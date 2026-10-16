@@ -18,6 +18,8 @@
  * Spec: ops/docs/backlog.md (#69 - dual-source round-robin + fallback)
  */
 
+import { liveVotes, parseShipped, rankThemes } from './themeVotes';
+
 interface Env {
   ASSETS: Fetcher;
   /**
@@ -29,6 +31,9 @@ interface Env {
    * Spec: ops/docs/plans/partner-attribution.md (section 3a)
    */
   CAMPAIGNS?: AnalyticsEngineDataset;
+  /** A GitHub token that can only read public data, for the live counts on
+   *  /themes. Absent, the page keeps the counts it was built with. */
+  GITHUB_TOKEN?: string;
 }
 
 /** Minimal shape of the Analytics Engine binding (no extra types package). */
@@ -57,6 +62,9 @@ interface ExportedHandler<E> {
 
 interface RewriterElement {
   append(content: string, options?: { html?: boolean }): RewriterElement;
+  getAttribute(name: string): string | null;
+  setAttribute(name: string, value: string): RewriterElement;
+  setInnerContent(content: string): RewriterElement;
 }
 
 declare global {
@@ -279,6 +287,7 @@ const LOCALE_SLUGS = new Set([
   '/uk',
   '/ru',
   '/th',
+  '/sk',
 ]);
 
 // Flat SEO landing pages (landing-pages.ts). Mirrors src/landingData/pages
@@ -486,7 +495,7 @@ export default {
         const page = APP_ROUTES.has(url.pathname)
           ? await env.ASSETS.fetch(new Request(new URL('/', url).toString(), request))
           : await env.ASSETS.fetch(request);
-        return injectSource(withSecurityHeaders(page, url), slug);
+        return injectSource(withSecurityHeaders(await withThemeVotes(page, url, env), url), slug);
       }
     }
 
@@ -496,9 +505,52 @@ export default {
     // gone. Nothing here needs to special-case that: the 404 page is HTML
     // and picks up the same headers.
     const response = await env.ASSETS.fetch(request);
-    return withSecurityHeaders(response, url);
+    return withSecurityHeaders(await withThemeVotes(response, url, env), url);
   },
 } satisfies ExportedHandler<Env>;
+
+/**
+ * /themes with the current upvotes: the page lists its threads and their
+ * baked counts in a meta tag, and each count and card carries its thread.
+ * Rewrites only integers, and leaves the page as built when GitHub does not
+ * answer. Spec: ops/docs/community-themes.md
+ */
+async function withThemeVotes(response: Response, url: URL, env: Env): Promise<Response> {
+  if (url.pathname !== '/themes' || !response.ok || !(response.headers.get('content-type') ?? '').includes('text/html')) {
+    return response;
+  }
+  const live = await liveVotes(env.GITHUB_TOKEN);
+  if (!live) return response;
+  let ranks = new Map<number, { votes: number; ov: number }>();
+  let thread = 0;
+  return new HTMLRewriter()
+    .on('meta[name="pn-theme-votes"]', {
+      element(el) {
+        ranks = rankThemes(parseShipped(el.getAttribute('content') ?? ''), live);
+      },
+    })
+    .on('article[data-thread]', {
+      element(el) {
+        const r = ranks.get(Number(el.getAttribute('data-thread')));
+        const on = /--on:(\d+)/.exec(el.getAttribute('style') ?? '')?.[1];
+        if (r && on !== undefined) el.setAttribute('style', `--ov:${r.ov};--on:${on}`);
+      },
+    })
+    .on('a.vote[data-thread]', {
+      element(el) {
+        thread = Number(el.getAttribute('data-thread'));
+        const r = ranks.get(thread);
+        if (r) el.setAttribute('aria-label', `${r.votes} ${r.votes === 1 ? 'vote' : 'votes'}, vote on GitHub`);
+      },
+    })
+    .on('a.vote .vc', {
+      element(el) {
+        const r = ranks.get(thread);
+        if (r) el.setInnerContent(String(r.votes));
+      },
+    })
+    .transform(response);
+}
 
 /**
  * Apply the HTML security headers to an asset response, passing non-HTML

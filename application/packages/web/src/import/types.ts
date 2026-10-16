@@ -146,6 +146,7 @@ export type ImporterId =
   | 'obsidian'
   | 'notesnook'
   | 'joplin'
+  | 'bear'
   | 'upnote'
   | 'apple-notes'
   | 'apple-journal'
@@ -166,7 +167,8 @@ export type ImporterId =
   | 'bitwarden'
   | 'browser-bookmarks'
   | 'browser-passwords'
-  | 'vcard';
+  | 'vcard'
+  | 'google-calendar';
 
 export interface Importer {
   id: ImporterId;

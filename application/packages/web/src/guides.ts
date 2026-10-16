@@ -48,6 +48,7 @@ type GuideSection = {
 export const GUIDE_META: Record<string, { name: string; icon?: string }> = {
   'apple-journal': { name: 'Apple Journal', icon: 'apple-journal.webp' },
   'apple-notes': { name: 'Apple Notes', icon: 'apple-notes.svg' },
+  bear: { name: 'Bear', icon: 'bear.webp' },
   bitwarden: { name: 'Bitwarden', icon: 'bitwarden.svg' },
   'browser-bookmarks': { name: 'Browser bookmarks', icon: 'browser-bookmarks.svg' },
   // No icon: no single browser owns the passwords .csv, so no logo is
@@ -55,8 +56,10 @@ export const GUIDE_META: Record<string, { name: string; icon?: string }> = {
   // phosphor glyph in GUIDE_GLYPH (help-page.ts) and on the homepage pill.
   'browser-passwords': { name: 'Browser passwords' },
   evernote: { name: 'Evernote', icon: 'evernote.svg' },
+  'google-calendar': { name: 'Google Calendar', icon: 'google-calendar.svg' },
   'google-keep': { name: 'Google Keep', icon: 'google-keep.svg' },
   'ia-writer': { name: 'iA Writer', icon: 'ia-writer.webp' },
+  joplin: { name: 'Joplin', icon: 'joplin.svg' },
   markdown: { name: 'Markdown', icon: 'markdown.svg' },
   'nextcloud-notes': { name: 'Nextcloud Notes', icon: 'nextcloud-notes.svg' },
   notesnook: { name: 'Notesnook', icon: 'notesnook.svg' },

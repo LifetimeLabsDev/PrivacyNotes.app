@@ -412,6 +412,7 @@ export const TagInput = forwardRef<TagInputHandle, Props>(function TagInput(
                folder chip in the leading slot are the same split as list vs
                container: many labels vs one location.
                Spec: ops/docs/ui-patterns.md (editor tag row) */
+            data-tag-chip={tag}
             className="group inline-flex shrink-0 items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-accent/10 text-accent-strong hover:bg-accent/20 transition whitespace-nowrap"
             dir="auto"
           >

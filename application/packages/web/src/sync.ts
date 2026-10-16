@@ -1,11 +1,13 @@
 import {
   encryptNote,
+  notePlaintext,
   decryptNote,
   bytesToBase64,
   base64ToBytes,
   type SupabaseClient,
 } from '@notes/shared';
 import { logAuthEvent } from './authDiag';
+import { recordSyncFault } from './syncFaults';
 import { ownsLocalData } from './authStorage';
 import { db, type LocalNote } from './db';
 import { heartbeat } from './devices';
@@ -30,6 +32,7 @@ import {
   type SyncBase,
 } from './noteMerge';
 import { nextStamp } from './notesRepo';
+import { normalizeSchedule } from './schedule';
 import { sameContent } from './editStamp';
 import { isServerWriteBlocked } from './syncPause';
 
@@ -550,7 +553,20 @@ function isNoteTooLargeError(err: { code?: string; message?: string } | null): b
  * counts the same bytes the CHECK does. Measuring the row here keeps a
  * note the server can only refuse off the wire entirely.
  * Spec: packages/supabase/migrations/history/0009_abuse_limits.sql */
-const CIPHERTEXT_MAX_BYTES = 1_048_576;
+export const NOTE_MAX_STORED_BYTES = 1_048_576;
+
+/** What a push encrypts for a note: the one place the row's payload is built. */
+export function rowPayloadOf(note: LocalNote) {
+  return { ...fieldsOfLocal(note), ...(archiveUnknownOf(note) ? { archived: undefined } : {}), editedAt: note.editedAt };
+}
+
+/** The exact length of the base64 ciphertext a push sends for the note, the
+ *  number the server's CHECK compares, without encrypting it: the sealed JSON
+ *  plus the 16-byte tag, then base64. */
+export function storedNoteBytes(note: LocalNote): number {
+  const sealed = notePlaintext(rowPayloadOf(note)).length + 16;
+  return 4 * Math.ceil(sealed / 3);
+}
 
 /** Surfaced via onPushError when a note exceeds the 1 MB per-note size
  * limit. pushFailures.ts matches this exact string to mark the note
@@ -1087,6 +1103,7 @@ async function syncInner(
       } catch (err) {
         healIds.delete(row.id);
         console.error('[sync] decrypt failed for', row.id, err);
+        recordSyncFault({ step: 'pull', code: 'decrypt' });
       }
     }
     return { toPut, tombstoneIds, healIds };
@@ -1171,9 +1188,10 @@ async function syncInner(
       throw new DeviceRevokedError();
     }
 
-    const { data: phase1, error: p1Err } = await phase1Promise;
+    const { data: phase1, error: p1Err, status: p1Status } = await phase1Promise;
 
     if (p1Err) {
+      recordSyncFault({ step: 'pull', status: p1Status, code: p1Err.code || undefined });
       if (isMfaRefusal(p1Err)) throw new MfaRequiredError();
       if (isAuthError(p1Err)) throw new SessionExpiredError();
       console.error('[sync] phase 1 pull failed:', p1Err);
@@ -1270,13 +1288,14 @@ async function syncInner(
             batchHadError = true;
             break;
           }
-          const { data: chunk, error: chunkErr } = await pullPage(
+          const { data: chunk, error: chunkErr, status: chunkStatus } = await pullPage(
             cursorAt,
             cursorId,
             PHASE2_CHUNK,
           );
 
           if (chunkErr) {
+            recordSyncFault({ step: 'pull', status: chunkStatus, code: chunkErr.code || undefined });
             if (isMfaRefusal(chunkErr)) throw new MfaRequiredError();
             if (isAuthError(chunkErr)) throw new SessionExpiredError();
             console.error('[sync] phase 2 pull failed after', cursorAt, chunkErr);
@@ -1398,7 +1417,7 @@ async function syncInner(
       // destroyed the only record that the delete was still pending -
       // the note stayed alive on the server, kept counting against the
       // quota, and came back on the next device to pull from epoch.
-      const { data: tombstoned, error } = await supabase
+      const { data: tombstoned, error, status: tombstoneStatus } = await supabase
         .from('notes')
         .update({ deleted_at: new Date().toISOString() })
         .in('id', chunk)
@@ -1416,7 +1435,7 @@ async function syncInner(
         // a successful no-op from here.
         const unaccounted = chunk.filter((id) => !confirmed.has(id));
         if (unaccounted.length > 0) {
-          const { data: survivors, error: checkErr } = await supabase
+          const { data: survivors, error: checkErr, status: checkStatus } = await supabase
             .from('notes')
             .select('id')
             .in('id', unaccounted)
@@ -1424,6 +1443,7 @@ async function syncInner(
           if (checkErr) {
             // Cannot prove they are gone, so keep them dirty and retry
             // on the next pass rather than guess.
+            recordSyncFault({ step: 'push', status: checkStatus, code: checkErr.code || undefined });
             if (isMfaRefusal(checkErr)) throw new MfaRequiredError();
             if (isAuthError(checkErr)) throw new SessionExpiredError();
             console.error('[sync] tombstone confirmation failed', checkErr);
@@ -1437,6 +1457,7 @@ async function syncInner(
             for (const id of unaccounted) {
               if (!stillAlive.has(id)) confirmed.add(id);
             }
+            if (stillAlive.size > 0) recordSyncFault({ step: 'push', code: 'delete-refused' });
             if (stillAlive.size > 0 && onPushError) {
               for (const id of stillAlive) {
                 onPushError(id, 'delete not accepted by the server');
@@ -1449,6 +1470,7 @@ async function syncInner(
           pushedCount += confirmed.size;
         }
       } else {
+        recordSyncFault({ step: 'push', status: tombstoneStatus, code: error.code || undefined });
         if (isMfaRefusal(error)) throw new MfaRequiredError();
         if (isAuthError(error)) throw new SessionExpiredError();
         console.error('[sync] batch tombstone failed', error);
@@ -1466,10 +1488,7 @@ async function syncInner(
    *  `fieldsOfLocal(note)`, the same fields a base recorded for this push
    *  describes, plus the "last edited" stamp when the row has one. */
   const buildRow = (note: LocalNote) => {
-    const { ciphertext, nonce } = encryptNote(
-      { ...fieldsOfLocal(note), ...(archiveUnknownOf(note) ? { archived: undefined } : {}), editedAt: note.editedAt },
-      encryptionKey,
-    );
+    const { ciphertext, nonce } = encryptNote(rowPayloadOf(note), encryptionKey);
     return {
       id: note.id,
       user_pubkey: pubkey,
@@ -1527,11 +1546,12 @@ async function syncInner(
     let probeOk = true;
     for (let i = 0; i < toUpsert.length && probeOk; i += PROBE_CHUNK) {
       const ids = toUpsert.slice(i, i + PROBE_CHUNK).map((n) => n.id);
-      const { data, error } = await supabase
+      const { data, error, status: probeStatus } = await supabase
         .from('notes')
         .select('id')
         .in('id', ids);
       if (error) {
+        recordSyncFault({ step: 'push', status: probeStatus, code: error.code || undefined });
         if (isMfaRefusal(error)) throw new MfaRequiredError();
         if (isAuthError(error)) throw new SessionExpiredError();
         // A malformed id 400s the whole chunk, and quietly treating a
@@ -1562,7 +1582,7 @@ async function syncInner(
         const sendable: LocalNote[] = [];
         for (const note of batch) {
           const built = buildRow(note);
-          if (built.ciphertext.length > CIPHERTEXT_MAX_BYTES) {
+          if (built.ciphertext.length > NOTE_MAX_STORED_BYTES) {
             if (onPushError) onPushError(note.id, NOTE_TOO_LARGE_MSG);
             continue;
           }
@@ -1570,8 +1590,9 @@ async function syncInner(
           sendable.push(note);
         }
         if (rows.length === 0) continue;
-        const { error } = await supabase.from('notes').insert(rows);
+        const { error, status: insertStatus } = await supabase.from('notes').insert(rows);
         if (error) {
+          recordSyncFault({ step: 'push', status: insertStatus, code: error.code || undefined });
           if (isMfaRefusal(error)) throw new MfaRequiredError();
           if (isAuthError(error)) throw new SessionExpiredError();
           if (isQuotaError(error)) throw new QuotaExceededError(error.message);
@@ -1605,7 +1626,7 @@ async function syncInner(
     // No retry can make this row fit, so it costs nothing but the report.
     // The note stays dirty and keeps its "not backed up" marking until an
     // edit brings it under the ceiling, when this check simply passes.
-    if (row.ciphertext.length > CIPHERTEXT_MAX_BYTES) {
+    if (row.ciphertext.length > NOTE_MAX_STORED_BYTES) {
       if (onPushError) onPushError(note.id, NOTE_TOO_LARGE_MSG);
       return;
     }
@@ -1617,7 +1638,7 @@ async function syncInner(
     // replace the newer one. A row with no recorded generation guards on
     // UNRECORDED_GENERATION, so its update always misses and the conflict
     // read below decides.
-    const { data: updated, error: updateErr } = await supabase
+    const { data: updated, error: updateErr, status: updateStatus } = await supabase
       .from('notes')
       .update({
         ciphertext: row.ciphertext,
@@ -1630,6 +1651,8 @@ async function syncInner(
       .select('id');
 
     if (updateErr) {
+      // The too-large refusal is the "Not backed up" list's to report.
+      if (!isNoteTooLargeError(updateErr)) recordSyncFault({ step: 'push', status: updateStatus, code: updateErr.code || undefined, ref: note.id });
       if (isMfaRefusal(updateErr)) throw new MfaRequiredError();
       if (isAuthError(updateErr)) throw new SessionExpiredError();
       if (isQuotaError(updateErr)) throw new QuotaExceededError(updateErr.message);
@@ -1661,7 +1684,7 @@ async function syncInner(
 
     // 0 rows updated - either the server moved past this device's
     // generation, or the note does not exist there yet (first push).
-    const { data: existing, error: fetchErr } = await supabase
+    const { data: existing, error: fetchErr, status: fetchStatus } = await supabase
       .from('notes')
       .select('ciphertext, nonce, updated_at, deleted_at')
       .eq('id', note.id)
@@ -1669,6 +1692,7 @@ async function syncInner(
       .maybeSingle();
 
     if (fetchErr) {
+      recordSyncFault({ step: 'push', status: fetchStatus, code: fetchErr.code || undefined, ref: note.id });
       if (isMfaRefusal(fetchErr)) throw new MfaRequiredError();
       if (isAuthError(fetchErr)) throw new SessionExpiredError();
       console.error('[sync] conflict check failed for', note.id, fetchErr);
@@ -1686,8 +1710,9 @@ async function syncInner(
 
     if (!existing) {
       // No row on server - first-time insert.
-      const { error: insertErr } = await supabase.from('notes').insert(row);
+      const { error: insertErr, status: insertStatus } = await supabase.from('notes').insert(row);
       if (insertErr) {
+        if (!isNoteTooLargeError(insertErr)) recordSyncFault({ step: 'push', status: insertStatus, code: insertErr.code || undefined, ref: note.id });
         if (isMfaRefusal(insertErr)) throw new MfaRequiredError();
         if (isAuthError(insertErr)) throw new SessionExpiredError();
         if (isQuotaError(insertErr)) throw new QuotaExceededError(insertErr.message);
@@ -1761,7 +1786,10 @@ async function syncInner(
         return;
       }
 
-      const merged: NoteFields = { ...rest, body };
+      // Two sides can each leave a schedule that holds while their merge does
+      // not (an end day kept from one side before a day moved on the other);
+      // the merge keeps what holds. Spec: ops/docs/plans/calendar-pillar-spec.md (section 4.2)
+      const merged: NoteFields = { ...rest, body, trackers: normalizeSchedule(rest.trackers, rest.type) };
       const editedAt = mergedEditedAt(local, server, merged);
       // A server copy that lost the flag to an older writer is not "the
       // same" as an archived merge: it is written, so the flag is restated.
@@ -1804,7 +1832,7 @@ async function syncInner(
       // from another device in the window since the conflict read must not
       // be overwritten, and a trigger-dropped write to a tombstoned row
       // looks exactly like success without it.
-      const { data: mergedRows, error: mergeErr } = await supabase
+      const { data: mergedRows, error: mergeErr, status: mergeStatus } = await supabase
         .from('notes')
         .update({
           ciphertext: bytesToBase64(mergedCt),
@@ -1839,6 +1867,7 @@ async function syncInner(
         pushedCount += 1;
         console.log('[sync] merged note', note.id);
       } else if (mergeErr) {
+        if (!isNoteTooLargeError(mergeErr)) recordSyncFault({ step: 'push', status: mergeStatus, code: mergeErr.code || undefined, ref: note.id });
         console.error('[sync] auto-merge push failed for', note.id, mergeErr);
         if (onPushError) onPushError(note.id, mergeErr.message ?? 'auto-merge failed');
       } else {
@@ -1849,6 +1878,7 @@ async function syncInner(
       }
     } catch (err) {
       console.error('[sync] conflict resolution failed for', note.id, err);
+      recordSyncFault({ step: 'push', code: 'merge', ref: note.id });
       if (onPushError) onPushError(note.id, 'conflict resolution failed');
     }
   };

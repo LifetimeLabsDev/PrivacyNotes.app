@@ -4,7 +4,8 @@ import type { DOMOutputSpec, Node as ProseMirrorNode } from '@tiptap/pm/model';
 import { Plugin, PluginKey, type EditorState, type Transaction } from '@tiptap/pm/state';
 import { TableMap } from '@tiptap/pm/tables';
 import { Decoration, DecorationSet, type EditorView } from '@tiptap/pm/view';
-import { commitWidths, dragTableWidth, dragWidths, effectiveWidths, mirrorEdge, widthsFromTableLines } from './tableColumnWidths';
+import i18n from './i18n';
+import { commitWidths, dragColumn, dragTableWidth, dragWidths, effectiveWidths, mirrorEdge, widthsFromTableLines } from './tableColumnWidths';
 import { tableWidthFromMarker } from './tableDelimiterRow';
 
 /**
@@ -274,126 +275,158 @@ function handleDecorations(state: EditorState, handle: Handle): DecorationSet {
   return DecorationSet.create(state.doc, decorations);
 }
 
-/**
- * Drag the table's outer end edge: the whole table gets narrower or wider,
- * in steps of the note's width, and its columns keep their shares. Full
- * width stores nothing; anything narrower is the marker line under the table.
- */
-function startEdgeDrag(view: EditorView, handle: Handle, event: PointerEvent, wrapper: HTMLElement, tableEl: HTMLElement, table: ProseMirrorNode): void {
-  const stored = tableWidthOf(table);
-  const start = stored ?? 100;
-  const rtl = getComputedStyle(tableEl).direction === 'rtl';
-  const noteWidth = wrapper.getBoundingClientRect().width;
-  const startX = event.clientX;
-  let current: number | null = stored;
-
-  const move = (ev: PointerEvent) => {
-    current = dragTableWidth(start, ((ev.clientX - startX) / noteWidth) * 100 * (rtl ? -1 : 1));
-    tableEl.style.width = current ? `${current}%` : '';
-  };
-  const finish = (commit: boolean) => {
-    window.removeEventListener('pointermove', move);
-    window.removeEventListener('pointerup', onUp);
-    window.removeEventListener('pointercancel', onCancel);
-    window.removeEventListener('keydown', onKey, true);
-    document.documentElement.classList.remove('pn-col-resizing');
-    const tr = view.state.tr.setMeta(resizeKey, { handle: null, dragging: false });
-    if (commit && current !== stored) tr.setNodeMarkup(handle.table, null, { ...table.attrs, tableWidth: current });
-    else tableEl.style.width = stored ? `${stored}%` : '';
-    view.dispatch(tr);
-  };
-  const onUp = () => finish(true);
-  const onCancel = () => finish(false);
-  const onKey = (ev: KeyboardEvent) => {
-    if (ev.key !== 'Escape') return;
-    ev.preventDefault();
-    ev.stopPropagation();
-    finish(false);
-  };
-
-  document.documentElement.classList.add('pn-col-resizing');
-  window.addEventListener('pointermove', move);
-  window.addEventListener('pointerup', onUp);
-  window.addEventListener('pointercancel', onCancel);
-  window.addEventListener('keydown', onKey, true);
-  view.dispatch(view.state.tr.setMeta(resizeKey, { handle, dragging: true }));
+/** What a drag shows: the column percentages and the table's own width (100 is the note's width). */
+interface DragLayout {
+  widths: readonly number[];
+  tableWidth: number;
+  /** pair: a border trades width between its two columns; edge: the whole table scales; column: one column and the table edge move. */
+  kind: 'pair' | 'edge' | 'column';
+  fine: boolean;
 }
 
+/** The key hint that follows the pointer during a drag. */
+function dragHint(): HTMLElement {
+  const hint = document.createElement('div');
+  hint.className = 'pn-col-drag-hint';
+  // Read at drag time: editorLinks.ts has the same test, but reads the window as it loads.
+  const mac = /Mac|iP(hone|[oa]d)/.test(navigator.platform);
+  hint.textContent = i18n.t('editor:table.resizeHint', { shift: 'Shift', alt: mac ? 'Option' : 'Alt' });
+  document.body.appendChild(hint);
+  return hint;
+}
+
+/**
+ * Drag a border. Each move reads the keys again, so they can be pressed or
+ * let go mid-drag:
+ * - plain, on a border between columns: the pair trades width (dragWidths);
+ * - plain, on the table's outer end edge: the whole table gets narrower or
+ *   wider and its columns keep their shares (dragTableWidth);
+ * - Shift: only the column before the border changes, and the table edge
+ *   moves with it (dragColumn);
+ * - Alt (Option on a Mac): whole-percent steps in place of the grid.
+ * A table width under 100 is stored as the marker line under the table.
+ */
 function startDrag(view: EditorView, handle: Handle, event: PointerEvent): void {
   const wrapper = view.nodeDOM(handle.table) as HTMLElement | null;
   const tableEl = wrapper instanceof HTMLTableElement ? wrapper : wrapper?.querySelector('table');
   const table = view.state.doc.nodeAt(handle.table);
   if (!tableEl || !table) return;
-  if (handle.border === TableMap.get(table).width - 1) {
-    if (wrapper && wrapper !== tableEl) startEdgeDrag(view, handle, event, wrapper, tableEl, table);
-    return;
-  }
+  const count = TableMap.get(table).width;
+  const edge = handle.border === count - 1;
+  // The table's own width is a share of the wrapper, which is as wide as the note.
+  const note = wrapper && wrapper !== tableEl ? wrapper : null;
+  if (edge && !note) return;
   const cols = Array.from(tableEl.querySelectorAll<HTMLElement>(':scope > colgroup > col'));
   const stored = tableWidths(table);
-  const count = TableMap.get(table).width;
+  const storedTable = tableWidthOf(table);
   const start = stored ?? Array.from({ length: count }, () => 100 / count);
+  const startTable = storedTable ?? 100;
   const rtl = getComputedStyle(tableEl).direction === 'rtl';
-  const tableWidth = tableEl.getBoundingClientRect().width;
+  const tablePx = tableEl.getBoundingClientRect().width;
+  const notePx = note ? note.getBoundingClientRect().width : tablePx;
   const startX = event.clientX;
-  let current = start.slice();
+  let lastX = startX;
+  let lastY = event.clientY;
+  // A press with no move is not a drag: committing it would snap an untouched table to the grid.
+  let moved = false;
+  let current: DragLayout = { widths: start, tableWidth: startTable, kind: edge ? 'edge' : 'pair', fine: false };
 
   // The symmetry guide: a dashed line where this border would mirror its
   // partner across the middle of the table, solid (with the partner border
   // lit) while the border sits on it. Drawn in the wrapper, outside the
-  // content the editor owns, and gone when the drag ends.
-  const target = mirrorEdge(start, handle.border);
+  // content the editor owns, and gone when the drag ends. Only a pair drag
+  // has one: the others move the table edge, and the guide with it.
+  const target = edge ? null : mirrorEdge(start, handle.border);
   const partner = count - 2 - handle.border;
   const partnerEdge = start.slice(0, partner + 1).reduce((a, w) => a + w, 0);
   const guides: HTMLElement[] = [];
   const guideAt = (percent: number, className: string): HTMLElement | null => {
-    if (!wrapper || wrapper === tableEl) return null;
+    if (!note) return null;
     const line = document.createElement('div');
     line.className = className;
-    const wrapRect = wrapper.getBoundingClientRect();
+    const wrapRect = note.getBoundingClientRect();
     const tableRect = tableEl.getBoundingClientRect();
     const fraction = rtl ? 1 - percent / 100 : percent / 100;
-    line.style.left = `${tableRect.left - wrapRect.left + wrapper.scrollLeft + fraction * tableRect.width}px`;
+    line.style.left = `${tableRect.left - wrapRect.left + note.scrollLeft + fraction * tableRect.width}px`;
     line.style.top = `${tableEl.offsetTop}px`;
     line.style.height = `${tableEl.offsetHeight}px`;
-    wrapper.appendChild(line);
+    note.appendChild(line);
     guides.push(line);
     return line;
   };
   const guide = target === null ? null : guideAt(target, 'pn-col-guide');
   const partnerLine = target === null || partner === handle.border ? null : guideAt(partnerEdge, 'pn-col-guide pn-col-guide-partner');
+  const hint = dragHint();
 
-  const show = (widths: readonly number[] | null) => {
-    cols.forEach((col, i) => { col.style.cssText = widths ? `width: ${widths[i]}%` : ''; });
+  const show = (layout: { widths: readonly number[] | null; tableWidth: number }) => {
+    cols.forEach((col, i) => { col.style.cssText = layout.widths ? `width: ${layout.widths[i]}%` : ''; });
+    tableEl.style.width = layout.tableWidth < 100 ? `${layout.tableWidth}%` : '';
+  };
+  const layoutAt = (x: number, keys: { shiftKey: boolean; altKey: boolean }): DragLayout => {
+    const dx = (x - startX) * (rtl ? -1 : 1);
+    const fine = keys.altKey;
+    if (keys.shiftKey && note) {
+      const next = dragColumn(start, startTable, handle.border, (dx / notePx) * 100, fine);
+      return { ...next, kind: 'column', fine };
+    }
+    if (edge) return { widths: start, tableWidth: dragTableWidth(startTable, (dx / notePx) * 100, fine) ?? 100, kind: 'edge', fine };
+    return { widths: dragWidths(start, handle.border, (dx / tablePx) * 100, target, fine), tableWidth: startTable, kind: 'pair', fine };
+  };
+  const placeHint = () => {
+    hint.style.left = `${Math.max(8, Math.min(lastX + 14, window.innerWidth - hint.offsetWidth - 8))}px`;
+    hint.style.top = `${Math.min(lastY + 18, window.innerHeight - hint.offsetHeight - 8)}px`;
+  };
+  const update = (keys: { shiftKey: boolean; altKey: boolean }) => {
+    current = layoutAt(lastX, keys);
+    show(current);
+    const edgeAt = current.widths.slice(0, handle.border + 1).reduce((a, w) => a + w, 0);
+    const matched = current.kind === 'pair' && target !== null && Math.abs(edgeAt - target) < 0.01;
+    for (const line of guides) {
+      line.style.display = current.kind === 'pair' ? '' : 'none';
+      line.classList.toggle('is-matched', matched);
+    }
+    placeHint();
   };
   const move = (ev: PointerEvent) => {
-    const delta = ((ev.clientX - startX) / tableWidth) * 100 * (rtl ? -1 : 1);
-    current = dragWidths(start, handle.border, delta, target);
-    show(current);
-    const edge = current.slice(0, handle.border + 1).reduce((a, w) => a + w, 0);
-    const matched = target !== null && Math.abs(edge - target) < 0.01;
-    guide?.classList.toggle('is-matched', matched);
-    partnerLine?.classList.toggle('is-matched', matched);
+    lastX = ev.clientX;
+    lastY = ev.clientY;
+    moved = true;
+    update(ev);
   };
   const finish = (commit: boolean) => {
     window.removeEventListener('pointermove', move);
     window.removeEventListener('pointerup', onUp);
     window.removeEventListener('pointercancel', onCancel);
     window.removeEventListener('keydown', onKey, true);
+    window.removeEventListener('keyup', onKey, true);
     document.documentElement.classList.remove('pn-col-resizing');
     for (const line of guides) line.remove();
-    const next = commit ? commitWidths(current) : stored;
+    hint.remove();
+    let widths = stored;
+    let width = storedTable;
+    if (commit && current.kind === 'pair') widths = commitWidths(current.widths, current.fine);
+    if (commit && current.kind === 'column') widths = effectiveWidths(current.widths);
+    if (commit && current.kind !== 'pair') width = current.tableWidth < 100 ? current.tableWidth : null;
     const tr = view.state.tr.setMeta(resizeKey, { handle: null, dragging: false });
-    if (commit && JSON.stringify(next) !== JSON.stringify(stored)) setTableWidths(tr, handle.table, next);
-    else show(stored);
+    const widthsChanged = JSON.stringify(widths) !== JSON.stringify(stored);
+    if (widthsChanged) setTableWidths(tr, handle.table, widths);
+    if (width !== storedTable) tr.setNodeMarkup(handle.table, null, { ...tr.doc.nodeAt(handle.table)!.attrs, tableWidth: width });
+    if (!widthsChanged && width === storedTable) show({ widths: stored, tableWidth: startTable });
     view.dispatch(tr);
   };
-  const onUp = () => finish(true);
+  const onUp = () => finish(moved);
   const onCancel = () => finish(false);
   const onKey = (ev: KeyboardEvent) => {
-    if (ev.key !== 'Escape') return;
+    if (ev.key === 'Escape' && ev.type === 'keydown') {
+      ev.preventDefault();
+      ev.stopPropagation();
+      finish(false);
+      return;
+    }
+    if (ev.key !== 'Shift' && ev.key !== 'Alt') return;
+    // A lone Alt press would otherwise move the focus to a browser's menu bar on Windows.
     ev.preventDefault();
-    ev.stopPropagation();
-    finish(false);
+    update(ev);
   };
 
   document.documentElement.classList.add('pn-col-resizing');
@@ -401,12 +434,14 @@ function startDrag(view: EditorView, handle: Handle, event: PointerEvent): void 
   window.addEventListener('pointerup', onUp);
   window.addEventListener('pointercancel', onCancel);
   window.addEventListener('keydown', onKey, true);
+  window.addEventListener('keyup', onKey, true);
+  placeHint();
   view.dispatch(view.state.tr.setMeta(resizeKey, { handle, dragging: true }));
 }
 
 /**
- * Drag the border between two columns: the pair trades width, the other
- * columns and the table width stay. Mouse and pen only; touch has no hover
+ * Drag a column border or the table's end edge (startDrag says what each key
+ * does). Mouse and pen only; touch has no hover
  * to find a border with, and a finger drag in the editor scrolls. The drag
  * shows on the cols directly and writes one transaction on release, so it
  * is one undo step and one save.

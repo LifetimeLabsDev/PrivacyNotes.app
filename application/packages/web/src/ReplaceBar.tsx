@@ -4,7 +4,7 @@ import type { Editor as TipTapEditor } from '@tiptap/react';
 import { MagnifyingGlass, ArrowsLeftRight, TextAa, X } from './icons';
 import { HoverLabel } from './HoverLabel';
 import { isImeComposing } from './imeComposing';
-import { BAR_BTN, BAR_INPUT, MatchNav, TEXT_BTN } from './MatchNav';
+import { BAR_BTN, BAR_INPUT, MatchNav, ReplaceToggle, TEXT_BTN } from './MatchNav';
 import { keyText } from './shortcutMatch';
 import {
   setSearchQuery,
@@ -21,6 +21,12 @@ type Props = {
   editor: TipTapEditor;
   /** Bumped by the parent on every open so the search input refocuses + selects. */
   focusTick: number;
+  /** The term to start on when the reader grew the find bar into this one. */
+  startQuery?: string;
+  /** Shrinks the bar back to the find bar with the current term. */
+  onSwap: (query: string) => void;
+  /** Free account (the demo opens the bar anyway): the Pro rocket. */
+  swapPro?: boolean;
   onClose: () => void;
 };
 
@@ -42,11 +48,11 @@ type Props = {
  * Esc deliberately does not close it, for the reason FindBar documents:
  * the shortcut that opened it closes it, and the X is the mouse path.
  */
-export function ReplaceBar({ editor, focusTick, onClose }: Props) {
+export function ReplaceBar({ editor, focusTick, startQuery, onSwap, swapPro = false, onClose }: Props) {
   const { t } = useTranslation('editor');
   const searchRef = useRef<HTMLInputElement>(null);
   const replaceRef = useRef<HTMLInputElement>(null);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(startQuery ?? '');
   const [replacement, setReplacement] = useState('');
   const [caseSensitive, setCaseSensitive] = useState(false);
   const [info, setInfo] = useState<SearchInfo>({ active: -1, total: 0, activeIsNode: false });
@@ -60,8 +66,10 @@ export function ReplaceBar({ editor, focusTick, onClose }: Props) {
   }, [editor]);
 
   // Prefill from the current selection (single line, sane length), the way a
-  // browser find does. Runs once on open.
+  // browser find does. Runs once on open, and not after a swap, which
+  // brought its term along.
   useEffect(() => {
+    if (startQuery) return;
     const { from, to } = editor.state.selection;
     if (to > from) {
       const sel = editor.state.doc.textBetween(from, to, ' ').trim();
@@ -189,6 +197,7 @@ export function ReplaceBar({ editor, focusTick, onClose }: Props) {
           </button>
         </HoverLabel>
         <MatchNav count={count} noHits={noHits} canStep={info.total > 0} onStep={go} />
+        <ReplaceToggle open pro={swapPro} onClick={() => onSwap(query)} />
         <div className="w-px h-5 bg-divider mx-0.5 shrink-0" aria-hidden="true" />
         <HoverLabel label={t('find.closeReplaceTitle', { keys: keyText('findReplace') })} position="below-end">
           <button

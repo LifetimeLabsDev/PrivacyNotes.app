@@ -8,7 +8,6 @@
     "title": "Завдання",
     "newTaskNote": "Нова нотатка із завданнями",
     "newTaskNoteWithHotkey": "Нова нотатка із завданнями ({{hotkey}})",
-    "new": "Створити",
     "hideCompleted": "Сховати виконані завдання",
     "showCompleted": "Показати виконані завдання",
     "searchPlaceholder": "Пошук завдань…",
@@ -37,12 +36,9 @@
     "deselectAll": "Скасувати вибір",
     "selectAll": "Вибрати все",
     "storage": "Сховище",
-    "supportedTypesHint": "Максимальний розмір файлу: {{max}} МБ",
     "perFile": "На файл",
     "free": "Безкоштовно",
     "upgradeToPro": "Перейти на Pro",
-    "addStorage": "Додати сховища",
-    "upToMax": "до {{max}}",
     "filterAll": "Усі",
     "filterImages": "Зображення",
     "filterAudio": "Аудіо",
@@ -115,6 +111,7 @@
     "video": "Відео",
     "image": "Зображення",
     "pdf": "PDF",
+    "email": "Електронний лист",
     "archive": "Архів",
     "document": "Документ",
     "spreadsheet": "Таблиця",
@@ -190,7 +187,8 @@
     "markdown": "Markdown",
     "markdownTip": "Без шифрування",
     "bookmarks": "Закладки",
-    "contacts": "Контакти"
+    "contacts": "Контакти",
+    "calendar": "Календар"
   },
   "browseToggle": {
     "label": "Переглядати за",
@@ -206,6 +204,11 @@
     "deleteConfirmTitle": "Видалити папку?",
     "deleteConfirmBodyRoot": "Папку «{{folder}}» буде видалено. Її нотатки й підпапки перемістяться на верхній рівень. Жодну нотатку не буде видалено.",
     "deleteConfirmBodyNested": "Папку «{{folder}}» буде видалено. Її нотатки й підпапки перемістяться в «{{parent}}». Жодну нотатку не буде видалено.",
+    "deleteConfirmBranchRoot": "Папку «{{folder}}» і її підпапки буде видалено. Їхні нотатки перемістяться на верхній рівень. Жодну нотатку не буде видалено.",
+    "deleteConfirmBranchNested": "Папку «{{folder}}» і її підпапки буде видалено. Їхні нотатки перемістяться в «{{parent}}». Жодну нотатку не буде видалено.",
+    "deleteSubfolders_one": "Також видалити її {{count}} підпапку",
+    "deleteSubfolders_few": "Також видалити її {{count}} підпапки",
+    "deleteSubfolders_many": "Також видалити її {{count}} підпапок",
     "moveTo": "Перемістити в папку",
     "searchPlaceholder": "Пошук папок",
     "sortFolders": "Сортувати папки",
@@ -223,7 +226,8 @@
     "saveName": "Зберегти назву папки",
     "actionsForFolder": "Дії з папкою {{folder}}",
     "seedSecurity": "Безпека",
-    "seedTravel": "Подорожі"
+    "seedTravel": "Подорожі",
+    "seedTeam": "Команда"
   },
   "collapsedSidebar": {
     "newNote": "Нова нотатка",
@@ -272,7 +276,19 @@
     "tagCount_few": "{{count}} теги",
     "tagCount_many": "{{count}} тегів",
     "tagCount_other": "{{count}} тегу",
-    "entryDate": "Дата запису"
+    "entryDate": "Дата запису",
+    "noDate": "Немає",
+    "schedule": "Розклад",
+    "ends": "Кінець",
+    "sameDay": "Того ж дня",
+    "allDay": "Весь день",
+    "starts": "Початок",
+    "endsAt": "Кінець о",
+    "noEnd": "Немає",
+    "removeFromCalendar": "Прибрати з календаря",
+    "makeEvent": "Зробіть це подією, щоб повторювати",
+    "typeEvent": "Подія",
+    "repeatRemoved": "Повтор буде прибрано"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "Вийти з виділення (Esc)",
@@ -307,6 +323,8 @@
     "showSize": "Показувати розмір файлу",
     "showTags": "Показувати папку й теги",
     "showCalendar": "Показувати календар",
+    "showWorkItems": "Показувати елементи простору «<b>Робота</b>»",
+    "showPersonalItems": "Показувати елементи простору «<b>Особисте</b>»",
     "other": "Інше",
     "showReadOnly": "Показувати доступні лише для читання",
     "showProtected": "Показувати захищені",
@@ -335,7 +353,9 @@
     "nextMonth": "Наступний місяць",
     "dayWithEntry": "{{date}}, є запис",
     "dayWithEntryIn": "{{date}}, є запис у просторі «{{space}}»",
-    "dayWithEntryBoth": "{{date}}, є записи в просторах «Особисте» і «Робота»",
+    "dayWithItems_one": "{{date}}, {{count}} елемент",
+    "dayWithItems_few": "{{date}}, {{count}} елементи",
+    "dayWithItems_many": "{{date}}, {{count}} елементів",
     "previousWeek": "Попередній тиждень",
     "nextWeek": "Наступний тиждень",
     "showMonth": "{{month}}, показати весь місяць",
@@ -381,11 +401,14 @@
     "copyBookmarkUrl": "Копіювати URL",
     "editBookmark": "Редагувати закладку",
     "openInTab": "Відкрити у вкладці",
+    "openInTabHint": "{{key}}+клік",
     "closeTab": "Закрити вкладку",
     "closeOtherTabs": "Закрити інші вкладки",
     "closeAllTabs": "Закрити всі вкладки",
     "pinTab": "Закріпити вкладку",
-    "unpinTab": "Відкріпити вкладку"
+    "unpinTab": "Відкріпити вкладку",
+    "newEvent": "Нова подія",
+    "quickAdd": "Швидке додавання"
   },
   "demoBanner": {
     "title": "Спробуйте без жодного ризику",
@@ -652,6 +675,9 @@
       "mastodon": "Mastodon"
     }
   },
+  "staleEditor": {
+    "copyToast": "Цю нотатку змінено на іншому пристрої. Ваші зміни збережено в копії «{{title}}»."
+  },
   "noteLinks": {
     "retargetedToast_one": "Оновлено {{count}} посилання на нотатку відповідно до нової назви.",
     "retargetedToast_few": "Оновлено {{count}} посилання на нотатки відповідно до нової назви.",
@@ -663,7 +689,8 @@
   },
   "tabStrip": {
     "label": "Відкриті вкладки",
-    "close": "Закрити {{title}}"
+    "close": "Закрити {{title}}",
+    "moreTabs": "Більше вкладок"
   },
   "shareInbox": {
     "saved": "Збережено в PrivacyNotes",
@@ -692,10 +719,11 @@
   },
   "spaces": {
     "label": "Простір",
+    "all": "Усе",
     "personal": "Особисте",
     "work": "Робота",
-    "moveToWork": "Перемістити до простору «Робота»",
-    "moveToPersonal": "Перемістити до простору «Особисте»",
+    "moveToWork": "Перемістити до простору «<b>Робота</b>»",
+    "moveToPersonal": "Перемістити до простору «<b>Особисте</b>»",
     "movedToWork": "Папку {{folder}} переміщено до простору «Робота»",
     "movedToPersonal": "Папку {{folder}} переміщено до простору «Особисте»",
     "itemMovedToWork": "Переміщено до простору «Робота»",
@@ -704,6 +732,236 @@
     "switchedToPersonal": "Перемкнено на простір «Особисте»",
     "switchToWork": "Перейти до простору «Робота»",
     "switchToPersonal": "Перейти до простору «Особисте»",
+    "switchToAll": "Показати всі простори",
     "workEmpty": "Простір «Робота» порожній. У просторі «Особисте» відкрийте меню елемента або папки й виберіть «Перемістити до простору „Робота“»."
+  },
+  "calendar": {
+    "moveToToday": "Перенести на сьогодні",
+    "moveToTomorrow": "Перенести на завтра",
+    "moveToNextWeek": "Перенести на наступний тиждень",
+    "deleteEvent": "Видалити подію",
+    "openContact": "Відкрити контакт",
+    "newOnDay": "Нова подія в цей день",
+    "showDay": "Показати цей день",
+    "open": "Відкрити календар",
+    "back": "Календар",
+    "more_one": "+{{count}} ще",
+    "addOn": "Додати на {{date}}",
+    "nothingFor_one": "Нічого протягом {{count}} дня",
+    "nothingToday": "Сьогодні нічого немає",
+    "allDay": "Весь день",
+    "now": "Зараз",
+    "viewLabel": "Подання календаря",
+    "views": {
+      "day": "День",
+      "week": "Тиждень",
+      "month": "Місяць"
+    },
+    "legendLabel": "Показувати в календарі",
+    "kinds": {
+      "event": "Події",
+      "note": "Нотатки",
+      "task": "Списки завдань",
+      "journal": "Записи щоденника",
+      "contact": "Дні народження"
+    },
+    "dragEnd": "Перетягніть, щоб змінити день завершення",
+    "previousDay": "Попередній день",
+    "nextDay": "Наступний день",
+    "seedWeeklyReview": "Щотижневий огляд",
+    "seedWeeklyReviewBody": "Щоп’ятниці о четвертій. Що зроблено, що відкладено і що далі на наступному тижні.",
+    "addToCalendar": "Додати в календар",
+    "showAgenda": "Показати список подій",
+    "hideAgenda": "Приховати список подій",
+    "seedDemo": {
+      "lunch": "Обід із Семом",
+      "dentist": "Стоматолог",
+      "callAna": "Дзвінок з Аною",
+      "groceries": "Продукти",
+      "concert": "Концерт",
+      "giftIdeas": "Ідеї подарунків для Кона",
+      "flight": "Переліт до Лісабона",
+      "conference": "Конференція в Лісабоні",
+      "nightTrain": "Нічний потяг до Порту",
+      "yoga": "Йога",
+      "sprint": "Планування спринту",
+      "bookClub": "Книжковий клуб",
+      "rent": "Сплатити оренду"
+    },
+    "nothingFor_few": "Нічого протягом {{count}} днів",
+    "nothingFor_many": "Нічого протягом {{count}} днів",
+    "more_few": "+{{count}} ще",
+    "more_many": "+{{count}} ще"
+  },
+  "repeat": {
+    "changeTitle": "Змінити цей елемент?",
+    "deleteTitle": "Видалити цей елемент?",
+    "thisOccurrence": "Лише цей раз",
+    "thisAndFollowing": "Цей і наступні",
+    "allOccurrences": "Усі повторення",
+    "label": "Повтор",
+    "never": "Не повторюється",
+    "daily_one": "Кожен {{count}} день",
+    "weekdays": "Щобудня (з понеділка по п’ятницю)",
+    "weekly_one": "Кожен {{count}} тиждень: {{days}}",
+    "monthlyDay_one": "Кожен {{count}} місяць, {{day}}-го числа",
+    "monthlyNth_one": "Кожен {{count}} місяць: {{weekday}} {{nth}} тижня",
+    "yearly_one": "Кожен {{count}} рік, {{date}}",
+    "withUntil": "{{rule}}, до {{date}}",
+    "withCount_one": "{{rule}}, {{count}} раз",
+    "nth": {
+      "1": "першого",
+      "2": "другого",
+      "3": "третього",
+      "4": "четвертого",
+      "last": "останнього"
+    },
+    "custom": "Власний",
+    "every": "Раз на",
+    "units": {
+      "day_one": "день",
+      "week_one": "тиждень",
+      "month_one": "місяць",
+      "year_one": "рік",
+      "year_few": "роки",
+      "year_many": "років",
+      "month_few": "місяці",
+      "month_many": "місяців",
+      "week_few": "тижні",
+      "week_many": "тижнів",
+      "day_few": "дні",
+      "day_many": "днів"
+    },
+    "onDays": "У дні",
+    "onDay": "{{day}}-го числа",
+    "onNth": "{{weekday}} {{nth}} тижня",
+    "ends": "Закінчується",
+    "endsNever": "Ніколи",
+    "endsOn": "У певну дату",
+    "endsAfter": "Після кількох повторень",
+    "times_one": "{{count}} раз",
+    "apply": "Застосувати",
+    "times_few": "{{count}} рази",
+    "times_many": "{{count}} разів",
+    "withCount_few": "{{rule}}, {{count}} рази",
+    "withCount_many": "{{rule}}, {{count}} разів",
+    "yearly_few": "Кожні {{count}} роки, {{date}}",
+    "yearly_many": "Кожні {{count}} років, {{date}}",
+    "monthlyNth_few": "Кожні {{count}} місяці: {{weekday}} {{nth}} тижня",
+    "monthlyNth_many": "Кожні {{count}} місяців: {{weekday}} {{nth}} тижня",
+    "monthlyDay_few": "Кожні {{count}} місяці, {{day}}-го числа",
+    "monthlyDay_many": "Кожні {{count}} місяців, {{day}}-го числа",
+    "weekly_few": "Кожні {{count}} тижні: {{days}}",
+    "weekly_many": "Кожні {{count}} тижнів: {{days}}",
+    "daily_few": "Кожні {{count}} дні",
+    "daily_many": "Кожні {{count}} днів"
+  },
+  "alerts": {
+    "label": "Сповіщення",
+    "none": "Немає",
+    "atTime": "У час початку",
+    "minutesBefore_one": "За {{count}} хвилину",
+    "hoursBefore_one": "За {{count}} годину",
+    "daysBefore_one": "За {{count}} день",
+    "weeksBefore_one": "За {{count}} тиждень",
+    "onDayAt": "У цей день о {{time}}",
+    "daysBeforeAt_one": "За {{count}} день о {{time}}",
+    "custom": "Власне",
+    "add": "Додати",
+    "max": "Не більше п’яти сповіщень.",
+    "units": {
+      "minutes": "хвилин",
+      "hours": "годин",
+      "days": "днів",
+      "weeks": "тижнів"
+    },
+    "at": "о",
+    "remove": "Прибрати {{alert}}",
+    "reminder": "Нагадування",
+    "open": "Відкрити",
+    "snooze": "Відкласти на 10 хв",
+    "offOnPhone": "Нагадування вимкнено на цьому телефоні",
+    "turnOn": "Увімкнути",
+    "openSettings": "Відкрити налаштування",
+    "daysBeforeAt_few": "За {{count}} дні о {{time}}",
+    "daysBeforeAt_many": "За {{count}} днів о {{time}}",
+    "weeksBefore_few": "За {{count}} тижні",
+    "weeksBefore_many": "За {{count}} тижнів",
+    "daysBefore_few": "За {{count}} дні",
+    "daysBefore_many": "За {{count}} днів",
+    "hoursBefore_few": "За {{count}} години",
+    "hoursBefore_many": "За {{count}} годин",
+    "minutesBefore_few": "За {{count}} хвилини",
+    "minutesBefore_many": "За {{count}} хвилин"
+  },
+  "quickAdd": {
+    "group": "Створити",
+    "items": "Елементи",
+    "createNamed": "{{type}}: {{title}}",
+    "types": {
+      "event": "Нова подія",
+      "note": "Нова нотатка",
+      "task": "Новий список завдань",
+      "journal": "Новий запис у щоденнику"
+    },
+    "keepAsText": "Залишити як текст",
+    "placeholder": "Назва, день, час, повтор...",
+    "example": "Спробуйте: {{example}}",
+    "examples": {
+      "1": "Стоматолог пт 15:00 за 1 год",
+      "2": "Щотижневий огляд кожну пт 16-17",
+      "3": "Подзвонити в банк завтра 11:30 на 30 хв",
+      "4": "Оренда кожного місяця 1-го за 1 день",
+      "5": "Іспит через 5 днів #школа",
+      "6": "завдання Список речей чт 18:00"
+    },
+    "examplesGroup": "Приклади речень",
+    "syntax": {
+      "group": "Що можна ввести",
+      "day": {
+        "label": "День",
+        "examples": "завтра · пт · наступної ср · 31 жовт · через 5 днів",
+        "insert": "завтра"
+      },
+      "time": {
+        "label": "Час",
+        "examples": "15:00 · 9:30 · 16-17 · о 9",
+        "insert": "15:00"
+      },
+      "length": {
+        "label": "Тривалість",
+        "examples": "на 30 хв · на 3 дні · пт до нд",
+        "insert": "на 1 год"
+      },
+      "repeat": {
+        "label": "Повтор",
+        "examples": "кожну пт · кожного будня · кожного місяця 1-го",
+        "insert": "кожну пт"
+      },
+      "alert": {
+        "label": "Сповіщення",
+        "examples": "за 1 год · нагадати 10 хв",
+        "insert": "за 1 год"
+      },
+      "place": {
+        "label": "Папка й тег",
+        "examples": "/Подорожі · #школа",
+        "insert": "#"
+      },
+      "space": {
+        "label": "Простір",
+        "examples": "@робота · @особисте",
+        "insert": "@робота"
+      },
+      "type": {
+        "label": "Тип",
+        "examples": "завдання · нотатка · щоденник (подія, якщо тип не вказано)",
+        "insert": "завдання"
+      }
+    },
+    "label": "Швидке додавання"
+  },
+  "offline": {
+    "notLoaded": "Ви офлайн, а ця частина застосунку ще не завантажилася. Спробуйте знову, коли повернетеся онлайн."
   }
 }

@@ -66,6 +66,7 @@
     "appearance_contentWidth": "largura da coluna, largo, largura total, margens",
     "appearance_editor": "markdown, texto formatado, wysiwyg, modo do editor",
     "appearance_copyFormat": "copiar, área de transferência, texto simples, colar, caixa de seleção",
+    "appearance_pasteFormat": "colar, área de transferência, texto simples, formatação, sem formatação, manter estilo",
     "appearance_favicons": "favicon, ícones de sites, logos",
     "appearance_invisibles": "marca de parágrafo, espaços em branco, espaços, caracteres ocultos, marcas de formatação",
     "appearance_startView": "página inicial, início, visualização padrão, abrir em",
@@ -81,11 +82,19 @@
     "about_openSource": "código-fonte, github, código aberto, open source",
     "about_feedback": "feedback, contato, relatar bug, reportar erro, sugestão",
     "about_dataStorage": "dados, servidor, onde fica armazenado, privacidade",
-    "about_singleKeys": "teclado, atalhos, atalhos de teclado, tecla única, j, k, acessibilidade, /, >",
+    "about_singleKeys": "teclado, atalhos, atalhos de teclado, tecla única, j, k, q, calendário, acessibilidade, /, >",
     "about_changelog": "notas de versão, novidades, atualizações, mudanças",
     "about_hotkeys": "atalhos de teclado, atalhos, teclas",
     "about_rating": "avaliação, avaliar, estrelas, app store",
     "appearance_openInTabs": "abas, barra de abas, navegador, abrir",
+    "section_calendar": "calendário, evento, lembrete, alerta, notificação, semana, mês, agenda, aniversário",
+    "calendar_alertTimed": "alerta, lembrete, notificação, padrão, minutos, antes, evento",
+    "calendar_alertAllDay": "alerta, lembrete, notificação, padrão, dia inteiro, manhã",
+    "calendar_alertBirthday": "aniversário, contato, alerta, lembrete",
+    "calendar_reminderTitles": "privacidade, tela de bloqueio, título, lembrete, notificação",
+    "calendar_where": "notificação, permissão, navegador, celular, computador, lembrete",
+    "calendar_weekNumbers": "número da semana, semana ISO, calendário",
+    "calendar_hours": "horas, horário de trabalho, visão do dia, visão da semana, manhã",
     "appearance_formatBar": "barra de ferramentas, barra de formatação, botões, personalizar, organizar, lista com marcadores, tachado, engrenagem"
   }
 }

@@ -92,7 +92,13 @@
       "goal": "Doel",
       "decision": "Besluit",
       "definition": "Definitie",
-      "seealso": "Zie ook"
+      "seealso": "Zie ook",
+      "box": "Vak",
+      "panel": "Paneel",
+      "update": "Update",
+      "time": "Tijd",
+      "steps": "Stappen",
+      "place": "Plaats"
     }
   },
   "color": {
@@ -123,6 +129,7 @@
     "addColumnRight": "Kolom rechts invoegen",
     "toggleHeaderRow": "Koprij in- of uitschakelen",
     "equalColumnWidths": "Kolommen even breed maken",
+    "resizeHint": "Houd {{shift}} ingedrukt om alleen deze kolom te wijzigen, {{alt}} voor kleinere stappen",
     "deleteRow": "Rij verwijderen",
     "deleteColumn": "Kolom verwijderen",
     "deleteTable": "Tabel verwijderen"
@@ -146,6 +153,8 @@
     "caseSensitiveTitle": "Hoofdlettergevoelig",
     "closeReplace": "Zoeken en vervangen sluiten",
     "closeReplaceTitle": "Sluiten ({{keys}})",
+    "showReplace": "Zoeken en vervangen",
+    "hideReplace": "Vervangen verbergen",
     "replacedCount_one": "{{count}} vervangen",
     "replacedCount_other": "{{count}} vervangen"
   },
@@ -155,7 +164,7 @@
     "title": "Overzicht",
     "ariaLabel": "Notitie-overzicht",
     "hide": "Overzicht verbergen",
-    "hideTitle": "Overzicht verbergen (Esc)",
+    "hideTitle": "Overzicht verbergen ({{keys}})",
     "copyHeadingLink": "Link naar kop kopiëren",
     "copyNoteLink": "Notitielink kopiëren",
     "copyHeadingShortcut": "Snelkoppeling naar kop kopiëren",
@@ -168,6 +177,9 @@
   },
   "topRow": {
     "add": "Regel bovenaan toevoegen"
+  },
+  "addLine": {
+    "add": "Regel toevoegen"
   },
   "link": {
     "popoverLabel": "Link toevoegen",
@@ -205,7 +217,9 @@
     "characters_other": "{{formatted}} tekens",
     "tasksChecked_one": "{{done}} van {{formatted}} afgevinkt",
     "tasksChecked_other": "{{done}} van {{formatted}} afgevinkt",
-    "tooLargeToSync": ", mogelijk te groot om te synchroniseren, splits op in een nieuwe notitie",
+    "syncLimit": " · {{share}} van de synchronisatielimiet van 1 MB",
+    "overSyncLimit": " · boven de synchronisatielimiet van 1 MB, blijft op dit apparaat",
+    "split": "Notitie splitsen",
     "veryLong": ", erg lang, bewerken kan traag worden en haperen",
     "gettingLong": ", wordt lang, kan haperen op tragere apparaten",
     "largeTableWarning": "Een grote tabel ({{rows}} rijen) kan deze notitie traag maken om te bewerken, overweeg om te splitsen"
@@ -265,10 +279,13 @@
     "hintTap": "Tik op een knop voor de opties.",
     "onBar": "Op de balk",
     "inMenu": "In het +-menu",
+    "inAttachMenu": "In het menu Bijvoegen",
+    "attachMenuEmpty": "Leeg, dus de knop Bijvoegen wordt niet getoond.",
     "menuEmpty": "Het menu is leeg, dus de +-knop wordt niet getoond.",
     "hidden": "Verborgen",
     "hiddenNote": "Ze werken nog steeds met hun sneltoets en Markdown.",
     "hiddenDrop": "Zet hier een knop neer om hem te verbergen.",
+    "markdownViewNote": "De Markdown-weergave houdt een eigen vaste set knoppen.",
     "hiddenEmpty": "Niets is verborgen.",
     "alwaysVisible": "Altijd zichtbaar",
     "pinned": "Opent een paneel, blijft dus op de balk of verborgen",
@@ -280,18 +297,23 @@
     "home": {
       "bar": "Op de balk",
       "menu": "In het +-menu",
+      "attachMenu": "In het menu Bijvoegen",
       "hidden": "Verborgen"
     },
     "opensPanel": "opent een paneel",
     "showsRecording": "toont de opname",
     "refuse": {
       "menuNotAllowed": "{{item}} kan op de balk staan of verborgen zijn, niet in het +-menu.",
+      "attachNotAllowed": "Alleen de knoppen voor afbeelding, bestand en opname passen in het menu Bijvoegen.",
       "lastOnBar": "Houd minstens één knop op de balk."
     },
     "items": {
       "link": "Link",
       "notelink": "Notitielink",
-      "audio": "Opname"
+      "audio": "Opname",
+      "attachMenu": "Bijvoegen",
+      "separator": "Verticale scheidingslijn",
+      "markdownView": "Markdown tonen"
     },
     "positionTitle": "Positie van de balk",
     "positionNote": "Kies waar de opmaakbalk in de editor staat.",

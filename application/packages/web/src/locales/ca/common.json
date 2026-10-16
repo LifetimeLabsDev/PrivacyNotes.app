@@ -39,7 +39,8 @@
   "storageBar": {
     "usage": "{{percent}} % usat ({{used}} / {{max}})",
     "refresh": "Actualitza l’emmagatzematge",
-    "cleanupInfo": "Els elements suprimits deixen de comptar a l'instant. Els fitxers xifrats mateixos surten del servidor en pocs dies."
+    "cleanupInfo": "Els elements suprimits deixen de comptar a l'instant. Els fitxers xifrats mateixos surten del servidor en pocs dies.",
+    "open": "Obre la configuració de l'emmagatzematge"
   },
   "updateToast": {
     "available": "Actualització disponible",
@@ -94,7 +95,7 @@
   },
   "quickSwitcher": {
     "label": "Vés a un element o a un ajust",
-    "jumpTo": "Vés a",
+    "jumpTo": "Salta",
     "placeholder": "Escriu un títol o un ajust, o > per a les ordres",
     "recent": "Recents",
     "empty": "Cap element ni ajust amb aquest nom",
@@ -107,7 +108,24 @@
     "openInTab": "obre en una pestanya",
     "openLink": "Obre",
     "edit": "edita",
-    "close": "tanca"
+    "close": "tanca",
+    "tags": "Etiquetes",
+    "folders": "Carpetes",
+    "tagItems_one": "{{count}} element",
+    "tagItems_other": "{{count}} elements",
+    "emptyTags": "Cap etiqueta amb aquest nom",
+    "emptyFolders": "Cap carpeta amb aquest nom",
+    "onlyTags": "etiquetes",
+    "onlyFolders": "carpetes",
+    "showOnlyTags": "Només etiquetes",
+    "showOnlyFolders": "Només carpetes",
+    "showOnlyCommands": "Només ordres",
+    "goToTag": "Vés a una etiqueta",
+    "goToFolder": "Vés a una carpeta",
+    "createTag": "Crea l'etiqueta #{{name}}",
+    "createFolder": "Crea la carpeta «{{name}}»",
+    "newTag": "Etiqueta nova",
+    "newFolder": "Carpeta nova"
   },
   "cardForm": {
     "cardholderName": "Nom del titular",

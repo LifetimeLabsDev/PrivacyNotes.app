@@ -86,6 +86,10 @@ export interface KeyboardShortcutHandlers {
   // Multi-select
   selectionMode: boolean;
   clearSelection: () => void;
+  /** The quick add (Q). */
+  openQuickAdd: () => void;
+  /** A Calendar key; false when nothing ran (an item is open over it). */
+  calendarKey: (key: 'today' | 'day' | 'week' | 'month' | 'new') => boolean;
   selectAllVisible: () => void;
 }
 
@@ -420,6 +424,17 @@ function runShortcut(e: KeyboardEvent, h: KeyboardShortcutHandlers): boolean | t
     return true;
   }
   if (behind) return false;
+
+  if (is('quickAdd')) {
+    h.openQuickAdd();
+    return true;
+  }
+  // The Calendar's keys, only while it is the open view.
+  if (h.view === 'calendar') {
+    const key = is('calendarToday') ? 'today' : is('calendarDay') ? 'day' : is('calendarWeek') ? 'week'
+      : is('calendarMonth') ? 'month' : is('calendarNew') ? 'new' : null;
+    if (key && h.calendarKey(key)) return true;
+  }
 
   if (is('commandMode')) {
     h.openCommands();

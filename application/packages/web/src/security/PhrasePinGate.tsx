@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { clearPinFailures, getPinLockoutState, markPinUnlocked, recordPinFailure, shouldPromptForPin, verifyPin } from '../pin';
-import { PinInput, type PinInputHandle } from '../PinInput';
+import { clearPinFailures, getPinLockoutState, markPinUnlocked, pinCredentialStamp, pinIsPasscode, recordPinFailure, shouldPromptForPin, verifyPin } from '../pin';
+import type { PinInputHandle } from '../PinInput';
+import { SecretInput } from '../PasscodeInput';
+import { secretReady, type SecretKind } from '../secretKind';
 import { ForgotPinLink, PinRecoveryForm } from '../PinRecoveryForm';
 import type { UserSettings } from '../userSettings';
 
@@ -44,8 +46,15 @@ function GateForOwner({ hasPin, pinTimeoutMinutes, onCancel, prompt = 'phraseGat
   return <>{children}</>;
 }
 
+/** The prompt keys this gate is opened with, and their passcode forms. */
+const PASSCODE_PROMPTS: Record<string, string> = {
+  'phraseGate.enterToView': 'phraseGate.enterToViewPasscode',
+  'phraseGate.enterToChangeCustody': 'phraseGate.enterToChangeCustodyPasscode',
+};
+
 /**
- * Chromeless PIN entry embedded in the tab body. Reuses verifyPin +
+ * Chromeless PIN entry embedded in the tab body. Draws the field of the secret
+ * the account holds, read from the cached hash (`pinIsPasscode`). Reuses verifyPin +
  * markPinUnlocked directly rather than wrapping the full-screen
  * PinPrompt - that would double-stack modals.
  */
@@ -61,6 +70,7 @@ function InlinePinGate({
   recovery?: PinGateRecovery;
 }) {
   const { t } = useTranslation('security');
+  const [kind] = useState<SecretKind>(() => (pinIsPasscode() ? 'passcode' : 'pin'));
   const [recovering, setRecovering] = useState(false);
   const [value, setValue] = useState('');
   const [err, setErr] = useState<string | null>(null);
@@ -82,13 +92,29 @@ function InlinePinGate({
   }, [lockout.locked]);
 
   async function submit(candidate: string) {
-    if (candidate.length !== 4 || working.current || lockout.locked) return;
+    if (!secretReady(kind, candidate) || working.current) return;
+    // The counter is shared by every PIN surface, so it is read at submit and
+    // not only from the state this gate mounted with.
+    const current = getPinLockoutState();
+    if (current.locked) {
+      setLockout(current);
+      setErr(t('phraseGate.tooManyAttempts', { seconds: current.secondsLeft }));
+      return;
+    }
     working.current = true;
     setBusy(true);
     setErr(null);
     try {
+      const stamp = pinCredentialStamp();
       const { valid: ok } = await verifyPin(candidate);
       if (!alive.current) return;
+      // The secret changed on another device during the check: the answer is
+      // about a secret the account no longer holds, so it opens nothing.
+      if (pinCredentialStamp() !== stamp) {
+        setValue('');
+        inputRef.current?.clear();
+        return;
+      }
       if (ok) {
         clearPinFailures();
         markPinUnlocked();
@@ -98,12 +124,12 @@ function InlinePinGate({
         setLockout(state);
         setErr(state.locked
           ? t('phraseGate.tooManyAttempts', { seconds: state.secondsLeft })
-          : t('phraseGate.incorrectPinRetry'));
+          : kind === 'passcode' ? t('phraseGate.incorrectPasscodeRetry') : t('phraseGate.incorrectPinRetry'));
         setValue('');
         inputRef.current?.clear();
       }
     } catch {
-      if (alive.current) setErr(t('phraseGate.checkFailed'));
+      if (alive.current) setErr(kind === 'passcode' ? t('phraseGate.checkFailedPasscode') : t('phraseGate.checkFailed'));
     } finally {
       if (alive.current) { working.current = false; setBusy(false); }
     }
@@ -114,15 +140,16 @@ function InlinePinGate({
   // The gate guards the phrase, so typing the phrase is proof enough to
   // clear a forgotten PIN. The cleared PIN opens the page behind it.
   if (recovering && recovery) {
-    return <PinRecoveryForm {...recovery} onCleared={onSuccess} onCancel={() => setRecovering(false)} />;
+    return <PinRecoveryForm {...recovery} kind={kind} onCleared={onSuccess} onCancel={() => setRecovering(false)} />;
   }
 
   return (
     <div className="space-y-4">
       <p className="text-sm text-pn-soft leading-relaxed">
-        {t(prompt)}
+        {t(kind === 'passcode' ? PASSCODE_PROMPTS[prompt] ?? prompt : prompt)}
       </p>
-      <PinInput
+      <SecretInput
+        kind={kind}
         ref={inputRef}
         value={value}
         onChange={(v) => {
@@ -153,13 +180,13 @@ function InlinePinGate({
         </button>
         <button
           onClick={() => void submit(value)}
-          disabled={value.length !== 4 || disabled}
+          disabled={!secretReady(kind, value) || disabled}
           className="flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {busy ? t('phraseGate.checking') : t('phraseGate.unlock')}
         </button>
       </div>
-      {recovery && <ForgotPinLink onClick={() => setRecovering(true)} />}
+      {recovery && <ForgotPinLink kind={kind} onClick={() => setRecovering(true)} />}
     </div>
   );
 }

@@ -11,13 +11,17 @@
     "noContent": "ไม่มีเนื้อหา",
     "notBackedUp": "ยังไม่ได้สำรอง",
     "archived": "เก็บถาวรแล้ว",
-    "entryDate": "วันที่ของรายการ"
+    "entryDate": "วันที่ของรายการ",
+    "date": "วันที่",
+    "dayOf": "วันที่ {{n}} จาก {{total}}"
   },
   "header": {
     "new": "สร้าง",
     "newNote": "โน้ตใหม่",
     "newNoteHover": "โน้ตใหม่ ({{hotkey}})",
-    "trash": "ถังขยะ"
+    "trash": "ถังขยะ",
+    "newEvent": "กิจกรรมใหม่",
+    "newEventHover": "กิจกรรมใหม่ ({{hotkey}})"
   },
   "folderChip": {
     "clear": "ล้างตัวกรองโฟลเดอร์: {{folder}}",
@@ -40,7 +44,9 @@
     "login": "ล็อกอิน",
     "file": "ไฟล์",
     "bookmark": "บุ๊กมาร์ก",
-    "contact": "ผู้ติดต่อ"
+    "contact": "ผู้ติดต่อ",
+    "event": "กิจกรรม",
+    "quickAdd": "เพิ่มด่วน"
   },
   "vaultFilter": {
     "all": "ทั้งหมด",
@@ -94,7 +100,8 @@
     "vault": "ตู้นิรภัย",
     "pinned": "ปักหมุด",
     "archive": "เก็บถาวร",
-    "notes": "โน้ต"
+    "notes": "โน้ต",
+    "calendar": "ปฏิทิน"
   },
   "footerStats": {
     "journals": "บันทึกประจำวัน",
@@ -136,8 +143,17 @@
     "collapse": "ยุบรายการโน้ต",
     "expand": "ขยายรายการโน้ต"
   },
+  "split": {
+    "action": "แยกโน้ต",
+    "done": "แยกเป็น “{{title}}” แล้ว",
+    "overLimit": "“{{title}}” มีขนาดเกิน 1 MB จึงอยู่บนอุปกรณ์นี้เท่านั้น",
+    "cannot": "แยกโน้ตนี้ตรงนี้ไม่ได้ วางเคอร์เซอร์ไว้ตรงที่โน้ตใหม่ควรเริ่มต้น",
+    "continuedTitle": "{{title}} (ต่อ)",
+    "continuedIn": "อ่านต่อใน {{link}}"
+  },
   "paneResize": {
-    "hintCollapse": "คลิกเพื่อยุบ · ลากเพื่อปรับขนาด"
+    "hintCollapse": "คลิกเพื่อยุบ · ลากเพื่อปรับขนาด",
+    "hintExpand": "คลิกเพื่อขยาย · ลากเพื่อปรับขนาด"
   },
   "emptyEditor": {
     "selectFile": "เลือกไฟล์เพื่อดูตัวอย่าง",
@@ -174,6 +190,8 @@
     "findInNote": "ค้นหาในโน้ต",
     "navPrev": "ก่อนหน้า",
     "navNext": "ถัดไป",
+    "navPrevTab": "แท็บก่อนหน้า",
+    "navNextTab": "แท็บถัดไป",
     "undo": "เลิกทำ",
     "redo": "ทำซ้ำ",
     "hide": "ซ่อน",
@@ -225,6 +243,8 @@
     "words": "คำ",
     "zen": "เซน",
     "appearance": "รูปลักษณ์",
+    "goToTop": "ไปที่ด้านบนสุด",
+    "goToEnd": "ไปที่ท้ายสุด",
     "signOut": "ออกจากระบบ",
     "signingOut": "กำลังออกจากระบบ…",
     "switchToLight": "สลับเป็นโหมดสว่าง",
@@ -250,7 +270,8 @@
     "aboutLabel": "เกี่ยวกับ",
     "languageLabel": "ภาษา",
     "dateLabel": "วันที่",
-    "languageDesc": "เลือกภาษาที่ใช้แสดง PrivacyNotes"
+    "languageDesc": "เลือกภาษาที่ใช้แสดง PrivacyNotes",
+    "calendarLabel": "ปฏิทิน"
   },
   "importStore": {
     "title": "นำเข้าหรือจัดเก็บ?",

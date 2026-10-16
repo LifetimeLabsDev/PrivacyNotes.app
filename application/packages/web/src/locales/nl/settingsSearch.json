@@ -66,6 +66,7 @@
     "appearance_contentWidth": "kolombreedte, breed, volledige breedte, marges",
     "appearance_editor": "markdown, opgemaakte tekst, wysiwyg, editormodus",
     "appearance_copyFormat": "kopiëren, klembord, platte tekst, plakken, selectievakje",
+    "appearance_pasteFormat": "plakken, klembord, platte tekst, opmaak, zonder opmaak, stijl overnemen",
     "appearance_favicons": "favicon, website-iconen, logo’s",
     "appearance_invisibles": "alineateken, witruimte, spaties, verborgen tekens, opmaaktekens",
     "appearance_startView": "startpagina, home, standaardweergave, openen met",
@@ -81,11 +82,19 @@
     "about_openSource": "broncode, github, open source",
     "about_feedback": "feedback, contact, bug melden, fout melden, suggestie",
     "about_dataStorage": "gegevens, data, server, waar opgeslagen, privacy",
-    "about_singleKeys": "toetsenbord, sneltoetsen, toetsencombinaties, enkele toets, j, k, toegankelijkheid, /, >",
+    "about_singleKeys": "toetsenbord, sneltoetsen, toetsencombinaties, enkele toets, j, k, q, agenda, kalender, toegankelijkheid, /, >",
     "about_changelog": "release notes, wat is er nieuw, updates, wijzigingen",
     "about_hotkeys": "sneltoetsen, toetsencombinaties, toetsen, shortcuts",
     "about_rating": "recensie, beoordelen, sterren, app store",
     "appearance_openInTabs": "tabbladen, tabs, tabbalk, browser, openen",
+    "section_calendar": "agenda, kalender, afspraak, herinnering, melding, notificatie, week, maand, planning, verjaardag",
+    "calendar_alertTimed": "melding, herinnering, notificatie, standaard, minuten, vooraf, afspraak",
+    "calendar_alertAllDay": "melding, herinnering, notificatie, standaard, hele dag, ochtend",
+    "calendar_alertBirthday": "verjaardag, contact, melding, herinnering",
+    "calendar_reminderTitles": "privacy, vergrendelscherm, titel, herinnering, melding",
+    "calendar_where": "melding, notificatie, toestemming, browser, telefoon, desktop, herinnering",
+    "calendar_weekNumbers": "weeknummer, ISO-week, agenda, kalender",
+    "calendar_hours": "uren, werktijden, dagweergave, weekweergave, ochtend",
     "appearance_formatBar": "werkbalk, opmaakbalk, knoppen, aanpassen, indelen, opsommingslijst, doorhalen, tandwiel"
   }
 }

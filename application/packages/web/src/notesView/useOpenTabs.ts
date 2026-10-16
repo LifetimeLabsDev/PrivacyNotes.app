@@ -4,8 +4,9 @@ import { isDemoMode } from '../demo';
 
 /**
  * The items open as tabs above the editor: an ordered list of ids, per device
- * and never synced. A tab never changes its item, so the list is all there is
- * to a tab; which one is active is simply whichever id is `selectedId`.
+ * and never synced. The list is all there is to a tab; which one is active is
+ * simply whichever id is `selectedId`. A tab changes its item only through
+ * `followTab`, when "Open items in tabs" is on.
  *
  * A pinned tab sits in a group at the start of the strip and cannot be closed,
  * one by one or in bulk, until it is unpinned. Only its item leaving the app
@@ -82,6 +83,19 @@ export function useOpenTabs(notes: LocalNote[]) {
     setState((prev) => ({ ...prev, ids: prev.ids.filter((id) => prev.pinned.includes(id) || !close.includes(id)) }));
   }, []);
 
+  /** The tab of `prev` changes to `next`, the way a browser tab changes
+   *  page. With no `prev` (it is pinned, or has no tab) `next` gets a tab of
+   *  its own at the end. An item that has a tab keeps it. */
+  const followTab = useCallback((prev: string | null, next: string) => {
+    setState((s) => {
+      if (s.ids.includes(next)) return s;
+      if (prev !== null && s.ids.includes(prev) && !s.pinned.includes(prev)) {
+        return { ...s, ids: s.ids.map((x) => (x === prev ? next : x)) };
+      }
+      return { ...s, ids: [...s.ids, next] };
+    });
+  }, []);
+
   /** Pinning moves a tab to the end of the pinned group, unpinning to the
    *  start of the rest, which is where a browser puts it. */
   const setPinned = useCallback((id: string, pin: boolean) => {
@@ -106,22 +120,23 @@ export function useOpenTabs(notes: LocalNote[]) {
     });
   }, []);
 
-  return { tabs, tabIds, pinnedIds, addTabs, closeTabs, setPinned, moveTab };
+  return { tabs, tabIds, pinnedIds, addTabs, followTab, closeTabs, setPinned, moveTab };
 }
 
 /**
- * "Open a tab on every click": a click on a list row or grid tile opens the item in a
- * tab instead of beside the strip. Per device like the tabs, and a plain
- * boolean with no cap: the person who turns it on tidies the strip, or turns
- * it off. The settings window can be a second window, so the store listens to
- * `storage` as well as to its own change event.
+ * "Open items in tabs": the open item always has a tab, and the tab you are
+ * on follows the item you open, the way a browser tab follows a link. A
+ * pinned tab keeps its item, so the next item opens in a new tab. On by
+ * default, per device like the tabs. The settings window can be a second window, so the store
+ * listens to `storage` as well as to its own change event.
  * Spec: ops/docs/plans/note-tabs.md (section 2)
  */
 const OPEN_IN_TABS_KEY = 'privacynotes.ui.openItemsInTabs';
 const OPEN_IN_TABS_EVENT = 'pn:open-items-in-tabs';
 
+/** On unless this device turned it off: only an explicit '0' is off. */
 function readOpenInTabs(): boolean {
-  try { return localStorage.getItem(OPEN_IN_TABS_KEY) === '1'; } catch { return false; }
+  try { return localStorage.getItem(OPEN_IN_TABS_KEY) !== '0'; } catch { return true; }
 }
 
 function subscribeOpenInTabs(onChange: () => void): () => void {
@@ -135,7 +150,7 @@ function subscribeOpenInTabs(onChange: () => void): () => void {
 }
 
 export function useOpenItemsInTabs(): [boolean, (on: boolean) => void] {
-  const on = useSyncExternalStore(subscribeOpenInTabs, readOpenInTabs, () => false);
+  const on = useSyncExternalStore(subscribeOpenInTabs, readOpenInTabs, () => true);
   const set = useCallback((next: boolean) => {
     try { localStorage.setItem(OPEN_IN_TABS_KEY, next ? '1' : '0'); } catch { /* storage unavailable */ }
     window.dispatchEvent(new Event(OPEN_IN_TABS_EVENT));

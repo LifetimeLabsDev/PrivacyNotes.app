@@ -42,7 +42,9 @@ export function mimeFromExt(path: string): string {
     opus: 'audio/opus', flac: 'audio/flac',
     mp4: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime',
   };
-  return map[ext] ?? 'application/octet-stream';
+  // An own-property test: an extension like `constructor` must not read a
+  // value inherited from Object.prototype.
+  return Object.hasOwn(map, ext) ? map[ext]! : 'application/octet-stream';
 }
 
 /* ------------------------------------------------------------------ */

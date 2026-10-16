@@ -1,0 +1,172 @@
+{
+  "dismiss": "Skryť",
+  "close": "Zavrieť",
+  "moveBanner": {
+    "bodySignIn": "Prihlás sa tam obnovovacou frázou alebo cez „{{scanQr}}“.",
+    "cta": "Presunúť teraz",
+    "syncing": "Synchronizujú sa tvoje poznámky…",
+    "error": "Teraz sa nepodarilo synchronizovať všetko. Skontroluj pripojenie a skús to znova.",
+    "conflict": "Jedna z tvojich poznámok má konflikt synchronizácie, ktorý čaká na tvoje rozhodnutie. Vyrieš ho v dialógovom okne a potom to skús znova."
+  },
+  "movedHint": {
+    "body": "Toto je nový domov aplikácie. Zmeň si záložku na use.privacynotes.app a znova pridaj odkaz na plochu.",
+    "gotIt": "Rozumiem"
+  },
+  "moveScreen": {
+    "title": "Aplikácia sa presťahovala na use.privacynotes.app",
+    "bodySignIn": "Prihlás sa tam 12-slovnou obnovovacou frázou alebo cez „{{scanQr}}“. Toto zariadenie sa najprv synchronizuje, takže ťa tam čakajú všetky poznámky a nič sa tu neodstráni.",
+    "openNotes": "Raz tu otvoriť poznámky a opraviť to",
+    "showPhrase": "Zobraziť moju obnovovaciu frázu",
+    "website": "Radšej prejsť na webovú stránku"
+  },
+  "quota": {
+    "frozen": {
+      "configured": "Synchronizácia je pozastavená. Limit úložiska prekračuješ už aspoň 90 dní. Tvoje poznámky sú v bezpečí v zariadení. Obnov predplatné alebo exportuj svoje údaje.",
+      "unconfigured": "Synchronizácia je pozastavená. Limit úložiska prekračuješ už viac ako 90 dní. Tvoje poznámky sú v bezpečí v zariadení. Exportuj a skráť poznámky, aby sa synchronizácia obnovila."
+    },
+    "grace": {
+      "configured_one": "Rozšírenie úložiska vypršalo. Zostáva {{count}} deň na zníženie využitia alebo obnovenie predplatného, kým sa synchronizácia pozastaví.",
+      "configured_few": "Rozšírenie úložiska vypršalo. Zostávajú {{count}} dni na zníženie využitia alebo obnovenie predplatného, kým sa synchronizácia pozastaví.",
+      "configured_many": "Rozšírenie úložiska vypršalo. Zostáva {{count}} dňa na zníženie využitia alebo obnovenie predplatného, kým sa synchronizácia pozastaví.",
+      "configured_other": "Rozšírenie úložiska vypršalo. Zostáva {{count}} dní na zníženie využitia alebo obnovenie predplatného, kým sa synchronizácia pozastaví.",
+      "unconfigured_one": "Limit úložiska je prekročený. Zostáva {{count}} deň na skrátenie poznámok, kým sa synchronizácia pozastaví.",
+      "unconfigured_few": "Limit úložiska je prekročený. Zostávajú {{count}} dni na skrátenie poznámok, kým sa synchronizácia pozastaví.",
+      "unconfigured_many": "Limit úložiska je prekročený. Zostáva {{count}} dňa na skrátenie poznámok, kým sa synchronizácia pozastaví.",
+      "unconfigured_other": "Limit úložiska je prekročený. Zostáva {{count}} dní na skrátenie poznámok, kým sa synchronizácia pozastaví."
+    },
+    "full": {
+      "configured": "Úložisko je plné. Niektoré poznámky sa nepodarilo synchronizovať. Uvoľni miesto alebo pridaj ďalšie úložisko.",
+      "unconfigured": "Úložisko je plné. Niektoré poznámky sa nepodarilo synchronizovať. Uvoľni miesto skrátením poznámok."
+    },
+    "manageStorage": "Spravovať úložisko",
+    "viewUsage": "Zobraziť využitie"
+  },
+  "syncError": {
+    "failed_one": "{{count}} poznámku sa nepodarilo synchronizovať. Pokus sa automaticky zopakuje.",
+    "failed_few": "{{count}} poznámky sa nepodarilo synchronizovať. Pokus sa automaticky zopakuje.",
+    "failed_many": "{{count}} poznámky sa nepodarilo synchronizovať. Pokus sa automaticky zopakuje.",
+    "failed_other": "{{count}} poznámok sa nepodarilo synchronizovať. Pokus sa automaticky zopakuje.",
+    "lastError": "Posledná chyba: {{message}}"
+  },
+  "sessionExpired": {
+    "title": "Relácia vypršala",
+    "body": "Tvoja relácia vypršala. Poznámky sú v bezpečí v tomto zariadení. Prihlás sa znova a synchronizácia bude pokračovať.",
+    "signInAgain": "Prihlásiť sa znova"
+  },
+  "signOutConfirm": {
+    "title": "Máš uloženú svoju 12-slovnú frázu?",
+    "body": "Tvoja fráza je <only>jediná</only> cesta späť. Žiadne obnovenie cez e-mail, žiadna linka podpory. Nevieme, kto si, a to zámerne. Ak ju ešte nemáš zapísanú, ťukni na <action>Nie, zobraziť frázu</action> a hneď ti ju otvoríme.",
+    "unsyncedWarn_one": "{{count}} poznámka v tomto zariadení sa ešte nesynchronizovala. Ak sa ju pri odhlasovaní nepodarí nahrať, natrvalo sa stratí.",
+    "unsyncedWarn_few": "{{count}} poznámky v tomto zariadení sa ešte nesynchronizovali. Ak sa ich pri odhlasovaní nepodarí nahrať, natrvalo sa stratia.",
+    "unsyncedWarn_many": "{{count}} poznámky v tomto zariadení sa ešte nesynchronizovalo. Ak sa ich pri odhlasovaní nepodarí nahrať, natrvalo sa stratia.",
+    "unsyncedWarn_other": "{{count}} poznámok v tomto zariadení sa ešte nesynchronizovalo. Ak sa ich pri odhlasovaní nepodarí nahrať, natrvalo sa stratia.",
+    "unsyncedKept_one": "{{count}} poznámka v tomto zariadení sa ešte nesynchronizovala. Zostane v tomto zariadení a synchronizuje sa po opätovnom prihlásení.",
+    "unsyncedKept_few": "{{count}} poznámky v tomto zariadení sa ešte nesynchronizovali. Zostanú v tomto zariadení a synchronizujú sa po opätovnom prihlásení.",
+    "unsyncedKept_many": "{{count}} poznámky v tomto zariadení sa ešte nesynchronizovalo. Zostanú v tomto zariadení a synchronizujú sa po opätovnom prihlásení.",
+    "unsyncedKept_other": "{{count}} poznámok v tomto zariadení sa ešte nesynchronizovalo. Zostanú v tomto zariadení a synchronizujú sa po opätovnom prihlásení.",
+    "unsyncedFilesWarn_one": "{{count}} súbor v tomto zariadení sa nesynchronizoval. Odhlásením sa natrvalo odstráni.",
+    "unsyncedFilesWarn_few": "{{count}} súbory v tomto zariadení sa nesynchronizovali. Odhlásením sa natrvalo odstránia.",
+    "unsyncedFilesWarn_many": "{{count}} súboru v tomto zariadení sa nesynchronizovalo. Odhlásením sa natrvalo odstránia.",
+    "unsyncedFilesWarn_other": "{{count}} súborov v tomto zariadení sa nesynchronizovalo. Odhlásením sa natrvalo odstránia.",
+    "dontRemind": "Už nepripomínať",
+    "showPhrase": "Nie, zobraziť frázu",
+    "confirm": "Áno, odhlásiť sa",
+    "stay": "Neodhlasovať sa",
+    "signOutLose_one": "Odhlásiť sa a stratiť {{count}} poznámku",
+    "signOutLose_few": "Odhlásiť sa a stratiť {{count}} poznámky",
+    "signOutLose_many": "Odhlásiť sa a stratiť {{count}} poznámky",
+    "signOutLose_other": "Odhlásiť sa a stratiť {{count}} poznámok",
+    "signOutLoseFiles_one": "Odhlásiť sa a stratiť {{count}} súbor",
+    "signOutLoseFiles_few": "Odhlásiť sa a stratiť {{count}} súbory",
+    "signOutLoseFiles_many": "Odhlásiť sa a stratiť {{count}} súboru",
+    "signOutLoseFiles_other": "Odhlásiť sa a stratiť {{count}} súborov",
+    "signOutLoseBoth_one": "Odhlásiť sa a stratiť {{count}} poznámku a {{files}}",
+    "signOutLoseBoth_few": "Odhlásiť sa a stratiť {{count}} poznámky a {{files}}",
+    "signOutLoseBoth_many": "Odhlásiť sa a stratiť {{count}} poznámky a {{files}}",
+    "signOutLoseBoth_other": "Odhlásiť sa a stratiť {{count}} poznámok a {{files}}",
+    "fileCount_one": "{{count}} súbor",
+    "fileCount_few": "{{count}} súbory",
+    "fileCount_many": "{{count}} súboru",
+    "fileCount_other": "{{count}} súborov",
+    "neverBackedUp_one": "Iba v tomto zariadení:",
+    "neverBackedUp_few": "Iba v tomto zariadení:",
+    "neverBackedUp_many": "Iba v tomto zariadení:",
+    "neverBackedUp_other": "Iba v tomto zariadení:",
+    "moreNotes": "a ešte {{count}}",
+    "appLockHint": "Zdieľané zariadenie? Zapni zámok aplikácie v časti Nastavenia > Zabezpečenie."
+  },
+  "burnShareModal": {
+    "title": "Zdieľať a Spáliť po prečítaní",
+    "body": "<lead>Pôvodná poznámka sa neodstráni.</lead> Zostáva v bezpečí v tvojom účte. Odkaz na spálenie je samostatná šifrovaná kópia, ktorá sa po prečítaní sama zničí.",
+    "readTime": "Čas na čítanie",
+    "readTimeHint": "Potom text zmizne z obrazovky",
+    "lifetime": "Platnosť odkazu",
+    "lifetimeHint": "Ak ho nikto neotvorí",
+    "minutes_one": "{{count}} minúta",
+    "minutes_few": "{{count}} minúty",
+    "minutes_many": "{{count}} minúty",
+    "minutes_other": "{{count}} minút",
+    "hours_one": "{{count}} hodina",
+    "hours_few": "{{count}} hodiny",
+    "hours_many": "{{count}} hodiny",
+    "hours_other": "{{count}} hodín",
+    "afterHours_one": "Po {{count}} hodine",
+    "afterHours_few": "Po {{count}} hodinách",
+    "afterHours_many": "Po {{count}} hodiny",
+    "afterHours_other": "Po {{count}} hodinách",
+    "afterDays_one": "Po {{count}} dni",
+    "afterDays_few": "Po {{count}} dňoch",
+    "afterDays_many": "Po {{count}} dňa",
+    "afterDays_other": "Po {{count}} dňoch",
+    "create": "Vytvoriť a skopírovať odkaz",
+    "share": "Zdieľať odkaz",
+    "imagesStripped": "Zobrazuje sa iba text, súbory sú v tejto poznámke skryté.",
+    "copied": "Skopírované"
+  },
+  "burnView": {
+    "title": "Spáliť po prečítaní",
+    "tagline": "Šifrované. Pominuteľné. Iba pre tvoje oči.",
+    "toggleTheme": "Prepnúť motív",
+    "checking": "Kontroluje sa…",
+    "revealing": "Načítava sa a dešifruje…",
+    "goToApp": "Prejsť do <brand/>",
+    "footerTagline": "- Poznámky šifrované s nulovou znalosťou, hostované vo Švajčiarsku.",
+    "sealed": {
+      "heading": "Prišla ti šifrovaná poznámka.",
+      "subheading": "Táto správa sa po prečítaní sama zničí. Neprečítané odkazy vypršia samy.",
+      "reveal": "Odhaliť správu",
+      "warning": "Server poznámku odstráni v okamihu, keď ju odhalíš. Druhá šanca nebude."
+    },
+    "revealed": {
+      "countdown": "Text sa vymaže o {{time}}",
+      "clearNow": "Vymazať teraz",
+      "emptyNote": "(prázdna poznámka)",
+      "deletedNotice": "Táto zdieľaná kópia bola odstránená zo servera. Znova sa zobraziť nedá."
+    },
+    "destroyed": {
+      "heading": "Správa zničená.",
+      "body": "Odstránená zo servera a vymazaná z pamäte. Túto správu už nie je možné prečítať."
+    },
+    "gone": {
+      "heading": "Táto poznámka už neexistuje.",
+      "body": "Už bola prečítaná alebo jej platnosť vypršala. Odkazy na spálenie sa dajú otvoriť iba raz a vypršia samy."
+    },
+    "error": {
+      "heading": "Niečo sa pokazilo.",
+      "fallback": "Odkaz môže byť poškodený alebo neúplný.",
+      "server": "Chyba servera. Poznámka už mohla byť prečítaná alebo jej platnosť vypršala.",
+      "decryption": "Dešifrovanie zlyhalo. Odkaz môže byť poškodený.",
+      "network": "Server je nedostupný. Skontroluj pripojenie a skús to znova."
+    },
+    "noPayload": {
+      "heading": "Žiadna správa sa nenašla.",
+      "body": "Táto adresa URL neobsahuje odkaz na samozničujúcu poznámku. Skontroluj, či máš celý odkaz."
+    }
+  },
+  "burnShare": {
+    "offline": "Si offline. Odkazy na spálenie potrebujú spojenie so serverom. Skús to znova, keď budeš online.",
+    "demo": "Odkazy na spálenie sa ukladajú na server a demo sa so žiadnym serverom nespája. Zaregistruj sa a vytváraj skutočné odkazy na spálenie.",
+    "tooLarge": "Poznámka je príliš veľká na zdieľanie cez odkaz na spálenie ({{size}} KB). Maximum je {{max}} KB.",
+    "storeFailed": "Samozničujúcu poznámku sa nepodarilo uložiť na server."
+  }
+}

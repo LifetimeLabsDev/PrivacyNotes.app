@@ -12,12 +12,15 @@ import { countTasks } from './tasks';
  *  ~8.5 stored bytes/word, measured from a lorem note:
  *    - grey  ~50k words (~41%): gentle, slower devices only
  *    - amber ~75k words (~62%): editing drags on any device
- *    - amber ~100k words (~82%): approaching the 1 MB wall, suggest splitting
+ *    - amber from 70%: the share of the 1 MB sync limit, with "Split note";
+      red over it: the note stays on this device
  *  Amber is the most severe state - long is a caution, not an error. An
  *  actual over-1 MB sync failure is still surfaced by the "failed to
  *  sync" banner. */
 const SYNC_LIMIT_BYTES = 1_048_576;
-const SYNC_FRACTION = 0.82; // amber: ~100k words, near the 1 MB wall
+// From here the line says how much of the 1 MB sync limit the note uses and
+// offers "Split note". Spec: ops/docs/plans/note-size-limit.md
+const SYNC_FRACTION = 0.7;
 const SLOW_FRACTION = 0.62; // amber: ~75k words, editing drags
 const INFO_FRACTION = 0.41; // grey: ~50k words, gentle heads-up
 
@@ -33,14 +36,30 @@ const WORD_COUNT_DEBOUNCE_MS = 600;
  *  Spec: ops/docs/design-decisions.md (large-table editor warning) */
 const BIG_TABLE_ROWS = 200;
 
-export function WordCount({ body }: { body: string }) {
-  const [display, setDisplay] = useState(() => compute(body));
+export function WordCount({
+  body,
+  sizeOf,
+  onSplit,
+  onOverLimit,
+}: {
+  body: string;
+  /** The exact stored size of the note with this body (storedNoteBytes);
+   *  without it the size is estimated from the body alone. */
+  sizeOf?: (body: string) => number;
+  /** Offered beside the sync-limit line; left out where a split cannot run. */
+  onSplit?: () => void;
+  /** Called when the measure finds the note over the sync limit. */
+  onOverLimit?: () => void;
+}) {
+  const sizeRef = useRef(sizeOf);
+  sizeRef.current = sizeOf;
+  const [display, setDisplay] = useState(() => compute(body, sizeOf));
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (timerRef.current) window.clearTimeout(timerRef.current);
     timerRef.current = window.setTimeout(() => {
-      setDisplay(compute(body));
+      setDisplay(compute(body, sizeRef.current));
     }, WORD_COUNT_DEBOUNCE_MS);
     return () => {
       if (timerRef.current) window.clearTimeout(timerRef.current);
@@ -50,6 +69,13 @@ export function WordCount({ body }: { body: string }) {
   // The task count skips the debounce: a tick should move the number at once,
   // and counting lines is cheap next to stripping the markdown.
   const tasks = useMemo(() => countTasks(body), [body]);
+
+  const over = !!display?.overLimit;
+  const overRef = useRef(onOverLimit);
+  overRef.current = onOverLimit;
+  useEffect(() => {
+    if (over) overRef.current?.();
+  }, [over]);
 
   if (!display) return null;
 
@@ -67,7 +93,17 @@ export function WordCount({ body }: { body: string }) {
   return (
     <div className="select-none space-y-0.5">
       {display.label && (
-        <div className={`text-xs ${display.colorClass}`}>{display.label + taskPart + display.warning}</div>
+        <div className={`text-xs ${display.colorClass}`}>
+          {display.label + taskPart + display.warning}
+          {display.nearLimit && onSplit && (
+            <>
+              {' '}
+              <button type="button" onClick={onSplit} className="underline text-accent hover:text-accent-strong">
+                {i18n.t('editor:wordCount.split')}
+              </button>
+            </>
+          )}
+        </div>
       )}
       {display.tableWarning && (
         <div className="text-xs text-warning">
@@ -106,14 +142,14 @@ function tableSizeWarning(md: string): string | null {
   return i18n.t('editor:wordCount.largeTableWarning', { rows: rows.toLocaleString(intlLocale()) });
 }
 
-function compute(body: string) {
+function compute(body: string, sizeOf?: (body: string) => number) {
   const tableWarning = tableSizeWarning(body);
   const text = stripMarkdown(body).trim();
   if (!text) {
     // No prose to count, but a giant (mostly empty) table still warrants the
     // editor-perf heads-up. Otherwise render nothing.
     return tableWarning
-      ? { label: null as string | null, warning: '', colorClass: '', tableWarning }
+      ? { label: null as string | null, warning: '', colorClass: '', tableWarning, nearLimit: false, overLimit: false }
       : null;
   }
   const words = countWords(body);
@@ -124,8 +160,9 @@ function compute(body: string) {
   // it by UTF-8 bytes - not characters - so the warning is accurate for
   // non-Latin scripts too. AEAD nonce/tag add ~28 bytes; base64 inflates
   // the stored ciphertext by 4/3.
-  const bodyBytes = new TextEncoder().encode(body).length;
-  const estStoredBytes = Math.ceil(((bodyBytes + 28) * 4) / 3);
+  const estStoredBytes = sizeOf
+    ? sizeOf(body)
+    : Math.ceil(((new TextEncoder().encode(body).length + 28) * 4) / 3);
 
   let colorClass = 'text-pn-muted';
   const label =
@@ -135,9 +172,16 @@ function compute(body: string) {
 
   // The size heads-up ends the line, after the task count the component adds.
   let warning = '';
-  if (estStoredBytes >= SYNC_LIMIT_BYTES * SYNC_FRACTION) {
+  const nearLimit = estStoredBytes >= SYNC_LIMIT_BYTES * SYNC_FRACTION;
+  if (estStoredBytes > SYNC_LIMIT_BYTES) {
+    colorClass = 'text-danger';
+    warning = i18n.t('editor:wordCount.overSyncLimit');
+  } else if (nearLimit) {
     colorClass = 'text-warning';
-    warning = i18n.t('editor:wordCount.tooLargeToSync');
+    const share = Math.min(99, Math.floor((estStoredBytes / SYNC_LIMIT_BYTES) * 100));
+    warning = i18n.t('editor:wordCount.syncLimit', {
+      share: (share / 100).toLocaleString(intlLocale(), { style: 'percent' }),
+    });
   } else if (estStoredBytes >= SYNC_LIMIT_BYTES * SLOW_FRACTION) {
     colorClass = 'text-warning';
     warning = i18n.t('editor:wordCount.veryLong');
@@ -145,5 +189,5 @@ function compute(body: string) {
     warning = i18n.t('editor:wordCount.gettingLong');
   }
 
-  return { label: label as string | null, warning, colorClass, tableWarning };
+  return { label: label as string | null, warning, colorClass, tableWarning, nearLimit, overLimit: estStoredBytes > SYNC_LIMIT_BYTES };
 }

@@ -816,7 +816,7 @@
     }
     /* Copy box: a code block with the `copy` language (COPY_BOX_LANGUAGE).
        A light box in the note's own font and colours, with the code block's
-       wrap and copy buttons, always shown, in its corner. It follows the
+       own wrap and copy buttons in the same corner. It follows the
        same wrap setting as every code block. */
     & .pn-copybox {
       --pn-code-band: 0.6rem;
@@ -840,30 +840,12 @@
       & .pn-codeblock-lang {
         display: none;
       }
+      /* The code block's tools in the code block's corner, less the 1px
+         border. They stay shown: the copy button is what the box is for. */
       & .pn-codeblock-tools {
-        top: 50%;
-        transform: translateY(-50%);
+        top: calc(0.5rem - 1px);
+        inset-inline-end: calc(0.5rem - 1px);
         opacity: 1;
-      }
-      &.pn-codeblock-folded .pn-codeblock-tools {
-        top: 0.5rem;
-        transform: none;
-      }
-      /* Quiet, in the note's colours: the box itself already says "copy". */
-      & .pn-copybox-btn {
-        background: rgb(var(--pn-surface-2));
-        color: rgb(var(--pn-text) / 0.8);
-        border: 1px solid rgb(var(--pn-text) / 0.16);
-        font-weight: 500;
-
-        &:hover {
-          background: rgb(var(--pn-text) / 0.07);
-          color: rgb(var(--pn-text));
-        }
-      }
-      & .pn-copybox-on {
-        color: rgb(var(--pn-accent));
-        border-color: rgb(var(--pn-accent) / 0.5);
       }
       &.is-empty::after {
         top: 0.6rem;
@@ -1074,6 +1056,21 @@
       margin-bottom: 0.15em;
       /* Anchor for the dragged item's lift above its neighbours. */
       position: relative;
+      /* A task off screen skips layout until it nears the viewport, so a
+         note with thousands of tasks opens without laying out all of them.
+         The size is a scrollbar estimate; `auto` keeps a task's real height
+         once it has been drawn. The browser still draws a task that holds
+         the caret, a selection or a find match. */
+      content-visibility: auto;
+      contain-intrinsic-block-size: auto 1.75em;
+    }
+    /* `auto` also clips what an item draws outside its own box, on screen or
+       not, and a hover tip on a task's first line sits above the item. An
+       item under the pointer or holding focus is on screen anyway, so it
+       drops the containment; its ancestors are hovered too. */
+    & ul[data-type='taskList'] li:hover,
+    & ul[data-type='taskList'] li:focus-within {
+      content-visibility: visible;
     }
     /* The drag grip (dragTask in editorExtensions.ts), last in the row. The
        gutter before the checkbox is not an option: the editor scrolls wide
@@ -1205,11 +1202,12 @@
          unaffected, which is why macOS never showed it). The line still
          FADES in on check: text-decoration-color transitions up from the
          transparent value below (multi-line safe, unlike a background
-         sweep) alongside the color dim. */
+         sweep) alongside the fade. */
       text-decoration-color: transparent;
-      transition:
-        color 0.2s ease,
-        text-decoration-color 0.25s ease 0.05s;
+      transition: text-decoration-color 0.25s ease 0.05s;
+    }
+    & ul[data-type='taskList'] li > div > :not(ul):not(ol) {
+      transition: opacity 0.2s ease;
     }
     /* Alignment, one layout down from the bullet rule above: a task item is
        a flex row (checkbox + text), so what has to move is the row's
@@ -1238,28 +1236,18 @@
     & ul[data-type='taskList'] li > div > p:last-child {
       margin-bottom: 0;
     }
+    /* A done task fades as one piece instead of turning gray: a text color,
+       a highlight and inline code all stay what the person chose, and all
+       read as done the same way (GitHub #491). The fade sits on the item's
+       own blocks, not on the div, so a nested task list under a done item is
+       not faded twice. 0.6 over the theme's text color lands on the muted
+       text tone, so plain text looks the way a done task always has. */
     & ul[data-type='taskList'] li[data-checked='true'] > div {
-      color: rgb(var(--pn-text-muted));
       text-decoration-line: line-through;
       text-decoration-color: currentColor;
     }
-    & ul[data-type='taskList'] li[data-checked='true'] > div strong {
-      color: inherit !important;
-    }
-    & ul[data-type='taskList'] li[data-checked='true'] > div em {
-      color: inherit !important;
-    }
-    & ul[data-type='taskList'] li[data-checked='true'] > div code {
-      color: inherit !important;
-    }
-    & ul[data-type='taskList'] li[data-checked='true'] > div a {
-      color: inherit !important;
-    }
-    & ul[data-type='taskList'] li[data-checked='true'] > div del {
-      color: inherit !important;
-    }
-    & ul[data-type='taskList'] li[data-checked='true'] > div span {
-      color: inherit !important;
+    & ul[data-type='taskList'] li[data-checked='true'] > div > :not(ul):not(ol) {
+      opacity: 0.6;
     }
   
     /* Text-color spans must win over Tailwind prose's explicit color on
@@ -1311,6 +1299,18 @@
   html.pn-col-resizing * {
     cursor: col-resize !important;
     user-select: none !important;
+  }
+  /* The keys a column drag reads, under the pointer while it lasts. */
+  .pn-col-drag-hint {
+    position: fixed;
+    z-index: 60;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+    background: rgb(var(--pn-text));
+    color: rgb(var(--pn-surface-2));
   }
 }
 
@@ -1407,9 +1407,6 @@
   .pn-copied {
     color: rgb(74 222 128) !important; /* theme-ok: the green of a done check, on the dark code toolbar */
     animation: pn-copied-pop 260ms ease-out;
-  }
-  .pn-copybox .pn-copied {
-    color: rgb(22 163 74) !important; /* theme-ok: the same green, darker for the light box */
   }
   /* A done check that pops once in place of an icon (the theme builder's
      Save). */
@@ -1829,6 +1826,64 @@
       padding-bottom: 0.15em;
     }
   }
+
+  /* Box and Panel are framed plain types: the caret and the title in the
+     muted text color, no accent stripe. Box puts the title on a gray strip
+     and leaves the body on the page color; Panel is one soft wash. The
+     child chain (content > wrapper > title) keeps a nested callout's title
+     out of the strip. */
+  .pn-callout-box,
+  .pn-callout-panel {
+    .ProseMirror & > .pn-callout-toggle,
+    .ProseMirror & > .pn-callout-placeholder {
+      color: rgb(var(--pn-text-muted));
+    }
+  }
+  .pn-callout-panel {
+    .ProseMirror &.pn-callout {
+      border: 1px solid rgb(var(--pn-text) / 0.12);
+      background: rgb(var(--pn-text) / 0.035);
+    }
+    :root.dark .ProseMirror &.pn-callout {
+      border-color: rgb(var(--pn-text) / 0.12);
+      background: rgb(var(--pn-text) / 0.05);
+    }
+  }
+  .pn-callout-box {
+    .ProseMirror &.pn-callout,
+    :root.dark .ProseMirror &.pn-callout {
+      padding: 0 0 0.6em;
+      border: 1px solid rgb(var(--pn-text) / 0.2);
+      background: none;
+      overflow: hidden;
+    }
+    .ProseMirror & > .pn-callout-content > div > [data-callout-title] {
+      margin: 0;
+      padding-block: 0.4em;
+      padding-inline: 2.35em 0.9em;
+      background: rgb(var(--pn-text) / 0.05);
+      border-bottom: 1px solid rgb(var(--pn-text) / 0.12);
+    }
+    :root.dark .ProseMirror & > .pn-callout-content > div > [data-callout-title] {
+      background: rgb(var(--pn-text) / 0.07);
+    }
+    .ProseMirror & > .pn-callout-content > div > [data-callout-title] ~ * {
+      margin-inline: 0.9em;
+    }
+    .ProseMirror & > .pn-callout-content > div > [data-callout-title] + * {
+      margin-top: 0.5em;
+    }
+    .ProseMirror & > .pn-callout-toggle,
+    .ProseMirror & > .pn-callout-placeholder {
+      top: 0.4em;
+    }
+    .ProseMirror &.pn-callout-folded {
+      padding-bottom: 0;
+    }
+    .ProseMirror &.pn-callout-folded > .pn-callout-content > div > [data-callout-title] {
+      border-bottom: 0;
+    }
+  }
 }
 
 @layer editor {
@@ -2022,6 +2077,12 @@
       outline: 2px solid rgb(var(--pn-accent));
       outline-offset: -2px;
     }
+  }
+
+  /* A click on a divider's line selects it (the gaps around it add a line,
+     editorAddLine.ts); the accent shows that Delete will remove it. */
+  .ProseMirror hr.ProseMirror-selectednode {
+    border-color: rgb(var(--pn-accent));
   }
 }
 
@@ -2673,21 +2734,21 @@
 }
 
 @layer utilities {
-  /* Theme-flip cross-fade.
- * The dark/light toggle used to snap instantly, which felt harsh -
- * "almost hurts" was the reported sensation. We add a short transition on color-related properties
- * only WHILE the user is flipping the theme, not all the time - hover
- * states stay instant, and nothing else in the UI is affected. The
- * `theme-animating` class is added by applyTheme() and removed after
- * ~320ms so the rule only matches during the crossfade window. */
-  :root.theme-animating,
-  :root.theme-animating *,
-  :root.theme-animating *::before,
-  :root.theme-animating *::after {
-    transition-property:
-      background-color, border-color, color, fill, stroke !important;
-    transition-duration: 280ms !important;
-    transition-timing-function: ease-out !important;
+  /* Theme-flip cross-fade: an instant light and dark flip feels harsh.
+ * `theme.ts` adds `theme-animating` only around a theme change
+ * (paintTheme, paintColorThemes) and removes it after 320 ms, so hover
+ * states stay instant. It restyles every element, so it stays off for
+ * reduced motion, and theme.ts skips it in the Linux app. */
+  @media (prefers-reduced-motion: no-preference) {
+    :root.theme-animating,
+    :root.theme-animating *,
+    :root.theme-animating *::before,
+    :root.theme-animating *::after {
+      transition-property:
+        background-color, border-color, color, fill, stroke !important;
+      transition-duration: 280ms !important;
+      transition-timing-function: ease-out !important;
+    }
   }
 }
 
@@ -3431,6 +3492,46 @@
   top: 4px;
 }
 
+/* Note history comparison (noteDiff.ts). Color is never the only signal:
+   added text is underlined, removed text is struck through, and a changed
+   block carries a bar on its starting side, dashed when only its formatting
+   changed. The tints come from the theme's own success and danger colors. */
+.pn-diff-ins {
+  color: inherit;
+  background: rgb(var(--pn-success) / 0.16);
+  text-decoration: underline;
+  text-decoration-color: rgb(var(--pn-success));
+  text-underline-offset: 2px;
+  border-radius: 2px;
+}
+.pn-diff-del {
+  color: inherit;
+  background: rgb(var(--pn-danger) / 0.14);
+  text-decoration: line-through;
+  text-decoration-color: rgb(var(--pn-danger));
+  border-radius: 2px;
+}
+.pn-diff-block-ins,
+.pn-diff-block-del,
+.pn-diff-block-format {
+  border-inline-start: 3px solid;
+  padding-inline-start: 0.5rem;
+}
+.pn-diff-block-ins {
+  border-inline-start-color: rgb(var(--pn-success));
+  background: rgb(var(--pn-success) / 0.08);
+}
+.pn-diff-block-del {
+  border-inline-start-color: rgb(var(--pn-danger));
+  background: rgb(var(--pn-danger) / 0.07);
+  text-decoration: line-through;
+  text-decoration-color: rgb(var(--pn-danger));
+}
+.pn-diff-block-format {
+  border-inline-start-style: dashed;
+  border-inline-start-color: rgb(var(--pn-warning));
+}
+
 /* Invisible characters (pilcrows, space dots, break arrows). Base glyph and
    layout rules vendored from @tiptap/extension-invisible-characters 1.x: the
    package only injects them from inside its plugin init, which the lazy
@@ -3574,12 +3675,17 @@
   display: none;
 }
 
-/* Editor toolbar format row: the row clips horizontally (overflow-x-clip) to
-   hide transient button spill while the fit is measured, which also cuts the
-   hover labels of the buttons at either end - their centered tip overhangs the
-   row's box. Which button sits at the end changes with window width, so this
-   can't be set per button. Edge-align both end tips instead: the first opens
-   to the bottom-right, the last to the bottom-left, both back into the row. */
+/* A hover tip that is not showing has no box. With only opacity hiding it,
+   a tip that hangs past the edge of a clipping scroller (the editor pane)
+   still widened that scroller's content, and a click could then scroll it
+   sideways, cutting off everything at its start edge. HoverLabel moves a
+   showing tip inside the visible box (`fitTip`), so a shown tip cannot do
+   this either. Unlayered, so it wins over the tip's own display utility.
+   Spec: ops/docs/ui-patterns.md section 18 */
+.pn-tip-host:not(:hover) > .pn-tip {
+  display: none;
+}
+
 /* The sidebar narrows down to SIDEBAR_WIDTH_MIN. Below 230px the extras that
    only add a hint go - the version badge beside the brand, the shortcut on
    Jump to, the icons and the Pro mark on the Tags and Folders tabs - so the
@@ -3592,30 +3698,115 @@
 .pn-sb-tip > .pn-tip {
   display: none;
 }
+.pn-sb-tip-roomy > .pn-tip {
+  display: none;
+}
+/* The open space's name beside its icon in the sidebar switch: below this
+   width its segment cannot hold the name, and the switch is icons and a
+   hover tip. */
+@container pn-sidebar (max-width: 259px) {
+  .pn-sb-roomy {
+    display: none !important;
+  }
+  /* The space switch has three names to fit, so it drops them here, takes
+     equal shares, and names its segments in tips. */
+  .pn-browse-roomy .pn-browse-seg {
+    flex-grow: 1 !important;
+  }
+  .pn-sb-tip-roomy > .pn-tip {
+    display: block;
+  }
+}
+/* The Tags and Folders switch (TagsRail). The open segment takes two shares
+   and shows its name; a closed one is its icon. On hover or keyboard focus a
+   closed segment takes the two shares and its name slides in, and the open
+   one steps back to its icon, so one name shows at a time. */
+/* No transition on flex-grow: Chromium keeps the old value of a transition
+   whose end value a container query changes, so a sidebar dragged across
+   the widths below would leave the segments at the wrong share. */
+.pn-browse-seg {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 0%;
+}
+.pn-browse-seg.is-open {
+  flex-grow: 2;
+}
+/* Two closed segments side by side get a hairline between them, so a track
+   with nothing open (the folded list) still reads as separate buttons. It
+   steps aside next to a segment under the pointer, whose own fill shows. */
+.pn-browse-seg:not(.is-open) + .pn-browse-seg:not(.is-open)::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -1.5px;
+  top: 25%;
+  bottom: 25%;
+  width: 1px;
+  background: rgb(var(--pn-accent) / 0.3);
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+.pn-browse-seg:is(:hover, :focus-within) + .pn-browse-seg::before,
+.pn-browse-seg:is(:hover, :focus-within)::before {
+  opacity: 0;
+}
+.pn-browse-name {
+  display: grid;
+  grid-template-columns: 0fr;
+  transition: grid-template-columns 0.2s ease;
+}
+.pn-browse-name > span {
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease, padding 0.2s ease;
+}
+.pn-browse-seg.is-open .pn-browse-name {
+  grid-template-columns: 1fr;
+}
+.pn-browse-seg.is-open .pn-browse-name > span {
+  opacity: 1;
+  padding-inline-start: 0.375rem;
+}
+@media (hover: hover) {
+  .pn-browse-seg:not(.is-open):is(:hover, :focus-within) {
+    flex-grow: 2;
+  }
+  .pn-browse-seg:not(.is-open):is(:hover, :focus-within) .pn-browse-name {
+    grid-template-columns: 1fr;
+  }
+  .pn-browse-seg:not(.is-open):is(:hover, :focus-within) .pn-browse-name > span {
+    opacity: 1;
+    padding-inline-start: 0.375rem;
+  }
+  .pn-browse:has(.pn-browse-seg:not(.is-open):is(:hover, :focus-within)) .pn-browse-seg.is-open,
+  .pn-jump-row:has(.pn-jump:is(:hover, :focus-visible)) .pn-browse-seg.is-open {
+    flex-grow: 1;
+  }
+  /* Jump's name slides in from the same row, so the open space steps back
+     for it too. */
+  .pn-browse:has(.pn-browse-seg:not(.is-open):is(:hover, :focus-within)) .pn-browse-seg.is-open .pn-browse-name,
+  .pn-jump-row:has(.pn-jump:is(:hover, :focus-visible)) .pn-browse-seg.is-open .pn-browse-name {
+    grid-template-columns: 0fr;
+  }
+  .pn-browse:has(.pn-browse-seg:not(.is-open):is(:hover, :focus-within)) .pn-browse-seg.is-open .pn-browse-name > span,
+  .pn-jump-row:has(.pn-jump:is(:hover, :focus-visible)) .pn-browse-seg.is-open .pn-browse-name > span {
+    opacity: 0;
+    padding-inline-start: 0;
+  }
+}
 @container pn-sidebar (max-width: 229px) {
   .pn-sb-wide {
     display: none !important;
+  }
+  /* No room for a name: the segments share the width and a tip names them. */
+  .pn-browse-seg {
+    flex-grow: 1 !important;
   }
   /* The footer actions name themselves in a tip here, not in the pill. */
   .pn-sb-tip > .pn-tip {
     display: block;
   }
-}
-
-.pn-format-row > :first-child .pn-tip {
-  inset-inline-start: 0;
-  inset-inline-end: auto;
-  /* Tailwind 4 moved -translate-x-1/2 from `transform` to the standalone
-     `translate` property - neutralize BOTH or the tip drifts half its
-     width off the button (regressed silently in the v4 bump). */
-  transform: none;
-  translate: none;
-}
-.pn-format-row > :last-child .pn-tip {
-  inset-inline-start: auto;
-  inset-inline-end: 0;
-  transform: none;
-  translate: none;
 }
 
 /* The bar on the Format bar tab marches its edge, as the Markdown tile on the

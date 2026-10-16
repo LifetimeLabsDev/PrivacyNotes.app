@@ -4,12 +4,16 @@
  * menu and the hidden set.
  *
  * Every item has three possible homes: the bar, the '+' menu (in the
- * person's order inside its own group), or hidden. The bar has two zones,
+ * person's order inside its own group), or hidden. The picture, file,
+ * recording and "picture from Files" items have a fourth: the attach menu,
+ * a small menu behind the paperclip button. The bar has two zones,
  * both in the person's order: the row, which gives way behind the "•••" when
  * the bar is narrow, and the end, after the '+', which always stays visible.
  * Two kinds of item never go into the menu: a control that opens a React
  * popover, because the menu closes on the press that would open it, and the
- * recorder, whose button shows the running recording.
+ * recorder, whose button shows the running recording. The recorder can sit
+ * in the attach menu, because the toolbar puts its stop button on the bar
+ * while it records.
  *
  * The saved arrangement names every list, so a key in none of them is an
  * item a later version added. It takes its stock home and stock position, so
@@ -25,36 +29,46 @@ import {
 } from './registers';
 
 /** Where an item lives. `bar` and `end` are the two zones of the bar. */
-export type FormatBarHome = 'bar' | 'end' | 'menu' | 'hidden';
+export type FormatBarHome = 'bar' | 'end' | 'menu' | 'attachMenu' | 'hidden';
 export type FormatBarGroup = 'format' | 'insert' | 'blocks' | 'notation';
 
 export type FormatBarItem = {
   key: string;
   /** Stock home. */
-  home: 'bar' | 'end' | 'menu';
+  home: FormatBarHome;
   /** The menu group the item sits in when it is in the menu. */
   group: FormatBarGroup;
   /** False for a popover trigger and for the recorder: on the bar or hidden. */
   menuAllowed: boolean;
+  /** True for the items the attach menu can hold. */
+  attachAllowed: boolean;
 };
 
-const row = (key: string, menuAllowed = true): FormatBarItem => ({ key, home: 'bar', group: 'format', menuAllowed });
-const menu = (key: string, group: FormatBarGroup): FormatBarItem => ({ key, home: 'menu', group, menuAllowed: true });
-const end = (key: string, menuAllowed = true): FormatBarItem => ({ key, home: 'end', group: 'insert', menuAllowed });
+const row = (key: string, menuAllowed = true): FormatBarItem => ({ key, home: 'bar', group: 'format', menuAllowed, attachAllowed: false });
+const menu = (key: string, group: FormatBarGroup, attachAllowed = false): FormatBarItem => ({ key, home: 'menu', group, menuAllowed: true, attachAllowed });
+const end = (key: string, menuAllowed = true): FormatBarItem => ({ key, home: 'end', group: 'insert', menuAllowed, attachAllowed: false });
+const attached = (key: string, menuAllowed = true): FormatBarItem => ({ key, home: 'attachMenu', group: 'insert', menuAllowed, attachAllowed: true });
+// A separator is a thin line on the bar. Each key exists once, so a person
+// who wants more than one line takes the next one.
+const separator = (key: string): FormatBarItem => ({ key, home: 'hidden', group: 'format', menuAllowed: false, attachAllowed: false });
 
-/** Stock order: the row, the menu, then the end of the bar. */
+/** Stock order: the row, the menu, the attach menu, the end of the bar, hidden. */
 export const FORMAT_BAR_ITEMS: readonly FormatBarItem[] = [
   row('bold'), row('italic'), row('underline'), row('heading', false), row('tasks'),
   row('link', false), row('notelink'),
   row('color', false), row('align', false), row('font', false),
   row('highlight', false), row('callout', false), row('strike'),
   menu('table', 'insert'), menu('hr', 'insert'), menu('bullets', 'insert'), menu('numbered', 'insert'),
-  menu('fromFiles', 'insert'), menu('date', 'insert'), menu('dateTime', 'insert'),
+  menu('fromFiles', 'insert', true), menu('date', 'insert'), menu('dateTime', 'insert'),
   menu('quote', 'blocks'), menu('codeblock', 'blocks'), menu('copybox', 'blocks'),
   menu('inlinecode', 'notation'), menu('math', 'notation'), menu('blockmath', 'notation'),
   menu('superscript', 'notation'), menu('subscript', 'notation'), menu('spoiler', 'notation'),
   menu('footnote', 'notation'),
-  end('image'), end('attach'), end('audio', false),
+  // The attach menu's items come before the paperclip in stock order, so an
+  // arrangement saved before the paperclip existed gets it after them.
+  attached('image'), attached('attach'), attached('audio', false),
+  end('attachMenu', false), end('customize'), end('markdownView'),
+  separator('separator1'), separator('separator2'), separator('separator3'), separator('separator4'),
 ];
 
 export const FORMAT_BAR_GROUPS: readonly FormatBarGroup[] = ['format', 'insert', 'blocks', 'notation'];
@@ -67,7 +81,7 @@ export function formatBarItem(key: string): FormatBarItem | undefined {
 }
 
 /** What a person saved. */
-export type FormatBarLayout = { bar: string[]; end: string[]; menu: string[]; hidden: string[] };
+export type FormatBarLayout = { bar: string[]; end: string[]; menu: string[]; attachMenu: string[]; hidden: string[] };
 
 /** What the toolbar draws. */
 export type ResolvedFormatBar = {
@@ -77,6 +91,8 @@ export type ResolvedFormatBar = {
   end: string[];
   /** Menu items, grouped in FORMAT_BAR_GROUPS order, the person's order inside a group. */
   menu: string[];
+  /** The attach menu, in order. */
+  attachMenu: string[];
   hidden: string[];
 };
 
@@ -106,7 +122,7 @@ function insertAtStockPlace(list: string[], key: string, sameRun: (k: string) =>
 
 export function stockFormatBar(): ResolvedFormatBar {
   const stock = (home: FormatBarItem['home']) => FORMAT_BAR_ITEMS.filter((i) => i.home === home).map((i) => i.key);
-  return { bar: stock('bar'), end: stock('end'), menu: groupMenu(stock('menu')), hidden: [] };
+  return { bar: stock('bar'), end: stock('end'), menu: groupMenu(stock('menu')), attachMenu: stock('attachMenu'), hidden: stock('hidden') };
 }
 
 function strings(raw: unknown): string[] {
@@ -115,11 +131,17 @@ function strings(raw: unknown): string[] {
 
 /**
  * An item that some editors do not offer: a Markdown folder note has no
- * picture, file, recording or "picture from Files", and the Linux app has no
- * recorder. None of them counts as the button that keeps a bar usable, or
- * that editor could draw an empty bar.
+ * picture, file, recording or "picture from Files", the Linux app has no
+ * recorder, a phone has no "Customize toolbar" (it reaches the tab through
+ * Settings), only a note that has a Markdown view offers "Show markdown",
+ * and the paperclip shows only while its menu holds something. None of them
+ * counts as the button that keeps a bar usable, or that editor could draw an
+ * empty bar. A separator is no button at all.
  */
-const SOMETIMES_ABSENT = new Set(['fromFiles', 'image', 'attach', 'audio']);
+const SOMETIMES_ABSENT = new Set([
+  'fromFiles', 'image', 'attach', 'audio', 'customize', 'markdownView', 'attachMenu',
+  'separator1', 'separator2', 'separator3', 'separator4',
+]);
 const keepsBar = (k: string) => !SOMETIMES_ABSENT.has(k);
 
 /**
@@ -142,6 +164,12 @@ export function resolveFormatBar(saved: Partial<FormatBarLayout> | null | undefi
     if (BY_KEY.get(k)!.menuAllowed) menuList.push(k);
     else endList.push(k);
   }
+  const attachList: string[] = [];
+  for (const k of take(saved.attachMenu)) {
+    // An item the attach menu cannot hold goes back to the end of the bar.
+    if (BY_KEY.get(k)!.attachAllowed) attachList.push(k);
+    else endList.push(k);
+  }
   const hidden = take(saved.hidden);
 
   // Items no list names: a later version added them. Stock home, stock place.
@@ -149,6 +177,8 @@ export function resolveFormatBar(saved: Partial<FormatBarLayout> | null | undefi
     if (seen.has(item.key)) continue;
     if (item.home === 'bar') insertAtStockPlace(bar, item.key);
     else if (item.home === 'end') insertAtStockPlace(endList, item.key);
+    else if (item.home === 'attachMenu') insertAtStockPlace(attachList, item.key);
+    else if (item.home === 'hidden') insertAtStockPlace(hidden, item.key);
     else insertAtStockPlace(menuList, item.key, (k) => BY_KEY.get(k)!.group === item.group);
   }
 
@@ -157,34 +187,36 @@ export function resolveFormatBar(saved: Partial<FormatBarLayout> | null | undefi
   // is the safe answer.
   if (![...bar, ...endList].some(keepsBar)) return stockFormatBar();
 
-  return { bar, end: endList, menu: groupMenu(menuList), hidden };
+  return { bar, end: endList, menu: groupMenu(menuList), attachMenu: attachList, hidden };
 }
 
 /** The arrangement to save for what the board shows. */
 export function layoutOf(r: ResolvedFormatBar): FormatBarLayout {
-  return { bar: [...r.bar], end: [...r.end], menu: [...r.menu], hidden: [...r.hidden] };
+  return { bar: [...r.bar], end: [...r.end], menu: [...r.menu], attachMenu: [...r.attachMenu], hidden: [...r.hidden] };
 }
 
 export function isStockFormatBar(r: ResolvedFormatBar): boolean {
   const s = stockFormatBar();
   return r.bar.join() === s.bar.join() && r.end.join() === s.end.join()
-    && r.menu.join() === s.menu.join() && r.hidden.length === 0;
+    && r.menu.join() === s.menu.join() && r.attachMenu.join() === s.attachMenu.join()
+    && r.hidden.join() === s.hidden.join();
 }
 
 export function homeOf(r: ResolvedFormatBar, key: string): FormatBarHome | null {
-  for (const home of ['bar', 'end', 'menu', 'hidden'] as const) if (r[home].includes(key)) return home;
+  for (const home of ['bar', 'end', 'menu', 'attachMenu', 'hidden'] as const) if (r[home].includes(key)) return home;
   return null;
 }
 
 /** Why a move is refused, or null when it is allowed. */
-export type FormatBarRefusal = 'menuNotAllowed' | 'lastOnBar' | null;
+export type FormatBarRefusal = 'menuNotAllowed' | 'attachNotAllowed' | 'lastOnBar' | null;
 
 export function refusalFor(r: ResolvedFormatBar, key: string, to: FormatBarHome): FormatBarRefusal {
   const item = BY_KEY.get(key);
   if (!item) return null;
   if (to === 'menu' && !item.menuAllowed) return 'menuNotAllowed';
+  if (to === 'attachMenu' && !item.attachAllowed) return 'attachNotAllowed';
   const onBar = [...r.bar, ...r.end];
-  if ((to === 'menu' || to === 'hidden') && onBar.includes(key) && !onBar.some((k) => k !== key && keepsBar(k))) {
+  if (to !== 'bar' && to !== 'end' && onBar.includes(key) && !onBar.some((k) => k !== key && keepsBar(k))) {
     return 'lastOnBar';
   }
   return null;
@@ -202,6 +234,7 @@ export function placeItem(r: ResolvedFormatBar, key: string, to: FormatBarHome, 
     bar: r.bar.filter((k) => k !== key),
     end: r.end.filter((k) => k !== key),
     menu: r.menu.filter((k) => k !== key),
+    attachMenu: r.attachMenu.filter((k) => k !== key),
     hidden: r.hidden.filter((k) => k !== key),
   };
   if (to === 'menu') {
@@ -290,7 +323,7 @@ export function readFormatBarSetting(setting: FormatBarSetting | undefined): For
     const parsed = JSON.parse(v) as unknown;
     if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
     const p = parsed as Record<string, unknown>;
-    return { bar: strings(p.bar), end: strings(p.end), menu: strings(p.menu), hidden: strings(p.hidden) };
+    return { bar: strings(p.bar), end: strings(p.end), menu: strings(p.menu), attachMenu: strings(p.attachMenu), hidden: strings(p.hidden) };
   } catch {
     return null;
   }

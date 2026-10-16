@@ -34,8 +34,12 @@ export type View =
   /** Contacts pillar - notes of type 'contact'. Free and ungated, like
    *  bookmarks. Spec: ops/docs/plans/contacts-pillar.md (section 4, the View union member) */
   | 'contacts'
+  /** Calendar pillar - every dated item on one calendar; it owns notes of
+   *  type 'event'. The list pane is the agenda, the editor pane the month,
+   *  week or day. Free. Spec: ops/docs/plans/calendar-pillar-spec.md */
+  | 'calendar'
   /** Archive - items kept but out of sight. A state, like 'starred', not a
-   *  type. Spec: ops/issues/0388.md */
+   *  type. Spec: ops/issues/archive/0388.md */
   | 'archive';
 
 /**
@@ -82,4 +86,5 @@ export const VIEW_NOTE_TYPES: Partial<Record<View, NoteType[]>> = {
   vault: ['login', 'card', 'ssh-key'],
   bookmarks: ['link'],
   contacts: ['contact'],
+  calendar: ['event'],
 };

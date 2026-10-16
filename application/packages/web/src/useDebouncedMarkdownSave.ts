@@ -4,39 +4,45 @@ import { cleanEmptyTaskItems, collapseMediaGaps } from './editorExtensions';
 import { stashPendingEdit } from './flushStash';
 import { writeDocCacheFromEditor } from './editorDocCache';
 
+/** Cancel the save still waiting (a debounce, or a large note's frame) and
+ *  say whether there was one, so the caller serializes in its place. */
+function takePendingSave(debounceRef: { current: number | null }, frameRef: { current: number | null }): boolean {
+  const pending = debounceRef.current !== null || frameRef.current !== null;
+  if (debounceRef.current !== null) window.clearTimeout(debounceRef.current);
+  if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+  debounceRef.current = null;
+  frameRef.current = null;
+  return pending;
+}
+
 function useFlushOnExitEffects(
   editor: TipTapEditor | null,
   debounceRef: { current: number | null },
+  frameRef: { current: number | null },
   onChangeRef: { current: (markdown: string) => void },
   noteIdRef: { current: string | undefined },
 ) {
-  // On unmount, flush any pending debounced change so it doesn't get lost
-  // when switching notes mid-type. For large docs, defer the expensive
-  // getMarkdown() so the note switch isn't blocked. The editor instance
-  // survives unmount briefly; handleBodyChange writes by note ID so it
-  // doesn't interfere with the newly selected note. (#91, #64)
+  // On unmount, flush any pending change so it doesn't get lost when
+  // switching notes mid-type: a debounce still waiting, or a large note's
+  // save waiting for its frame. handleBodyChange writes by note ID so it
+  // doesn't interfere with the newly selected note. (#64)
+  //
+  // The serialization runs NOW, at every size. TipTap tears the editor down
+  // on a 1 ms timer scheduled in its own unmount cleanup, which runs before
+  // this one, and the teardown empties the editor's storage, the markdown
+  // serializer included; a flush deferred past that timer found nothing and
+  // the keystrokes were lost. A large note pays one serialization on the
+  // switch, and only when a save was still pending. Pinned by
+  // tests/largeNoteUnmountFlush.test.ts.
   useEffect(() => {
     const editorInstance = editor;
     return () => {
-      if (debounceRef.current) {
-        window.clearTimeout(debounceRef.current);
-        debounceRef.current = null;
-        if (editorInstance) {
-          const large = editorInstance.state.doc.content.size > 150_000;
-          const doFlush = () => {
-            try {
-              const md: string = collapseMediaGaps(cleanEmptyTaskItems(editorInstance.storage.markdown.getMarkdown()));
-              onChangeRef.current(md);
-              writeDocCacheFromEditor(noteIdRef.current, md, editorInstance);
-            } catch { /* editor may be destroyed */ }
-          };
-          if (large) {
-            setTimeout(doFlush, 0);
-          } else {
-            doFlush();
-          }
-        }
-      }
+      if (!takePendingSave(debounceRef, frameRef) || !editorInstance) return;
+      try {
+        const md: string = collapseMediaGaps(cleanEmptyTaskItems(editorInstance.storage.markdown.getMarkdown()));
+        onChangeRef.current(md);
+        writeDocCacheFromEditor(noteIdRef.current, md, editorInstance);
+      } catch { /* editor already destroyed */ }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor]);
@@ -47,9 +53,7 @@ function useFlushOnExitEffects(
   useEffect(() => {
     if (!editor) return;
     const flush = () => {
-      if (debounceRef.current) {
-        window.clearTimeout(debounceRef.current);
-        debounceRef.current = null;
+      if (takePendingSave(debounceRef, frameRef)) {
         const md: string = collapseMediaGaps(cleanEmptyTaskItems(editor.storage.markdown.getMarkdown()));
         // Synchronous last-chance copy FIRST: the onChange save path is
         // async and a closing tab dies before its IndexedDB write
@@ -94,6 +98,8 @@ export function useDebouncedMarkdownSave({
   noteId?: string;
 }) {
   const debounceRef = useRef<number | null>(null);
+  /** A large note's save that waits for the next frame (see onUpdate). */
+  const frameRef = useRef<number | null>(null);
   // Stable ref for onChange - used by beforeunload/visibilitychange listeners
   // to avoid stale closures. Fix: GitHub #81.
   const onChangeRef = useRef(onChange);
@@ -124,12 +130,16 @@ export function useDebouncedMarkdownSave({
       : docSize > 50_000 ? 600
       : 300;
     debounceRef.current = window.setTimeout(() => {
+      debounceRef.current = null;
       // For very large docs, yield to the main thread before the
       // expensive getMarkdown() serialization so pending input events
       // and paints aren't blocked. requestAnimationFrame lets the
-      // browser finish its current frame first. (#91)
+      // browser finish its current frame first. (#91) The unmount flush
+      // takes over a frame still waiting.
       if (docSize > 150_000) {
-        requestAnimationFrame(() => {
+        if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+        frameRef.current = requestAnimationFrame(() => {
+          frameRef.current = null;
           const md: string = collapseMediaGaps(cleanEmptyTaskItems(editor.storage.markdown.getMarkdown()));
           onChange(md);
           writeDocCacheFromEditor(noteId, md, editor);
@@ -143,7 +153,7 @@ export function useDebouncedMarkdownSave({
   };
 
   const useFlushOnExit = (editor: TipTapEditor | null) =>
-    useFlushOnExitEffects(editor, debounceRef, onChangeRef, noteIdRef);
+    useFlushOnExitEffects(editor, debounceRef, frameRef, onChangeRef, noteIdRef);
 
   // Synchronous flush for callers that swap the editor out in the SAME
   // event (the Formatted/Markdown mode toggle). The unmount flush above
@@ -153,9 +163,7 @@ export function useDebouncedMarkdownSave({
   // deferral here on purpose: the serialized body must exist before the
   // re-render, and a one-off click can afford the serialization cost.
   const flushNow = useCallback((editor: TipTapEditor) => {
-    if (!debounceRef.current) return;
-    window.clearTimeout(debounceRef.current);
-    debounceRef.current = null;
+    if (!takePendingSave(debounceRef, frameRef)) return;
     const md: string = collapseMediaGaps(cleanEmptyTaskItems(editor.storage.markdown.getMarkdown()));
     onChangeRef.current(md);
     writeDocCacheFromEditor(noteIdRef.current, md, editor);

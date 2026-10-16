@@ -10,7 +10,7 @@ import type { View } from './views';
  * because the tree needs its parents and every folder is a drop target. All,
  * Pinned, Archive and Trash keep the global rail; Markdown has its own.
  * Tag pickers never read this: a note tag can still go on a login.
- * Spec: ops/issues/0335.md (decisions)
+ * Spec: ops/issues/archive/0335.md (decisions)
  */
 
 /** The items a pillar is made of, before the tag and folder filters. `null`

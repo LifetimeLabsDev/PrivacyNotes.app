@@ -15,6 +15,8 @@
     "notFound": "Bild nicht gefunden",
     "saveFailed": "Das Speichern ist fehlgeschlagen, die Datei kann also leer oder unvollständig sein.",
     "viewAria": "Bild ansehen",
+    "copyAria": "Bild kopieren",
+    "copyFailed": "Das Bild konnte nicht kopiert werden.",
     "picturesLeftOut": "Einige Bilder wurden nicht eingefügt. Kopiere ein Bild einzeln, um es einzufügen."
   },
   "attachment": {
@@ -56,6 +58,17 @@
     "pageCount_one": "{{count}} Seite",
     "pageCount_other": "{{count}} Seiten",
     "pageLabel": "{{name}}, Seite {{page}} von {{count}}"
+  },
+  "mail": {
+    "loading": "E-Mail wird geöffnet...",
+    "failed": "Diese E-Mail kann nicht gelesen werden. Lade sie herunter, um sie in einer anderen App zu öffnen.",
+    "from": "Von",
+    "to": "An",
+    "cc": "Cc",
+    "date": "Datum",
+    "noSubject": "(Kein Betreff)",
+    "empty": "Diese E-Mail enthält keinen Text.",
+    "attachments": "Anhänge"
   },
   "picker": {
     "title": "Bilder in Dateien",

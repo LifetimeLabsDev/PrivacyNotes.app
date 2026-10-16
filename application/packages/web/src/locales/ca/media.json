@@ -15,6 +15,8 @@
     "notFound": "No s'ha trobat la imatge",
     "saveFailed": "No s'ha pogut desar, així que el fitxer pot estar buit o incomplet.",
     "viewAria": "Mostra la imatge",
+    "copyAria": "Copia la imatge",
+    "copyFailed": "No s'ha pogut copiar la imatge.",
     "picturesLeftOut": "Algunes imatges no s'han afegit. Copia una imatge sola per enganxar-la."
   },
   "attachment": {
@@ -56,6 +58,17 @@
     "pageCount_one": "{{count}} pàgina",
     "pageCount_other": "{{count}} pàgines",
     "pageLabel": "{{name}}, pàgina {{page}} de {{count}}"
+  },
+  "mail": {
+    "loading": "S'està obrint el correu...",
+    "failed": "No es pot llegir aquest correu. Baixa'l per obrir-lo en una altra app.",
+    "from": "De",
+    "to": "Per a",
+    "cc": "Cc",
+    "date": "Data",
+    "noSubject": "(Sense assumpte)",
+    "empty": "Aquest correu no té text.",
+    "attachments": "Adjunts"
   },
   "picker": {
     "title": "Imatges a Fitxers",

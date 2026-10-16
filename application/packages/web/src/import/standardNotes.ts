@@ -3,9 +3,9 @@ import { zipEntryText } from './zipEntry';
 import { normalizeTag, TAG_MAX_LENGTH } from '../notesRepo';
 import { createFolder, type FolderDef } from '../folders';
 import { IMPORT_FOLDER_LIMIT } from './folderImport';
-import { linkifyMarkdown } from './linkify';
+import { linkifyLiteralText, linkifyMarkdown } from './linkify';
 import type { Importer, ImportBlob, ImportedNote, ParsedImport } from './types';
-import { superToMarkdown, type SnLinkedItem } from './standardNotesSuper';
+import { escapeMarkdownText, guardMarkdownLineStart, superToMarkdown, type SnLinkedItem } from './standardNotesSuper';
 import { htmlNoteToMarkdown } from './notesnook';
 import { serializeLoginBody } from '../LoginForm';
 
@@ -35,14 +35,17 @@ import { serializeLoginBody } from '../LoginForm';
  * Newer SN versions write these flags on `content`, older ones under
  * `content.appData["org.standardnotes.sn"]`; both are read.
  *
- * Note types, by `noteType`, or by `editorIdentifier` on older exports:
+ * Note types, by `noteType`, or by `editorIdentifier` on older exports, or
+ * on the oldest ones by the editor item (`SN|Component`) that lists the note
+ * in `associatedItemIds` or is the default editor:
  *   - super          → markdown (standardNotesSuper.ts)
  *   - task           → our 'task' note type, body rewritten to `- [ ]`
  *   - code           → one fenced block in the language the editor chose
  *   - spreadsheet    → a pipe table per sheet
  *   - authentication → one Vault login per entry, the note itself dropped
  *   - rich-text      → markdown, through the Notesnook HTML converter
- *   - markdown, plain-text and anything unknown → the text as it is
+ *   - plain-text    → the same characters, every markdown sign escaped
+ *   - markdown and any other editor → the text as it is
  *
  * Format reference (version 004):
  *   {
@@ -104,6 +107,12 @@ interface SnContent {
   locked?: boolean;
   /** An `SN|File` item's file name. */
   name?: string;
+  /** An editor item (`SN|Component`): where it shows, and its identifier. */
+  area?: string;
+  package_info?: { identifier?: string };
+  /** The notes an editor was switched on for, and off for. */
+  associatedItemIds?: string[];
+  disassociatedItemIds?: string[];
   /**
    * SN's appData bucket. Per-app JSON namespaced by a reverse-DNS key
    * - the first-party note metadata lives under
@@ -118,6 +127,8 @@ interface SnContent {
       locked?: boolean;
       /** When the user last edited the note - see readUpdatedAt below. */
       client_updated_at?: string;
+      /** On an editor item: it opens every note no editor was chosen for. */
+      defaultEditor?: boolean;
     };
     /** Per-editor data, keyed by the editor; the code editor keeps `mode` here. */
     'org.standardnotes.sn.components'?: Record<string, unknown>;
@@ -137,7 +148,7 @@ export const standardNotesImporter: Importer = {
   id: 'standard-notes',
   label: 'Standard Notes',
   description:
-    'Decrypted .zip or .txt backup from Standard Notes (File → Export → Decrypted).',
+    'Decrypted .zip or .txt backup from Standard Notes (Account settings > Backups > Data backups > Decrypted).',
   accept: '.zip,.txt,application/zip,text/plain',
   enabled: true,
   sourceTag: 'standardnotes',
@@ -185,6 +196,7 @@ export const standardNotesImporter: Importer = {
     const tagIndex = buildTagIndex(backup.items);
     const noteIdToTags = tagIndex.noteTags;
     const linkedItems = buildItemIndex(backup.items);
+    const legacyEditor = buildLegacyEditors(backup.items);
     const blobs = new Map<string, ImportBlob>();
 
     onProgress?.('Building notes…');
@@ -244,7 +256,7 @@ export const standardNotesImporter: Importer = {
       // fall back to the server value for pre-2019 exports that predate
       // the field.
       const updatedAt = isoOrNow(snMeta.client_updated_at ?? item.updated_at ?? item.created_at);
-      const kind = noteKind(c);
+      const kind = noteKind(c, item.uuid ? legacyEditor(item.uuid) : undefined);
 
       // The authenticator editor keeps a list of 2FA and password entries.
       // Each becomes a Vault login, which is what they are; the note that
@@ -280,6 +292,8 @@ export const standardNotesImporter: Importer = {
       }
 
       let source = rawBody;
+      // Autolinks the conversion itself made from bare URLs in typed text.
+      let madeLinks = 0;
       let extraTags: string[] = [];
       let type: 'task' | undefined;
       switch (kind) {
@@ -287,14 +301,21 @@ export const standardNotesImporter: Importer = {
           const res = superToMarkdown(rawBody, { items: linkedItems, blobs });
           if (res) {
             source = res.markdown;
+            madeLinks = res.links;
             extraTags = res.hashtags;
             missingFileCount += res.missingFiles;
             superCount++;
           } else if (rawBody.trim()) {
+            // A note switched to Super keeps its old text until the editor
+            // rewrites it, so this is plain text the user still reads as such.
+            ({ markdown: source, links: madeLinks } = plainTextToMarkdown(rawBody));
             superFailedCount++;
           }
           break;
         }
+        case 'plain':
+          ({ markdown: source, links: madeLinks } = plainTextToMarkdown(rawBody));
+          break;
         case 'task': {
           // SN checklists store their items as a JSON blob in the note text,
           // which would otherwise import as an unreadable wall of JSON.
@@ -356,7 +377,7 @@ export const standardNotesImporter: Importer = {
       // of its own, and the pass already skips code spans and existing
       // links. Caught in the v0.300.0 importer audit.
       const body = linkifyMarkdown(source);
-      if (body !== source) linkifiedCount++;
+      if (body !== source || madeLinks > 0) linkifiedCount++;
 
       notes.push({
         // Pass title through verbatim - including empty. Standard Notes
@@ -541,14 +562,14 @@ async function extractBackupJson(
   return file.text();
 }
 
-type SnNoteKind = 'super' | 'task' | 'code' | 'spreadsheet' | 'authentication' | 'rich-text' | 'text';
+type SnNoteKind = 'super' | 'task' | 'code' | 'spreadsheet' | 'authentication' | 'rich-text' | 'plain' | 'text';
 
 /**
  * Which editor wrote this note. Newer exports set `noteType`; older ones
  * only carry the editor id. The ids are Standard Notes' feature
  * identifiers (`NativeFeatureIdentifier.ts` in their app repository).
  */
-function noteKind(c: SnContent): SnNoteKind {
+function noteKind(c: SnContent, legacyEditorId: string | undefined): SnNoteKind {
   switch (c.noteType) {
     case 'super':
     case 'task':
@@ -558,10 +579,13 @@ function noteKind(c: SnContent): SnNoteKind {
     case 'rich-text':
       return c.noteType;
     case 'plain-text':
+      return 'plain';
     case 'markdown':
       return 'text';
   }
-  const id = c.editorIdentifier ?? '';
+  const id = c.editorIdentifier ?? legacyEditorId ?? '';
+  // The default editor writes no editor id on older exports.
+  if (!id || id.includes('plain-text')) return 'plain';
   if (id.includes('super-editor')) return 'super';
   if (id.includes('task-editor') || id.includes('advanced-checklist')) return 'task';
   if (id.includes('code-editor')) return 'code';
@@ -569,6 +593,36 @@ function noteKind(c: SnContent): SnNoteKind {
   if (id.includes('token-vault')) return 'authentication';
   if (id.includes('plus-editor') || id.includes('bold-editor')) return 'rich-text';
   return 'text';
+}
+
+/**
+ * A plain-text note as markdown that shows the same characters. The plain
+ * editor shows everything literally, so every sign markdown would act on is
+ * escaped, a line that looks like a heading, list or quote stays text, every
+ * blank line becomes an empty paragraph, and leading spaces stay as
+ * non-breaking ones. A paragraph carries no gap on the default line spacing,
+ * so this draws the note line for line as Standard Notes did.
+ * Spec: ops/docs/design-decisions.md (editor paragraph rhythm)
+ */
+function plainTextToMarkdown(text: string): { markdown: string; links: number } {
+  const out: string[] = [];
+  let links = 0;
+  let blanks = 0;
+  for (const raw of text.replace(/\r\n?/g, '\n').split('\n')) {
+    const line = raw.replace(/\s+$/, '');
+    if (!line) {
+      blanks++;
+      continue;
+    }
+    if (out.length > 0) out.push(blanks === 0 ? '\n' : `\n\n${'&nbsp;\n\n'.repeat(blanks)}`);
+    blanks = 0;
+    const lead = /^[ \t]*/.exec(line)![0];
+    const typed = linkifyLiteralText(line.slice(lead.length), escapeMarkdownText);
+    links += typed.links;
+    const body = typed.markdown;
+    out.push(lead ? '&nbsp;'.repeat(lead.replace(/\t/g, '    ').length) + body : guardMarkdownLineStart(body));
+  }
+  return { markdown: out.join(''), links };
 }
 
 /**
@@ -776,6 +830,30 @@ function isEncryptedBackup(backup: SnBackup): boolean {
 }
 
 /**
+ * The editor the oldest backups name for a note, before notes carried their
+ * own: an editor item that lists the note, else the default editor unless it
+ * lists the note as switched off. Standard Notes resolves it the same way
+ * (`EditorForNote.ts`, `legacyGetEditorForNote`).
+ */
+function buildLegacyEditors(items: SnItem[]): (noteUuid: string) => string | undefined {
+  const chosen = new Map<string, string>();
+  let fallback: { id: string; off: Set<string> } | null = null;
+  for (const item of items) {
+    if (item.content_type !== 'SN|Component' || item.deleted) continue;
+    const c = contentOf(item);
+    const id = c.package_info?.identifier;
+    // Field types are checked: a malformed editor item is skipped, never fatal.
+    if (c.area !== 'editor-editor' || typeof id !== 'string' || !id) continue;
+    const uuids = (v: unknown): string[] => (Array.isArray(v) ? v.filter((u): u is string => typeof u === 'string') : []);
+    for (const uuid of uuids(c.associatedItemIds)) if (!chosen.has(uuid)) chosen.set(uuid, id);
+    if (!fallback && c.appData?.['org.standardnotes.sn']?.defaultEditor === true) {
+      fallback = { id, off: new Set(uuids(c.disassociatedItemIds)) };
+    }
+  }
+  return (uuid) => chosen.get(uuid) ?? (fallback && !fallback.off.has(uuid) ? fallback.id : undefined);
+}
+
+/**
  * Read an item's content object. parse() rejects encrypted backups up
  * front, so the string case here only exists to satisfy the type checker
  * and to keep a malformed item from taking the whole import down.
@@ -834,7 +912,9 @@ function buildTagIndex(items: SnItem[]): TagIndex {
   }
   for (const item of items) {
     if (item.content_type !== 'Tag' || !item.uuid || !titles.has(item.uuid)) continue;
-    for (const ref of contentOf(item).references ?? []) {
+    const refs = contentOf(item).references;
+    for (const ref of Array.isArray(refs) ? refs : []) {
+      if (!ref || typeof ref.uuid !== 'string') continue;
       if (ref.content_type === 'Note') {
         const list = noteTags.get(ref.uuid) ?? [];
         list.push(item.uuid);

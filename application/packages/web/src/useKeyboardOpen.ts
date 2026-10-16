@@ -32,17 +32,59 @@ import { setSoftKeyboardUp } from './softKeyboard';
 
 const THRESHOLD = 150;
 
-/** Scroll the caret's own column, never the page, so the caret clears the keyboard. */
+/** Styles that decide where a textarea wraps its text, copied onto the measuring copy. */
+const MIRROR_STYLES = [
+  'box-sizing', 'width', 'direction', 'font-family', 'font-size', 'font-weight', 'font-style',
+  'letter-spacing', 'word-spacing', 'line-height', 'text-transform', 'text-indent', 'tab-size',
+  'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+  'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width',
+];
+
+/**
+ * The caret's line inside a textarea, in viewport coordinates. A textarea has
+ * no range to measure, so an invisible copy with the same width and font lays
+ * out the text up to the caret, and a marker at its end gives the line.
+ */
+function textareaCaretRect(el: HTMLTextAreaElement): { top: number; bottom: number } {
+  const cs = getComputedStyle(el);
+  const mirror = document.createElement('div');
+  for (const p of MIRROR_STYLES) mirror.style.setProperty(p, cs.getPropertyValue(p));
+  mirror.style.cssText += ';position:absolute;top:0;left:-9999px;visibility:hidden;white-space:pre-wrap;overflow-wrap:break-word;border-style:solid';
+  mirror.textContent = el.value.slice(0, el.selectionEnd);
+  const mark = document.createElement('span');
+  mark.textContent = '​';
+  mirror.appendChild(mark);
+  document.body.appendChild(mirror);
+  const line = mark.getBoundingClientRect();
+  const offset = line.top - mirror.getBoundingClientRect().top;
+  mirror.remove();
+  const top = el.getBoundingClientRect().top + offset - el.scrollTop;
+  return { top, bottom: top + line.height };
+}
+
+/**
+ * Scroll the caret's own column, never the page, so the caret clears the keyboard.
+ * Nothing here may scroll the window: a window scroll fires the viewport's
+ * scroll event, which calls this again on the next frame, and the page shakes
+ * (GitHub #509, where `scrollIntoView` on the Markdown view's textarea did it).
+ */
 function keepCaretVisible() {
   const el = document.activeElement as HTMLElement | null;
-  if (!el?.isContentEditable) {
-    if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) el.scrollIntoView({ block: 'nearest' });
+  if (!el) return;
+  let rect: { top: number; bottom: number };
+  if (el instanceof HTMLTextAreaElement) {
+    rect = textareaCaretRect(el);
+  } else if (el instanceof HTMLInputElement) {
+    rect = el.getBoundingClientRect();
+  } else if (el.isContentEditable) {
+    const sel = window.getSelection();
+    if (!sel?.rangeCount) return;
+    const range = sel.getRangeAt(0).getBoundingClientRect();
+    if (!range.height) return;
+    rect = range;
+  } else {
     return;
   }
-  const sel = window.getSelection();
-  if (!sel?.rangeCount) return;
-  const rect = sel.getRangeAt(0).getBoundingClientRect();
-  if (!rect.height) return;
   // The first ancestor that really scrolls up and down. An element that only
   // scrolls sideways (overflow-x: auto) computes overflow-y as auto too.
   let col = el.parentElement;

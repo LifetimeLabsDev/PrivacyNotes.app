@@ -168,8 +168,8 @@
     "startViewTitle": "Açılışta gösterilecek",
     "viewTitle": "Öğeleri şu şekilde göster",
     "viewDesc": "Otomatik, ekran genişliğinizi izler.",
-    "openInTabsTitle": "Her tıklamada sekme aç",
-    "openInTabsDesc": "Bu kapalıyken sağ tık > Sekmede aç yine bir sekme açar. Sekmeler telefonlarda görünmez.",
+    "openInTabsTitle": "Açık öğeyi bir sekmede göster",
+    "openInTabsDesc": "Sekme, bir tarayıcıdaki gibi sonra açtığınız öğeyi izler. Korumak için bir sekmeyi sabitleyin. Bu kapalıyken yalnızca \"Sekmede aç\" bir sekme açar. Sekmeler telefonlarda görünmez.",
     "viewList": "Liste",
     "viewGrid": "Izgara",
     "viewAuto": "Otomatik",
@@ -181,6 +181,10 @@
     "copyFormatDesc": "Bir nottan kopyaladığınızda diğer uygulamaların aldığı içerik. Yalnızca bu cihazda.",
     "copyFormatMarkdown": "Markdown",
     "copyFormatPlain": "Düz metin",
+    "pasteFormatTitle": "Yapıştırılan metin",
+    "pasteFormatDesc": "Başka bir uygulamadan yapıştırdığınızda korunan içerik. Yalnızca bu cihazda.",
+    "pasteFormatFormatted": "Biçimlendirilmiş",
+    "pasteFormatPlain": "Düz metin",
     "faviconsTitle": "Site simgeleri",
     "faviconsDesc": "Bağlantıların ve kasa girişlerinin yanındaki site logoları.",
     "faviconsExample": "Örnek:",
@@ -241,7 +245,10 @@
       "yours": "Sizinkiler",
       "noLightCommunity": "Henüz açık topluluk teması yok.",
       "noDarkCommunity": "Henüz koyu topluluk teması yok.",
-      "none": "Burada henüz tema yok."
+      "none": "Burada henüz tema yok.",
+      "sortLabel": "Sıralama",
+      "sortVotes": "En çok oy",
+      "sortNewest": "En yeni"
     },
     "custom": {
       "newTheme": "Yeni tema",
@@ -250,7 +257,6 @@
       "logoOriginal": "Orijinal",
       "logoHelp": "Logo ve “Privacy”, temanın vurgu rengini alır ya da özgün renklerini korur.",
       "pasteCode": "Tema kodunu yapıştır",
-      "community": "Temalara göz at",
       "menu": "{{name}} seçenekleri",
       "copyCode": "Kodu kopyala",
       "makeCopy": "Çoğalt",
@@ -281,7 +287,9 @@
       "suggestTitle": "Gerisini vurgu renginizden doldurun",
       "suggestLight": "Açık",
       "suggestDark": "Koyu",
-      "communityNote": "Uygulama her mod için en yeni {{count}} topluluk temasını gösterir.",
+      "websiteTitle": "Web sitemizde daha fazla tema",
+      "websiteDesc": "Tüm temalar ve en son oylar. Uygulama her güncellemeyle yeni temalar alır.",
+      "vote": "GitHub'da oy ver",
       "themeLimit": "{{max}} temanız var. Başka birini kaydetmek için birini silin.",
       "credit": "Hazırlayan",
       "creditPlaceholder": "GitHub kullanıcı adı (isteğe bağlı)",
@@ -516,5 +524,27 @@
     "yearFirst": "Önce yıl (ISO)",
     "hour24": "24 saat",
     "hour12": "12 saat"
+  },
+  "calendar": {
+    "alertTimed": "Varsayılan uyarı, saatli öğeler",
+    "alertAllDay": "Varsayılan uyarı, tüm gün süren öğeler",
+    "alertBirthday": "Doğum günleri",
+    "alertsHelp": "Yeni bir etkinlik bu uyarıyla başlar. Sonrasında her öğe kendi uyarılarını korur.",
+    "reminderTitles": "Hatırlatıcılarda başlıkları göster",
+    "reminderTitlesHelp": "Kapalıyken bir hatırlatıcı yalnızca Hatırlatıcı sözcüğünü ve saati gösterir. PIN'inizin arkasındaki bir öğe her zaman böyle gösterilir.",
+    "whereTitle": "Bu cihazdaki hatırlatıcılar",
+    "reminderHint": {
+      "mobile": "Hatırlatıcılar bu telefonda, PrivacyNotes kapalıyken de çalar.",
+      "desktop": "Hatırlatıcılar, PrivacyNotes bu bilgisayarda çalışırken çalar.",
+      "browser": "Hatırlatıcılar, PrivacyNotes bu tarayıcıda açıkken çalar."
+    },
+    "scheduledThrough": "Hatırlatıcılar {{date}} tarihine kadar planlandı",
+    "permissionAsk": "Bildirimlere izin ver",
+    "permissionOpenSettings": "Ayarları aç",
+    "permissionDenied": "PrivacyNotes için bildirimler engellendi. Bunlara bu tarayıcının veya cihazın ayarlarından izin verin.",
+    "weekNumbers": "Hafta numaralarını göster",
+    "hours": "Gösterilen saatler",
+    "hoursHelp": "Gün ve hafta görünümü ilk saatte açılır.",
+    "to": "ila"
   }
 }

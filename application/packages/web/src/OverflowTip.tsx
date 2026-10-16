@@ -20,10 +20,14 @@ const HOVER_DELAY_MS = 500;
 
 export function OverflowTip({
   text,
+  always = false,
   className,
   children,
 }: {
   text: string;
+  /** Show it every time, for content with no visible text, such as an
+   *  icon-only tab inside a strip whose scroll would cut a CSS tip. */
+  always?: boolean;
   className?: string;
   children: ReactNode;
 }) {
@@ -34,8 +38,8 @@ export function OverflowTip({
   const pos = usePointMenuPosition(point, tipRef);
 
   const show = () => {
-    const el = wrapRef.current?.querySelector('.truncate');
-    if (!el || el.scrollWidth <= el.clientWidth) return;
+    const el = always ? wrapRef.current : wrapRef.current?.querySelector('.truncate');
+    if (!el || (!always && el.scrollWidth <= el.clientWidth)) return;
     const r = el.getBoundingClientRect();
     setPoint({ x: r.left, y: r.bottom + 4 });
   };
@@ -81,13 +85,16 @@ export function OverflowTip({
         <span
           ref={tipRef}
           role="tooltip"
+          // w-max: its own width, up to the cap. A fixed box near the right
+          // edge otherwise shrinks to the room left there and wraps against
+          // the edge before the clamp can move it.
           style={{
             top: pos?.top ?? point.y,
             left: pos?.left ?? point.x,
             visibility: pos ? 'visible' : 'hidden',
           }}
           // theme-ok: a tooltip is a dark pill in every theme
-          className="fixed z-[60] pointer-events-none px-2.5 py-1.5 rounded-md bg-neutral-900 dark:bg-neutral-800 border border-neutral-700 text-[12px] text-neutral-100 max-w-[280px] whitespace-normal break-words leading-snug"
+          className="fixed z-[60] pointer-events-none px-2.5 py-1.5 rounded-md bg-neutral-900 dark:bg-neutral-800 border border-neutral-700 text-[12px] text-neutral-100 w-max max-w-[280px] whitespace-normal break-words leading-snug"
         >
           {text}
         </span>

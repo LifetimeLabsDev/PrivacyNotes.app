@@ -37,7 +37,8 @@
   "storageBar": {
     "usage": "{{percent}}% 使用中 ({{used}} / {{max}})",
     "refresh": "ストレージを更新",
-    "cleanupInfo": "削除した項目はすぐにカウントされなくなります。暗号化されたファイル自体は数日以内にサーバーから削除されます。"
+    "cleanupInfo": "削除した項目はすぐにカウントされなくなります。暗号化されたファイル自体は数日以内にサーバーから削除されます。",
+    "open": "ストレージ設定を開く"
   },
   "updateToast": {
     "available": "アップデートがあります",
@@ -105,7 +106,23 @@
     "openInTab": "タブで開く",
     "openLink": "開く",
     "edit": "編集",
-    "close": "閉じる"
+    "close": "閉じる",
+    "tags": "タグ",
+    "folders": "フォルダ",
+    "tagItems_other": "{{count}}件",
+    "emptyTags": "その名前のタグはありません",
+    "emptyFolders": "その名前のフォルダはありません",
+    "onlyTags": "タグ",
+    "onlyFolders": "フォルダ",
+    "showOnlyTags": "タグのみ",
+    "showOnlyFolders": "フォルダのみ",
+    "showOnlyCommands": "コマンドのみ",
+    "goToTag": "タグへ移動",
+    "goToFolder": "フォルダへ移動",
+    "createTag": "タグ #{{name}} を作成",
+    "createFolder": "フォルダ「{{name}}」を作成",
+    "newTag": "新しいタグ",
+    "newFolder": "新規フォルダ"
   },
   "cardForm": {
     "cardholderName": "カード名義人",

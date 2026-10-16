@@ -39,16 +39,29 @@
     "photosTooBig_one": "No hi ha prou espai per a la foto ({{size}}), així que queda fora. Tota la resta s'importa. Allibera {{shortfall}}, o afegeix emmagatzematge, i torna a importar per incorporar-la.",
     "photosTooBig_other": "No hi ha prou espai per a les {{count}} fotos ({{size}}), així que queden fora. Tota la resta s'importa. Allibera {{shortfall}}, o afegeix emmagatzematge, i torna a importar per incorporar-les."
   },
+  "importCalendar": {
+    "location": "Ubicació",
+    "videoCall": "Videotrucada",
+    "organizer": "Organitzador",
+    "guests": "Convidats",
+    "file": "Fitxer",
+    "link": "Enllaç",
+    "timeZone": "Zona horària",
+    "ends": "Acaba",
+    "repeats": "Es repeteix"
+  },
   "sourceDesc": {
     "googleKeep": "Fitxer .zip de Google Takeout (carpeta Keep) o una sola nota .json. Les llistes de verificació s'importen com a llistes de tasques natives.",
+    "googleCalendar": "El .zip de Settings > Import & export de Google Calendar, o un sol fitxer .ics. Els esdeveniments conserven les hores, les repeticions i els recordatoris.",
     "appleNotes": "Exporta amb l'aplicació gratuïta Exporter en format Markdown i deixa anar el .zip aquí.",
     "appleJournal": "Exporta des de Diari al Mac o a l'iPhone, comprimeix la carpeta AppleJournalEntries i deixa anar el .zip. Les entrades s'importen com a entrades de diari amb les fotos, els vídeos, les notes de veu i les ubicacions.",
     "evernote": "Un sol .enex, o uns quants dins d'un zip. Conserva el format, les etiquetes, els adjunts, els enllaços entre notes i les llibretes. L'Evernote deixa les tasques fora del .enex.",
     "samsungNotes": "Exporta com a Word (.docx) o text (.txt). Comprimeix diversos fitxers en un .zip per importar-los en bloc.",
     "simplenote": "Exporta des de Simplenote (Settings -> Tools -> Export Notes). Deixa anar el .zip.",
-    "standardNotes": "Còpia de seguretat desxifrada .zip o .txt de Standard Notes (File > Export > Decrypted).",
+    "standardNotes": "Còpia de seguretat desxifrada .zip o .txt de Standard Notes (Account settings > Backups > Data backups > Decrypted).",
     "obsidian": "Vault d'Obsidian en .zip. Conserva etiquetes, [[note links]], estructura de carpetes, #tags en línia, i imatges i fitxers incrustats.",
     "notesnook": "Exportació de Notesnook com a .zip. Tria HTML en exportar per conservar el format, les llibretes, les etiquetes i els adjunts.",
+    "bear": "A Bear, tria File > Backup Notes... i deixa anar aquí el fitxer .bear2bk. Hi vénen les etiquetes i les etiquetes niades, les notes fixades, l'arxiu, la paperera, els ressaltats amb els seus colors, els enllaços entre notes i els adjunts.",
     "joplin": "El fitxer .jex de File > Export all > \"JEX - Joplin Export File\". Les llibretes es converteixen en carpetes, i les etiquetes, les tasques pendents, els enllaços entre notes i els adjunts també hi vénen.",
     "upnote": "A UpNote: Settings > Backup > Backup now, i després comprimeix tot el que hi ha a la carpeta de còpia de seguretat. Conserva les llibretes, les etiquetes, les notes fixades, els note-links, el format i els adjunts. Les exportacions per nota des de les apps de mòbil també funcionen - tria «Export to HTML».",
     "markdownFolder": "Fitxers .md o .txt solts o dins d'un .zip. Una carpeta comprimida manté les subcarpetes i s'emporta les imatges i els adjunts.",
@@ -96,6 +109,12 @@
     "blobsNotInBackup_other": "Les teves notes s'han restaurat, però {{items}} que figuren a la còpia de seguretat no hi són."
   },
   "preview": {
+    "oversize_one": "{{count}} nota supera 1 MB. Es queda en aquest dispositiu i no se sincronitza.",
+    "oversize_other": "{{count}} notes superen 1 MB. Es queden en aquest dispositiu i no se sincronitzen.",
+    "splitOversize_one": "Divideix aquesta nota en notes més petites pels seus encapçalaments, perquè se sincronitzi",
+    "splitOversize_other": "Divideix aquestes {{count}} notes en notes més petites pels seus encapçalaments, perquè se sincronitzin",
+    "partTitle": "{{title}} ({{index}}/{{total}})",
+    "continuedIn": "Continua a {{link}}",
     "sourceLabel": "Origen",
     "uniqueTags": "Etiquetes úniques",
     "empty": "Buit",
@@ -107,6 +126,7 @@
     "duplicateWarning": "la importació afegeix aquests elements com a notes noves. Si l'executes dues vegades, tindràs duplicats. Encara no hi ha deduplicació automàtica.",
     "duplicateSkipNote": "els marcadors que ja tens desats s'ometen, així que repetir aquesta importació no duplica res.",
     "contactSkipNote": "les persones que ja has desat s'ometen i queden tal com són, així que executar-ho dues vegades no duplicarà ningú.",
+    "eventSkipNote": "els esdeveniments que ja has importat s'ometen i queden tal com són, així que executar-ho dues vegades no els duplicarà.",
     "restoreMergeNote": "les notes de la teva pròpia còpia de seguretat es fan coincidir per identificador. Una nota que ja tens només s'actualitza si la versió de la còpia és més recent, i una nota de la paperera en surt.",
     "quotaExceeded": "<strong>No tens prou emmagatzematge per importar.</strong> Es calcula que calen {{needed}}, i en queden {{available}} de disponibles. Allibera espai o millora el pla abans d'importar.",
     "quotaWarning": "Atenció: aquesta importació farà servir aproximadament {{needed}} dels {{available}} d'emmagatzematge que et queden.",
@@ -160,7 +180,11 @@
     "bookmarksExportDesc": "El fitxer de marcadors estàndard que llegeix qualsevol navegador. Importa'l al Chrome, Firefox, Safari o Edge amb les carpetes intactes.",
     "contactsOnlyHeading": "Només contactes",
     "contactsExportTitle": "Fitxer de contactes (.vcf)",
-    "contactsExportDesc": "El fitxer vCard que llegeix qualsevol telèfon i agenda. Importa'l a l'iPhone, Android, Contactes de Google o Contactes al Mac, amb etiquetes i grups intactes."
+    "contactsExportDesc": "El fitxer vCard que llegeix qualsevol telèfon i agenda. Importa'l a l'iPhone, Android, Contactes de Google o Contactes al Mac, amb etiquetes i grups intactes.",
+    "calendarOnlyHeading": "Només calendari",
+    "calendarExportTitle": "Fitxer de calendari (.ics)",
+    "calendarExportDesc": "Esdeveniments, i notes i llistes de tasques amb data, per a Google Calendar, Apple Calendar o Outlook.",
+    "calendarPrivate": "Privat"
   },
   "exportProgress": {
     "failedTitle": "L'exportació ha fallat",
@@ -228,5 +252,11 @@
     "title_other": "S'han compartit {{count}} elements amb PrivacyNotes",
     "line": "No es desa res fins que triïs.",
     "saveAll": "Desa-ho tot"
+  },
+  "destination": {
+    "label": "Afegeix a",
+    "none": "Sense carpeta",
+    "newFolder": "Carpeta nova \"{{name}}\"",
+    "help": "Les carpetes de l'origen van dins de la carpeta que triïs, i els elements sense carpeta hi van a parar."
   }
 }

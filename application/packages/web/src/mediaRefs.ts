@@ -9,8 +9,8 @@
  * nothing reaches the viewer that the note itself would not render.
  *
  * The viewer moves through the list that opened it, and that list holds only
- * what the viewer can show: pictures and PDFs. A recording keeps its player in
- * the chip, and any other file keeps its Download button.
+ * what the viewer can show: pictures, PDFs and saved emails. A recording
+ * keeps its player in the chip, and any other file keeps its Download button.
  *
  * Spec: ops/docs/ui-patterns.md (section 98, the picture viewer)
  */
@@ -59,8 +59,25 @@ export function isPdfRef(ref: MediaRef): boolean {
   return ref.src.startsWith(FILE_REF_PREFIX) && isPdf(ref.mime, ref.name);
 }
 
+/** A saved email (.eml), by type, or by name when the platform stored no
+ *  useful type. Outlook's .msg is a different, binary format and is not one. */
+export function isMail(mime: string, name: string): boolean {
+  const type = mime.split(';')[0]!.trim().toLowerCase();
+  if (type === 'message/rfc822') return true;
+  return /\.eml$/i.test(name.trim()) && (type === '' || type === 'application/octet-stream' || type.startsWith('message/') || type === 'text/plain');
+}
+
+export function isMailRef(ref: MediaRef): boolean {
+  return ref.src.startsWith(FILE_REF_PREFIX) && isMail(ref.mime, ref.name);
+}
+
+/** A file the viewer reads from its stored bytes rather than as a picture. */
+export function isDocumentRef(ref: MediaRef): boolean {
+  return isPdfRef(ref) || isMailRef(ref);
+}
+
 /**
- * Every picture and PDF in a note, in document order, beside the position of
+ * Every picture, PDF and saved email in a note, in document order, beside the position of
  * each node. The position is what a node view knows about itself, and it tells
  * two references to one stored file apart, which the uuid cannot.
  */
@@ -81,7 +98,7 @@ export function mediaInDoc(doc: PMNode): { refs: MediaRef[]; positions: number[]
       const src = typeof node.attrs.src === 'string' ? node.attrs.src : '';
       const mime = typeof node.attrs.mimetype === 'string' ? node.attrs.mimetype : '';
       const file = typeof node.attrs.filename === 'string' ? node.attrs.filename : '';
-      if (src.startsWith(FILE_REF_PREFIX) && (isPictureMime(mime) || isPdf(mime, file))) {
+      if (src.startsWith(FILE_REF_PREFIX) && (isPictureMime(mime) || isPdf(mime, file) || isMail(mime, file))) {
         refs.push({ src, name: file, mime });
         positions.push(pos);
       }

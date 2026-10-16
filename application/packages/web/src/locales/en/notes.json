@@ -11,13 +11,17 @@
     "noContent": "No content",
     "notBackedUp": "Not backed up",
     "archived": "Archived",
-    "entryDate": "Entry date"
+    "entryDate": "Entry date",
+    "date": "Date",
+    "dayOf": "day {{n}} of {{total}}"
   },
   "header": {
     "new": "New",
     "newNote": "New note",
     "newNoteHover": "New note ({{hotkey}})",
-    "trash": "Trash"
+    "trash": "Trash",
+    "newEvent": "New event",
+    "newEventHover": "New event ({{hotkey}})"
   },
   "folderChip": {
     "clear": "Clear folder filter: {{folder}}",
@@ -40,7 +44,9 @@
     "login": "Login",
     "file": "File",
     "bookmark": "Bookmark",
-    "contact": "Contact"
+    "contact": "Contact",
+    "event": "Event",
+    "quickAdd": "Quick add"
   },
   "vaultFilter": {
     "all": "All",
@@ -94,7 +100,8 @@
     "vault": "Vault",
     "pinned": "Pinned",
     "archive": "Archive",
-    "notes": "Notes"
+    "notes": "Notes",
+    "calendar": "Calendar"
   },
   "footerStats": {
     "journals": "Journals",
@@ -138,8 +145,17 @@
     "collapse": "Collapse notes list",
     "expand": "Expand notes list"
   },
+  "split": {
+    "action": "Split note",
+    "done": "Split into “{{title}}”",
+    "overLimit": "“{{title}}” is over 1 MB and stays on this device",
+    "cannot": "This note cannot be split here. Put the cursor where the new note should start.",
+    "continuedTitle": "{{title}} (continued)",
+    "continuedIn": "Continued in {{link}}"
+  },
   "paneResize": {
-    "hintCollapse": "Click to collapse · Drag to resize"
+    "hintCollapse": "Click to collapse · Drag to resize",
+    "hintExpand": "Click to expand · Drag to resize"
   },
   "emptyEditor": {
     "selectFile": "Select a file to preview",
@@ -176,6 +192,8 @@
     "findInNote": "Find in note",
     "navPrev": "Previous",
     "navNext": "Next",
+    "navPrevTab": "Previous tab",
+    "navNextTab": "Next tab",
     "undo": "Undo",
     "redo": "Redo",
     "hide": "Hide",
@@ -227,6 +245,8 @@
     "words": "Words",
     "zen": "Zen",
     "appearance": "Design",
+    "goToTop": "Go to top",
+    "goToEnd": "Go to end",
     "signOut": "Sign out",
     "signingOut": "Signing out…",
     "switchToLight": "Switch to light mode",
@@ -252,7 +272,8 @@
     "aboutLabel": "About",
     "languageLabel": "Language",
     "dateLabel": "Date",
-    "languageDesc": "Choose the language PrivacyNotes is shown in."
+    "languageDesc": "Choose the language PrivacyNotes is shown in.",
+    "calendarLabel": "Calendar"
   },
   "importStore": {
     "title": "Import or store?",

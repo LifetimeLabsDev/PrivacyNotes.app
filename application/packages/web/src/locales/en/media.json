@@ -15,6 +15,8 @@
     "notFound": "Image not found",
     "saveFailed": "Saving failed, so the file may be empty or incomplete.",
     "viewAria": "View image",
+    "copyAria": "Copy image",
+    "copyFailed": "Could not copy the picture.",
     "picturesLeftOut": "Some pictures were not added. Copy a picture on its own to paste it."
   },
   "attachment": {
@@ -56,6 +58,17 @@
     "pageCount_one": "{{count}} page",
     "pageCount_other": "{{count}} pages",
     "pageLabel": "{{name}}, page {{page}} of {{count}}"
+  },
+  "mail": {
+    "loading": "Opening email...",
+    "failed": "Can't read this email. Download it to open it in another app.",
+    "from": "From",
+    "to": "To",
+    "cc": "Cc",
+    "date": "Date",
+    "noSubject": "(No subject)",
+    "empty": "This email has no text.",
+    "attachments": "Attachments"
   },
   "picker": {
     "title": "Pictures in Files",

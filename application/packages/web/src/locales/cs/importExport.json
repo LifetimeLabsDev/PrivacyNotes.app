@@ -45,16 +45,29 @@
     "photosTooBig_many": "Na {{count}} fotek ({{size}}) není dost místa, takže zůstanou stranou. Všechno ostatní se importuje. Uvolni {{shortfall}} nebo přikup úložiště a importuj znovu, aby se přidaly.",
     "photosTooBig_other": "Na {{count}} fotek ({{size}}) není dost místa, takže zůstanou stranou. Všechno ostatní se importuje. Uvolni {{shortfall}} nebo přikup úložiště a importuj znovu, aby se přidaly."
   },
+  "importCalendar": {
+    "location": "Místo",
+    "videoCall": "Videohovor",
+    "organizer": "Organizátor",
+    "guests": "Hosté",
+    "file": "Soubor",
+    "link": "Odkaz",
+    "timeZone": "Časové pásmo",
+    "ends": "Končí",
+    "repeats": "Opakuje se"
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip (složka Keep) nebo jedna poznámka .json. Zaškrtávací seznamy se importují jako nativní seznamy úkolů.",
+    "googleCalendar": "Soubor .zip z Google Calendar přes Settings > Import & export, nebo jeden soubor .ics. Události si zachovají časy, opakování i připomínky.",
     "appleNotes": "Exportuj přes bezplatnou aplikaci Exporter do Markdownu a pak sem přetáhni .zip.",
     "appleJournal": "Exportuj z Deníku na Macu nebo iPhonu, zkomprimuj složku AppleJournalEntries a přetáhni sem .zip. Záznamy se importují jako záznamy v deníku i s fotkami, videi, hlasovými poznámkami a polohami.",
     "evernote": "Jeden soubor .enex, nebo víc zabalených do zipu. Zachová formátování, štítky, přílohy, odkazy na poznámky a zápisníky. Úkoly Evernote do .enex nedává.",
     "samsungNotes": "Exportuj jako Word (.docx) nebo text (.txt). Víc souborů zabal do .zip pro hromadný import.",
     "simplenote": "Exportuj ze Simplenote (Settings -> Tools -> Export Notes). Přetáhni sem .zip.",
-    "standardNotes": "Dešifrovaná záloha .zip nebo .txt ze Standard Notes (File > Export > Decrypted).",
+    "standardNotes": "Dešifrovaná záloha .zip nebo .txt ze Standard Notes (Account settings > Backups > Data backups > Decrypted).",
     "obsidian": "Vault Obsidianu jako .zip. Zachová štítky, [[note links]], strukturu složek, inline #tagy i vložené obrázky a soubory.",
     "notesnook": "Export z Notesnooku jako .zip. Při exportu zvol HTML, aby se zachovalo formátování, zápisníky, značky a přílohy.",
+    "bear": "V Bearu zvol File > Backup Notes... a přetáhni sem soubor .bear2bk. Přejdou s ním značky i vnořené značky, připnutí, archiv, koš, zvýraznění s jejich barvami, odkazy na poznámky i přílohy.",
     "joplin": "Soubor .jex z File > Export all > „JEX - Joplin Export File“. Zápisníky se stanou složkami a značky, úkoly, odkazy na poznámky i přílohy přejdou s nimi.",
     "upnote": "V UpNote: Settings > Backup > Backup now, pak zabal do zipu všechno ve složce se zálohou. Zachová zápisníky, značky, připnutí, note-linky, formátování a přílohy. Fungují i exporty jednotlivých poznámek z mobilních aplikací - zvol „Export to HTML“.",
     "markdownFolder": "Soubory .md nebo .txt jednotlivě, nebo jako .zip. Zabalená složka si udrží podsložky a vezme s sebou obrázky i přílohy.",
@@ -104,6 +117,14 @@
     "blobsNotInBackup_other": "Tvoje poznámky se obnovily, ale {{items}} uvedených v záloze v ní chybí."
   },
   "preview": {
+    "oversize_one": "{{count}} poznámka má více než 1 MB. Zůstane na tomto zařízení a nebude se synchronizovat.",
+    "oversize_few": "{{count}} poznámky mají více než 1 MB. Zůstanou na tomto zařízení a nebudou se synchronizovat.",
+    "oversize_other": "{{count}} poznámek má více než 1 MB. Zůstanou na tomto zařízení a nebudou se synchronizovat.",
+    "splitOversize_one": "Rozdělit tuto poznámku podle nadpisů na menší poznámky, aby se synchronizovala",
+    "splitOversize_few": "Rozdělit tyto {{count}} poznámky podle nadpisů na menší poznámky, aby se synchronizovaly",
+    "splitOversize_other": "Rozdělit těchto {{count}} poznámek podle nadpisů na menší poznámky, aby se synchronizovaly",
+    "partTitle": "{{title}} ({{index}}/{{total}})",
+    "continuedIn": "Pokračování v {{link}}",
     "sourceLabel": "Zdroj",
     "uniqueTags": "Unikátní značky",
     "empty": "Prázdné",
@@ -115,6 +136,7 @@
     "duplicateWarning": "import je přidá jako nové poznámky. Když ho spustíš dvakrát, budeš mít duplikáty. Automatické slučování duplikátů zatím nemáme.",
     "duplicateSkipNote": "záložky, které už máš uložené, se přeskočí, takže druhý průchod nic nezduplikuje.",
     "contactSkipNote": "lidé, které už máš uložené, se přeskočí a zůstanou, jak jsou, takže druhé spuštění nikoho nezdvojí.",
+    "eventSkipNote": "události, které už máš naimportované, se přeskočí a zůstanou, jak jsou, takže druhé spuštění je nezdvojí.",
     "restoreMergeNote": "poznámky z tvé vlastní zálohy se párují podle identifikátoru. Poznámka, kterou už máš, se aktualizuje jen tehdy, když je verze v záloze novější, a poznámka v koši se z něj vrátí.",
     "quotaExceeded": "<strong>Na import máš málo místa.</strong> Odhadem je potřeba {{needed}}, k dispozici je {{available}}. Před importem uvolni místo nebo přejdi na vyšší tarif.",
     "quotaWarning": "Pozor: tento import spotřebuje přibližně {{needed}} z {{available}} zbývajícího místa.",
@@ -176,7 +198,11 @@
     "bookmarksExportDesc": "Standardní soubor záložek, který přečte každý prohlížeč. Naimportuj ho i se složkami do Chrome, Firefoxu, Safari nebo Edge.",
     "contactsOnlyHeading": "Jen kontakty",
     "contactsExportTitle": "Soubor kontaktů (.vcf)",
-    "contactsExportDesc": "Soubor vCard, který přečte každý telefon i adresář. Importuj ho do iPhonu, Androidu, Kontaktů Google nebo Kontaktů na Macu, i se štítky a skupinami."
+    "contactsExportDesc": "Soubor vCard, který přečte každý telefon i adresář. Importuj ho do iPhonu, Androidu, Kontaktů Google nebo Kontaktů na Macu, i se štítky a skupinami.",
+    "calendarOnlyHeading": "Jen kalendář",
+    "calendarExportTitle": "Soubor kalendáře (.ics)",
+    "calendarExportDesc": "Události a poznámky a seznamy úkolů s datem, pro Google Calendar, Apple Calendar nebo Outlook.",
+    "calendarPrivate": "Soukromé"
   },
   "exportProgress": {
     "failedTitle": "Export selhal",
@@ -256,5 +282,11 @@
     "title_other": "Do PrivacyNotes bylo sdíleno {{count}} položek",
     "line": "Nic se neuloží, dokud nevybereš.",
     "saveAll": "Uložit vše"
+  },
+  "destination": {
+    "label": "Přidat do",
+    "none": "Bez složky",
+    "newFolder": "Nová složka „{{name}}“",
+    "help": "Složky ze zdroje se vloží do složky, kterou vybereš, a položky bez složky skončí přímo v ní."
   }
 }

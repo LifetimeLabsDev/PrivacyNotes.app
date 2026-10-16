@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type DragEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, DotsSixVertical, DotsThree, Plus, PushPin } from './icons';
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, DotsSixVertical, DotsThree, Paperclip, Plus, PushPin } from './icons';
 import { useEscapeToClose } from './useEscapeToClose';
 import { HoverLabel } from './HoverLabel';
 import { useIsTouchDevice } from './useIsMobile';
@@ -43,7 +43,7 @@ export type FormatBarBoardProps = {
   onLeave?: () => void;
 };
 
-/** A part of the board: the bar's row, the bar's end, the menu, hidden. */
+/** A part of the board: the bar's row, the bar's end, the menu, the attach menu, hidden. */
 type Part = FormatBarHome;
 
 const DRAG_TYPE = 'application/x-pn-format-bar';
@@ -319,19 +319,24 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
     };
     // On the bar and in the hidden row an item looks like its toolbar
     // button: the icon alone, the name in a hover label (and at the top of
-    // its menu on touch). Only the menu lists names, as the + menu does.
-    if (part !== 'menu') {
+    // its menu on touch). Only the two menus list names, as the toolbar's do.
+    if (part !== 'menu' && part !== 'attachMenu') {
+      const thinLine = key.startsWith('separator') && part !== 'hidden';
       return (
         <li key={key} className="shrink-0" onDragEnter={over(part, key, true)} onDragOver={over(part, key, true)}>
           <HoverLabel label={name} position="below">
             <button
               {...common}
               aria-label={name}
-              className={`flex items-center justify-center w-8 h-8 [@media(hover:none)]:w-10 [@media(hover:none)]:h-10 rounded-md transition ${
+              // On the bar a separator is the toolbar's thin line in a narrow
+              // slot; in the hidden row it is a full button, so it can be seen and grabbed.
+              className={`flex items-center justify-center ${thinLine ? 'w-2 [@media(hover:none)]:w-5' : 'w-8 [@media(hover:none)]:w-10'} h-8 [@media(hover:none)]:h-10 rounded-md transition ${
                 open ? 'bg-accent/15 text-accent-strong' : 'text-pn-soft [@media(hover:hover)]:hover:bg-pn/10'
               } ${canDrag ? 'cursor-grab' : ''} ${dragKey === key ? 'opacity-40' : ''}`}
             >
-              <Icon size={18} aria-hidden="true" />
+              {thinLine
+                ? <span aria-hidden="true" className="h-4 w-px bg-pn-muted/35" />
+                : <Icon size={18} aria-hidden="true" />}
             </button>
           </HoverLabel>
         </li>
@@ -347,9 +352,9 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
         >
           {canDrag && <DotsSixVertical size={14} className="shrink-0 text-pn-muted" aria-hidden="true" />}
           <Icon size={18} className="shrink-0" aria-hidden="true" />
-          <span className="flex-1 min-w-0 truncate">{name}</span>
+          <span className="flex-1 min-w-0 leading-tight break-words hyphens-auto">{name}</span>
           {/* The pin says why the item cannot go into the menu. */}
-          {!def.menuAllowed && <PushPin size={12} className="shrink-0 text-pn-muted" aria-label={t('formatBar.pinned')} />}
+          {part === 'menu' && !def.menuAllowed && <PushPin size={12} className="shrink-0 text-pn-muted" aria-label={t('formatBar.pinned')} />}
           {touch && <DotsThree size={18} className="shrink-0 text-pn-muted" aria-hidden="true" />}
         </button>
       </li>
@@ -385,15 +390,38 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
         return <div key={g} className="min-w-0">{subhead(t(`insertGroup.${g}`))}{list(inGroup, 'menu', g === dragGroup)}</div>;
       })
     : <>{empty(t('formatBar.menuEmpty'))}{target?.part === 'menu' && <ul>{marker('menu', null, false)}</ul>}</>;
+  // The attach menu, drawn under the Blocks group: the paperclip's own list,
+  // a drop target of its own inside the + menu box.
+  const attachSection = (
+    <div
+      key="attachMenu"
+      {...dropZone('attachMenu')}
+      className={`min-w-0 mt-2 rounded-md transition-colors ${target?.part === 'attachMenu' ? 'bg-accent/10' : ''}`}
+    >
+      <div className="flex items-center gap-1.5 px-1 pt-3 pb-1 text-[11px] uppercase tracking-wide text-pn-muted">
+        <Paperclip size={12} aria-hidden="true" />{t('formatBar.inAttachMenu')}
+      </div>
+      {layout.attachMenu.length
+        ? list(layout.attachMenu, 'attachMenu')
+        : <>{empty(t('formatBar.attachMenuEmpty'))}<ul>{marker('attachMenu', null, false)}</ul></>}
+    </div>
+  );
+  const blocksAt = Array.isArray(menuColumn) ? FORMAT_BAR_GROUPS.indexOf('blocks') : -1;
+  const menuWithAttach = Array.isArray(menuColumn)
+    ? menuColumn.map((col, n) => (n === blocksAt
+        ? <div key="blocks" className="min-w-0">{col}{attachSection}</div>
+        : col))
+    : <>{menuColumn}{attachSection}</>;
   // The hidden row says what a hidden button still does, or how to hide one.
-  const hiddenNote = layout.hidden.length ? t('formatBar.hiddenNote')
+  // A separator is not a button, so it does not count as a hidden one.
+  const hiddenNote = layout.hidden.some((k) => !k.startsWith('separator')) ? t('formatBar.hiddenNote')
     : canDrag ? t('formatBar.hiddenDrop')
     : t('formatBar.hiddenEmpty');
   const overBar = target?.part === 'bar' || target?.part === 'end';
 
   const menuItem = menuKey ? formatBarItem(menuKey) : undefined;
   const menuHome = menuKey ? homeOf(layout, menuKey) : null;
-  const ordered = menuHome === 'bar' || menuHome === 'end' || menuHome === 'menu';
+  const ordered = menuHome === 'bar' || menuHome === 'end' || menuHome === 'menu' || menuHome === 'attachMenu';
   // The bar runs sideways, so its order moves are left and right (across the
   // '+' between its two zones), mirrored in a right-to-left language; the
   // menu runs down.
@@ -481,7 +509,7 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
               a touch screen a long row scrolls sideways, as the toolbar does.
               Under a pointer it stays unclipped, because the names show in
               hover labels below the icons, and only an unusually long bar
-              wraps; pn-format-row keeps the end labels inside the row. */}
+              wraps. */}
           {/* The bar reads as a live drop target at rest (an accent edge and
               tint, marching on hover and when the tab opens), turns dashed
               while any button is dragged, and fills when the drag is over it,
@@ -543,7 +571,7 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
           <p aria-live="polite" className={`mb-1.5 px-1 text-xs empty:mb-0 ${refusal ? 'text-danger' : 'text-pro'}`}>
             {refusal ? (refusal.reason === 'menuNotAllowed'
               ? t('formatBar.refuse.menuNotAllowed', { item: label(refusal.key) })
-              : t('formatBar.refuse.lastOnBar'))
+              : t(`formatBar.refuse.${refusal.reason}`))
               : previewing && t('formatBar.previewOnly')}
           </p>
           <section
@@ -553,7 +581,7 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
           >
             <h3 className="px-1 text-xs font-semibold text-pn-muted">{t('formatBar.inMenu')}</h3>
             <div className="grid gap-x-3 [grid-template-columns:repeat(auto-fit,minmax(11rem,1fr))] items-start">
-              {menuColumn}
+              {menuWithAttach}
             </div>
           </section>
         </div>
@@ -565,10 +593,14 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
           role="menu"
           aria-label={t('formatBar.optionsFor', { item: label(menuKey) })}
           onKeyDown={menuKeys}
-          // Focus that leaves the menu closes it, so it never stays open behind the focus.
+          // Focus that moves to another element closes the menu, so it never
+          // stays open behind the focus. A blur to nothing keeps it open: WebKit
+          // gives no focus to a tapped button, so a tap on a choice blurs the
+          // menu with no next element, and closing then would eat the click.
+          // A tap outside is handled by the pointerdown listener.
           onBlur={(e) => {
             const next = e.relatedTarget as Node | null;
-            if (!next || (!menuRef.current?.contains(next) && !anchorRef.current?.contains(next))) closeMenu(false);
+            if (next && !menuRef.current?.contains(next) && !anchorRef.current?.contains(next)) closeMenu(false);
           }}
           className="fixed z-[60] w-60 rounded-lg border border-divider bg-surface-1 p-1 shadow-lg"
           style={{ top: menuPos?.top ?? 0, left: menuPos?.left ?? 0, visibility: menuPos ? 'visible' : 'hidden' }}
@@ -590,7 +622,7 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
               <div className="my-1 h-px bg-divider" aria-hidden="true" />
             </>
           )}
-          {(['bar', 'menu', 'hidden'] as const).map((home) => {
+          {(['bar', 'menu', 'attachMenu', 'hidden'] as const).filter((home) => home !== 'attachMenu' || menuItem.attachAllowed).map((home) => {
             const blocked = home === 'menu' && !menuItem.menuAllowed;
             const current = menuHome === home || (home === 'bar' && menuHome === 'end');
             return (

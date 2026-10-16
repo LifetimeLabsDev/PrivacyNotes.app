@@ -8,7 +8,6 @@
     "title": "タスク",
     "newTaskNote": "新規タスクノート",
     "newTaskNoteWithHotkey": "新規タスクノート({{hotkey}})",
-    "new": "新規",
     "hideCompleted": "完了したタスクを隠す",
     "showCompleted": "完了したタスクを表示",
     "searchPlaceholder": "タスクを検索…",
@@ -37,12 +36,9 @@
     "deselectAll": "選択をすべて解除",
     "selectAll": "すべて選択",
     "storage": "ストレージ",
-    "supportedTypesHint": "最大ファイルサイズ: {{max}} MB",
     "perFile": "1ファイルあたり",
     "free": "無料",
     "upgradeToPro": "Proにアップグレード",
-    "addStorage": "ストレージを追加",
-    "upToMax": "最大{{max}}",
     "filterAll": "すべて",
     "filterImages": "画像",
     "filterAudio": "音声",
@@ -115,6 +111,7 @@
     "video": "動画",
     "image": "画像",
     "pdf": "PDF",
+    "email": "メール",
     "archive": "アーカイブ",
     "document": "文書",
     "spreadsheet": "スプレッドシート",
@@ -187,7 +184,8 @@
     "markdown": "Markdown",
     "markdownTip": "暗号化なし",
     "bookmarks": "ブックマーク",
-    "contacts": "連絡先"
+    "contacts": "連絡先",
+    "calendar": "カレンダー"
   },
   "browseToggle": {
     "label": "分類",
@@ -203,6 +201,9 @@
     "deleteConfirmTitle": "フォルダを削除しますか?",
     "deleteConfirmBodyRoot": "「{{folder}}」を削除します。中のノートとサブフォルダは最上位に移動します。ノートは削除されません。",
     "deleteConfirmBodyNested": "「{{folder}}」を削除します。中のノートとサブフォルダは「{{parent}}」に移動します。ノートは削除されません。",
+    "deleteConfirmBranchRoot": "「{{folder}}」とそのサブフォルダを削除します。中のノートは最上位に移動します。ノートは削除されません。",
+    "deleteConfirmBranchNested": "「{{folder}}」とそのサブフォルダを削除します。中のノートは「{{parent}}」に移動します。ノートは削除されません。",
+    "deleteSubfolders_other": "{{count}} 個のサブフォルダも削除する",
     "moveTo": "フォルダに移動",
     "searchPlaceholder": "フォルダを検索",
     "sortFolders": "フォルダを並び替え",
@@ -220,7 +221,8 @@
     "saveName": "フォルダ名を保存",
     "actionsForFolder": "フォルダ{{folder}}の操作",
     "seedSecurity": "セキュリティ",
-    "seedTravel": "旅行"
+    "seedTravel": "旅行",
+    "seedTeam": "チーム"
   },
   "collapsedSidebar": {
     "newNote": "新規ノート",
@@ -266,7 +268,19 @@
     "size": "使用ストレージ: {{size}}",
     "sizeHint": "この項目の暗号化後の合計サイズ。",
     "tagCount_other": "{{count}}個のタグ",
-    "entryDate": "ジャーナルの日付"
+    "entryDate": "ジャーナルの日付",
+    "noDate": "なし",
+    "schedule": "スケジュール",
+    "ends": "終了日",
+    "sameDay": "同じ日",
+    "allDay": "終日",
+    "starts": "開始",
+    "endsAt": "終了時刻",
+    "noEnd": "なし",
+    "removeFromCalendar": "カレンダーから削除",
+    "makeEvent": "繰り返すには予定に変更してください",
+    "typeEvent": "予定",
+    "repeatRemoved": "繰り返しは削除されます"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "選択を終了(Esc)",
@@ -301,6 +315,8 @@
     "showSize": "ファイルサイズを表示",
     "showTags": "フォルダとタグを表示",
     "showCalendar": "カレンダーを表示",
+    "showWorkItems": "<b>仕事</b>のアイテムを表示",
+    "showPersonalItems": "<b>個人</b>のアイテムを表示",
     "other": "その他",
     "showReadOnly": "読み取り専用を表示",
     "showProtected": "保護されたアイテムを表示",
@@ -329,7 +345,7 @@
     "nextMonth": "次の月",
     "dayWithEntry": "{{date}}、エントリーあり",
     "dayWithEntryIn": "{{date}}、「{{space}}」にエントリーあり",
-    "dayWithEntryBoth": "{{date}}、「個人」と「仕事」にエントリーあり",
+    "dayWithItems_other": "{{date}}、{{count}}件のアイテム",
     "previousWeek": "前の週",
     "nextWeek": "次の週",
     "showMonth": "{{month}}、月全体を表示",
@@ -372,11 +388,14 @@
     "copyBookmarkUrl": "URLをコピー",
     "editBookmark": "ブックマークを編集",
     "openInTab": "タブで開く",
+    "openInTabHint": "{{key}}+クリック",
     "closeTab": "タブを閉じる",
     "closeOtherTabs": "ほかのタブを閉じる",
     "closeAllTabs": "すべてのタブを閉じる",
     "pinTab": "タブをピン留め",
-    "unpinTab": "タブのピン留めを解除"
+    "unpinTab": "タブのピン留めを解除",
+    "newEvent": "新規予定",
+    "quickAdd": "クイック追加"
   },
   "demoBanner": {
     "title": "リスクなしでお試しください",
@@ -628,6 +647,9 @@
       "mastodon": "Mastodon"
     }
   },
+  "staleEditor": {
+    "copyToast": "このノートは別のデバイスで変更されました。あなたの編集内容はコピー「{{title}}」に保存されています。"
+  },
   "noteLinks": {
     "retargetedToast_other": "{{count}}件のノートリンクを新しいタイトルに更新しました。"
   },
@@ -636,7 +658,8 @@
   },
   "tabStrip": {
     "label": "開いているタブ",
-    "close": "「{{title}}」を閉じる"
+    "close": "「{{title}}」を閉じる",
+    "moreTabs": "その他のタブ"
   },
   "shareInbox": {
     "saved": "PrivacyNotesに保存しました",
@@ -665,10 +688,11 @@
   },
   "spaces": {
     "label": "スペース",
+    "all": "すべて",
     "personal": "個人",
     "work": "仕事",
-    "moveToWork": "「仕事」に移動",
-    "moveToPersonal": "「個人」に移動",
+    "moveToWork": "「<b>仕事</b>」に移動",
+    "moveToPersonal": "「<b>個人</b>」に移動",
     "movedToWork": "{{folder}}を「仕事」に移動しました",
     "movedToPersonal": "{{folder}}を「個人」に移動しました",
     "itemMovedToWork": "「仕事」に移動しました",
@@ -677,6 +701,200 @@
     "switchedToPersonal": "「個人」に切り替えました",
     "switchToWork": "「仕事」に切り替え",
     "switchToPersonal": "「個人」に切り替え",
+    "switchToAll": "すべてのスペースを表示",
     "workEmpty": "「仕事」は空です。「個人」で項目かフォルダのメニューを開き、「仕事に移動」を選んでください。"
+  },
+  "calendar": {
+    "moveToToday": "今日に移動",
+    "moveToTomorrow": "明日に移動",
+    "moveToNextWeek": "来週に移動",
+    "deleteEvent": "予定を削除",
+    "openContact": "連絡先を開く",
+    "newOnDay": "この日に新規予定",
+    "showDay": "この日を表示",
+    "open": "カレンダーを開く",
+    "back": "カレンダー",
+    "more_other": "+{{count}}件",
+    "addOn": "{{date}}に追加",
+    "nothingFor_other": "{{count}}日間、何もありません",
+    "nothingToday": "今日は何もありません",
+    "allDay": "終日",
+    "now": "現在",
+    "viewLabel": "カレンダーの表示",
+    "views": {
+      "day": "日",
+      "week": "週",
+      "month": "月"
+    },
+    "legendLabel": "カレンダーに表示",
+    "kinds": {
+      "event": "予定",
+      "note": "ノート",
+      "task": "タスクリスト",
+      "journal": "ジャーナルの記録",
+      "contact": "誕生日"
+    },
+    "dragEnd": "ドラッグして終了日を変更",
+    "previousDay": "前の日",
+    "nextDay": "次の日",
+    "seedWeeklyReview": "週次レビュー",
+    "seedWeeklyReviewBody": "毎週金曜日の16時。終わったこと、遅れたこと、来週やること。",
+    "addToCalendar": "カレンダーに追加",
+    "showAgenda": "アジェンダを表示",
+    "hideAgenda": "アジェンダを非表示",
+    "seedDemo": {
+      "lunch": "サムとランチ",
+      "dentist": "歯医者",
+      "callAna": "アナと電話",
+      "groceries": "食料品の買い出し",
+      "concert": "コンサート",
+      "giftIdeas": "コンへのプレゼントのアイデア",
+      "flight": "リスボン行きのフライト",
+      "conference": "リスボンのカンファレンス",
+      "nightTrain": "ポルト行きの夜行列車",
+      "yoga": "ヨガ",
+      "sprint": "スプリント計画",
+      "bookClub": "読書会",
+      "rent": "家賃の支払い"
+    }
+  },
+  "repeat": {
+    "changeTitle": "このアイテムを変更しますか?",
+    "deleteTitle": "このアイテムを削除しますか?",
+    "thisOccurrence": "この回のみ",
+    "thisAndFollowing": "この回以降",
+    "allOccurrences": "すべての回",
+    "label": "繰り返し",
+    "never": "繰り返さない",
+    "daily_other": "{{count}}日ごと",
+    "weekdays": "毎週平日(月曜日〜金曜日)",
+    "weekly_other": "{{count}}週間ごと、{{days}}",
+    "monthlyDay_other": "{{count}}か月ごと、{{day}}日",
+    "monthlyNth_other": "{{count}}か月ごと、{{nth}}{{weekday}}",
+    "yearly_other": "{{count}}年ごと、{{date}}",
+    "withUntil": "{{rule}}、{{date}}まで",
+    "withCount_other": "{{rule}}、{{count}}回",
+    "nth": {
+      "1": "第1",
+      "2": "第2",
+      "3": "第3",
+      "4": "第4",
+      "last": "最終"
+    },
+    "custom": "カスタム",
+    "every": "間隔",
+    "units": {
+      "day_other": "日ごと",
+      "week_other": "週間ごと",
+      "month_other": "か月ごと",
+      "year_other": "年ごと"
+    },
+    "onDays": "曜日",
+    "onDay": "{{day}}日",
+    "onNth": "{{nth}}{{weekday}}",
+    "ends": "終了",
+    "endsNever": "なし",
+    "endsOn": "日付を指定",
+    "endsAfter": "回数を指定",
+    "times_other": "{{count}}回",
+    "apply": "適用"
+  },
+  "alerts": {
+    "label": "通知",
+    "none": "なし",
+    "atTime": "開始時刻",
+    "minutesBefore_other": "{{count}}分前",
+    "hoursBefore_other": "{{count}}時間前",
+    "daysBefore_other": "{{count}}日前",
+    "weeksBefore_other": "{{count}}週間前",
+    "onDayAt": "当日 {{time}}",
+    "daysBeforeAt_other": "{{count}}日前 {{time}}",
+    "custom": "カスタム",
+    "add": "追加",
+    "max": "通知は5件まで設定できます。",
+    "units": {
+      "minutes": "分前",
+      "hours": "時間前",
+      "days": "日前",
+      "weeks": "週間前"
+    },
+    "at": "の",
+    "remove": "{{alert}}を削除",
+    "reminder": "リマインダー",
+    "open": "開く",
+    "snooze": "10分後に再通知",
+    "offOnPhone": "このスマートフォンではリマインダーがオフです",
+    "turnOn": "オンにする",
+    "openSettings": "設定を開く"
+  },
+  "quickAdd": {
+    "group": "作成",
+    "items": "アイテム",
+    "createNamed": "{{type}}: {{title}}",
+    "types": {
+      "event": "新規予定",
+      "note": "新規ノート",
+      "task": "新規タスクリスト",
+      "journal": "新規ジャーナル"
+    },
+    "keepAsText": "テキストのままにする",
+    "placeholder": "タイトル、日、時刻、繰り返し...",
+    "example": "例: {{example}}",
+    "examples": {
+      "1": "歯医者 金曜日 15:00 1時間 前",
+      "2": "週次レビュー 毎週 金曜日 16:00-17:00",
+      "3": "銀行に電話 明日 11:30 所要 30分",
+      "4": "家賃 毎月 1日 通知 1日 前",
+      "5": "試験 3 日後 #学校",
+      "6": "タスク 持ち物リスト 木曜日 18:00"
+    },
+    "examplesGroup": "例文",
+    "syntax": {
+      "group": "入力できる内容",
+      "day": {
+        "label": "日",
+        "examples": "明日 · 金曜日 · 来週 水曜日 · 10月 31日 · 3 日後",
+        "insert": "明日"
+      },
+      "time": {
+        "label": "時刻",
+        "examples": "15:00 · 16:00-17:00 · 9 時 · 16:00 から 17:00",
+        "insert": "15:00"
+      },
+      "length": {
+        "label": "長さ",
+        "examples": "所要 30分 · 期間 3日 · 金曜日 から 日曜日",
+        "insert": "所要 1時間"
+      },
+      "repeat": {
+        "label": "繰り返し",
+        "examples": "毎週 金曜日 · 毎週 平日 · 毎月",
+        "insert": "毎週 金曜日"
+      },
+      "alert": {
+        "label": "通知",
+        "examples": "1時間 前 · 通知 10分",
+        "insert": "1時間 前"
+      },
+      "place": {
+        "label": "フォルダとタグ",
+        "examples": "/旅行 · #学校",
+        "insert": "#"
+      },
+      "space": {
+        "label": "スペース",
+        "examples": "@仕事 · @個人",
+        "insert": "@仕事"
+      },
+      "type": {
+        "label": "種類",
+        "examples": "タスク · ノート · ジャーナル(何も入力しなければ予定)",
+        "insert": "タスク"
+      }
+    },
+    "label": "クイック追加"
+  },
+  "offline": {
+    "notLoaded": "オフラインのため、アプリのこの部分はまだ読み込まれていません。オンラインに戻ってから、もう一度お試しください。"
   }
 }

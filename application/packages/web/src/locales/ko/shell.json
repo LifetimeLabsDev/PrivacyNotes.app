@@ -8,7 +8,6 @@
     "title": "할 일",
     "newTaskNote": "새 할 일 노트",
     "newTaskNoteWithHotkey": "새 할 일 노트 ({{hotkey}})",
-    "new": "추가",
     "hideCompleted": "완료한 할 일 숨기기",
     "showCompleted": "완료한 할 일 표시",
     "searchPlaceholder": "할 일 검색…",
@@ -37,12 +36,9 @@
     "deselectAll": "전체 선택 해제",
     "selectAll": "전체 선택",
     "storage": "저장 공간",
-    "supportedTypesHint": "최대 파일 크기: {{max}} MB",
     "perFile": "파일당",
     "free": "무료",
     "upgradeToPro": "Pro로 업그레이드",
-    "addStorage": "저장 공간 추가",
-    "upToMax": "최대 {{max}}",
     "filterAll": "전체",
     "filterImages": "이미지",
     "filterAudio": "오디오",
@@ -115,6 +111,7 @@
     "video": "동영상",
     "image": "이미지",
     "pdf": "PDF",
+    "email": "이메일",
     "archive": "압축 파일",
     "document": "문서",
     "spreadsheet": "스프레드시트",
@@ -187,7 +184,8 @@
     "markdown": "Markdown",
     "markdownTip": "암호화 안 함",
     "bookmarks": "북마크",
-    "contacts": "연락처"
+    "contacts": "연락처",
+    "calendar": "캘린더"
   },
   "browseToggle": {
     "label": "탐색 기준",
@@ -203,6 +201,9 @@
     "deleteConfirmTitle": "폴더를 삭제할까요?",
     "deleteConfirmBodyRoot": "\"{{folder}}\" 폴더가 삭제돼요. 안의 노트와 하위 폴더는 최상위로 이동해요. 노트는 삭제되지 않아요.",
     "deleteConfirmBodyNested": "\"{{folder}}\" 폴더가 삭제돼요. 안의 노트와 하위 폴더는 \"{{parent}}\" 아래로 이동해요. 노트는 삭제되지 않아요.",
+    "deleteConfirmBranchRoot": "\"{{folder}}\" 폴더와 하위 폴더가 삭제돼요. 안의 노트는 최상위로 이동해요. 노트는 삭제되지 않아요.",
+    "deleteConfirmBranchNested": "\"{{folder}}\" 폴더와 하위 폴더가 삭제돼요. 안의 노트는 \"{{parent}}\" 아래로 이동해요. 노트는 삭제되지 않아요.",
+    "deleteSubfolders_other": "하위 폴더 {{count}}개도 함께 삭제",
     "moveTo": "폴더로 이동",
     "searchPlaceholder": "폴더 검색",
     "sortFolders": "폴더 정렬",
@@ -220,7 +221,8 @@
     "saveName": "폴더 이름 저장",
     "actionsForFolder": "{{folder}} 폴더 작업",
     "seedSecurity": "보안",
-    "seedTravel": "여행"
+    "seedTravel": "여행",
+    "seedTeam": "팀"
   },
   "collapsedSidebar": {
     "newNote": "새 노트",
@@ -266,7 +268,19 @@
     "size": "사용 용량: {{size}}",
     "sizeHint": "이 항목의 암호화된 총 크기예요.",
     "tagCount_other": "태그 {{count}}개",
-    "entryDate": "항목 날짜"
+    "entryDate": "항목 날짜",
+    "noDate": "없음",
+    "schedule": "날짜 및 시간",
+    "ends": "종료",
+    "sameDay": "같은 날",
+    "allDay": "종일",
+    "starts": "시작",
+    "endsAt": "종료 시간",
+    "noEnd": "없음",
+    "removeFromCalendar": "캘린더에서 제거",
+    "makeEvent": "반복하려면 일정으로 바꾸세요",
+    "typeEvent": "일정",
+    "repeatRemoved": "반복이 제거돼요"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "선택 종료 (Esc)",
@@ -301,6 +315,8 @@
     "showSize": "파일 크기 표시",
     "showTags": "폴더 및 태그 표시",
     "showCalendar": "캘린더 표시",
+    "showWorkItems": "<b>업무</b> 항목 표시",
+    "showPersonalItems": "<b>개인</b> 항목 표시",
     "other": "기타",
     "showReadOnly": "읽기 전용 표시",
     "showProtected": "보호된 항목 표시",
@@ -329,7 +345,7 @@
     "nextMonth": "다음 달",
     "dayWithEntry": "{{date}}, 항목 있음",
     "dayWithEntryIn": "{{date}}, {{space}}에 항목 있음",
-    "dayWithEntryBoth": "{{date}}, 개인과 업무에 항목 있음",
+    "dayWithItems_other": "{{date}}, 항목 {{count}}개",
     "previousWeek": "이전 주",
     "nextWeek": "다음 주",
     "showMonth": "{{month}}, 한 달 전체 보기",
@@ -372,11 +388,14 @@
     "copyBookmarkUrl": "URL 복사",
     "editBookmark": "북마크 편집",
     "openInTab": "탭에서 열기",
+    "openInTabHint": "{{key}}+클릭",
     "closeTab": "탭 닫기",
     "closeOtherTabs": "다른 탭 닫기",
     "closeAllTabs": "모든 탭 닫기",
     "pinTab": "탭 고정",
-    "unpinTab": "탭 고정 해제"
+    "unpinTab": "탭 고정 해제",
+    "newEvent": "새 일정",
+    "quickAdd": "빠른 추가"
   },
   "demoBanner": {
     "title": "부담 없이 사용해 보세요",
@@ -628,6 +647,9 @@
       "mastodon": "Mastodon"
     }
   },
+  "staleEditor": {
+    "copyToast": "이 노트가 다른 기기에서 변경되었어요. 편집한 내용은 사본 \"{{title}}\"에 있어요."
+  },
   "noteLinks": {
     "retargetedToast_other": "노트 링크 {{count}}개를 새 제목으로 바꿨어요."
   },
@@ -636,7 +658,8 @@
   },
   "tabStrip": {
     "label": "열린 탭",
-    "close": "{{title}} 닫기"
+    "close": "{{title}} 닫기",
+    "moreTabs": "탭 더 보기"
   },
   "shareInbox": {
     "saved": "PrivacyNotes에 저장했어요",
@@ -665,10 +688,11 @@
   },
   "spaces": {
     "label": "공간",
+    "all": "전체",
     "personal": "개인",
     "work": "업무",
-    "moveToWork": "업무로 이동",
-    "moveToPersonal": "개인으로 이동",
+    "moveToWork": "<b>업무</b>로 이동",
+    "moveToPersonal": "<b>개인</b>으로 이동",
     "movedToWork": "{{folder}}을(를) 업무로 옮겼어요",
     "movedToPersonal": "{{folder}}을(를) 개인으로 옮겼어요",
     "itemMovedToWork": "업무로 옮겼어요",
@@ -677,6 +701,200 @@
     "switchedToPersonal": "개인으로 전환했어요",
     "switchToWork": "업무로 전환",
     "switchToPersonal": "개인으로 전환",
+    "switchToAll": "모든 공간 보기",
     "workEmpty": "업무가 비어 있어요. 개인에서 항목이나 폴더의 메뉴를 열고 업무로 이동을 고르세요."
+  },
+  "calendar": {
+    "moveToToday": "오늘로 이동",
+    "moveToTomorrow": "내일로 이동",
+    "moveToNextWeek": "다음 주로 이동",
+    "deleteEvent": "일정 삭제",
+    "openContact": "연락처 열기",
+    "newOnDay": "이 날에 새 일정",
+    "showDay": "이 날 보기",
+    "open": "캘린더 열기",
+    "back": "캘린더",
+    "more_other": "+{{count}}개 더",
+    "addOn": "{{date}}에 추가",
+    "nothingFor_other": "{{count}}일 동안 아무것도 없음",
+    "nothingToday": "오늘은 아무것도 없음",
+    "allDay": "종일",
+    "now": "지금",
+    "viewLabel": "캘린더 보기",
+    "views": {
+      "day": "일",
+      "week": "주",
+      "month": "월"
+    },
+    "legendLabel": "캘린더에 표시",
+    "kinds": {
+      "event": "일정",
+      "note": "노트",
+      "task": "할 일 목록",
+      "journal": "저널 항목",
+      "contact": "생일"
+    },
+    "dragEnd": "드래그해서 종료일 변경",
+    "previousDay": "이전 날",
+    "nextDay": "다음 날",
+    "seedWeeklyReview": "주간 회고",
+    "seedWeeklyReviewBody": "매주 금요일 4시. 완료한 것, 밀린 것, 그리고 다음 주에 할 것.",
+    "addToCalendar": "캘린더에 추가",
+    "showAgenda": "일정 목록 보기",
+    "hideAgenda": "일정 목록 숨기기",
+    "seedDemo": {
+      "lunch": "샘과 점심",
+      "dentist": "치과",
+      "callAna": "아나와 통화",
+      "groceries": "장보기",
+      "concert": "콘서트",
+      "giftIdeas": "콘 선물 아이디어",
+      "flight": "리스본행 항공편",
+      "conference": "리스본 컨퍼런스",
+      "nightTrain": "포르투행 야간열차",
+      "yoga": "요가",
+      "sprint": "스프린트 계획",
+      "bookClub": "독서 모임",
+      "rent": "월세 내기"
+    }
+  },
+  "repeat": {
+    "changeTitle": "이 항목을 변경할까요?",
+    "deleteTitle": "이 항목을 삭제할까요?",
+    "thisOccurrence": "이번 항목만",
+    "thisAndFollowing": "이번 및 이후 항목",
+    "allOccurrences": "모든 항목",
+    "label": "반복",
+    "never": "반복 안 함",
+    "daily_other": "{{count}}일마다",
+    "weekdays": "평일마다 (월요일~금요일)",
+    "weekly_other": "{{count}}주마다 {{days}}",
+    "monthlyDay_other": "{{count}}개월마다 {{day}}일",
+    "monthlyNth_other": "{{count}}개월마다 {{nth}} {{weekday}}",
+    "yearly_other": "{{count}}년마다 {{date}}",
+    "withUntil": "{{rule}}, {{date}}까지",
+    "withCount_other": "{{rule}}, {{count}}회",
+    "nth": {
+      "1": "첫째",
+      "2": "둘째",
+      "3": "셋째",
+      "4": "넷째",
+      "last": "마지막"
+    },
+    "custom": "사용자 지정",
+    "every": "반복 간격",
+    "units": {
+      "day_other": "일",
+      "week_other": "주",
+      "month_other": "개월",
+      "year_other": "년"
+    },
+    "onDays": "요일",
+    "onDay": "{{day}}일",
+    "onNth": "{{nth}} {{weekday}}",
+    "ends": "종료",
+    "endsNever": "안 함",
+    "endsOn": "날짜 지정",
+    "endsAfter": "횟수 지정",
+    "times_other": "{{count}}회",
+    "apply": "적용"
+  },
+  "alerts": {
+    "label": "알림",
+    "none": "없음",
+    "atTime": "정시",
+    "minutesBefore_other": "{{count}}분 전",
+    "hoursBefore_other": "{{count}}시간 전",
+    "daysBefore_other": "{{count}}일 전",
+    "weeksBefore_other": "{{count}}주 전",
+    "onDayAt": "당일 {{time}}",
+    "daysBeforeAt_other": "{{count}}일 전 {{time}}",
+    "custom": "사용자 지정",
+    "add": "추가",
+    "max": "알림은 최대 5개까지예요.",
+    "units": {
+      "minutes": "분",
+      "hours": "시간",
+      "days": "일",
+      "weeks": "주"
+    },
+    "at": "시간",
+    "remove": "{{alert}} 제거",
+    "reminder": "미리 알림",
+    "open": "열기",
+    "snooze": "10분 후 다시 알림",
+    "offOnPhone": "이 휴대폰에서 미리 알림이 꺼져 있어요",
+    "turnOn": "켜기",
+    "openSettings": "설정 열기"
+  },
+  "quickAdd": {
+    "group": "만들기",
+    "items": "항목",
+    "createNamed": "{{type}}: {{title}}",
+    "types": {
+      "event": "새 일정",
+      "note": "새 노트",
+      "task": "새 할 일 목록",
+      "journal": "새 저널 항목"
+    },
+    "keepAsText": "텍스트로 두기",
+    "placeholder": "제목, 날짜, 시간, 반복...",
+    "example": "예: {{example}}",
+    "examples": {
+      "1": "치과 금요일 15:00 1시간 전",
+      "2": "주간 회고 매주 금요일 16:00-17:00",
+      "3": "은행에 전화 내일 11:30 총 30분",
+      "4": "월세 매 달 1일 1일 전",
+      "5": "시험 다음 주 #학교",
+      "6": "할일 짐 싸기 목록 목요일 18:00"
+    },
+    "examplesGroup": "예시 문장",
+    "syntax": {
+      "group": "입력할 수 있는 것",
+      "day": {
+        "label": "날짜",
+        "examples": "내일 · 금요일 · 다음 수요일 · 10월 31일 · 다음 주",
+        "insert": "내일"
+      },
+      "time": {
+        "label": "시간",
+        "examples": "15:00 · 9:30 · 16:00-17:00 · 9 시",
+        "insert": "15:00"
+      },
+      "length": {
+        "label": "길이",
+        "examples": "총 30분 · 총 3일 · 금요일 ~ 일요일",
+        "insert": "총 1시간"
+      },
+      "repeat": {
+        "label": "반복",
+        "examples": "매주 금요일 · 매주 평일 · 매 달 1일",
+        "insert": "매주 금요일"
+      },
+      "alert": {
+        "label": "알림",
+        "examples": "1시간 전 · 알림 10분",
+        "insert": "1시간 전"
+      },
+      "place": {
+        "label": "폴더와 태그",
+        "examples": "/여행 · #학교",
+        "insert": "#"
+      },
+      "space": {
+        "label": "공간",
+        "examples": "@업무 · @개인",
+        "insert": "@업무"
+      },
+      "type": {
+        "label": "유형",
+        "examples": "할일 · 노트 · 저널 (입력하지 않으면 일정)",
+        "insert": "할일"
+      }
+    },
+    "label": "빠른 추가"
+  },
+  "offline": {
+    "notLoaded": "지금 오프라인이라 앱의 이 부분을 아직 불러오지 못했어요. 다시 온라인이 되면 시도해 주세요."
   }
 }

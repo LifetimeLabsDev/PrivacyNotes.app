@@ -15,6 +15,8 @@
     "notFound": "Image introuvable",
     "saveFailed": "L'enregistrement a échoué, donc le fichier peut être vide ou incomplet.",
     "viewAria": "Afficher l'image",
+    "copyAria": "Copier l'image",
+    "copyFailed": "Impossible de copier l'image.",
     "picturesLeftOut": "Certaines images n'ont pas été ajoutées. Copie une image seule pour la coller."
   },
   "attachment": {
@@ -56,6 +58,17 @@
     "pageCount_one": "{{count}} page",
     "pageCount_other": "{{count}} pages",
     "pageLabel": "{{name}}, page {{page}} sur {{count}}"
+  },
+  "mail": {
+    "loading": "Ouverture de l'e-mail...",
+    "failed": "Impossible de lire cet e-mail. Télécharge-le pour l'ouvrir dans une autre app.",
+    "from": "De",
+    "to": "À",
+    "cc": "Cc",
+    "date": "Date",
+    "noSubject": "(Sans objet)",
+    "empty": "Cet e-mail ne contient aucun texte.",
+    "attachments": "Pièces jointes"
   },
   "picker": {
     "title": "Images dans Fichiers",

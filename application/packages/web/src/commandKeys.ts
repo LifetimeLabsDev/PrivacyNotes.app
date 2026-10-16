@@ -65,7 +65,7 @@ export const COMMAND_KEYS = {
   ],
   // Back and forward through the opened items, as in a browser. Option+Left
   // moves the caret by a word on a Mac, so the Alt keys are for Windows and
-  // Linux only. Spec: ops/issues/0331.md
+  // Linux only. Spec: ops/issues/archive/0331.md
   historyBack: [
     { mod: true, key: '[', repeat: true },
     { alt: true, key: 'ArrowLeft', os: 'pc', repeat: true },
@@ -100,6 +100,15 @@ export const COMMAND_KEYS = {
     { alt: true, shift: true, key: 'n', optionWhileTyping: true, alias: true },
   ],
   newMenu: [{ mod: true, shift: true, key: 'n', desktop: true }],
+  // A single key outside a text field, as the list keys are: one line that
+  // reads a title, a day and a time, from anywhere.
+  quickAdd: [{ key: 'q' }],
+  // The Calendar's own keys, while it is open and no field has focus.
+  calendarToday: [{ key: 't' }],
+  calendarDay: [{ key: 'd' }],
+  calendarWeek: [{ key: 'w' }],
+  calendarMonth: [{ key: 'm' }],
+  calendarNew: [{ key: 'n' }],
   moveToTrash: [
     { mod: true, key: 'Backspace' },
     { mod: true, key: 'Delete', alias: true },
@@ -178,7 +187,15 @@ export const COMMAND_KEYS = {
   highlight: [{ mod: true, shift: true, key: 'h' }],
   inlineCode: [{ mod: true, key: 'e' }],
   superscript: [{ mod: true, key: '.' }],
-  headings: [1, 2, 3, 4, 5, 6].map((n) => ({ mod: true, alt: true, key: String(n) })),
+  // Off Apple, Ctrl+Alt is AltGr, and AltGr+digit types a character on many
+  // layouts (² on German, € on UK 4, all six on US International), so Ctrl+Alt
+  // stays a silent alias and Ctrl+Shift is the key. On a Mac, Cmd+Shift+3 to 5
+  // belong to the screenshot keys.
+  headings: [
+    ...[1, 2, 3, 4, 5, 6].map((n) => ({ mod: true, alt: true, key: String(n), os: 'mac' as const })),
+    ...[1, 2, 3, 4, 5, 6].map((n) => ({ mod: true, shift: true, key: String(n), os: 'pc' as const })),
+    ...[1, 2, 3, 4, 5, 6].map((n) => ({ mod: true, alt: true, key: String(n), os: 'pc' as const, alias: true })),
+  ],
   normalText: [{ mod: true, alt: true, key: '0' }],
   numberedList: [{ mod: true, shift: true, key: '7' }],
   bulletedList: [{ mod: true, shift: true, key: '8' }],

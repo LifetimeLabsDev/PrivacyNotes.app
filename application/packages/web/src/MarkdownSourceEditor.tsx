@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { useTheme } from './theme';
 import { registerEditorCommand } from './editorCommands';
 import { formatInstant } from './intlFormat';
@@ -7,6 +8,8 @@ import { isImeComposing } from './imeComposing';
 import { proUnlocked } from './demo';
 import { SourceSearchBar } from './SourceSearchBar';
 import { replaceAllText, type TextMatch } from './markdownSourceSearch';
+import { MarkdownSourceBar } from './MarkdownSourceBar';
+import { sourceEdit, type SourceAction } from './markdownSourceFormat';
 
 type Props = {
   /** Initial markdown content. Only read on mount - use a `key` prop to force reload. */
@@ -17,6 +20,9 @@ type Props = {
   /** Turns on find (free) and replace (Pro) for this view, with the keys and
    *  the command entries the rich editor has. */
   search?: { isPro: boolean; onOpenUpgrade?: (trigger: 'replace') => void };
+  /** The Markdown toolbar. `slot` is the pane's row under the note when the
+   *  bar sits at the bottom; nothing is drawn there until it exists. */
+  toolbar?: { onShowFormatted: () => void; atBottom: boolean; slot: HTMLElement | null; mobileTabIndex?: number };
 };
 
 /**
@@ -27,9 +33,10 @@ type Props = {
  * exact same value/onChange contract and the same save + sync path. No
  * serialization, no schema change.
  *
- * Deliberately boring - no toolbar, no note-link autocomplete, no image
- * paste. It is the reliable fallback when the rich editor misbehaves, and
- * the source view for people who prefer raw markdown. With `search` it has
+ * Deliberately boring - no note-link autocomplete, no image paste. It is the
+ * reliable fallback when the rich editor misbehaves, and the source view for
+ * people who prefer raw markdown. With `toolbar` it has a fixed bar whose
+ * buttons write the Markdown characters into the text. With `search` it has
  * the find and replace bars, which see the raw text: a code block's
  * language, a link's address, the markup itself (GitHub #455).
  *
@@ -38,19 +45,30 @@ type Props = {
  *
  * Spec: ops/specs/editor-mode-toggle.md (no custom Tab-key handling in v1, deliberately)
  */
-export function MarkdownSourceEditor({ value, onChange, readOnly = false, search }: Props) {
+export function MarkdownSourceEditor({ value, onChange, readOnly = false, search, toolbar }: Props) {
   const ref = useRef<HTMLTextAreaElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const { spellcheck } = useTheme();
   const [text, setText] = useState(value);
 
   // Grow to fit the content so the note scrolls in the editor pane
-  // rather than in a nested textarea scrollbar.
+  // rather than in a nested textarea scrollbar. Measuring collapses the field
+  // to its minimum height for a moment, the pane's content gets shorter, and
+  // the browser clamps the pane's scroll position; it never gives it back
+  // when the height returns, so it is put back here, before the next paint.
+  // Without that, every keystroke on Android threw a long note to its top
+  // (GitHub #469).
   function fit() {
     const el = ref.current;
     if (!el) return;
+    // An element that only scrolls sideways computes overflow-y as auto too,
+    // so the pane is the first ancestor that has something to scroll.
+    let pane = el.parentElement;
+    while (pane && !(pane.scrollHeight > pane.clientHeight && /(auto|scroll)/.test(getComputedStyle(pane).overflowY))) pane = pane.parentElement;
+    const top = pane?.scrollTop ?? 0;
     el.style.height = 'auto';
     el.style.height = `${el.scrollHeight}px`;
+    if (pane && pane.scrollTop !== top) pane.scrollTop = top;
   }
 
   useEffect(() => {
@@ -91,6 +109,43 @@ export function MarkdownSourceEditor({ value, onChange, readOnly = false, search
     el.setRangeText(text, el.selectionStart, el.selectionEnd, 'end');
     change(el.value);
   }
+
+  /** A toolbar press: one replacement through the same change as typing, so
+   *  one undo takes it back, then the selection the action leaves. */
+  function format(action: SourceAction) {
+    const el = ref.current;
+    if (!el || readOnly) return;
+    const edit = sourceEdit(action, el.value, el.selectionStart, el.selectionEnd);
+    el.focus();
+    el.setSelectionRange(edit.from, edit.to);
+    const typed = edit.insert === ''
+      ? document.execCommand?.('delete', false)
+      : document.execCommand?.('insertText', false, edit.insert);
+    if (!typed) {
+      el.setRangeText(edit.insert, edit.from, edit.to, 'end');
+      change(el.value);
+    }
+    el.setSelectionRange(edit.selFrom, edit.selTo);
+  }
+
+  // The find bar pins under the toolbar, as the rich editor's does.
+  const sourceBarRef = useRef<HTMLDivElement>(null);
+  const showBar = !!toolbar && !readOnly;
+  const barAtTop = showBar && !toolbar.atBottom;
+  useEffect(() => {
+    const root = rootRef.current;
+    const el = sourceBarRef.current;
+    if (!root) return;
+    if (!barAtTop || !el) {
+      root.style.setProperty('--pn-editor-toolbar-h', '0px');
+      return;
+    }
+    const apply = () => root.style.setProperty('--pn-editor-toolbar-h', `${el.offsetHeight}px`);
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [barAtTop]);
 
   const [bar, setBar] = useState<'none' | 'find' | 'replace'>('none');
   const barRef = useRef(bar);
@@ -220,16 +275,24 @@ export function MarkdownSourceEditor({ value, onChange, readOnly = false, search
       // same --pn-text-scale knob. Its own 14px base is kept (monospace
       // runs visually larger than the prose face at the same size).
       style={{ fontSize: 'calc(14px * var(--pn-text-scale))' }}
-      className={`${search ? 'relative' : 'mt-4'} w-full min-h-[60vh] resize-none border-0 bg-transparent p-0 font-mono leading-relaxed text-pn outline-none`}
+      className="relative w-full min-h-[60vh] resize-none border-0 bg-transparent p-0 font-mono leading-relaxed text-pn outline-none"
     />
   );
-  if (!search) return textarea;
+
+  const sourceBar = showBar ? (
+    <MarkdownSourceBar
+      onAction={format}
+      onShowFormatted={toolbar.onShowFormatted}
+      atBottom={toolbar.atBottom}
+      mobileTabIndex={toolbar.mobileTabIndex}
+    />
+  ) : null;
 
   // The matches are painted on a copy of the text under the transparent
   // textarea: same font, size, width and wrapping, so each mark sits exactly
   // under its characters. A textarea has no highlight of its own.
   let marks: ReactNode = null;
-  if (bar !== 'none' && hits.matches.length > 0) {
+  if (search && bar !== 'none' && hits.matches.length > 0) {
     const parts: ReactNode[] = [];
     let at = 0;
     hits.matches.forEach((m, i) => {
@@ -257,19 +320,20 @@ export function MarkdownSourceEditor({ value, onChange, readOnly = false, search
     );
   }
 
-  // mt-4: the rich editor's formatting bar normally separates the body from
-  // the sticky tag row above. There is no bar here, so the textarea owns that
-  // gap or the text sits glued to the row.
-  // min-h-[60vh]: matches `.ProseMirror` in index.css so toggling modes does
-  // not jump the page height.
-  // The bar takes the rich editor's slot: a zero-height sticky row pinned
-  // under the tag row, floating over the text.
+  // The text keeps a gap under whatever sits above it, the toolbar or, with
+  // the bar hidden or at the bottom, the sticky tag row.
+  // min-h-[60vh] on the textarea matches `.ProseMirror` in index.css so
+  // toggling modes does not jump the page height.
+  // The find bar takes the rich editor's slot: a zero-height sticky row
+  // pinned under the toolbar, floating over the text.
   return (
-    <div ref={rootRef} className="mt-4">
-      {bar !== 'none' && (
+    <div ref={rootRef}>
+      {barAtTop && <div ref={sourceBarRef} className="sticky z-10 top-[var(--pn-tagrow-h,0px)]">{sourceBar}</div>}
+      {showBar && toolbar.atBottom && toolbar.slot && createPortal(sourceBar, toolbar.slot)}
+      {search && bar !== 'none' && (
         <div
           className="sticky z-[5] flex h-0 items-start justify-end overflow-visible pointer-events-none"
-          style={{ top: 'var(--pn-tagrow-h, 0px)' }}
+          style={{ top: 'calc(var(--pn-tagrow-h, 0px) + var(--pn-editor-toolbar-h, 0px))' }}
         >
           <SourceSearchBar
             mode={bar}
@@ -284,11 +348,13 @@ export function MarkdownSourceEditor({ value, onChange, readOnly = false, search
               const next = replaceAllText(text, matches, replacement);
               writeRange(first, last, next.slice(first, next.length - (text.length - last)));
             }}
+            onSwap={readOnly ? undefined : () => (bar === 'find' ? toggleReplace() : openBar('find'))}
+            swapPro={!search?.isPro}
             onClose={closeBar}
           />
         </div>
       )}
-      <div className="relative">
+      <div className="relative mt-4">
         {marks}
         {textarea}
       </div>

@@ -31,6 +31,8 @@
  *   - Firefox TAGS= and SHORTCUTURL= (the address-bar keyword) are both
  *     user-authored labels, so they land in one list that the import
  *     modal's checkbox keeps or drops. Chromium and Safari write neither.
+ *     The keyword is also kept in the link body, whatever the checkbox
+ *     says, so the export can write SHORTCUTURL back for Firefox.
  *   - The embedded ICON= data URIs are ignored: stale snapshots, and the
  *     live favicon proxy already does this job.
  *   - <DD> descriptions are NOT read. Firefox dropped the description
@@ -200,9 +202,13 @@ export async function parseBrowserBookmarks(file: File): Promise<ParsedImport> {
     const created = toIso(attr(attrs, 'ADD_DATE'));
     const folderPath = [ROOT_FOLDER, ...path()];
     const browserTags = browserTagsOf(attrs);
+    const keyword = attr(attrs, 'SHORTCUTURL')?.trim() ?? '';
+    // Whether Firefox ALSO had a tag of the keyword's name: the export leaves
+    // out a tag that only the keyword made, and keeps this one.
+    const keywordTag = !!keyword && (attr(attrs, 'TAGS') ?? '').split(',').some((t) => normalizeTag(t) === normalizeTag(keyword));
     notes.push({
       title: name,
-      body: buildLinkBody(href),
+      body: buildLinkBody(href, keyword || undefined, keywordTag),
       tags: [],
       createdAt: created ?? now,
       updatedAt: created ?? now,

@@ -11,6 +11,8 @@ import type { IconProps } from '@phosphor-icons/react';
 import { IconContext } from '@phosphor-icons/react';
 import {
   AddressBook,
+  CalendarDots,
+  CalendarPlus,
   Archive,
   BoxArrowDown,
   BoxArrowUp,
@@ -134,6 +136,7 @@ export const PILLAR_GLYPHS = {
   markdown: FileMd,
   bookmarks: PhBookmarks,
   contacts: AddressBook,
+  calendar: CalendarDots,
   archive: Archive,
   trash: Trash,
 } as const;
@@ -149,6 +152,7 @@ export const NEW_GLYPHS = {
   login: ShieldPlus,
   file: Upload,
   journal: PenNib,
+  event: CalendarPlus,
   bookmark: PhBookmark,
   contact: UserPlus,
 } as const;

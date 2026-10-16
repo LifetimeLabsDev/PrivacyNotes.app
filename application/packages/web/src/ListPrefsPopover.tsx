@@ -1,12 +1,14 @@
 import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
 import { useEscapeToClose } from './useEscapeToClose';
 import { HoverLabel } from './HoverLabel';
 import { Switch } from './Switch';
 import { ViewModeContext, setDeviceCompactRows, useCompactRows } from './viewMode';
 import { ViewModeToggle } from './ViewModeToggle';
-import { setJournalCalendarShown, useJournalCalendarShown } from './JournalCalendar';
+import type { Space } from './spaces';
+import { SPACE_ICONS } from './SpaceSwitch';
+import { setCalendarShowsOther, setJournalCalendarShown, useCalendarShowsOther, useJournalCalendarShown } from './JournalCalendar';
 import { X, Question, ArrowsInLineVertical, Article, Calendar, Rows, Clock, HardDrive, PencilSimpleSlash, Shield, SortAscending, SortDescending, Tag, TextAlignJustify } from './icons';
 import {
   resolvePrefs,
@@ -59,6 +61,11 @@ type Props = {
    * own name, and MUST be the same pillar its list renders from.
    */
   pillar?: Pillar;
+  /** This list draws the calendar card: show its device switches. */
+  calendarRows?: boolean;
+  /** With Spaces on, the space that is not open: the calendar's switch
+   *  shows or hides its items, and the row names it. */
+  otherSpace?: Space | null;
   /** CSS classes merged onto the popover container. Positioning only. */
   className?: string;
   /** Hide the VIEW toggles section (preview, date, tags). */
@@ -115,11 +122,16 @@ export function ListPrefsPopover({
   titleLabel,
   createdLabel,
   pillar = 'global',
+  calendarRows = false,
+  otherSpace = null,
 }: Props) {
   const { t } = useTranslation('shell');
   // Read and write the SAME copy the pane's list renders from.
   const prefs: ListPrefs = resolvePrefs(store, pillar);
   const calendarShown = useJournalCalendarShown();
+  // The switch belongs to the open space, the one that is not `otherSpace`.
+  const openSpace: Space = otherSpace === 'personal' ? 'work' : 'personal';
+  const showsOther = useCalendarShowsOther(openSpace);
   const resolvedTitleLabel = titleLabel ?? t('listPrefs.title');
 
   const layout = useContext(ViewModeContext);
@@ -242,14 +254,29 @@ export function ListPrefsPopover({
           />
         </div>
         {/* Device-local like the layout, so it sits here and outside the synced prefs. */}
-        {pillar === 'journal' && (
-          <div className="mt-2">
+        {calendarRows && (
+          <div className="mt-2 space-y-0.5">
             <ToggleRow
               label={t('listPrefs.showCalendar')}
               icon={<Calendar aria-hidden="true" className="shrink-0" />}
               checked={calendarShown}
               onChange={setJournalCalendarShown}
             />
+            {calendarShown && otherSpace && (
+              <ToggleRow
+                label={(
+                  // The space's name in bold: the one word that changes with the open space.
+                  <Trans
+                    t={t}
+                    i18nKey={otherSpace === 'work' ? 'listPrefs.showWorkItems' : 'listPrefs.showPersonalItems'}
+                    components={{ b: <b className="font-semibold" /> }}
+                  />
+                )}
+                icon={(() => { const Glyph = SPACE_ICONS[otherSpace]; return <Glyph aria-hidden="true" className="shrink-0" />; })()}
+                checked={showsOther}
+                onChange={(on) => setCalendarShowsOther(openSpace, on)}
+              />
+            )}
           </div>
         )}
       </div>
@@ -518,7 +545,7 @@ function ToggleRow({
   hint,
   onChange,
 }: {
-  label: string;
+  label: React.ReactNode;
   icon?: React.ReactNode;
   checked: boolean;
   disabled?: boolean;

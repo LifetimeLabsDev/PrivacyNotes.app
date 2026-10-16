@@ -66,6 +66,7 @@
     "appearance_contentWidth": "larghezza colonna, largo, larghezza piena, margini",
     "appearance_editor": "Markdown, testo formattato, rich text, WYSIWYG, modalità editor",
     "appearance_copyFormat": "copia, appunti, testo semplice, incolla, casella di controllo",
+    "appearance_pasteFormat": "incolla, appunti, testo semplice, formattazione, senza formattazione, stesso stile",
     "appearance_favicons": "favicon, icone dei siti, loghi",
     "appearance_invisibles": "segno di paragrafo, pilcrow, spazi, spazi bianchi, caratteri nascosti, segni di formattazione",
     "appearance_startView": "pagina iniziale, home, vista predefinita, apri su",
@@ -81,11 +82,19 @@
     "about_openSource": "codice sorgente, GitHub, open source",
     "about_feedback": "feedback, contatto, segnala un bug, suggerimento",
     "about_dataStorage": "dati, server, dove sono salvati, archiviazione, privacy",
-    "about_singleKeys": "tastiera, scorciatoie, scorciatoie da tastiera, hotkeys, tasto singolo, j, k, accessibilità, /, >",
+    "about_singleKeys": "tastiera, scorciatoie, scorciatoie da tastiera, hotkeys, tasto singolo, j, k, q, calendario, accessibilità, /, >",
     "about_changelog": "note di rilascio, novità, cosa c’è di nuovo, aggiornamenti",
     "about_hotkeys": "scorciatoie da tastiera, scorciatoie, tasti, hotkeys, shortcut",
     "about_rating": "recensione, valuta, voto, stelle, App Store",
     "appearance_openInTabs": "schede, barra delle schede, browser, aprire, tab",
+    "section_calendar": "calendario, evento, promemoria, avviso, notifica, settimana, mese, programma, compleanno",
+    "calendar_alertTimed": "avviso, promemoria, notifica, predefinito, minuti, prima, evento",
+    "calendar_alertAllDay": "avviso, promemoria, notifica, predefinito, tutto il giorno, mattina",
+    "calendar_alertBirthday": "compleanno, contatto, avviso, promemoria",
+    "calendar_reminderTitles": "privacy, schermata di blocco, titolo, promemoria, notifica",
+    "calendar_where": "notifica, permesso, autorizzazione, browser, telefono, desktop, promemoria",
+    "calendar_weekNumbers": "numero della settimana, settimana ISO, calendario",
+    "calendar_hours": "ore, orario di lavoro, vista giorno, vista settimana, mattina",
     "appearance_formatBar": "barra degli strumenti, barra di formattazione, pulsanti, personalizzare, disporre, elenco puntato, barrato, ingranaggio"
   }
 }

@@ -55,6 +55,9 @@ export const HOTKEY_GROUPS: HotkeyGroup[] = [
     rows: [
       { commands: ['newNote'], label: 'New note', i18nKey: 'newNote' },
       { commands: ['newMenu'], label: 'New item, then its letter', i18nKey: 'newMenu' },
+      { commands: ['quickAdd'], label: 'Quick add: a title with a day and a time', i18nKey: 'quickAdd' },
+      // One row, so the printed sheet stays on one page.
+      { commands: ['calendarToday', 'calendarDay', 'calendarWeek', 'calendarMonth', 'calendarNew'], label: 'Calendar: today / day / week / month / new', i18nKey: 'calendarKeys' },
       { commands: ['moveToTrash'], label: 'Move note to trash', i18nKey: 'moveToTrash' },
     ],
   },
@@ -100,7 +103,9 @@ export const HOTKEY_GROUPS: HotkeyGroup[] = [
       { commands: ['highlight'], label: 'Highlight', i18nKey: 'highlight' },
       { commands: ['inlineCode'], label: 'Inline code', i18nKey: 'inlineCode' },
       { commands: ['superscript'], label: 'Superscript', i18nKey: 'superscript' },
-      { commands: ['headings'], range: true, label: 'Heading 1 to 6', i18nKey: 'headings' },
+      // Short on purpose: the keys show the range, and a longer label wraps the
+      // Ctrl+Shift range onto a second line of the printed sheet.
+      { commands: ['headings'], range: true, label: 'Headings', i18nKey: 'headings' },
       { commands: ['normalText'], label: 'Normal text', i18nKey: 'normalText' },
       { commands: ['numberedList'], label: 'Numbered list', i18nKey: 'numberedList' },
       { commands: ['bulletedList'], label: 'Bulleted list', i18nKey: 'bulletedList' },

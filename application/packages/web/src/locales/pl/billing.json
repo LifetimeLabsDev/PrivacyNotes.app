@@ -22,7 +22,8 @@
       "totp": "Kody 2FA to funkcja Pro. Zapisz klucz uwierzytelniający przy dowolnym loginie, a zmieniający się kod zobaczysz obok hasła. Sam klucz jest zapisywany i synchronizowany w każdym planie.",
       "replace": "Znajdź i zamień to funkcja Pro. Przejdź na Pro, aby zamienić jedno wystąpienie albo wszystkie wystąpienia w notatce za jednym razem.",
       "passphrase": "Frazy hasłowe to funkcja Pro. Wygeneruj frazę z losowych słów, którą łatwo wpisać i powiedzieć.",
-      "default": "Jedno przejście na Pro odblokowuje wszystko poniżej. Płatność jednorazowa."
+      "default": "Jedno przejście na Pro odblokowuje wszystko poniżej. Płatność jednorazowa.",
+      "alerts": "Przypomnienia to funkcja Pro. Twoje urządzenia dzwonią o wybranej godzinie, a nic z elementu ich nie opuszcza."
     },
     "features": {
       "devices": "Synchronizacja nieograniczonej liczby urządzeń, każda platforma",
@@ -73,7 +74,7 @@
     "openingBody": "Powinno pojawić się okno płatności Paddle. Jeśli się nie pojawi, przeglądarka mogła zablokować wyskakujące okienko - odśwież tę stronę, aby spróbować ponownie."
   },
   "history": {
-    "subtitle": "Do 20 wersji na element. Najstarsze usuwane automatycznie.",
+    "subtitle": "Do 50 wersji na element. Najstarsze usuwane automatycznie.",
     "empty": "Brak historii. Wersje zaczną się pojawiać po następnej edycji. Zajrzyj tu później.",
     "loadFailed": "Nie udało się wczytać historii. Sprawdź połączenie i spróbuj ponownie.",
     "selectPrompt": "Wybierz wersję, aby zobaczyć podgląd.",
@@ -82,7 +83,22 @@
     "restoring": "Przywracanie…",
     "restoreSnapshotFailed": "Nie udało się najpierw zapisać bieżącej wersji, więc nic nie przywrócono. Sprawdź połączenie i spróbuj ponownie.",
     "restoreFailed": "Nie udało się przywrócić tej wersji. Spróbuj ponownie.",
-    "loginExtrasNotRecorded": "Ta wersja nie zapisała pól własnych ani dodatkowych stron. Przywrócenie jej zachowa obecne."
+    "loginExtrasNotRecorded": "Ta wersja nie zapisała pól własnych ani dodatkowych stron. Przywrócenie jej zachowa obecne.",
+    "compare": "Porównaj z bieżącą notatką",
+    "thisVersion": "Wtedy",
+    "currentNote": "Teraz",
+    "onlyInVersion": "Usunięte od tamtej pory",
+    "onlyInCurrent": "Dodane od tamtej pory",
+    "changeCount_one": "{{count}} zmiana",
+    "changeCount_few": "{{count}} zmiany",
+    "changeCount_many": "{{count}} zmian",
+    "changeCount_other": "{{count}} zmiany",
+    "noChanges": "Brak zmian w tekście",
+    "titleChanged": "Zmieniono tytuł",
+    "tagsChanged": "Zmieniono tagi",
+    "formatChanged": "Zmieniono formatowanie",
+    "tooLong": "Ta notatka jest za długa, aby ją porównać.",
+    "trackersNotRecorded": "Ta wersja nie zapisała wartości trackerów. Przywrócenie jej zachowa obecne."
   },
   "donation": {
     "eyebrow": "Odblokowano",

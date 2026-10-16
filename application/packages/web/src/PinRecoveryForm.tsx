@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { clearPin, phraseMatches } from './pinRecovery';
-import type { UserSettings } from './userSettings';
+import { clearPin, phraseMatches, restoreUnsavedClear } from './pinRecovery';
+import type { SecretKind } from './secretKind';
+import { saveCredential, type UserSettings } from './userSettings';
 
 /**
  * The recovery phrase, offered wherever a forgotten PIN would otherwise be
@@ -19,12 +20,15 @@ import type { UserSettings } from './userSettings';
  * Spec: ops/docs/plans/pin-recovery.md
  */
 export function PinRecoveryForm({
+  kind = 'pin',
   phrase,
   userSettings,
   onSettingsChange,
   onCleared,
   onCancel,
 }: {
+  /** The secret this clears, for the words on screen. */
+  kind?: SecretKind;
   /** The account's phrase, held by the signed-in app. */
   phrase: string;
   userSettings: UserSettings;
@@ -52,14 +56,20 @@ export function PinRecoveryForm({
       setError(t('appLock.phraseNotSaved'));
       return;
     }
-    onSettingsChange(cleared, userSettings);
+    // A save the store refused leaves the account's PIN in force, so this
+    // device gets its hash and its wrap back.
+    if (!saveCredential(cleared.settings, userSettings, onSettingsChange)) {
+      await restoreUnsavedClear(phrase, cleared);
+      setError(t('pinTab.changeNotSaved'));
+      return;
+    }
     onCleared();
   }
 
   return (
     <div className="space-y-3 text-start">
       <p className="text-xs text-pn-soft leading-relaxed">
-        {t('pinRecovery.intro')}
+        {kind === 'passcode' ? t('pinRecovery.introPasscode') : t('pinRecovery.intro')}
       </p>
       <textarea
         value={input}
@@ -79,7 +89,7 @@ export function PinRecoveryForm({
         className="w-full rounded-md bg-surface-1 border border-divider text-pn focus:border-accent p-2.5 text-sm font-mono focus:outline-none placeholder:text-pn-muted"
       />
       <p className="text-xs text-pn-soft leading-relaxed">
-        {t('pinRecovery.consequence')}
+        {kind === 'passcode' ? t('pinRecovery.consequencePasscode') : t('pinRecovery.consequence')}
       </p>
       {error && (
         <p className="text-sm text-danger">{error}</p>
@@ -98,7 +108,7 @@ export function PinRecoveryForm({
           disabled={!input.trim()}
           className="flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {t('pinRecovery.clearPin')}
+          {kind === 'passcode' ? t('pinRecovery.clearPasscode') : t('pinRecovery.clearPin')}
         </button>
       </div>
     </div>
@@ -106,7 +116,7 @@ export function PinRecoveryForm({
 }
 
 /** The link into the form. Same wording everywhere a PIN is demanded. */
-export function ForgotPinLink({ onClick }: { onClick: () => void }) {
+export function ForgotPinLink({ onClick, kind = 'pin' }: { onClick: () => void; kind?: SecretKind }) {
   const { t } = useTranslation('security');
   return (
     <button
@@ -114,7 +124,7 @@ export function ForgotPinLink({ onClick }: { onClick: () => void }) {
       onClick={onClick}
       className="w-full text-sm text-accent hover:underline py-1 transition"
     >
-      {t('pinRecovery.forgotPin')}
+      {kind === 'passcode' ? t('pinRecovery.forgotPasscode') : t('pinRecovery.forgotPin')}
     </button>
   );
 }

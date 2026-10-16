@@ -1,4 +1,4 @@
-import type { Dispatch, MutableRefObject, SetStateAction } from 'react';
+import { useEffect, type Dispatch, type MutableRefObject, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { SupabaseClient } from '@notes/shared';
 import type { LocalNote } from '../db';
@@ -6,27 +6,15 @@ import { recordAdminEvent } from '../adminEvents';
 import type { ExportSource } from '../adminEvents';
 import i18n from '../i18n';
 import { decodeZipBackup, BACKUP_TOO_SMALL } from '@notes/shared';
-import {
-  exportSingleMarkdown as baseExportSingleMarkdown,
-  exportSingleHtml as baseExportSingleHtml,
-  exportAllMarkdownZip as baseExportAllMarkdownZip,
-  exportAllHtmlZip as baseExportAllHtmlZip,
-  exportAllJson as baseExportAllJson,
-  exportEncryptedBackup as baseExportEncryptedBackup,
-  exportEncryptedFullBackup as baseExportEncryptedFullBackup,
-  exportVaultBitwarden,
-  exportBookmarksHtml,
-  exportContactsVcf,
-  printNote as basePrintNote,
-  decryptBackup,
-  describeMissing,
-  type MissingBlob,
-} from '../export';
+import type { MissingBlob } from '../export';
 import { RESTORE_WAIT_LINE, restoreGateNow } from '../pullState';
 import { remapFolderLooks, settingsAfterRestore } from '../backupRestore';
 import type { ImageStore } from '../imageStore';
 import type { AttachmentStore } from '../attachmentStore';
 import type { UserSettings } from '../userSettings';
+import { isChunkLoadError, prefetchChunk } from '../chunkLoad';
+
+const loadExport = () => import('../export');
 
 export function useExports({
   supabase,
@@ -46,6 +34,21 @@ export function useExports({
   setExportProgress: Dispatch<SetStateAction<{ status: string; done: boolean; error?: string } | null>>;
 }) {
   const { t } = useTranslation('notes');
+  // export.ts, with the renderer it pulls in, loads on the first export and
+  // not at boot. It is fetched a few seconds after sign-in so an export made
+  // offline later still works: nothing else caches the chunk. Offline at that
+  // moment, it is fetched when the connection is back.
+  useEffect(() => {
+    const prefetch = () => prefetchChunk(loadExport);
+    const id = window.setTimeout(() => {
+      if (navigator.onLine) prefetch();
+      else window.addEventListener('online', prefetch, { once: true });
+    }, 4000);
+    return () => {
+      window.clearTimeout(id);
+      window.removeEventListener('online', prefetch);
+    };
+  }, []);
   // Export wrappers - identical to the raw functions in ./export but
   // they also fire an anonymous admin_events row (`export` + format)
   // so we can see which export paths users actually use. No content,
@@ -61,6 +64,12 @@ export function useExports({
       await run();
       recordAdminEvent(supabase, 'export', format);
     } catch (err) {
+      // Offline before the chunk was ever fetched: the toast already says so,
+      // so a progress window the export opened closes rather than waiting.
+      if (!navigator.onLine && isChunkLoadError(err)) {
+        setExportProgress(null);
+        return;
+      }
       setExportProgress({
         status: '',
         done: true,
@@ -74,34 +83,46 @@ export function useExports({
   // because a partial copy beats none, and the progress window says what it
   // lacks: a finished export carries a status only then, and the window
   // never calls it complete. A single note opens the window only for that.
-  const reportMissing = (missing: MissingBlob[]) => {
+  const reportMissing = (missing: MissingBlob[], describeMissing: (m: MissingBlob[]) => string) => {
     if (missing.length > 0) setExportProgress({ status: describeMissing(missing), done: true });
   };
   const exportSingleMarkdown = (n: LocalNote) =>
-    runExport('md', async () => reportMissing(
-      await baseExportSingleMarkdown(n, imageStoreRef.current, userSettings.folders, attachmentStoreRef.current)));
+    runExport('md', async () => {
+      const ex = await loadExport();
+      reportMissing(
+        await ex.exportSingleMarkdown(n, imageStoreRef.current, userSettings.folders, attachmentStoreRef.current),
+        ex.describeMissing,
+      );
+    });
   const exportSingleHtml = (n: LocalNote) =>
-    runExport('html', async () => reportMissing(
-      await baseExportSingleHtml(n, imageStoreRef.current, userSettings.folders, attachmentStoreRef.current)));
+    runExport('html', async () => {
+      const ex = await loadExport();
+      reportMissing(
+        await ex.exportSingleHtml(n, imageStoreRef.current, userSettings.folders, attachmentStoreRef.current),
+        ex.describeMissing,
+      );
+    });
   // Both bulk zips open the progress window and both report the same two
   // phases. An empty opening status is deliberate: the modal owns the
   // "Preparing..." wording, in every language.
   const exportAllMarkdownZip = async (ns: LocalNote[]) => {
     setExportProgress({ status: '', done: false });
     await runExport('md-zip', async () => {
-      const missing = await baseExportAllMarkdownZip(ns, imageStoreRef.current, attachmentStoreRef.current, (msg) => {
+      const ex = await loadExport();
+      const missing = await ex.exportAllMarkdownZip(ns, imageStoreRef.current, attachmentStoreRef.current, (msg) => {
         setExportProgress({ status: msg, done: false });
       }, userSettings.folders, { itemStyles: userSettings.itemStyles, customThemes: userSettings.customThemes });
-      setExportProgress({ status: describeMissing(missing), done: true });
+      setExportProgress({ status: ex.describeMissing(missing), done: true });
     });
   };
   const exportEncryptedFullBackup = async (ns: LocalNote[]) => {
     setExportProgress({ status: '', done: false });
     await runExport('encrypted-zip', async () => {
-      const missing = await baseExportEncryptedFullBackup(ns, imageStoreRef.current, attachmentStoreRef.current, auth.encryptionKey, (msg) => {
+      const ex = await loadExport();
+      const missing = await ex.exportEncryptedFullBackup(ns, imageStoreRef.current, attachmentStoreRef.current, auth.encryptionKey, (msg) => {
         setExportProgress({ status: msg, done: false });
       }, userSettings.folders, { itemStyles: userSettings.itemStyles, customThemes: userSettings.customThemes });
-      setExportProgress({ status: describeMissing(missing), done: true });
+      setExportProgress({ status: ex.describeMissing(missing), done: true });
     });
   };
   /** Decrypt a picked .pnbackupz into the plain full-backup zip. The
@@ -123,34 +144,36 @@ export function useExports({
   const exportAllHtmlZip = async (ns: LocalNote[]) => {
     setExportProgress({ status: '', done: false });
     await runExport('html-zip', async () => {
-      const missing = await baseExportAllHtmlZip(ns, imageStoreRef.current, userSettings.folders, (msg) => {
+      const ex = await loadExport();
+      const missing = await ex.exportAllHtmlZip(ns, imageStoreRef.current, userSettings.folders, (msg) => {
         setExportProgress({ status: msg, done: false });
       }, attachmentStoreRef.current);
-      setExportProgress({ status: describeMissing(missing), done: true });
+      setExportProgress({ status: ex.describeMissing(missing), done: true });
     });
   };
   const exportAllJson = (ns: LocalNote[]) =>
-    runExport('json', () => baseExportAllJson(ns, userSettings.folders, userSettings.itemStyles, userSettings.customThemes));
+    runExport('json', async () => (await loadExport()).exportAllJson(ns, userSettings.folders, userSettings.itemStyles, userSettings.customThemes));
   const exportEncryptedBackup = (ns: LocalNote[]) =>
-    runExport('encrypted', () =>
-      baseExportEncryptedBackup(ns, auth.encryptionKey, userSettings.folders, userSettings.itemStyles, userSettings.customThemes));
+    runExport('encrypted', async () =>
+      (await loadExport()).exportEncryptedBackup(ns, auth.encryptionKey, userSettings.folders, userSettings.itemStyles, userSettings.customThemes));
   const exportVault = (ns: LocalNote[]) =>
-    runExport('vault', () => exportVaultBitwarden(ns, userSettings.folders));
+    runExport('vault', async () => (await loadExport()).exportVaultBitwarden(ns, userSettings.folders));
   const exportBookmarks = (ns: LocalNote[]) =>
-    runExport('bookmarks', () => exportBookmarksHtml(ns, userSettings.folders));
+    runExport('bookmarks', async () => (await loadExport()).exportBookmarksHtml(ns, userSettings.folders));
   const exportContacts = (ns: LocalNote[]) =>
-    runExport('contacts', () => exportContactsVcf(ns));
-  const printNote = async (n: LocalNote, titleOnly = false) => {
-    await basePrintNote(n, imageStoreRef.current, userSettings.folders, attachmentStoreRef.current, titleOnly);
-    recordAdminEvent(supabase, 'export', 'pdf');
-  };
+    runExport('contacts', async () => (await loadExport()).exportContactsVcf(ns));
+  const exportCalendar = (ns: LocalNote[]) =>
+    runExport('calendar', async () => (await loadExport()).exportCalendarIcs(ns));
+  const printNote = (n: LocalNote, titleOnly = false) =>
+    runExport('pdf', async () =>
+      (await loadExport()).printNote(n, imageStoreRef.current, userSettings.folders, attachmentStoreRef.current, titleOnly));
   const importEncryptedBackup = async (file: File): Promise<{ imported: number; updated: number; unchanged: number }> => {
     // The restore matches the backup's notes by id against this device's
     // copy, so it waits for this device's first clean pull (pullState.ts).
     const gate = restoreGateNow();
     if (gate !== 'open') throw new Error(i18n.t(RESTORE_WAIT_LINE[gate]));
     const buf = new Uint8Array(await file.arrayBuffer());
-    const backup = decryptBackup(buf, auth.encryptionKey);
+    const backup = (await loadExport()).decryptBackup(buf, auth.encryptionKey);
     recordAdminEvent(supabase, 'import', 'encrypted');
     // v3 backups carry the folder definitions, their looks and the custom
     // themes; merged before the notes so the restored notes' folderId
@@ -216,6 +239,7 @@ export function useExports({
     exportVault,
     exportBookmarks,
     exportContacts,
+    exportCalendar,
     printNote,
     importEncryptedBackup,
     exportEncryptedFullBackup,

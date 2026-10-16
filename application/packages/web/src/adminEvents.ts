@@ -36,6 +36,7 @@ export type ExportSource =
   | 'vault'
   | 'bookmarks'
   | 'contacts'
+  | 'calendar'
   | 'pdf'
   | 'burn';
 

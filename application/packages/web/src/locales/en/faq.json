@@ -78,8 +78,22 @@
     "import-from-other-apps": {
       "q": "How do I move my notes in from another app?",
       "a": [
-        "Open Settings > Import & Export and pick your source. The list covers the apps people arrive from: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes and Apple Journal. Bitwarden and your browser's saved passwords land in the Vault, your browser bookmarks come across as bookmarks, and a generic Markdown importer takes any folder of .md files.",
+        "Open Settings > Import & Export and pick your source. The list covers the apps people arrive from: Apple Notes, Bear, Obsidian, Evernote, Standard Notes, Joplin, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes and Apple Journal. Bitwarden and your browser's saved passwords land in the Vault, your browser bookmarks come across as bookmarks, and a generic Markdown importer takes any folder of .md files.",
         "Imports run entirely on your device: your exported files are parsed, encrypted, and stored locally, nothing is uploaded for processing. Each imported note is tagged with its source so you can review the batch afterwards, and Google Keep checklists even convert to native task lists."
+      ]
+    },
+    "import-bear": {
+      "q": "How do I move my notes from Bear to PrivacyNotes?",
+      "a": [
+        "Make a Bear backup and import it. In Bear, choose File > Backup Notes... and save the .bear2bk file. Then open Settings > Import & Export, pick Bear and drop the file in. The backup holds your whole library, so archived and trashed notes come along, and pinned and read-only notes keep that state.",
+        "Your tags come across as tags, and nested tags such as #work/projects are also rebuilt as folders. Highlights keep their Bear colors, links between notes become note-links, and images and attached files are imported into your storage. The [Bear import guide](/help/import/bear/) shows every step."
+      ]
+    },
+    "import-joplin": {
+      "q": "How do I import my notes from Joplin?",
+      "a": [
+        "Export a JEX file from Joplin and import it. In Joplin, choose File > Export all > \"JEX - Joplin Export File\" and save the file. Then open Settings > Import & Export, pick Joplin and drop the .jex file in. The newest file from Tools > Create backup works the same way.",
+        "Notebooks become folders, nested as deep as in Joplin, and every note keeps its tags and its dates. To-dos become tasks, links between notes become note-links, and attachments are imported into your storage. Joplin leaves its trash out of every export, so restore any note you want from the trash before you export. The [Joplin import guide](/help/import/joplin/) shows every step."
       ]
     },
     "markdown-support": {
@@ -221,10 +235,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "I forgot my PIN. How do I get back in?",
+      "q": "I forgot my PIN or passcode. How do I get back in?",
       "a": [
-        "Nothing is lost, and you can clear the PIN yourself with your recovery phrase. The PIN is a screen gate rather than an encryption key: your notes are encrypted with keys derived from the phrase, so the phrase is what opens them. Tying encryption to four digits would mean a forgotten PIN destroyed data, and it never does here.",
-        "Wherever the app asks for the PIN, choose **Forgot your PIN?** and type your 12 words. It is on the lock screen, on a protected note, and in **Settings > Security > PIN**. The PIN clears on every device, and you can set a new one straight away. Biometric unlock is not affected."
+        "Nothing is lost, and you can clear the PIN or passcode yourself with your recovery phrase. It is a screen gate rather than an encryption key: your notes are encrypted with keys derived from the phrase, so the phrase is what opens them. Tying encryption to the PIN would mean a forgotten PIN destroyed data, and it never does here.",
+        "Wherever the app asks for it, choose **Forgot your PIN?** or **Forgot your passcode?** and type your 12 words. It is on the lock screen, on a protected note, and in **Settings > Security > PIN**. It clears on every device, and you can set a new one straight away. Biometric unlock is not affected. A device with an older version of the app asks for 4 digits even after you set a passcode; **Forgot your PIN?** there works the same way."
       ]
     },
     "delete-account": {
@@ -238,7 +252,7 @@
       "q": "What exactly syncs across my devices, and what stays local?",
       "a": [
         "Everything you would expect, and all of it encrypted on your device: notes, tasks, journal entries, your vault, and the files in it. Your settings follow you too - favorite tags, sort and view preferences, color theme, your PIN (as a salted hash, never the PIN itself), app lock, tracker and medication setup, and trash auto-delete. Set something up once and every device picks it up.",
-        "A few things stay deliberately device-local: light or dark mode (each device follows its own system preference), biometric unlock (tied to the hardware of each device), and your unlock state (closing the app always re-locks). The server only ever stores encrypted blobs and can read none of it."
+        "A few things stay deliberately device-local: light or dark mode (each device follows its own system preference), biometric unlock (tied to the hardware of each device), the space the sidebar shows, and your unlock state (closing the app always re-locks). The server only ever stores encrypted blobs and can read none of it."
       ]
     },
     "offline": {
@@ -250,7 +264,7 @@
     "sync-conflicts": {
       "q": "What happens if I edit the same note on two devices at once?",
       "a": [
-        "Your devices merge the note detail by detail when they sync again, so a change made on only one of them is kept. If both edited the text while apart (say, one was offline), the device that syncs second shows a conflict dialog: keep the version on this device, keep the other one, or keep both as separate notes. Both versions are kept until you choose.",
+        "Your devices merge the note detail by detail when they sync again, so a change made on only one of them is kept. If both edited the text while apart (say, one was offline), the device that syncs second shows a conflict dialog: keep the version on this device, keep the other one, or keep both as separate notes. Both versions are kept until you choose. If the other device's version arrives while you are typing in the note, your text is kept as a copy marked \"(conflict)\" and the note shows the other version.",
         "When both devices changed the same detail while apart, such as a pin, a folder or the title, the detail from the device that edited the note last is kept, without a dialog. A note deleted permanently on one device is deleted everywhere, including an edit another device made to it while apart."
       ]
     },
@@ -359,7 +373,7 @@
     "buy-pro-anonymously": {
       "q": "Can I buy Pro without revealing who I am?",
       "a": [
-        "Yes, with two standard tools. For the receipt, use an email alias: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com), or [addy.io](https://addy.io) all forward to your real inbox without exposing it. For the payment, use a masked card: [privacy.com](https://privacy.com) in the US generates virtual cards that work with any name you type, and many banks and services elsewhere ([Revolut](https://www.revolut.com), for example) offer disposable virtual cards that do the same job.",
+        "Yes, with two standard tools. For the receipt, use an email alias: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com), or [addy.io](https://addy.io) all forward to your real inbox without exposing it. For the payment, use a masked card: [privacy.com](https://privacy.com) in the US generates virtual cards that work with any name you type, and anywhere else a prepaid card that works online, bought with cash, does the same job with no name on it at all.",
         "At checkout, Paddle asks for an email, a payment method, and a country (plus a postal code in some regions) to calculate tax. The alias receives the receipt, the masked card carries whatever name you gave it, and the tax location narrows you to a region, nothing more. Keep the alias alive though: the receipt email is your proof of purchase and your channel for a refund.",
         "Combined with a phrase account, no single party ends up holding the full picture: your bank sees a card top-up, Paddle sees an alias and a masked card, and we see a public key that became Pro, next to that alias in our Paddle account."
       ]
@@ -402,7 +416,7 @@
     "languages": {
       "q": "Which languages does the app speak?",
       "a": [
-        "English, German, French, Italian, Spanish, Dutch, Polish, Czech, Catalan, Turkish, Swedish, Ukrainian, Russian, Japanese, Korean, Traditional Chinese, Thai, Arabic, and Portuguese in both European and Brazilian variants. The app follows your system language by default, or you can pin one explicitly under Settings > Language on each device.",
+        "English, German, French, Italian, Spanish, Dutch, Polish, Czech, Slovak, Catalan, Turkish, Swedish, Ukrainian, Russian, Japanese, Korean, Traditional Chinese, Thai, Arabic, and Portuguese in both European and Brazilian variants. The app follows your system language by default, or you can pin one explicitly under Settings > Language on each device.",
         "Translations are free for everyone, not a Pro perk. More languages are planned; if yours is missing, tell us on [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) or [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -424,7 +438,7 @@
       "q": "How do tasks work?",
       "a": [
         "Any line you write as - [ ] in any note becomes a task, and the Tasks view in the sidebar collects them all in one place. Checking a task off there updates the note it lives in, and opening a task jumps to that note. There is no separate task database to maintain: tasks are just lines in your notes, encrypted like everything else.",
-        "The quick-add box at the top of Tasks appends to a note called Quick Tasks (created for you on first use), so capturing a stray to-do takes one keystroke, not a filing decision. The same view offers three layouts (Hybrid, Aggregated, List), a completed-tasks toggle, and task search, and the New button on the All view can start a task note directly."
+        "The quick-add box at the top of Tasks appends to a note called Quick Tasks (created for you on first use), so capturing a stray to-do takes one keystroke, not a filing decision. The same view offers three layouts (Hybrid, Aggregated, List), a completed-tasks toggle, and task search, and the + button on the All view can start a task note directly."
       ]
     },
     "journal": {
@@ -488,8 +502,8 @@
     "biometric-unlock": {
       "q": "Biometric unlock stopped working. What can I do?",
       "a": [
-        "You are never locked out. The lock screen always offers a fallback: \"Unlock with PIN\", or \"Sign in with recovery phrase\". The biometric is a local gate, not an encryption key, so your notes are untouched either way.",
-        "Then fix the gate. Enrollment is per-device, so a new phone, a fresh browser profile, or a reinstall needs re-enrolling: Settings > Security > \"Lock\", disable, then \"Enable biometric unlock\" again. It also requires \"Trust this device\" (untrusted sessions clear when the tab closes) and hardware with a platform authenticator (Touch ID, Face ID, Windows Hello). If a password manager like Bitwarden or 1Password pops up instead of the system prompt, dismiss it and retry, or turn off its passkey capture for the site - the app requests the built-in authenticator, but some managers intercept anyway."
+        "You are never locked out. The lock screen always offers a fallback: \"Unlock with PIN\" (\"Unlock with passcode\" if you set one), or \"Sign in with recovery phrase\". Biometric unlock only opens the copy of your recovery phrase stored on this device, and your notes are encrypted with keys from the phrase itself, so they are untouched either way.",
+        "Then set it up again. If the lock screen says \"Biometric unlock could not open your notes\", unlock another way first. Enrollment is per-device, so a new phone, a fresh browser profile, or a reinstall needs re-enrolling: Settings > Security > \"Lock\", disable, then \"Enable biometric unlock\" again. It also requires \"Trust this device\" (untrusted sessions clear when the tab closes) and hardware with a platform authenticator (Touch ID, Face ID, Windows Hello). If a password manager like Bitwarden or 1Password pops up instead of the system prompt, dismiss it and retry, or turn off its passkey capture for the site - the app requests the built-in authenticator, but some managers intercept anyway."
       ]
     },
     "phrase-compromised": {
@@ -647,7 +661,14 @@
       "q": "How do sections, folders, tags and spaces work together?",
       "a": [
         "Everything you keep lives in one library. The sections in the sidebar, such as Notes, Vault and Journals, are views of that library by type. A folder is a place, so one folder can hold a note and the login that belongs with it, and the folder tree is the same in every section. Its numbers count what the open section holds, and a folder with none of it shows dimmed. A tag is a label, and the sidebar lists only the tags the open section uses.",
-        "Spaces split the library into Personal and Work and show one at a time. A top-level folder belongs to one space, with everything inside it, and **Move to Work** in its menu moves it across. An item in no folder belongs to Personal, so anything you create in Work files into a Work folder. Tags are free, and folders and spaces need Pro."
+        "Spaces split the library into Personal and Work, and a top-level folder belongs to one space with everything inside it. [How spaces work](/help/spaces/) covers the switch, moving items across and turning spaces off. Tags are free, and folders and spaces need Pro."
+      ]
+    },
+    "spaces": {
+      "q": "How do the Personal and Work spaces work?",
+      "a": [
+        "Spaces split your library into Personal and Work. The switch beside **Jump** in the sidebar shows **All**, **Personal** or **Work**: All shows every item, and the other two show one space each. Each device keeps its own choice, so your phone can show Personal while your laptop shows Work, and opening an item from the other space switches to it. Spaces only change what the lists show: every item still syncs to every device.",
+        "A top-level folder belongs to one space, with everything inside it, and **Move to Work** or **Move to Personal** in its menu, or in the menu of any item, moves it across. An item in no folder is Personal, and so is anything you create while All is open. To stop using spaces, switch off Settings > Lists > Spaces: every item shows, nothing moves, and each folder keeps its space for when you switch it back on. Spaces need Pro."
       ]
     },
     "note-links": {
@@ -717,8 +738,8 @@
     "note-history": {
       "q": "Can I get an older version of a note back?",
       "a": [
-        "Yes, with Pro. Open the note's \"...\" menu and choose \"Note history\" to browse and restore up to 20 previous versions. Restoring loses nothing: the current text is saved as a version first, so you can step back and forth. Versions are encrypted like the note itself, so we cannot read them either.",
-        "A snapshot is taken at most once a minute, so two edits seconds apart share one version. Note history is the one Pro feature that runs through the server, which is why the demo keeps its own local copy instead. Every tier has the [trash](/help/trash-auto-delete/) as well, which holds a deleted note for 30 days."
+        "Yes, with Pro. Open the note's \"...\" menu and choose \"Note history\" to browse up to 50 earlier versions, compare one with the current note, and restore it. Restoring loses nothing: the current text is saved as a version first, so you can step back and forth. Versions are encrypted like the note itself, so we cannot read them either.",
+        "Each version is the note as it stood before an edit: one is saved at your first edit after a pause of five minutes, one every ten minutes while you keep writing, and one before an edit that removes more than half of a note of 200 characters or more, unless the last version is less than 30 seconds old. Note history is the one Pro feature that runs through the server, which is why the demo keeps its own local copy instead. Every tier has the [trash](/help/trash-auto-delete/) as well, which holds a deleted note for 30 days."
       ]
     },
     "vault-totp": {
@@ -816,8 +837,8 @@
     "quick-switcher": {
       "q": "What is the quick switcher, and what can it find?",
       "a": [
-        "The quick switcher jumps to anything by its title. Press Cmd+K on a Mac or Ctrl+K on Windows and Linux (Cmd+P or Ctrl+P works too), or click **Jump to** in the sidebar or the list header. Type part of a title to find notes, tasks, journal entries, Vault items, bookmarks, contacts, attached files and settings. Enter opens the item, and Option+Enter or Alt+Enter opens it in a tab.",
-        "Type > first to run a command instead, such as creating a new note or going to a section. To find words inside your text rather than in titles, pick the **Search everything** row, or press Cmd+Enter or Ctrl+Enter from any row. Matching happens on your device, so nothing you type is sent to us. The quick switcher is free."
+        "The quick switcher jumps to anything by its title. Press Cmd+K on a Mac or Ctrl+K on Windows and Linux (Cmd+P or Ctrl+P works too), or click **Jump** in the sidebar or the list header. Type part of a title to find notes, tasks, journal entries, Vault items, bookmarks, contacts, attached files and settings. Enter opens the item, and Option+Enter or Alt+Enter opens it in a tab.",
+        "Type > first to run a command instead, such as creating a new note or going to a section. Type # first to see only your tags, or / to see only your folders; picking one filters the list the way a click in the sidebar does. To find words inside your text rather than in titles, pick the **Search everything** row, or press Cmd+Enter or Ctrl+Enter from any row. Matching happens on your device, so nothing you type is sent to us. The quick switcher is free."
       ]
     },
     "screen-capture": {
@@ -902,6 +923,27 @@
       "a": [
         "Yes. Open Settings > Account > Accounts and connect Google, Apple or GitHub to add a login that opens the same vault. You can connect several, even two accounts from one provider, and your recovery phrase keeps working alongside them. Connecting or disconnecting an account leaves your notes and your encryption unchanged.",
         "A login that already belongs to another vault cannot be connected, because vaults are never merged. **Disconnect** asks for your 12 words first. If we keep your phrase for you, the last connected account stays until you connect another one or save your phrase and switch to self-custody. With self-custody, a new device still asks for your 12 words. Connected accounts are in beta."
+      ]
+    },
+    "calendar": {
+      "q": "Is there a calendar, and what shows on it?",
+      "a": [
+        "Yes. Calendar in the sidebar shows every item with a date in one place: events, journal entries, notes and task lists with a date, and the birthdays of your contacts. The list beside it is the agenda of the coming days, and the large view switches between Day, Week and Month. Click an empty day to add something there, or drag an item to another day.",
+        "An event is its own kind of item: a note with a day, an end day, a time and a repeat. Type a whole line into Quick add, for example \"Dentist fri 3pm 1h before\", and it reads the day, the time and the alert for you. A note or a task list can carry a day, a time and an end day too, from the Schedule row of its \"...\" menu. The calendar is free."
+      ]
+    },
+    "reminders": {
+      "q": "Do calendar reminders work when the app is closed?",
+      "a": [
+        "On a phone, yes: up to 64 alerts, up to 400 days ahead, are handed to the phone itself, so they ring while PrivacyNotes is closed; opening and unlocking the app hands over more. In the desktop app a reminder rings while the app runs, and in a browser while PrivacyNotes is open in a tab. Each device plans its reminders from the items it holds, so the server never learns a title, a time or a day.",
+        "Add an alert from the Alert row of an item's Schedule view, up to five per item, and set the defaults under Settings > Calendar, where \"Show titles in reminders\" also lives. An item behind your PIN always rings as \"Reminder\" and the time, and so does every alert scheduled while the app lock is on. One handed over before the lock was on can keep its title until it rings. Reminders are part of Pro; the calendar itself is free."
+      ]
+    },
+    "calendar-time-zones": {
+      "q": "What happens to event times when I travel to another time zone?",
+      "a": [
+        "A time on the calendar stays the time you typed. An event at 15:00 shows and rings at 15:00 wherever your device is, the way a reminder in a to-do app does, because every time is kept as a local time with no time zone. A phone schedules each alert for an exact moment, so after a time-zone change, open and unlock PrivacyNotes once in the new zone to move its alerts; while it is open and unlocked, it moves them by itself.",
+        "For a call with someone in another time zone, enter the time as it is where you are. If a daylight-saving change skips the hour of an alert, the alert rings at the first minute after the skip."
       ]
     }
   }

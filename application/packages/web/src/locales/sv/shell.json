@@ -8,7 +8,6 @@
     "title": "Uppgifter",
     "newTaskNote": "Ny uppgiftsanteckning",
     "newTaskNoteWithHotkey": "Ny uppgiftsanteckning ({{hotkey}})",
-    "new": "Ny",
     "hideCompleted": "Dölj klara uppgifter",
     "showCompleted": "Visa klara uppgifter",
     "searchPlaceholder": "Sök uppgifter…",
@@ -37,12 +36,9 @@
     "deselectAll": "Avmarkera alla",
     "selectAll": "Markera alla",
     "storage": "Lagring",
-    "supportedTypesHint": "Största filstorlek: {{max}} MB",
     "perFile": "Per fil",
     "free": "Gratis",
     "upgradeToPro": "Uppgradera till Pro",
-    "addStorage": "Lägg till lagring",
-    "upToMax": "upp till {{max}}",
     "filterAll": "Alla",
     "filterImages": "Bilder",
     "filterAudio": "Ljud",
@@ -115,6 +111,7 @@
     "video": "Video",
     "image": "Bild",
     "pdf": "PDF",
+    "email": "E-post",
     "archive": "Arkiv",
     "document": "Dokument",
     "spreadsheet": "Kalkylark",
@@ -188,7 +185,8 @@
     "markdown": "Markdown",
     "markdownTip": "Okrypterad",
     "bookmarks": "Bokmärken",
-    "contacts": "Kontakter"
+    "contacts": "Kontakter",
+    "calendar": "Kalender"
   },
   "browseToggle": {
     "label": "Bläddra efter",
@@ -204,6 +202,10 @@
     "deleteConfirmTitle": "Radera mappen?",
     "deleteConfirmBodyRoot": "”{{folder}}” raderas. Dess anteckningar och undermappar flyttas till toppnivån. Inga anteckningar raderas.",
     "deleteConfirmBodyNested": "”{{folder}}” raderas. Dess anteckningar och undermappar flyttas till ”{{parent}}”. Inga anteckningar raderas.",
+    "deleteConfirmBranchRoot": "”{{folder}}” och dess undermappar raderas. Deras anteckningar flyttas till toppnivån. Inga anteckningar raderas.",
+    "deleteConfirmBranchNested": "”{{folder}}” och dess undermappar raderas. Deras anteckningar flyttas till ”{{parent}}”. Inga anteckningar raderas.",
+    "deleteSubfolders_other": "Radera även dess {{count}} undermappar",
+    "deleteSubfolders_one": "Radera även dess undermapp",
     "moveTo": "Flytta till mapp",
     "searchPlaceholder": "Sök mappar",
     "sortFolders": "Sortera mappar",
@@ -221,7 +223,8 @@
     "saveName": "Spara mappnamnet",
     "actionsForFolder": "Åtgärder för mappen {{folder}}",
     "seedSecurity": "Säkerhet",
-    "seedTravel": "Resor"
+    "seedTravel": "Resor",
+    "seedTeam": "Team"
   },
   "collapsedSidebar": {
     "newNote": "Ny anteckning",
@@ -268,7 +271,19 @@
     "sizeHint": "Total krypterad storlek för det här objektet.",
     "tagCount_one": "{{count}} tagg",
     "tagCount_other": "{{count}} taggar",
-    "entryDate": "Inläggsdatum"
+    "entryDate": "Inläggsdatum",
+    "noDate": "Inget",
+    "schedule": "Schema",
+    "ends": "Slutar",
+    "sameDay": "Samma dag",
+    "allDay": "Heldag",
+    "starts": "Börjar",
+    "endsAt": "Slutar kl.",
+    "noEnd": "Inget",
+    "removeFromCalendar": "Ta bort från kalendern",
+    "makeEvent": "Gör detta till en händelse för att upprepa det",
+    "typeEvent": "Händelse",
+    "repeatRemoved": "Upprepningen tas bort"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "Avsluta markering (Esc)",
@@ -303,6 +318,8 @@
     "showSize": "Visa filstorlek",
     "showTags": "Visa mapp och taggar",
     "showCalendar": "Visa kalender",
+    "showWorkItems": "Visa objekt i <b>Arbete</b>",
+    "showPersonalItems": "Visa objekt i <b>Privat</b>",
     "other": "Övrigt",
     "showReadOnly": "Visa skrivskyddade",
     "showProtected": "Visa skyddade",
@@ -331,7 +348,8 @@
     "nextMonth": "Nästa månad",
     "dayWithEntry": "{{date}}, har ett inlägg",
     "dayWithEntryIn": "{{date}}, har ett inlägg i {{space}}",
-    "dayWithEntryBoth": "{{date}}, har inlägg i Privat och Arbete",
+    "dayWithItems_one": "{{date}}, {{count}} objekt",
+    "dayWithItems_other": "{{date}}, {{count}} objekt",
     "previousWeek": "Föregående vecka",
     "nextWeek": "Nästa vecka",
     "showMonth": "{{month}}, visa hela månaden",
@@ -375,11 +393,14 @@
     "copyBookmarkUrl": "Kopiera URL",
     "editBookmark": "Redigera bokmärke",
     "openInTab": "Öppna i flik",
+    "openInTabHint": "{{key}}-klick",
     "closeTab": "Stäng flik",
     "closeOtherTabs": "Stäng andra flikar",
     "closeAllTabs": "Stäng alla flikar",
     "pinTab": "Fäst flik",
-    "unpinTab": "Lossa flik"
+    "unpinTab": "Lossa flik",
+    "newEvent": "Ny händelse",
+    "quickAdd": "Snabbtillägg"
   },
   "demoBanner": {
     "title": "Testa helt utan risk",
@@ -636,6 +657,9 @@
       "mastodon": "Mastodon"
     }
   },
+  "staleEditor": {
+    "copyToast": "Den här anteckningen ändrades på en annan enhet. Dina ändringar finns i en kopia, ”{{title}}”."
+  },
   "noteLinks": {
     "retargetedToast_one": "{{count}} anteckningslänk uppdaterad till den nya titeln.",
     "retargetedToast_other": "{{count}} anteckningslänkar uppdaterade till den nya titeln."
@@ -645,7 +669,8 @@
   },
   "tabStrip": {
     "label": "Öppna flikar",
-    "close": "Stäng {{title}}"
+    "close": "Stäng {{title}}",
+    "moreTabs": "Fler flikar"
   },
   "shareInbox": {
     "saved": "Sparat i PrivacyNotes",
@@ -674,10 +699,11 @@
   },
   "spaces": {
     "label": "Utrymme",
+    "all": "Alla",
     "personal": "Privat",
     "work": "Arbete",
-    "moveToWork": "Flytta till Arbete",
-    "moveToPersonal": "Flytta till Privat",
+    "moveToWork": "Flytta till <b>Arbete</b>",
+    "moveToPersonal": "Flytta till <b>Privat</b>",
     "movedToWork": "{{folder}} flyttades till Arbete",
     "movedToPersonal": "{{folder}} flyttades till Privat",
     "itemMovedToWork": "Flyttades till Arbete",
@@ -686,6 +712,218 @@
     "switchedToPersonal": "Bytte till Privat",
     "switchToWork": "Byt till Arbete",
     "switchToPersonal": "Byt till Privat",
+    "switchToAll": "Visa alla utrymmen",
     "workEmpty": "Arbete är tomt. Öppna menyn för ett objekt eller en mapp i Privat och välj Flytta till Arbete."
+  },
+  "calendar": {
+    "moveToToday": "Flytta till i dag",
+    "moveToTomorrow": "Flytta till i morgon",
+    "moveToNextWeek": "Flytta till nästa vecka",
+    "deleteEvent": "Radera händelse",
+    "openContact": "Öppna kontakt",
+    "newOnDay": "Ny händelse den här dagen",
+    "showDay": "Visa den här dagen",
+    "open": "Öppna kalendern",
+    "back": "Kalender",
+    "more_other": "+{{count}} till",
+    "addOn": "Lägg till {{date}}",
+    "nothingFor_other": "Inget på {{count}} dagar",
+    "nothingToday": "Inget i dag",
+    "allDay": "Heldag",
+    "now": "Nu",
+    "viewLabel": "Kalendervy",
+    "views": {
+      "day": "Dag",
+      "week": "Vecka",
+      "month": "Månad"
+    },
+    "legendLabel": "Visa i kalendern",
+    "kinds": {
+      "event": "Händelser",
+      "note": "Anteckningar",
+      "task": "Uppgiftslistor",
+      "journal": "Dagboksinlägg",
+      "contact": "Födelsedagar"
+    },
+    "dragEnd": "Dra för att ändra slutdagen",
+    "previousDay": "Föregående dag",
+    "nextDay": "Nästa dag",
+    "seedWeeklyReview": "Veckogenomgång",
+    "seedWeeklyReviewBody": "Varje fredag klockan fyra. Vad som blev klart, vad som halkade efter och vad som kommer nästa vecka.",
+    "addToCalendar": "Lägg till i kalendern",
+    "showAgenda": "Visa agenda",
+    "hideAgenda": "Dölj agenda",
+    "seedDemo": {
+      "lunch": "Lunch med Sam",
+      "dentist": "Tandläkare",
+      "callAna": "Samtal med Ana",
+      "groceries": "Handla mat",
+      "concert": "Konsert",
+      "giftIdeas": "Presentidéer till Kon",
+      "flight": "Flyg till Lissabon",
+      "conference": "Konferens i Lissabon",
+      "nightTrain": "Nattåg till Porto",
+      "yoga": "Yoga",
+      "sprint": "Sprintplanering",
+      "bookClub": "Bokcirkel",
+      "rent": "Betala hyran"
+    },
+    "nothingFor_one": "Inget på {{count}} dag",
+    "more_one": "+{{count}} till"
+  },
+  "repeat": {
+    "changeTitle": "Ändra det här objektet?",
+    "deleteTitle": "Radera det här objektet?",
+    "thisOccurrence": "Den här förekomsten",
+    "thisAndFollowing": "Den här och följande",
+    "allOccurrences": "Alla förekomster",
+    "label": "Upprepa",
+    "never": "Upprepas inte",
+    "daily_other": "Var {{count}}:e dag",
+    "weekdays": "Varje vardag (måndag till fredag)",
+    "weekly_other": "Var {{count}}:e vecka på {{days}}",
+    "monthlyDay_other": "Var {{count}}:e månad dag {{day}}",
+    "monthlyNth_other": "Var {{count}}:e månad den {{nth}} {{weekday}}",
+    "yearly_other": "Vart {{count}}:e år den {{date}}",
+    "withUntil": "{{rule}}, till och med {{date}}",
+    "withCount_other": "{{rule}}, {{count}} gånger",
+    "nth": {
+      "1": "första",
+      "2": "andra",
+      "3": "tredje",
+      "4": "fjärde",
+      "last": "sista"
+    },
+    "custom": "Anpassad",
+    "every": "Var",
+    "units": {
+      "day_other": "dagar",
+      "week_other": "veckor",
+      "month_other": "månader",
+      "year_other": "år",
+      "year_one": "år",
+      "month_one": "månad",
+      "week_one": "vecka",
+      "day_one": "dag"
+    },
+    "onDays": "På",
+    "onDay": "Dag {{day}}",
+    "onNth": "Den {{nth}} {{weekday}}",
+    "ends": "Slutar",
+    "endsNever": "Aldrig",
+    "endsOn": "Ett visst datum",
+    "endsAfter": "Efter ett antal gånger",
+    "times_other": "{{count}} gånger",
+    "apply": "Tillämpa",
+    "times_one": "{{count}} gång",
+    "withCount_one": "{{rule}}, {{count}} gång",
+    "yearly_one": "Varje år den {{date}}",
+    "monthlyNth_one": "Varje månad den {{nth}} {{weekday}}",
+    "monthlyDay_one": "Varje månad dag {{day}}",
+    "weekly_one": "Varje vecka på {{days}}",
+    "daily_one": "Varje dag"
+  },
+  "alerts": {
+    "label": "Avisering",
+    "none": "Ingen",
+    "atTime": "Vid tidpunkten",
+    "minutesBefore_other": "{{count}} minuter före",
+    "hoursBefore_other": "{{count}} timmar före",
+    "daysBefore_other": "{{count}} dagar före",
+    "weeksBefore_other": "{{count}} veckor före",
+    "onDayAt": "Samma dag kl. {{time}}",
+    "daysBeforeAt_other": "{{count}} dagar före kl. {{time}}",
+    "custom": "Anpassad",
+    "add": "Lägg till",
+    "max": "Upp till fem aviseringar.",
+    "units": {
+      "minutes": "minuter",
+      "hours": "timmar",
+      "days": "dagar",
+      "weeks": "veckor"
+    },
+    "at": "kl.",
+    "remove": "Ta bort {{alert}}",
+    "reminder": "Påminnelse",
+    "open": "Öppna",
+    "snooze": "Snooza 10 min",
+    "offOnPhone": "Påminnelser är avstängda på den här telefonen",
+    "turnOn": "Slå på",
+    "openSettings": "Öppna inställningar",
+    "daysBeforeAt_one": "{{count}} dag före kl. {{time}}",
+    "weeksBefore_one": "{{count}} vecka före",
+    "daysBefore_one": "{{count}} dag före",
+    "hoursBefore_one": "{{count}} timme före",
+    "minutesBefore_one": "{{count}} minut före"
+  },
+  "quickAdd": {
+    "group": "Skapa",
+    "items": "Objekt",
+    "createNamed": "{{type}}: {{title}}",
+    "types": {
+      "event": "Ny händelse",
+      "note": "Ny anteckning",
+      "task": "Ny uppgiftslista",
+      "journal": "Nytt dagboksinlägg"
+    },
+    "keepAsText": "Behåll som text",
+    "placeholder": "Titel, dag, tid, upprepning...",
+    "example": "Prova: {{example}}",
+    "examples": {
+      "1": "Tandläkare fre 15:00 1 tim före",
+      "2": "Veckogenomgång varje fredag 16-17",
+      "3": "Ring banken i morgon 11:30 i 30 min",
+      "4": "Hyra varje månad den 1:a 1 dag före",
+      "5": "Prov om 3 dagar #skolan",
+      "6": "uppgift Packlista tors 18:00"
+    },
+    "examplesGroup": "Exempelmeningar",
+    "syntax": {
+      "group": "Det här kan du skriva",
+      "day": {
+        "label": "Dag",
+        "examples": "i morgon · fre · nästa ons · 31 okt · om 3 dagar",
+        "insert": "i morgon"
+      },
+      "time": {
+        "label": "Tid",
+        "examples": "15:00 · 15.00 · 16-17 · kl 9",
+        "insert": "15:00"
+      },
+      "length": {
+        "label": "Längd",
+        "examples": "i 30 min · i 3 dagar · fre till sön",
+        "insert": "i 1 tim"
+      },
+      "repeat": {
+        "label": "Upprepa",
+        "examples": "varje fredag · varje vardag · varje månad den 1:a",
+        "insert": "varje fredag"
+      },
+      "alert": {
+        "label": "Avisering",
+        "examples": "1 tim före · påminn 10 min",
+        "insert": "1 tim före"
+      },
+      "place": {
+        "label": "Mapp och tagg",
+        "examples": "/Resor · #skolan",
+        "insert": "#"
+      },
+      "space": {
+        "label": "Utrymme",
+        "examples": "@arbete · @privat",
+        "insert": "@arbete"
+      },
+      "type": {
+        "label": "Typ",
+        "examples": "uppgift · anteckning · dagbok (en händelse när ingen typ anges)",
+        "insert": "uppgift"
+      }
+    },
+    "label": "Snabbtillägg"
+  },
+  "offline": {
+    "notLoaded": "Du är offline och den här delen av appen har inte laddats än. Försök igen när du är uppkopplad igen."
   }
 }

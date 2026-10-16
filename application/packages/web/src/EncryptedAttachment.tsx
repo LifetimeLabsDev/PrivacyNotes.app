@@ -27,7 +27,7 @@ import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
 import { AttachmentStore, type AttachmentMeta, type DecryptedAttachment } from './attachmentStore';
 import { validateAttachment, isImageFile, formatFileSize } from './attachmentValidation';
 import { currentImageOptions, isSupportedImage, processImage } from './imageProcessing';
-import { isPdf, isPictureMime, openMediaViewerInDoc } from './mediaRefs';
+import { isMail, isPdf, isPictureMime, openMediaViewerInDoc } from './mediaRefs';
 import { HoverLabel } from './HoverLabel';
 import { ContextMenu, useContextMenu, type ContextMenuItem } from './ContextMenu';
 import { suppressSoftKeyboard } from './softKeyboard';
@@ -186,6 +186,7 @@ export function showsFileCard(fileNote: boolean, doc: ProseMirrorNode): boolean 
 // pdf.js is fetched the first time a PDF card or the viewer needs it, never
 // on the way to the first render.
 const PdfCover = lazy(() => import('./PdfPages').then((m) => ({ default: m.PdfCover })));
+const MailCover = lazy(() => import('./MailView').then((m) => ({ default: m.MailCover })));
 
 /**
  * The file itself, on the card a Files upload opens as: a picture at its
@@ -195,18 +196,21 @@ const PdfCover = lazy(() => import('./PdfPages').then((m) => ({ default: m.PdfCo
  *
  * Spans rather than divs throughout, because this is the content of a button.
  */
-function FilePreview({ uuid, pdf, name, onOpen }: {
+function FilePreview({ uuid, pdf, mail, name, onOpen }: {
   uuid: string;
   pdf: boolean;
+  mail: boolean;
   name: string;
   onOpen: () => void;
 }) {
   const { t } = useTranslation('media');
-  const [url, setUrl] = useState<string | null>(() => (pdf ? null : cachedAttachmentUrl(uuid)));
+  // A PDF and a mail are read from their bytes; only a picture has a URL.
+  const fromBytes = pdf || mail;
+  const [url, setUrl] = useState<string | null>(() => (fromBytes ? null : cachedAttachmentUrl(uuid)));
   const [missing, setMissing] = useState(false);
 
   useEffect(() => {
-    if (pdf || url) return;
+    if (fromBytes || url) return;
     let alive = true;
     void loadAttachmentUrl(uuid).then((loaded) => {
       if (!alive) return;
@@ -214,7 +218,7 @@ function FilePreview({ uuid, pdf, name, onOpen }: {
       else setMissing(true);
     });
     return () => { alive = false; };
-  }, [uuid, pdf, url]);
+  }, [uuid, fromBytes, url]);
 
   return (
     <button
@@ -222,9 +226,13 @@ function FilePreview({ uuid, pdf, name, onOpen }: {
       onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
       onClick={(e) => { e.stopPropagation(); onOpen(); }}
       aria-label={t('attachment.view')}
-      className={`block w-full bg-surface-1 cursor-zoom-in outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent ${BUTTON_CONTENT}`}
+      className={`block w-full bg-surface-1 ${mail ? 'cursor-pointer' : 'cursor-zoom-in'} outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent ${BUTTON_CONTENT}`}
     >
-      {pdf ? (
+      {mail ? (
+        <Suspense fallback={<span className="block py-10" />}>
+          <MailCover uuid={uuid} />
+        </Suspense>
+      ) : pdf ? (
         <Suspense fallback={<span className="block py-16" />}>
           <PdfCover uuid={uuid} name={name} />
         </Suspense>
@@ -426,7 +434,8 @@ function EncryptedAttachmentView({
   // re-encoded pictures keeps its thumbnail attempt but opens nothing.
   const isPicture = Boolean(uuid) && isPictureMime(mimetype || '');
   const isPdfFile = Boolean(uuid) && isPdf(mimetype || '', filename || '');
-  const viewable = isPicture || isPdfFile;
+  const isMailFile = Boolean(uuid) && isMail(mimetype || '', filename || '');
+  const viewable = isPicture || isPdfFile || isMailFile;
   // A Files note that holds one file shows that file, not only its name, and
   // reads as a list once it holds a second. The count follows every edit, so
   // a file dropped into the note turns the card back into a row at once.
@@ -658,7 +667,7 @@ function EncryptedAttachmentView({
   const sizeStr = filesize || '';
   // The type, then a PDF's page count once its first page is drawn, then the size.
   const metaStr = [
-    mimeToLabel(isPdfFile ? 'application/pdf' : mimetype || ''),
+    mimeToLabel(isPdfFile ? 'application/pdf' : isMailFile ? 'message/rfc822' : mimetype || ''),
     pdfCover ? t('viewer.pageCount', { count: pdfCover.pages }) : '',
     sizeStr,
   ].filter(Boolean).join(' · ');
@@ -975,7 +984,7 @@ function EncryptedAttachmentView({
     >
       {showPreview && uuid ? (
         <div className={`rounded-xl border overflow-hidden bg-surface-2 transition ${frameTone}`}>
-          <FilePreview uuid={uuid} pdf={isPdfFile} name={filename || ''} onOpen={openViewer} />
+          <FilePreview uuid={uuid} pdf={isPdfFile} mail={isMailFile} name={filename || ''} onOpen={openViewer} />
           {row}
         </div>
       ) : row}
@@ -1150,6 +1159,15 @@ async function handleAttachmentUpload(
     } else {
       alert(i18n.t('media:attachment.uploadFailed', { message: msg || i18n.t('media:attachment.unknownError') }));
     }
+    return;
+  }
+
+  // The note may have turned read-only, or closed, while the file was
+  // stored. Nothing is inserted then; the stored blob is named by no note,
+  // and the orphan reconcile (imageGC.ts) reclaims it. A failed background
+  // upload then has no node to take out, only a rejection to settle.
+  if (!view.editable || view.isDestroyed) {
+    uploaded.catch(() => {});
     return;
   }
 

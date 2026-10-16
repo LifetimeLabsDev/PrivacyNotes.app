@@ -11,13 +11,17 @@
     "noContent": "Aucun contenu",
     "notBackedUp": "Non sauvegardé",
     "archived": "Archivé",
-    "entryDate": "Date de l'entrée"
+    "entryDate": "Date de l'entrée",
+    "date": "Date",
+    "dayOf": "jour {{n}} sur {{total}}"
   },
   "header": {
     "new": "Nouveau",
     "newNote": "Nouvelle note",
     "newNoteHover": "Nouvelle note ({{hotkey}})",
-    "trash": "Corbeille"
+    "trash": "Corbeille",
+    "newEvent": "Nouvel événement",
+    "newEventHover": "Nouvel événement ({{hotkey}})"
   },
   "folderChip": {
     "clear": "Effacer le filtre de dossier : {{folder}}",
@@ -40,7 +44,9 @@
     "login": "Identifiant",
     "file": "Fichier",
     "bookmark": "Signet",
-    "contact": "Contact"
+    "contact": "Contact",
+    "event": "Événement",
+    "quickAdd": "Ajout rapide"
   },
   "vaultFilter": {
     "all": "Tous",
@@ -94,7 +100,8 @@
     "vault": "Coffre",
     "pinned": "Épinglés",
     "archive": "Archives",
-    "notes": "Notes"
+    "notes": "Notes",
+    "calendar": "Calendrier"
   },
   "footerStats": {
     "journals": "Journaux",
@@ -138,8 +145,17 @@
     "collapse": "Replier la liste des notes",
     "expand": "Déplier la liste des notes"
   },
+  "split": {
+    "action": "Scinder la note",
+    "done": "Scindée vers « {{title}} »",
+    "overLimit": "« {{title}} » dépasse 1 Mo et reste sur cet appareil",
+    "cannot": "Cette note ne peut pas être scindée ici. Place le curseur là où la nouvelle note doit commencer.",
+    "continuedTitle": "{{title}} (suite)",
+    "continuedIn": "Suite dans {{link}}"
+  },
   "paneResize": {
-    "hintCollapse": "Clique pour replier · Glisse pour redimensionner"
+    "hintCollapse": "Clique pour replier · Glisse pour redimensionner",
+    "hintExpand": "Clique pour déplier · Glisse pour redimensionner"
   },
   "emptyEditor": {
     "selectFile": "Sélectionne un fichier à prévisualiser",
@@ -176,6 +192,8 @@
     "findInNote": "Rechercher dans la note",
     "navPrev": "Précédent",
     "navNext": "Suivant",
+    "navPrevTab": "Onglet précédent",
+    "navNextTab": "Onglet suivant",
     "undo": "Annuler",
     "redo": "Rétablir",
     "hide": "Masquer",
@@ -227,6 +245,8 @@
     "words": "Mots",
     "zen": "Mode Zen",
     "appearance": "Apparence",
+    "goToTop": "Aller en haut",
+    "goToEnd": "Aller à la fin",
     "signOut": "Se déconnecter",
     "signingOut": "Déconnexion…",
     "switchToLight": "Passer en mode clair",
@@ -252,7 +272,8 @@
     "aboutLabel": "À propos",
     "languageLabel": "Langue",
     "dateLabel": "Date",
-    "languageDesc": "Choisis la langue d'affichage de PrivacyNotes."
+    "languageDesc": "Choisis la langue d'affichage de PrivacyNotes.",
+    "calendarLabel": "Calendrier"
   },
   "importStore": {
     "title": "Importer ou stocker ?",

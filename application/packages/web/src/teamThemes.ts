@@ -8,8 +8,8 @@
  * app copies it. An entry is never removed either: a slot that names a theme
  * this version does not list goes back to Default without a word. Its colors
  * may change, and a device that shows it then repaints. The build refuses an entry whose code does not parse or fails
- * a check, or whose id or name another entry has, here or in the community
- * list.
+ * a check, or whose id another entry has, here or in the community list, or
+ * whose name another theme of the same mode has.
  *
  * Import-free: themes-page.ts loads this file on its own.
  * Spec: ops/docs/color-themes.md (section 6)

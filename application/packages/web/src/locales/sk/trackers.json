@@ -1,0 +1,180 @@
+{
+  "labels": {
+    "mood": "Nálada",
+    "emotions": "Emócie",
+    "sleep": "Spánok",
+    "sleepScore": "Skóre spánku",
+    "heartRate": "Tep srdca",
+    "activity": "Aktivita",
+    "medication": "Lieky",
+    "meds": "Lieky",
+    "energy": "Energia",
+    "focus": "Sústredenie",
+    "weight": "Hmotnosť",
+    "steps": "Kroky",
+    "water": "Voda",
+    "screenTime": "Čas pred obrazovkou",
+    "caffeine": "Kofeín",
+    "pain": "Bolesť",
+    "social": "Spoločnosť",
+    "custom": "Vlastné"
+  },
+  "units": {
+    "hoursSuffix": "h",
+    "bpm": "úd./min",
+    "kg": "kg",
+    "lb": "lb",
+    "steps_one": "krok",
+    "steps_few": "kroky",
+    "steps_many": "kroku",
+    "steps_other": "krokov",
+    "hrs": "hod.",
+    "glasses_one": " pohár",
+    "glasses_few": " poháre",
+    "glasses_many": " pohára",
+    "glasses_other": " pohárov",
+    "cups_one": " šálka",
+    "cups_few": " šálky",
+    "cups_many": " šálky",
+    "cups_other": " šálok"
+  },
+  "scaleEnds": {
+    "low": "málo",
+    "high": "veľa",
+    "none": "nič",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "silná",
+    "socialLow": "bez kontaktu",
+    "socialHigh": "veľa kontaktu"
+  },
+  "mood": {
+    "prompt": "Ako sa cítiš? (1-10)",
+    "low": "hrozne",
+    "high": "skvele",
+    "anchor": {
+      "1": "hrozne",
+      "3": "zle",
+      "5": "ujde to",
+      "7": "dobre",
+      "10": "skvele"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}} ({{min}}-{{max}})"
+  },
+  "emotions": {
+    "prompt": "Aké emócie cítiš?",
+    "count_one": "{{count}} emócia",
+    "count_few": "{{count}} emócie",
+    "count_many": "{{count}} emócie",
+    "count_other": "{{count}} emócií",
+    "valence": {
+      "positive": "pozitívne",
+      "neutral": "neutrálne",
+      "negative": "negatívne"
+    },
+    "tags": {
+      "happy": "Šťastie",
+      "calm": "Pokoj",
+      "relaxed": "Uvoľnenie",
+      "grateful": "Vďačnosť",
+      "loved": "Pocit lásky",
+      "motivated": "Motivácia",
+      "confident": "Sebadôvera",
+      "productive": "Produktivita",
+      "focused": "Sústredenie",
+      "energetic": "Energia",
+      "tired": "Únava",
+      "restless": "Nepokoj",
+      "distracted": "Roztržitosť",
+      "numb": "Otupenosť",
+      "overwhelmed": "Zahltenie",
+      "anxious": "Úzkosť",
+      "stressed": "Stres",
+      "frustrated": "Frustrácia",
+      "irritable": "Podráždenosť",
+      "sad": "Smútok",
+      "lonely": "Osamelosť",
+      "guilty": "Pocit viny",
+      "hopeless": "Beznádej",
+      "angry": "Hnev"
+    }
+  },
+  "sleep": {
+    "prompt": "Aký bol tvoj spánok?",
+    "hoursLabel": "Hodiny:",
+    "quality": {
+      "terrible": "Hrozný",
+      "poor": "Slabý",
+      "okay": "Ujde to",
+      "good": "Dobrý",
+      "great": "Výborný"
+    }
+  },
+  "sleepScore": {
+    "prompt": "Skóre spánku"
+  },
+  "heartRate": {
+    "prompt": "Priemerný tep srdca"
+  },
+  "activity": {
+    "prompt": "Úroveň aktivity dnes?",
+    "level": {
+      "sedentary": "Sedavá",
+      "light": "Ľahká",
+      "moderate": "Mierna",
+      "active": "Aktívna",
+      "intense": "Intenzívna"
+    }
+  },
+  "medication": {
+    "heading": "Lieky",
+    "empty": "Zatiaľ nie sú nastavené žiadne lieky.",
+    "takenCount_one": "užité: {{count}}",
+    "takenCount_few": "užité: {{count}}",
+    "takenCount_many": "užité: {{count}}",
+    "takenCount_other": "užité: {{count}}",
+    "namePlaceholder": "Názov lieku",
+    "dosagePlaceholder": "Dávka (napr. 50 mg)",
+    "addMedication": "+ Pridať liek",
+    "editMedication": "Upraviť liek",
+    "removeMedication": "Odobrať liek",
+    "confirmRemove": "Odobrať <highlight>{{name}}</highlight>?",
+    "yes": "Áno",
+    "no": "Nie",
+    "taken": "Užité",
+    "skip": "Preskočiť"
+  },
+  "custom": {
+    "yes": "Áno",
+    "no": "Nie",
+    "typeLabels": {
+      "scale10": "Stupnica (0-10)",
+      "scale5": "Stupnica (0-5)",
+      "slider100": "Posuvník (0-100)",
+      "number": "Číslo",
+      "yesno": "Áno / Nie"
+    }
+  },
+  "config": {
+    "configureTrackers": "Nastaviť sledovanie",
+    "title": "Sledované hodnoty",
+    "categoryMoodMind": "Nálada a myseľ",
+    "categoryBodyHealth": "Telo a zdravie",
+    "categoryLifestyle": "Životný štýl",
+    "customHeading": "Vlastné",
+    "resume": "Pokračovať",
+    "stop": "Zastaviť",
+    "addCustomTracker": "Pridať vlastnú sledovanú hodnotu",
+    "addCustomTrackerCount": "Pridať vlastnú sledovanú hodnotu ({{count}}/{{max}})",
+    "addCustomTrackerHint": "Sleduj, čo chceš",
+    "maxReached": "Dosiahnuté maximum vlastných sledovaných hodnôt: {{max}}.",
+    "customTrackers": "Vlastné sledované hodnoty",
+    "newCustomTracker": "Nová vlastná sledovaná hodnota",
+    "trackerNamePlaceholder": "Názov sledovanej hodnoty",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "Typ:",
+    "colorLabel": "Farba:"
+  }
+}

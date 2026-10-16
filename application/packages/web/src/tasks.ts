@@ -2,7 +2,7 @@ import type { LocalNote } from './db';
 import type { ListPrefs } from './listPrefs';
 import { compareNotes, deriveDisplayTitle, editedAtOf } from './notesViewUtils';
 import { nextFence, type Fence } from './markdownFence';
-import { createNote, getNote, updateNote } from './notesRepo';
+import { createNote, getNote, updateNoteFrom } from './notesRepo';
 import { textMatcher } from './textMatch';
 
 /**
@@ -14,8 +14,9 @@ import { textMatcher } from './textMatch';
  * grouped checklist.
  *
  * Flipping a task re-writes the note's body (replacing `[ ]` with `[x]`
- * or vice versa on the same line index) and routes through the normal
- * updateNote path so sync / dirty flags just work.
+ * or vice versa on the same line index, while that line still holds the
+ * task) and routes through the normal note write (updateNoteFrom) so sync /
+ * dirty flags just work.
  *
  * Matches TipTap's markdown serialization: one leading list marker
  * (`-`, `*`, `+`) + space + `[ ]` or `[x]` + space + content. Ordered
@@ -55,7 +56,7 @@ function extractTasksFromNote(note: LocalNote): TaskItem[] {
       noteId: note.id,
       noteTitle: title,
       lineIdx: i,
-      text: (m[4] ?? '').replace(/&nbsp;/g, ' ').trim(),
+      text: taskText(m[4]),
       checked: m[3] === 'x' || m[3] === 'X',
       editedAt: editedAtOf(note),
     });
@@ -119,21 +120,25 @@ export function selectTaskNotes(
   return matching.slice().sort((a, b) => compareNotes(a, b, listPrefs));
 }
 
+/** A task line's text the way the Tasks view shows it. */
+const taskText = (rest: string | undefined) => (rest ?? '').replace(/&nbsp;/g, ' ').trim();
+
 /**
  * Flip the checked state on a single task line. Returns the new body,
- * or null if the target line doesn't look like a task anymore (e.g.
- * the user edited the line between render and click).
+ * or null if the target line doesn't hold the task `text` anymore (e.g.
+ * the user, or another device, edited the note between render and click).
  */
 function setTaskCheckedInBody(
   body: string,
   lineIdx: number,
-  checked: boolean
+  checked: boolean,
+  text: string,
 ): string | null {
   const lines = body.split(/\r?\n/);
   const line = lines[lineIdx];
   if (line == null || !outsideFences(lines)[lineIdx]) return null;
   const m = line.match(TASK_LINE);
-  if (!m) return null;
+  if (!m || taskText(m[4]) !== text) return null;
   const [, indent, marker, , rest] = m;
   lines[lineIdx] = `${indent}${marker} [${checked ? 'x' : ' '}] ${rest ?? ''}`.replace(/\s+$/, '');
   return lines.join('\n');
@@ -175,8 +180,8 @@ function uncheckAllTasksInBody(body: string): string {
 /**
  * Uncheck every task in a note, starting from `body`, which the caller takes
  * from the open editor so that text still in its save delay is kept. Returns
- * the body written, or null when nothing was: the note is gone or takes no
- * edits (see `takesTaskEdit`).
+ * the body written, or null when nothing was: the note is gone, takes no
+ * edits (see `takesTaskEdit`), or no longer holds `body` (see writeFromBody).
  */
 export async function uncheckAllTasksInNote(
   noteId: string,
@@ -185,8 +190,20 @@ export async function uncheckAllTasksInNote(
 ): Promise<string | null> {
   const note = await getNote(noteId);
   if (!note || !takesTaskEdit(note, isGated)) return null;
-  const next = uncheckAllTasksInBody(body);
-  return (await updateNote(note.id, { body: next })) ? next : null;
+  return writeFromBody(note.id, body, uncheckAllTasksInBody(body));
+}
+
+/**
+ * Write `next`, made from `body`, only while the row still holds `body`. The
+ * caller read `body` from the editor or the notes array, and a pull that
+ * stored another device's version since then must not be overwritten by a
+ * rewrite of the version before it (#497). The editor's own pending save is
+ * queued ahead of this write, so a body still in its save delay is the row's
+ * body by the time this runs.
+ */
+async function writeFromBody(id: string, body: string, next: string): Promise<string | null> {
+  const written = await updateNoteFrom(id, (current) => (current.body === body ? { body: next } : null));
+  return written ? next : null;
 }
 
 /**
@@ -345,7 +362,7 @@ export function canSortTasksByStatus(body: string): boolean {
  * just after the last unchecked sibling. A task just checked lands at the top
  * of the checked ones and a task just unchecked at the end of the open ones,
  * which is the move the editor makes (moveTaskToGroupEdge in
- * editorExtensions.ts).
+ * editorTasks.ts).
  */
 export function moveTaskToGroupEdgeInBody(body: string, lineIdx: number): string {
   return mapTaskLists(body, (items) => {
@@ -375,7 +392,7 @@ async function rewriteTasksInNote(
   if (!note || !takesTaskEdit(note, isGated)) return null;
   const next = transform(body);
   if (next === body) return null;
-  return (await updateNote(note.id, { body: next })) ? next : null;
+  return writeFromBody(note.id, body, next);
 }
 
 export const deleteCheckedTasksInNote = (noteId: string, body: string, isGated: (n: LocalNote) => boolean) =>
@@ -425,9 +442,12 @@ function takesTaskEdit(n: LocalNote, isGated: (n: LocalNote) => boolean): boolea
  * Tick or untick one task line inside the note that holds it, through the
  * normal note write. With `sinkChecked`, the task then moves to the edge of
  * its list's open group, as it does when ticked in the editor. Returns the body written, or null when nothing was: the
- * note is gone, it takes no edits (see `takesTaskEdit`), or the line is no
- * longer a task line because the note changed after the list was drawn.
- * Tested in tests/lockGateWrites.test.ts.
+ * note is gone, it takes no edits (see `takesTaskEdit`), or the line no
+ * longer holds the task the list was drawn from because the note changed.
+ * The change is built from the row inside the write, so a pull or another
+ * tab that stored a newer body since the list was drawn is ticked in, never
+ * overwritten (#497). Tested in tests/lockGateWrites.test.ts and
+ * tests/taskWriteRace.test.ts.
  */
 export async function toggleTaskInNote(
   task: TaskItem,
@@ -435,13 +455,14 @@ export async function toggleTaskInNote(
   isGated: (n: LocalNote) => boolean,
   sinkChecked = false,
 ): Promise<string | null> {
-  const note = await getNote(task.noteId);
-  if (!note || !takesTaskEdit(note, isGated)) return null;
-  const flipped = setTaskCheckedInBody(note.body, task.lineIdx, checked);
-  if (flipped == null) return null;
-  // The same move a tick makes in the editor, when the setting asks for it.
-  const body = sinkChecked ? moveTaskToGroupEdgeInBody(flipped, task.lineIdx) : flipped;
-  return (await updateNote(note.id, { body })) ? body : null;
+  const written = await updateNoteFrom(task.noteId, (current) => {
+    if (!takesTaskEdit(current, isGated)) return null;
+    const flipped = setTaskCheckedInBody(current.body, task.lineIdx, checked, task.text);
+    if (flipped == null) return null;
+    // The same move a tick makes in the editor, when the setting asks for it.
+    return { body: sinkChecked ? moveTaskToGroupEdgeInBody(flipped, task.lineIdx) : flipped };
+  });
+  return written?.body ?? null;
 }
 
 /**
@@ -464,7 +485,10 @@ export async function appendQuickTask(
     (n) => (n.title ?? '').trim() === INBOX_TITLE && takesTaskEdit(n, isGated),
   );
   const id = inbox?.id ?? (await createNote(INBOX_TITLE, '', [], false, 'task', folderForNew())).id;
-  const note = await getNote(id);
-  if (!note || !takesTaskEdit(note, isGated)) return null;
-  return (await updateNote(id, { body: appendTaskToBody(note.body, clean) })) ? id : null;
+  // Appended to the row as it stands inside the write, so a body a pull
+  // stored a moment ago is kept.
+  const written = await updateNoteFrom(id, (current) =>
+    takesTaskEdit(current, isGated) ? { body: appendTaskToBody(current.body, clean) } : null,
+  );
+  return written ? id : null;
 }

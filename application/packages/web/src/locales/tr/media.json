@@ -15,6 +15,8 @@
     "notFound": "Görsel bulunamadı",
     "saveFailed": "Kaydetme başarısız oldu, bu yüzden dosya boş ya da eksik olabilir.",
     "viewAria": "Görseli görüntüle",
+    "copyAria": "Görseli kopyala",
+    "copyFailed": "Görsel kopyalanamadı.",
     "picturesLeftOut": "Bazı görseller eklenmedi. Yapıştırmak için bir görseli tek başına kopyalayın."
   },
   "attachment": {
@@ -56,6 +58,17 @@
     "pageCount_one": "{{count}} sayfa",
     "pageCount_other": "{{count}} sayfa",
     "pageLabel": "{{name}}, sayfa {{page}} / {{count}}"
+  },
+  "mail": {
+    "loading": "E-posta açılıyor...",
+    "failed": "Bu e-posta okunamıyor. Başka bir uygulamada açmak için indirin.",
+    "from": "Kimden",
+    "to": "Kime",
+    "cc": "Bilgi",
+    "date": "Tarih",
+    "noSubject": "(Konu yok)",
+    "empty": "Bu e-postada metin yok.",
+    "attachments": "Ekler"
   },
   "picker": {
     "title": "Dosyalar'daki görseller",

@@ -92,7 +92,13 @@
       "goal": "Objetivo",
       "decision": "Decisão",
       "definition": "Definição",
-      "seealso": "Ver também"
+      "seealso": "Ver também",
+      "box": "Caixa",
+      "panel": "Painel",
+      "update": "Atualização",
+      "time": "Tempo",
+      "steps": "Passos",
+      "place": "Local"
     }
   },
   "color": {
@@ -123,6 +129,7 @@
     "addColumnRight": "Adicionar coluna à direita",
     "toggleHeaderRow": "Ativar ou desativar a linha de cabeçalho",
     "equalColumnWidths": "Igualar colunas",
+    "resizeHint": "Mantém {{shift}} premido para alterar só esta coluna, {{alt}} para passos mais finos",
     "deleteRow": "Eliminar linha",
     "deleteColumn": "Eliminar coluna",
     "deleteTable": "Eliminar tabela"
@@ -146,6 +153,8 @@
     "caseSensitiveTitle": "Distinguir maiúsculas de minúsculas",
     "closeReplace": "Fechar procurar e substituir",
     "closeReplaceTitle": "Fechar ({{keys}})",
+    "showReplace": "Procurar e substituir",
+    "hideReplace": "Ocultar a substituição",
     "replacedCount_one": "{{count}} substituída",
     "replacedCount_other": "{{count}} substituídas"
   },
@@ -155,7 +164,7 @@
     "title": "Estrutura",
     "ariaLabel": "Estrutura da nota",
     "hide": "Ocultar estrutura",
-    "hideTitle": "Ocultar estrutura (Esc)",
+    "hideTitle": "Ocultar estrutura ({{keys}})",
     "copyHeadingLink": "Copiar ligação para o título",
     "copyNoteLink": "Copiar ligação entre notas",
     "copyHeadingShortcut": "Copiar atalho para o título",
@@ -168,6 +177,9 @@
   },
   "topRow": {
     "add": "Adicionar uma linha no topo"
+  },
+  "addLine": {
+    "add": "Adicionar uma linha"
   },
   "link": {
     "popoverLabel": "Adicionar link",
@@ -205,7 +217,9 @@
     "characters_other": "{{formatted}} caracteres",
     "tasksChecked_one": "{{done}} de {{formatted}} marcado",
     "tasksChecked_other": "{{done}} de {{formatted}} marcados",
-    "tooLargeToSync": ", pode ser demasiado grande para sincronizar, divide-a numa nova nota",
+    "syncLimit": " · {{share}} do limite de sincronização de 1 MB",
+    "overSyncLimit": " · acima do limite de sincronização de 1 MB, fica neste dispositivo",
+    "split": "Dividir nota",
     "veryLong": ", muito longa, pode ficar lenta a editar e bloquear",
     "gettingLong": ", está a ficar longa, pode ficar lenta em dispositivos mais lentos",
     "largeTableWarning": "Uma tabela grande ({{rows}} linhas) pode tornar esta nota lenta a editar, considera dividi-la"
@@ -266,10 +280,13 @@
     "hintTap": "Toca num botão para ver as opções.",
     "onBar": "Na barra",
     "inMenu": "No menu +",
+    "inAttachMenu": "No menu de anexos",
+    "attachMenuEmpty": "Vazio, por isso o botão de anexar não é mostrado.",
     "menuEmpty": "O menu está vazio, por isso o botão + não é mostrado.",
     "hidden": "Ocultos",
     "hiddenNote": "Continuam a funcionar por atalho e em Markdown.",
     "hiddenDrop": "Larga aqui um botão para o ocultar.",
+    "markdownViewNote": "A vista Markdown tem o seu próprio conjunto fixo de botões.",
     "hiddenEmpty": "Nada está oculto.",
     "alwaysVisible": "Sempre visíveis",
     "pinned": "Abre um painel, por isso fica na barra ou oculto",
@@ -281,18 +298,23 @@
     "home": {
       "bar": "Na barra",
       "menu": "No menu +",
+      "attachMenu": "No menu de anexos",
       "hidden": "Oculto"
     },
     "opensPanel": "abre um painel",
     "showsRecording": "mostra a gravação",
     "refuse": {
       "menuNotAllowed": "{{item}} pode estar na barra ou oculto, não no menu +.",
+      "attachNotAllowed": "Só os botões de imagem, ficheiro e gravação cabem no menu de anexos.",
       "lastOnBar": "Deixa pelo menos um botão na barra."
     },
     "items": {
       "link": "Ligação",
       "notelink": "Ligação entre notas",
-      "audio": "Gravação"
+      "audio": "Gravação",
+      "attachMenu": "Anexar",
+      "separator": "Separador",
+      "markdownView": "Ver markdown"
     },
     "positionTitle": "Posição da barra",
     "positionNote": "Escolhe onde fica a barra de formatação no editor.",

@@ -10,6 +10,43 @@
     "otherGuides": "Andere importgidsen"
   },
   "guides": {
+    "google-calendar": {
+      "app": "Google Calendar",
+      "title": "Je Google Calendar exporteren",
+      "metaTitle": "Google Calendar exporteren - PrivacyNotes",
+      "lead": "Google Calendar exporteert alle agenda's die je beheert als één .zip, vanuit de instellingen op een computer. PrivacyNotes leest die .zip zoals hij is, uitpakken hoeft niet.",
+      "sections": [
+        {
+          "h": "Al je agenda's in één keer exporteren",
+          "steps": [
+            "Open [Google Calendar](https://calendar.google.com) in een browser op een computer. De app op je telefoon kan niet exporteren.",
+            "Klik rechtsboven op het tandwiel en dan op \"Settings\" (instellingen).",
+            "Klik in de lijst links op \"Import & export\".",
+            "Klik onder \"Export\" op \"Export\". Je browser downloadt een .zip met voor elke agenda één .ics-bestand.",
+            "Laat de .zip zoals hij is."
+          ],
+          "p": [
+            "De .zip bevat elke agenda waarvoor je de rechten \"Make changes and manage sharing\" hebt, je eigen agenda's inbegrepen. Agenda's die je alleen kunt bekijken, zoals feestdagen of de agenda van een collega, zitten er niet in. Bij een werk- of schoolaccount kan je beheerder het exporteren beperken."
+          ]
+        },
+        {
+          "h": "Of exporteer één agenda",
+          "steps": [
+            "Wijs in de lijst links, onder \"My calendars\", de naam van de agenda aan, klik op \"More\" (de drie puntjes) en dan op \"Settings and sharing\".",
+            "Klik onder \"Calendar settings\" op \"Export calendar\". Je browser downloadt een .zip met het .ics-bestand van die agenda. Laat het bestand zoals het is."
+          ]
+        },
+        {
+          "h": "Wat er meekomt",
+          "p": [
+            "Elke afspraak komt binnen met zijn dag, zijn tijd en zijn duur, ook afspraken die meerdere dagen duren. Herhalende afspraken behouden hun regel, en een keer die je in Google hebt verplaatst of verwijderd, blijft verplaatst of verwijderd. Elke agenda wordt een map.",
+            "Herinneringen die je bij een afspraak hebt ingesteld komen ook mee, e-mailherinneringen inbegrepen: ze worden herinneringen in de app, en die hebben PrivacyNotes Pro nodig om af te gaan. Een afspraak die de standaardherinneringen van je agenda gebruikte, komt zonder herinnering binnen, want Google schrijft standaardinstellingen niet in het bestand. De plaats, de link naar het videogesprek, de gasten en de beschrijving komen in de tekst van de afspraak. Tijden staan zoals ze op dit apparaat stonden toen je importeerde.",
+            "Een los .ics-bestand uit elke agenda-app werkt ook, Apple Agenda en Outlook inbegrepen.",
+            "Importeer later hetzelfde bestand nog eens en afspraken die er al zijn worden overgeslagen, zodat alleen nieuwe worden toegevoegd."
+          ]
+        }
+      ]
+    },
     "google-keep": {
       "app": "Google Keep",
       "title": "Je Google Keep-notities exporteren",
@@ -63,6 +100,40 @@
         }
       ]
     },
+    "bear": {
+      "app": "Bear",
+      "title": "Je Bear-notities exporteren",
+      "metaTitle": "Je Bear-notities exporteren - PrivacyNotes",
+      "lead": "Bear exporteert je hele bibliotheek als één back-upbestand, en dat is het bestand dat je meebrengt: het bevat elke notitie, inclusief het archief en de prullenbak.",
+      "sections": [
+        {
+          "h": "Een back-up van Bear maken",
+          "steps": [
+            "Open Bear op je Mac.",
+            "Kies File > Backup Notes...",
+            "Sla het bestand op. Je krijgt één .bear2bk-bestand dat je hele bibliotheek bevat.",
+            "Sleep dat .bear2bk-bestand erin zoals het is."
+          ]
+        },
+        {
+          "h": "De back-up bevat meer dan een export",
+          "p": [
+            "File > Export Notes... schrijft alleen de notities weg van de weergave die je open hebt, dus gearchiveerde notities en notities in de prullenbak ontbreken. De back-up bevat ze allemaal, en onthoudt welke notities vastgezet, gearchiveerd, in de prullenbak of alleen-lezen waren.",
+            "Heb je alleen een Markdown- of Text Bundle-export, zip die dan en sleep de zip erin. Je tekst, tags en bijlagen komen mee, maar het archief, de prullenbak en de vastgezette notities niet, omdat die exports ze nooit wegschrijven.",
+            "Exporteer je in Bear met de hand? Selecteer minstens twee notities. Bij één notitie opent een opslagvenster dat het bestand de verkeerde extensie kan geven."
+          ]
+        },
+        {
+          "h": "Wat er meekomt",
+          "p": [
+            "Je tags komen mee als tags. Geneste tags zoals #work/projects worden ook opnieuw opgebouwd als mappen, en elke notitie belandt in de map van haar diepste tag. Links tussen notities worden notitielinks, en een link naar een kop wijst naar die kop.",
+            "De opmaak blijft behouden: koppen, vet, cursief, onderstreept, doorgehaald, markeringen in hun Bear-kleuren, takenlijsten, tabellen, codeblokken, citaten, aandachtsblokken, wiskunde en voetnoten. Afbeeldingen openen op volle breedte, en ingeklapte koppen komen uitgeklapt binnen.",
+            "Vastgezette notities blijven vastgezet, gearchiveerde notities komen in het archief, notities uit de prullenbak komen in de prullenbak, alleen-lezen notities blijven alleen-lezen, en elke notitie houdt haar oorspronkelijke datums.",
+            "Afbeeldingen en bestanden die aan je notities hangen worden geïmporteerd in je opslag. Een notitie die naar een bestand verwijst dat de back-up niet bevat, wordt toch geïmporteerd, en het importvoorbeeld vertelt je hoeveel links dat betreft."
+          ]
+        }
+      ]
+    },
     "obsidian": {
       "app": "Obsidian",
       "title": "Je Obsidian-vault exporteren",
@@ -92,21 +163,21 @@
       "app": "Standard Notes",
       "title": "Je Standard Notes exporteren",
       "metaTitle": "Een Standard Notes-back-up exporteren - PrivacyNotes",
-      "lead": "Standard Notes biedt een ontsleutelde back-upexport, en dat is het bestand dat PrivacyNotes leest. Meteen één belangrijk detail: het moet de ontsleutelde variant zijn, niet de versleutelde.",
+      "lead": "Standard Notes exporteert je account als één ontsleutelde back-up. Super-notities komen mee met hun opmaak, plus checklists, tags en 2FA-codes.",
       "sections": [
         {
           "h": "Je notities exporteren uit Standard Notes",
           "steps": [
             "Open Standard Notes (op het web via app.standardnotes.com, of de desktop-app) en meld je aan.",
-            "Open Preferences en dan het onderdeel Backups.",
-            "Download een databack-up en kies het ontsleutelde formaat als daarom wordt gevraagd.",
+            "Klik linksonder op het accountpictogram en dan op Account settings > Backups.",
+            "Kies onder Data backups voor Decrypted en klik dan op Download backup. Dat ene bestand bevat al je notities, ook de Super-notities.",
             "Je krijgt een .zip met daarin een bestand \"Standard Notes Backup and Import File.txt\". Laat de zip zoals hij is."
           ]
         },
         {
           "h": "Super-notities, checklists en 2FA-codes houden hun vorm",
           "p": [
-            "Super-notities houden hun koppen, lijsten, checklists, tabellen, codeblokken, kleuren en inklapbare secties. Checklists komen in Taken terecht, spreadsheets worden tabellen en authenticator-items worden logins in de Kluis, met hun 2FA-sleutel. Geneste tags worden mappen, en elke notitie houdt ook haar tags.",
+            "Super-notities houden hun opmaak: koppen, lijsten, checklists, tabellen, codeblokken, markeringen, kleuren, tekstuitlijning en inklapbare secties. Een link naar een andere notitie wordt een notitielink en een #hashtag in de tekst wordt een tag op de notitie. Checklists komen in Taken terecht, spreadsheets worden tabellen en authenticator-items worden logins in de Kluis, met hun 2FA-sleutel. Geneste tags worden mappen, en elke notitie houdt ook haar tags.",
             "Bestanden die je naar Standard Notes hebt geüpload blijven op hun server, dus de back-up bevat alleen hun namen. Elke geïmporteerde notitie geeft aan waar een bestand stond. Download die bestanden uit Standard Notes en voeg ze opnieuw toe aan de notitie."
           ]
         },
@@ -444,6 +515,47 @@
           "h": "Als afbeeldingen of bestanden ontbreken",
           "p": [
             "Een back-up die is gemaakt voordat je \"Backup attachments\" aanzette, bevat geen bestanden, en het importvoorbeeld waarschuwt je dan dat notities verwijzen naar bijlagen die de back-up niet bevat. Gebeurt dat, annuleer dan, zet de optie aan in UpNote, klik opnieuw op \"Backup now\", zip de verse map en importeer die in plaats daarvan."
+          ]
+        }
+      ]
+    },
+    "joplin": {
+      "app": "Joplin",
+      "title": "Je Joplin-notities exporteren",
+      "metaTitle": "Je Joplin-notities exporteren als JEX - PrivacyNotes",
+      "lead": "Joplin exporteert alle notitieboeken tegelijk als één JEX-bestand. Je notities komen mee met hun notitieboeken, tags, to-do's, notitielinks en bijlagen.",
+      "sections": [
+        {
+          "h": "Alles exporteren als JEX",
+          "steps": [
+            "Open Joplin op je computer.",
+            "Kies File > Export all > \"JEX - Joplin Export File\".",
+            "Sla het bestand op. Je krijgt één .jex-bestand met elk notitieboek erin, dus er hoeft niets gezipt te worden.",
+            "Sleep dat .jex-bestand erin zoals het is."
+          ],
+          "p": [
+            "Tools > Create backup schrijft precies hetzelfde bestand weg, byte voor byte, als all_notebooks.jex in een map JoplinBackup in je thuismap. Maakt Joplin die back-ups al voor je, dan werkt de nieuwste net zo goed."
+          ]
+        },
+        {
+          "h": "Kies JEX, geen Markdown, HTML of PDF",
+          "p": [
+            "Export all biedt ook MD, MD + Front Matter, HTML directory en PDF. Dat zijn kopieën om in andere apps te lezen. Het JEX-bestand is Joplins eigen vastlegging van elke notitie, elk notitieboek, elke tag en elke bijlage, en het is het bestand dat wij lezen. Sleep je een van de andere exports erin, dan zeggen we dat in plaats van de helft te importeren.",
+            "Heb je al \"RAW - Joplin Export Directory\" geëxporteerd, zip die map dan en sleep de zip erin. Hij bevat dezelfde items als het JEX-bestand."
+          ]
+        },
+        {
+          "h": "Haal notities uit de prullenbak voordat je exporteert",
+          "p": [
+            "Joplin laat de prullenbak weg uit elke export en elke back-up. Haal elke notitie die je wilt houden uit de prullenbak voordat je exporteert, anders blijft ze achter in Joplin."
+          ]
+        },
+        {
+          "h": "Wat er meekomt",
+          "p": [
+            "Je notitieboeken worden opnieuw opgebouwd als echte mappen, zo diep genest als Joplin ze nestte, en elke notitie houdt haar tags en de aanmaak- en wijzigingsdatums die Joplin je liet zien.",
+            "To-do's worden taaknotities met een selectievakje dat je kunt afvinken, al afgevinkt als de to-do klaar was, en een vervaldatum blijft naast de titel staan. Links tussen notities worden notitielinks. Afbeeldingen en bijlagen worden geïmporteerd in je opslag en blijven op hun plek in de notitie staan. Notities die als HTML zijn opgeslagen, zoals veel webclips, worden omgezet met hun opmaak.",
+            "Notities uit het notitieboek Conflicts van Joplin komen binnen met de tag \"conflict\", zodat je ze kunt vinden en sorteren. Gebruik je de versleuteling van Joplin, laat die dan klaar zijn met ontsleutelen voordat je exporteert: een item dat nog versleuteld is wordt overgeslagen, en het importvoorbeeld vertelt je hoeveel."
           ]
         }
       ]

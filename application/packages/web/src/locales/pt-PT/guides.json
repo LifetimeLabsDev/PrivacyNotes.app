@@ -10,6 +10,43 @@
     "otherGuides": "Outros guias de importação"
   },
   "guides": {
+    "google-calendar": {
+      "app": "Google Calendar",
+      "title": "Exporta o teu Google Calendar",
+      "metaTitle": "Como exportar o teu Google Calendar - PrivacyNotes",
+      "lead": "O Google Calendar exporta todos os calendários que geres num único .zip, a partir das definições, num computador. O PrivacyNotes lê esse .zip tal como está, sem precisares de o descomprimir.",
+      "sections": [
+        {
+          "h": "Exporta todos os teus calendários de uma vez",
+          "steps": [
+            "Abre o [Google Calendar](https://calendar.google.com) num navegador, num computador. A app de telemóvel não tem exportação.",
+            "Clica na roda dentada, no canto superior direito, e depois em \"Settings\".",
+            "Na lista à esquerda, clica em \"Import & export\".",
+            "Em \"Export\", clica em \"Export\". O navegador transfere um .zip com um ficheiro .ics por calendário.",
+            "Deixa o .zip exatamente como está."
+          ],
+          "p": [
+            "O .zip contém todos os calendários em que tens a permissão \"Make changes and manage sharing\", incluindo o teu. Os calendários que só podes ver, como os feriados ou o calendário de um colega, não estão lá. Numa conta de trabalho ou de escola, o administrador pode restringir a exportação."
+          ]
+        },
+        {
+          "h": "Ou exporta um só calendário",
+          "steps": [
+            "Na lista à esquerda, em \"My calendars\", passa o cursor sobre o nome do calendário, clica em \"More\" (os três pontos) e depois em \"Settings and sharing\".",
+            "Em \"Calendar settings\", clica em \"Export calendar\". O navegador transfere um .zip com o ficheiro .ics desse calendário. Deixa-o como está."
+          ]
+        },
+        {
+          "h": "O que vem junto",
+          "p": [
+            "Cada evento chega com o seu dia, a sua hora e a sua duração, incluindo os eventos de vários dias. Os eventos com repetição mantêm a regra, e uma ocorrência que moveste ou eliminaste no Google continua movida ou eliminada. Cada calendário passa a uma pasta.",
+            "Os lembretes que definiste num evento chegam também, incluindo os lembretes por e-mail: passam a lembretes da app, que precisam do PrivacyNotes Pro para tocar. Um evento que usava os lembretes predefinidos do teu calendário chega sem lembrete, porque a Google não escreve as predefinições no ficheiro. O local, a ligação da videochamada, os convidados e a descrição vão para o texto do evento. As horas aparecem como apareciam neste dispositivo quando importaste.",
+            "Um único ficheiro .ics de qualquer app de calendário também funciona, incluindo o Apple Calendar e o Outlook.",
+            "Se importares o mesmo ficheiro mais tarde, os eventos que já cá estão são ignorados, por isso só são adicionados os novos."
+          ]
+        }
+      ]
+    },
     "google-keep": {
       "app": "Google Keep",
       "title": "Exporta as tuas notas do Google Keep",
@@ -63,6 +100,40 @@
         }
       ]
     },
+    "bear": {
+      "app": "Bear",
+      "title": "Exporta as tuas notas do Bear",
+      "metaTitle": "Exportar as tuas notas do Bear - PrivacyNotes",
+      "lead": "O Bear exporta a tua biblioteca inteira num único ficheiro de backup, e é esse o ficheiro a trazer: contém todas as notas, arquivo e lixo incluídos.",
+      "sections": [
+        {
+          "h": "Faz um backup do Bear",
+          "steps": [
+            "Abre o Bear no teu Mac.",
+            "Escolhe File > Backup Notes...",
+            "Guarda o ficheiro. Recebes um único ficheiro .bear2bk com a tua biblioteca inteira.",
+            "Larga esse .bear2bk como está."
+          ]
+        },
+        {
+          "h": "O backup traz mais do que uma exportação",
+          "p": [
+            "File > Export Notes... escreve só as notas da vista que tens aberta, por isso as notas arquivadas e as que estão no lixo ficam de fora. O backup contém-nas todas, e lembra-se de quais notas estavam fixadas, arquivadas, no lixo ou em apenas leitura.",
+            "Se só tens uma exportação em Markdown ou Text Bundle, comprime-a num zip e larga o zip. O texto, as etiquetas e os anexos vêm, mas o arquivo, o lixo e as notas fixadas não, porque essas exportações nunca os escrevem.",
+            "Vais exportar do Bear à mão? Seleciona pelo menos duas notas. Uma única nota abre uma janela de gravação que pode dar ao ficheiro a extensão errada."
+          ]
+        },
+        {
+          "h": "O que vem junto",
+          "p": [
+            "As tuas etiquetas vêm como etiquetas. As etiquetas aninhadas, como #work/projects, são também reconstruídas como pastas, e cada nota fica na pasta da sua etiqueta mais funda. As ligações entre notas passam a ligações entre notas do PrivacyNotes, e uma ligação a um título aponta para esse título.",
+            "A formatação sobrevive: títulos, negrito, itálico, sublinhado, rasurado, realces nas cores do Bear, listas de tarefas, tabelas, blocos de código, citações, avisos, fórmulas e notas de rodapé. As imagens abrem em largura total, e os títulos recolhidos chegam abertos.",
+            "As notas fixadas continuam fixadas, as arquivadas vão para o Arquivo, as que estavam no lixo vão para o Lixo, as de apenas leitura continuam em apenas leitura, e cada nota mantém as suas datas originais.",
+            "As imagens e os ficheiros anexados às tuas notas são importados para o teu armazenamento. Uma nota que aponta para um ficheiro que o backup não contém importa-se na mesma, e a pré-visualização da importação diz-te quantas ligações isso afeta."
+          ]
+        }
+      ]
+    },
     "obsidian": {
       "app": "Obsidian",
       "title": "Exporta o teu vault do Obsidian",
@@ -92,21 +163,21 @@
       "app": "Standard Notes",
       "title": "Exporta as tuas notas do Standard Notes",
       "metaTitle": "Exportar um backup do Standard Notes - PrivacyNotes",
-      "lead": "O Standard Notes oferece um backup desencriptado como exportação, e é esse o ficheiro que o PrivacyNotes lê. Um pormenor importante logo à partida: tem de ser a variante desencriptada, não a encriptada.",
+      "lead": "O Standard Notes exporta a tua conta num único backup desencriptado. Traz as notas Super com a formatação, mais as listas de verificação, as etiquetas e os códigos 2FA.",
       "sections": [
         {
           "h": "Exporta as tuas notas do Standard Notes",
           "steps": [
             "Abre o Standard Notes (na web em app.standardnotes.com, ou a app para computador) e inicia sessão.",
-            "Abre as Preferências e depois a secção Backups.",
-            "Transfere um backup de dados e escolhe o formato desencriptado (decrypted) quando te for pedido.",
+            "Clica no ícone da conta, em baixo à esquerda, e depois em Account settings > Backups.",
+            "Em Data backups, escolhe Decrypted e clica em Download backup. Esse único ficheiro contém todas as notas, incluindo as notas Super.",
             "Recebes um .zip com um ficheiro chamado \"Standard Notes Backup and Import File.txt\". Mantém o zip como está."
           ]
         },
         {
           "h": "As notas Super, as listas de verificação e os códigos 2FA mantêm a forma",
           "p": [
-            "As notas Super mantêm os títulos, as listas, as listas de verificação, as tabelas, os blocos de código, as cores e as secções recolhíveis. As listas de verificação vão para Tarefas, as folhas de cálculo passam a tabelas e as entradas do autenticador passam a logins no Cofre, com a respetiva chave 2FA. As etiquetas aninhadas passam a pastas, e cada nota mantém também as suas etiquetas.",
+            "As notas Super mantêm a formatação: títulos, listas, listas de verificação, tabelas, blocos de código, realces, cores, alinhamento do texto e secções recolhíveis. Uma ligação a outra nota passa a ser uma ligação entre notas, e uma #hashtag no texto passa a ser uma etiqueta da nota. As listas de verificação vão para Tarefas, as folhas de cálculo passam a tabelas e as entradas do autenticador passam a logins no Cofre, com a respetiva chave 2FA. As etiquetas aninhadas passam a pastas, e cada nota mantém também as suas etiquetas.",
             "Os ficheiros que carregaste no Standard Notes ficam no servidor deles, por isso o backup só guarda os nomes. Cada nota importada marca onde estava um ficheiro. Transfere esses ficheiros do Standard Notes e volta a adicioná-los à nota."
           ]
         },
@@ -444,6 +515,47 @@
           "h": "Se faltarem imagens ou ficheiros",
           "p": [
             "Um backup feito antes de teres assinalado \"Backup attachments\" não tem ficheiros lá dentro, e a pré-visualização da importação vai avisar-te de que há notas a referir anexos que o backup não traz. Se isso acontecer, cancela, ativa a opção no UpNote, clica outra vez em \"Backup now\", comprime a pasta nova e importa essa."
+          ]
+        }
+      ]
+    },
+    "joplin": {
+      "app": "Joplin",
+      "title": "Exporta as tuas notas do Joplin",
+      "metaTitle": "Exportar as tuas notas do Joplin como JEX - PrivacyNotes",
+      "lead": "O Joplin exporta todos os cadernos de uma vez num único ficheiro JEX. Traz as tuas notas com os cadernos, as etiquetas, as tarefas por fazer, as ligações entre notas e os anexos.",
+      "sections": [
+        {
+          "h": "Exporta tudo como JEX",
+          "steps": [
+            "Abre o Joplin no teu computador.",
+            "Escolhe File > Export all > \"JEX - Joplin Export File\".",
+            "Guarda o ficheiro. Recebes um único ficheiro .jex com todos os cadernos, por isso não há nada para comprimir.",
+            "Larga esse .jex como está."
+          ],
+          "p": [
+            "Tools > Create backup escreve o mesmo ficheiro, byte a byte, como all_notebooks.jex dentro de uma pasta JoplinBackup na tua pasta pessoal. Se o Joplin já faz esses backups por ti, o mais recente serve igualmente bem."
+          ]
+        },
+        {
+          "h": "Escolhe JEX, não Markdown, HTML nem PDF",
+          "p": [
+            "Export all oferece também MD, MD + Front Matter, HTML directory e PDF. Essas são cópias feitas para ler noutras apps. O ficheiro JEX é o registo do próprio Joplin de cada nota, caderno, etiqueta e anexo, e é esse que lemos. Se largares uma das outras exportações, dizemos-to em vez de importarmos só metade.",
+            "Se já exportaste \"RAW - Joplin Export Directory\", comprime essa pasta num zip e larga o zip. Contém os mesmos itens que o ficheiro JEX."
+          ]
+        },
+        {
+          "h": "Tira as notas do lixo antes de exportares",
+          "p": [
+            "O Joplin deixa o lixo de fora de todas as exportações e de todos os backups. Tira do lixo as notas que queres guardar antes de exportares, ou ficam para trás no Joplin."
+          ]
+        },
+        {
+          "h": "O que vem junto",
+          "p": [
+            "Os teus cadernos são reconstruídos como pastas a sério, aninhadas tão fundo como o Joplin as aninhou, e cada nota mantém as suas etiquetas e as datas de criação e de atualização que o Joplin te mostrava.",
+            "As tarefas por fazer passam a notas de tarefas com uma caixa que podes assinalar, já assinalada quando a tarefa estava concluída, e uma data-limite fica escrita ao lado do título. As ligações entre notas passam a ligações entre notas do PrivacyNotes. As imagens e os anexos são importados para o teu armazenamento e ficam no mesmo sítio da nota. As notas guardadas como HTML, como muitos recortes da web, são convertidas com a formatação.",
+            "As notas do caderno Conflicts do Joplin chegam com a etiqueta \"conflict\", para as poderes encontrar e tratar. Se usas a encriptação do Joplin, deixa-o acabar de desencriptar antes de exportares: um item que ainda esteja encriptado é ignorado, e a pré-visualização da importação diz quantos."
           ]
         }
       ]

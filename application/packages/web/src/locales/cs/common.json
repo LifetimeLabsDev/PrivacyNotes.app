@@ -40,7 +40,8 @@
   "storageBar": {
     "usage": "Využito {{percent}} % ({{used}} / {{max}})",
     "refresh": "Obnovit úložiště",
-    "cleanupInfo": "Smazané položky se hned přestanou započítávat. Samotné zašifrované soubory zmizí ze serveru během několika dní."
+    "cleanupInfo": "Smazané položky se hned přestanou započítávat. Samotné zašifrované soubory zmizí ze serveru během několika dní.",
+    "open": "Otevřít nastavení úložiště"
   },
   "updateToast": {
     "available": "Dostupná aktualizace",
@@ -95,7 +96,7 @@
   },
   "quickSwitcher": {
     "label": "Přejít na položku nebo nastavení",
-    "jumpTo": "Přejít na",
+    "jumpTo": "Přejít",
     "placeholder": "Napiš název položky nebo nastavení, nebo > pro příkazy",
     "recent": "Nedávné",
     "empty": "Žádná položka ani nastavení s tímto názvem",
@@ -108,7 +109,25 @@
     "openInTab": "otevřít na kartě",
     "openLink": "Otevřít",
     "edit": "upravit",
-    "close": "zavřít"
+    "close": "zavřít",
+    "tags": "Značky",
+    "folders": "Složky",
+    "tagItems_one": "{{count}} položka",
+    "tagItems_few": "{{count}} položky",
+    "tagItems_other": "{{count}} položek",
+    "emptyTags": "Žádná značka s tímto názvem",
+    "emptyFolders": "Žádná složka s tímto názvem",
+    "onlyTags": "značky",
+    "onlyFolders": "složky",
+    "showOnlyTags": "Jen značky",
+    "showOnlyFolders": "Jen složky",
+    "showOnlyCommands": "Jen příkazy",
+    "goToTag": "Přejít na značku",
+    "goToFolder": "Přejít do složky",
+    "createTag": "Vytvořit značku #{{name}}",
+    "createFolder": "Vytvořit složku „{{name}}“",
+    "newTag": "Nová značka",
+    "newFolder": "Nová složka"
   },
   "cardForm": {
     "cardholderName": "Jméno držitele karty",

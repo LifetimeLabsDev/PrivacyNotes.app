@@ -1,20 +1,23 @@
 /**
- * 4-digit PIN gating phrase display and PIN-protected notes.
+ * The app lock secret, a 4-digit PIN or a longer passcode, gating phrase
+ * display and PIN-protected notes.
  *
- * Hash (PBKDF2-SHA256, 600k iterations, 16-byte salt) stored in UserSettings
- * and synced across devices. localStorage cache keeps `hasPin()` synchronous.
- * Legacy PINs (100k iterations) are upgraded transparently on next verify.
+ * Hash (PBKDF2-SHA256, 600k iterations) stored in UserSettings and synced
+ * across devices. The salt is 16 bytes for a PIN and 24 for a passcode, which
+ * is how every reader tells the two apart (secretKind.ts). localStorage cache
+ * keeps `hasPin()` synchronous. A legacy hash (100k iterations) still
+ * verifies, and stays until the secret is changed.
  */
 
 import { bytesToBase64, base64ToBytes } from '@notes/shared';
 import type { UserSettings } from './userSettings';
 import { credentialKey } from './demo';
+import { normalizeSecret, saltBytesFor, saltIsPasscode } from './secretKind';
 
 // Spec: THREAT_MODEL.md (PBKDF2-SHA256 600k iterations per OWASP 2024)
 const ITERATIONS = 600_000;
 const LEGACY_ITERATIONS = 100_000;
 const KEY_BITS = 256;
-const SALT_BYTES = 16;
 
 // localStorage cache mirrors settings so `hasPin()` can be synchronous.
 // Demo-bucketed (credentialKey in demo.ts) so a demo session's PIN
@@ -30,7 +33,7 @@ async function derive(pin: string, salt: Uint8Array, iterations: number): Promis
   const enc = new TextEncoder();
   const material = await crypto.subtle.importKey(
     'raw',
-    enc.encode(pin),
+    enc.encode(normalizeSecret(pin)),
     'PBKDF2',
     false,
     ['deriveBits']
@@ -91,7 +94,7 @@ export function clearPinCache(): void {
 
 // ── Public API ───────────────────────────────────────────────────
 
-/** Synchronous check via localStorage cache (kept in sync by syncPinCache/setPin). */
+/** Synchronous check via localStorage cache (kept in sync by syncPinCache/stagePinHash). */
 export function hasPin(): boolean {
   try {
     return (
@@ -104,19 +107,100 @@ export function hasPin(): boolean {
 }
 
 /**
- * Hash a new PIN and return updated settings. Does NOT persist -
- * caller must save + sync. Updates localStorage cache immediately.
+ * True when the account's secret, as this device caches its hash, is a
+ * passcode. The PIN tab, the note gate, the phrase gate and the app-lock
+ * confirm draw their field from it; the lock screen reads the wrap instead
+ * (`pinWrapIsPasscode` in biometric.ts), because that is what it opens.
  */
-export async function setPin(
-  pin: string,
-  settings: UserSettings
-): Promise<UserSettings> {
-  const salt = crypto.getRandomValues(new Uint8Array(SALT_BYTES));
+export function pinIsPasscode(): boolean {
+  try {
+    return saltIsPasscode(localStorage.getItem(CACHE_SALT));
+  } catch {
+    return false;
+  }
+}
+
+/** The salt and hash a check was made against, as the synced settings carry them. */
+export type PinCredential = Pick<UserSettings, 'pinSalt' | 'pinHash'>;
+
+/** The cached salt and hash, null when this device caches none. */
+export function cachedPinCredential(): PinCredential {
+  try {
+    return { pinSalt: localStorage.getItem(CACHE_SALT), pinHash: localStorage.getItem(CACHE_HASH) };
+  } catch {
+    return { pinSalt: null, pinHash: null };
+  }
+}
+
+/** A credential as one comparable value. */
+export function credentialStamp(c: PinCredential): string {
+  return `${c.pinSalt ?? ''}:${c.pinHash ?? ''}`;
+}
+
+/**
+ * The cached hash and salt as one value. A check that starts under one stamp
+ * and ends under another answered for a secret the account no longer holds
+ * (a sync pass replaced it during the derivation), so its answer opens
+ * nothing. Pinned by tests/secretSurfaces.test.ts.
+ */
+export function pinCredentialStamp(): string {
+  return credentialStamp(cachedPinCredential());
+}
+
+/** A hash of the secret, as the synced settings carry it. */
+export type PinHash = { pinSalt: string; pinHash: string; pinIterations: number };
+
+/**
+ * Hash a new secret at today's count, in memory, writing nothing. The salt
+ * takes the length the secret's kind records (secretKind.ts).
+ */
+export async function hashPin(pin: string): Promise<PinHash> {
+  const salt = crypto.getRandomValues(new Uint8Array(saltBytesFor(pin)));
   const hash = await derive(pin, salt, ITERATIONS);
-  const saltB64 = bytesToBase64(salt);
-  const hashB64 = bytesToBase64(hash);
-  cacheWrite(saltB64, hashB64, ITERATIONS);
-  return { ...settings, pinSalt: saltB64, pinHash: hashB64, pinIterations: ITERATIONS };
+  return { pinSalt: bytesToBase64(salt), pinHash: bytesToBase64(hash), pinIterations: ITERATIONS };
+}
+
+/**
+ * Put a new hash into this device's cache before the settings that carry it
+ * are saved, and read it back. Answers null, with the hash it had still in
+ * place, when the store refuses it; otherwise a function that puts back the
+ * hash it replaced, for a settings save that then does not land (saveCredential
+ * in userSettings.ts). The put-back does nothing once another hash was cached
+ * here. It writes the keys itself, not through cacheWrite, which swallows a
+ * refusal.
+ */
+export function stagePinHash(h: PinHash): (() => void) | null {
+  const keys = [CACHE_SALT, CACHE_HASH, CACHE_ITERATIONS];
+  let previous: (string | null)[];
+  try {
+    previous = keys.map((k) => localStorage.getItem(k));
+  } catch {
+    return null;
+  }
+  // Putting the old values back returns the store to a size it already held.
+  const putBack = () => keys.forEach((k, i) => {
+    try {
+      const v = previous[i];
+      if (v === null || v === undefined) localStorage.removeItem(k);
+      else localStorage.setItem(k, v);
+    } catch { /* */ }
+  });
+  try {
+    localStorage.setItem(CACHE_SALT, h.pinSalt);
+    localStorage.setItem(CACHE_HASH, h.pinHash);
+    localStorage.setItem(CACHE_ITERATIONS, String(h.pinIterations));
+    if (localStorage.getItem(CACHE_SALT) !== h.pinSalt || localStorage.getItem(CACHE_HASH) !== h.pinHash) {
+      throw new Error('read-back');
+    }
+  } catch {
+    putBack();
+    return null;
+  }
+  return () => {
+    try {
+      if (localStorage.getItem(CACHE_HASH) === h.pinHash) putBack();
+    } catch { /* */ }
+  };
 }
 
 /** Remove the PIN from settings and clear unlock state. Caller must persist + sync. */
@@ -154,9 +238,11 @@ export function pinChangeNeedsWrap(
 }
 
 /**
- * Verify a candidate PIN. Returns `{ valid, needsRehash }`.
- * When `needsRehash` is true, caller should call `setPin()` to upgrade
- * to current iteration count.
+ * Verify a candidate PIN. Returns `{ valid, needsRehash }`. `needsRehash` is
+ * true for a valid PIN under a hash at the older count, and nothing acts on it
+ * yet: a rehash saved here would be pushed over a newer secret another device
+ * set before this one pulled it, so it waits on a guard in the settings push.
+ * Spec: ops/docs/plans/app-lock-passcode.md (section 10)
  */
 export async function verifyPin(pin: string): Promise<{ valid: boolean; needsRehash: boolean }> {
   let saltB64: string | null;

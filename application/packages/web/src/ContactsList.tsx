@@ -15,6 +15,7 @@ import { SelectionCountStrip } from './SelectionCountStrip';
 import { HoverLabel } from './HoverLabel';
 import { ImportPromptEntry, importPromptFor, type ImportOffer } from './ImportPrompt';
 import { FunnelSimple, Download, PILLAR_GLYPHS, NEW_GLYPHS } from './icons';
+import { NewButton } from './NewButton';
 
 /**
  * The Contacts pillar list COLUMN - the vault anatomy, one step simpler
@@ -173,7 +174,7 @@ export function ContactsList({
           allTags={allTags}
         />
       ) : (
-      <div className="shrink-0 h-14 px-4 border-b border-divider flex items-center justify-between gap-3">
+      <div className="shrink-0 h-11 md:h-14 px-4 border-b border-divider flex items-center justify-between gap-3">
         <ListNav
           hiddenViews={hiddenViews}
           view="contacts"
@@ -182,15 +183,11 @@ export function ContactsList({
           title={t('pillars.contacts')}
           icon={<PILLAR_GLYPHS.contacts size={26} className="text-accent shrink-0" aria-hidden="true" />}
         />
-        <button
-          type="button"
+        <NewButton
           onClick={onRequestNew}
           tabIndex={mobileTabIndex}
-          className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition"
-        >
-          <NEW_GLYPHS.contact size={18} />
-          {t('contacts.new')}
-        </button>
+          label={t('contacts.new')}
+        />
       </div>
       )}
 
@@ -202,7 +199,7 @@ export function ContactsList({
       />
 
       {/* ── Search row + sort button - matches the other lists ───── */}
-      <div className="shrink-0 p-3 border-b border-divider relative">
+      <div className="shrink-0 px-3 py-2 md:p-3 border-b border-divider relative">
         <div className="flex items-stretch gap-2">
           <HoverLabel label={t('contacts.sortOptions')} position="above-start">
             <button

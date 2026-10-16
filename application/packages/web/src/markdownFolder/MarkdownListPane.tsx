@@ -20,7 +20,8 @@ import { useProgressiveReveal } from '../useProgressiveReveal';
 import { itemGridClass, routeItemClick, useScrollRestore } from '../itemList';
 import { compareNotes } from '../notesViewUtils';
 import { HoverLabel } from '../HoverLabel';
-import { X, CheckSquare, FileMd, FileTxt, Folder, NotePencil, Question, Trash, FunnelSimple, Lock, Copy, ArrowsClockwise, NEW_GLYPHS, PILLAR_GLYPHS } from '../icons';
+import { X, CheckSquare, FileMd, FileTxt, Folder, NotePencil, Question, Trash, FunnelSimple, Lock, Copy, ArrowsClockwise, PILLAR_GLYPHS } from '../icons';
+import { NewButton } from '../NewButton';
 import type { ListPrefs, ListPrefsStore } from '../listPrefs';
 import type { View } from '../views';
 import type { ContextMenuItem } from '../ContextMenu';
@@ -560,7 +561,7 @@ export function MarkdownListPane({
     <div className="flex flex-col h-full min-h-0 bg-surface-1">
       {/* Byte-for-byte the title row `NotesList` uses, so this pillar's header
           is the same control rather than a lookalike. */}
-      <div className="shrink-0 h-14 px-4 border-b border-divider flex items-center justify-between gap-3">
+      <div className="shrink-0 h-11 md:h-14 px-4 border-b border-divider flex items-center justify-between gap-3">
         <ListNav
           hiddenViews={hiddenViews}
           view="markdown"
@@ -569,18 +570,7 @@ export function MarkdownListPane({
           icon={<PILLAR_GLYPHS.markdown size={26} className="text-accent shrink-0" aria-hidden="true" />}
           title={t('markdown.title')}
         />
-        <div className="shrink-0 flex items-center gap-1.5">
-          {dir && (
-            <button
-              type="button"
-              onClick={() => void handleNew()}
-              className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition cursor-pointer"
-            >
-              <NEW_GLYPHS.note size={18} />
-              {t('markdown.new')}
-            </button>
-          )}
-        </div>
+        {dir && <NewButton onClick={() => void handleNew()} label={t('markdown.new')} />}
       </div>
 
       {dir && (

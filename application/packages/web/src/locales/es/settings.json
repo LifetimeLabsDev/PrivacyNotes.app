@@ -168,8 +168,8 @@
     "startViewTitle": "Mostrar al abrir la app",
     "viewTitle": "Mostrar elementos como",
     "viewDesc": "Auto sigue el ancho de tu pantalla.",
-    "openInTabsTitle": "Abrir una pestaña con cada clic",
-    "openInTabsDesc": "Si está desactivado, clic derecho > Abrir en una pestaña sigue abriendo una pestaña. Las pestañas no aparecen en los teléfonos.",
+    "openInTabsTitle": "Mostrar el elemento abierto en una pestaña",
+    "openInTabsDesc": "La pestaña sigue lo que abres a continuación, como en un navegador. Fija una pestaña para conservarla. Si está desactivado, solo \"Abrir en una pestaña\" crea una pestaña. Las pestañas no aparecen en los teléfonos.",
     "viewList": "Lista",
     "viewGrid": "Cuadrícula",
     "viewAuto": "Auto",
@@ -181,6 +181,10 @@
     "copyFormatDesc": "Lo que reciben otras apps cuando copias desde una nota. Solo en este dispositivo.",
     "copyFormatMarkdown": "Markdown",
     "copyFormatPlain": "Texto sin formato",
+    "pasteFormatTitle": "Texto pegado",
+    "pasteFormatDesc": "Lo que se conserva al pegar desde otra app. Solo en este dispositivo.",
+    "pasteFormatFormatted": "Con formato",
+    "pasteFormatPlain": "Texto sin formato",
     "faviconsTitle": "Iconos de los sitios",
     "faviconsDesc": "El logo del sitio junto a los enlaces y los inicios de sesión de la Bóveda.",
     "faviconsExample": "Ejemplo:",
@@ -241,7 +245,10 @@
       "yours": "Tuyos",
       "noLightCommunity": "Aún no hay temas claros de la comunidad.",
       "noDarkCommunity": "Aún no hay temas oscuros de la comunidad.",
-      "none": "Aún no hay temas aquí."
+      "none": "Aún no hay temas aquí.",
+      "sortLabel": "Orden",
+      "sortVotes": "Más votados",
+      "sortNewest": "Más recientes"
     },
     "custom": {
       "newTheme": "Nuevo tema",
@@ -250,7 +257,6 @@
       "logoOriginal": "Original",
       "logoHelp": "El logo y «Privacy» toman el acento del tema o mantienen sus colores originales.",
       "pasteCode": "Pegar código de tema",
-      "community": "Explorar temas",
       "menu": "Opciones de {{name}}",
       "copyCode": "Copiar código",
       "makeCopy": "Duplicar",
@@ -281,7 +287,9 @@
       "suggestTitle": "Completa el resto a partir de tu acento",
       "suggestLight": "Claro",
       "suggestDark": "Oscuro",
-      "communityNote": "La app muestra los {{count}} temas de la comunidad más recientes de cada modo.",
+      "websiteTitle": "Más temas en nuestra web",
+      "websiteDesc": "Todos los temas y los votos más recientes. La app recibe temas nuevos con cada actualización.",
+      "vote": "Votar en GitHub",
       "themeLimit": "Tienes {{max}} temas. Elimina uno para guardar otro.",
       "credit": "Autoría",
       "creditPlaceholder": "Usuario de GitHub (opcional)",
@@ -516,5 +524,27 @@
     "yearFirst": "Primero el año (ISO)",
     "hour24": "24 horas",
     "hour12": "12 horas"
+  },
+  "calendar": {
+    "alertTimed": "Alerta predeterminada, elementos con hora",
+    "alertAllDay": "Alerta predeterminada, elementos de todo el día",
+    "alertBirthday": "Cumpleaños",
+    "alertsHelp": "Un evento nuevo empieza con esta alerta. Después, cada elemento conserva sus propias alertas.",
+    "reminderTitles": "Mostrar títulos en los recordatorios",
+    "reminderTitlesHelp": "Si está desactivado, un recordatorio muestra la palabra Recordatorio y la hora. Un elemento protegido con tu PIN siempre lo hace.",
+    "whereTitle": "Recordatorios en este dispositivo",
+    "reminderHint": {
+      "mobile": "Los recordatorios suenan en este teléfono, también con PrivacyNotes cerrado.",
+      "desktop": "Los recordatorios suenan mientras PrivacyNotes se ejecuta en este ordenador.",
+      "browser": "Los recordatorios suenan mientras PrivacyNotes está abierto en este navegador."
+    },
+    "scheduledThrough": "Recordatorios programados hasta el {{date}}",
+    "permissionAsk": "Permitir notificaciones",
+    "permissionOpenSettings": "Abrir ajustes",
+    "permissionDenied": "Las notificaciones de PrivacyNotes están bloqueadas. Permítelas en los ajustes de este navegador o dispositivo.",
+    "weekNumbers": "Mostrar números de semana",
+    "hours": "Horas visibles",
+    "hoursHelp": "El día y la semana se abren en la primera hora.",
+    "to": "a"
   }
 }

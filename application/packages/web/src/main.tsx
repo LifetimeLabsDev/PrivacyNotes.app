@@ -6,6 +6,8 @@ import { LoadingScreen } from './LoadingScreen';
 import { initTheme } from './theme';
 import { initAppZoom } from './appZoom';
 import { clearFreshDemoCredentials, isDemoMode } from './demo';
+import { dropDoorsLeftBySignOut } from './biometric';
+import { logAuthEvent } from './authDiag';
 import { isAppHost } from './hosts';
 import { dropApexPhraseFragment } from './qrSignIn';
 import { captureShortcutFromLocation } from './noteShortcut';
@@ -17,7 +19,17 @@ import { i18nReady } from './i18n';
 import { initWriterGenListener, announceSealedWriter } from './writerGen';
 import { SEALED_WRITES_IN_PRODUCTION, setSealedWrites } from './localSeal';
 import { VERSION } from './version';
+import { onPreloadError } from './chunkLoad';
 import './index.css';
+
+const NATIVE_MOBILE = __PN_BUILD_PLATFORM__ === 'ios' || __PN_BUILD_PLATFORM__ === 'android';
+function hasReminderLeftovers(): boolean {
+  try {
+    return localStorage.getItem('privacynotes.reminderToCancel') !== null;
+  } catch {
+    return false;
+  }
+}
 
 initTheme();
 
@@ -52,6 +64,18 @@ if (!isLinuxNative()) document.documentElement.dataset.lazyTiles = 'on';
 // demo PIN or app lock - see clearFreshDemoCredentials. Must run
 // before React mounts (App.tsx reads the lock state synchronously).
 clearFreshDemoCredentials();
+// A sign-out from a tab on an older bundle can leave a wrapped door this
+// bundle knows and that one did not. It goes before App.tsx reads the lock
+// state, on proof that this browser is signed out (dropDoorsLeftBySignOut).
+if (dropDoorsLeftBySignOut()) logAuthEvent('auth:boot-dropped-signed-out-doors');
+// Reminder ids a teardown left unconfirmed when its page reloaded or died:
+// cancelled at start, signed in or not, without holding the boot up. Only a
+// phone hands reminders to the OS. The key is REMINDER_TO_CANCEL_KEY in
+// notesView/useReminders.tsx, read here so a start with nothing to cancel
+// loads nothing.
+if (NATIVE_MOBILE && hasReminderLeftovers()) {
+  void import('./notesView/useReminders').then((m) => m.cancelLeftoverReminders()).catch(() => {});
+}
 // A reader-release tab reloads once when a sealed-writer tab appears.
 // Spec: ops/docs/plans/local-at-rest.md (5.2, mechanism 2)
 initWriterGenListener();
@@ -81,26 +105,9 @@ const leavingApex = dropApexPhraseFragment();
 // Spec: ops/docs/plans/note-shortcuts.md
 captureShortcutFromLocation();
 
-// Vite emits `vite:preloadError` on `window` when a dynamically-imported
-// chunk 404s - almost always because the user had a tab open across a
-// deploy, so the cached entry bundle is still asking for an old chunk
-// hash that no longer exists on the CDN. Without handling this, the
-// failure surfaces inside whichever feature triggered the import (e.g.
-// "Camera unavailable: Failed to fetch dynamically imported module"
-// when opening the QR scanner) and the user has no idea a hard refresh
-// would fix it.
-//
-// We reload once per tab session. The flag lives in sessionStorage so
-// it auto-clears on tab close - and so a *second* preloadError in the
-// same session (post-reload) doesn't loop: it falls through to the
-// caller's normal error handling, which means something is genuinely
-// broken and reloading won't help.
-window.addEventListener('vite:preloadError', (event) => {
-  if (sessionStorage.getItem('pn:reloaded-for-preload-error') === '1') return;
-  sessionStorage.setItem('pn:reloaded-for-preload-error', '1');
-  event.preventDefault();
-  window.location.reload();
-});
+// A chunk that fails to load: one reload per tab session picks up a new
+// deploy, never offline and never for a prefetch (chunkLoad.tsx).
+window.addEventListener('vite:preloadError', onPreloadError);
 
 // A handful of standalone screens live behind their own URL rather than a
 // nested route. We check the pathname here and lazy-load the one that

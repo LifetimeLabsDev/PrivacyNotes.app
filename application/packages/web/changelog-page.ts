@@ -207,6 +207,9 @@ const TYPE_ICON: Record<ChangelogItem['type'], string> = {
   fixed: BUG_ICON.replace('width="15" height="15"', 'width="16" height="16"'),
 };
 
+/** The public tracker, where every issue an item answers is linked. */
+const ISSUES_URL = 'https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues';
+
 function renderReleases(releases: ChangelogRelease[], shotMap: ShotMap): string {
   let prevMonth: string | null = null;
   return releases
@@ -219,7 +222,10 @@ function renderReleases(releases: ChangelogRelease[], shotMap: ShotMap): string 
             n < 0
               ? ''
               : ` <a class="shotchip" href="${shots[n].src}" data-i="${n}">${PHOTO_ICON}<span>Screenshot</span></a>`;
-          return `<li class="item" data-t="${it.type}"${n < 0 ? '' : ' data-shot'}><span class="tag tag-${it.type}">${LABEL[it.type]}</span><span class="txt">${esc(it.text)}${chip}</span></li>`;
+          const issues = (it.issues ?? [])
+            .map((num) => ` <a class="issuechip" href="${ISSUES_URL}/${num}" target="_blank" rel="noopener noreferrer">#${num}</a>`)
+            .join('');
+          return `<li class="item" data-t="${it.type}"${n < 0 ? '' : ' data-shot'}><span class="tag tag-${it.type}">${LABEL[it.type]}</span><span class="txt">${esc(it.text)}${issues}${chip}</span></li>`;
         })
         .join('');
       const gallery = shots.length ? renderGallery(shots) : '';
@@ -367,6 +373,8 @@ const PAGE_CSS = `.cl-month{margin:30px 0 4px;scroll-margin-top:16px}
 .shotchip{display:inline-flex;align-items:center;gap:4px;margin-left:8px;padding:1px 8px 1px 6px;border:1px solid var(--line);border-radius:999px;font-size:12px;line-height:18px;font-weight:500;color:var(--muted);text-decoration:none;white-space:nowrap;vertical-align:1px;cursor:zoom-in}
 .shotchip svg{width:13px;height:13px}
 .shotchip:hover{color:var(--accent);border-color:var(--accent)}
+.issuechip{margin-left:6px;font-size:12px;font-weight:500;color:var(--muted);text-decoration:none;white-space:nowrap}
+.issuechip:hover{color:var(--accent);text-decoration:underline}
 ${LIGHTBOX_CSS}
 @media(max-width:860px){
 .rail-extra{margin-top:14px;padding-top:0;border-top:0}

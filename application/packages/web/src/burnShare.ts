@@ -19,6 +19,7 @@ import { hasMedia, stripMediaReferences } from './imageProcessing';
 import i18n from './i18n';
 import { detectPlatform } from './devices';
 import { isDemoMode } from './demo';
+import { APEX_ORIGIN } from './hosts';
 import { readLineSpacing } from './theme';
 
 // Lightweight anon client - burn shares don't require auth.
@@ -129,7 +130,7 @@ export async function createBurnLink(
   const origin =
     detectPlatform() === 'web'
       ? window.location.origin.replace('://www.', '://')
-      : 'https://privacynotes.app';
+      : APEX_ORIGIN;
   const url = `${origin}/burn#id=${id}&k=${keyHex}`;
 
   return { ok: true, url };

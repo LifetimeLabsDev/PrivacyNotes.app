@@ -168,8 +168,8 @@
     "startViewTitle": "Show when app opens",
     "viewTitle": "Show items as",
     "viewDesc": "Auto follows your screen width.",
-    "openInTabsTitle": "Open a tab on every click",
-    "openInTabsDesc": "When this is off, right-click > Open in tab still opens a tab. Tabs do not show on phones.",
+    "openInTabsTitle": "Show the open item in a tab",
+    "openInTabsDesc": "The tab follows what you open next, like in a browser. Pin a tab to keep it. When this is off, only \"Open in tab\" makes a tab. Tabs do not show on phones.",
     "viewList": "List",
     "viewGrid": "Grid",
     "viewAuto": "Auto",
@@ -181,6 +181,10 @@
     "copyFormatDesc": "What other apps get when you copy from a note. This device only.",
     "copyFormatMarkdown": "Markdown",
     "copyFormatPlain": "Plain text",
+    "pasteFormatTitle": "Pasted text",
+    "pasteFormatDesc": "What a paste from another app keeps. This device only.",
+    "pasteFormatFormatted": "Formatted",
+    "pasteFormatPlain": "Plain text",
     "faviconsTitle": "Website icons",
     "faviconsDesc": "Site logos next to links and vault logins.",
     "faviconsExample": "Example:",
@@ -241,7 +245,10 @@
       "yours": "Yours",
       "noLightCommunity": "No light community themes yet.",
       "noDarkCommunity": "No dark community themes yet.",
-      "none": "No themes here yet."
+      "none": "No themes here yet.",
+      "sortLabel": "Order",
+      "sortVotes": "Most votes",
+      "sortNewest": "Newest"
     },
     "custom": {
       "newTheme": "New theme",
@@ -250,7 +257,6 @@
       "logoOriginal": "Original",
       "logoHelp": "The logo and “Privacy” take the theme's accent, or keep their original colors.",
       "pasteCode": "Paste theme code",
-      "community": "Browse themes",
       "madeBy": "Made by @{{author}}",
       "menu": "Options for {{name}}",
       "copyCode": "Copy code",
@@ -281,7 +287,9 @@
       "suggestTitle": "Fill the rest from your accent",
       "suggestLight": "Light",
       "suggestDark": "Dark",
-      "communityNote": "The app shows the {{count}} newest community themes of each mode.",
+      "websiteTitle": "More themes on our website",
+      "websiteDesc": "Every theme and the latest votes. The app gets new themes with each update.",
+      "vote": "Vote on GitHub",
       "themeLimit": "You have {{max}} themes. Delete one to save another.",
       "credit": "Credit",
       "creditPlaceholder": "GitHub username (optional)",
@@ -516,5 +524,27 @@
     "yearFirst": "Year first (ISO)",
     "hour24": "24-hour",
     "hour12": "12-hour"
+  },
+  "calendar": {
+    "alertTimed": "Default alert, timed items",
+    "alertAllDay": "Default alert, all-day items",
+    "alertBirthday": "Birthdays",
+    "alertsHelp": "A new event starts with this alert. Each item keeps its own alerts after that.",
+    "reminderTitles": "Show titles in reminders",
+    "reminderTitlesHelp": "Off, a reminder shows the word Reminder and the time. An item behind your PIN always does.",
+    "whereTitle": "Reminders on this device",
+    "reminderHint": {
+      "mobile": "Reminders ring on this phone, also while PrivacyNotes is closed.",
+      "desktop": "Reminders ring while PrivacyNotes runs on this computer.",
+      "browser": "Reminders ring while PrivacyNotes is open in this browser."
+    },
+    "scheduledThrough": "Reminders scheduled through {{date}}",
+    "permissionAsk": "Allow notifications",
+    "permissionOpenSettings": "Open settings",
+    "permissionDenied": "Notifications are blocked for PrivacyNotes. Allow them in the settings of this browser or device.",
+    "weekNumbers": "Show week numbers",
+    "hours": "Hours shown",
+    "hoursHelp": "The day and the week open at the first hour.",
+    "to": "to"
   }
 }

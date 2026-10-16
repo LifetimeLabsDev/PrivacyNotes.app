@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
 import type { ListPrefs, ListPrefsStore } from './listPrefs';
@@ -11,21 +11,25 @@ import NoteRow, { itemDragSelection } from './NoteRow';
 import NoteCard from './NoteCard';
 import { StorageBar } from './StorageBar';
 import { HoverLabel } from './HoverLabel';
-import { JournalCalendarCard, JournalCalendarPopover, useJournalCalendarShown } from './JournalCalendar';
-import { Key, CreditCard, Lock, NotePencil, CaretDown, Trash, SquaresFour, Book, Shield, ShieldPlus, PushPin, FileText, FunnelSimple, Note, CheckSquare, Upload, BookmarkSimple, Plus, Notebook, PILLAR_GLYPHS, NEW_GLYPHS } from './icons';
+import { JournalCalendarCard, JournalCalendarPopover, useJournalCalendarShown, type CalendarCardExtras } from './JournalCalendar';
+import { Key, CreditCard, Lock, NotePencil, Trash, SquaresFour, Book, Shield, ShieldPlus, PushPin, FileText, FunnelSimple, Note, CheckSquare, Upload, BookmarkSimple, Plus, Notebook, CalendarPlus, PILLAR_GLYPHS, NEW_GLYPHS } from './icons';
 import { ActiveFilterEntry, ActiveSearchEntry, FilteredEmpty, ListFilterChips } from './ListFilterChips';
 import { ListEntryCard } from './ListEntryCard';
 import { BookmarkRowActions } from './BookmarkRowActions';
 import { ListSearchInput } from './ListSearchInput';
 import { Switch } from './Switch';
-import { exemptOpts, newButtonOpts } from './i18nExempt';
+import { exemptOpts } from './i18nExempt';
+import { NewButton, NewButtonDock } from './NewButton';
+import { keyText } from './shortcutMatch';
 import type { View } from './views';
 import { ListNav } from './notesView/ListNav';
 import { ItemList, useContextTarget, useItemList } from './itemList';
 import { ImportPromptEntry, importPromptFor, type ImportOffer, type ImportPromptKind } from './ImportPrompt';
 import { useListKeys } from './listKeys';
 import { useListGroups, type ListEntry } from './ListGroupHeader';
-import type { JournalDays } from './notesViewUtils';
+import type { DayIndex } from './notesViewUtils';
+import type { Space } from './spaces';
+import { toLocalIso } from './intlFormat';
 
 type VaultFilter = 'all' | 'login' | 'card' | 'ssh-key';
 
@@ -113,13 +117,26 @@ export interface NotesListProps {
   onNewFile: () => void;
   onNewBookmark: () => void;
   onNewContact: () => void;
+  /** The quick add: the switcher in create mode. */
+  onQuickAdd: () => void;
   /** Open the import modal on the tab this pillar imports from - the
    *  standing import entry at the end of the list. */
   onOpenImport: (tab: 'import' | 'vault') => void;
   onBackfillDate: (isoDate: string) => void;
-  /** Local ISO day to the id of that day's newest journal entry. */
-  journalEntries: JournalDays;
-  onOpenJournalEntry: (id: string) => void;
+  /** Every dated item by day: the one index every calendar reads. */
+  calendarDays: DayIndex;
+  /** Whether Notes and All hold a dated item, so their card shows. */
+  datedLists: { notes: boolean; all: boolean };
+  /** With Spaces on, the space that is not open, for the calendar switch. */
+  otherSpace: Space | null;
+  /** Opens an item a calendar names; a repeating one names its occurrence. */
+  onOpenCalendarItem: (id: string, occurrence?: string) => void;
+  /** The cards' expand button and the drop of a row on a day. */
+  calendarExtras: CalendarCardExtras;
+  /** The Calendar pillar's agenda, drawn in place of the item list. */
+  calendarBody?: ReactNode;
+  /** Creates a note or a task list on a day picked in a calendar. */
+  onCreateDated: (type: 'note' | 'task', isoDate: string) => void;
   onEmptyTrash: () => void;
   trashedNotesLength: number;
   onRefreshStorage: () => Promise<void> | void;
@@ -144,6 +161,8 @@ type NewMenuOption = {
   label: string;
   icon: React.ReactNode;
   onSelect: () => void;
+  /** The key that runs it, drawn at the row's end. */
+  keys?: string;
 };
 
 /* ── Shared "New" dropdown ──────────────────────────────────────────
@@ -151,10 +170,13 @@ type NewMenuOption = {
  * view (note / task / journal / login / file) so the two can't drift in
  * style or behaviour. Callers pass fully-built, already-translated options;
  * the button label ("New") is the only string this component owns. */
-function NewDropdown({ options, ariaLabel, icon }: { options: NewMenuOption[]; ariaLabel?: string; icon?: React.ReactNode }) {
-  const { t } = useTranslation('notes');
+function NewDropdown({ options, label }: { options: NewMenuOption[]; label: string }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const { docked, slot } = useContext(NewButtonDock);
+  // The bar's slot comes and goes with an open item; a menu left open would
+  // greet the person on the way back.
+  useEffect(() => setOpen(false), [slot]);
 
   useEffect(() => {
     if (!open) return;
@@ -169,21 +191,16 @@ function NewDropdown({ options, ariaLabel, icon }: { options: NewMenuOption[]; a
   }, [open]);
 
   return (
-    // Spec: ops/docs/ui-patterns.md section 45 (z-index tier system - wrapper must
-    // not create a z-20 stacking context, or it traps the MobileHeader's z-50 pillar
-    // dropdown beneath it in the Vault view).
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen(!open)}
-        aria-label={ariaLabel}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition cursor-pointer"
-      >
-        {icon ?? <NEW_GLYPHS.note size={18} />}
-        {t('header.new', newButtonOpts())}
-        <CaretDown size={12} className="ms-0.5" />
-      </button>
+    // Spec: ops/docs/ui-patterns.md section 45 (z-index tier system - the
+    // NewButton wrapper must not create a z-20 stacking context, or it traps the
+    // MobileHeader's z-50 pillar dropdown beneath it in the Vault view).
+    <NewButton
+      wrapRef={ref}
+      onClick={() => setOpen(!open)}
+      label={label}
+      popup="menu"
+      expanded={open}
+    >
       {/*
         `w-max` on the menu below is load-bearing, not decoration. The menu is
         absolutely positioned inside a `relative` wrapper that is only as wide as
@@ -199,8 +216,8 @@ function NewDropdown({ options, ariaLabel, icon }: { options: NewMenuOption[]; a
         Spec: ops/docs/ui-patterns.md section 45.
       */}
       {open && (
-        <div role="menu" className="absolute end-0 top-full mt-1 z-50 w-max max-w-[calc(100vw-1.5rem)] bg-surface-2 border border-divider rounded-lg shadow-lg py-1">
-          {options.map(({ key, label, icon, onSelect }) => (
+        <div role="menu" className={`absolute end-0 ${docked ? 'bottom-full mb-2' : 'top-full mt-1'} z-50 w-max max-w-[calc(100vw-1.5rem)] bg-surface-2 border border-divider rounded-lg shadow-lg py-1`}>
+          {options.map(({ key, label, icon, onSelect, keys }) => (
             <button
               key={key}
               type="button"
@@ -216,11 +233,12 @@ function NewDropdown({ options, ariaLabel, icon }: { options: NewMenuOption[]; a
                   New button itself, where they sit on an accent-tinted pill. */}
               <span className="text-accent">{icon}</span>
               {label}
+              {keys && <kbd className="ms-auto ps-4 font-sans text-[11px] text-pn-muted">{keys}</kbd>}
             </button>
           ))}
         </div>
       )}
-    </div>
+    </NewButton>
   );
 }
 
@@ -285,10 +303,16 @@ export function NotesList({
   onNewFile,
   onNewBookmark,
   onNewContact,
+  onQuickAdd,
   onOpenImport,
   onBackfillDate,
-  journalEntries,
-  onOpenJournalEntry,
+  calendarDays,
+  datedLists,
+  otherSpace,
+  onOpenCalendarItem,
+  calendarExtras,
+  calendarBody,
+  onCreateDated,
   onEmptyTrash,
   trashedNotesLength,
   onRefreshStorage,
@@ -305,6 +329,8 @@ export function NotesList({
   const listPrefsButtonRef = useRef<HTMLButtonElement | null>(null);
   const [showBackfill, setShowBackfill] = useState(false);
   const backfillButtonRef = useRef<HTMLButtonElement | null>(null);
+  const newSlot = useContext(NewButtonDock).slot;
+  useEffect(() => setShowBackfill(false), [newSlot]);
 
   const [contextTargetId, setContextTargetId] = useContextTarget();
 
@@ -460,17 +486,21 @@ export function NotesList({
   // created item is starred, from the active view. Bare-noun labels live in
   // notes:newMenu.* so the button's "New" isn't repeated in every row.
   // Order MUST match the sidebar pillar nav (TagsRail.tsx) and the right-click
-  // menu (contextMenus.tsx buildGlobalMenu): Note, Task, Login, File, Journal, Contact, Bookmark.
+  // menu (contextMenus.tsx buildGlobalMenu): Note, Task, Login, File, Journal, Event, Contact, Bookmark.
   // A tag or folder filter narrows the list, never the menu: every type
   // inherits both filters on creation, so all seven stay reachable and land
   // where the user is looking (GitHub #324).
   // Spec: ops/docs/ui-patterns.md section 45 (New-menu order invariant)
   const allNewOptions: NewMenuOption[] = [
+    // Quick add heads the menu: one line that reads a day and a time.
+    { key: 'quickAdd', label: t('newMenu.quickAdd'), icon: <CalendarPlus />, onSelect: () => onQuickAdd(), keys: keyText('quickAdd') },
     { key: 'note', label: t('newMenu.note'), icon: <NEW_GLYPHS.note />, onSelect: () => onNew() },
     { key: 'task', label: t('newMenu.task'), icon: <NEW_GLYPHS.task />, onSelect: () => onNew(undefined, 'tasks') },
     { key: 'login', label: t('newMenu.login'), icon: <NEW_GLYPHS.login />, onSelect: () => onNew('login', 'vault') },
     { key: 'file', label: t('newMenu.file'), icon: <NEW_GLYPHS.file />, onSelect: () => onNewFile() },
     { key: 'journal', label: t('newMenu.journal'), icon: <NEW_GLYPHS.journal />, onSelect: () => onNew(undefined, 'journal') },
+    // An event is made in the quick add, which shows what it can read.
+    { key: 'event', label: t('newMenu.event'), icon: <NEW_GLYPHS.event />, onSelect: () => onQuickAdd() },
     { key: 'contact', label: t('newMenu.contact'), icon: <NEW_GLYPHS.contact />, onSelect: () => onNewContact() },
     { key: 'bookmark', label: t('newMenu.bookmark'), icon: <NEW_GLYPHS.bookmark />, onSelect: () => onNewBookmark() },
   ];
@@ -503,7 +533,7 @@ export function NotesList({
           allTags={allTags}
         />
       ) : (
-      <div className="shrink-0 h-14 px-4 border-b border-divider flex items-center justify-between gap-3">
+      <div className="shrink-0 h-11 md:h-14 px-4 border-b border-divider flex items-center justify-between gap-3">
         <ListNav
           hiddenViews={hiddenViews}
           view={view as Parameters<typeof ListNav>[0]['view']}
@@ -523,6 +553,8 @@ export function NotesList({
               <PILLAR_GLYPHS.pinned size={26} className="text-accent shrink-0" aria-hidden="true" />
             ) : view === 'archive' ? (
               <PILLAR_GLYPHS.archive size={26} className="text-accent shrink-0" aria-hidden="true" />
+            ) : view === 'calendar' ? (
+              <PILLAR_GLYPHS.calendar size={26} className="text-accent shrink-0" aria-hidden="true" />
             ) : (
               <PILLAR_GLYPHS.notes size={26} className="text-accent shrink-0" aria-hidden="true" />
             )
@@ -539,12 +571,14 @@ export function NotesList({
           </button>
           </HoverLabel>
         ) : view !== 'trash' && view !== 'archive' ? (
-          /* No New in Archive, as in Trash: nothing is born archived. */
-          <div className="shrink-0 flex items-center gap-1.5">
+          /* No New in Archive, as in Trash: nothing is born archived. Empty
+             on a phone, where the button draws in the bottom bar through a
+             portal, and hidden then, or the row would keep a gap for it. */
+          <div className="shrink-0 flex items-center gap-1.5 empty:hidden">
             {view === 'vault' ? (
-              <NewDropdown ariaLabel={t('vaultNew.ariaLabel')} options={vaultNewOptions} icon={<NEW_GLYPHS.login size={18} />} />
+              <NewDropdown label={t('vaultNew.ariaLabel')} options={vaultNewOptions} />
             ) : view === 'home' || view === 'starred' ? (
-              <NewDropdown options={allNewOptions} icon={<NEW_GLYPHS.generic size={18} />} />
+              <NewDropdown label={t('header.new')} options={allNewOptions} />
             ) : view === 'journal' ? (
               /* The date picker hangs off the New button rather than a calendar
                  button beside it. This pillar is the only one that wanted three
@@ -552,44 +586,37 @@ export function NotesList({
                  one truncated the title to "Jou...". Nothing is buried: today is
                  the picker's first row and the hotkey still creates it in one
                  stroke. */
-              <div className="relative">
-                <HoverLabel label={t('journal.newEntryHover', { hotkey: hotkeyLabel })} position="above">
-                <button
-                  ref={backfillButtonRef}
-                  type="button"
-                  onClick={() => setShowBackfill((v) => !v)}
-                  aria-label={t('journal.newEntry')}
-                  aria-haspopup="dialog"
-                  aria-expanded={showBackfill}
-                  className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition cursor-pointer"
-                >
-                  <NEW_GLYPHS.note size={18} />
-                  {t('header.new', newButtonOpts())}
-                  <CaretDown size={12} className="ms-0.5" />
-                </button>
-                </HoverLabel>
+              <NewButton
+                buttonRef={backfillButtonRef}
+                onClick={() => setShowBackfill((v) => !v)}
+                label={t('journal.newEntry')}
+                hover={t('journal.newEntryHover', { hotkey: hotkeyLabel })}
+                popup="dialog"
+                expanded={showBackfill}
+              >
                 {showBackfill && (
                   <JournalCalendarPopover
-                    entries={journalEntries}
-                    onOpen={onOpenJournalEntry}
+                    entries={calendarDays}
+                    onOpen={onOpenCalendarItem}
                     onToday={() => onNew()}
                     onPick={onBackfillDate}
                     onClose={() => setShowBackfill(false)}
                     anchorRef={backfillButtonRef}
                   />
                 )}
-              </div>
+              </NewButton>
+            ) : view === 'calendar' ? (
+              <NewButton
+                onClick={() => onQuickAdd()}
+                label={t('header.newEvent')}
+                hover={t('header.newEventHover', { hotkey: keyText('quickAdd') })}
+              />
             ) : (
-              <HoverLabel label={t('header.newNoteHover', { hotkey: hotkeyLabel })} position="above">
-              <button
+              <NewButton
                 onClick={() => onNew()}
-                aria-label={t('header.newNote')}
-                className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition"
-              >
-                <NEW_GLYPHS.note size={18} />
-                {t('header.new', newButtonOpts())}
-              </button>
-              </HoverLabel>
+                label={t('header.newNote')}
+                hover={t('header.newNoteHover', { hotkey: hotkeyLabel })}
+              />
             )}
           </div>
         ) : null}
@@ -661,8 +688,9 @@ export function NotesList({
           the HR coming from the title row above. The sort / list-prefs
           button sits beside the input at the same height so it reads
           as part of the same row. */}
-      <div className="shrink-0 p-3 border-b border-divider relative">
+      <div className="shrink-0 px-3 py-2 md:p-3 border-b border-divider relative">
         <div className="flex items-stretch gap-2">
+          {view !== 'calendar' && (
           <HoverLabel label={t('search.sortOptions')} position="above-start">
           <button
             ref={listPrefsButtonRef}
@@ -681,6 +709,7 @@ export function NotesList({
             <FunnelSimple size={18} />
           </button>
           </HoverLabel>
+          )}
           <ListSearchInput
             inputRef={searchInputRef}
             tabIndex={mobileTabIndex}
@@ -696,6 +725,8 @@ export function NotesList({
             onClose={() => setShowListPrefs(false)}
             anchorRef={listPrefsButtonRef}
             className="absolute start-3 top-full mt-1"
+            calendarRows={view === 'journal' || view === 'all' || view === 'home'}
+            otherSpace={otherSpace}
             /* Journal and Vault own their view. Everything else this list
                draws - Notes, All, Pinned, Trash, a folder or tag filter
                inside any of them - shares Global: giving Notes a copy of its
@@ -717,9 +748,22 @@ export function NotesList({
           onDeselectAll={onDeselectAll}
         />
       )}
+      {view === 'calendar' ? calendarBody : (
       <ItemList list={list} grid={viewMode === 'grid'} onMouseDown={suppressShiftTextSelection}>
         {view === 'journal' && calendarShown && !search.trim() && !selectionMode && (
-          <JournalCalendarCard grid={viewMode === 'grid'} entries={journalEntries} onOpen={onOpenJournalEntry} onPick={onBackfillDate} onToday={() => onNew()} />
+          <JournalCalendarCard grid={viewMode === 'grid'} entries={calendarDays} onOpen={onOpenCalendarItem} onPick={onBackfillDate} onToday={() => onNew()} {...calendarExtras} />
+        )}
+        {/* Notes and All draw the same card once they hold a dated item; an
+            empty day there makes a note. Spec: ops/docs/plans/note-date.md (section 4) */}
+        {((view === 'all' && datedLists.notes) || (view === 'home' && datedLists.all)) && calendarShown && !search.trim() && !selectionMode && (
+          <JournalCalendarCard
+            grid={viewMode === 'grid'}
+            entries={calendarDays}
+            onOpen={onOpenCalendarItem}
+            onPick={(day) => onCreateDated('note', day)}
+            onToday={() => onCreateDated('note', toLocalIso(new Date()))}
+            {...calendarExtras}
+          />
         )}
         {displayNotes.length === 0 && (
           <li className={viewMode === 'grid' ? 'col-span-full' : ''}>
@@ -815,6 +859,7 @@ export function NotesList({
           />
         )}
       </ItemList>
+      )}
     </>
   );
 }

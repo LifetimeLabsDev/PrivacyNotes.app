@@ -18,7 +18,7 @@ const LIMIT = 100;
  * since), and the walk then goes on to the next step. `recent` lists the
  * steps newest first, for the quick switcher.
  *
- * Spec: ops/issues/0331.md
+ * Spec: ops/issues/archive/0331.md
  */
 export function useItemHistory(selectedId: string | null, open: (id: string) => boolean) {
   const steps = useRef<string[]>([]);

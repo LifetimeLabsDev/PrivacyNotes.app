@@ -495,6 +495,7 @@ export function FolderTreeView({
                   onSelect(folder);
                 }}
                 data-row-name={folder.name}
+                aria-current={active || undefined}
                 className={`flex-1 min-w-0 flex items-center text-start ${
                   rail ? 'gap-2 py-2 pe-1' : 'gap-2 py-2 pe-1'
                 } ${disabled ? 'cursor-not-allowed' : ''}`}

@@ -39,16 +39,29 @@
     "photosTooBig_one": "Inte tillräckligt med plats för fotot ({{size}}), så det lämnas utanför. Allt annat kommer med. Frigör {{shortfall}}, eller lägg till lagring, och importera igen för att ta med det.",
     "photosTooBig_other": "Inte tillräckligt med plats för de {{count}} fotona ({{size}}), så de lämnas utanför. Allt annat kommer med. Frigör {{shortfall}}, eller lägg till lagring, och importera igen för att ta med dem."
   },
+  "importCalendar": {
+    "location": "Plats",
+    "videoCall": "Videosamtal",
+    "organizer": "Organisatör",
+    "guests": "Gäster",
+    "file": "Fil",
+    "link": "Länk",
+    "timeZone": "Tidszon",
+    "ends": "Slutar",
+    "repeats": "Upprepas"
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip (mappen Keep) eller en enskild .json-anteckning. Checklistor importeras som riktiga uppgiftslistor.",
+    "googleCalendar": ".zip-filen från Settings > Import & export i Google Kalender, eller en enskild .ics-fil. Händelserna behåller sina tider, upprepningar och påminnelser.",
     "appleNotes": "Exportera med gratisappen Exporter som Markdown och släpp .zip-filen här.",
     "appleJournal": "Exportera från Journal på Mac eller iPhone, komprimera mappen AppleJournalEntries och släpp .zip-filen här. Posterna importeras som dagboksinlägg med sina foton, videor, röstmemon och platser.",
     "evernote": "En ensam .enex, eller flera zippade tillsammans. Behåller formatering, taggar, bilagor, anteckningslänkar och anteckningsböcker. Evernote tar inte med uppgifter i .enex.",
     "samsungNotes": "Exportera som Word (.docx) eller text (.txt). Zippa flera filer för att importera många på en gång.",
     "simplenote": "Exportera från Simplenote (Inställningar -> Verktyg -> Exportera anteckningar). Släpp .zip-filen här.",
-    "standardNotes": "Dekrypterad .zip- eller .txt-säkerhetskopia från Standard Notes (Arkiv > Exportera > Dekrypterad).",
+    "standardNotes": "Dekrypterad .zip- eller .txt-säkerhetskopia från Standard Notes (Account settings > Backups > Data backups > Decrypted).",
     "obsidian": "Obsidian-valv som .zip. Bevarar taggar, [[note links]], mappstruktur, #taggar i texten samt inbäddade bilder och filer.",
     "notesnook": "Notesnook-export som .zip. Välj HTML vid exporten för att behålla formatering, anteckningsböcker, taggar och bilagor.",
+    "bear": "Välj File > Backup Notes... i Bear och släpp .bear2bk-filen här. Taggar och undertaggar, fästa anteckningar, arkivet, papperskorgen, överstrykningar med sina färger, anteckningslänkar och bilagor följer med.",
     "joplin": "Filen .jex från File > Export all > ”JEX - Joplin Export File”. Anteckningsböcker blir mappar, och taggar, att göra-punkter, anteckningslänkar och bilagor följer med.",
     "upnote": "I UpNote: Settings > Backup > Backup now, zippa sedan allt i mappen med säkerhetskopian. Behåller anteckningsböcker, taggar, fästa anteckningar, anteckningslänkar, formatering och bilagor. Export av enskilda anteckningar från mobilapparna fungerar också - välj ”Export to HTML”.",
     "markdownFolder": ".md- eller .txt-filer var för sig eller som en .zip. En zippad mapp behåller sina undermappar och tar med sig sina bilder och bilagor.",
@@ -96,6 +109,12 @@
     "blobsNotInBackup_other": "Dina anteckningar återställdes, men {{items}} som listas i säkerhetskopian saknas i den."
   },
   "preview": {
+    "oversize_one": "{{count}} anteckning är större än 1 MB. Den stannar på den här enheten och synkas inte.",
+    "oversize_other": "{{count}} anteckningar är större än 1 MB. De stannar på den här enheten och synkas inte.",
+    "splitOversize_one": "Dela upp anteckningen i mindre anteckningar vid dess rubriker, så att den synkas",
+    "splitOversize_other": "Dela upp de här {{count}} anteckningarna i mindre anteckningar vid deras rubriker, så att de synkas",
+    "partTitle": "{{title}} ({{index}}/{{total}})",
+    "continuedIn": "Fortsätter i {{link}}",
     "sourceLabel": "Källa",
     "uniqueTags": "Unika taggar",
     "empty": "Tom",
@@ -107,6 +126,7 @@
     "duplicateWarning": "importen lägger till de här som nya anteckningar. Kör du den två gånger får du dubbletter. Det finns ingen automatisk dubblettrensning ännu.",
     "duplicateSkipNote": "bokmärken du redan sparat hoppas över, så att köra det här två gånger dubblerar ingenting.",
     "contactSkipNote": "personer du redan har sparat hoppas över och lämnas som de är, så att köra det två gånger dubblerar ingen.",
+    "eventSkipNote": "händelser du redan har importerat hoppas över och lämnas som de är, så att köra det två gånger dubblerar dem inte.",
     "restoreMergeNote": "anteckningar från din egen säkerhetskopia matchas på id. En anteckning du redan har uppdateras bara när säkerhetskopians version är nyare, och en anteckning i papperskorgen tas ut ur den.",
     "quotaExceeded": "<strong>För lite lagring för att importera.</strong> Uppskattningsvis {{needed}} behövs, {{available}} tillgängligt. Frigör utrymme eller uppgradera innan du importerar.",
     "quotaWarning": "Obs: den här importen använder ungefär {{needed}} av ditt återstående lagringsutrymme på {{available}}.",
@@ -154,7 +174,11 @@
     "bookmarksExportDesc": "Standardfilen för bokmärken som varje webbläsare läser. Importera den till Chrome, Firefox, Safari eller Edge med mapparna kvar.",
     "contactsOnlyHeading": "Bara kontakter",
     "contactsExportTitle": "Kontaktfil (.vcf)",
-    "contactsExportDesc": "vCard-filen som varje telefon och adressbok läser. Importera den i iPhone, Android, Google Kontakter eller Kontakter på Mac, med etiketter och grupper intakta."
+    "contactsExportDesc": "vCard-filen som varje telefon och adressbok läser. Importera den i iPhone, Android, Google Kontakter eller Kontakter på Mac, med etiketter och grupper intakta.",
+    "calendarOnlyHeading": "Bara kalender",
+    "calendarExportTitle": "Kalenderfil (.ics)",
+    "calendarExportDesc": "Händelser samt daterade anteckningar och uppgiftslistor, för Google Kalender, Apple Kalender eller Outlook.",
+    "calendarPrivate": "Privat"
   },
   "exportProgress": {
     "failedTitle": "Exporten misslyckades",
@@ -220,5 +244,11 @@
     "title_other": "{{count}} objekt delades till PrivacyNotes",
     "line": "Inget sparas förrän du väljer.",
     "saveAll": "Spara alla"
+  },
+  "destination": {
+    "label": "Lägg till i",
+    "none": "Ingen mapp",
+    "newFolder": "Ny mapp \"{{name}}\"",
+    "help": "Mappar från källan hamnar i mappen du väljer, och objekt utan mapp läggs direkt i den."
   }
 }

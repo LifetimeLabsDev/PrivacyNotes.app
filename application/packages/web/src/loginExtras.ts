@@ -11,7 +11,7 @@
  * unmasked). Every other type, including one a newer client may add, is
  * treated as hidden.
  *
- * Spec: ops/issues/0289.md
+ * Spec: ops/issues/archive/0289.md
  */
 
 export interface LoginField {

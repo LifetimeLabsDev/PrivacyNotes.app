@@ -66,6 +66,7 @@
     "appearance_contentWidth": "column width, wide, full width, margins",
     "appearance_editor": "markdown, rich text, wysiwyg, editor mode",
     "appearance_copyFormat": "copy, clipboard, plain text, paste, checkbox",
+    "appearance_pasteFormat": "paste, clipboard, plain text, formatting, unformatted, match style",
     "appearance_favicons": "favicon, site icons, logos",
     "appearance_formatBar": "toolbar, format bar, buttons, customize, arrange, bullet list, strikethrough, gear",
     "appearance_invisibles": "pilcrow, whitespace, spaces, hidden characters, formatting marks",
@@ -82,10 +83,18 @@
     "about_openSource": "source code, github, open source",
     "about_feedback": "feedback, contact, bug report, suggestion",
     "about_dataStorage": "data, server, where stored, privacy",
-    "about_singleKeys": "keyboard, shortcuts, hotkeys, single key, j, k, accessibility, /, >",
+    "about_singleKeys": "keyboard, shortcuts, hotkeys, single key, j, k, q, calendar, accessibility, /, >",
     "about_changelog": "release notes, what is new, updates",
     "about_hotkeys": "keyboard shortcuts, shortcuts, keys, hotkeys",
     "about_rating": "review, rate, stars, app store",
-    "appearance_openInTabs": "tabs, tab bar, browser, open"
+    "appearance_openInTabs": "tabs, tab bar, browser, open",
+    "section_calendar": "calendar, event, reminder, alert, notification, week, month, schedule, birthday",
+    "calendar_alertTimed": "alert, reminder, notification, default, minutes, before, event",
+    "calendar_alertAllDay": "alert, reminder, notification, default, all day, morning",
+    "calendar_alertBirthday": "birthday, contact, alert, reminder",
+    "calendar_reminderTitles": "privacy, lock screen, title, reminder, notification",
+    "calendar_where": "notification, permission, browser, phone, desktop, reminder",
+    "calendar_weekNumbers": "week number, ISO week, calendar",
+    "calendar_hours": "hours, working hours, day view, week view, morning"
   }
 }

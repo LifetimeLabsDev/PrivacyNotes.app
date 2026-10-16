@@ -36,16 +36,29 @@
     "photosDescNoQuota_other": "{{count}} 張照片，經 app 縮小後約 {{size}}。",
     "photosTooBig_other": "空間不足以放下這 {{count}} 張照片（{{size}}），所以照片會略過，其他內容全部匯入。清出 {{shortfall}} 或加購空間後再匯入一次，就能把照片帶進來。"
   },
+  "importCalendar": {
+    "location": "地點",
+    "videoCall": "視訊通話",
+    "organizer": "主辦人",
+    "guests": "邀請對象",
+    "file": "檔案",
+    "link": "連結",
+    "timeZone": "時區",
+    "ends": "結束",
+    "repeats": "重複"
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeout 的 .zip（Keep 資料夾）或單一 .json 筆記。核取清單會匯入為原生任務清單。",
+    "googleCalendar": "Google 日曆的 Settings > Import & export 匯出的 .zip，或單一 .ics 檔案。活動會保留時間、重複設定與提醒。",
     "appleNotes": "用免費的 Exporter 應用程式匯出為 Markdown，然後把 .zip 拖進來。",
     "appleJournal": "從 Mac 或 iPhone 的日誌匯出，把 AppleJournalEntries 資料夾壓縮起來，再把 .zip 拖進來。項目會連同相片、影片、語音備忘錄與位置資訊一起匯入為日誌項目。",
     "evernote": "單一 .enex 檔案，或多個壓成一個 zip 都可以。保留格式、標籤、附件、筆記連結與筆記本。Evernote 不會把任務寫進 .enex。",
     "samsungNotes": "匯出為 Word（.docx）或文字（.txt）。多個檔案可壓成 zip 批次匯入。",
     "simplenote": "從 Simplenote 匯出（Settings -> Tools -> Export Notes），把 .zip 拖進來。",
-    "standardNotes": "Standard Notes 的已解密 .zip 或 .txt 備份（File > Export > Decrypted）。",
+    "standardNotes": "Standard Notes 的已解密 .zip 或 .txt 備份（Account settings > Backups > Data backups > Decrypted）。",
     "obsidian": "Obsidian vault 的 .zip。保留標籤、[[note links]]、資料夾結構、內文中的 #tags，以及嵌入的圖片和檔案。",
     "notesnook": "Notesnook 匯出的 .zip。匯出時選 HTML 可保留格式、筆記本、標籤與附件。",
+    "bear": "在 Bear 中選擇 File > Backup Notes...，然後把 .bear2bk 檔拖到這裡。標籤與巢狀標籤、釘選、封存、垃圾桶、帶顏色的螢光標記、筆記連結與附件都會一起帶過來。",
     "joplin": "從 File > Export all >「JEX - Joplin Export File」匯出的 .jex 檔。筆記本會變成資料夾，標籤、待辦事項、筆記連結與附件也會一起帶過來。",
     "upnote": "在 UpNote 中：Settings > Backup >「Backup now」，然後把備份資料夾裡的所有內容壓成 zip。保留筆記本、標籤、釘選、筆記連結、格式與附件。手機應用程式的逐篇匯出也可以：請選「Export to HTML」。",
     "markdownFolder": "單獨的 .md 或 .txt 檔，或是一個 .zip。壓成 zip 的資料夾會保留子資料夾，並把圖片和附件一起帶過來。",
@@ -92,6 +105,10 @@
     "blobsNotInBackup_other": "你的筆記已還原，但備份清單中列出的{{items}}並不在備份裡。"
   },
   "preview": {
+    "oversize_other": "{{count}} 則筆記超過 1 MB，只會保留在這台裝置上，不會同步。",
+    "splitOversize_other": "依標題將這 {{count}} 則筆記拆成較小的筆記，以便同步",
+    "partTitle": "{{title}}（{{index}}/{{total}}）",
+    "continuedIn": "接續於 {{link}}",
     "sourceLabel": "來源",
     "uniqueTags": "不重複標籤",
     "empty": "空白",
@@ -103,6 +120,7 @@
     "duplicateWarning": "匯入會把這些內容新增為新筆記。執行兩次就會出現重複項目，目前還沒有自動去重。",
     "duplicateSkipNote": "已經存過的書籤會自動略過，所以重跑一次也不會重複。",
     "contactSkipNote": "已經存過的人會略過並保持原樣，所以執行兩次不會讓任何人重複。",
+    "eventSkipNote": "已經匯入過的活動會略過並保持原樣，所以執行兩次也不會重複。",
     "restoreMergeNote": "你自己的備份中的筆記會依 ID 比對。已有的筆記只有在備份中的副本較新時才會更新；垃圾桶裡的筆記會移出垃圾桶。",
     "quotaExceeded": "<strong>儲存空間不足，無法匯入。</strong>預估需要 {{needed}}，目前可用 {{available}}。請先釋出空間或升級再匯入。",
     "quotaWarning": "提醒：這次匯入大約會用掉 {{needed}}，你剩餘的儲存空間為 {{available}}。",
@@ -143,7 +161,11 @@
     "bookmarksExportDesc": "每個瀏覽器都讀得懂的標準書籤檔案，可以連同資料夾一起匯入 Chrome、Firefox、Safari 或 Edge。",
     "contactsOnlyHeading": "只有聯絡人",
     "contactsExportTitle": "聯絡人檔案 (.vcf)",
-    "contactsExportDesc": "每支手機和通訊錄都能讀的 vCard 檔。可以匯入 iPhone、Android、Google 聯絡人或 Mac 的聯絡人，標籤和群組都保留。"
+    "contactsExportDesc": "每支手機和通訊錄都能讀的 vCard 檔。可以匯入 iPhone、Android、Google 聯絡人或 Mac 的聯絡人，標籤和群組都保留。",
+    "calendarOnlyHeading": "只有日曆",
+    "calendarExportTitle": "日曆檔案 (.ics)",
+    "calendarExportDesc": "活動，以及有日期的筆記和任務清單，可匯入 Google 日曆、Apple 日曆或 Outlook。",
+    "calendarPrivate": "私人"
   },
   "exportProgress": {
     "failedTitle": "匯出失敗",
@@ -202,5 +224,11 @@
     "title_other": "有 {{count}} 個項目分享到 PrivacyNotes",
     "line": "在你選擇之前，不會儲存任何內容。",
     "saveAll": "全部儲存"
+  },
+  "destination": {
+    "label": "加入至",
+    "none": "不放入資料夾",
+    "newFolder": "新資料夾「{{name}}」",
+    "help": "來源中的資料夾會放進你選的資料夾裡，沒有資料夾的項目也會放進這個資料夾。"
   }
 }

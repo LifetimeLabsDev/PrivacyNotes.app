@@ -22,7 +22,8 @@
       "totp": "Os códigos 2FA são uma funcionalidade Pro. Guarda uma chave de autenticação em qualquer login e vês o código rotativo ao lado da palavra-passe. A chave é guardada e sincronizada em todos os planos.",
       "replace": "Procurar e substituir é uma funcionalidade Pro. Passa para Pro e substitui uma ocorrência ou todas as ocorrências de uma nota de uma vez.",
       "passphrase": "As frases-passe são uma funcionalidade Pro. Gera uma frase de palavras aleatórias, fácil de escrever e de dizer.",
-      "default": "Um upgrade desbloqueia tudo o que está abaixo. Pagamento único."
+      "default": "Um upgrade desbloqueia tudo o que está abaixo. Pagamento único.",
+      "alerts": "Os lembretes são uma funcionalidade Pro. Os teus dispositivos tocam à hora que escolheres, e nada sobre o item sai deles."
     },
     "features": {
       "devices": "Sincroniza dispositivos ilimitados, em todas as plataformas",
@@ -73,7 +74,7 @@
     "openingBody": "Deve aparecer uma janela de checkout do Paddle. Se não aparecer, o teu navegador pode ter bloqueado o pop-up - recarrega esta página para tentar de novo."
   },
   "history": {
-    "subtitle": "Até 20 versões por item. As mais antigas são removidas automaticamente.",
+    "subtitle": "Até 50 versões por item. As mais antigas são removidas automaticamente.",
     "empty": "Ainda não há histórico. As versões começam a acumular-se depois da próxima edição. Volta mais tarde.",
     "loadFailed": "Não foi possível carregar o histórico. Verifica a ligação e tenta de novo.",
     "selectPrompt": "Seleciona uma versão para pré-visualizar.",
@@ -82,7 +83,20 @@
     "restoring": "A restaurar…",
     "restoreSnapshotFailed": "Não foi possível guardar primeiro a versão atual, por isso nada foi restaurado. Verifica a ligação e tenta de novo.",
     "restoreFailed": "Não foi possível restaurar esta versão. Tenta de novo.",
-    "loginExtrasNotRecorded": "Esta versão não registou campos personalizados nem sites adicionais. Restaurá-la mantém os atuais."
+    "loginExtrasNotRecorded": "Esta versão não registou campos personalizados nem sites adicionais. Restaurá-la mantém os atuais.",
+    "compare": "Comparar com a nota atual",
+    "thisVersion": "Antes",
+    "currentNote": "Agora",
+    "onlyInVersion": "Removido desde então",
+    "onlyInCurrent": "Adicionado desde então",
+    "changeCount_other": "{{count}} alterações",
+    "noChanges": "Sem alterações no texto",
+    "titleChanged": "Título alterado",
+    "tagsChanged": "Etiquetas alteradas",
+    "formatChanged": "Formatação alterada",
+    "tooLong": "Esta nota é demasiado longa para comparar.",
+    "trackersNotRecorded": "Esta versão não registou valores dos registos. Restaurá-la mantém os atuais.",
+    "changeCount_one": "{{count}} alteração"
   },
   "donation": {
     "eyebrow": "Desbloqueaste",

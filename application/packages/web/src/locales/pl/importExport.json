@@ -45,16 +45,29 @@
     "photosTooBig_many": "Za mało miejsca na {{count}} zdjęć ({{size}}), więc zostają pominięte. Cała reszta się importuje. Zwolnij {{shortfall}} albo dokup miejsce i zaimportuj ponownie, żeby je dodać.",
     "photosTooBig_other": "Za mało miejsca na {{count}} zdjęć ({{size}}), więc zostają pominięte. Cała reszta się importuje. Zwolnij {{shortfall}} albo dokup miejsce i zaimportuj ponownie, żeby je dodać."
   },
+  "importCalendar": {
+    "location": "Lokalizacja",
+    "videoCall": "Rozmowa wideo",
+    "organizer": "Organizator",
+    "guests": "Goście",
+    "file": "Plik",
+    "link": "Link",
+    "timeZone": "Strefa czasowa",
+    "ends": "Koniec",
+    "repeats": "Powtarzanie"
+  },
   "sourceDesc": {
     "googleKeep": "Plik .zip z Google Takeout (folder Keep) lub pojedyncza notatka .json. Listy kontrolne importują się jako natywne listy zadań.",
+    "googleCalendar": "Plik .zip z Settings > Import & export w Google Calendar albo pojedynczy plik .ics. Wydarzenia zachowują godziny, powtarzanie i przypomnienia.",
     "appleNotes": "Wyeksportuj darmową aplikacją Exporter jako Markdown, a potem upuść tutaj plik .zip.",
     "appleJournal": "Eksportuj z Dziennika na Macu lub iPhonie, skompresuj folder AppleJournalEntries i upuść tutaj plik .zip. Wpisy importują się jako wpisy w dzienniku razem ze zdjęciami, filmami, notatkami głosowymi i lokalizacjami.",
     "evernote": "Pojedynczy plik .enex albo kilka spakowanych w zip. Zachowuje formatowanie, tagi, załączniki, linki do notatek i notatniki. Zadań Evernote nie zapisuje w .enex.",
     "samsungNotes": "Wyeksportuj jako Word (.docx) lub tekst (.txt). Spakuj wiele plików w .zip do importu zbiorczego.",
     "simplenote": "Wyeksportuj z Simplenote (Settings -> Tools -> Export Notes). Upuść plik .zip.",
-    "standardNotes": "Odszyfrowana kopia .zip lub .txt ze Standard Notes (File > Export > Decrypted).",
+    "standardNotes": "Odszyfrowana kopia .zip lub .txt ze Standard Notes (Account settings > Backups > Data backups > Decrypted).",
     "obsidian": "Sejf Obsidiana jako .zip. Zachowuje tagi, [[note links]], strukturę folderów, tagi #inline oraz osadzone obrazki i pliki.",
     "notesnook": "Eksport Notesnook jako .zip. Przy eksporcie wybierz HTML, aby zachować formatowanie, notesy, tagi i załączniki.",
+    "bear": "W Bear wybierz File > Backup Notes... i upuść tutaj plik .bear2bk. Tagi i zagnieżdżone tagi, przypięcia, archiwum, kosz, wyróżnienia z ich kolorami, linki do notatek i załączniki przechodzą razem z nimi.",
     "joplin": "Plik .jex z File > Export all > „JEX - Joplin Export File”. Notesy stają się folderami, a tagi, zadania do zrobienia, linki do notatek i załączniki przechodzą razem z nimi.",
     "upnote": "W UpNote: Settings > Backup > Backup now, potem spakuj wszystko z folderu kopii zapasowej do .zip. Zachowuje notesy, tagi, przypięcia, linki do notatek, formatowanie i załączniki. Eksporty pojedynczych notatek z aplikacji na telefon też działają - wybierz „Export to HTML”.",
     "markdownFolder": "Pliki .md albo .txt pojedynczo lub w .zip. Spakowany folder zachowuje podfoldery i zabiera ze sobą obrazki oraz załączniki.",
@@ -104,6 +117,14 @@
     "blobsNotInBackup_other": "Twoje notatki zostały przywrócone, ale w kopii zapasowej brakuje wymienionych w niej elementów: {{items}}."
   },
   "preview": {
+    "oversize_one": "{{count}} notatka ma ponad 1 MB. Zostaje na tym urządzeniu i się nie synchronizuje.",
+    "splitOversize_one": "Podziel tę notatkę na mniejsze notatki według nagłówków, aby się synchronizowała",
+    "partTitle": "{{title}} ({{index}}/{{total}})",
+    "continuedIn": "Ciąg dalszy w {{link}}",
+    "splitOversize_few": "Podziel te {{count}} notatki na mniejsze notatki według nagłówków, aby się synchronizowały",
+    "splitOversize_many": "Podziel tych {{count}} notatek na mniejsze notatki według nagłówków, aby się synchronizowały",
+    "oversize_few": "{{count}} notatki mają ponad 1 MB. Zostają na tym urządzeniu i się nie synchronizują.",
+    "oversize_many": "{{count}} notatek ma ponad 1 MB. Zostają na tym urządzeniu i się nie synchronizują.",
     "sourceLabel": "Źródło",
     "uniqueTags": "Unikalne tagi",
     "empty": "Puste",
@@ -115,6 +136,7 @@
     "duplicateWarning": "import dodaje je jako nowe notatki. Jeśli uruchomisz go dwa razy, dostaniesz duplikaty. Nie ma jeszcze automatycznego usuwania duplikatów.",
     "duplicateSkipNote": "zakładki, które już masz zapisane, zostaną pominięte, więc powtórzenie tego importu niczego nie zduplikuje.",
     "contactSkipNote": "osoby, które już zapisałeś, są pomijane i zostają bez zmian, więc drugie uruchomienie nikogo nie zduplikuje.",
+    "eventSkipNote": "wydarzenia, które już zaimportowano, są pomijane i zostają bez zmian, więc drugie uruchomienie ich nie zduplikuje.",
     "restoreMergeNote": "notatki z Twojej własnej kopii zapasowej są dopasowywane po identyfikatorze. Notatka, którą już masz, zostaje zaktualizowana tylko wtedy, gdy wersja z kopii jest nowsza, a notatka z kosza wraca z niego.",
     "quotaExceeded": "<strong>Za mało pamięci, aby zaimportować.</strong> Szacowane zapotrzebowanie: {{needed}}, dostępne: {{available}}. Zwolnij miejsce lub przejdź na wyższy plan przed importem.",
     "quotaWarning": "Uwaga: ten import zajmie mniej więcej {{needed}} z Twoich {{available}} pozostałej pamięci.",
@@ -176,7 +198,11 @@
     "bookmarksExportDesc": "Standardowy plik zakładek, który czyta każda przeglądarka. Zaimportuj go do Chrome, Firefoksa, Safari albo Edge razem z folderami.",
     "contactsOnlyHeading": "Tylko kontakty",
     "contactsExportTitle": "Plik kontaktów (.vcf)",
-    "contactsExportDesc": "Plik vCard, który czyta każdy telefon i każda książka adresowa. Zaimportuj go do iPhone'a, Androida, Kontaktów Google albo Kontaktów na Macu, z etykietami i grupami."
+    "contactsExportDesc": "Plik vCard, który czyta każdy telefon i każda książka adresowa. Zaimportuj go do iPhone'a, Androida, Kontaktów Google albo Kontaktów na Macu, z etykietami i grupami.",
+    "calendarOnlyHeading": "Tylko kalendarz",
+    "calendarExportTitle": "Plik kalendarza (.ics)",
+    "calendarExportDesc": "Wydarzenia oraz notatki i listy zadań z datą, dla Google Calendar, Kalendarza Apple albo Outlooka.",
+    "calendarPrivate": "Prywatne"
   },
   "exportProgress": {
     "failedTitle": "Eksport nie powiódł się",
@@ -256,5 +282,11 @@
     "title_other": "Do PrivacyNotes udostępniono {{count}} elementu",
     "line": "Nic nie zostanie zapisane, dopóki nie wybierzesz.",
     "saveAll": "Zapisz wszystko"
+  },
+  "destination": {
+    "label": "Dodaj do",
+    "none": "Bez folderu",
+    "newFolder": "Nowy folder „{{name}}”",
+    "help": "Foldery ze źródła trafią do wybranego przez ciebie folderu, a elementy bez folderu trafią bezpośrednio do niego."
   }
 }

@@ -101,7 +101,7 @@ export function ListNav({
           type="button"
           onClick={palette.openSwitcher}
           aria-label={t('common:quickSwitcher.jumpTo')}
-          className="lg:hidden ms-auto rounded-md p-2 bg-accent/10 hover:bg-accent/20 text-accent-strong transition shrink-0"
+          className="lg:hidden ms-auto inline-flex h-9 w-9 items-center justify-center rounded-lg bg-accent/10 hover:bg-accent/20 text-accent-strong transition shrink-0"
         >
           <Lightning size={18} weight="fill" />
         </button>

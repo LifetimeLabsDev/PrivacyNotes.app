@@ -78,8 +78,22 @@
     "import-from-other-apps": {
       "q": "Comment importer mes notes depuis une autre appli ?",
       "a": [
-        "Ouvre Paramètres > Import & Export et choisis ta source. La liste couvre les applis d'où viennent les gens : Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes et Apple Journal. Bitwarden et les mots de passe enregistrés dans ton navigateur atterrissent dans le Coffre, tes signets de navigateur arrivent comme signets, et un importateur Markdown générique prend n'importe quel dossier de fichiers .md.",
+        "Ouvre Paramètres > Import & Export et choisis ta source. La liste couvre les applis d'où viennent les gens : Apple Notes, Bear, Obsidian, Evernote, Standard Notes, Joplin, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes et Apple Journal. Bitwarden et les mots de passe enregistrés dans ton navigateur atterrissent dans le Coffre, tes signets de navigateur arrivent comme signets, et un importateur Markdown générique prend n'importe quel dossier de fichiers .md.",
         "Les imports s'exécutent entièrement sur ton appareil : tes fichiers exportés sont lus, chiffrés et stockés localement, rien n'est envoyé pour traitement. Chaque note importée reçoit une étiquette avec sa source pour relire le lot ensuite, et les checklists Google Keep deviennent même de vraies listes de tâches."
+      ]
+    },
+    "import-bear": {
+      "q": "Comment transférer mes notes de Bear vers PrivacyNotes ?",
+      "a": [
+        "Fais une sauvegarde de Bear et importe-la. Dans Bear, choisis File > Backup Notes... et enregistre le fichier .bear2bk. Ouvre ensuite Paramètres > Import & Export, choisis Bear et dépose le fichier. La sauvegarde contient toute ta bibliothèque : les notes archivées et celles de la corbeille viennent avec, et les notes épinglées et en lecture seule gardent cet état.",
+        "Tes étiquettes arrivent comme étiquettes, et les étiquettes imbriquées comme #work/projects sont aussi reconstruites en dossiers. Les surlignages gardent leurs couleurs Bear, les liens entre notes deviennent des liens de note, et les images et fichiers joints sont importés dans ton stockage. Le [guide d'import Bear](/fr/help/import/bear/) détaille chaque étape."
+      ]
+    },
+    "import-joplin": {
+      "q": "Comment importer mes notes depuis Joplin ?",
+      "a": [
+        "Exporte un fichier JEX depuis Joplin et importe-le. Dans Joplin, choisis File > Export all > \"JEX - Joplin Export File\" et enregistre le fichier. Ouvre ensuite Paramètres > Import & Export, choisis Joplin et dépose le fichier .jex. Le fichier le plus récent de Tools > Create backup fonctionne de la même façon.",
+        "Les carnets deviennent des dossiers, imbriqués aussi profondément que dans Joplin, et chaque note garde ses étiquettes et ses dates. Les to-dos deviennent des tâches, les liens entre notes deviennent des liens de note, et les pièces jointes sont importées dans ton stockage. Joplin laisse sa corbeille hors de tous ses exports : restaure donc de la corbeille toute note que tu veux garder avant d'exporter. Le [guide d'import Joplin](/fr/help/import/joplin/) détaille chaque étape."
       ]
     },
     "markdown-support": {
@@ -221,10 +235,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "J'ai oublié mon PIN. Comment revenir dans l'app ?",
+      "q": "J'ai oublié mon PIN ou mon code d'accès. Comment revenir dans l'app ?",
       "a": [
-        "Rien n'est perdu, et tu peux effacer le PIN toi-même avec ta phrase de récupération. Le PIN est un verrou d'écran, pas une clé de chiffrement : tes notes sont chiffrées avec des clés dérivées de la phrase, donc c'est la phrase qui les ouvre. Lier le chiffrement à quatre chiffres ferait qu'un PIN oublié détruirait des données. Ici, jamais.",
-        "Partout où l'app demande le PIN, choisis **PIN oublié ?** et saisis tes 12 mots. C'est sur l'écran de verrouillage, sur une note protégée et dans **Paramètres > Sécurité > PIN**. Le PIN est effacé sur tous tes appareils, et tu peux en définir un nouveau tout de suite. Le déverrouillage biométrique n'est pas affecté."
+        "Rien n'est perdu, et tu peux effacer le PIN ou le code d'accès toi-même avec ta phrase de récupération. C'est un verrou d'écran, pas une clé de chiffrement : tes notes sont chiffrées avec des clés dérivées de la phrase, donc c'est la phrase qui les ouvre. Lier le chiffrement au PIN ferait qu'un PIN oublié détruirait des données. Ici, jamais.",
+        "Partout où l'app te le demande, choisis **PIN oublié ?** ou **Code d'accès oublié ?** et saisis tes 12 mots. C'est sur l'écran de verrouillage, sur une note protégée et dans **Paramètres > Sécurité > PIN**. Il est effacé sur tous tes appareils, et tu peux en définir un nouveau tout de suite. Le déverrouillage biométrique n'est pas affecté. Un appareil avec une ancienne version de l'app demande 4 chiffres même après que tu as défini un code d'accès ; **PIN oublié ?** y fonctionne de la même façon."
       ]
     },
     "delete-account": {
@@ -238,7 +252,7 @@
       "q": "Qu'est-ce qui se synchronise exactement entre mes appareils, et qu'est-ce qui reste local ?",
       "a": [
         "Tout ce que tu attends, et le tout chiffré sur ton appareil : notes, tâches, entrées de journal, ton coffre et les fichiers qu'il contient. Tes paramètres te suivent aussi - étiquettes favorites, préférences de tri et d'affichage, thème de couleur, ton PIN (sous forme de hash salé, jamais le PIN lui-même), verrouillage de l'appli, configuration des suivis et des médicaments, et vidage automatique de la corbeille. Configure une fois, chaque appareil suit.",
-        "Quelques éléments restent volontairement locaux : mode clair ou sombre (chaque appareil suit son propre réglage système), déverrouillage biométrique (lié au matériel de chaque appareil) et ton état de déverrouillage (fermer l'appli reverrouille toujours). Le serveur ne stocke jamais que des blobs chiffrés et ne peut rien en lire."
+        "Quelques éléments restent volontairement locaux : mode clair ou sombre (chaque appareil suit son propre réglage système), déverrouillage biométrique (lié au matériel de chaque appareil), l'espace que montre la barre latérale et ton état de déverrouillage (fermer l'appli reverrouille toujours). Le serveur ne stocke jamais que des blobs chiffrés et ne peut rien en lire."
       ]
     },
     "offline": {
@@ -250,7 +264,7 @@
     "sync-conflicts": {
       "q": "Que se passe-t-il si je modifie la même note sur deux appareils en même temps ?",
       "a": [
-        "Tes appareils fusionnent la note détail par détail quand ils se synchronisent à nouveau, donc une modification faite sur un seul d'entre eux est conservée. Si les deux ont modifié le texte chacun de leur côté (l'un étant hors ligne, par exemple), l'appareil qui se synchronise en second affiche une boîte de dialogue de conflit : garder la version de cet appareil, garder l'autre ou garder les deux comme notes séparées. Les deux versions sont conservées tant que tu n'as pas choisi.",
+        "Tes appareils fusionnent la note détail par détail quand ils se synchronisent à nouveau, donc une modification faite sur un seul d'entre eux est conservée. Si les deux ont modifié le texte chacun de leur côté (l'un étant hors ligne, par exemple), l'appareil qui se synchronise en second affiche une boîte de dialogue de conflit : garder la version de cet appareil, garder l'autre ou garder les deux comme notes séparées. Les deux versions sont conservées tant que tu n'as pas choisi. Si la version de l'autre appareil arrive pendant que tu écris dans la note, ton texte est conservé dans une copie marquée « (conflict) » et la note affiche l'autre version.",
         "Quand les deux appareils ont modifié le même détail chacun de leur côté, comme l'épinglage, le dossier ou le titre, c'est le détail de l'appareil qui a modifié la note en dernier qui est conservé, sans boîte de dialogue. Une note supprimée définitivement sur un appareil est supprimée partout, y compris une modification qu'un autre appareil y a apportée pendant qu'ils étaient séparés."
       ]
     },
@@ -359,7 +373,7 @@
     "buy-pro-anonymously": {
       "q": "Puis-je acheter Pro sans révéler qui je suis ?",
       "a": [
-        "Oui, avec deux outils standards. Pour le reçu, utilise un alias e-mail : [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) ou [addy.io](https://addy.io) transfèrent tous vers ta vraie boîte sans l'exposer. Pour le paiement, utilise une carte masquée : [privacy.com](https://privacy.com) aux États-Unis génère des cartes virtuelles qui acceptent n'importe quel nom, et beaucoup de banques et services ailleurs ([Revolut](https://www.revolut.com), par exemple) proposent des cartes virtuelles jetables qui font le même travail.",
+        "Oui, avec deux outils standards. Pour le reçu, utilise un alias e-mail : [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) ou [addy.io](https://addy.io) transfèrent tous vers ta vraie boîte sans l'exposer. Pour le paiement, utilise une carte masquée : [privacy.com](https://privacy.com) aux États-Unis génère des cartes virtuelles qui acceptent n'importe quel nom, et ailleurs, une carte prépayée utilisable en ligne, achetée en espèces, fait le même travail sans aucun nom dessus.",
         "Au paiement, Paddle demande un e-mail, un moyen de paiement et un pays (plus un code postal dans certaines régions) pour calculer la taxe. L'alias reçoit le reçu, la carte masquée porte le nom que tu lui as donné, et la localisation fiscale ne te situe qu'à l'échelle d'une région, rien de plus. Garde l'alias vivant, cela dit : l'e-mail de reçu est ta preuve d'achat et ton canal de remboursement.",
         "Combiné à un compte à phrase, aucune partie ne détient au final le tableau complet : ta banque voit une recharge de carte, Paddle voit un alias et une carte masquée, et nous voyons une clé publique passée Pro, à côté de cet alias dans notre compte Paddle."
       ]
@@ -402,7 +416,7 @@
     "languages": {
       "q": "Quelles langues parle l'appli ?",
       "a": [
-        "Anglais, allemand, français, italien, espagnol, néerlandais, polonais, tchèque, catalan, turc, suédois, ukrainien, russe, japonais, coréen, chinois traditionnel, thaï, arabe et portugais, en variantes européenne et brésilienne. L'appli suit ta langue système par défaut, ou tu en fixes une explicitement dans Paramètres > Langue sur chaque appareil.",
+        "Anglais, allemand, français, italien, espagnol, néerlandais, polonais, tchèque, slovaque, catalan, turc, suédois, ukrainien, russe, japonais, coréen, chinois traditionnel, thaï, arabe et portugais, en variantes européenne et brésilienne. L'appli suit ta langue système par défaut, ou tu en fixes une explicitement dans Paramètres > Langue sur chaque appareil.",
         "Les traductions sont gratuites pour tout le monde, pas un avantage Pro. D'autres langues sont prévues ; si la tienne manque, dis-le-nous sur [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) ou [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -424,7 +438,7 @@
       "q": "Comment fonctionnent les tâches ?",
       "a": [
         "Toute ligne que tu écris sous la forme - [ ] dans n'importe quelle note devient une tâche, et la vue Tâches dans la barre latérale les rassemble toutes au même endroit. Y cocher une tâche met à jour la note où elle vit, et ouvrir une tâche t'amène à cette note. Il n'y a pas de base de tâches distincte à maintenir : les tâches ne sont que des lignes dans tes notes, chiffrées comme tout le reste.",
-        "Le champ d'ajout rapide en haut de Tâches ajoute à une note appelée Quick Tasks (créée pour toi à la première utilisation), donc noter une tâche isolée prend une frappe, pas une décision de classement. La même vue propose trois dispositions (Hybride, Agrégé, Liste), un basculement des tâches terminées, et la recherche de tâches, et le bouton New sur la vue Tout peut démarrer une note de tâches directement."
+        "Le champ d'ajout rapide en haut de Tâches ajoute à une note appelée Quick Tasks (créée pour toi à la première utilisation), donc noter une tâche isolée prend une frappe, pas une décision de classement. La même vue propose trois dispositions (Hybride, Agrégé, Liste), un basculement des tâches terminées, et la recherche de tâches, et le bouton + sur la vue Tout peut démarrer une note de tâches directement."
       ]
     },
     "journal": {
@@ -488,8 +502,8 @@
     "biometric-unlock": {
       "q": "Le déverrouillage biométrique ne fonctionne plus. Que puis-je faire ?",
       "a": [
-        "Tu n'es jamais bloqué dehors. L'écran de verrouillage propose toujours une solution de repli : \"Déverrouiller avec le PIN\", ou \"Se connecter avec la phrase de récupération\". La biométrie est un verrou local, pas une clé de chiffrement, tes notes sont donc intactes dans tous les cas.",
-        "Ensuite, répare le verrou. L'enrôlement se fait par appareil, donc un nouveau téléphone, un nouveau profil de navigateur ou une réinstallation demande de recommencer l'enrôlement : Paramètres > Sécurité > \"Verrou\", désactive, puis \"Activer le déverrouillage biométrique\" à nouveau. Cela requiert aussi \"Faire confiance à cet appareil\" (les sessions non fiables s'effacent à la fermeture de l'onglet) et un matériel doté d'un authentificateur de plateforme (Touch ID, Face ID, Windows Hello). Si un gestionnaire de mots de passe comme Bitwarden ou 1Password surgit à la place de l'invite système, ferme-le et réessaie, ou désactive sa capture de passkey pour le site - l'appli demande l'authentificateur intégré, mais certains gestionnaires interceptent quand même."
+        "Tu n'es jamais bloqué dehors. L'écran de verrouillage propose toujours une solution de repli : \"Déverrouiller avec le PIN\" (\"Déverrouiller avec le code d'accès\" si tu en as défini un), ou \"Se connecter avec la phrase de récupération\". Le déverrouillage biométrique n'ouvre que la copie de ta phrase de récupération stockée sur cet appareil, et tes notes sont chiffrées avec des clés issues de la phrase elle-même, elles restent donc intactes dans tous les cas.",
+        "Ensuite, reconfigure-le. Si l'écran de verrouillage indique \"Le déverrouillage biométrique n'a pas pu ouvrir tes notes\", déverrouille d'abord autrement. L'enrôlement se fait par appareil, donc un nouveau téléphone, un nouveau profil de navigateur ou une réinstallation demande de recommencer l'enrôlement : Paramètres > Sécurité > \"Verrou\", désactive, puis \"Activer le déverrouillage biométrique\" à nouveau. Cela requiert aussi \"Faire confiance à cet appareil\" (les sessions non fiables s'effacent à la fermeture de l'onglet) et un matériel doté d'un authentificateur de plateforme (Touch ID, Face ID, Windows Hello). Si un gestionnaire de mots de passe comme Bitwarden ou 1Password surgit à la place de l'invite système, ferme-le et réessaie, ou désactive sa capture de passkey pour le site - l'appli demande l'authentificateur intégré, mais certains gestionnaires interceptent quand même."
       ]
     },
     "phrase-compromised": {
@@ -647,7 +661,14 @@
       "q": "Comment les sections, dossiers, étiquettes et espaces fonctionnent-ils ensemble ?",
       "a": [
         "Tout ce que tu gardes vit dans une seule bibliothèque. Les sections de la barre latérale, comme Notes, Coffre et Journaux, sont des vues de cette bibliothèque par type. Un dossier est un lieu, donc un même dossier peut contenir une note et l'identifiant qui va avec, et l'arborescence des dossiers est la même dans chaque section. Ses nombres comptent ce que contient la section ouverte, et un dossier qui n'en contient rien apparaît estompé. Une étiquette est un libellé, et la barre latérale ne liste que les étiquettes utilisées par la section ouverte.",
-        "Les espaces séparent la bibliothèque en Personnel et Travail, et en affichent un à la fois. Un dossier de premier niveau appartient à un espace, avec tout ce qu'il contient, et **Déplacer vers Travail** dans son menu le fait passer dans l'autre. Un élément sans dossier appartient à Personnel, donc tout ce que tu crées dans Travail va dans un dossier de Travail. Les étiquettes sont gratuites, les dossiers et les espaces demandent Pro."
+        "Les espaces séparent la bibliothèque en Personnel et Travail, et un dossier de premier niveau appartient à un espace, avec tout ce qu'il contient. [Comment fonctionnent les espaces](/fr/help/spaces/) explique le sélecteur, le déplacement d'éléments d'un espace à l'autre et la désactivation des espaces. Les étiquettes sont gratuites, les dossiers et les espaces demandent Pro."
+      ]
+    },
+    "spaces": {
+      "q": "Comment fonctionnent les espaces Personnel et Travail ?",
+      "a": [
+        "Les espaces séparent ta bibliothèque en Personnel et Travail. Le sélecteur à côté de **Accéder** dans la barre latérale affiche **Tous**, **Personnel** ou **Travail** : Tous montre chaque élément, et les deux autres montrent un espace chacun. Chaque appareil garde son propre choix, donc ton téléphone peut afficher Personnel pendant que ton ordinateur affiche Travail, et ouvrir un élément de l'autre espace bascule vers celui-ci. Les espaces ne changent que ce que montrent les listes : chaque élément se synchronise toujours sur tous tes appareils.",
+        "Un dossier de premier niveau appartient à un espace, avec tout ce qu'il contient, et **Déplacer vers Travail** ou **Déplacer vers Personnel** dans son menu, ou dans le menu de n'importe quel élément, le fait passer dans l'autre. Un élément sans dossier est dans Personnel, tout comme ce que tu crées quand Tous est ouvert. Pour ne plus utiliser les espaces, désactive Paramètres > Listes > Espaces : tout s'affiche, rien ne bouge, et chaque dossier garde son espace pour le jour où tu les réactives. Les espaces demandent Pro."
       ]
     },
     "note-links": {
@@ -717,8 +738,8 @@
     "note-history": {
       "q": "Puis-je récupérer une version plus ancienne d'une note ?",
       "a": [
-        "Oui, avec Pro. Ouvre le menu \"...\" de la note et choisis \"Historique\" pour parcourir et restaurer jusqu'à 20 versions précédentes. Restaurer ne perd rien : le texte actuel est d'abord enregistré comme version, tu peux donc faire des allers-retours. Les versions sont chiffrées comme la note elle-même : nous ne pouvons pas les lire non plus.",
-        "Un instantané est pris au plus une fois par minute : deux modifications à quelques secondes d'écart partagent une version. L'historique est la seule fonction Pro qui passe par le serveur, et c'est pourquoi la démo garde plutôt sa propre copie locale. Chaque forfait a aussi la [corbeille](/fr/help/trash-auto-delete/), qui garde une note supprimée 30 jours."
+        "Oui, avec Pro. Ouvre le menu \"...\" de la note et choisis \"Historique\" pour parcourir jusqu'à 50 versions précédentes, en comparer une avec la note actuelle et la restaurer. Restaurer ne perd rien : le texte actuel est d'abord enregistré comme version, tu peux donc faire des allers-retours. Les versions sont chiffrées comme la note elle-même : nous ne pouvons pas les lire non plus.",
+        "Chaque version est la note telle qu'elle était avant une modification : une est enregistrée à ta première modification après une pause de cinq minutes, une toutes les dix minutes tant que tu continues d'écrire, et une avant une modification qui supprime plus de la moitié d'une note de 200 caractères ou plus, sauf si la dernière version a moins de 30 secondes. L'historique est la seule fonction Pro qui passe par le serveur, et c'est pourquoi la démo garde plutôt sa propre copie locale. Chaque forfait a aussi la [corbeille](/fr/help/trash-auto-delete/), qui garde une note supprimée 30 jours."
       ]
     },
     "vault-totp": {
@@ -849,10 +870,10 @@
       ]
     },
     "quick-switcher": {
-      "q": "À quoi sert la fonction « Aller à », et que peut-elle trouver ?",
+      "q": "À quoi sert la navigation rapide, et que peut-elle trouver ?",
       "a": [
-        "La fonction « Aller à » va directement à n'importe quoi par son titre. Appuie sur Cmd+K sur Mac ou Ctrl+K sur Windows et Linux (Cmd+P ou Ctrl+P marche aussi), ou clique sur **Aller à** dans la barre latérale ou l'en-tête de la liste. Tape une partie d'un titre pour trouver des notes, des tâches, des entrées de journal, des éléments du Coffre, des signets, des contacts, des fichiers joints et des paramètres. Entrée ouvre l'élément, et Option+Entrée ou Alt+Entrée l'ouvre dans un onglet.",
-        "Tape d'abord > pour lancer plutôt une commande, comme créer une note ou aller à une section. Pour chercher des mots dans ton texte plutôt que dans les titres, choisis la ligne **Tout rechercher**, ou appuie sur Cmd+Entrée ou Ctrl+Entrée depuis n'importe quelle ligne. La recherche se fait sur ton appareil, donc rien de ce que tu tapes ne nous est envoyé. La fonction « Aller à » est gratuite."
+        "La navigation rapide va directement à n'importe quoi par son titre. Appuie sur Cmd+K sur Mac ou Ctrl+K sur Windows et Linux (Cmd+P ou Ctrl+P marche aussi), ou clique sur **Accéder** dans la barre latérale ou l'en-tête de la liste. Tape une partie d'un titre pour trouver des notes, des tâches, des entrées de journal, des éléments du Coffre, des signets, des contacts, des fichiers joints et des paramètres. Entrée ouvre l'élément, et Option+Entrée ou Alt+Entrée l'ouvre dans un onglet.",
+        "Tape d'abord > pour lancer plutôt une commande, comme créer une note ou aller à une section. Tape d'abord # pour ne voir que tes étiquettes, ou / pour ne voir que tes dossiers ; en choisir un filtre la liste comme un clic dans la barre latérale. Pour chercher des mots dans ton texte plutôt que dans les titres, choisis la ligne **Tout rechercher**, ou appuie sur Cmd+Entrée ou Ctrl+Entrée depuis n'importe quelle ligne. La recherche se fait sur ton appareil, donc rien de ce que tu tapes ne nous est envoyé. La navigation rapide est gratuite."
       ]
     },
     "find-in-note": {
@@ -876,6 +897,27 @@
         "Un moyen de connexion qui appartient déjà à un autre coffre ne peut pas être associé, car les coffres ne sont jamais fusionnés. **Dissocier** demande d'abord tes 12 mots. Si nous gardons ta phrase pour toi, le dernier compte associé reste jusqu'à ce que tu en associes un autre ou que tu enregistres ta phrase et passes à l'autoconservation. En autoconservation, un nouvel appareil demande toujours tes 12 mots. Les comptes associés sont en bêta."
       ]
     },
+    "calendar": {
+      "q": "Y a-t-il un calendrier, et qu'est-ce qui s'y affiche ?",
+      "a": [
+        "Oui. Calendrier, dans la barre latérale, réunit au même endroit chaque élément qui a une date : les événements, les entrées de journal, les notes et listes de tâches datées, et les anniversaires de tes contacts. La liste à côté est l'agenda des jours à venir, et la grande vue bascule entre Jour, Semaine et Mois. Clique sur un jour vide pour y ajouter quelque chose, ou fais glisser un élément vers un autre jour.",
+        "Un événement est un type d'élément à part : une note avec un jour, un jour de fin, une heure et une répétition. Tape une ligne entière dans Ajout rapide, par exemple \"Dentiste ven. 15h 1h avant\", et il lit pour toi le jour, l'heure et l'alerte. Une note ou une liste de tâches peut aussi porter un jour, une heure et un jour de fin, depuis la ligne Planification de son menu \"...\". Le calendrier est gratuit."
+      ]
+    },
+    "reminders": {
+      "q": "Les rappels du calendrier fonctionnent-ils quand l'app est fermée ?",
+      "a": [
+        "Sur un téléphone, oui : jusqu'à 64 alertes, jusqu'à 400 jours à l'avance, sont confiées au téléphone lui-même, elles sonnent donc même quand PrivacyNotes est fermé ; ouvrir et déverrouiller l'app en confie davantage. Dans l'app de bureau, un rappel sonne tant que l'app tourne, et dans un navigateur tant que PrivacyNotes est ouvert dans un onglet. Chaque appareil planifie ses rappels à partir des éléments qu'il contient, donc le serveur n'apprend jamais un titre, une heure ou un jour.",
+        "Ajoute une alerte depuis la ligne Alerte de la vue Planification d'un élément, jusqu'à cinq par élément, et règle les valeurs par défaut dans Paramètres > Calendrier, où se trouve aussi \"Afficher les titres dans les rappels\". Un élément protégé par ton PIN sonne toujours comme \"Rappel\" avec l'heure, tout comme chaque alerte planifiée pendant que le verrouillage de l'app est activé. Une alerte confiée avant l'activation du verrouillage peut garder son titre jusqu'à ce qu'elle sonne. Les rappels font partie de Pro ; le calendrier lui-même est gratuit."
+      ]
+    },
+    "calendar-time-zones": {
+      "q": "Que deviennent les heures des événements quand je voyage dans un autre fuseau horaire ?",
+      "a": [
+        "Une heure du calendrier reste l'heure que tu as tapée. Un événement à 15:00 s'affiche et sonne à 15:00 où que soit ton appareil, comme un rappel dans une app de tâches, parce que chaque heure est gardée comme heure locale, sans fuseau horaire. Un téléphone planifie chaque alerte pour un moment précis : après un changement de fuseau horaire, ouvre et déverrouille PrivacyNotes une fois dans le nouveau fuseau pour déplacer ses alertes ; tant qu'il est ouvert et déverrouillé, il les déplace tout seul.",
+        "Pour un appel avec quelqu'un dans un autre fuseau horaire, saisis l'heure telle qu'elle est chez toi. Si un passage à l'heure d'été saute l'heure d'une alerte, l'alerte sonne à la première minute après le saut."
+      ]
+    },
     "session-expired": {
       "q": "Pourquoi l'app affiche \"Session expirée\" ?",
       "a": [
@@ -887,7 +929,7 @@
       "q": "À quoi sert l'archivage, et quelle différence avec la corbeille ?",
       "a": [
         "Archiver retire un élément de tes listes sans le supprimer. Choisis **Archiver** dans le menu \"...\" de l'élément ou dans son menu clic droit, ou dans la barre de sélection pour plusieurs éléments à la fois. Les éléments archivés quittent Tout, leur section, Épinglés et les compteurs des dossiers et des étiquettes, et attendent dans la vue **Archives** en bas de la barre latérale, qui apparaît dès qu'un élément est archivé. Pour les garder dans Tout et dans les compteurs, coche Archives dans la colonne **Tout** de Paramètres > Listes. **Désarchiver**, aux mêmes endroits, ramène un élément.",
-        "La corbeille sert à ce dont tu veux te débarrasser : elle [le supprime définitivement après 30 jours](/fr/help/trash-auto-delete/) sauf si tu désactives cela. L'archive ne supprime jamais rien, et les éléments archivés restent à portée de main, car une recherche dans Tout, la fonction « Aller à » et les liens de note les trouvent encore. Ils se synchronisent et restent chiffrés comme tout le reste, et ils comptent toujours dans ton stockage. L'archive fonctionne avec tous les types d'éléments et elle est gratuite."
+        "La corbeille sert à ce dont tu veux te débarrasser : elle [le supprime définitivement après 30 jours](/fr/help/trash-auto-delete/) sauf si tu désactives cela. L'archive ne supprime jamais rien, et les éléments archivés restent à portée de main, car une recherche dans Tout, la navigation rapide et les liens de note les trouvent encore. Ils se synchronisent et restent chiffrés comme tout le reste, et ils comptent toujours dans ton stockage. L'archive fonctionne avec tous les types d'éléments et elle est gratuite."
       ]
     },
     "share-into-app": {

@@ -78,8 +78,22 @@
     "import-from-other-apps": {
       "q": "Hoe haal ik mijn notities uit een andere app hierheen?",
       "a": [
-        "Open Instellingen > Import & Export en kies je bron. De lijst dekt de apps waar mensen vandaan komen: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes en Apple Journal. Bitwarden en de opgeslagen wachtwoorden van je browser belanden in de Kluis, je browserbladwijzers komen binnen als bladwijzers, en een generieke Markdown-importer neemt elke map met .md-bestanden.",
+        "Open Instellingen > Import & Export en kies je bron. De lijst dekt de apps waar mensen vandaan komen: Apple Notes, Bear, Obsidian, Evernote, Standard Notes, Joplin, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes en Apple Journal. Bitwarden en de opgeslagen wachtwoorden van je browser belanden in de Kluis, je browserbladwijzers komen binnen als bladwijzers, en een generieke Markdown-importer neemt elke map met .md-bestanden.",
         "Importeren gebeurt volledig op je apparaat: je geëxporteerde bestanden worden gelezen, versleuteld en lokaal opgeslagen, er wordt niets geüpload om te verwerken. Elke geïmporteerde notitie krijgt een tag van zijn bron zodat je de batch achteraf kunt nakijken, en checklists uit Google Keep worden zelfs echte takenlijsten."
+      ]
+    },
+    "import-bear": {
+      "q": "Hoe verhuis ik mijn notities van Bear naar PrivacyNotes?",
+      "a": [
+        "Maak een back-up in Bear en importeer die. Kies in Bear File > Backup Notes... en sla het .bear2bk-bestand op. Open daarna Instellingen > Import & Export, kies Bear en sleep het bestand erin. De back-up bevat je hele bibliotheek, dus gearchiveerde notities en notities in de prullenbak komen mee, en vastgezette en alleen-lezen notities houden die status.",
+        "Je tags komen binnen als tags, en geneste tags zoals #work/projects worden ook opnieuw opgebouwd als mappen. Markeringen houden hun Bear-kleuren, links tussen notities worden notitielinks, en afbeeldingen en bijgevoegde bestanden worden geïmporteerd in je opslag. De [importgids voor Bear](/nl/help/import/bear/) laat elke stap zien."
+      ]
+    },
+    "import-joplin": {
+      "q": "Hoe importeer ik mijn notities uit Joplin?",
+      "a": [
+        "Exporteer een JEX-bestand uit Joplin en importeer dat. Kies in Joplin File > Export all > \"JEX - Joplin Export File\" en sla het bestand op. Open daarna Instellingen > Import & Export, kies Joplin en sleep het .jex-bestand erin. Het nieuwste bestand uit Tools > Create backup werkt op dezelfde manier.",
+        "Notitieboeken worden mappen, zo diep genest als in Joplin, en elke notitie houdt haar tags en haar datums. To-do's worden taken, links tussen notities worden notitielinks en bijlagen worden geïmporteerd in je opslag. Joplin laat zijn prullenbak weg uit elke export, dus haal de notities die je wilt houden eerst uit de prullenbak voordat je exporteert. De [importgids voor Joplin](/nl/help/import/joplin/) laat elke stap zien."
       ]
     },
     "markdown-support": {
@@ -221,10 +235,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Ik ben mijn PIN vergeten. Hoe kom ik er weer in?",
+      "q": "Ik ben mijn PIN of toegangscode vergeten. Hoe kom ik er weer in?",
       "a": [
-        "Er gaat niets verloren, en je kunt de PIN zelf wissen met je herstelzin. De PIN is een slot op het scherm, geen versleutelingssleutel: je notities zijn versleuteld met sleutels uit de herstelzin, dus de herstelzin opent ze. Versleuteling aan vier cijfers koppelen zou betekenen dat een vergeten PIN gegevens vernietigt. Hier gebeurt dat nooit.",
-        "Overal waar de app om de PIN vraagt, kies je **PIN vergeten?** en typ je je 12 woorden. Het staat op het vergrendelscherm, op een beveiligde notitie en in **Instellingen > Beveiliging > PIN**. De PIN wordt op al je apparaten gewist en je kunt meteen een nieuwe instellen. Biometrisch ontgrendelen verandert niet."
+        "Er gaat niets verloren, en je kunt de PIN of toegangscode zelf wissen met je herstelzin. Het is een slot op het scherm, geen versleutelingssleutel: je notities zijn versleuteld met sleutels uit de herstelzin, dus de herstelzin opent ze. Versleuteling aan de PIN koppelen zou betekenen dat een vergeten PIN gegevens vernietigt. Hier gebeurt dat nooit.",
+        "Overal waar de app erom vraagt, kies je **PIN vergeten?** of **Toegangscode vergeten?** en typ je je 12 woorden. Het staat op het vergrendelscherm, op een beveiligde notitie en in **Instellingen > Beveiliging > PIN**. De code wordt op al je apparaten gewist en je kunt meteen een nieuwe instellen. Biometrisch ontgrendelen verandert niet. Een apparaat met een oudere versie van de app vraagt om 4 cijfers, ook nadat je een toegangscode hebt ingesteld; **PIN vergeten?** werkt daar op dezelfde manier."
       ]
     },
     "delete-account": {
@@ -238,7 +252,7 @@
       "q": "Wat synchroniseert er precies tussen mijn apparaten, en wat blijft lokaal?",
       "a": [
         "Alles wat je zou verwachten, en dat allemaal versleuteld op je apparaat: notities, taken, dagboeknotities, je kluis en de bestanden erin. Je instellingen reizen mee - favoriete tags, sorteer- en weergavevoorkeuren, kleurenthema, je PIN (als gezouten hash, nooit de PIN zelf), de app-vergrendeling, de opzet van je trackers en medicatie, en het automatisch legen van de prullenbak. Stel het één keer in en elk apparaat pikt het op.",
-        "Een paar dingen blijven bewust op het apparaat zelf: lichte of donkere modus (elk apparaat volgt zijn eigen systeemvoorkeur), biometrisch ontgrendelen (gekoppeld aan de hardware van elk apparaat), en of je ontgrendeld bent (de app sluiten vergrendelt altijd opnieuw). De server bewaart uitsluitend versleutelde blobs en kan er niets van lezen."
+        "Een paar dingen blijven bewust op het apparaat zelf: lichte of donkere modus (elk apparaat volgt zijn eigen systeemvoorkeur), biometrisch ontgrendelen (gekoppeld aan de hardware van elk apparaat), de ruimte die de zijbalk toont, en of je ontgrendeld bent (de app sluiten vergrendelt altijd opnieuw). De server bewaart uitsluitend versleutelde blobs en kan er niets van lezen."
       ]
     },
     "offline": {
@@ -250,7 +264,7 @@
     "sync-conflicts": {
       "q": "Wat gebeurt er als ik dezelfde notitie op twee apparaten tegelijk bewerk?",
       "a": [
-        "Je apparaten voegen de notitie detail voor detail samen zodra ze weer synchroniseren, dus een wijziging die op maar één ervan is gemaakt, blijft behouden. Hebben beide de tekst bewerkt terwijl ze los van elkaar stonden (bijvoorbeeld omdat er één offline was), dan toont het apparaat dat als tweede synchroniseert een conflictvenster: houd de versie op dit apparaat, houd die van het andere, of houd beide als aparte notities. Beide versies blijven bewaard tot je een keuze maakt.",
+        "Je apparaten voegen de notitie detail voor detail samen zodra ze weer synchroniseren, dus een wijziging die op maar één ervan is gemaakt, blijft behouden. Hebben beide de tekst bewerkt terwijl ze los van elkaar stonden (bijvoorbeeld omdat er één offline was), dan toont het apparaat dat als tweede synchroniseert een conflictvenster: houd de versie op dit apparaat, houd die van het andere, of houd beide als aparte notities. Beide versies blijven bewaard tot je een keuze maakt. Komt de versie van het andere apparaat binnen terwijl je in de notitie aan het typen bent, dan blijft jouw tekst bewaard als kopie met de aanduiding \"(conflict)\" en toont de notitie de andere versie.",
         "Hebben beide apparaten los van elkaar hetzelfde detail gewijzigd, zoals het vastzetten, de map of de titel, dan wordt zonder venster het detail bewaard van het apparaat dat de notitie als laatste heeft bewerkt. Een notitie die op één apparaat definitief wordt verwijderd, wordt overal verwijderd, inclusief een wijziging die een ander apparaat erin aanbracht terwijl ze los van elkaar stonden."
       ]
     },
@@ -359,7 +373,7 @@
     "buy-pro-anonymously": {
       "q": "Kan ik Pro kopen zonder prijs te geven wie ik ben?",
       "a": [
-        "Ja, met twee gangbare hulpmiddelen. Gebruik voor de bon een e-mailalias: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) en [addy.io](https://addy.io) sturen allemaal door naar je echte inbox zonder die bloot te geven. Gebruik voor de betaling een gemaskeerde kaart: [privacy.com](https://privacy.com) genereert in de VS virtuele kaarten die werken met elke naam die je invult, en veel banken en diensten elders ([Revolut](https://www.revolut.com) bijvoorbeeld) bieden wegwerpkaarten die hetzelfde doen.",
+        "Ja, met twee gangbare hulpmiddelen. Gebruik voor de bon een e-mailalias: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) en [addy.io](https://addy.io) sturen allemaal door naar je echte inbox zonder die bloot te geven. Gebruik voor de betaling een gemaskeerde kaart: [privacy.com](https://privacy.com) genereert in de VS virtuele kaarten die werken met elke naam die je invult, en overal elders doet een prepaidkaart die online werkt en die je contant koopt hetzelfde, zonder dat er een naam op staat.",
         "Bij het afrekenen vraagt Paddle om een e-mailadres, een betaalmethode en een land (plus in sommige regio's een postcode) om de belasting te berekenen. De alias ontvangt de bon, de gemaskeerde kaart draagt de naam die je hem gaf, en de belastinglocatie herleidt je tot een regio, meer niet. Houd de alias wel in leven: de e-mail met de bon is je aankoopbewijs en je kanaal voor een terugbetaling.",
         "Gecombineerd met een herstelzinaccount heeft geen enkele partij het volledige plaatje: je bank ziet een kaartoplading, Paddle ziet een alias en een gemaskeerde kaart, en wij zien een publieke sleutel die Pro is geworden, naast die alias in ons Paddle-account."
       ]
@@ -402,7 +416,7 @@
     "languages": {
       "q": "Welke talen spreekt de app?",
       "a": [
-        "Engels, Duits, Frans, Italiaans, Spaans, Nederlands, Pools, Tsjechisch, Catalaans, Turks, Zweeds, Oekraïens, Russisch, Japans, Koreaans, traditioneel Chinees, Thai, Arabisch en Portugees, in zowel de Europese als de Braziliaanse variant. De app volgt standaard je systeemtaal, of je zet er op elk apparaat expliciet een vast bij Instellingen > Taal.",
+        "Engels, Duits, Frans, Italiaans, Spaans, Nederlands, Pools, Tsjechisch, Slowaaks, Catalaans, Turks, Zweeds, Oekraïens, Russisch, Japans, Koreaans, traditioneel Chinees, Thai, Arabisch en Portugees, in zowel de Europese als de Braziliaanse variant. De app volgt standaard je systeemtaal, of je zet er op elk apparaat expliciet een vast bij Instellingen > Taal.",
         "Vertalingen zijn gratis voor iedereen, geen Pro-extraatje. Er staan meer talen op de planning; ontbreekt die van jou, laat het ons weten op [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) of [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -424,7 +438,7 @@
       "q": "Hoe werken taken?",
       "a": [
         "Elke regel die je als - [ ] schrijft, in welke notitie dan ook, wordt een taak, en de weergave Taken in de zijbalk verzamelt ze allemaal op één plek. Een taak daar afvinken werkt de notitie bij waarin hij staat, en een taak openen springt naar die notitie. Er is geen aparte takendatabase om bij te houden: taken zijn gewoon regels in je notities, versleuteld net als al het andere.",
-        "Het snelinvoervak boven aan Taken voegt toe aan een notitie die Quick Tasks heet (bij het eerste gebruik voor je aangemaakt), zodat een losse to-do vastleggen één toetsaanslag kost en geen archiveerbeslissing. Diezelfde weergave biedt drie indelingen (Hybride, Gebundeld, Lijst), een schakelaar voor afgeronde taken en zoeken in taken, en de knop New in de weergave Alles kan meteen een taaknotitie starten."
+        "Het snelinvoervak boven aan Taken voegt toe aan een notitie die Quick Tasks heet (bij het eerste gebruik voor je aangemaakt), zodat een losse to-do vastleggen één toetsaanslag kost en geen archiveerbeslissing. Diezelfde weergave biedt drie indelingen (Hybride, Gebundeld, Lijst), een schakelaar voor afgeronde taken en zoeken in taken, en de knop + in de weergave Alles kan meteen een taaknotitie starten."
       ]
     },
     "journal": {
@@ -488,8 +502,8 @@
     "biometric-unlock": {
       "q": "Biometrisch ontgrendelen werkt niet meer. Wat kan ik doen?",
       "a": [
-        "Je wordt nooit buitengesloten. Het vergrendelscherm biedt altijd een uitweg: \"Ontgrendelen met PIN\", of \"Aanmelden met herstelzin\". De biometrie is een lokale drempel, geen encryptiesleutel, dus je notities blijven hoe dan ook onaangeroerd.",
-        "Herstel daarna de biometrische toegang. Biometrisch ontgrendelen stel je per apparaat in, dus op een nieuwe telefoon, in een nieuw browserprofiel of na een herinstallatie moet je het opnieuw instellen: Instellingen > Beveiliging > \"Slot\", uitzetten, en dan opnieuw \"Biometrisch ontgrendelen inschakelen\". Het vereist ook \"Dit apparaat vertrouwen\" (niet-vertrouwde sessies verdwijnen zodra het tabblad sluit) en hardware met een platform-authenticator (Touch ID, Face ID, Windows Hello). Duikt er een wachtwoordmanager als Bitwarden of 1Password op in plaats van de systeemvraag, sluit die dan en probeer opnieuw, of zet zijn passkey-overname voor de site uit - de app vraagt om de ingebouwde authenticator, maar sommige managers onderscheppen het toch."
+        "Je wordt nooit buitengesloten. Het vergrendelscherm biedt altijd een uitweg: \"Ontgrendelen met PIN\" (\"Ontgrendelen met toegangscode\" als je er een hebt ingesteld), of \"Aanmelden met herstelzin\". Biometrisch ontgrendelen opent alleen de kopie van je herstelzin die op dit apparaat staat, en je notities zijn versleuteld met sleutels uit de herstelzin zelf, dus ze blijven hoe dan ook onaangeroerd.",
+        "Stel het daarna opnieuw in. Als het vergrendelscherm zegt \"Biometrisch ontgrendelen kon je notities niet openen.\", ontgrendel dan eerst op een andere manier. Biometrisch ontgrendelen stel je per apparaat in, dus op een nieuwe telefoon, in een nieuw browserprofiel of na een herinstallatie moet je het opnieuw instellen: Instellingen > Beveiliging > \"Slot\", uitzetten, en dan opnieuw \"Biometrisch ontgrendelen inschakelen\". Het vereist ook \"Dit apparaat vertrouwen\" (niet-vertrouwde sessies verdwijnen zodra het tabblad sluit) en hardware met een platform-authenticator (Touch ID, Face ID, Windows Hello). Duikt er een wachtwoordmanager als Bitwarden of 1Password op in plaats van de systeemvraag, sluit die dan en probeer opnieuw, of zet zijn passkey-overname voor de site uit - de app vraagt om de ingebouwde authenticator, maar sommige managers onderscheppen het toch."
       ]
     },
     "phrase-compromised": {
@@ -647,7 +661,14 @@
       "q": "Hoe werken secties, mappen, tags en ruimtes samen?",
       "a": [
         "Alles wat je bewaart staat in één bibliotheek. De secties in de zijbalk, zoals Notities, Kluis en Dagboeken, zijn weergaven van die bibliotheek per type. Een map is een plek, dus één map kan een notitie en de bijbehorende login samen bevatten, en de mappenboom is in elke sectie hetzelfde. De getallen tellen wat de open sectie bevat, en een map zonder iets daarvan wordt gedimd weergegeven. Een tag is een label, en de zijbalk toont alleen de tags die de open sectie gebruikt.",
-        "Ruimtes splitsen de bibliotheek in Persoonlijk en Werk en tonen er één tegelijk. Een map op het hoogste niveau hoort bij één ruimte, met alles erin, en **Naar Werk verplaatsen** in het menu ervan zet hem over. Een item zonder map hoort bij Persoonlijk, dus alles wat je in Werk maakt komt in een map van Werk. Tags zijn gratis, mappen en ruimtes vragen Pro."
+        "Ruimtes splitsen de bibliotheek in Persoonlijk en Werk, en een map op het hoogste niveau hoort bij één ruimte, met alles erin. [Hoe ruimtes werken](/nl/help/spaces/) legt de schakelaar uit, het overzetten van items en het uitzetten van ruimtes. Tags zijn gratis, mappen en ruimtes vragen Pro."
+      ]
+    },
+    "spaces": {
+      "q": "Hoe werken de ruimtes Persoonlijk en Werk?",
+      "a": [
+        "Ruimtes splitsen je bibliotheek in Persoonlijk en Werk. De schakelaar naast **Springen** in de zijbalk toont **Alle**, **Persoonlijk** of **Werk**: Alle toont elk item, en de andere twee tonen elk één ruimte. Elk apparaat onthoudt zijn eigen keuze, dus je telefoon kan Persoonlijk tonen terwijl je laptop Werk toont, en een item uit de andere ruimte openen schakelt naar die ruimte. Ruimtes veranderen alleen wat de lijsten tonen: elk item synchroniseert nog steeds naar elk apparaat.",
+        "Een map op het hoogste niveau hoort bij één ruimte, met alles erin, en **Naar Werk verplaatsen** of **Naar Persoonlijk verplaatsen** in het menu ervan, of in het menu van een willekeurig item, zet hem over. Een item zonder map is Persoonlijk, net als alles wat je maakt terwijl Alle open staat. Om geen ruimtes meer te gebruiken zet je Instellingen > Lijsten > Ruimtes uit: elk item wordt getoond, er verhuist niets, en elke map houdt zijn ruimte voor als je het weer aanzet. Ruimtes vragen Pro."
       ]
     },
     "note-links": {
@@ -717,8 +738,8 @@
     "note-history": {
       "q": "Kan ik een oudere versie van een notitie terughalen?",
       "a": [
-        "Ja, met Pro. Open het \"...\"-menu van de notitie en kies \"Geschiedenis\" om tot 20 eerdere versies te doorlopen en te herstellen. Bij het herstellen gaat niets verloren: de huidige tekst wordt eerst als versie bewaard, dus je kunt heen en weer stappen. Versies zijn versleuteld zoals de notitie zelf, dus wij kunnen ze evenmin lezen.",
-        "Er wordt hoogstens één momentopname per minuut gemaakt, dus twee bewerkingen met seconden ertussen delen één versie. De geschiedenis is de enige Pro-functie die via de server loopt, en daarom houdt de demo in plaats daarvan een eigen lokale kopie bij. Elk plan heeft daarnaast de [prullenbak](/nl/help/trash-auto-delete/), die een verwijderde notitie 30 dagen bewaart."
+        "Ja, met Pro. Open het \"...\"-menu van de notitie en kies \"Geschiedenis\" om tot 50 eerdere versies te doorlopen, een versie te vergelijken met de huidige notitie en te herstellen. Bij het herstellen gaat niets verloren: de huidige tekst wordt eerst als versie bewaard, dus je kunt heen en weer stappen. Versies zijn versleuteld zoals de notitie zelf, dus wij kunnen ze evenmin lezen.",
+        "Elke versie is de notitie zoals die vóór een bewerking was: er wordt er een bewaard bij je eerste bewerking na een pauze van vijf minuten, een elke tien minuten terwijl je doorschrijft, en een vóór een bewerking die meer dan de helft van een notitie van 200 tekens of meer weghaalt, tenzij de laatste versie minder dan 30 seconden oud is. De geschiedenis is de enige Pro-functie die via de server loopt, en daarom houdt de demo in plaats daarvan een eigen lokale kopie bij. Elk plan heeft daarnaast de [prullenbak](/nl/help/trash-auto-delete/), die een verwijderde notitie 30 dagen bewaart."
       ]
     },
     "vault-totp": {
@@ -849,10 +870,10 @@
       ]
     },
     "quick-switcher": {
-      "q": "Wat is de functie ‘Ga naar’, en wat kan die vinden?",
+      "q": "Wat is de snelschakelaar, en wat kan die vinden?",
       "a": [
-        "Met de functie ‘Ga naar’ spring je via de titel naar alles. Druk op Cmd+K op een Mac of Ctrl+K op Windows en Linux (Cmd+P of Ctrl+P werkt ook), of klik op **Ga naar** in de zijbalk of de kop van de lijst. Typ een deel van een titel om notities, taken, dagboeknotities, Kluis-items, bladwijzers, contacten, bijgevoegde bestanden en instellingen te vinden. Enter opent het item, en Option+Enter of Alt+Enter opent het in een tabblad.",
-        "Typ eerst > om in plaats daarvan een opdracht uit te voeren, zoals een nieuwe notitie maken of naar een sectie gaan. Om woorden in je tekst te vinden in plaats van in titels, kies je de rij **Alles doorzoeken**, of druk je vanaf elke rij op Cmd+Enter of Ctrl+Enter. Het zoeken gebeurt op je apparaat, dus niets van wat je typt wordt naar ons gestuurd. De functie ‘Ga naar’ is gratis."
+        "Met de snelschakelaar spring je via de titel naar alles. Druk op Cmd+K op een Mac of Ctrl+K op Windows en Linux (Cmd+P of Ctrl+P werkt ook), of klik op **Springen** in de zijbalk of de kop van de lijst. Typ een deel van een titel om notities, taken, dagboeknotities, Kluis-items, bladwijzers, contacten, bijgevoegde bestanden en instellingen te vinden. Enter opent het item, en Option+Enter of Alt+Enter opent het in een tabblad.",
+        "Typ eerst > om in plaats daarvan een opdracht uit te voeren, zoals een nieuwe notitie maken of naar een sectie gaan. Typ eerst # om alleen je tags te zien, of / om alleen je mappen te zien; kies je er een, dan filtert dat de lijst zoals een klik in de zijbalk doet. Om woorden in je tekst te vinden in plaats van in titels, kies je de rij **Alles doorzoeken**, of druk je vanaf elke rij op Cmd+Enter of Ctrl+Enter. Het zoeken gebeurt op je apparaat, dus niets van wat je typt wordt naar ons gestuurd. De snelschakelaar is gratis."
       ]
     },
     "find-in-note": {
@@ -876,6 +897,27 @@
         "Een aanmeldmethode die al bij een andere kluis hoort, kun je niet koppelen, want kluizen worden nooit samengevoegd. **Ontkoppelen** vraagt eerst om je 12 woorden. Als wij je herstelzin voor je bewaren, blijft het laatste gekoppelde account staan tot je een ander koppelt of je herstelzin bewaart en overstapt op eigen beheer. Met eigen beheer vraagt een nieuw apparaat nog steeds om je 12 woorden. Gekoppelde accounts zijn in bèta."
       ]
     },
+    "calendar": {
+      "q": "Is er een agenda, en wat staat erin?",
+      "a": [
+        "Ja. Agenda in de zijbalk toont elk item met een datum op één plek: afspraken, dagboeknotities, notities en takenlijsten met een datum, en de verjaardagen van je contacten. De lijst ernaast is het overzicht van de komende dagen, en de grote weergave schakelt tussen Dag, Week en Maand. Klik op een lege dag om daar iets toe te voegen, of sleep een item naar een andere dag.",
+        "Een afspraak is een eigen soort item: een notitie met een dag, een einddag, een tijd en een herhaling. Typ een hele regel in Snel toevoegen, bijvoorbeeld \"Tandarts vr 15:00 1 uur vooraf\", en de dag, de tijd en de melding worden voor je uitgelezen. Ook een notitie of een takenlijst kan een dag, een tijd en een einddag hebben, via de rij Planning in het menu \"...\". De agenda is gratis."
+      ]
+    },
+    "reminders": {
+      "q": "Werken herinneringen uit de agenda als de app gesloten is?",
+      "a": [
+        "Op een telefoon wel: tot 64 meldingen, tot 400 dagen vooruit, worden aan de telefoon zelf doorgegeven, dus ze gaan af terwijl PrivacyNotes gesloten is; als je de app opent en ontgrendelt, worden er meer doorgegeven. In de desktop-app gaat een herinnering af zolang de app draait, en in een browser zolang PrivacyNotes in een tabblad open is. Elk apparaat plant zijn herinneringen op basis van de items die het bewaart, dus de server komt nooit een titel, een tijd of een dag te weten.",
+        "Voeg een melding toe via de rij Melding in de weergave Planning van een item, tot vijf per item, en stel de standaarden in onder Instellingen > Agenda, waar ook \"Titels tonen in herinneringen\" staat. Een item achter je PIN gaat altijd af als \"Herinnering\" met de tijd, en dat geldt ook voor elke melding die is ingepland terwijl de app-vergrendeling aan staat. Een melding die werd doorgegeven voordat de vergrendeling aan stond, kan haar titel houden tot ze afgaat. Herinneringen horen bij Pro; de agenda zelf is gratis."
+      ]
+    },
+    "calendar-time-zones": {
+      "q": "Wat gebeurt er met de tijden van afspraken als ik naar een andere tijdzone reis?",
+      "a": [
+        "Een tijd in de agenda blijft de tijd die je hebt getypt. Een afspraak om 15:00 wordt getoond en gaat af om 15:00, waar je apparaat ook is, zoals een herinnering in een takenapp, omdat elke tijd wordt bewaard als lokale tijd zonder tijdzone. Een telefoon plant elke melding voor een exact moment, dus open en ontgrendel PrivacyNotes na een wisseling van tijdzone één keer in de nieuwe zone om de meldingen te verplaatsen; zolang de app open en ontgrendeld is, verplaatst hij ze vanzelf.",
+        "Voor een gesprek met iemand in een andere tijdzone vul je de tijd in zoals die is waar jij bent. Als een overgang naar zomertijd het uur van een melding overslaat, gaat de melding af in de eerste minuut na de sprong."
+      ]
+    },
     "session-expired": {
       "q": "Waarom zegt de app \"Sessie verlopen\"?",
       "a": [
@@ -887,7 +929,7 @@
       "q": "Wat doet Archiveren, en wat is het verschil met de prullenbak?",
       "a": [
         "Archiveren haalt een item uit je lijsten zonder het te verwijderen. Kies **Archiveren** in het \"...\"-menu of het rechtsklikmenu van het item, of in de selectiebalk voor meerdere items tegelijk. Gearchiveerde items verdwijnen uit Alles, hun sectie, Vastgezet en de tellers van mappen en tags, en wachten in de weergave **Archief** onderaan de zijbalk, die verschijnt zodra er iets is gearchiveerd. Wil je ze in Alles en in de tellingen houden, vink dan Archief aan in de kolom **Alles** van Instellingen > Lijsten. **Uit archief halen** op dezelfde plekken haalt een item terug.",
-        "De prullenbak is voor dingen die weg moeten: hij [verwijdert ze na 30 dagen definitief](/nl/help/trash-auto-delete/), tenzij je dat uitzet. Het archief verwijdert nooit iets, en gearchiveerde items blijven binnen bereik, want zoeken in Alles, de functie ‘Ga naar’ en notitielinks vinden ze nog steeds. Ze synchroniseren en blijven versleuteld zoals al het andere, en ze tellen nog steeds mee voor je opslag. Archiveren werkt voor elk type item en is gratis."
+        "De prullenbak is voor dingen die weg moeten: hij [verwijdert ze na 30 dagen definitief](/nl/help/trash-auto-delete/), tenzij je dat uitzet. Het archief verwijdert nooit iets, en gearchiveerde items blijven binnen bereik, want zoeken in Alles, de snelschakelaar en notitielinks vinden ze nog steeds. Ze synchroniseren en blijven versleuteld zoals al het andere, en ze tellen nog steeds mee voor je opslag. Archiveren werkt voor elk type item en is gratis."
       ]
     },
     "share-into-app": {

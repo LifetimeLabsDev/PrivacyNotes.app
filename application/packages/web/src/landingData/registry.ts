@@ -155,7 +155,7 @@ export const VS_ROWS: Record<string, VsRow> = {
   history: {
     label: 'Note history and version restore',
     group: 'editor',
-    us: { v: 'pro', note: 'Last 20 versions, part of the one-time Pro' },
+    us: { v: 'pro', note: 'Last 50 versions, part of the one-time Pro' },
   },
   'pin-protect': {
     label: 'Protect individual notes',
@@ -181,7 +181,7 @@ export const VS_ROWS: Record<string, VsRow> = {
     label: 'Useful free tier',
     small: 'What you get without paying, forever',
     group: 'price',
-    us: { v: 'yes', note: 'All seven pillars including markdown, 2 devices' },
+    us: { v: 'yes', note: 'Every pillar including markdown, 2 devices' },
   },
   export: {
     label: 'Export everything to plain files',

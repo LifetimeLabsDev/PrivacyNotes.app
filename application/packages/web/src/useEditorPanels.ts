@@ -59,6 +59,9 @@ export function useEditorPanels({
   // reader opened. The tick changes on every seeded open and keys the bar in
   // Editor.tsx, so a repeat takes the new word even while the bar is up.
   const [findSeed, setFindSeed] = useState<{ term: string; tick: number } | null>(null);
+  // The term a bar starts on when the reader swaps find for replace or back
+  // with the button in the bar, so the swap keeps what they typed.
+  const [swapTerm, setSwapTerm] = useState('');
   // Document outline panel. Opened via the top-right toggle or Cmd/Ctrl+Shift+O;
   // shares the top-right slot with the find bar, so only one is open at a time.
   const [outlineOpen, setOutlineOpen] = useState(readOutlinePref);
@@ -111,8 +114,9 @@ export function useEditorPanels({
     else ed.commands.focus();
   }, []);
 
-  const openFind = useCallback(() => {
+  const openFind = useCallback((term = '') => {
     setFindSeed(null);
+    setSwapTerm(term);
     setBar('find');
     setBarFocusTick((t) => t + 1);
     setOutlineOpen(false);
@@ -155,12 +159,13 @@ export function useEditorPanels({
    * note refuses before the pitch: it cannot take the action at all.
    * Spec: ops/docs/pro-features.md (Find and replace)
    */
-  const openReplace = useCallback(() => {
+  const openReplace = useCallback((term = '') => {
     if (readOnly) return;
     if (!proUnlocked(isPro)) {
       onOpenUpgrade?.('replace');
       return;
     }
+    setSwapTerm(term);
     setBar('replace');
     setBarFocusTick((t) => t + 1);
     setOutlineOpen(false);
@@ -183,6 +188,13 @@ export function useEditorPanels({
     if (barRef.current === 'find') closeBar();
     else openFind();
   }, [closeBar, openFind]);
+
+  /** The swap button in either bar: find grows into replace, replace
+   *  shrinks back to find, and the term the reader typed goes along. */
+  const swapBar = useCallback((term: string) => {
+    if (barRef.current === 'find') openReplace(term);
+    else openFind(term);
+  }, [openFind, openReplace]);
 
   /** Same shape for replace: the shortcut and the menu row both toggle. */
   const toggleReplace = useCallback(() => {
@@ -382,5 +394,7 @@ export function useEditorPanels({
     closeBar,
     toggleFind,
     toggleReplace,
+    swapBar,
+    swapTerm,
   };
 }

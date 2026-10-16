@@ -297,1027 +297,70 @@ function preloadOnboarding(): Plugin {
 }
 
 // Vite's own chunk-size warning is a fixed 500 kB against RAW minified bytes.
-// It knows nothing about gzip, nothing about whether a chunk is on the
-// critical path, and nothing about whether a build got better or worse: it
-// fired in exactly the same words when the entry chunk was 2,872 kB and at
-// today's 247 kB gzipped. A warning that never changes gets scrolled past,
-// which is how ~2.6 MB of eager locale JSON sat in the entry chunk for months.
+// It knows nothing about gzip or the critical path, and it printed the same
+// words at 2,872 kB and at 247 kB, so it was scrolled past while ~2.6 MB of
+// eager locale JSON sat in the entry chunk for months. It is switched off
+// (chunkSizeWarningLimit below) and replaced by pn-chunk-budgets.
 //
-// So it is switched off (chunkSizeWarningLimit below) and replaced with
-// per-chunk gzip budgets that FAIL the build. Gzip because that is what users
-// actually download; level 9 is a fixed yardstick for comparing one build to
-// the next, not a prediction of what the CDN serves. Each budget sits a few
-// percent above the real number, so tripping one means something genuinely
-// grew.
+// What pn-chunk-budgets defends is the boot path: the gzipped static-import
+// closure of the entry chunk plus NotesView, which a first-time visitor
+// downloads before the app renders. Two checks fail the build, and nothing else
+// does:
 //
-// Tripped a budget? Find out WHAT grew first (ops/docs/bundle-size.md section
-// 9 has the recipe). Only once the growth is understood and wanted, raise the
-// number here in the same commit and say why in the changelog. Raising it to
-// make the build green is how the 500 kB warning became useless.
-// The deploy is the one build nobody can iterate on, and by the time it runs the
-// code has already passed review, so the budgets below WARN there and throw
-// everywhere else (see the failure path at the bottom of the plugin). The
-// Cloudflare project is Workers-style, which exports WORKERS_CI; CF_PAGES covers
-// a classic Pages build, and PN_BUDGETS_WARN=1 forces the same path by hand from
-// the dashboard if Cloudflare ever renames both.
-// Spec: ops/docs/bundle-size.md (chunk budgets)
+// 1. A STEP: the boot path grew more than BOOT_PATH_STEP_KB since
+//    bundle-baseline.json. That is the accident worth stopping, a heavy module
+//    pulled onto the boot path by one static import.
+// 2. A CEILING: the boot path crossed BOOT_PATH_CEILING_KB. That number is a
+//    product decision taken by a person, never raised to finish a change.
+//
+// Ordinary growth passes. `pnpm preflight` rewrites the baseline after a
+// passing build, so the committed file moves with every release and the slow
+// creep is visible in its diff and in `pnpm health`, instead of stopping a
+// build every few commits. A per-chunk ratchet just above today's size was
+// tried first; it never stopped a byte and cost a round trip on most features.
+//
+// gzip level 9 is a fixed yardstick for comparing builds, not a prediction of
+// what the CDN serves.
+// Spec: ops/docs/bundle-size.md (section 6)
+const BOOT_PATH_STEP_KB = 5;
+const BOOT_PATH_CEILING_KB = 1400;
+
+// Lazy chunks heavy enough to be worth naming in the baseline, so their drift
+// is visible in review. They load on demand and do not count toward the boot
+// path. Rolldown names a chunk after one of its modules, so if a name flips,
+// the entry here has to follow it.
+const TRACKED_LAZY_CHUNKS = ['heic-to', 'PdfPages', 'katex', 'EncryptedAttachment'];
+
+// The deploy and the release builds only warn: they run after review, on the
+// one build nobody can iterate on. WORKERS_CI and CF_PAGES are Cloudflare's;
+// PN_BUDGETS_WARN=1 forces the same path by hand.
 const isDeployBuild = Boolean(
   process.env.WORKERS_CI || process.env.CF_PAGES || process.env.PN_BUDGETS_WARN
 );
 
-// Spec: ops/docs/bundle-size.md (chunk budgets)
-const CHUNK_BUDGET_KB: Record<string, number> = {
-  // Re-derived for the rolldown chunk graph when vite 8 landed (bundle-size.md
-  // section 6 calls a bundler swap a re-derivation event). Rolldown splits the
-  // same boot bytes across many small statically-imported chunks instead of
-  // rollup's two fat ones, so the entry pair shrank and Editor/EncryptedImage
-  // became their own chunks. Budgets sit a few percent above the measured
-  // number, so tripping one means something genuinely grew.
-  // The entry is keyed on the ENTRY FLAG, not the name, so a lazy chunk that
-  // happens to be called "index" can never inherit the entry's budget.
-  // 65.46 kB gz at the vite 8 landing, 2026-08-01. 75.97 once the shared
-  // package was pinned to one chunk (2026-08-20, the white-page fix below).
-  // NOTHING GREW: the boot path FELL 3.59 kB gz (850.77 -> 847.18) and lost
-  // twelve chunks (70 -> 58) in the same change. Pinning shared stopped
-  // rolldown scattering it, and the glue it used to hoist into a dozen
-  // one-import chunks now sits in the entry once instead of many times. This
-  // is a re-derivation, the same kind of event as the bundler swap above, so
-  // the number is re-measured rather than defended. Raised to 77.
-  // 77.00 on launch day (2026-08-31), which the previous 77 refused with the
-  // baseline at 76.98: three og:locale rows and a reworded FAQ answer, about
-  // 20 bytes. Raised to 78 so the next copy edit is not a budget question.
-  // 78.03 in build-smoke's units on 2026-09-10, thirty bytes over, from six
-  // items added to the public changelog. That entry is data in the entry
-  // chunk, so curating a release moves this number and nothing else does.
-  // Raised to 79 for the same reason it went to 78.
-  // 86.32 kB gz on 2026-09-17, 7.32 over. WHAT GREW: react-dom 19.3.0, and
-  // nothing else. Measured by holding react and react-dom at 19.2.8 with the
-  // rest of the same dependency batch installed: this chunk did not move at
-  // all, and the boot path grew 1.01 kB instead of 9.45. Vite 8.3.0 was ruled
-  // out the same way, pinned back to 8.2.2 for one build with no effect. React
-  // is the framework and sits in the entry by construction, so there is no
-  // lazy boundary to hide it behind. Raised to 87.
-  // 87.38 kB gz on 2026-09-18, 0.38 over. WHAT GREW: the screen a failed
-  // render leaves behind, in main.tsx. Isolated at +1.05 by building the same
-  // tree with that one file at HEAD (86.33 against 87.38). It cannot sit
-  // behind a lazy boundary, because it is what renders when a chunk fails to
-  // load. Raised to 88.
-  // 111.02 kB gz on 2026-09-27, NOT new bytes: the boot path shrank 0.49 kB.
-  // The sign-in prompt started importing PinInput, and the bundler moved
-  // auth.tsx, sync.ts and their helpers out of a shared boot chunk into the
-  // entry (PinInput went the other way). Found by diffing the entry's source
-  // map against a build of the previous commit. Raised to 112.
-  // 112.04 kB gz on 2026-10-04, 0.04 over. WHAT GREW: auth.tsx (+0.11), the
-  // device-limit retry finishing an account switch. Raised to 113.
-  // 113 -> 114 (2026-10-10): the shortcut parser (noteShortcut.ts), which
-  // must read the address before the app mounts, +1.1 kB gz.
-  '(entry)': 114,
-  // NEW CHUNK, not new bytes: the whole shared package in one piece, 62.91 kB
-  // gz. It has to stay one chunk - splitting it is what put a white page in
-  // production. See the advancedChunks comment in `build` for the mechanism.
-  shared: 65,
-  // 130.20 kB gz with the Markdown pillar (107.47 at the vite 8 landing).
-  // The pillar's four panes are static imports and must stay that way: making
-  // them lazy puts a Suspense boundary above the editor, and TipTap does not
-  // survive the disconnect/reconnect React does there (see the import comment
-  // in NotesView.tsx). So this growth is paid here rather than deferred.
-  // 135.05 kB gz since the `.txt` icon (2026-08-15): the Markdown list and file
-  // header pick `FileTxt` or `FileMd` per extension, so a second Phosphor glyph
-  // now ships in this chunk (~0.8 kB gz across the boot path, which is what one
-  // icon costs). The pillar's panes are static imports for the reason above, so
-  // an icon they reference lands here rather than behind a lazy boundary.
-  // 136.25 kB gz with the export-fidelity pass (2026-08-19): export.ts's
-  // embedded stylesheet gained the code-panel hljs palette and print rules,
-  // and markdownRender the editor-style task checkboxes and callout fold
-  // handling - stylesheet strings ship as bytes, so the export looking like
-  // the editor is paid here. The highlighter itself stays out (dynamic, see
-  // markdownHighlight.ts).
-  // 137.64 kB gz with TOTP codes in the Vault (2026-08-20). WHAT GREW: the
-  // shared package's totp.ts pulls noble's sha1 (legacy.js) and sha512 into
-  // the bundle (sha256 and hmac were already there for the crypto core), and
-  // VaultItem/LoginForm gained the code row, countdown ring and key field.
-  // VaultItem is a static import under NoteEditorPane, so the bytes are
-  // boot-path by construction, same as the panes above.
-  // 145.91 kB gz with the Bookmarks pillar, final same-day shape
-  // (2026-08-22). WHAT GREW: BookmarksList (quick-add bar, derived links,
-  // multi-select), BookmarkItem under the standard header (URL field, PIN
-  // block, labeled copy/open), linkBody.ts + openExternal.ts, NoteRow's
-  // tall favicon chip + trailing-actions slot, the read-only hint for
-  // vault/link bodies, and seven pillar-specific Phosphor glyphs
-  // (PlusSquare, NotePencil trigger split, CheckFat, Files, Notebook,
-  // Bookmarks/Bookmark, ShieldPlus). Static under NotesView like every
-  // pillar pane; the importer stays behind the lazy ImportModal boundary.
-  // 148.32 kB gz after the tracker data-loss fixes (2026-08-26). WHAT
-  // GREW: mergeTrackers/trackersEqual and the template tombstone filters
-  // in trackerTypes.ts, the field-level merge at both ConflictModal
-  // resolutions, saveWeekReflection (which creates the Monday entry), and
-  // the dosage-history writes in MedicationPill. All of it is correctness
-  // on paths the boot closure already carried.
-  // 149 -> 150 (2026-08-26): the same +1.07 kB gz as the boot path above,
-  // measured the same way. `export.ts` is static under NotesView.
-  // 150 -> 153 (2026-08-27): 151.95 kB gz with the shared folder tree. WHAT
-  // GREW: FolderTreeView, which the sidebar and the Move dialog now both
-  // render, carries the pointer-event drag (drop resolution, edge
-  // auto-scroll, the capture handlers) and the tinted-branch and caret
-  // chrome the dialog never had. The two surfaces' own tree code shrank in
-  // return, so the net is the reorder gesture itself.
-  // 153 -> 154 (2026-08-28): 153.28 kB gz after the admin console moved out
-  // to packages/admin. NOT new bytes, and not growth this chunk caused. The
-  // panel was the second consumer of HoverLabel, formatBytes, pricing,
-  // LoadingScreen and icons, so rolldown kept those in chunks of their own.
-  // With one consumer left it folds them back in, and four chunks disappear
-  // (65 -> 61). Measured both ways against HEAD in a worktree: the boot path
-  // FELL 883.09 -> 881.67 kB gz. The app is smaller and this chunk carries a
-  // little more of it.
-  // 154 -> 155 (v0.477.0): 154.00 kB gz. The content-width axis adds the
-  // ContentWidthButton and the theme axis it reads to this chunk.
-  // 155 -> 156 (2026-08-29): 155.23 kB gz. WHAT GREW: the editor header's
-  // quick-action row (notesView/NoteQuickActions.tsx), the shared gates in
-  // noteActionGuards.ts, and the previous/next note pair with its shortcut.
-  // The "..." menu gave a little back when it stopped carrying its own copy
-  // of the Pro and PIN checks.
-  // 156 -> 157 (2026-08-31): two same-day causes, merged from parallel
-  // branches. The at-rest sweep (localSweep.ts) and its idle trigger -
-  // the every-session pass that converts plaintext rows to the sealed
-  // format - and the search index now following the notes state
-  // (searchIndexSync.ts + the displayNotes wiring), so a note is
-  // searchable the moment it exists instead of after the next refresh.
-  // 157 -> 158 (2026-08-31, same day): the encrypted full backup's card
-  // and prop threading, the trashed-flag wiring, and the blob stores'
-  // ownership guard - +0.40 kB measured.
-  // 158 -> 159 (2026-09-05): the never-backed-up guards - the notice in
-  // the three permanent-delete confirms, the sign-out confirm's list and
-  // safer default, and the reveal shared with ID & Sync's Open. +0.51 kB
-  // measured against the v0.499.4 baseline drawn the same day.
-  // 159 -> 162 (2026-09-08): the Contacts pillar - ContactsList, ContactItem
-  // and ContactForm are statically imported like every other pillar's list
-  // and body, plus the pillar wiring in NotesView itself. +8.37 kB measured
-  // against the v0.506.0 baseline; the vCard reader and writer stay out of
-  // the boot path (import chunk, dynamic export import).
-  // 162 -> 164 (2026-09-08): the detail-pane kit and the vault view modes
-  // rebuilt on it, +1.83 kB gz, measured against the v0.506.1 baseline.
-  // 164 -> 166 (2026-10-02): the contact photo picker on the chip, +1.19 kB
-  // gz against the v0.555.1 baseline.
-  // 166 -> 168 (2026-10-02): the task list controls, the list walker in
-  // tasks.ts and the menu, confirm and counter wiring, +2.44 kB gz against the
-  // v0.558.0 baseline.
-  // 168 -> 169 (2026-10-06): the keyboard commands of phases 2 to 4 (history
-  // back and forward, the list and sidebar keys, F6, the desktop keys), +2.32
-  // kB gz against the v0.569.2 baseline.
-  // 169 -> 170 (2026-10-06): command mode (the palette entries and their
-  // runner), +0.79 kB gz against the v0.570.1 baseline.
-  // 170 -> 171 (2026-10-06): custom and community themes, +1.26 kB gz
-  // against the v0.571.0 baseline: the Themes tab's action row and card menus
-  // and the builder hook; the cards, the paste field and the builder are lazy
-  // chunks.
-  // 171 -> 172 (2026-10-06): the quick switcher's wiring (its state, the
-  // section of each item, the lazy mount), +0.24 kB gz; the switcher itself
-  // is a lazy chunk.
-  // 172 -> 174 (2026-10-07): the date work of steps 4 to 7 in
-  // ops/docs/plans/dates.md, +2.31 kB gz: the Date & time tab of the Date &
-  // Language pane and the effect that applies it, the Entry date row of the
-  // note menu, the date field of the New menu, the entry date write, and the
-  // pattern row of the Journals pane (settingsCategories imports both panes).
-  // 174 -> 175 (2026-10-07): the note color control of v0.577.0 and the
-  // Subfolders switch of v0.578.0 (its scope, the path labels for the row
-  // chips and the switch context), +0.52 kB gz over the old line.
-  // 175 -> 176 (2026-10-07): the theme concept fixes, +0.18 kB gz against the
-  // v0.583.0 baseline: the builder draft kept through Save with Pro, the
-  // pinned-mode read of a card click, and the built-in card menus (their codes
-  // load after the sheet mounts).
-  // 176 -> 177 (2026-10-07): a list item dropped on a sidebar folder or tag
-  // (GitHub #418), +1.27 kB gz against the v0.585.0 baseline: the rail's drop
-  // hook with its spring timers (useRailItemDrop) and the drag data (itemDrag).
-  // 177 -> 178 (2026-10-08): the release-review fix wave, +0.26 kB gz against
-  // the v0.592.6 baseline: the blob stores settle an object already stored
-  // before they wait for quota headroom, and the merge writes a moved edit date.
-  // 178 -> 179 (2026-10-08): the theme builder redesign, +0.04 kB gz over the
-  // line: the Pro mark moved onto the theme card swatch (ProCorner).
-  // 179 -> 180 (2026-10-08): +0.11 kB gz against the v0.594.0 baseline: the
-  // milestone toast's dismiss button and steady timer, and the sidebar's
-  // markdown file rows.
-  // 180 -> 182 (2026-10-08): the journal calendar, +1.03 kB gz: the day map,
-  // the footer calendar props, the calendar card that heads the Journals list
-  // with its Show calendar switch, and the list options' switch icons.
-  // 182 -> 183 (2026-10-09): the app shell's keyboard height and the
-  // bottom bar's row in the note pane.
-  // 183 -> 186 (2026-10-09): the list group headers (#448), about +2.5 kB gz:
-  // the group builder, the header row and its fold state, and the
-  // NotesList wiring.
-  // 186 -> 196 (2026-10-09): Spaces (#352) and the Settings regroup, about
-  // +7 kB gz: the space filter and moves, the switch, the split Design,
-  // Editor, Toolbar, Lists and Date panes, and the favorite themes.
-  // 196 -> 198 (2026-10-09): the Markdown folder editor at full strength,
-  // about +1 kB gz: inserts at the caret, the toolbar's picture and file
-  // buttons, the header find button and the find pill, the rich-save tidy,
-  // and the pane fold for a file opened from the file manager.
-  // 198 -> 199 (2026-10-10): the shared list item and list shell (LG3, LG2)
-  // and the row style, +0.58 kB gz since the v0.614.0 baseline.
-  // 199 -> 200 (2026-10-10): the favorite themes, the Note colors example
-  // and the quick switcher's bookmark actions, about +0.85 kB gz.
-  // 200 -> 201 (2026-10-10): opening a shortcut and its copy rows, +0.9 kB gz.
-  // 201 -> 202 (2026-10-10): the free Spaces switch and the toolbar draft's
-  // upgrade handoff, about +0.3 kB gz.
-  NotesView: 202,
-  // The eager English catalogs. 60.43 kB gz once the Contacts pillar's strings
-  // (the form, the label vocabulary, the import row) and the Images pane
-  // landed (2026-09-08), +1.81 against the v0.506.0 baseline, over the 60 kB
-  // default. Raised to 62.
-  // 62.11 in build-smoke's units on 2026-09-10 with no catalog change in the
-  // diff, so this is the ubuntu-against-darwin gap the baseline note warns
-  // about rather than growth. Raised to 63 to stop a measurement difference
-  // failing a build.
-  // 63.01 on 2026-09-11 with the generator's second mode: twenty-odd short
-  // strings for the toggle, the steppers, the strength tiers and the
-  // passphrase options, +0.24 kB gz. Raised to 64.
-  // 64.15 on 2026-09-23 with the picture viewer, the PDF view and the Files
-  // picture picker: nineteen short strings, +0.32 kB gz. Raised to 65.
-  // 65.17 on 2026-09-24 with a batch of reliability fixes: the export
-  // missing-blob sentences, the storage-upgrade retry and refusal lines, the
-  // save-failure lines and the history read error, +0.45 kB gz. Raised to 66.
-  // 66.19 on 2026-09-25 with the settings search: one lazy-import stub per
-  // locale for its catalog, and the sidebar divider's label, +0.29 kB gz.
-  // Raised to 67.
-  // 70.27 on 2026-09-27: English account connection, custody and 2FA setup,
-  // recovery and refusal copy. Other locales still load on demand.
-  i18n: 71,
-  // 209.51 kB gz since katex became its own chunk below (278.11 with it inside,
-  // against a 300 budget). Retightened in the same change that moved it: a
-  // budget carrying 90 kB of slack is decoration, not a gate.
-  Editor: 220, // tiptap/lowlight, a static dep of NotesView now
-  // NEW CHUNK, not new bytes: 75.88 kB gz that used to sit inside Editor above.
-  // markdownRender.ts imports katex DYNAMICALLY to render math in exports, the
-  // burn viewer and print, so katex now has both a static importer (the editor's
-  // math extensions) and a dynamic one, and rolldown gives it its own chunk.
-  // The boot path is unchanged - the static importer still pulls it in there -
-  // and the win is on the burn viewer, which reaches markdownRender without the
-  // editor and so fetches this only for a note that actually contains a `$`.
-  // Budget set a few percent above the measured number, like its neighbours.
-  katex: 80,
-  // The attachment node and the code the picture node shares with it, 104.42
-  // kB gz on 2026-09-24; the picture node itself is a chunk of its own
-  // (EncryptedImage, 5.30, under the default budget). Rolldown names the big
-  // chunk after one of the two modules, so if the name flips back, this key
-  // has to follow it.
-  EncryptedAttachment: 110,
-  // Lazy, and enormous, but only fetched by someone who drops in a HEIC file.
-  // Why it still ships: ops/docs/bundle-size.md section 8.
-  'heic-to': 770, // 728.90 kB gz, unchanged by the bundler swap
-  // Lazy: pdf.js, fetched the first time somebody opens a PDF. 147.54 kB gz
-  // for the legacy build (the modern one needs newer WebKit than our oldest
-  // supported iOS). Its worker ships as a separate asset, outside any budget.
-  // Why it ships at all, and what it costs the app download:
-  // ops/docs/bundle-size.md section 8.
-  PdfPages: 155,
-};
-
-// Everything not named above, including the per-locale catalog chunks. Loose
-// enough never to nag, tight enough that a new heavyweight shows up in the
-// build log instead of in production.
-const DEFAULT_CHUNK_BUDGET_KB = 60;
-
-// The boot path is no longer a nameable pair: rolldown spreads what rollup
-// kept in entry+NotesView across ~66 statically-imported chunks that all
-// load before first render. The number worth defending is therefore the
-// static-import CLOSURE of the entry chunk plus NotesView (which App.tsx
-// prefetches immediately), and it carries its own budget.
-// 835.13 kB gz with the Markdown pillar (819.58 at v0.309.4, before it landed).
-// Raised from 830 because the pillar's four pane components - MarkdownListPane,
-// MarkdownFilePane, MarkdownRail, MarkdownExplainer - are STATIC imports in
-// NotesView, so they sit in the boot closure whether or not anyone opens the
-// pillar. Deliberately tight (about 5 kB of headroom, where the old number
-// carried nearly 40) so the next addition has to be argued for rather than
-// absorbed.
+// The baseline is stated in build-smoke's units: ubuntu, with the synthetic
+// values from tools/ci-vite-env.mjs. Other builds measure lower, so the plugin
+// adds the spread back before it compares and prints both numbers.
 //
-// `lazy()` is NOT the way back under: it was tried and reverted, because a
-// Suspense boundary above MarkdownFilePane crashes the app the moment a file is
-// opened (NotesView.tsx's import comment has the mechanism). It also bought
-// nothing here - splitting the panes out hoisted their shared code into new
-// statically-imported chunks, and this number went UP by 0.88 kB. Any real
-// reduction has to come from what the pillar's shell-level hooks pull in.
-//
-// 840.13 kB gz with the default-Markdown-app control (2026-08-14), which tripped
-// 840 by 130 bytes. WHAT GREW, since the rule here is to know before raising:
-// `defaultApp.ts` (the OS-status seam and its subscriber cache) and
-// `MarkdownDefaultApp.tsx` (three frames over one body), reached from
-// MarkdownListPane, MarkdownExplainer and NotesView - all three already static
-// imports, so this rides in the boot closure exactly as the panes above do. Plus
-// the list's auto-open effect. Raised to 845 rather than 841 so the next 130
-// bytes are not another build failure, and kept under 1% of headroom so it is
-// still a gate rather than a formality. Splitting it out is the same dead end as
-// the panes: it is the same shared code that got hoisted last time.
-//
-// 845.71 kB gz with the editor-syntax-fixture export fixes (2026-08-19), over a
-// budget that had 60 bytes of headroom left. WHAT GREW: markdownRender.ts
-// learned the syntax the torture-test fixture caught it dropping (pipe-table
-// column alignment, two-space hard breaks, email + query-string autolinks,
-// indented code blocks, list splitting on marker change), and export.ts's
-// embedded stylesheet gained the RTL direction rules and long-word wrapping the
-// editor already had. Both are static imports under NotesView, so the bytes are
-// boot-path by construction. Raised to 847 for the same reason as the last
-// raise: a whisker of margin so the next hundred bytes argue their case in a
-// review rather than as a red build.
-// Spec: ops/docs/bundle-size.md
-//
-// 847.07 kB gz with the storage-accounting and equal-stamp sync fixes
-// (2026-08-19). WHAT GREW: sync.ts (the pull now tells its own echo from a
-// foreign equal-stamp row via the recorded push nonce, #156), notesRepo.ts
-// (monotonic edit stamps), and the upload pre-flight gates that now count
-// the incoming file (#131) - all static imports on the boot path. Raised to
-// 849 so the next small fix in these files is not a build failure, still
-// under 0.5% of headroom.
-//
-// 850.21 kB gz with TOTP codes in the Vault (2026-08-20). WHAT GREW: the
-// same bytes as the NotesView raise above - noble's sha1 and sha512 via the
-// shared package's new totp.ts, plus the code row, ring and key field in
-// VaultItem/LoginForm, all static under NoteEditorPane. Raised to 851,
-// keeping under 0.1% of headroom so the gate stays a gate.
-//
-// 849.32 kB gz once vault items rendered as fields (2026-08-20). WHAT GREW:
-// vaultFields.ts, which both export.ts and the burn share read, plus the
-// table markup and the markdown writer that go with it - static under
-// NotesView like everything above. NOT raised: the line above already covers
-// it, and a budget that moves for growth it can absorb stops being a gate.
-//
-// 853 after the deploy build failed at 851.58 kB gz on the same commit CI called
-// 850.10 (2026-08-20). NOTHING GREW: v0.416.0 rebuilt on this machine measures
-// 850.78 against HEAD's 850.79, so the gauge was wrong rather than the bundle.
-// Every number above was taken in a tree with no VITE_ values to inline (an
-// agent sandbox or CI, where .env.local does not exist) and the deploy inlines
-// them. Same commit, same machine: 849.31 kB gz with the variables empty, 850.79
-// with them set. The gap is not the length of the strings - emptying one group
-// at a time moves under 0.5 kB, emptying all of them moves 1.48 - it is what
-// gzip does with a bundle full of identical empty strings. Linux adds another
-// 0.79 kB on top of macOS, which is how the deploy arrives at 851.58.
-//
-// So the reference measurement is THE DEPLOY BUILD, not whatever a sandbox
-// prints, and 853 sits 1.42 kB (0.17%) above it. That headroom is the spread
-// between the three environments, not room for new bytes. To reproduce it,
-// build with the real packages/web/.env.local in place; without one the number
-// runs about 1.5 kB low and the plugin says so on its own log line.
-// 862 with the Bookmarks pillar, final same-day shape (2026-08-22):
-// 859.86 kB gz measured on a Mac WITH .env.local inlined (deploy-like), so
-// the deploy reference is that plus Linux's ~0.79 - about 860.7 - and 862
-// keeps the same ~1.2 kB environment spread the 853 raise established, not
-// room for new bytes. WHAT GREW: the NotesView chunk's Bookmarks pillar,
-// itemized on its budget above.
-// 865 after the five commits that finished the pillar (2026-08-23): 862.29
-// kB gz, same machine and same .env.local state as the 859.86 above, so the
-// +2.43 is real growth rather than calibration. WHAT GREW: nothing new entered
-// the boot path - the closure is the same 59 chunks - it is NotesView.js and
-// the entry carrying the pillar's own code (the Bookmarks view, the sidebar
-// and All-list view settings, the Netscape writer behind the bookmarks
-// export, and the homepage grid card). Deploy reference is 862.29 plus
-// Linux's ~0.79, about 863.1, so 865 keeps the same ~1.9 kB environment
-// spread, not room for new bytes.
-// 868 for the bookmarks import entry and the folder picker's row menu
-// (2026-08-23): 865.56 kB gz, same machine and same .env.local state as the
-// 862.29 above. Only 0.78 of that is this change - the tree measures 864.78
-// with these four files at HEAD - so the gate was already 0.22 kB from
-// tripping before it was touched, and whoever next raises this line should
-// account for the other 2.49 (the v0.440 public-changelog entry, and the
-// importer work that was uncommitted in the tree at the time) rather than
-// take it for calibration. WHAT GREW: nothing new entered the boot path -
-// the closure is the same 60 chunks - it is BookmarksList's standing import
-// row and tile and FolderPicker's row menu, both static under NotesView.
-// Deploy reference is 865.56 plus Linux's ~0.79, about 866.35, so 868 keeps
-// the same ~1.6 kB environment spread the raises above established, not room
-// for new bytes.
-// 871 for the in-app help chip (2026-08-24): 868.25 kB gz against 866.09 for
-// the same tree with the chip's six call sites stripped, so +2.16 is this
-// change and nothing else - both numbers come from one sandbox without
-// .env.local, which the note above says runs about 1.5 kB low. WHAT GREW:
-// HelpChip.tsx plus the generated `helpQuestions` English catalog, reached
-// from ImportModal, SyncOptionsModal, SecurityModal, UpgradeModal,
-// DangerZone and BurnShareModal. It is one shared chunk, and the closure goes
-// 59 -> 60 because of it. Measured BOTH ways first: a private module tree
-// with its own import.meta.glob cost 868.41, so folding the strings into the
-// normal i18n namespaces bought 0.16 and one fewer loader, not the 2 kB it
-// looked worth - the bytes are the component and the strings themselves.
-// Deploy reference is 868.25 plus Linux's ~0.79, about 869.04, so 871 keeps
-// the same ~2 kB environment spread the raises above established, not room
-// for new bytes. Caveat for whoever raises this next: the tree also carried a
-// parallel session's uncommitted import-prompt work at the time, which is in
-// both of my numbers and therefore not in the +2.16, but IS in the 868.25.
-// 873 after the import prompt and the import-aware milestones (2026-08-24),
-// and it corrects the 871 above. That raise added only Linux's 0.79 to a
-// sandbox number, but a sandbox has no .env.local, and the note further up
-// says an env-less build measures about 1.25 to 1.5 kB low. Its own commit
-// (dfc16329) measures 869.50 kB gz on a Mac WITH .env.local, so build-smoke
-// was already at about 870.3 the moment the budget went to 871: 0.7 kB of
-// headroom, not the 2 the note claimed. HEAD measures 870.33 on that same
-// machine and the same .env.local state, so +0.83 is real growth on top of
-// it, and build-smoke read 871.40 and failed. WHAT GREW, over the same 60
-// chunks: NotesView +0.41 (ImportPrompt.tsx, the shared import row static
-// under NotesList, TasksList and BookmarksList), notesRepo +0.21
-// (notesCreated.ts and its counter), languages +0.12 and auth +0.08
-// (settingsLocalKey.ts and the userSettings split behind the import-aware
-// milestones), HelpChip +0.02. The reference here is build-smoke's own
-// 871.40, measured on ubuntu with tools/ci-vite-env.mjs values, which
-// section 6 puts within 0.1 kB of the deploy - so 873 keeps the same ~1.6 kB
-// environment spread the raises above established, not room for new bytes.
-// Calibrate the next raise against the second number on the plugin's own log
-// line, which is now stated in build-smoke's units from any machine.
-// 875 with the auth breadcrumb log (2026-08-25). WHAT GREW: the session
-// diagnostics themselves cost 0.33 kB gz on the boot path (authDiag.ts plus
-// its call sites in auth.tsx, sync.ts and SessionExpiredModal.tsx; auth
-// +0.34, the rest in the NotesView closure), measured as two builds on the
-// same tree with only those four files reverted: 872.86 -> 873.19 in
-// build-smoke units on this Mac (darwin +1.10 applied). The other growth
-// since baseline v0.448.1 (Sun.es +1.22, NotesView +0.92, markdown +0.33,
-// markdownRender -0.70, Moon.es -0.73) was already in the tree and had eaten
-// the headroom down to 0.14 kB before this change. Caveat for the next
-// raise: the tree also carried a parallel session's uncommitted HelpChip,
-// LandingPage and Onboarding edits at measurement time, so those bytes are
-// in 873.19 and in the re-derived baseline. 875 keeps the same ~1.8 kB
-// spread the raises above established, not room for new bytes.
-// 877 with the session-stability batch (2026-08-25, the day's second
-// raise). WHAT GREW since baseline v0.453.2, in build-smoke units at
-// 875.16 measured on this Mac (darwin +1.10 applied): auth +0.34 and
-// (entry) +0.29 are the stability hardening (verdict taxonomy, owner
-// mirror in db/authStorage, lock-screen sign-in hold, breadcrumbs,
-// credential-key bucketing), devices +0.10 is the secret-swap journal;
-// NotesView +0.94 and languages +0.20 were the v0.455-v0.456 filter
-// feature, already committed and inside the previous headroom. 877
-// keeps the same ~1.8 kB spread as the raises above, not room for new
-// bytes.
-// 879 for the GitHub sign-in button and the privacy ladder (2026-08-26):
-// 876.48 kB gz against 875.76 for the identical tree with this session's five
-// files restored from HEAD (Onboarding.tsx, HelpChip.tsx, helpChips.json,
-// en/auth.json and the 17 generated helpQuestions.json), so +0.72 is this
-// change and nothing else. Both numbers come from the same machine with the
-// same .env.local. WHAT GREW: almost all of it is one icon. `Password` is a
-// three-cluster glyph and lands as its own chunk at +0.80, which takes the
-// closure 60 -> 61; the ladder's markup and its English strings are the rest,
-// and dropping `signup-options` from the chip map gave a little back. An icon
-// costing more than a whole panel is worth knowing before the next one is
-// added to a boot-path surface: the cheaper marks measured 2.4-3.6 kB raw
-// against Password's 3.9. Deploy reference is 876.48 plus Linux's ~0.79,
-// about 877.3, so 879 keeps the same ~1.6 kB environment spread the raises
-// above established, not room for new bytes.
-// 879 -> 883 (2026-08-26). WHAT GREW: +1.08 kB gz for journal trackers in
-// the export formats (`trackerExport.ts` plus the readable block and its
-// styles in `buildNoteHtmlDocument`), and ~1.4 kB for the portable folder
-// path - `folderNamePath` in folders.ts and `parseFolderPath` in
-// import/folderImport.ts, both reached from the boot closure. Each number
-// was measured in isolation by building with and without that change on the
-// same tree, because several change-sets landed the same day.
-//
-// It is paid in the BOOT path only because `export.ts` (1347 lines) is a
-// static import of NotesView via `notesView/useExports.ts`, so the whole
-// export surface loads for everyone whether or not they ever export.
-// Making those nine imports dynamic would return far more than these
-// changes cost; it is a separate refactor, not a rider on a feature commit.
-// 886 -> 887 (2026-08-29). WHAT GREW: +0.74 kB gz in NotesView.js for the
-// editor header's quick-action pill - `notesView/NoteQuickActions.tsx` plus
-// the shared `noteActionGuards.ts` the "..." menu now calls too, which is
-// why the menu itself got a little smaller. The build reported other movers
-// on the same tree (EyeSlash, auth, EncryptedImage); those belong to work
-// already in progress here, not to this change, so this raise covers the
-// 0.74 and nothing else.
-// 887 -> 888 (2026-08-30). WHAT GREW: the rest of the editor-chrome pass -
-// the previous/next pair and its shortcut, `EditorSlotPill.tsx` shared by
-// the four controls in the editor's top-right slot (+0.27 in Editor.js for
-// the slot prop), and the demo's local note-history path in
-// `noteVersions.ts`. NotesView carries most of it at +1.23 since the
-// baseline. The same parallel movers as the line above are still in the
-// number and still are not this change.
-// 888 -> 889 (2026-08-30). WHAT GREW: +0.55 kB gz for the split colour
-// buttons in EditorToolbar.tsx - the second trigger, its label and the
-// colour strip on each of the two controls, plus the small localStorage
-// pair in editorPrefs.ts. Measured against this same tree at HEAD, which
-// sat at 887.45 with 0.55 kB of headroom.
-// 889 -> 890 (2026-08-31). WHAT GREW: +0.64 kB gz in icons.js for three
-// phosphor glyphs the note menus now draw (a struck pencil, a shield and a
-// struck shield), and +0.61 in NotesView.js for the read-only and protect
-// entries in the row context menu, the guards behind them and the instant
-// gate a fresh protect applies.
-// 890 -> 892 (2026-08-31). WHAT GREW: +1.10 kB gz for the local at-rest
-// seal layer - the DBCore middleware and key registry in db.js (+0.97),
-// the AAD encrypt/decrypt variants in shared (+0.13) and the writer-gen
-// listener in the entry (+0.11). The layer must sit on the boot path:
-// it wraps the database the first paint reads.
-// 892 -> 893 (2026-08-31, the integration merge). WHAT GREW: the sweep
-// and its writer-mode plumbing (db +1.71 total with the layer above)
-// plus the state-driven search index (NotesView +0.66), which land
-// together at 892.16 as build-smoke measures it.
-// 893 -> 894 (2026-08-31, same day): the sealed-backup codec in shared,
-// the sync push ownership re-checks, and the auth switch suspend - +0.97 kB
-// measured across the closure.
-// 894 -> 895 (2026-08-31, same day): the announcement banner and its
-// registry on the landing and shell boot paths - AnnouncementBanner
-// +3.84, openExternal -2.91, net +0.93 kB as the build reports it.
-// 895 -> 896 (2026-09-02): the paged blob-size listing in imageStore
-// (+0.14 kB gz, measured against HEAD in a worktree). Storage answers a
-// listing with one page, so an unpaged call left every blob past the
-// first page permanently sizeless. The predecessor landed at 0.02 kB
-// headroom, which is why 0.14 needs a raise at all.
-// 896 -> 897 (2026-09-02): the recovery-phrase route out of a forgotten
-// PIN - pinRecovery.ts, its form, and the strings in every security
-// catalog (+0.57 kB gz over the whole boot path). A forgotten PIN had no
-// route at all before it, on any device.
-// 897 -> 898 (2026-09-02, same day): two phosphor glyphs, FileHtml and
-// Printer, for the share menu's new icon column (+0.81 kB gz across the
-// closure). The menu lost three whole-vault backup rows in the same
-// change and the strings behind them, so the net cost is two icons.
-// 898 -> 899 (2026-09-05): the "Not backed up" state - pushFailures.ts,
-// the pill and panel branches, the reveal helper NotesView now shares with
-// the note-link jump, the bar under the editor header and the row badge.
-// The build reports NotesView +0.44 kB gz since the v0.495.0 baseline,
-// which the four releases between carried across at 0.02 kB of headroom;
-// useOnlineStatus +0.24 and Editor +0.17 are those releases, not this one.
-// 899 -> 900 (2026-09-05, same day): the never-backed-up guards, the
-// honest sync log and the fuller support report. +0.96 kB since the
-// same-day baseline: NotesView +0.70, i18n +0.20, the rest in the panel.
-// 900 -> 901 (2026-09-07): one label added to every locale catalog, for
-// the single-line copy of the words in the recovery-phrase file. It
-// landed on 0.02 kB of headroom, so the string itself is the whole
-// overrun; the rest of the +0.53 since the v0.500.0 baseline is the
-// releases in between.
-// 901 -> 903 (2026-09-07, same day): find and replace - ReplaceBar,
-// MatchNav, the replace drivers in editorSearch, one phosphor glyph and
-// the strings behind them. +1.46 kB gz measured against HEAD in a
-// worktree (Editor +1.03, the rest is catalogs and the icon). HEAD sat at
-// 0.34 kB of headroom, so the UpgradeModal and billing movement the build
-// also reports is the three releases before this one, not this change.
-// 903 -> 905 (2026-09-08): a search result opens on its word (GitHub #288).
-// 903.02 kB gz here, +0.88 since the v0.505.0 baseline: NotesView +0.47 and
-// Editor +0.31 are the jump (the click resolves the matched term, the handle
-// seeds the find bar); shared +0.58 and i18n +0.12 are the dependency batch
-// already on main, EncryptedImage -0.72 the same. Same whisker of margin as
-// every raise above, so the next hundred bytes argue their case in a review.
-// 916.68 kB gz here (2026-09-08), +14.58 since the v0.506.0 baseline, all of it
-// the two features that ship together: the Contacts pillar (NotesView +8.37,
-// contactBody +2.11, its strings in i18n +1.81, icons +0.85) and the image
-// switches (attachmentValidation +1.77 for the door code, imageProcessing's
-// walkers loaded on demand). A pillar is the one growth that earns a raise
-// without a dynamic import: it is on screen the moment the sidebar draws.
-// Raised to 920 with the usual whisker of margin.
-// 920 -> 921 (2026-09-08): the pending-sign-in gate in front of the native
-// OAuth callback (oauthPending.ts plus the handler's refusal branch), auth
-// +0.21 kB gz against 0.30 of headroom. Same whisker of margin.
-// 921 -> 922 (2026-09-09): the doctor report and the AI prompt read their
-// words from the catalog instead of holding English literals, and the English
-// catalog is eager by design, so i18n +1.03 kB gz. The other 0.22 is the
-// formatter module the report and both charts now share. Same whisker.
-// 922 -> 923 (2026-09-09): the lock screen's account check and the sign-out
-// key sweep in auth (+0.27), the wipe's extra keys, the sanitizer's one more
-// selector and the export document's own policy string (NotesView +0.29).
-// Boot-path code every one of them, and none has a lazy home. Same whisker.
-// 923 -> 925 (2026-09-10): the September review's client fixes, all of them on
-// paths that run before anything renders. The settings freshness counter and
-// the two places that refuse a rolled-back blob (+0.55 on the settings module),
-// the sign-out owner check moving off the status onto the wipe and the re-mint
-// retry re-reading the owner (auth +0.33), and the demo-bucket sweep in the
-// danger zone. Two rather than one, so the next copy edit is not a budget
-// question on top of a security one.
-// 925 -> 927 (2026-09-10): folders stop being replaced wholesale. The tree
-// merge, the tombstones and the undelete record (folders +0.71), the four
-// merge call sites and the claim gate in settings, the settings writes that
-// now go through the cache rather than a React copy (NotesView +0.37), and
-// the restore matching our own notes by id (apply +0.15). All boot-path: the
-// merge runs on the first sync pass, before anything is drawn. Two rather
-// than one, so the next copy edit is not a budget question on top of a data
-// loss fix.
-// 927 -> 928 (2026-09-10): the editor's link rules, +0.23 kB gz. Deciding
-// what a click means costs a click handler and a mark-range read
-// (editorLinks.ts), and the right-click menu is four items built from
-// components the editor already carries. It lands on the boot path because
-// the editor is inside NotesView's static closure. Same whisker of margin.
-// 929 -> 931 (2026-09-11): renaming a stored file, and a seek bar on an
-// audio chip. The chip grows an inline field, a slider and a wrap rule, the
-// editor grows the handle the Files pillar's Rename row calls, and the name
-// rules are a new module (Editor +1.18, fileNames +0.29, NotesView +0.20).
-// It lands on the boot path because the editor is inside NotesView's static
-// closure, and none of it can load later than the editor it belongs to. Two
-// rather than one, so the next copy edit is not a budget question.
-// 931 -> 932 (2026-09-11): the password colouring (PasswordText.tsx and its
-// three call sites) adds nothing the gauge can see - no vault chunk moved at
-// 0.01 kB resolution against the v0.512.0 baseline. What tripped the gate,
-// by 0.15, is the 1.03 kB the four commits since that baseline had already
-// added without a raise: auth +0.51 (the PIN-wrap move and the settings
-// cache) and adminEvents +0.50. Same whisker of margin.
-// 932 -> 935 (2026-09-11): the password generator grew a second mode and a
-// strength meter, +2.54 kB gz: PasswordGenerator.tsx and passwordGen.ts
-// (the modal, the exact-count and passphrase builders, the bits formula)
-// static under LoginForm, plus their English strings in the eager catalog
-// (i18n +0.24). Loading the modal on demand was measured and rejected: the
-// modules it shares with the boot path (settings, the painter, the hover
-// label, the icons) get hoisted into seven chunks of their own, and the
-// boot path still grows 1.73 kB while first open pays a round trip. Three
-// rather than one, so the next copy edit is not a budget question.
-// 935 -> 937 (2026-09-14): the Line spacing setting and the clipboard
-// rewrite, +0.24 kB gz measured across this session's own edits. The row and
-// its example live in AppearanceSheet, the axis and its reader in theme.ts,
-// the field in userSettings, and the block-walking clipboard serializer in
-// editorExtensions - all of them static under NotesView, so all of them land
-// here. The other 3.62 of the 3.86 this build reports against the v0.512.4
-// baseline is four versions of other people's work that never raised the
-// line, which is also why the gate had 0.23 kB of headroom before anything in
-// this session was written. Two rather than one, so the next copy edit is not
-// a budget question.
-// 937 -> 940 (2026-09-15): one list of rows now builds both note context
-// menus, and the bulk verbs the selection version gained (read-only,
-// protect, duplicate, the two exports) come with it, +2.14 kB gz across
-// NotesView, contextMenus, useMultiSelect and the tag picker. All of it is
-// static under NotesView, so all of it lands here. Three rather than one,
-// so the next row added to that list is not a budget question.
-// 940 -> 948 (2026-09-17): 946.60 kB gz in build-smoke's units with the
-// dependency batch. WHAT GREW: react-dom 19.3.0 carries 8.35 kB gz of it in
-// the entry chunk, isolated by rebuilding with react held at 19.2.8; the
-// remaining 1.10 is shared (supabase-js 2.116.0), auth, jsx-runtime and katex,
-// none above 0.61. Eight rather than seven, so the next small fix on this path
-// is not a build failure, and still under 0.2% of headroom.
-// 948 -> 950 (2026-09-18): 948.41 kB gz in build-smoke's units. WHAT GREW:
-// 1.05 is the boot error screen in the entry chunk, isolated the same way as
-// the entry budget above; the other 0.76 predates this change and arrived with
-// v0.519.0 to v0.521.0 (auth +0.56, i18n +0.17). Two rather than one, so the
-// next small fix on this path is not a budget question.
-// 950 -> 953 (2026-09-23): 951.16 kB gz in build-smoke's units. WHAT GREW:
-// Ukrainian, Russian and Thai, +1.23: i18n +0.62 is one lazy-import stub per
-// new catalog in the locale glob, and (entry) +0.61 is their endonyms, flags
-// and marketing titles, all read at boot. The rest (Editor +0.48, NotesView
-// +0.35, folderImport +0.18, markdownRender +0.17) arrived with v0.522.0 to
-// v0.525.1 inside the old headroom. Two rather than one, so the next small
-// fix on this path is not a budget question.
-// 953 -> 958 (2026-09-23): 956.00 kB gz in build-smoke's units, +4.73 measured
-// against the same commit without the change, with the same env values. WHAT
-// GREW: the picture viewer's boot half, which is everything that opens it -
-// the file card and clickable thumbnail in the attachment node, thumbnails
-// for uploaded pictures in the Files grid (LazyPicture +1.00, mediaUrls
-// +0.17), the request host and the picker entry (NotesView +0.30), and the
-// English strings (i18n +0.32). The attachment node now shares a chunk with
-// the picture node (EncryptedImage +7.48, Editor -5.30), and the shared icon
-// chunks regrouped for a net +1.04. The viewer, the picker and pdf.js stay
-// lazy. Two above the number, so the next small fix is not a budget question.
-// 958 -> 961 (2026-09-24): 958.80 kB gz in build-smoke's units, +2.61 measured
-// against the same commit without the change, with the same env values. WHAT
-// GREW: the file chip's new controls (the labelled View or Download, the tile
-// button, the menu wiring), the PDF first-page cache and the near-screen hook
-// that gates it, and the viewer's save path. The media chunk split in two,
-// 104.42 under the attachment's name and 5.30 for the picture node, where it
-// was 105.94 as one, and the small shared chunks regrouped around it
-// (usePendingUploads, hosts, HoverLabel, two icons); a build without the
-// ContextMenu import measured the same, so the menu costs nothing here. The
-// stage and pdf.js stay lazy. Two above the number, as before.
-// 961 -> 966 (2026-09-24): 965.64 kB gz in build-smoke's units, +6.84 against
-// the v0.528.0 baseline. WHAT GREW: icons and colors for folders and tags. The
-// glyphs the sidebar draws at boot, the context that feeds them and the note
-// tint the list rows and grid tiles share (LookGlyph +1.77), the per-value
-// merge, validation and color rule that every sync runs (itemStyles +1.41), and
-// the provider, the open note's tint and the Keep color import in NotesView
-// (+1.25). The editor's color swatch became a component the lazy picker shares
-// (ColorSwatch +1.53), and two icons the picker also draws moved into chunks of
-// their own (RocketLaunch +1.26, Star +1.09); the other movers net -1.47. The
-// picker, its strings and the icon paths stay lazy. The budget sits just above
-// the number.
-// 966 -> 968 (2026-09-24): 966.78 kB gz in build-smoke's units, +1.14 against
-// the v0.529.0 baseline, from a batch of reliability fixes. WHAT GREW:
-// the trash-purge module and its gate in the orchestrator, the storage-upgrade
-// quote and its two refusal states (devices +0.11), the export missing-blob
-// list and the i18n strings above (+0.45). export +26.04 is not growth: the
-// same code left the NotesView (-9.71) and adminEvents (-15.96) chunks, which
-// net to -25.67, as the export helpers the import modal now shares regrouped
-// the graph. The budget sits just above the number.
-// 968 -> 970 (2026-09-24): +1.86 kB gz in build-smoke's units is the note-sync
-// merge, measured against the same commit without the change, with the same
-// env values (967.47 -> 969.33): the per-field merge and the sync base
-// fingerprints in noteMerge.ts, with the generation guard, the base records,
-// the base heal and the conflict dialog's answers in sync.ts (auth +1.72,
-// NotesView -0.33 as the answers left the orchestrator), the sealed envelope
-// that stores the base (db +0.27) and the English conflict strings (i18n
-// +0.13). The rest of the tree's growth is the batch's other changes.
-// 970 -> 973 (2026-09-25): batch 6 of the same wave, measured 972.31 in
-// build-smoke's units: the wipe-door counts (`neverBackedUp.tsx` now on the
-// boot path through the Danger zone) +1.0, the restore gate, the demo bucket,
-// the kept stash and the note type table together +1.9 with the strings.
-// 973 -> 974 (2026-09-25): 973.74 kB gz in build-smoke's units, +1.14 against
-// the v0.530.4 tree. WHAT GREW: the search core. Its matcher (`textMatch.ts`),
-// which every list now filters through, sits on the boot path because
-// NotesView imports the tag picker, the folder picker and the note-link list
-// directly, and it lands in the notesViewUtils chunk with the phrase check
-// that calls it, together with the kana fold (notesViewUtils +0.89). The
-// input method guard and its call sites (EncryptedAttachment +0.14) and the
-// notes list's folded copies make up the rest. The budget sits just above
-// the number.
-// 974 -> 975 (2026-09-25): 974.69 kB gz in build-smoke's units, +0.69 against
-// the v0.531.0 tree. WHAT GREW: a batch of reliability fixes, each on the
-// boot path by construction. The folder path reader that keeps a slash in a
-// name and reuses a saved folder id (folderImport +0.15), the phrase write
-// that reads itself back before a lock door comes off (auth +0.15), the
-// freshest-body helper the four single-note exports share (NotesView +0.13),
-// the one-line title rule in its own module (oneLineTitle +0.12) and the
-// halted-push strings (i18n +0.11). The budget sits just above the number.
-// 975 -> 977 (2026-09-25): 976.05 kB gz in build-smoke's units, +1.61 against
-// the v0.531.2 tree. WHAT GREW: the sidebar divider between Content and the
-// tags or folders (useSidebarSplit, the Trash row that stays under a folded
-// list), the magnetic pane strips, the picker's Cancel snapshot in TagsRail,
-// and two small modules the lazy look picker now shares with the boot path,
-// which the bundler moves into chunks of their own (softKeyboard, textMatch).
-// The settings window went lazy in the same change (SettingsShell loads
-// SettingsWindow), which is what keeps its search off the boot path. The
-// budget sits just above the number.
-// 977 -> 979 (2026-09-25): 978.10 kB gz in build-smoke's units, +1.51 against
-// the v0.532.0 baseline, all of it in the Editor chunk. WHAT GREW: the
-// clipboard module that keeps blank lines across a paste and a copy on both
-// line spacings (clipboardSpacing). It is part of the editor, which is on
-// the boot path. The budget sits just above the number.
-// 979 -> 983 (2026-09-25): 982.22 kB gz in build-smoke's units. WHAT GREW:
-// table column widths (the drag and the node view in the Editor chunk, and
-// tableColumnWidths plus tableDelimiterRow, which the editor and the note
-// list read). All of it is editor code on the boot path. The budget sits just
-// above the number.
-// 983 -> 984 (2026-09-25): the same tree measured 983.34 kB gz on the CI
-// runner, where darwin predicted 982.22 with the old 1.1 kB correction. No
-// code grew; the correction is now 2.3 and the budget sits just above the CI
-// number.
-// 984 -> 985 (2026-09-26): +0.58 kB gz, the table's own width (the outer
-// edge drag in the Editor chunk and the marker line helpers). The budget sits
-// just above the number.
-// 985 -> 987 (2026-09-26): +1.18 kB gz, a note's own color (the color row
-// in the note menu and its resolver), the look picker's tabs and its shared
-// search field.
-// 987 -> 988 (2026-09-26): +0.35 kB gz, device labels (the shared register
-// merge in the settings blob, reached from auth) and the device rename field.
-// 988 -> 993 (2026-09-26): +2.8 kB gz, the item tabs above the editor (the
-// strip, its stored list with the pins, the "Open items in tabs" switch and
-// the NotesView wiring). The budget sits just above the number.
-// 993 -> 994 (2026-09-26): +1.1 kB gz, copy and paste keep a note's lines in
-// every app (the line join shared by the copy, the export and the burn page,
-// and the paste rules in the Editor chunk).
-// 994 -> 995 (2026-09-26): +0.8 kB gz, the "Can somebody guess my phrase?"
-// card in the phrase tab (its copy and its icons).
-// 995 -> 1006 (2026-09-27): +9.34 kB gz since v0.542.0. Auth +4.72
-// for the guarded account exchange and MFA session storage, i18n +3.27
-// for the new English copy, PIN +1.24 for the shared custody gate; icons
-// and wiring account for the remainder. Management panels stay lazy.
-// 1006 -> 1007 (2026-09-28): +0.6 kB gz, the settings tab strip that
-// measures its labels, and the App Store row in the rating list.
-// 1007 -> 1008 (2026-09-28): +0.8 kB gz, the burn link modal picks its
-// reading time and link lifetime (its copy and the option lists).
-// 1008 -> 1009 (2026-09-28): +0.8 kB gz since v0.547.0, the bug report
-// link (+0.45) and the per-device layout switch in the list menu, with the
-// longer preview option.
-// 1009 -> 1010 (2026-09-28): +1.0 kB gz since v0.549.2, the archive (its
-// three icons +0.73, the view, the menu rows and the list split in NotesView).
-// 1010 -> 1011 (2026-09-28): +0.9 kB gz, the archive write guards in sync,
-// the sliced search build, the footer word-count memo and the stable row
-// handlers in the notes list.
-// 1011 -> 1016 (2026-09-28): 1015.53 kB gz, login custom fields and extra
-// websites (the form rows, the view rows, loginExtras.ts) and the guarded
-// history restore. The vault history preview is a lazy chunk of its own.
-// 1016 -> 1017 (2026-09-28): +0.9 kB gz, the checkout confirm copy in the
-// English catalog and the Sparkle icon, shared with the lazy checkout page,
-// splitting out of the boot chunk that already held it.
-// 1017 -> 1018 (2026-10-02): +0.67 kB gz, the blob upload recovery that
-// settles an object a lost response left committed, and the quota failure
-// contract that makes a refused read unknown rather than zero.
-// 1018 -> 1019 (2026-10-02): +0.88 kB gz, the window-scale ladder and its
-// store, reached by the boot theme module for the account-switch wipe and by
-// the shortcut handler for the keys. The webview call behind it is a dynamic
-// import and the row that drives it is a lazy chunk, so this is the ladder
-// and the subscription only.
-// 1019 -> 1021 (2026-10-02): +1.54 kB gz, the contact photo picker: the
-// shared picture pipeline reached from a form instead of the editor, the
-// chip's own picker and its two menu entries.
-// 1021 -> 1024 (2026-10-02): +2.65 kB gz since v0.558.0, the task list
-// controls: the shared list walker in tasks.ts behind delete, sort and the
-// Tasks pane's move, the drag grip in the task node view, the confirm and the
-// footer counter.
-// 1024 -> 1025 (2026-10-03): +1.03 kB gz, the live sign-in fence: liveSignIn.ts
-// and the stamp it hands the sign-in paths, the sync pass, the settings sync
-// and the PIN wraps, the second check after each credential write, and the
-// listener that follows another tab's sign-out, so nothing from a session a
-// sign-out ended writes the phrase back.
-// 1025 -> 1027 (2026-10-04): +1.20 kB gz, the editor's markdown repairs (the
-// text escape, the hard break, the code fence and the table cell rule, so a
-// note reads back as it was saved), the paste filter for another app's
-// colours and fonts, the typed markdown link and Tab adding a table row.
-// 1027 -> 1028 (2026-10-06): +0.46 kB gz in the editor chunk, the outline's
-// fold arrows and select all inside a code block, on top of the app
-// switcher privacy screen (+0.69 kB gz).
-// 1028 -> 1030 (2026-10-06): +2.48 kB gz in the editor chunk, the code block
-// fold and its language button and picker; the theme tokens beside it add
-// +0.09 kB gz.
-// 1030 -> 1031 (2026-10-06): +0.86 kB gz, the Themes tab and the light and
-// dark theme pair (theme +0.24, NotesView +0.60 with the Appearance pane and
-// the status and tint classes, i18n +0.10).
-// 1031 -> 1032 (2026-10-06): +0.16 kB gz, the color fixes of the theme audit
-// (darker tracker colors and the map for a custom tracker's older color, the
-// rating star edge, the rocket on a fill, one wordmark blue), on top of the
-// key matcher (shortcutMatch +0.91) that landed 0.14 kB under the old budget.
-// 1032 -> 1035 (2026-10-06): +2.76 kB gz, the keyboard commands of phases 2
-// to 4 (NotesView +2.32, the command list +0.89); the help rows sit outside
-// the boot path in hotkeysData.ts.
-// 1035 -> 1036 (2026-10-06): +0.43 kB gz, one date formatter for every
-// screen (intlFormat +0.51, now on the boot path because the list rows use
-// it; languages +0.11; notesViewUtils -0.11 without its hand-built dates).
-// 1036 -> 1038 (2026-10-06): +1.90 kB gz, command mode: the commands and their
-// runner in NotesView (+0.79) and the ">" mode of the list search field
-// (+0.74, the list itself is a lazy chunk); i18n +0.21.
-// 1038 -> 1044 (2026-10-06): +6.14 kB gz, custom and community themes. About
-// 4 kB is code the first paint and the sync need: the custom slot paint in
-// theme.ts (+0.89), the strings (+0.73), the theme list merge (customThemes
-// and registers), the action row and the builder hook (NotesView +1.26). The
-// rest is chunk splitting: the lazy theme chunks share ConfirmModal, the Pro
-// mark and a few icons with the boot path, so those moved into chunks of
-// their own. The cards, the paste field, the builder and the theme code
-// module are all lazy.
-// 1044 -> 1045 (2026-10-06): +0.35 kB over, the quick switcher's wiring in
-// NotesView (+0.24, the switcher itself is a lazy chunk) on top of the search
-// field's command button (+0.57, v0.572.3) and the callout copy fix in Editor
-// (+0.19, v0.572.2), both of which landed just under the old budget.
-// 1045 -> 1046 (2026-10-06): +0.34 kB over, the "last edited" date: the one
-// content comparison (editStamp.ts, in the loginExtras chunk beside
-// trackerTypes, +0.61), the stamp rules in notesRepo (+0.23) and NotesView
-// (+0.20), the payload reader and the merge in shared (+0.12); notesViewUtils
-// -0.40.
-// 1046 -> 1052 (2026-10-07): +5.47 kB gz, the date work of steps 4 to 7 in
-// ops/docs/plans/dates.md. The date settings (+1.56): their resolution in
-// intlFormat (+0.89), the Date and time rows of the Language pane, which
-// settingsCategories imports statically, and the effect that applies them
-// (NotesView +0.47), and their strings (i18n +0.11). The journal dates
-// (+1.26): the date field of the New menu, the Entry date row of the note
-// menu, the entry-day helpers (notesViewUtils +0.26) and the day merge. The
-// title pattern and the date inserts (+2.50): the pattern engine (intlFormat
-// +0.36), the pattern row (NotesView +0.92), the keys and the insert (Editor
-// +0.36), their strings (i18n +0.19), and the Calendar icon, which leaves the
-// vault fields chunk for one of its own on the boot path because the Entry
-// date row uses it (+0.81, vaultFields -0.51). The two tabs of the Date &
-// Language pane (+0.15, NotesView +0.13).
-// 1052 -> 1054 (2026-10-07): +1.99 kB gz, TipTap 3.31.3 -> 3.31.4 in the
-// weekly dependency batch. The core chunk (EncryptedAttachment, which carries
-// @tiptap/core and the table and link extensions) grew 3.61 and Editor fell
-// 1.70; the release is fixes only (splitBlock, task item split, table cell
-// escaping, list parse speed).
-// 1054 -> 1055 (2026-10-07): +0.54 kB gz over the old line. The note color
-// control of v0.577.0 (itemStyles +0.20) and the Subfolders switch of
-// v0.578.0: its scope helpers (folders +0.16), the path labels and the switch
-// in NotesView, and the toggle chip in ListFilterChips.
-// 1055 -> 1058 (2026-10-07): +2.48 kB gz, the selection menu of the note
-// body and Sort lines (Editor +2.39, its glyphs in icons +0.22).
-// 1058 -> 1061 (2026-10-07): +2.95 kB gz, note-links to a heading (GitHub
-// #432): the target split and heading reader (noteLinks +2.48), the scroll
-// and the [[ heading list (Editor +2.17), the Outline copy icon (clipboard
-// +0.99), the jump wiring in NotesView (+0.35).
-// 1061 -> 1062 (2026-10-07): +0.82 kB gz, the light milestones: milestones.ts joins
-// the boot path for the celebration check in NotesView, with its strings. As a
-// dynamic import it cost more (+1.60), because rolldown reshuffles the shared
-// chunks around the extra chunk, so the static import stays.
-// 1062 -> 1063 (2026-10-07): +1.27 kB gz, a list item dropped on a sidebar
-// folder or tag (GitHub #418): useRailItemDrop and itemDrag, both in the rail.
-// 1063 -> 1065 (2026-10-07): +1.55 kB gz, the wellness statistics rework: the new
-// strings (i18n +1.60), the day ledger hooks in notesRepo (+0.71) and the shuffle
-// of the shared chunks around the new stats modules.
-// 1065 -> 1066 (2026-10-07): +0.41 kB gz in NotesView against the v0.587.0
-// baseline: the section-scoped sidebar of v0.588.0 and a file dragged from the
-// Files pillar onto a folder or tag (GitHub #418, fileDragIds in FilesList).
-// 1066 -> 1069 (2026-10-07): +2.45 kB gz, pictures in a paste keep their place
-// (GitHub #403 and #317): the pending-picture swap, the Safari reader call and
-// the notice in EncryptedImage (+1.63), the Copied text setting in Editor and
-// theme (+0.57).
-// 1069 -> 1078 (2026-10-07): +8.5 kB gz, Markdown footnotes (GitHub #393):
-// the three nodes, their parse, numbers, jumps and paste rules (footnotes.ts)
-// and markdown-it-footnote in Editor (+7.36 against the v0.588.1 baseline,
-// which also carries v0.589 to v0.591), the export reader (markdownRender
-// +1.09). The schema needs the nodes at editor creation, so none of it can load
-// later.
-// 1078 -> 1079 (2026-10-07): the release review fix wave, about +0.3 kB gz: the
-// entity decode of the export reader (markdownRender), the plain-Escape mark
-// (editorExtensions, plainEscape), the per-store credential removal (auth).
-// 1079 -> 1080 (2026-10-08): the second sitting of that fix wave, +0.68 kB gz
-// against the v0.592.11 baseline: the settings write fence and the repair push
-// (userSettings, liveSignIn, notesCreated), the lock curtain (appReLock), and
-// one code fence rule for tasks and headings (markdownFence).
-// 1082 -> 1084 (2026-10-08): the quick switcher's commands and buttons, +1.68
-// kB gz against the v0.593.0 baseline: the command icons (PALETTE_ICONS), the
-// Jump to buttons of the sidebar, the rail and the list header (NotesView,
-// TagsRail, CollapsedSidebar, ListNav). Moving the icon map into the lazy
-// switcher chunk was measured and grew the boot path instead (+2 to +5 kB):
-// most icons are already on it through their own buttons, and sharing them
-// with a lazy chunk splits each one out.
-// 1084 -> 1086 (2026-10-08): +1.62 kB gz over the line against the v0.594.2
-// baseline, nearly all of it the Editor chunk (+1.78): the spoiler mark and
-// its reveal plugin, the copy box, click to copy on inline code, and the list
-// merge of the code-block toggle (GitHub #434).
-// 1086 -> 1088 (2026-10-08): the journal calendar (GitHub #435), about +1.6 kB
-// gz: MonthGrid, which replaces both browser date fields of the journal, and
-// the calendar module that the Journals list, the New button and the footer
-// share, plus the list options' switch icons.
-// 1088 -> 1089 (2026-10-08): the code block's copy and check icons, the
-// copy box's wrap toggle and the spoiler's hide-after-mark state, Editor
-// +0.45 kB gz.
-// 1089 -> 1094 (2026-10-08): the format bar a person arranges (GitHub #422),
-// +5.4 kB gz against the committed tree: the item registry and the resolver
-// with its settings register (formatBar, userSettings), the toolbar built from
-// the arrangement with the touch strip and the gear (Editor), the wiring in
-// NotesView, and the icon map the toolbar shares with the lazy sheet, which
-// splits those icons out of the Editor chunk. Importing the sheet statically
-// was measured and is 0.5 kB worse.
-// 1094 -> 1096 (2026-10-08): the contact print layout, +1.27 kB gz measured
-// against the committed tree: export.ts is on the boot path, and it gained
-// the grouped contact renderer, the photo inliner and their stylesheet rules.
-// 1096 -> 1098 (2026-10-09): the bottom format bar moved out of the note
-// column into its own row (the toolbar portal in Editor, the slot in both
-// panes) and the iOS keyboard fit in useKeyboardOpen (GitHub #449), about
-// +1 kB gz; the rest was uncommitted work in the tree when it was measured.
-// 1098 -> 1099 (2026-10-09): the theme work, +0.57 kB gz: NotesView +0.43
-// (the solo and bare Settings doors, the theme limit) and i18n +0.11 (the new
-// Appearance strings). The community list stays off the boot path: the
-// gallery limit lives in communityShown.ts for that reason.
-// 1099 -> 1102 (2026-10-09): the list group headers (#448), all of it in
-// NotesView, which is on the boot path.
-// 1102 -> 1115 (2026-10-09): Spaces (#352) and the Settings regroup, about
-// +10 kB gz: NotesView +7.4, the favorite themes +2, the new pane icons.
-// 1115 -> 1117 (2026-10-09): the per-space tag and calendar paths, the
-// two-space day map and the quick switcher row (v0.608.0), find and replace
-// in the Markdown view (v0.609.0), and the theme logo choice: NotesView
-// +2.97, notesViewUtils +0.15, i18n +0.11 since the v0.607.0 baseline.
-// 1117 -> 1118 (2026-10-10): the selection toolbar's fold and its "More
-// actions" menu (v0.614.0), +0.8 kB gz in NotesView with the shared list item
-// that was uncommitted in the tree when it was measured.
-// 1118 -> 1119 (2026-10-10): the shared list item and shell (LG3, LG2),
-// compact rows and the list menu placed beside the list, +0.84 kB gz in
-// NotesView since the v0.614.0 baseline.
-// 1119 -> 1120 (2026-10-10): the favorite themes, the Note colors example
-// and the quick switcher's bookmark actions, about +0.9 kB gz in NotesView,
-// quickThemes and the English strings since the v0.616.0 baseline.
-// 1120 -> 1123 (2026-10-10): nine more callout types with their icons, the
-// Fold type, the keyword rule and the start-side fold control, about
-// +2.3 kB gz net in the callout and editor chunks since the v0.617.0 baseline.
-// 1123 -> 1126 (2026-10-10): shortcuts to an item, about +2.4 kB gz in the
-// entry, NotesView and the editor; the offer bar and card load on demand.
-// 1126 -> 1128 (2026-10-10): the upgrade window's price bars, the feature
-// tile and its glyphs, about +1.1 kB gz in UpgradeModal.
-const BOOT_PATH_BUDGET_KB = 1128;
-
-// The budget above is stated in ONE environment's units: build-smoke's, which
-// is ubuntu with the synthetic values from tools/ci-vite-env.mjs. Every other
-// build measures below it, so a Mac that passes says nothing about the gate
-// that actually runs. That is not theory - it is how 2026-08-24 shipped a boot
-// path 0.40 kB over with a green local preflight, and how the raise before it
-// was calibrated 1.25 kB low.
-//
-// So the plugin adds the spread back before it compares, and prints both
-// numbers. A local build now fails where build-smoke fails, and the number a
-// future raise quotes is already in the gate's units.
-//
-// Both constants are measured, not guessed, and both need re-measuring
-// whenever section 6's table is re-derived (a bundler swap, a runner image
-// change). Re-measure by building the same commit two ways and subtracting.
-// Spec: ops/docs/bundle-size.md (section 6)
-//
-// 1.5 for the VITE_ values: emptying all of them moves 1.48 kB, and it is not
-// the length of the strings but what gzip does with a bundle full of identical
-// empty ones. A sandbox with no .env.local is the build this corrects.
+// 1.5 for the VITE_ values: emptying all of them moves 1.48 kB, because of what
+// gzip does with a bundle full of identical empty strings.
 const ENV_SPREAD_KB = 1.5;
-// The spread is per-platform, not "everything that is not Linux". macOS is the
-// only builder that measures low, and reading it as a non-Linux constant
-// charged Windows 1.1 kB it does not owe: at v0.452.0 the Windows release
-// runner measured 872.66 against build-smoke's 872.73 on the same commit, so
-// the gate saw 873.76, failed a build that was 0.27 kB UNDER budget, and no
-// byte of it was real. Windows sits at ubuntu parity, so it corrects by zero.
-//
-// macOS: 0.79 at commit 53632f85 (849.31 macOS against 850.10 ubuntu, both
-// env-less), 1.05 at v0.448.0 (870.35 against build-smoke's 871.40, both with
-// deploy-shaped values), 1.09 at v0.452.0 (871.64 against 872.73), and 2.22
-// at v0.534.0 (981.12 against 983.34). It tracks the bundle, so take the
-// newest and round up rather than average.
-//
-// A platform nobody has measured corrects by zero, deliberately: an
-// unmeasured guess that runs high fails builds for bytes that do not exist,
-// while one that runs low only means the gate is no stricter than build-smoke,
-// which is the gate that actually runs on every push.
+// Per platform: macOS measures low and the gap grows with the bundle (3.76 at
+// commit 5ac8b15e), so take the newest measurement and round up. Windows sits
+// at ubuntu parity. A platform nobody has measured corrects by zero, because a
+// guess that runs high fails builds for bytes that do not exist.
 // Spec: ops/docs/bundle-size.md (section 6)
 const PLATFORM_SPREAD_KB: Record<string, number> = {
-  darwin: 2.3,
+  darwin: 3.8,
   win32: 0,
 };
 
-// A build knows what every chunk weighs today. It does not know what they
-// weighed last week, so a tripped budget can only say "you are over", and the
-// cheapest way out of that sentence is to raise the number. Finding the real
-// answer by hand costs two builds and a second checkout of the repo, which is
-// why it keeps getting skipped: 853 -> 873 in three weeks, one plausible raise
-// at a time.
-//
-// bundle-baseline.json is last week. It holds what the gated chunks weighed at
-// the last deliberate budget change, so EVERY build can name what grew without
-// being asked, and the budget error carries the list instead of a recipe. The
-// file is committed, so the drift is also visible in review.
-//
-// It is a report, never a gate (ops/docs/structure-handoff.md: a new check
-// ships as a report first). Failing a build for differing from the baseline
-// would fail every commit that moves a single byte.
-//
-// Rewrite it with `pnpm bundle:baseline` in the same commit that raises a
-// budget, so the next reader's diff answers "what grew since we last agreed on
-// a number" rather than "what grew since some build in July".
-// Spec: ops/docs/bundle-size.md (section 6)
+// PN_BUNDLE_RECORD=1 (set by `pnpm preflight`): check, then rewrite the
+// baseline when the checks pass. PN_BUNDLE_BASELINE=1 (`pnpm bundle:baseline`):
+// rewrite without checking, which is how a deliberate step is accepted.
 const BASELINE_FILE = path.resolve(__dirname, 'bundle-baseline.json');
 // Movers under this are not worth a line: the platform spread lands unevenly
-// across chunks, so a baseline taken on another machine shows small deltas
-// that are environment, not code.
+// across chunks, so small deltas are environment, not code.
 const BASELINE_NOISE_KB = 0.1;
 
 type BundleBaseline = {
@@ -1341,9 +384,7 @@ function readBaseline(): BundleBaseline | null {
 const signed = (kb: number) => `${kb >= 0 ? '+' : ''}${kb.toFixed(2)}`;
 
 function chunkBudgets(): Plugin {
-  // The budgets are calibrated against the deploy, which inlines the VITE_
-  // values. A build without them measures low, so it labels its own number
-  // instead of letting the next reader take it for the real one.
+  // A build without the VITE_ values measures low, so it labels its number.
   let envInlined = true;
   return {
     name: 'pn-chunk-budgets',
@@ -1352,7 +393,6 @@ function chunkBudgets(): Plugin {
       envInlined = Boolean(config.env.VITE_SUPABASE_ANON_KEY && config.env.VITE_PADDLE_CLIENT_TOKEN);
     },
     generateBundle(_options, bundle) {
-      const over: string[] = [];
       const gzByFile = new Map<string, number>();
       const chunkByFile = new Map<
         string,
@@ -1360,16 +400,13 @@ function chunkBudgets(): Plugin {
       >();
       for (const [file, chunk] of Object.entries(bundle)) {
         if (chunk.type !== 'chunk') continue;
+        // The entry is keyed on the flag, not the name, so a lazy chunk called
+        // "index" is never mistaken for it.
         const key = chunk.isEntry
           ? '(entry)'
           : chunk.name || file.replace(/^assets\//, '').replace(/-[\w-]+\.js$/, '');
-        const kb = zlib.gzipSync(chunk.code, { level: 9 }).length / 1000;
-        gzByFile.set(file, kb);
+        gzByFile.set(file, zlib.gzipSync(chunk.code, { level: 9 }).length / 1000);
         chunkByFile.set(file, { key, name: chunk.name, isEntry: chunk.isEntry, imports: chunk.imports });
-        const budget = CHUNK_BUDGET_KB[key] ?? DEFAULT_CHUNK_BUDGET_KB;
-        if (kb > budget) {
-          over.push(`  ${key} (${file}): ${kb.toFixed(2)} kB gzipped, budget ${budget} kB`);
-        }
       }
       const stack = [...chunkByFile.entries()]
         .filter(([, chunk]) => chunk.isEntry || chunk.name === 'NotesView')
@@ -1383,8 +420,7 @@ function chunkBudgets(): Plugin {
       }
       let bootPathKb = 0;
       for (const file of boot) bootPathKb += gzByFile.get(file) ?? 0;
-      // Restate the measurement in build-smoke's units before comparing, so
-      // this build fails exactly where build-smoke does.
+
       const spread: string[] = [];
       let spreadKb = 0;
       if (!envInlined) {
@@ -1397,34 +433,14 @@ function chunkBudgets(): Plugin {
         spread.push(process.platform);
       }
       const gatedKb = bootPathKb + spreadKb;
-      this.info(
-        `boot path (static closure of entry + NotesView, ${boot.size} chunks): ` +
-          `${bootPathKb.toFixed(2)} kB gzipped` +
-          (spreadKb > 0
-            ? `, ${gatedKb.toFixed(2)} as build-smoke measures it (+${spreadKb.toFixed(2)}: ${spread.join(', ')})`
-            : '') +
-          `, budget ${BOOT_PATH_BUDGET_KB} (headroom ${(BOOT_PATH_BUDGET_KB - gatedKb).toFixed(2)} kB)`
-      );
-      if (gatedKb > BOOT_PATH_BUDGET_KB) {
-        over.push(
-          `  boot path: ${gatedKb.toFixed(2)} kB gzipped over ${boot.size} chunks, budget ${BOOT_PATH_BUDGET_KB} kB` +
-            (spreadKb > 0
-              ? ` (measured ${bootPathKb.toFixed(2)} here, plus ${spreadKb.toFixed(2)} for ${spread.join(', ')})`
-              : '')
-        );
-      }
 
-      // Everything the budgets gate, keyed the way they key it, so a mover can
-      // be read straight into the budget it belongs to.
       const current: Record<string, number> = {};
       for (const [file, chunk] of chunkByFile) {
-        if (!boot.has(file) && !(chunk.key in CHUNK_BUDGET_KB)) continue;
-        current[chunk.key] = Number(
-          ((current[chunk.key] ?? 0) + (gzByFile.get(file) ?? 0)).toFixed(2)
-        );
+        if (!boot.has(file) && !TRACKED_LAZY_CHUNKS.includes(chunk.key)) continue;
+        current[chunk.key] = Number(((current[chunk.key] ?? 0) + (gzByFile.get(file) ?? 0)).toFixed(2));
       }
 
-      if (process.env.PN_BUNDLE_BASELINE) {
+      const writeBaseline = () => {
         const written: BundleBaseline = {
           version: readVersion('pn-chunk-budgets'),
           measuredOn: { platform: process.platform, envInlined },
@@ -1434,61 +450,68 @@ function chunkBudgets(): Plugin {
           chunks: Object.fromEntries(Object.entries(current).sort(([a], [b]) => a.localeCompare(b))),
         };
         fs.writeFileSync(BASELINE_FILE, `${JSON.stringify(written, null, 2)}\n`);
-        // The budgets are not enforced in this run on purpose: rewriting the
-        // baseline is step one of a raise, and failing on the old number would
-        // make the command look broken at exactly the moment it is correct.
-        this.info(
-          `bundle-baseline.json rewritten at v${written.version} (${Object.keys(current).length} gated chunks, boot path ${written.bootPathCiKb} in build-smoke's units). Budgets not enforced in this run.`
-        );
+        this.info(`bundle-baseline.json rewritten at v${written.version}, boot path ${written.bootPathCiKb} kB.`);
+      };
+
+      const baseline = readBaseline();
+      const step = baseline ? gatedKb - baseline.bootPathCiKb : 0;
+      this.info(
+        `boot path (static closure of entry + NotesView, ${boot.size} chunks): ` +
+          `${bootPathKb.toFixed(2)} kB gzipped` +
+          (spreadKb > 0
+            ? `, ${gatedKb.toFixed(2)} as build-smoke measures it (+${spreadKb.toFixed(2)}: ${spread.join(', ')})`
+            : '') +
+          (baseline ? `, ${signed(step)} since baseline v${baseline.version} (step limit ${BOOT_PATH_STEP_KB})` : '') +
+          `, ceiling ${BOOT_PATH_CEILING_KB}`
+      );
+
+      if (process.env.PN_BUNDLE_BASELINE) {
+        writeBaseline();
         return;
       }
 
-      const baseline = readBaseline();
-      let grew: string[] = [];
+      let movers: string[] = [];
       if (!baseline) {
         this.warn(
-          `pn-chunk-budgets: no bundle-baseline.json, so this build cannot say what grew. Run \`pnpm bundle:baseline\` to write one.`
+          'pn-chunk-budgets: no bundle-baseline.json, so this build cannot measure a step. Run `pnpm bundle:baseline` to write one.'
         );
       } else {
-        const movers = [...new Set([...Object.keys(current), ...Object.keys(baseline.chunks)])]
+        const moved = [...new Set([...Object.keys(current), ...Object.keys(baseline.chunks)])]
           .map((key) => ({ key, delta: (current[key] ?? 0) - (baseline.chunks[key] ?? 0) }))
           .filter((m) => Math.abs(m.delta) >= BASELINE_NOISE_KB)
           .sort((a, b) => b.delta - a.delta);
-        grew = movers.slice(0, 6).map((m) => `${m.key} ${signed(m.delta)}`);
-        if (movers.length > grew.length) grew.push(`${movers.length - grew.length} more`);
-        const bootDelta = gatedKb - baseline.bootPathCiKb;
-        if (Math.abs(bootDelta) >= BASELINE_NOISE_KB || movers.length > 0) {
-          this.info(
-            `since baseline v${baseline.version}: boot path ${signed(bootDelta)} kB` +
-              (grew.length > 0 ? `, ${grew.join(', ')}` : '') +
-              (baseline.measuredOn.platform === process.platform
-                ? ''
-                : ` (baseline measured on ${baseline.measuredOn.platform}: small movers can be environment, not code)`)
-          );
-        }
+        movers = moved.slice(0, 6).map((m) => `${m.key} ${signed(m.delta)}`);
+        if (moved.length > movers.length) movers.push(`${moved.length - movers.length} more`);
+        if (movers.length > 0) this.info(`moved since baseline: ${movers.join(', ')}`);
       }
 
-      if (over.length > 0) {
-        const report =
-          `pn-chunk-budgets: ${over.length} chunk(s) over budget\n${over.join('\n')}\n\n` +
-          (grew.length > 0
-            ? `What moved since baseline v${baseline?.version}: ${grew.join(', ')} (kB gzipped).\n\n`
-            : '') +
-          'Find what grew before touching these numbers - ops/docs/bundle-size.md ' +
-          'section 9 has the recipe. If the growth is intended, raise the budget in ' +
-          'vite.config.ts, rewrite the baseline with `pnpm bundle:baseline` in the ' +
-          'same commit, and say why in the changelog.';
-        if (isDeployBuild) {
-          // A budget is a review gate, not a release gate: throwing here blocks
-          // shipping code that is already merged, which is what happened on
-          // 2026-08-20. build-smoke builds with deploy-shaped VITE_ values
-          // (tools/ci-vite-env.mjs), so the same overage fails on the pull
-          // request, where it can still be argued about.
-          this.warn(`${report}\n\nNOT failing the deploy: build-smoke owns this gate.`);
-          return;
-        }
-        throw new Error(report);
+      const over: string[] = [];
+      if (step > BOOT_PATH_STEP_KB) {
+        over.push(
+          `boot path grew ${step.toFixed(2)} kB in one step (limit ${BOOT_PATH_STEP_KB}). ` +
+            `What moved: ${movers.join(', ') || 'see the list above'}. ` +
+            'If a module landed on the boot path by accident, make its import dynamic. ' +
+            'If the growth is wanted, accept it with `pnpm bundle:baseline` and say so in the commit message.'
+        );
       }
+      if (gatedKb > BOOT_PATH_CEILING_KB) {
+        over.push(
+          `boot path ${gatedKb.toFixed(2)} kB is over the ceiling of ${BOOT_PATH_CEILING_KB} kB. ` +
+            'The ceiling is a product decision: ask the owner before raising BOOT_PATH_CEILING_KB, ' +
+            'and look for code to move off the boot path first (ops/docs/bundle-size.md section 9).'
+        );
+      }
+
+      if (over.length === 0) {
+        if (process.env.PN_BUNDLE_RECORD) writeBaseline();
+        return;
+      }
+      const report = `pn-chunk-budgets:\n${over.map((l) => `  ${l}`).join('\n')}`;
+      if (isDeployBuild) {
+        this.warn(`${report}\n\nNOT failing the deploy: build-smoke owns this gate.`);
+        return;
+      }
+      throw new Error(report);
     },
   };
 }

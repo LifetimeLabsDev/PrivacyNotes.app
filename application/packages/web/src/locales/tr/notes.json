@@ -11,13 +11,17 @@
     "noContent": "İçerik yok",
     "notBackedUp": "Yedeklenmedi",
     "archived": "Arşivlendi",
-    "entryDate": "Kayıt tarihi"
+    "entryDate": "Kayıt tarihi",
+    "date": "Tarih",
+    "dayOf": "{{total}} günün {{n}}. günü"
   },
   "header": {
     "new": "Yeni",
     "newNote": "Yeni not",
     "newNoteHover": "Yeni not ({{hotkey}})",
-    "trash": "Çöp kutusu"
+    "trash": "Çöp kutusu",
+    "newEvent": "Yeni etkinlik",
+    "newEventHover": "Yeni etkinlik ({{hotkey}})"
   },
   "folderChip": {
     "clear": "Klasör filtresini temizle: {{folder}}",
@@ -40,7 +44,9 @@
     "login": "Giriş bilgisi",
     "file": "Dosya",
     "bookmark": "Yer imi",
-    "contact": "Kişi"
+    "contact": "Kişi",
+    "event": "Etkinlik",
+    "quickAdd": "Hızlı ekle"
   },
   "vaultFilter": {
     "all": "Tümü",
@@ -94,7 +100,8 @@
     "vault": "Kasa",
     "pinned": "Sabitlenmiş",
     "archive": "Arşiv",
-    "notes": "Notlar"
+    "notes": "Notlar",
+    "calendar": "Takvim"
   },
   "footerStats": {
     "journals": "Günlük",
@@ -138,8 +145,17 @@
     "collapse": "Not listesini daralt",
     "expand": "Not listesini genişlet"
   },
+  "split": {
+    "action": "Notu böl",
+    "done": "Bölündü: “{{title}}”",
+    "overLimit": "“{{title}}” 1 MB'tan büyük ve bu cihazda kalır",
+    "cannot": "Bu not burada bölünemez. İmleci yeni notun başlaması gereken yere koyun.",
+    "continuedTitle": "{{title}} (devamı)",
+    "continuedIn": "Devamı: {{link}}"
+  },
   "paneResize": {
-    "hintCollapse": "Daraltmak için tıklayın · Boyutlandırmak için sürükleyin"
+    "hintCollapse": "Daraltmak için tıklayın · Boyutlandırmak için sürükleyin",
+    "hintExpand": "Genişletmek için tıklayın · Boyutlandırmak için sürükleyin"
   },
   "emptyEditor": {
     "selectFile": "Önizlemek için bir dosya seçin",
@@ -176,6 +192,8 @@
     "findInNote": "Notta bul",
     "navPrev": "Önceki",
     "navNext": "Sonraki",
+    "navPrevTab": "Önceki sekme",
+    "navNextTab": "Sonraki sekme",
     "undo": "Geri al",
     "redo": "Yinele",
     "hide": "Gizle",
@@ -227,6 +245,8 @@
     "words": "Kelime",
     "zen": "Zen modu",
     "appearance": "Görünüm",
+    "goToTop": "Başa git",
+    "goToEnd": "Sona git",
     "signOut": "Çıkış yap",
     "signingOut": "Çıkış yapılıyor…",
     "switchToLight": "Açık moda geç",
@@ -252,7 +272,8 @@
     "aboutLabel": "Hakkında",
     "languageLabel": "Dil",
     "dateLabel": "Tarih",
-    "languageDesc": "PrivacyNotes'un gösterileceği dili seçin."
+    "languageDesc": "PrivacyNotes'un gösterileceği dili seçin.",
+    "calendarLabel": "Takvim"
   },
   "importStore": {
     "title": "İçe aktarılsın mı, saklansın mı?",

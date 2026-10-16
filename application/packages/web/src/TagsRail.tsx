@@ -17,10 +17,11 @@ import { FolderTree, type FolderTreeProps } from './FolderTree';
 import { useFolderExpansion } from './folderTreeState';
 import { useRailItemDrop } from './useRailItemDrop';
 import type { FolderSortDir, FolderSortField } from './folders';
-import { IconUpgrade, ProMark } from './UpgradeModal';
-import { Star, Hash, DotsThree, PencilSimple, Palette, Trash, X, CaretDown, PushPin, File, NotePencil, CheckFat, Shield, Key, Folder, Book, Notebook, FunnelSimple, ArrowsInLineVertical, ArrowsOutLineVertical, Eye, Download, Plus, Prohibit, Chat, Devices, Question, FileMd, Bookmarks, Lightning, Briefcase, User, type Icon, PILLAR_GLYPHS } from './icons';
-import { SpaceSwitch } from './SpaceSwitch';
-import type { Space } from './spaces';
+import { ProGlyph, ProMark } from './UpgradeModal';
+import { Star, Hash, DotsThree, PencilSimple, Palette, Trash, X, CaretDown, PushPin, File, NotePencil, CheckFat, Shield, Key, Folder, Book, Notebook, FunnelSimple, ArrowsInLineVertical, ArrowsOutLineVertical, Eye, Download, Plus, Prohibit, Chat, Devices, Question, FileMd, Bookmarks, Lightning, BellSimple, type Icon, PILLAR_GLYPHS } from './icons';
+import { useUnseenAlerts } from './reminders';
+import { SPACE_ICONS, SpaceMoveLabel, SpaceSwitch } from './SpaceSwitch';
+import type { Space, SpaceView } from './spaces';
 import { keyText } from './shortcutMatch';
 import { isViewShown, type View } from './views';
 import { exemptOpts } from './i18nExempt';
@@ -83,10 +84,19 @@ export interface TagsRailProps {
   /** Opens the quick switcher. */
   onJump: () => void;
 
-  /** The Personal and Work switch, and the root folder move while spaces
-   *  are on. A free account gets the switch alone, as the upgrade door.
+  /** The space switch, and the root folder move while spaces are on. A free
+   *  account gets the switch alone, as the upgrade door.
    *  Spec: ops/docs/plans/spaces.md */
-  spaces?: { active: Space; onChange: (space: Space) => void; onMoveFolder?: (id: string, space: Space) => void; locked?: boolean };
+  spaces?: {
+    active: SpaceView;
+    onChange: (view: SpaceView) => void;
+    onMoveFolder?: (id: string, space: Space) => void;
+    /** The space a root folder is in, so the move names the other one. */
+    folderSpace?: (id: string) => Space;
+    locked?: boolean;
+    /** A free account: All is the only view, so the switch leaves it out. */
+    noAll?: boolean;
+  };
 
   // About modal
   setShowAbout: (v: false | { tab?: 'about' | 'hotkeys' | 'rating' }) => void;
@@ -302,6 +312,7 @@ function FooterAction({
 
 export function TagsRail(props: TagsRailProps) {
   const { t } = useTranslation('shell');
+  const calendarBell = useUnseenAlerts();
   const tagColorOf = (tag: string) => {
     const color = lookOf(props.userSettings.itemStyles, tagLookKey(tag)).color;
     return isLookColor(color) ? color : null;
@@ -394,6 +405,24 @@ export function TagsRail(props: TagsRailProps) {
   const contentSectionRef = useRef<HTMLDivElement | null>(null);
   const browseListRef = useRef<HTMLDivElement | null>(null);
   const split = useSidebarSplit(contentSectionRef, browseListRef);
+  // A click on Tags or Folders hands focus to that list, so a letter jumps
+  // at once (GitHub #535). The list may change only after the Pro gate in
+  // onBrowseChange lets it, so the move waits for the mode to show.
+  const focusListFor = useRef<{ mode: 'tags' | 'folders'; at: number; visible: boolean } | null>(null);
+  const focusBrowseList = (visible: boolean) => {
+    const rows = Array.from(browseListRef.current?.querySelectorAll<HTMLElement>('[data-row-name]') ?? []);
+    const row = rows.find((r) => r.hasAttribute('aria-current')) ?? rows[0];
+    if (!row) return;
+    // A pointer click shows no ring; Enter or Space on the switch does.
+    row.focus({ focusVisible: visible } as FocusOptions);
+    row.scrollIntoView({ block: 'nearest' });
+  };
+  useEffect(() => {
+    const want = focusListFor.current;
+    if (!want || split.folded) return;
+    focusListFor.current = null;
+    if (want.mode === browseMode && Date.now() - want.at < 1000) focusBrowseList(want.visible);
+  }, [browseMode, split.folded]);
   // A set height only applies while both parts are open; the Markdown pillar
   // has its own rail below the list and no divider.
   const splitActive = !markdownRail && !viewsCollapsed;
@@ -498,8 +527,9 @@ export function TagsRail(props: TagsRailProps) {
   const sidebarOptionRows = sidebarViewRows(t);
   const allOptionRows = allViewRows(t);
 
-  // Trash scrolls with the tags, and stays under the switch while they are folded.
-  const trashRow = (
+  // Trash scrolls with the tags and folds away with them. An empty trash has
+  // no row, like Pinned and Archive, unless it is the open view.
+  const trashRow = (trashedCount > 0 || view === 'trash') && (
     <div className="mt-2 -mx-3 px-3 border-t border-divider pt-2">
       <button
         onClick={() => handleSelectView('trash')}
@@ -517,6 +547,108 @@ export function TagsRail(props: TagsRailProps) {
       </button>
     </div>
   );
+
+  // ── renderTagMenu ──────────────────────────────────────────────────
+
+  // The tag actions menu, drawn at the rail's top level rather than in its
+  // row: a tag chip elsewhere (the note's tag row, the list's filter chip)
+  // opens the same menu while the rail shows folders.
+  const renderTagMenu = () => {
+    if (!openTagMenu) return null;
+    const tag = openTagMenu.tag;
+    const isFavorite = favoriteTagsList.some(([name]) => name === tag);
+    return (
+      <>
+        {/* invisible backdrop so any click outside closes the menu */}
+        <div
+          className="fixed inset-0 z-[55]"
+          onClick={() => setOpenTagMenu(null)}
+        />
+        <div
+          ref={tagMenuRef}
+          style={{
+            top: tagMenuPos?.top ?? openTagMenu.y,
+            left: tagMenuPos?.left ?? openTagMenu.x,
+            visibility: tagMenuPos ? 'visible' : 'hidden',
+          }}
+          className="fixed z-[60] min-w-[180px] rounded-md border border-divider bg-surface-2 shadow-lg py-1"
+        >
+          <button
+            onClick={() => {
+              setOpenTagMenu(null);
+              toggleFavoriteTag(tag);
+            }}
+            className="w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2"
+          >
+            <Star weight={isFavorite ? 'fill' : 'bold'} className={isFavorite ? 'text-amber-400' : 'text-accent'} />
+            {isFavorite ? t('tagsRail.removeFavorite') : t('tagsRail.markAsFavorite')}
+          </button>
+          <button
+            onClick={() => {
+              setOpenTagMenu(null);
+              // The menu also opens from a tag chip (NotesView) while
+              // the rail shows folders, and the rename field lives on
+              // the tag row.
+              if (browseMode !== 'tags') onBrowseChange('tags');
+              setRenameBuffer(tag);
+              setRenamingTag(tag);
+            }}
+            className="w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2"
+          >
+            <PencilSimple className="text-accent" />
+            {t('tagsRail.renameTag')}
+          </button>
+          <button
+            onClick={() => {
+              setOpenTagMenu(null);
+              openLook({ kind: 'tag', lookKey: tagLookKey(tag), name: tag, favorite: isFavorite });
+            }}
+            className="w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2"
+          >
+            <Palette className="text-accent" />
+            <span className="flex-1">{t('looks.menu')}</span>
+            {!isPro && <ProMark />}
+          </button>
+          <button
+            onClick={() => {
+              setOpenTagMenu(null);
+              setNewTagDraft('');
+              setCreatingTag(true);
+            }}
+            className="w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2"
+          >
+            <Plus className="text-accent" />
+            {t('tagsRail.createTag')}
+          </button>
+          <div className="my-1 border-t border-divider" />
+          <button
+            onClick={() => {
+              setOpenTagMenu(null);
+              void handleDeleteTag(tag);
+            }}
+            className="w-full text-start px-3 py-1.5 text-[13px] text-danger hover:bg-red-50 dark:hover:bg-red-950/30 flex items-center gap-2"
+          >
+            <Trash />
+            {t('tagsRail.deleteTag')}
+          </button>
+          {/* "Delete Tag & Notes" is disabled for now - we may bring
+              it back later. Keep the handler + i18n keys wired so
+              re-enabling is a one-line uncomment.
+          <button
+            onClick={() => {
+              setOpenTagMenu(null);
+              void handleDeleteTagAndNotes(tag);
+            }}
+            className="w-full text-start px-3 py-1.5 text-[13px] text-danger hover:bg-red-50 dark:hover:bg-red-950/30 flex items-center gap-2"
+          >
+            <Trash />
+            {t('tagsRail.deleteTagAndNotes')}
+          </button>
+          */}
+        </div>
+      </>
+    );
+  };
 
   // ── renderTagRow ───────────────────────────────────────────────────
 
@@ -571,6 +703,7 @@ export function TagsRail(props: TagsRailProps) {
               void handleSelectTag(active ? null : tag);
             }}
             data-row-name={tag}
+            aria-current={active || undefined}
             className="flex-1 min-w-0 flex items-center gap-2 px-2 py-2 text-start"
           >
             {/* Amber, like a folder glyph, and accent while the row is
@@ -634,93 +767,6 @@ export function TagsRail(props: TagsRailProps) {
             </span>
           )}
         </div>
-        {menuOpen && openTagMenu && (
-          <>
-            {/* invisible backdrop so any click outside closes the menu */}
-            <div
-              className="fixed inset-0 z-[55]"
-              onClick={() => setOpenTagMenu(null)}
-            />
-            <div
-              ref={tagMenuRef}
-              style={{
-                top: tagMenuPos?.top ?? openTagMenu.y,
-                left: tagMenuPos?.left ?? openTagMenu.x,
-                visibility: tagMenuPos ? 'visible' : 'hidden',
-              }}
-              className="fixed z-[60] min-w-[180px] rounded-md border border-divider bg-surface-2 shadow-lg py-1"
-            >
-              <button
-                onClick={() => {
-                  setOpenTagMenu(null);
-                  toggleFavoriteTag(tag);
-                }}
-                className="w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2"
-              >
-                <Star weight={isFavorite ? 'fill' : 'bold'} className={isFavorite ? 'text-amber-400' : 'text-accent'} />
-                {isFavorite ? t('tagsRail.removeFavorite') : t('tagsRail.markAsFavorite')}
-              </button>
-              <button
-                onClick={() => {
-                  setOpenTagMenu(null);
-                  setRenameBuffer(tag);
-                  setRenamingTag(tag);
-                }}
-                className="w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2"
-              >
-                <PencilSimple className="text-accent" />
-                {t('tagsRail.renameTag')}
-              </button>
-              <button
-                onClick={() => {
-                  setOpenTagMenu(null);
-                  openLook({ kind: 'tag', lookKey: tagLookKey(tag), name: tag, favorite: isFavorite });
-                }}
-                className="w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2"
-              >
-                <Palette className="text-accent" />
-                <span className="flex-1">{t('looks.menu')}</span>
-                {!isPro && <ProMark />}
-              </button>
-              <button
-                onClick={() => {
-                  setOpenTagMenu(null);
-                  setNewTagDraft('');
-                  setCreatingTag(true);
-                }}
-                className="w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2"
-              >
-                <Plus className="text-accent" />
-                {t('tagsRail.createTag')}
-              </button>
-              <div className="my-1 border-t border-divider" />
-              <button
-                onClick={() => {
-                  setOpenTagMenu(null);
-                  void handleDeleteTag(tag);
-                }}
-                className="w-full text-start px-3 py-1.5 text-[13px] text-danger hover:bg-red-50 dark:hover:bg-red-950/30 flex items-center gap-2"
-              >
-                <Trash />
-                {t('tagsRail.deleteTag')}
-              </button>
-              {/* "Delete Tag & Notes" is disabled for now - we may bring
-                  it back later. Keep the handler + i18n keys wired so
-                  re-enabling is a one-line uncomment.
-              <button
-                onClick={() => {
-                  setOpenTagMenu(null);
-                  void handleDeleteTagAndNotes(tag);
-                }}
-                className="w-full text-start px-3 py-1.5 text-[13px] text-danger hover:bg-red-50 dark:hover:bg-red-950/30 flex items-center gap-2"
-              >
-                <Trash />
-                {t('tagsRail.deleteTagAndNotes')}
-              </button>
-              */}
-            </div>
-          </>
-        )}
       </div>
     );
   };
@@ -731,6 +777,7 @@ export function TagsRail(props: TagsRailProps) {
 
   return (
     <div className="h-full flex flex-col min-h-0">
+      {renderTagMenu()}
       {/* Brand row */}
       <div className="group shrink-0 min-h-[3.5rem] lg:min-h-0 lg:h-14 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] lg:pt-0 border-b border-divider flex items-center gap-2">
         <h1 className="text-lg tracking-tight truncate m-0">
@@ -767,34 +814,60 @@ export function TagsRail(props: TagsRailProps) {
         </button>
       </div>
       {/* Below lg the drawer has no Jump to row, so the switch takes that
-          slot, full width and with its words: a touch screen shows no
-          tooltip to name the icons. */}
+          slot, full width, in the same look as the Tags and Folders switch:
+          the open space names itself. */}
       {spaces && (
-        <div className="lg:hidden shrink-0 px-3 pt-3">
-          <SpaceSwitch active={spaces.active} onChange={spaces.onChange} locked={spaces.locked} labeled />
+        <div className="lg:hidden shrink-0 px-3 pt-3 flex">
+          <SpaceSwitch active={spaces.active} onChange={spaces.onChange} locked={spaces.locked} noAll={spaces.noAll} stretch />
         </div>
       )}
       {/* The quick switcher's button, from lg up. Below lg the list header
           carries it (ListNav), so the drawer does not repeat it.
           Spec: ops/docs/plans/keyboard-shortcuts.md (decision D15) */}
-      <div className="hidden lg:flex items-center gap-1.5 shrink-0 px-3 pt-3">
+      <div className="pn-jump-row hidden lg:flex items-center gap-1.5 shrink-0 px-3 pt-3">
         {/* The tint of the "+ New" button, so the app's two main actions
             read as one family. A lightning bolt, not a magnifier: the list
             search, find in note and the settings search already draw one,
             and this button also runs commands. */}
-        <button
-          type="button"
-          onClick={onJump}
-          className="pn-jump flex-1 min-w-0 h-8 flex items-center gap-2 rounded-md bg-accent/10 ps-2.5 pe-1.5 text-[14px] font-semibold text-accent-strong transition focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-        >
-          <span className="pn-jump-charge" aria-hidden="true" />
-          <Lightning size={16} weight="fill" className="shrink-0" />
-          <span className="flex-1 truncate text-start">{t('common:quickSwitcher.jumpTo')}</span>
-          <kbd dir="ltr" className="pn-sb-wide shrink-0 rounded border border-accent/30 px-1.5 font-sans text-[11px] font-normal leading-5">
-            {keyText('quickSwitcher')}
-          </kbd>
-        </button>
-        {spaces && <SpaceSwitch active={spaces.active} onChange={spaces.onChange} locked={spaces.locked} />}
+        {spaces ? (
+          <>
+            {/* Beside the space switch, Jump is the bolt, the same height
+                and tint as the switch, so the row reads as one bar. Its name
+                and key slide in on hover, as a closed segment's name does,
+                and a sidebar too narrow for them gets the tip instead. */}
+            <HoverLabel label={`${t('common:quickSwitcher.jumpTo')} ${keyText('quickSwitcher')}`} position="below" className="pn-sb-tip flex shrink-0">
+              <button
+                type="button"
+                onClick={onJump}
+                aria-label={t('common:quickSwitcher.jumpTo')}
+                className="group pn-jump min-w-8 h-8 px-2 flex items-center justify-center rounded-md bg-accent/10 text-accent-strong transition focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/40"
+              >
+                <span className="pn-jump-charge" aria-hidden="true" />
+                <Lightning size={16} weight="fill" className="shrink-0" />
+                <span aria-hidden="true" className="pn-sb-wide grid grid-cols-[0fr] transition-[grid-template-columns] duration-200 group-hover:grid-cols-[1fr] group-focus-visible:grid-cols-[1fr] [@media(hover:none)]:hidden">
+                  <span className="flex items-center gap-1.5 overflow-hidden whitespace-nowrap text-[13px] font-semibold opacity-0 transition-[opacity,padding] duration-200 group-hover:opacity-100 group-hover:ps-1.5 group-focus-visible:opacity-100 group-focus-visible:ps-1.5">
+                    {t('common:quickSwitcher.jumpTo')}
+                    <kbd dir="ltr" className="rounded border border-accent/30 px-1 font-sans text-[11px] font-normal leading-4">{keyText('quickSwitcher')}</kbd>
+                  </span>
+                </span>
+              </button>
+            </HoverLabel>
+            <SpaceSwitch active={spaces.active} onChange={spaces.onChange} locked={spaces.locked} noAll={spaces.noAll} stretch />
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={onJump}
+            className="pn-jump flex-1 min-w-0 h-8 flex items-center gap-2 rounded-md bg-accent/10 ps-2.5 pe-1.5 text-[14px] font-semibold text-accent-strong transition focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+          >
+            <span className="pn-jump-charge" aria-hidden="true" />
+            <Lightning size={16} weight="fill" className="shrink-0" />
+            <span className="flex-1 truncate text-start">{t('common:quickSwitcher.jumpTo')}</span>
+            <kbd dir="ltr" className="pn-sb-wide shrink-0 rounded border border-accent/30 px-1.5 font-sans text-[11px] font-normal leading-5">
+              {keyText('quickSwitcher')}
+            </kbd>
+          </button>
+        )}
       </div>
       {/* The caption row sits OUTSIDE the scrolling box below, and that is what
           lets it carry a tip at all. The row list is `overflow-y-auto`, and CSS
@@ -942,7 +1015,14 @@ export function TagsRail(props: TagsRailProps) {
                 </span>
                 {r.label}
               </span>
-              {count !== undefined && (
+              {r.key === 'calendar' && calendarBell ? (
+                // A reminder fired and its item is not opened yet: the count
+                // takes the accent fill and the bell until it is.
+                <span className="inline-flex items-center gap-0.5 rounded-full bg-accent-fill text-white px-1.5 text-xs font-semibold tabular-nums">
+                  <BellSimple size={10} weight="fill" aria-hidden="true" />
+                  {count}
+                </span>
+              ) : count !== undefined && (
                 <span className="text-xs text-pn-muted tabular-nums">
                   {count}
                 </span>
@@ -978,13 +1058,19 @@ export function TagsRail(props: TagsRailProps) {
       {/* The divider: drag to share the height, drag to the bottom to fold
           the tags or folders, double-click to put it back. It draws the
           line the Content part used to carry as its bottom border. */}
-      <div
-        {...split.separatorProps}
-        aria-label={t('tagsRail.resizeSplit')}
-        className={`pn-hstrip shrink-0 h-3 border-t${keyboardUp ? ' hidden' : ''} border-b border-divider bg-surface-0 hover:bg-surface-1 text-pn-muted hover:text-accent transition`}
+      <HoverLabel
+        label={t(split.folded ? 'notes:paneResize.hintExpand' : 'notes:paneResize.hintCollapse')}
+        position="below"
+        className={`shrink-0 flex flex-col${keyboardUp ? ' hidden' : ''}`}
       >
-        <span className="pn-hstrip-dots" aria-hidden="true" />
-      </div>
+        <div
+          {...split.separatorProps}
+          aria-label={t('tagsRail.resizeSplit')}
+          className="pn-hstrip shrink-0 h-3 border-t border-b border-divider bg-surface-0 hover:bg-surface-1 text-pn-muted hover:text-accent transition"
+        >
+          <span className="pn-hstrip-dots" aria-hidden="true" />
+        </div>
+      </HoverLabel>
       {/* Browse toggle (Tags | Folders) + tag sort popover - pinned (shrink-0)
          above the scrollable list so its height is always reserved (never
          overlapped when the sidebar is short) and the absolute sort popover
@@ -992,7 +1078,7 @@ export function TagsRail(props: TagsRailProps) {
          carries the gold rocket while not Pro and the gate lives in
          onBrowseChange (NotesView). */}
       <div className="shrink-0 relative px-3 pt-3">
-        <div className="flex items-stretch gap-1.5 mb-1">
+        <div className="flex items-center gap-1.5 mb-1">
           {/* Sort button on the left, pill on the right - the same
               composition as the layout switch (ViewModeToggle). The hover
               label is suppressed while the popover is open so the two
@@ -1005,20 +1091,25 @@ export function TagsRail(props: TagsRailProps) {
                   onClick={() => setTagSortOpen(false)}
                   aria-label={sortLabel}
                   aria-expanded
-                  className={`h-full px-2 rounded-md border inline-flex items-center justify-center transition border-accent ${SIDEBAR_ACTIVE}`}
+                  className="w-8 h-8 rounded-md inline-flex items-center justify-center transition bg-surface-2 text-accent-strong ring-1 ring-inset ring-accent/40"
                 >
-                  <FunnelSimple size={15} aria-hidden="true" />
+                  <FunnelSimple size={16} aria-hidden="true" />
                 </button>
               ) : (
                 <HoverLabel label={sortLabel} position="end">
                   <button
                     type="button"
-                    onClick={() => setTagSortOpen(true)}
+                    onClick={() => {
+                      // Folded, the list has no room under the switch and the
+                      // menu would be cut off; sorting is about the list anyway.
+                      split.unfold();
+                      setTagSortOpen(true);
+                    }}
                     aria-label={sortLabel}
                     aria-expanded={false}
-                    className="h-full px-2 rounded-md border inline-flex items-center justify-center transition border-divider text-pn-muted hover:text-accent hover:border-accent/50 dark:hover:text-accent"
+                    className="w-8 h-8 rounded-md inline-flex items-center justify-center transition bg-accent/10 text-accent-strong/70 hover:text-accent-strong hover:bg-accent/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/40"
                   >
-                    <FunnelSimple size={15} aria-hidden="true" />
+                    <FunnelSimple size={16} aria-hidden="true" />
                   </button>
                 </HoverLabel>
               )}
@@ -1111,53 +1202,58 @@ export function TagsRail(props: TagsRailProps) {
               )}
             </div>
           )}
+          {/* The space switch's look: a tinted track, the open segment a
+              light pill with a filled icon and its name. A closed segment
+              names itself on hover the way the footer actions do, and a
+              sidebar too narrow for names gets tips instead (pn-browse in
+              index.css). Folders carries the Pro mark on its icon while not Pro,
+              and the gate lives in onBrowseChange (NotesView). */}
           <div
             role="group"
             aria-label={t('browseToggle.label')}
             onKeyDown={onSwitchKeyDown}
-            // No overflow-hidden: it would clip the Folders tip. Each end
-            // button rounds its own corner to the border's inner radius.
-            className="flex-1 min-w-0 flex rounded-md border border-divider"
+            className="pn-browse flex-1 min-w-0 flex gap-0.5 rounded-md bg-accent/10 p-0.5"
           >
-            <button
-              type="button"
-              onClick={() => {
-                split.unfold();
-                onBrowseChange('tags');
-              }}
-              {...railDrop.switchProps('tags')}
-              aria-pressed={browseMode === 'tags'}
-              className={`flex-auto min-w-0 inline-flex rounded-s-[5px] items-center justify-center gap-1 px-1.5 py-1 text-[12px] font-medium transition ${
-                browseMode === 'tags'
-                  ? SIDEBAR_ACTIVE
-                  : 'text-pn-muted hover:text-accent dark:hover:text-accent'
-              }`}
-            >
-              <Hash size={13} className="pn-sb-wide shrink-0" />
-              <span className="truncate">{t('browseToggle.tags', exemptOpts('shell:browseToggle.tags'))}</span>
-            </button>
-            {/* The tip names the Pro gate only; a Pro account needs no tip on
-                a tab that carries its own word. */}
-            <HoverLabel label={t('browseToggle.folders', exemptOpts('shell:browseToggle.folders'))} pro disabled={isPro} position="below" className="flex-auto min-w-0 flex">
-              <button
-                type="button"
-                onClick={() => {
-                  split.unfold();
-                  onBrowseChange('folders');
-                }}
-                {...railDrop.switchProps('folders')}
-                aria-pressed={browseMode === 'folders'}
-                className={`flex-auto min-w-0 inline-flex rounded-e-[5px] items-center justify-center gap-1 px-1.5 py-1 text-[12px] font-medium transition ${
-                  browseMode === 'folders'
-                    ? SIDEBAR_ACTIVE
-                    : 'text-pn-muted hover:text-accent dark:hover:text-accent'
-                }`}
-              >
-                <Folder size={13} className="pn-sb-wide shrink-0" />
-                <span className="truncate">{t('browseToggle.folders', exemptOpts('shell:browseToggle.folders'))}</span>
-                {!isPro && <span className="pn-sb-wide shrink-0 inline-flex"><IconUpgrade size={11} /></span>}
-              </button>
-            </HoverLabel>
+            {(['tags', 'folders'] as const).map((mode) => {
+              // Folded, neither shows as open: the list it would name is away.
+              const on = browseMode === mode && !split.folded;
+              const label = t(`browseToggle.${mode}`, exemptOpts(`shell:browseToggle.${mode}`));
+              const pro = mode === 'folders' && !isPro;
+              const ModeIcon = mode === 'tags' ? Hash : Folder;
+              const filled = mode === 'tags' ? 'bold' : 'fill';
+              return (
+                <HoverLabel key={mode} label={label} pro={pro} position="below" className={`pn-sb-tip pn-browse-seg${on ? ' is-open' : ''}`}>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      // Left and Right on the switch press the other segment
+                      // with a script click, and focus stays on the switch.
+                      if (e.isTrusted) {
+                        const visible = e.detail === 0;
+                        if (browseMode === mode && !split.folded) focusBrowseList(visible);
+                        else focusListFor.current = { mode, at: Date.now(), visible };
+                      }
+                      split.unfold();
+                      onBrowseChange(mode);
+                    }}
+                    {...railDrop.switchProps(mode)}
+                    aria-pressed={on}
+                    aria-label={pro ? `${label} (Pro)` : label}
+                    className={`group w-full min-w-0 h-7 flex items-center justify-center px-1.5 rounded transition focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/40 ${
+                      on ? 'bg-surface-2 text-accent-strong' : 'text-accent-strong/60 hover:text-accent-strong hover:bg-surface-2/60'
+                    }`}
+                  >
+                    <ProGlyph pro={pro}>
+                      <ModeIcon size={16} weight={on ? filled : 'regular'} className={on ? '' : 'group-hover:hidden'} aria-hidden="true" />
+                      {!on && <ModeIcon size={16} weight={filled} className="hidden group-hover:inline-flex" aria-hidden="true" />}
+                    </ProGlyph>
+                    <span aria-hidden="true" className="pn-sb-wide pn-browse-name">
+                      <span className="text-[13px] font-semibold">{label}</span>
+                    </span>
+                  </button>
+                </HoverLabel>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -1185,11 +1281,10 @@ export function TagsRail(props: TagsRailProps) {
             onEditLook={openFolderLook}
             onGlyphClick={glyphOpensLook ? openFolderLook : undefined}
             itemDrop={{ overId: railDrop.over?.kind === 'folder' ? railDrop.over.key : null }}
-            spaceMove={spaces?.onMoveFolder && {
-              label: spaces.active === 'work' ? t('spaces.moveToPersonal') : t('spaces.moveToWork'),
-              icon: spaces.active === 'work' ? User : Briefcase,
-              run: (id) => spaces.onMoveFolder?.(id, spaces.active === 'work' ? 'personal' : 'work'),
-            }}
+            spaceMove={spaces?.onMoveFolder && ((id) => {
+              const to: Space = spaces.folderSpace?.(id) === 'work' ? 'personal' : 'work';
+              return { label: <SpaceMoveLabel to={to} />, icon: SPACE_ICONS[to], run: () => spaces.onMoveFolder?.(id, to) };
+            })}
             emptyText={spaces?.active === 'work' ? t('spaces.workEmpty') : undefined}
             sortField={folderSortField}
             sortDir={folderSortDir}
@@ -1288,8 +1383,6 @@ export function TagsRail(props: TagsRailProps) {
 
       </div>
       )}
-      {/* Folded: Trash stays in reach under the switch. */}
-      {split.folded && <div className="shrink-0 px-3 pb-3">{trashRow}</div>}
       </>)}
 
       {/* Footer actions - five icon buttons: Help, Downloads | Import,
@@ -1297,8 +1390,11 @@ export function TagsRail(props: TagsRailProps) {
           divider; the in-app actions sit right of it. Labels reveal as an
           inline expanding pill on hover; touch devices render icons only
           (FooterAction above). Hidden on very short viewports (before the
-          footer) so the primary nav keeps room. Spec: ops/docs/ui-patterns.md section 46 (legacy guard, predates the height-tier scale) */}
-      <div className="shrink-0 border-t border-divider px-3 py-1 flex items-stretch justify-between gap-0.5 [@media(max-height:450px)]:hidden">
+          footer) so the primary nav keeps room. The row inset plus the
+          button's own px-1 puts the first and last glyph 20px from the
+          sidebar edges, the inset of the sidebar rows and of the app
+          footer's Settings zone below. Spec: ops/docs/ui-patterns.md section 46 (legacy guard, predates the height-tier scale) */}
+      <div className="shrink-0 border-t border-divider px-4 py-1 flex items-stretch justify-between gap-0.5 [@media(max-height:450px)]:hidden">
         <FooterAction
           icon={Question}
           label={t('tagsRail.help')}

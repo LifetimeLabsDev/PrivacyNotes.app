@@ -6,6 +6,7 @@ import { resetPulledClean } from './pullState';
 import { hasMedia, stripMediaReferencesTo } from './imageProcessing';
 import { changesContent } from './editStamp';
 import { recordLedgerWrite, type LedgerWrite } from './dayLedger';
+import { withoutSourceIdentity } from './schedule';
 
 /**
  * Pure Dexie CRUD. No network, and no crypto of its own: wire
@@ -363,6 +364,30 @@ export async function trashNote(id: string): Promise<void> {
   await touchNote(id, { trashed: 1 });
 }
 
+/**
+ * Move a draft the person left empty to the trash, deciding "empty" on the
+ * row inside the write's own transaction. A transaction queues behind every
+ * one requested before it, so a save the open editor started (its flush on
+ * New or Close) lands first and is seen here; a separate read ahead of the
+ * write could run before that save and trash a draft whose typing then lands
+ * in the trashed row. A row already trashed or tombstoned is left alone, so
+ * a second pass is a no-op. Returns true when the row was trashed. Tested in
+ * tests/draftDiscard.test.ts.
+ */
+export async function trashIfEmpty(id: string, isEmpty: (n: LocalNote) => boolean): Promise<boolean> {
+  return db.transaction('rw', db.notes, async () => {
+    const current = await db.notes.get(id);
+    if (!current || current.trashed === 1 || current.deleted === 1 || !isEmpty(current)) return false;
+    await db.notes.update(id, {
+      trashed: 1,
+      updatedAt: nextStamp(current.updatedAt),
+      editedAt: current.editedAt ?? current.updatedAt,
+      dirty: 1,
+    });
+    return true;
+  });
+}
+
 /** Restore a trashed note. */
 export async function restoreNote(id: string): Promise<void> {
   await touchNote(id, { trashed: 0 });
@@ -449,10 +474,47 @@ export async function duplicateNote(id: string): Promise<LocalNote | null> {
     folderId: src.folderId ?? null,
     ...(src.archived === 1 ? { archived: 1 } : {}),
     // Deep-copy tracker data so journal duplicates preserve mood/sleep/etc.
-    ...(src.trackers ? { trackers: structuredClone(src.trackers) } : {}),
+    // The copy is another event, so it leaves the source identity behind.
+    ...(src.trackers ? { trackers: structuredClone(withoutSourceIdentity(src.trackers)) } : {}),
   };
   await db.notes.put(copy);
   return copy;
+}
+
+/**
+ * Split an occurrence off a repeating event: a copy of the item with other
+ * tracker values (the occurrence a "This occurrence" or "This and following"
+ * edit splits off) and the series' new tracker values, both built from the
+ * row as it is stored and written in one transaction, so a change synced
+ * after the screen last read it, or between the two writes, is never undone.
+ * The copy keeps title, body, tags, folder and PIN protection; never
+ * read-only. Null when `build` refuses or the series write does not land.
+ * Spec: ops/docs/plans/calendar-pillar-spec.md (step 6)
+ */
+export async function splitOffCopy(
+  id: string,
+  build: (src: LocalNote) => { copy: Record<string, unknown>; series: Record<string, unknown> } | null,
+): Promise<{ copy: LocalNote; series: NotePatch } | null> {
+  const ledger: LedgerSlot = {};
+  const done = await db.transaction('rw', db.notes, async () => {
+    const src = await db.notes.get(id);
+    if (!src || src.deleted === 1) return null;
+    const built = build(src);
+    if (!built) return null;
+    const series: NotePatch = { trackers: built.series };
+    if (!(await writePatch(src, series, undefined, { edit: false }, ledger))) return null;
+    const now = new Date().toISOString();
+    const copy: LocalNote = {
+      id: crypto.randomUUID(), title: src.title, body: src.body, tags: [...src.tags],
+      createdAt: now, updatedAt: now, editedAt: now, dirty: 1, deleted: 0, trashed: 0,
+      starred: src.starred, locked: 0, pinProtected: src.pinProtected, type: src.type ?? 'note',
+      folderId: src.folderId ?? null, trackers: structuredClone(withoutSourceIdentity(built.copy)),
+    };
+    await db.notes.put(copy);
+    return { copy, series };
+  });
+  if (ledger.write) recordLedgerWrite(ledger.write);
+  return done;
 }
 
 /** Toggle or set the starred flag on a note. */
@@ -644,34 +706,40 @@ async function bulkSetFlag(ids: string[], field: 'starred' | 'archived', on: boo
 }
 
 /**
- * Write a new body to each note in `updates`, in ONE transaction.
+ * Rewrite the body of each note in `ids`, in ONE transaction, from the row as
+ * it stands inside it: `rewrite` returns the new body, or null to leave the
+ * row alone. A body a pull stored after the caller looked is the one
+ * rewritten, never overwritten with a rewrite of the body before it (#497).
  *
  * The rename pass (`useNoteEditing.handleTitleBlur`) is the caller: pointing
  * note-links at a renamed note can touch many notes at once, and a separate
  * `updateNote` per note is a separate transaction per note. Same shape and
- * same reasoning as the bulk helpers above. Returns the number written.
+ * same reasoning as the bulk helpers above. Returns the bodies written.
  * Nobody edited these notes, so their "last edited" date stays.
  */
-export async function bulkSetBody(
-  updates: Array<{ id: string; body: string }>,
-): Promise<number> {
-  if (updates.length === 0) return 0;
+export async function bulkRewriteBody(
+  ids: string[],
+  rewrite: (current: LocalNote) => string | null,
+): Promise<Array<{ id: string; body: string }>> {
+  if (ids.length === 0) return [];
   void requestPersistence();
-  let count = 0;
-  await db.transaction('rw', db.notes, async () => {
-    for (const { id, body } of updates) {
+  return db.transaction('rw', db.notes, async () => {
+    const written: Array<{ id: string; body: string }> = [];
+    for (const id of ids) {
       const note = await db.notes.get(id);
       if (!note) continue;
+      const body = rewrite(note);
+      if (body === null || body === note.body) continue;
       await db.notes.update(id, {
         body,
         updatedAt: nextStamp(note.updatedAt),
         editedAt: note.editedAt ?? note.updatedAt,
         dirty: 1,
       });
-      count++;
+      written.push({ id, body });
     }
+    return written;
   });
-  return count;
 }
 
 /**

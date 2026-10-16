@@ -18,6 +18,11 @@
  *   - ADD_DATE is unix SECONDS, matching what every browser writes.
  *   - Firefox reads TAGS back into its own tag store; every other browser
  *     ignores the attribute. So we always emit it and lose nothing.
+ *   - SHORTCUTURL is Firefox's address-bar keyword, carried in the link
+ *     body. The import can also turn the keyword into a tag, so a tag equal
+ *     to the keyword is left out of TAGS: Firefox kept the two apart, and a
+ *     round trip must not add a tag the user never had there. The body's
+ *     `keywordTag` says Firefox had that tag too, and then it is written.
  *   - A nameless bookmark is written with its domain as the name, because
  *     an empty <A> is a blank row in every browser's list.
  *   - The import's own "Bookmarks" root is NOT re-emitted (decided
@@ -29,6 +34,7 @@
 
 import type { FolderDef } from './folders';
 import { linkDomain, parseLinkBody } from './linkBody';
+import { normalizeTag } from './notesRepo';
 
 /** The minimum a bookmark row needs to be written out. */
 export interface ExportableBookmark {
@@ -116,13 +122,15 @@ export function buildBookmarksHtml(
   ];
 
   const writeBookmark = (b: ExportableBookmark, indent: string) => {
-    const { url } = parseLinkBody(b.body);
+    const { url, keyword = '', keywordTag: alsoTag } = parseLinkBody(b.body);
     if (!url) return;
     const name = b.title.trim() || linkDomain(url) || url;
+    const keywordTag = alsoTag ? '' : normalizeTag(keyword);
     const a = attrs([
       ['HREF', url],
       ['ADD_DATE', unixSeconds(b.createdAt)],
-      ['TAGS', b.tags.join(',')],
+      ['SHORTCUTURL', keyword],
+      ['TAGS', b.tags.filter((t) => !keywordTag || t !== keywordTag).join(',')],
     ]);
     out.push(`${indent}<DT><A${a}>${esc(name)}</A>`);
   };

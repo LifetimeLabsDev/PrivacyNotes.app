@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { CaretUp, CaretDown } from './icons';
+import { CaretUp, CaretDown, Swap } from './icons';
 import { HoverLabel } from './HoverLabel';
+import { ProGlyph } from './UpgradeModal';
 
 /**
  * Button style shared by every icon control in the find and replace bars.
@@ -72,5 +73,33 @@ export function MatchNav({ count, noHits, canStep, onStep }: Props) {
         </button>
       </HoverLabel>
     </>
+  );
+}
+
+/**
+ * The button that grows the find bar into the replace bar and shrinks it
+ * back, in the find row of every bar. The parent carries the search term
+ * across and gates the replace half on Pro and on an editable note, so a
+ * read-only note never renders this. `pro` puts the rocket on the glyph for
+ * a free account, keyed off `!isPro` like every Pro mark.
+ */
+export function ReplaceToggle({ open, pro, onClick }: { open: boolean; pro: boolean; onClick: () => void }) {
+  const { t } = useTranslation('editor');
+  const label = open ? t('find.hideReplace') : t('find.showReplace');
+  return (
+    <HoverLabel label={label} position="below">
+      <button
+        type="button"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={onClick}
+        aria-pressed={open}
+        aria-label={label}
+        className={`${BAR_BTN}${open ? ' bg-pn/10 text-accent' : ''}`}
+      >
+        <ProGlyph pro={pro}>
+          <Swap size={15} />
+        </ProGlyph>
+      </button>
+    </HoverLabel>
   );
 }

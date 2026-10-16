@@ -39,16 +39,29 @@
     "photosTooBig_one": "Spazio insufficiente per la foto ({{size}}), quindi resta fuori. Tutto il resto viene importato. Libera {{shortfall}}, o aggiungi spazio, e importa di nuovo per recuperarla.",
     "photosTooBig_other": "Spazio insufficiente per le {{count}} foto ({{size}}), quindi restano fuori. Tutto il resto viene importato. Libera {{shortfall}}, o aggiungi spazio, e importa di nuovo per recuperarle."
   },
+  "importCalendar": {
+    "location": "Luogo",
+    "videoCall": "Videochiamata",
+    "organizer": "Organizzatore",
+    "guests": "Invitati",
+    "file": "File",
+    "link": "Link",
+    "timeZone": "Fuso orario",
+    "ends": "Fine",
+    "repeats": "Ripetizione"
+  },
   "sourceDesc": {
     "googleKeep": "File .zip di Google Takeout (cartella Keep) o una singola nota .json. Le checklist vengono importate come elenchi di attività nativi.",
+    "googleCalendar": "Il file .zip da Settings > Import & export di Google Calendar, oppure un singolo file .ics. Gli eventi mantengono orari, ripetizioni e promemoria.",
     "appleNotes": "Esporta tramite l'app gratuita Exporter come Markdown, poi trascina qui il file .zip.",
     "appleJournal": "Esporta da Diario su Mac o iPhone, comprimi la cartella AppleJournalEntries e trascina qui il .zip. Le pagine si importano come pagine di diario con le loro foto, video, memo vocali e luoghi.",
     "evernote": "Un solo .enex, oppure più file in un unico zip. Mantiene formattazione, tag, allegati, collegamenti tra note e taccuini. Evernote lascia le attività fuori dal .enex.",
     "samsungNotes": "Esporta come Word (.docx) o Testo (.txt). Comprimi più file per un'importazione in blocco.",
     "simplenote": "Esporta da Simplenote (Settings -> Tools -> Export Notes). Trascina il file .zip.",
-    "standardNotes": "Backup decifrato .zip o .txt da Standard Notes (File > Esporta > Decifrato).",
+    "standardNotes": "Backup decifrato .zip o .txt da Standard Notes (Account settings > Backups > Data backups > Decrypted).",
     "obsidian": "Vault di Obsidian in .zip. Mantiene tag, [[note link]], struttura delle cartelle, #tag in linea e immagini e file incorporati.",
     "notesnook": "Export di Notesnook come .zip. Scegli HTML quando esporti per tenere formattazione, taccuini, tag e allegati.",
+    "bear": "In Bear, scegli File > Backup Notes... e trascina qui il file .bear2bk. Tag e tag annidati, note fissate, l'archivio, il cestino, le evidenziazioni con i loro colori, i collegamenti fra note e gli allegati arrivano con loro.",
     "joplin": "Il file .jex da File > Export all > \"JEX - Joplin Export File\". I taccuini diventano cartelle, e tag, cose da fare, collegamenti fra note e allegati arrivano con loro.",
     "upnote": "In UpNote: Settings > Backup > Backup now, poi zippa tutto il contenuto della cartella di backup. Mantiene taccuini, tag, note fissate, collegamenti tra note, formattazione e allegati. Funzionano anche gli export per singola nota dalle app per telefono - scegli \"Export to HTML\".",
     "markdownFolder": "File .md o .txt singoli oppure in uno .zip. Una cartella zippata mantiene le sue sottocartelle e porta con sé immagini e allegati.",
@@ -96,6 +109,12 @@
     "blobsNotInBackup_other": "Le tue note sono state ripristinate, ma {{items}} elencati nel backup non ci sono."
   },
   "preview": {
+    "oversize_other": "{{count}} note superano 1 MB. Restano su questo dispositivo e non si sincronizzano.",
+    "splitOversize_other": "Dividi queste {{count}} note in note più piccole ai loro titoli, così si sincronizzano",
+    "partTitle": "{{title}} ({{index}}/{{total}})",
+    "continuedIn": "Continua in {{link}}",
+    "splitOversize_one": "Dividi questa nota in note più piccole ai suoi titoli, così si sincronizza",
+    "oversize_one": "{{count}} nota supera 1 MB. Resta su questo dispositivo e non si sincronizza.",
     "sourceLabel": "Fonte",
     "uniqueTags": "Tag unici",
     "empty": "Vuoto",
@@ -107,6 +126,7 @@
     "duplicateWarning": "l'importazione le aggiunge come nuove note. Se la esegui due volte, otterrai dei duplicati. Non c'è ancora una deduplicazione automatica.",
     "duplicateSkipNote": "i segnalibri che hai già salvato vengono saltati, quindi ripetere questo import non crea doppioni.",
     "contactSkipNote": "le persone che hai già salvato vengono saltate e restano come sono, quindi eseguirlo due volte non duplicherà nessuno.",
+    "eventSkipNote": "gli eventi che hai già importato vengono saltati e restano come sono, quindi eseguirlo due volte non li duplicherà.",
     "restoreMergeNote": "le note di un tuo backup vengono abbinate per id. Una nota che hai già viene aggiornata solo se la copia nel backup è più recente, e una nota nel cestino ne esce.",
     "quotaExceeded": "<strong>Spazio insufficiente per l'importazione.</strong> Stimati {{needed}} necessari, {{available}} disponibili. Libera spazio o passa a Pro prima di importare.",
     "quotaWarning": "Attenzione: questa importazione userà circa {{needed}} dei tuoi {{available}} di spazio rimanente.",
@@ -154,7 +174,11 @@
     "bookmarksExportDesc": "Il file di segnalibri standard che ogni browser legge. Importalo in Chrome, Firefox, Safari o Edge con le tue cartelle intatte.",
     "contactsOnlyHeading": "Solo contatti",
     "contactsExportTitle": "File contatti (.vcf)",
-    "contactsExportDesc": "Il file vCard che ogni telefono e ogni rubrica legge. Importalo su iPhone, Android, Contatti Google o Contatti sul Mac, con etichette e gruppi intatti."
+    "contactsExportDesc": "Il file vCard che ogni telefono e ogni rubrica legge. Importalo su iPhone, Android, Contatti Google o Contatti sul Mac, con etichette e gruppi intatti.",
+    "calendarOnlyHeading": "Solo calendario",
+    "calendarExportTitle": "File calendario (.ics)",
+    "calendarExportDesc": "Eventi e note ed elenchi di attività con una data, per Google Calendar, Apple Calendar o Outlook.",
+    "calendarPrivate": "Privato"
   },
   "exportProgress": {
     "failedTitle": "Esportazione non riuscita",
@@ -221,5 +245,11 @@
     "title_other": "{{count}} elementi sono stati condivisi con PrivacyNotes",
     "line": "Non viene salvato nulla finché non scegli.",
     "saveAll": "Salva tutto"
+  },
+  "destination": {
+    "label": "Aggiungi a",
+    "none": "Nessuna cartella",
+    "newFolder": "Nuova cartella \"{{name}}\"",
+    "help": "Le cartelle di origine finiscono dentro la cartella che scegli, e gli elementi senza cartella vanno direttamente lì."
   }
 }

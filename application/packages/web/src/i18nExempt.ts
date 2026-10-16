@@ -33,7 +33,7 @@ const CJK = ['ja', 'ko', 'zh-TW'] as const;
 // plus Cyrillic and Thai, which run as long or as wide. The name predates the
 // non-Latin ones, and tools/check-help-paths.mjs and tools/locale-review.mjs
 // read the list by it. (en is the source and always shows its own text.)
-const LATIN = ['de', 'fr', 'it', 'es', 'nl', 'pl', 'pt-PT', 'pt-BR', 'ca', 'cs', 'tr', 'sv', 'uk', 'ru', 'th'] as const;
+const LATIN = ['de', 'fr', 'it', 'es', 'nl', 'pl', 'pt-PT', 'pt-BR', 'ca', 'cs', 'sk', 'tr', 'sv', 'uk', 'ru', 'th'] as const;
 // Every translated locale EXCEPT the few whose translation overflows a given
 // slot. CJK forms are short and always fit, so they are always included.
 const allBut = (...tooWide: string[]): readonly string[] => [
@@ -78,7 +78,8 @@ const RENDER_TRANSLATED: Record<string, readonly string[]> = {
   // <=8ch, and cs "Import") fit. Everywhere else both translate.
   // tr "Geri bildirim" is 13 glyphs over two words, the same shape that got cs
   // excluded. sv takes the loanword "Feedback" (8), as de/it/nl/pt-PT already do.
-  'shell:tagsRail.feedback': allBut('es', 'ca', 'cs', 'tr'),
+  // sk "Spätná väzba" is the cs shape, 12 glyphs over two words.
+  'shell:tagsRail.feedback': allBut('es', 'ca', 'cs', 'sk', 'tr'),
   // tr "İçe aktar" is two words in a slot where nl's single 10-glyph
   // "Importeren" already overflows; sv "Importera" (9) sits just under it.
   'shell:tagsRail.import': allBut('nl', 'tr'),
@@ -93,7 +94,8 @@ const RENDER_TRANSLATED: Record<string, readonly string[]> = {
   // sv "Nedladdningar" (13) lands in the fr/pt-PT class here; tr "İndirmeler"
   // (10) matches cs "Ke stažení" (10), which already fits this pill.
   // uk "Завантаження" (12) joins the sv class; ru "Загрузки" (8) fits.
-  'shell:tagsRail.downloads': allBut('fr', 'pt-PT', 'sv', 'uk'),
+  // sk "Na stiahnutie" (13, two words) joins it too.
+  'shell:tagsRail.downloads': allBut('fr', 'pt-PT', 'sv', 'sk', 'uk'),
 
   // The footer Settings label, the sync-status pill beside it, and the settings
   // rail "Import & Export" label are English in EVERY Latin locale (translated
@@ -136,16 +138,4 @@ export function exemptOpts(qualifiedKey: string): typeof FORCE_EN | undefined {
   // A key not in the map is not exempt at all: render its real translation.
   // (Only keys listed above are ever forced to English.)
   return allow === undefined || fits(allow) ? undefined : FORCE_EN;
-}
-
-// The "New" action button (notes:header.new + shell:tasksList.new). German "Neu"
-// and Czech "Nova"/"Novy" (4ch) fit where every other Latin locale's translation
-// overflows; the CJK forms (新規 / 추가 / 新增) fit too. Kept as its own helper
-// because it is the one key whose Latin allow list is non-empty.
-// sv "Ny" (2) is shorter than German "Neu"; tr "Yeni" (4) matches Czech "Nový".
-// th "สร้าง" draws three columns wide, narrower than "Neu".
-const NEW_BUTTON_FITS = ['de', 'cs', 'tr', 'sv', 'th', ...CJK] as const;
-
-export function newButtonOpts(): typeof FORCE_EN | undefined {
-  return fits(NEW_BUTTON_FITS) ? undefined : FORCE_EN;
 }

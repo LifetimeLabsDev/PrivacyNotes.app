@@ -15,6 +15,8 @@
     "notFound": "画像が見つかりません",
     "saveFailed": "保存に失敗したため、ファイルが空か不完全な可能性があります。",
     "viewAria": "画像を表示",
+    "copyAria": "画像をコピー",
+    "copyFailed": "画像をコピーできませんでした。",
     "picturesLeftOut": "一部の画像は追加されませんでした。画像は単独でコピーして貼り付けてください。"
   },
   "attachment": {
@@ -55,6 +57,17 @@
     "saveFailed": "保存に失敗したため、ファイルが空か不完全な可能性があります。",
     "pageCount_other": "{{count}}ページ",
     "pageLabel": "{{name}}、{{count}}ページ中{{page}}ページ目"
+  },
+  "mail": {
+    "loading": "メールを開いています...",
+    "failed": "このメールを読み込めません。ダウンロードして別のアプリで開いてください。",
+    "from": "差出人",
+    "to": "宛先",
+    "cc": "Cc",
+    "date": "日付",
+    "noSubject": "(件名なし)",
+    "empty": "このメールには本文がありません。",
+    "attachments": "添付ファイル"
   },
   "picker": {
     "title": "ファイル内の画像",

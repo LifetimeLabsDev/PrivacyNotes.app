@@ -38,7 +38,8 @@
   "storageBar": {
     "usage": "{{percent}} % utilisé ({{used}} / {{max}})",
     "refresh": "Actualiser le stockage",
-    "cleanupInfo": "Les éléments supprimés ne sont plus comptés immédiatement. Les fichiers chiffrés eux-mêmes quittent le serveur en quelques jours."
+    "cleanupInfo": "Les éléments supprimés ne sont plus comptés immédiatement. Les fichiers chiffrés eux-mêmes quittent le serveur en quelques jours.",
+    "open": "Ouvrir les paramètres de stockage"
   },
   "updateToast": {
     "available": "Mise à jour disponible",
@@ -93,7 +94,7 @@
   },
   "quickSwitcher": {
     "label": "Aller à un élément ou un paramètre",
-    "jumpTo": "Aller à",
+    "jumpTo": "Accéder",
     "placeholder": "Tape un titre ou un paramètre, ou > pour les commandes",
     "recent": "Récents",
     "empty": "Aucun élément ni paramètre avec ce nom",
@@ -106,7 +107,24 @@
     "openInTab": "ouvrir dans un onglet",
     "openLink": "Ouvrir",
     "edit": "modifier",
-    "close": "fermer"
+    "close": "fermer",
+    "tags": "Étiquettes",
+    "folders": "Dossiers",
+    "tagItems_one": "{{count}} élément",
+    "tagItems_other": "{{count}} éléments",
+    "emptyTags": "Aucune étiquette avec ce nom",
+    "emptyFolders": "Aucun dossier avec ce nom",
+    "onlyTags": "étiquettes",
+    "onlyFolders": "dossiers",
+    "showOnlyTags": "Étiquettes uniquement",
+    "showOnlyFolders": "Dossiers uniquement",
+    "showOnlyCommands": "Commandes uniquement",
+    "goToTag": "Aller à une étiquette",
+    "goToFolder": "Aller à un dossier",
+    "createTag": "Créer l'étiquette #{{name}}",
+    "createFolder": "Créer le dossier « {{name}} »",
+    "newTag": "Nouvelle étiquette",
+    "newFolder": "Nouveau dossier"
   },
   "cardForm": {
     "cardholderName": "Nom du titulaire",

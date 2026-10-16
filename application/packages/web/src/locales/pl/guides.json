@@ -10,6 +10,43 @@
     "otherGuides": "Inne przewodniki importu"
   },
   "guides": {
+    "google-calendar": {
+      "app": "Google Calendar",
+      "title": "Wyeksportuj swój Google Calendar",
+      "metaTitle": "Jak wyeksportować Google Calendar - PrivacyNotes",
+      "lead": "Google Calendar eksportuje wszystkie kalendarze, którymi zarządzasz, jako jeden plik .zip z poziomu ustawień, na komputerze. PrivacyNotes czyta ten plik .zip bezpośrednio, bez rozpakowywania.",
+      "sections": [
+        {
+          "h": "Wyeksportuj wszystkie kalendarze naraz",
+          "steps": [
+            "Otwórz [Google Calendar](https://calendar.google.com) w przeglądarce na komputerze. Aplikacja na telefon nie ma eksportu.",
+            "Kliknij ikonę zębatki w prawym górnym rogu, a potem „Settings”.",
+            "Na liście po lewej kliknij „Import & export”.",
+            "W sekcji „Export” kliknij „Export”. Przeglądarka pobierze plik .zip z jednym plikiem .ics dla każdego kalendarza.",
+            "Zostaw plik .zip dokładnie takim, jaki jest."
+          ],
+          "p": [
+            "Plik .zip zawiera każdy kalendarz, w którym masz uprawnienie „Make changes and manage sharing”, w tym Twój własny. Kalendarzy, które możesz tylko przeglądać, jak święta czy kalendarz współpracownika, w nim nie ma. Na koncie służbowym lub szkolnym administrator może ograniczyć eksport."
+          ]
+        },
+        {
+          "h": "Albo wyeksportuj jeden kalendarz",
+          "steps": [
+            "Na liście po lewej, w sekcji „My calendars”, wskaż nazwę kalendarza, kliknij „More” (trzy kropki), a potem „Settings and sharing”.",
+            "W sekcji „Calendar settings” kliknij „Export calendar”. Przeglądarka pobierze plik .zip z plikiem .ics tego kalendarza. Zostaw go takim, jaki jest."
+          ]
+        },
+        {
+          "h": "Co przechodzi razem z wydarzeniami",
+          "p": [
+            "Każde wydarzenie przychodzi ze swoim dniem, godziną i czasem trwania, także wydarzenia trwające kilka dni. Wydarzenia cykliczne zachowują swoją regułę, a wystąpienie przeniesione lub usunięte w Google zostaje przeniesione lub usunięte. Każdy kalendarz staje się folderem.",
+            "Przypomnienia ustawione przy wydarzeniu też przychodzą, w tym przypomnienia e-mailem: stają się przypomnieniami w aplikacji, a żeby dzwoniły, potrzebny jest PrivacyNotes Pro. Wydarzenie, które używało domyślnych przypomnień kalendarza, przychodzi bez przypomnienia, bo Google nie zapisuje wartości domyślnych w pliku. Miejsce, link do rozmowy wideo, goście i opis trafiają do tekstu wydarzenia. Godziny wyświetlają się tak, jak na tym urządzeniu w chwili importu.",
+            "Działa też pojedynczy plik .ics z dowolnej aplikacji kalendarza, w tym z Kalendarza Apple i Outlooka.",
+            "Jeśli później zaimportujesz ten sam plik jeszcze raz, wydarzenia, które już tu są, zostaną pominięte, więc dodane zostaną tylko nowe."
+          ]
+        }
+      ]
+    },
     "google-keep": {
       "app": "Google Keep",
       "title": "Wyeksportuj swoje notatki z Google Keep",
@@ -63,6 +100,40 @@
         }
       ]
     },
+    "bear": {
+      "app": "Bear",
+      "title": "Wyeksportuj swoje notatki z Bear",
+      "metaTitle": "Eksport notatek z Bear - PrivacyNotes",
+      "lead": "Bear eksportuje całą Twoją bibliotekę jako jeden plik kopii zapasowej i to właśnie ten plik warto przynieść: zawiera każdą notatkę, razem z archiwum i koszem.",
+      "sections": [
+        {
+          "h": "Zrób kopię zapasową w Bear",
+          "steps": [
+            "Otwórz Bear na Macu.",
+            "Wybierz File > Backup Notes...",
+            "Zapisz plik. Dostaniesz jeden plik .bear2bk, który zawiera całą Twoją bibliotekę.",
+            "Upuść ten plik .bear2bk bez zmian."
+          ]
+        },
+        {
+          "h": "Kopia zapasowa niesie więcej niż eksport",
+          "p": [
+            "File > Export Notes... zapisuje tylko notatki z widoku, który masz otwarty, więc notatki z archiwum i z kosza zostają pominięte. Kopia zapasowa zawiera je wszystkie i pamięta, które notatki były przypięte, zarchiwizowane, w koszu albo tylko do odczytu.",
+            "Jeśli masz tylko eksport Markdown albo Text Bundle, spakuj go do zip i upuść ten zip. Twój tekst, tagi i załączniki przejdą, ale archiwum, kosz i przypięcia nie, bo te eksporty ich nie zapisują.",
+            "Eksportujesz z Bear ręcznie? Zaznacz co najmniej dwie notatki. Pojedyncza notatka otwiera okno zapisu, które może nadać plikowi złe rozszerzenie."
+          ]
+        },
+        {
+          "h": "Co przechodzi razem z notatkami",
+          "p": [
+            "Twoje tagi przechodzą jako tagi. Zagnieżdżone tagi, takie jak #work/projects, są dodatkowo odtwarzane jako foldery, a każda notatka trafia do folderu swojego najgłębszego tagu. Połączenia między notatkami stają się linkami do notatek, a link do nagłówka wskazuje ten nagłówek.",
+            "Formatowanie zostaje: nagłówki, pogrubienie, kursywa, podkreślenie, przekreślenie, podświetlenia w kolorach z Bear, listy zadań, tabele, bloki kodu, cytaty, ramki, wzory matematyczne i przypisy. Obrazy otwierają się w pełnej szerokości, a zwinięte nagłówki przychodzą rozwinięte.",
+            "Przypięte notatki zostają przypięte, notatki z archiwum trafiają do Archiwum, notatki z kosza trafiają do Kosza, notatki tylko do odczytu zostają tylko do odczytu, a każda notatka zachowuje swoje oryginalne daty.",
+            "Obrazy i pliki dołączone do notatek są importowane do Twojej pamięci. Notatka, która wskazuje plik, którego nie ma w kopii zapasowej, i tak się zaimportuje, a podgląd importu powie Ci, ilu linków to dotyczy."
+          ]
+        }
+      ]
+    },
     "obsidian": {
       "app": "Obsidian",
       "title": "Wyeksportuj swój sejf Obsidian",
@@ -92,21 +163,21 @@
       "app": "Standard Notes",
       "title": "Wyeksportuj swoje notatki ze Standard Notes",
       "metaTitle": "Eksport kopii zapasowej Standard Notes - PrivacyNotes",
-      "lead": "Standard Notes oferuje eksport odszyfrowanej kopii zapasowej i to właśnie ten plik czyta PrivacyNotes. Jeden ważny szczegół na starcie: musi to być wariant odszyfrowany, nie zaszyfrowany.",
+      "lead": "Standard Notes eksportuje Twoje konto jako jedną odszyfrowaną kopię zapasową. Przenosi notatki Super razem z formatowaniem, a do tego listy kontrolne, tagi i kody 2FA.",
       "sections": [
         {
           "h": "Wyeksportuj notatki ze Standard Notes",
           "steps": [
             "Otwórz Standard Notes (w przeglądarce na app.standardnotes.com albo aplikację desktopową) i zaloguj się.",
-            "Otwórz Preferences, a potem sekcję Backups.",
-            "Pobierz kopię danych i wybierz format odszyfrowany, gdy pojawi się pytanie.",
+            "Kliknij ikonę konta w lewym dolnym rogu, a potem Account settings > Backups.",
+            "W sekcji Data backups wybierz Decrypted, a potem kliknij Download backup. Ten jeden plik zawiera wszystkie notatki, także notatki Super.",
             "Dostaniesz plik .zip zawierający plik „Standard Notes Backup and Import File.txt”. Zostaw zip takim, jaki jest."
           ]
         },
         {
           "h": "Notatki Super, listy kontrolne i kody 2FA zachowują swój kształt",
           "p": [
-            "Notatki Super zachowują nagłówki, listy, listy kontrolne, tabele, bloki kodu, kolory i zwijane sekcje. Listy kontrolne trafiają do Zadań, arkusze kalkulacyjne stają się tabelami, a wpisy z uwierzytelniacza stają się loginami w Sejfie, razem z kluczem 2FA. Zagnieżdżone tagi stają się folderami, a każda notatka zachowuje też swoje tagi.",
+            "Notatki Super zachowują formatowanie: nagłówki, listy, listy kontrolne, tabele, bloki kodu, wyróżnienia, kolory, wyrównanie tekstu i zwijane sekcje. Link do innej notatki staje się linkiem do notatki, a #hashtag w tekście staje się tagiem notatki. Listy kontrolne trafiają do Zadań, arkusze kalkulacyjne stają się tabelami, a wpisy z uwierzytelniacza stają się loginami w Sejfie, razem z kluczem 2FA. Zagnieżdżone tagi stają się folderami, a każda notatka zachowuje też swoje tagi.",
             "Pliki przesłane do Standard Notes zostają na ich serwerze, więc kopia zawiera tylko ich nazwy. Każda zaimportowana notatka oznacza miejsce, w którym był plik. Pobierz te pliki ze Standard Notes i dodaj je ponownie do notatki."
           ]
         },
@@ -444,6 +515,47 @@
           "h": "Jeśli brakuje obrazów lub plików",
           "p": [
             "Kopia zapasowa utworzona, zanim zaznaczysz „Backup attachments”, nie zawiera żadnych plików, a podgląd importu ostrzeże Cię, że notatki odwołują się do załączników, których kopia nie niesie. Jeśli tak się stanie, anuluj, włącz to ustawienie w UpNote, kliknij ponownie „Backup now”, spakuj świeży folder i zaimportuj ten zamiast tamtego."
+          ]
+        }
+      ]
+    },
+    "joplin": {
+      "app": "Joplin",
+      "title": "Wyeksportuj swoje notatki z Joplin",
+      "metaTitle": "Eksport notatek z Joplin jako JEX - PrivacyNotes",
+      "lead": "Joplin eksportuje wszystkie notesy naraz jako jeden plik JEX. Przenosi Twoje notatki razem z notesami, tagami, elementami to-do, linkami do innych notatek i załącznikami.",
+      "sections": [
+        {
+          "h": "Wyeksportuj wszystko jako JEX",
+          "steps": [
+            "Otwórz Joplin na komputerze.",
+            "Wybierz File > Export all > „JEX - Joplin Export File”.",
+            "Zapisz plik. Dostaniesz jeden plik .jex, który zawiera każdy notes, więc nie ma nic do pakowania.",
+            "Upuść ten plik .jex bez zmian."
+          ],
+          "p": [
+            "Tools > Create backup zapisuje ten sam plik, bajt w bajt, jako all_notebooks.jex w folderze JoplinBackup w Twoim folderze domowym. Jeśli Joplin już robi dla Ciebie takie kopie, najnowsza działa równie dobrze."
+          ]
+        },
+        {
+          "h": "Wybierz JEX, nie Markdown, HTML ani PDF",
+          "p": [
+            "Export all oferuje też MD, MD + Front Matter, HTML directory i PDF. To kopie przygotowane do czytania w innych aplikacjach. Plik JEX to własny zapis Joplin każdej notatki, notesu, tagu i załącznika i właśnie ten plik czytamy. Jeśli upuścisz któryś z pozostałych eksportów, powiemy Ci o tym, zamiast zaimportować jego połowę.",
+            "Jeśli masz już eksport „RAW - Joplin Export Directory”, spakuj ten folder do zip i upuść ten zip. Zawiera te same elementy co plik JEX."
+          ]
+        },
+        {
+          "h": "Wyjmij notatki z kosza przed eksportem",
+          "p": [
+            "Joplin pomija kosz w każdym eksporcie i w każdej kopii zapasowej. Przed eksportem przenieś z kosza każdą notatkę, którą chcesz zachować, bo inaczej zostanie w Joplin."
+          ]
+        },
+        {
+          "h": "Co przechodzi razem z notatkami",
+          "p": [
+            "Twoje notesy są odtwarzane jako prawdziwe foldery, zagnieżdżone tak głęboko, jak w Joplin, a każda notatka zachowuje swoje tagi oraz daty utworzenia i aktualizacji, które pokazywał Ci Joplin.",
+            "Elementy to-do stają się notatkami zadań z polem wyboru, które możesz odhaczyć, od razu odhaczonym, jeśli to-do było wykonane, a termin zostaje zapisany obok tytułu. Połączenia między notatkami stają się linkami do notatek. Obrazy i załączniki są importowane do Twojej pamięci i zostają na swoich miejscach w notatce. Notatki zapisane jako HTML, takie jak wiele wycinków z sieci, są konwertowane razem z formatowaniem.",
+            "Notatki z notesu Conflicts w Joplin przychodzą z tagiem „conflict”, więc możesz je znaleźć i posortować. Jeśli używasz szyfrowania Joplin, poczekaj, aż skończy odszyfrowywanie, zanim wyeksportujesz: element, który nadal jest zaszyfrowany, jest pomijany, a podgląd importu powie Ci, ile ich jest."
           ]
         }
       ]

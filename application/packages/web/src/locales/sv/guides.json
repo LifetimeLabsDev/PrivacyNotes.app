@@ -10,6 +10,43 @@
     "otherGuides": "Andra importguider"
   },
   "guides": {
+    "google-calendar": {
+      "app": "Google Kalender",
+      "title": "Exportera din Google Kalender",
+      "metaTitle": "Så exporterar du din Google Kalender - PrivacyNotes",
+      "lead": "Google Kalender exporterar alla kalendrar du hanterar som en enda .zip från inställningarna, på en dator. PrivacyNotes läser den .zip-filen som den är, ingen uppackning behövs.",
+      "sections": [
+        {
+          "h": "Exportera alla dina kalendrar på en gång",
+          "steps": [
+            "Öppna [Google Kalender](https://calendar.google.com) i en webbläsare på en dator. Mobilappen har ingen export.",
+            "Klicka på kugghjulet uppe till höger och sedan på ”Settings”.",
+            "Klicka på ”Import & export” i listan till vänster.",
+            "Klicka på ”Export” under ”Export”. Webbläsaren laddar ner en .zip med en .ics-fil för varje kalender.",
+            "Låt .zip-filen vara som den är."
+          ],
+          "p": [
+            "Zipfilen innehåller varje kalender där du har behörigheten ”Make changes and manage sharing”, din egen inräknad. Kalendrar du bara kan se, till exempel helgdagar eller en kollegas kalender, finns inte med. På ett jobb- eller skolkonto kan din administratör begränsa exporten."
+          ]
+        },
+        {
+          "h": "Eller exportera en enda kalender",
+          "steps": [
+            "Peka på kalenderns namn under ”My calendars” i listan till vänster, klicka på ”More” (de tre prickarna) och sedan på ”Settings and sharing”.",
+            "Klicka på ”Export calendar” under ”Calendar settings”. Webbläsaren laddar ner en .zip med den kalenderns .ics-fil. Låt den vara som den är."
+          ]
+        },
+        {
+          "h": "Vad som följer med",
+          "p": [
+            "Varje händelse kommer med sin dag, sin tid och hur länge den varar, även händelser som sträcker sig över flera dagar. Upprepade händelser behåller sin regel, och en förekomst som du flyttade eller raderade i Google förblir flyttad eller raderad. Varje kalender blir en mapp.",
+            "Påminnelser du ställt in på en händelse kommer också med, även e-postpåminnelser: de blir påminnelser i appen, som kräver PrivacyNotes Pro för att ringa. En händelse som använde kalenderns standardpåminnelser kommer utan påminnelse, eftersom Google inte skriver in standardvärden i filen. Platsen, länken till videosamtalet, gästerna och beskrivningen hamnar i händelsens text. Tider visas som de gjorde på den här enheten när du importerade.",
+            "En enskild .ics-fil från vilken kalenderapp som helst fungerar också, Apple Kalender och Outlook inräknade.",
+            "Importerar du samma fil igen senare hoppas de händelser som redan finns här över, så bara nya läggs till."
+          ]
+        }
+      ]
+    },
     "google-keep": {
       "app": "Google Keep",
       "title": "Exportera dina Google Keep-anteckningar",
@@ -63,6 +100,40 @@
         }
       ]
     },
+    "bear": {
+      "app": "Bear",
+      "title": "Exportera dina Bear-anteckningar",
+      "metaTitle": "Exportera dina Bear-anteckningar - PrivacyNotes",
+      "lead": "Bear exporterar hela ditt bibliotek som en enda säkerhetskopia, och det är den filen du ska ta med: den innehåller varje anteckning, arkivet och papperskorgen inräknade.",
+      "sections": [
+        {
+          "h": "Skapa en Bear-säkerhetskopia",
+          "steps": [
+            "Öppna Bear på din Mac.",
+            "Välj File > Backup Notes...",
+            "Spara filen. Du får en .bear2bk-fil som innehåller hela ditt bibliotek.",
+            "Släpp in den .bear2bk-filen som den är."
+          ]
+        },
+        {
+          "h": "Säkerhetskopian rymmer mer än en export",
+          "p": [
+            "File > Export Notes... skriver bara ut anteckningarna i den vy du har öppen, så arkiverade anteckningar och anteckningar i papperskorgen lämnas utanför. Säkerhetskopian innehåller alla, och den minns vilka anteckningar som var fästa, arkiverade, i papperskorgen eller skrivskyddade.",
+            "Har du bara en export som Markdown eller Text Bundle, zippa den och släpp in zipfilen. Din text, dina taggar och dina bilagor följer med, men inte arkivet, papperskorgen eller de fästa anteckningarna, eftersom de exporterna aldrig skriver ut dem.",
+            "Exporterar du från Bear för hand? Markera minst två anteckningar. En enda anteckning öppnar en sparruta som kan ge filen fel filändelse."
+          ]
+        },
+        {
+          "h": "Vad som följer med",
+          "p": [
+            "Dina taggar följer med som taggar. Nästlade taggar som #work/projects byggs också upp som mappar, och varje anteckning hamnar i mappen för sin djupaste tagg. Länkar mellan anteckningar blir anteckningslänkar, och en länk till en rubrik pekar på just den rubriken.",
+            "Formateringen finns kvar: rubriker, fet stil, kursiv, understruken text, genomstruken text, markeringar i sina Bear-färger, uppgiftslistor, tabeller, kodblock, citat, informationsrutor, matematik och fotnoter. Bilder öppnas i full bredd, och hopfällda rubriker kommer in uppfällda.",
+            "Fästa anteckningar förblir fästa, arkiverade anteckningar hamnar i arkivet, anteckningar i papperskorgen hamnar i papperskorgen, skrivskyddade anteckningar förblir skrivskyddade, och varje anteckning behåller sina ursprungliga datum.",
+            "Bilder och filer som sitter på dina anteckningar importeras till din lagring. En anteckning som pekar på en fil som säkerhetskopian inte innehåller importeras ändå, och importförhandsgranskningen berättar hur många länkar det gäller."
+          ]
+        }
+      ]
+    },
     "obsidian": {
       "app": "Obsidian",
       "title": "Exportera ditt Obsidian-valv",
@@ -92,21 +163,21 @@
       "app": "Standard Notes",
       "title": "Exportera dina Standard Notes",
       "metaTitle": "Exportera en Standard Notes-säkerhetskopia - PrivacyNotes",
-      "lead": "Standard Notes har en dekrypterad säkerhetskopia att exportera, och det är den filen PrivacyNotes läser. En viktig detalj direkt: det måste vara den dekrypterade varianten, inte den krypterade.",
+      "lead": "Standard Notes exporterar ditt konto som en enda dekrypterad säkerhetskopia. Den tar med Super-anteckningar med sin formatering, plus checklistor, taggar och 2FA-koder.",
       "sections": [
         {
           "h": "Exportera dina anteckningar från Standard Notes",
           "steps": [
             "Öppna Standard Notes (webben på app.standardnotes.com, eller skrivbordsappen) och logga in.",
-            "Öppna Preferences och sedan avsnittet Backups.",
-            "Ladda ner en säkerhetskopia av dina data och välj det dekrypterade formatet när du blir tillfrågad.",
+            "Klicka på kontoikonen längst ned till vänster och sedan på Account settings > Backups.",
+            "Välj Decrypted under Data backups och klicka sedan på Download backup. Den enda filen innehåller alla anteckningar, även Super-anteckningar.",
             "Du får en .zip som innehåller en fil som heter ”Standard Notes Backup and Import File.txt”. Låt zipfilen vara som den är."
           ]
         },
         {
           "h": "Super-anteckningar, checklistor och 2FA-koder behåller sin form",
           "p": [
-            "Super-anteckningar behåller rubriker, listor, checklistor, tabeller, kodblock, färger och hopfällbara avsnitt. Checklistor hamnar i Uppgifter, kalkylblad blir tabeller och poster från autentiseraren blir inloggningar i Valvet, med sin 2FA-nyckel. Nästlade taggar blir mappar, och varje anteckning behåller även sina taggar.",
+            "Super-anteckningar behåller sin formatering: rubriker, listor, checklistor, tabeller, kodblock, markeringar, färger, textjustering och hopfällbara avsnitt. En länk till en annan anteckning blir en anteckningslänk, och en #hashtag i texten blir en tagg på anteckningen. Checklistor hamnar i Uppgifter, kalkylblad blir tabeller och poster från autentiseraren blir inloggningar i Valvet, med sin 2FA-nyckel. Nästlade taggar blir mappar, och varje anteckning behåller även sina taggar.",
             "Filer som du har laddat upp till Standard Notes ligger kvar på deras server, så säkerhetskopian innehåller bara deras namn. Varje importerad anteckning visar var en fil fanns. Ladda ner filerna från Standard Notes och lägg till dem i anteckningen igen."
           ]
         },
@@ -444,6 +515,47 @@
           "h": "Om bilder eller filer saknas",
           "p": [
             "En säkerhetskopia som gjordes innan du bockade i ”Backup attachments” innehåller inga filer, och importförhandsvisningen varnar då för att anteckningar hänvisar till bilagor som säkerhetskopian inte bär på. Händer det: avbryt, slå på inställningen i UpNote, klicka på ”Backup now” igen, zippa den färska mappen och importera den i stället."
+          ]
+        }
+      ]
+    },
+    "joplin": {
+      "app": "Joplin",
+      "title": "Exportera dina Joplin-anteckningar",
+      "metaTitle": "Exportera dina Joplin-anteckningar som JEX - PrivacyNotes",
+      "lead": "Joplin exporterar alla anteckningsböcker på en gång som en enda JEX-fil. Den tar med dina anteckningar med deras anteckningsböcker, taggar, to-dos, anteckningslänkar och bilagor.",
+      "sections": [
+        {
+          "h": "Exportera allt som JEX",
+          "steps": [
+            "Öppna Joplin på din dator.",
+            "Välj File > Export all > \"JEX - Joplin Export File\".",
+            "Spara filen. Du får en enda .jex-fil som innehåller varje anteckningsbok, så det finns inget att zippa.",
+            "Släpp in den .jex-filen som den är."
+          ],
+          "p": [
+            "Tools > Create backup skriver exakt samma fil, byte för byte, som all_notebooks.jex i en mapp som heter JoplinBackup i din hemmapp. Om Joplin redan gör de säkerhetskopiorna åt dig fungerar den senaste lika bra."
+          ]
+        },
+        {
+          "h": "Välj JEX, inte Markdown, HTML eller PDF",
+          "p": [
+            "Export all erbjuder också MD, MD + Front Matter, HTML directory och PDF. Det är kopior som görs för läsning i andra appar. JEX-filen är Joplins egen förteckning över varje anteckning, anteckningsbok, tagg och bilaga, och det är den vi läser. Släpper du in någon av de andra exporterna säger vi det i stället för att importera hälften av den.",
+            "Har du redan exporterat \"RAW - Joplin Export Directory\", zippa mappen och släpp in zipfilen. Den innehåller samma poster som JEX-filen."
+          ]
+        },
+        {
+          "h": "Ta ut anteckningar ur papperskorgen innan du exporterar",
+          "p": [
+            "Joplin lämnar papperskorgen utanför varje export och varje säkerhetskopia. Flytta ut de anteckningar du vill behålla ur papperskorgen innan du exporterar, annars blir de kvar i Joplin."
+          ]
+        },
+        {
+          "h": "Vad som följer med",
+          "p": [
+            "Dina anteckningsböcker byggs upp som riktiga mappar, nästlade lika djupt som Joplin nästlade dem, och varje anteckning behåller sina taggar och de skapande- och ändringsdatum som Joplin visade dig.",
+            "To-dos blir uppgiftsanteckningar med en kryssruta du kan bocka av, redan avbockad när to-don var klar, och ett förfallodatum står kvar bredvid titeln. Länkar mellan anteckningar blir anteckningslänkar. Bilder och bilagor importeras till din lagring och ligger kvar på sin plats i anteckningen. Anteckningar som sparats som HTML, till exempel många webbklipp, konverteras med sin formatering.",
+            "Anteckningar från Joplins Conflicts-anteckningsbok kommer in med taggen \"conflict\", så att du kan hitta och sortera dem. Använder du Joplins kryptering, låt den bli klar med dekrypteringen innan du exporterar: en post som fortfarande är krypterad hoppas över, och importförhandsgranskningen berättar hur många."
           ]
         }
       ]

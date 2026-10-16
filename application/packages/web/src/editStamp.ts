@@ -8,6 +8,7 @@
  * Tested in tests/editStamp.test.ts.
  */
 import { BOOKKEEPING_KEYS, trackersEqual } from './trackerTypes';
+import { SCHEDULE_KEYS } from './schedule';
 
 /** What a person wrote into a note. */
 interface Content {
@@ -16,13 +17,35 @@ interface Content {
   trackers?: Record<string, unknown>;
 }
 
-function trackerContent(trackers: Record<string, unknown> | undefined): Record<string, unknown> {
+/** A journal entry's tracker values, without the bookkeeping keys. */
+export function trackerContent(trackers: Record<string, unknown> | undefined): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(trackers ?? {})) {
     if (!BOOKKEEPING_KEYS.has(key)) out[key] = value;
   }
   return out;
 }
+
+/** `trackers` with its tracker values replaced by `values`: the entry's
+ *  date, the backfill mark and its schedule (time, alerts) stay, as a
+ *  restore from history needs. A restore brings back what was written, and
+ *  the reminder the entry rings now is not part of that. */
+export function withTrackerContent(
+  trackers: Record<string, unknown> | undefined,
+  values: Record<string, unknown>,
+): Record<string, unknown> {
+  const kept = (key: string) => BOOKKEEPING_KEYS.has(key) || SCHEDULE_KEY_SET.has(key);
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(values)) {
+    if (!kept(key)) out[key] = value;
+  }
+  for (const [key, value] of Object.entries(trackers ?? {})) {
+    if (kept(key)) out[key] = value;
+  }
+  return out;
+}
+
+const SCHEDULE_KEY_SET: ReadonlySet<string> = new Set(SCHEDULE_KEYS);
 
 /** Whether two versions hold the same content. */
 export function sameContent(a: Content, b: Content): boolean {

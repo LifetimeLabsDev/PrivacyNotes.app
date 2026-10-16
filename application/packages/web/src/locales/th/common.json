@@ -37,7 +37,8 @@
   "storageBar": {
     "usage": "ใช้ไป {{percent}}% ({{used}} / {{max}})",
     "refresh": "รีเฟรชข้อมูลพื้นที่จัดเก็บ",
-    "cleanupInfo": "รายการที่ลบจะไม่ถูกนับทันที ส่วนไฟล์ที่เข้ารหัสจะถูกลบออกจากเซิร์ฟเวอร์ภายในไม่กี่วัน"
+    "cleanupInfo": "รายการที่ลบจะไม่ถูกนับทันที ส่วนไฟล์ที่เข้ารหัสจะถูกลบออกจากเซิร์ฟเวอร์ภายในไม่กี่วัน",
+    "open": "เปิดการตั้งค่าพื้นที่จัดเก็บ"
   },
   "updateToast": {
     "available": "มีอัปเดตใหม่",
@@ -105,7 +106,23 @@
     "openInTab": "เปิดในแท็บ",
     "openLink": "เปิด",
     "edit": "แก้ไข",
-    "close": "ปิด"
+    "close": "ปิด",
+    "tags": "แท็ก",
+    "folders": "โฟลเดอร์",
+    "tagItems_other": "{{count}} รายการ",
+    "emptyTags": "ไม่มีแท็กที่ใช้ชื่อนี้",
+    "emptyFolders": "ไม่มีโฟลเดอร์ที่ใช้ชื่อนี้",
+    "onlyTags": "แท็ก",
+    "onlyFolders": "โฟลเดอร์",
+    "showOnlyTags": "เฉพาะแท็ก",
+    "showOnlyFolders": "เฉพาะโฟลเดอร์",
+    "showOnlyCommands": "เฉพาะคำสั่ง",
+    "goToTag": "ไปที่แท็ก",
+    "goToFolder": "ไปที่โฟลเดอร์",
+    "createTag": "สร้างแท็ก #{{name}}",
+    "createFolder": "สร้างโฟลเดอร์ “{{name}}”",
+    "newTag": "แท็กใหม่",
+    "newFolder": "โฟลเดอร์ใหม่"
   },
   "cardForm": {
     "cardholderName": "ชื่อผู้ถือบัตร",

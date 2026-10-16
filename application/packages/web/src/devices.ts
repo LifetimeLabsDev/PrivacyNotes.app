@@ -30,6 +30,7 @@ import {
 } from '@notes/shared';
 import { collectFingerprint, detectDeviceOs, hashFingerprint } from './deviceFingerprint';
 import { isDemoMode } from './demo';
+import { recordSyncFault } from './syncFaults';
 import { db } from './db';
 
 const DEVICE_SECRET_KEY = 'privacynotes.deviceSecret';
@@ -409,6 +410,7 @@ export async function registerDevice(args: RegisterDeviceArgs): Promise<Register
         devices: body.devices ?? [],
       };
     }
+    recordSyncFault({ step: 'device', status: (error as FnError).context?.status, code: body?.error ?? error.name });
     throw new Error(
       `register-device failed: ${body?.error ?? (error as Error).message}`,
     );
@@ -765,10 +767,11 @@ export async function heartbeat(
     return true; // skip - too soon since last heartbeat
   }
   lastHeartbeatAt = now;
-  const { data, error } = await supabase.rpc('device_heartbeat', {
+  const { data, error, status } = await supabase.rpc('device_heartbeat', {
     p_device_id: deviceId,
   });
   if (error) {
+    recordSyncFault({ step: 'device', status, code: error.code || undefined });
     // Fail open. This covers network blips AND the "pubkey not linked"
     // RAISE (migration 0064): a caller that cannot prove who it is has
     // learned nothing about whether its device was revoked, and a

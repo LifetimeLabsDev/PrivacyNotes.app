@@ -66,6 +66,7 @@
     "appearance_contentWidth": "ancho de columna, ancho, ancho completo, márgenes",
     "appearance_editor": "Markdown, texto enriquecido, WYSIWYG, modo del editor",
     "appearance_copyFormat": "copiar, portapapeles, texto sin formato, pegar, casilla",
+    "appearance_pasteFormat": "pegar, portapapeles, texto sin formato, formato, sin formato, igualar estilo",
     "appearance_favicons": "favicon, iconos de sitios, logotipos",
     "appearance_invisibles": "calderón, pilcrow, espacios, espacios en blanco, caracteres ocultos, marcas de formato",
     "appearance_startView": "página de inicio, inicio, vista predeterminada, abrir en",
@@ -81,11 +82,19 @@
     "about_openSource": "código fuente, GitHub, código abierto, open source",
     "about_feedback": "comentarios, opinión, contacto, informar de un error, sugerencia",
     "about_dataStorage": "datos, servidor, dónde se guardan, almacenamiento, privacidad",
-    "about_singleKeys": "teclado, atajos, atajos de teclado, hotkeys, tecla única, j, k, accesibilidad, /, >",
+    "about_singleKeys": "teclado, atajos, atajos de teclado, hotkeys, tecla única, j, k, q, calendario, accesibilidad, /, >",
     "about_changelog": "notas de la versión, novedades, qué hay de nuevo, actualizaciones",
     "about_hotkeys": "atajos de teclado, atajos, teclas, hotkeys, accesos directos",
     "about_rating": "reseña, valorar, puntuar, estrellas, App Store",
     "appearance_openInTabs": "pestañas, barra de pestañas, navegador, abrir",
+    "section_calendar": "calendario, evento, recordatorio, alerta, notificación, semana, mes, agenda, programar, cumpleaños",
+    "calendar_alertTimed": "alerta, recordatorio, notificación, predeterminada, minutos, antes, evento",
+    "calendar_alertAllDay": "alerta, recordatorio, notificación, predeterminada, todo el día, mañana",
+    "calendar_alertBirthday": "cumpleaños, contacto, alerta, recordatorio",
+    "calendar_reminderTitles": "privacidad, pantalla de bloqueo, título, recordatorio, notificación",
+    "calendar_where": "notificación, permiso, navegador, teléfono, móvil, escritorio, ordenador, recordatorio",
+    "calendar_weekNumbers": "número de semana, semana ISO, calendario",
+    "calendar_hours": "horas, horario laboral, vista de día, vista de semana, mañana",
     "appearance_formatBar": "barra de herramientas, barra de formato, botones, personalizar, ordenar, lista con viñetas, tachado, engranaje"
   }
 }

@@ -40,7 +40,8 @@
   "storageBar": {
     "usage": "Użyto {{percent}}% ({{used}} / {{max}})",
     "refresh": "Odśwież użycie miejsca",
-    "cleanupInfo": "Usunięte elementy od razu przestają się liczyć. Same zaszyfrowane pliki znikają z serwera w ciągu kilku dni."
+    "cleanupInfo": "Usunięte elementy od razu przestają się liczyć. Same zaszyfrowane pliki znikają z serwera w ciągu kilku dni.",
+    "open": "Otwórz ustawienia pamięci"
   },
   "updateToast": {
     "available": "Dostępna aktualizacja",
@@ -95,7 +96,7 @@
   },
   "quickSwitcher": {
     "label": "Przejdź do elementu lub ustawienia",
-    "jumpTo": "Przejdź do",
+    "jumpTo": "Przejdź",
     "placeholder": "Wpisz tytuł lub ustawienie albo > dla poleceń",
     "recent": "Ostatnie",
     "empty": "Brak elementu ani ustawienia o tej nazwie",
@@ -108,7 +109,25 @@
     "openInTab": "otwórz w karcie",
     "openLink": "Otwórz",
     "edit": "edytuj",
-    "close": "zamknij"
+    "close": "zamknij",
+    "tags": "Tagi",
+    "folders": "Foldery",
+    "tagItems_one": "{{count}} element",
+    "emptyTags": "Brak tagu o tej nazwie",
+    "emptyFolders": "Brak folderu o tej nazwie",
+    "onlyTags": "tagi",
+    "onlyFolders": "foldery",
+    "showOnlyTags": "Tylko tagi",
+    "showOnlyFolders": "Tylko foldery",
+    "showOnlyCommands": "Tylko polecenia",
+    "goToTag": "Przejdź do tagu",
+    "goToFolder": "Przejdź do folderu",
+    "createTag": "Utwórz tag #{{name}}",
+    "createFolder": "Utwórz folder „{{name}}”",
+    "newTag": "Nowy tag",
+    "newFolder": "Nowy folder",
+    "tagItems_few": "{{count}} elementy",
+    "tagItems_many": "{{count}} elementów"
   },
   "cardForm": {
     "cardholderName": "Imię i nazwisko posiadacza",

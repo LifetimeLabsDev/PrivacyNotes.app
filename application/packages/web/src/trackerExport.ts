@@ -1,4 +1,5 @@
 import i18n from './i18n';
+import { SCHEDULE_KEYS } from './schedule';
 import {
   EMOTION_TAGS,
   type ActivityLevel,
@@ -37,8 +38,10 @@ export interface TrackerRow {
 }
 
 /** Bookkeeping the person did not log, and values printed by their own rule
- *  below. The week reflection is private prose, not a tracker value. */
-const SKIP_KEYS = new Set(['journalDate', 'backfilled', 'weekReflection', 'customTrackers']);
+ *  below. The week reflection is private prose, not a tracker value. The
+ *  schedule keys share `trackers` and the export prints them as one line of
+ *  their own under the title, so they are never tracker rows. */
+const SKIP_KEYS = new Set<string>(['backfilled', 'weekReflection', 'customTrackers', ...SCHEDULE_KEYS]);
 
 interface SleepValue {
   quality: SleepQuality;

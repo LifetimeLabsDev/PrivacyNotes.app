@@ -38,7 +38,8 @@
   "storageBar": {
     "usage": "{{percent}}% used ({{used}} / {{max}})",
     "refresh": "Refresh storage",
-    "cleanupInfo": "Deleted items stop counting right away. The encrypted files themselves leave the server within a few days."
+    "cleanupInfo": "Deleted items stop counting right away. The encrypted files themselves leave the server within a few days.",
+    "open": "Open storage settings"
   },
   "updateToast": {
     "available": "Update available",
@@ -93,7 +94,7 @@
   },
   "quickSwitcher": {
     "label": "Jump to an item or a setting",
-    "jumpTo": "Jump to",
+    "jumpTo": "Jump",
     "placeholder": "Type a title or a setting, or > for commands",
     "recent": "Recent",
     "empty": "No item or setting with that name",
@@ -106,7 +107,24 @@
     "openInTab": "open in a tab",
     "openLink": "Open",
     "edit": "edit",
-    "close": "close"
+    "close": "close",
+    "tags": "Tags",
+    "folders": "Folders",
+    "tagItems_one": "{{count}} item",
+    "tagItems_other": "{{count}} items",
+    "emptyTags": "No tag with that name",
+    "emptyFolders": "No folder with that name",
+    "onlyTags": "tags",
+    "onlyFolders": "folders",
+    "showOnlyTags": "Only tags",
+    "showOnlyFolders": "Only folders",
+    "showOnlyCommands": "Only commands",
+    "goToTag": "Go to a tag",
+    "goToFolder": "Go to a folder",
+    "createTag": "Create tag #{{name}}",
+    "createFolder": "Create folder “{{name}}”",
+    "newTag": "New Tag",
+    "newFolder": "New Folder"
   },
   "cardForm": {
     "cardholderName": "Cardholder Name",

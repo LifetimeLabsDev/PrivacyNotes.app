@@ -426,5 +426,135 @@
       "bytes": 58074,
       "sha256": "2cf9f42a1ccb25b955c09378d0b4bbdadd2b3606dd4ef02098712b224a9a27c9"
     }
+  },
+  "0.646": {
+    "bear-import": {
+      "w": 2000,
+      "h": 1407,
+      "bytes": 190676,
+      "sha256": "a665828b9c2cf690f131903a14867a9ff269cf3ef43760f4afa6c962948de846"
+    }
+  },
+  "0.647": {
+    "jump-tags": {
+      "w": 1248,
+      "h": 932,
+      "bytes": 51430,
+      "sha256": "3e9163f6e6406b9f8eb66ad5da42fea35d4cad12529748fd946daf54cc7cb667"
+    }
+  },
+  "0.648": {
+    "markdown-toolbar": {
+      "w": 1444,
+      "h": 1720,
+      "bytes": 90216,
+      "sha256": "5eec2afd00f6175a5ea1d46f1f58dcf31400b1ccb320bcd9a92731247edb4e19"
+    }
+  },
+  "0.649": {
+    "passcode": {
+      "w": 2000,
+      "h": 1524,
+      "bytes": 152804,
+      "sha256": "69cfa57de334da6f47c9f9f25d72a2fda3671d5f71984507de021a6b96275f62"
+    }
+  },
+  "0.650": {
+    "phone-bar": {
+      "w": 780,
+      "h": 1688,
+      "bytes": 47456,
+      "sha256": "b17380fca7ff40adb161fed2569f8df373e8a82de5f88acee52680d664236f83"
+    }
+  },
+  "0.651": {
+    "history-code": {
+      "w": 2000,
+      "h": 1280,
+      "bytes": 134154,
+      "sha256": "a3a2c74a117b3a36ac00f2457a5505373280c8434cae167ee60f534234380a89"
+    },
+    "history-tasks": {
+      "w": 2000,
+      "h": 1280,
+      "bytes": 83562,
+      "sha256": "1695b0a6871c13d55f16a0307e0660df5266f184037eac5a913172e287a34249"
+    },
+    "history-text": {
+      "w": 2000,
+      "h": 1280,
+      "bytes": 484352,
+      "sha256": "20a51e2ecabf6380934670b351a313efbbc1526d30bba5e9b32f46be2804ce89"
+    }
+  },
+  "0.652": {
+    "qa-event": {
+      "w": 1248,
+      "h": 936,
+      "bytes": 44734,
+      "sha256": "1e29b71794567b15aae28a3c0a7df648bee6e38842137c8a254675a8492c2cfd"
+    },
+    "qa-german": {
+      "w": 1248,
+      "h": 936,
+      "bytes": 48174,
+      "sha256": "d398a05dfc2c3edef3970830c0acc4603d47b5af3dccd09ea6949e184d187162"
+    },
+    "qa-month": {
+      "w": 1248,
+      "h": 936,
+      "bytes": 51560,
+      "sha256": "ac7c919417e58a33f2e4b1420298ba470f13be094b95f68b5abacd4804cb5ed6"
+    },
+    "qa-repeat": {
+      "w": 1248,
+      "h": 936,
+      "bytes": 51214,
+      "sha256": "9f2013a17009e11dc3fc3e969131e0cdb44c59cf0ed65c632b34566edd529153"
+    },
+    "qa-syntax": {
+      "w": 1248,
+      "h": 1140,
+      "bytes": 47358,
+      "sha256": "3c4b92f5255639255d8f0e90eb330e87b34e0871e27dfefb566ffa22cf2ca7eb"
+    },
+    "qa-tag": {
+      "w": 1248,
+      "h": 936,
+      "bytes": 50482,
+      "sha256": "ce038ebd09b8b2d0c9a82c42594c87cb6ea2ce4594c6d172f30a1293165e52fd"
+    },
+    "qa-task": {
+      "w": 1248,
+      "h": 936,
+      "bytes": 48024,
+      "sha256": "9b0d716f6807e967c1f5bb72c26dfc579be7de6bdc24b09ef0c44792840b95e6"
+    }
+  },
+  "0.653": {
+    "calendar": {
+      "w": 2000,
+      "h": 1250,
+      "bytes": 135132,
+      "sha256": "2c42c7f43b2c84385b289e61ce4c3c9725e247317242b76049db7bd3820ed0a5"
+    },
+    "google-calendar": {
+      "w": 2000,
+      "h": 1407,
+      "bytes": 182868,
+      "sha256": "9d37fbcb170885501130a5f8c4f18413d4883265d7731db15868c0e032b1e57a"
+    },
+    "mini-calendar": {
+      "w": 1104,
+      "h": 1720,
+      "bytes": 73350,
+      "sha256": "aa7fca6006858ece3074b1830a5a645e8bc713390bc9a31d8055d0658eb42e81"
+    },
+    "schedule": {
+      "w": 1444,
+      "h": 1720,
+      "bytes": 48882,
+      "sha256": "5b163132fd1ce23fff043afc1ea48e5ce671b3027701288af3ff16c316f2c1c7"
+    }
   }
 }

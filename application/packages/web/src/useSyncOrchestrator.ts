@@ -48,13 +48,32 @@ export async function forkConflictCopy(
   title: string,
   body: string,
 ): Promise<LocalNote> {
-  const flags = {
+  return forkCopy(conflict.localNote, title, body, {
     pinProtected: local.pinProtected === 1 || conflict.serverPinProtected ? 1 : 0,
     locked: local.locked === 1 || conflict.serverLocked ? 1 : 0,
     editedAt: local.editedAt ?? local.updatedAt,
-  } as const;
+  });
+}
+
+/**
+ * The copy that keeps the text of an editor whose row was rewritten under it
+ * (#497): a "Keep both" copy of that row, holding the editor's text, written
+ * now, so it carries this moment as its "last edited" date. It keeps the
+ * row's protection but is never read-only, because the stale editor's later
+ * saves go into it until its remount lands.
+ */
+async function forkStaleEditorCopy(row: LocalNote, title: string, body: string): Promise<LocalNote> {
+  return forkCopy(row, title, body, { pinProtected: row.pinProtected === 1 ? 1 : 0, locked: 0 });
+}
+
+async function forkCopy(
+  source: LocalNote,
+  title: string,
+  body: string,
+  flags: { pinProtected: 0 | 1; locked: 0 | 1; editedAt?: string },
+): Promise<LocalNote> {
   return db.transaction('rw', db.notes, async () => {
-    const copy = await createNote(title, body, conflict.localNote.tags, conflict.localNote.starred === 1, conflict.localNote.type ?? 'note', null, { counted: false });
+    const copy = await createNote(title, body, source.tags, source.starred === 1, source.type ?? 'note', null, { counted: false });
     await db.notes.update(copy.id, flags);
     return { ...copy, ...flags };
   });
@@ -158,6 +177,36 @@ export function useSyncOrchestrator({
     end();
     return all;
   }, []);
+
+  /**
+   * An open editor's save was refused: its row holds a version that arrived
+   * after the editor loaded (#497). Keep the editor's text as a copy, the
+   * same copy "Keep both" makes, then remount the editor on the row, so it
+   * shows the version the row holds. Resolves with the copy, or null when
+   * the editor held nothing the row does not supersede, and says whether the
+   * open editor was remounted.
+   */
+  const keepStaleEditorText = useCallback(async (row: LocalNote, body: string | null): Promise<{ copy: LocalNote | null; remounted: boolean }> => {
+    let copy: LocalNote | null = null;
+    if (body !== null) {
+      copy = await forkStaleEditorCopy(row, (row.title || 'Untitled') + ' (conflict)', body);
+      // Gated by the source's identity, like the Keep both copy: a note
+      // protected in this unlock window is gated by its id, which the copy
+      // does not carry.
+      if (isNoteLocked({ ...row, pinProtected: copy.pinProtected })) gateCopy(copy.id);
+    }
+    // Reload state before the remount, so the new editor mounts on the row.
+    // The copy exists by now, so a failed reload must not lose its id.
+    try {
+      await refresh();
+    } catch (err) {
+      console.error('[edit] reload after a stale save failed', err);
+    }
+    if (selectedIdRef.current !== row.id) return { copy, remounted: false };
+    editingBodyRef.current.delete(row.id);
+    setEditorRevision((r) => r + 1);
+    return { copy, remounted: true };
+  }, [refresh, isNoteLocked, gateCopy, editingBodyRef, setEditorRevision]);
 
   const runSync = useCallback(async () => {
     if (isDemoMode()) return;
@@ -566,7 +615,7 @@ export function useSyncOrchestrator({
             const claimPk = (check.user.app_metadata as { pubkey?: string } | undefined)?.pubkey;
             if (claimPk === auth.pubkey) {
               logAuthEvent('sync:session-expired-suppressed', {
-                reason: 'session verified healthy',
+                reason: 'verified-healthy',
               });
               return;
             }
@@ -716,7 +765,10 @@ export function useSyncOrchestrator({
   // (flushStash.ts). Runs once at mount; an applied stash marks the
   // note dirty, so the next pass pushes it like any other edit.
   useEffect(() => {
-    void reconcileFlushStash().then((applied) => {
+    // A stash whose note a pull rewrote keeps its text as the same copy a
+    // stale editor's save makes.
+    // A copy that fails resolves false, and the text waits in the kept slot.
+    void reconcileFlushStash((row, text) => keepStaleEditorText(row, text).then((r) => r.copy !== null).catch(() => false)).then((applied) => {
       if (applied) void refresh();
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -755,6 +807,7 @@ export function useSyncOrchestrator({
 
   return {
     refresh,
+    keepStaleEditorText,
     runSync,
     resolveConflict,
     quotaExceeded,

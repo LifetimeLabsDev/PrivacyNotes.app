@@ -254,9 +254,10 @@
   }
 
   // A leaf answers one question, so there is nothing on the page to filter:
-  // its box searches question TITLES across the whole FAQ and jumps you
-  // straight to the one you pick. The form still GETs the hub when JS is
-  // off, or when the query wants the full-text search over answer bodies.
+  // its box searches the whole FAQ and jumps you straight to the one you
+  // pick. Titles answer at once from the inline index; the answer text
+  // arrives with search-index.json on the first keystroke, and its hits
+  // list after every title hit. The form still GETs the hub when JS is off.
   function initLeafSearch() {
     var form = document.getElementById('faq-lform');
     var input = document.getElementById('faq-lq');
@@ -274,6 +275,30 @@
     var clear = document.getElementById('faq-lclear');
     var active = -1;
 
+    // [href, folded question and answer] per entry. A failed fetch leaves
+    // it null, and the box keeps answering from titles alone.
+    var fullPath = form.getAttribute('data-full');
+    var full = null;
+    var fullRequested = false;
+    function loadFull() {
+      if (fullRequested || !fullPath || !window.fetch) return;
+      fullRequested = true;
+      fetch(fullPath)
+        .then(function (r) {
+          return r.ok ? r.json() : null;
+        })
+        .then(function (data) {
+          if (!Array.isArray(data)) return;
+          full = data;
+          if (input.value.trim()) render(input.value);
+        })
+        .catch(function () {});
+    }
+    var titleOf = {};
+    rows.forEach(function (row) {
+      titleOf[row[1]] = row[0];
+    });
+
     function render(raw) {
       var typed = raw.trim();
       form.classList.toggle('has-q', raw.length > 0);
@@ -288,10 +313,22 @@
       // word. Array sort is stable.
       var match = matcher(typed);
       var hits = [];
+      var seen = {};
       rows.forEach(function (row) {
         var m = match ? match(row[0]) : { rank: 1 };
-        if (m) hits.push({ row: row, rank: m.rank });
+        if (m) {
+          hits.push({ row: row, rank: m.rank });
+          seen[row[1]] = true;
+        }
       });
+      // An answer hit ranks below every title hit; word starts still first.
+      if (full && match) {
+        full.forEach(function (entry) {
+          if (seen[entry[0]] || !titleOf[entry[0]]) return;
+          var m = match(entry[1]);
+          if (m) hits.push({ row: [titleOf[entry[0]], entry[0]], rank: m.rank - 3 });
+        });
+      }
       hits.sort(function (a, b) {
         return b.rank - a.rank;
       });
@@ -320,7 +357,9 @@
       items[active].scrollIntoView({ block: 'nearest' });
     }
 
+    input.addEventListener('focus', loadFull);
     input.addEventListener('input', function () {
+      loadFull();
       render(input.value);
     });
     if (clear)
@@ -395,7 +434,7 @@
   if (page === 'help-leaf') initLeafSearch();
   if (page === 'changelog') { initChangelog(); initShots(); }
   if (page === 'brand') { initBrand(); initBrandRail(); }
-  if (page === 'themes') { initBrand(); initThemeShots(); }
+  if (page === 'themes') { initBrand(); initThemeShots(); initThemeMore(); }
   if (page === 'landing') initLanding();
   if (page === 'cheatsheet') initCheatSheet();
   if (page === 'auth-desktop') initAuthDesktop();
@@ -505,6 +544,41 @@
         });
         open(shots, Math.max(0, shown.indexOf(a)), a);
       });
+    });
+  }
+
+  // /themes: each list shows its first data-page cards and a Load more button
+  // that adds as many again. The count follows what the reader sees: the Mode
+  // filter hides cards with CSS and the Order switch reorders them with CSS
+  // `order`, so a change of either starts the list over at one page.
+  function initThemeMore() {
+    var grids = Array.prototype.slice.call(document.querySelectorAll('.tgrid[data-page]'));
+    grids.forEach(function (grid) {
+      var step = Number(grid.getAttribute('data-page'));
+      var btn = grid.nextElementSibling;
+      if (!(step > 0) || !btn || !btn.hasAttribute('data-more')) return;
+      var cards = Array.prototype.slice.call(grid.querySelectorAll('.tc'));
+      var limit = step;
+      function apply() {
+        cards.forEach(function (c) { c.classList.remove('tc-more'); });
+        var seen = cards
+          .map(function (c, i) { return { c: c, i: i, o: Number(getComputedStyle(c).order) || 0 }; })
+          .filter(function (x) { return x.c.getClientRects().length > 0; })
+          .sort(function (a, b) { return a.o - b.o || a.i - b.i; });
+        seen.forEach(function (x, k) { if (k >= limit) x.c.classList.add('tc-more'); });
+        btn.hidden = seen.length <= limit;
+      }
+      btn.addEventListener('click', function () {
+        limit += step;
+        apply();
+      });
+      document.addEventListener('change', function (e) {
+        if (e.target.classList && e.target.classList.contains('tfi')) {
+          limit = step;
+          apply();
+        }
+      });
+      apply();
     });
   }
 

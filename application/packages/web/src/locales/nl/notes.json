@@ -11,13 +11,17 @@
     "noContent": "Geen inhoud",
     "notBackedUp": "Geen back-up",
     "archived": "Gearchiveerd",
-    "entryDate": "Dagboekdatum"
+    "entryDate": "Dagboekdatum",
+    "date": "Datum",
+    "dayOf": "dag {{n}} van {{total}}"
   },
   "header": {
     "new": "Nieuw",
     "newNote": "Nieuwe notitie",
     "newNoteHover": "Nieuwe notitie ({{hotkey}})",
-    "trash": "Prullenbak"
+    "trash": "Prullenbak",
+    "newEvent": "Nieuwe afspraak",
+    "newEventHover": "Nieuwe afspraak ({{hotkey}})"
   },
   "folderChip": {
     "clear": "Mapfilter wissen: {{folder}}",
@@ -40,7 +44,9 @@
     "login": "Login",
     "file": "Bestand",
     "bookmark": "Bladwijzer",
-    "contact": "Contact"
+    "contact": "Contact",
+    "event": "Afspraak",
+    "quickAdd": "Snel toevoegen"
   },
   "vaultFilter": {
     "all": "Alles",
@@ -94,7 +100,8 @@
     "vault": "Kluis",
     "pinned": "Vastgezet",
     "archive": "Archief",
-    "notes": "Notities"
+    "notes": "Notities",
+    "calendar": "Agenda"
   },
   "footerStats": {
     "journals": "Dagboeken",
@@ -138,8 +145,17 @@
     "collapse": "Notitielijst inklappen",
     "expand": "Notitielijst uitklappen"
   },
+  "split": {
+    "action": "Notitie splitsen",
+    "done": "Gesplitst in “{{title}}”",
+    "overLimit": "“{{title}}” is groter dan 1 MB en blijft op dit apparaat",
+    "cannot": "Deze notitie kan hier niet worden gesplitst. Zet de cursor waar de nieuwe notitie moet beginnen.",
+    "continuedTitle": "{{title}} (vervolg)",
+    "continuedIn": "Verder in {{link}}"
+  },
   "paneResize": {
-    "hintCollapse": "Klik om in te klappen · Sleep om de grootte aan te passen"
+    "hintCollapse": "Klik om in te klappen · Sleep om de grootte aan te passen",
+    "hintExpand": "Klik om uit te klappen · Sleep om de grootte aan te passen"
   },
   "emptyEditor": {
     "selectFile": "Kies een bestand om te bekijken",
@@ -176,6 +192,8 @@
     "findInNote": "Zoeken in notitie",
     "navPrev": "Vorige",
     "navNext": "Volgende",
+    "navPrevTab": "Vorig tabblad",
+    "navNextTab": "Volgend tabblad",
     "undo": "Ongedaan maken",
     "redo": "Opnieuw",
     "hide": "Verbergen",
@@ -227,6 +245,8 @@
     "words": "Woorden",
     "zen": "Zen-modus",
     "appearance": "Weergave",
+    "goToTop": "Naar boven",
+    "goToEnd": "Naar het einde",
     "signOut": "Afmelden",
     "signingOut": "Afmelden…",
     "switchToLight": "Overschakelen naar lichte modus",
@@ -252,7 +272,8 @@
     "aboutLabel": "Over",
     "languageLabel": "Taal",
     "dateLabel": "Datum",
-    "languageDesc": "Kies de taal waarin PrivacyNotes wordt getoond."
+    "languageDesc": "Kies de taal waarin PrivacyNotes wordt getoond.",
+    "calendarLabel": "Agenda"
   },
   "importStore": {
     "title": "Importeren of opslaan?",

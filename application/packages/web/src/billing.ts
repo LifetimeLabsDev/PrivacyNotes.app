@@ -19,11 +19,12 @@ import { detectPlatform, isNativeStoreBuild } from './devices';
 
 export { isNativeStoreBuild };
 import { isDemoMode } from './demo';
+import { APEX_ORIGIN } from './hosts';
 
 // The CheckoutLauncher page runs the Paddle overlay on an approved Paddle
 // domain. Desktop sends users here in their system browser.
 // Spec: ops/docs/design-decisions.md (native checkout)
-const WEB_CHECKOUT_ORIGIN = 'https://privacynotes.app';
+const WEB_CHECKOUT_ORIGIN = APEX_ORIGIN;
 
 // Native store product IDs (App Store + Google Play, mirrored). Pro is a
 // non-consumable one-time unlock; storage tiers are auto-renewable subs.

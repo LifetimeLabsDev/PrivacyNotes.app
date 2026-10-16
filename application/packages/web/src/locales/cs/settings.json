@@ -188,8 +188,8 @@
     "startViewTitle": "Zobrazit po otevření",
     "viewTitle": "Zobrazit položky jako",
     "viewDesc": "Automaticky se řídí šířkou tvé obrazovky.",
-    "openInTabsTitle": "Otevírat kartu při každém kliknutí",
-    "openInTabsDesc": "Když je to vypnuté, pravé tlačítko > Otevřít na kartě kartu stejně otevře. Na telefonech se karty nezobrazují.",
+    "openInTabsTitle": "Zobrazit otevřenou položku na kartě",
+    "openInTabsDesc": "Karta se řídí tím, co otevřeš dál, jako v prohlížeči. Připni si kartu, aby zůstala. Když je to vypnuté, kartu vytvoří jen „Otevřít na kartě“. Na telefonech se karty nezobrazují.",
     "viewList": "Seznam",
     "viewGrid": "Mřížka",
     "viewAuto": "Auto",
@@ -201,6 +201,10 @@
     "copyFormatDesc": "Co dostanou jiné aplikace, když kopíruješ z poznámky. Jen na tomto zařízení.",
     "copyFormatMarkdown": "Markdown",
     "copyFormatPlain": "Prostý text",
+    "pasteFormatTitle": "Vkládaný text",
+    "pasteFormatDesc": "Co si zachová text vložený z jiné aplikace. Jen na tomto zařízení.",
+    "pasteFormatFormatted": "Formátovaný",
+    "pasteFormatPlain": "Prostý text",
     "faviconsTitle": "Ikony webů",
     "faviconsDesc": "Logo webu vedle odkazů a přihlašovacích údajů v Trezoru.",
     "faviconsExample": "Příklad:",
@@ -261,7 +265,10 @@
       "yours": "Tvoje",
       "noLightCommunity": "Zatím žádná světlá témata komunity.",
       "noDarkCommunity": "Zatím žádná tmavá témata komunity.",
-      "none": "Zatím tu nejsou žádná témata."
+      "none": "Zatím tu nejsou žádná témata.",
+      "sortLabel": "Pořadí",
+      "sortVotes": "Nejvíc hlasů",
+      "sortNewest": "Nejnovější"
     },
     "custom": {
       "newTheme": "Nové téma",
@@ -270,7 +277,6 @@
       "logoOriginal": "Původní",
       "logoHelp": "Logo a „Privacy“ převezmou akcent motivu, nebo si nechají původní barvy.",
       "pasteCode": "Vložit kód tématu",
-      "community": "Procházet témata",
       "menu": "Možnosti tématu {{name}}",
       "copyCode": "Kopírovat kód",
       "makeCopy": "Duplikovat",
@@ -301,7 +307,9 @@
       "suggestTitle": "Doplň zbytek podle akcentu",
       "suggestLight": "Světlé",
       "suggestDark": "Tmavé",
-      "communityNote": "Aplikace zobrazuje {{count}} nejnovějších témat komunity pro každý režim.",
+      "websiteTitle": "Další témata na našem webu",
+      "websiteDesc": "Všechna témata a nejnovější hlasy. Aplikace dostává nová témata s každou aktualizací.",
+      "vote": "Hlasovat na GitHubu",
       "themeLimit": "Máš {{max}} témat. Pro uložení dalšího nějaké smaž.",
       "credit": "Autor",
       "creditPlaceholder": "Uživatelské jméno na GitHubu (nepovinné)",
@@ -572,5 +580,27 @@
     "yearFirst": "Nejdřív rok (ISO)",
     "hour24": "24hodinový",
     "hour12": "12hodinový"
+  },
+  "calendar": {
+    "alertTimed": "Výchozí upozornění, položky s časem",
+    "alertAllDay": "Výchozí upozornění, celodenní položky",
+    "alertBirthday": "Narozeniny",
+    "alertsHelp": "Nová událost začne s tímto upozorněním. Každá položka si pak drží vlastní upozornění.",
+    "reminderTitles": "Zobrazovat názvy v připomínkách",
+    "reminderTitlesHelp": "Když je to vypnuté, připomínka ukáže jen slovo Připomínka a čas. Položka za tvým PINem to tak má vždycky.",
+    "whereTitle": "Připomínky na tomto zařízení",
+    "reminderHint": {
+      "mobile": "Připomínky zazvoní na tomto telefonu, i když je PrivacyNotes zavřené.",
+      "desktop": "Připomínky zazvoní, dokud PrivacyNotes na tomto počítači běží.",
+      "browser": "Připomínky zazvoní, dokud je PrivacyNotes otevřené v tomto prohlížeči."
+    },
+    "scheduledThrough": "Připomínky naplánované do {{date}}",
+    "permissionAsk": "Povolit oznámení",
+    "permissionOpenSettings": "Otevřít nastavení",
+    "permissionDenied": "Oznámení jsou pro PrivacyNotes zablokovaná. Povol je v nastavení tohoto prohlížeče nebo zařízení.",
+    "weekNumbers": "Zobrazovat čísla týdnů",
+    "hours": "Zobrazené hodiny",
+    "hoursHelp": "Den a týden se otevřou na první hodině.",
+    "to": "do"
   }
 }

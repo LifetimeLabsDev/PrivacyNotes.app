@@ -120,6 +120,49 @@ export type VersionCtx = {
 };
 
 /**
+ * Blobs named by a note state on its way to note history: a version save in
+ * flight, or one waiting to be tried again (useNoteEditing.ts). The version
+ * that will name them is not readable yet, so no path here removes one: the
+ * body-change GC does not queue it, the sweep leaves it queued, and the
+ * orphan reconcile leaves it in the bucket. Counted per state, so a blob two
+ * states name stays held until both are done.
+ */
+const heldForVersions = new Map<string, number>();
+
+/**
+ * Moves whenever a state starts on its way to history and whenever a version
+ * is saved. A pass that read the history or the holds and then awaited reads
+ * it again right before it deletes: when it moved, what the pass read may be
+ * missing a version that names a blob it is about to delete, so it deletes
+ * nothing and a later pass decides again.
+ */
+let versionActivity = 0;
+
+/** A version was saved on this device (useNoteEditing.ts, the restore). */
+export function markVersionActivity(): void {
+  versionActivity += 1;
+}
+
+/** Hold the blobs `body` names until the returned release runs (once). */
+export function holdBlobsForVersion(body: string): () => void {
+  versionActivity += 1;
+  const ids = [...extractImageIds(body), ...extractAttachmentIds(body)];
+  for (const id of ids) heldForVersions.set(id, (heldForVersions.get(id) ?? 0) + 1);
+  let released = false;
+  return () => {
+    if (released) return;
+    released = true;
+    for (const id of ids) {
+      const left = (heldForVersions.get(id) ?? 1) - 1;
+      if (left > 0) heldForVersions.set(id, left);
+      else heldForVersions.delete(id);
+    }
+  };
+}
+
+const heldForVersion = (uuid: string) => heldForVersions.has(uuid);
+
+/**
  * Compare the old and new body of a note. Delete any image/attachment
  * blobs that were in the old body but not in the new one - unless a
  * history snapshot still references them.
@@ -151,6 +194,12 @@ export async function gcOnBodyChange(
     if (!newAttIds.has(id)) attCandidates.push(id);
   }
 
+  // A state on its way to history keeps what it names, now and after the
+  // reads below (see versionActivity).
+  const activity = versionActivity;
+  const notHeld = (id: string) => !heldForVersion(id);
+  imgCandidates = imgCandidates.filter(notHeld);
+  attCandidates = attCandidates.filter(notHeld);
   if (imgCandidates.length === 0 && attCandidates.length === 0) return;
 
   // Don't delete blobs still referenced by other notes (e.g. copy-pasted).
@@ -186,15 +235,19 @@ export async function gcOnBodyChange(
       // keeps a snapshot's blobs alive.
       return;
     }
-    const orphanedImgs = imgCandidates.filter((id) => !versionImgIds.has(id));
+    if (versionActivity !== activity) return;
+    const orphanedImgs = imgCandidates.filter((id) => !versionImgIds.has(id) && notHeld(id));
     if (orphanedImgs.length > 0) await imageStore.deferDelete(orphanedImgs);
-    const orphanedAtts = attCandidates.filter((id) => !versionAttIds.has(id));
+    const orphanedAtts = attCandidates.filter((id) => !versionAttIds.has(id) && notHeld(id));
     if (orphanedAtts.length > 0 && attachmentStore) {
       await attachmentStore.deferDelete(orphanedAtts);
     }
     return;
   }
 
+  if (versionActivity !== activity) return;
+  imgCandidates = imgCandidates.filter(notHeld);
+  attCandidates = attCandidates.filter(notHeld);
   if (imgCandidates.length > 0) await imageStore.deferDelete(imgCandidates);
   if (attCandidates.length > 0 && attachmentStore) {
     await attachmentStore.deferDelete(attCandidates);
@@ -353,17 +406,22 @@ export async function sweepBlobGC(
     const cancelled = entries.filter((e) => referenced.has(e.uuid));
 
     // Not referenced: actually remove the Storage objects, grouped by kind.
-    const toRemove = entries.filter((e) => !referenced.has(e.uuid));
+    // One a version on its way names stays queued for a later pass.
+    const toRemove = entries.filter((e) => !referenced.has(e.uuid) && !heldForVersion(e.uuid));
     const imgUuids = toRemove.filter((e) => e.kind === 'image').map((e) => e.uuid);
     const attUuids = toRemove.filter((e) => e.kind === 'attachment').map((e) => e.uuid);
 
+    // Checked again right before each removal: a hold can start while the
+    // reads above or the removal before it were awaited.
     const settled: string[] = [];
-    if (imgUuids.length > 0) {
-      const { removed } = await imageStore.removeRemoteOnly(imgUuids);
+    const imgNow = imgUuids.filter((id) => !heldForVersion(id));
+    if (imgNow.length > 0) {
+      const { removed } = await imageStore.removeRemoteOnly(imgNow);
       settled.push(...removed);
     }
-    if (attUuids.length > 0 && attachmentStore) {
-      const { removed } = await attachmentStore.removeRemoteOnly(attUuids);
+    const attNow = attUuids.filter((id) => !heldForVersion(id));
+    if (attNow.length > 0 && attachmentStore) {
+      const { removed } = await attachmentStore.removeRemoteOnly(attNow);
       settled.push(...removed);
     }
     // Local rows go before the queue rows: an entry that survives an
@@ -453,10 +511,10 @@ function markReconcileTried(pubkey: string): void {
 }
 
 /** Upper bound on version rows the reconcile will fetch and decrypt in one
- * pass. Versions are capped at 20 per note, so this covers accounts up to a
- * few thousand edited notes. Past it the reconcile aborts rather than delete
- * on an incomplete reference set. */
-const VERSION_SCAN_MAX = 20000;
+ * pass. Versions are capped at 50 per note, so this covers accounts up to a
+ * thousand notes with a full history. Past it the reconcile aborts rather
+ * than delete on an incomplete reference set. */
+const VERSION_SCAN_MAX = 50000;
 
 /** One page of a Supabase Storage listing. */
 const LIST_PAGE = 1000;
@@ -491,7 +549,8 @@ type StorageObject = { name: string; created_at?: string | null };
  * 4. The uuid appears in no note_version snapshot. A blob removed from a
  *    live note's body is deliberately kept alive by its history (see
  *    gcOnBodyChange), and that reference exists only in encrypted server
- *    rows. If the versions cannot be read, the pass aborts.
+ *    rows. If the versions cannot be read, the pass aborts. A snapshot this
+ *    device has not saved yet holds its blobs too (holdBlobsForVersion).
  * 5. The object is older than BLOB_GC_GRACE_MS, which covers the window
  *    between an upload returning a uuid and that uuid reaching a saved body.
  *
@@ -598,13 +657,15 @@ export async function reconcileOrphanBlobs(
       markReconcileDone();
       return;
     }
+    // From here the pass reads references and then deletes on them.
+    const activity = versionActivity;
     const queued = new Set((await db.blobGC.toArray()).map((e) => e.uuid));
     const referenced = await findRefsAnywhere(
       aged.map((o) => o.name).filter((n) => !queued.has(n)),
     );
     let candidates = aged
       .map((o) => o.name)
-      .filter((n) => !queued.has(n) && !referenced.has(n));
+      .filter((n) => !queued.has(n) && !referenced.has(n) && !heldForVersion(n));
     if (candidates.length === 0) {
       markReconcileDone();
       return;
@@ -618,6 +679,12 @@ export async function reconcileOrphanBlobs(
       markReconcileDone();
       return;
     }
+    // A state went on its way to history, or a version was saved, while
+    // this pass read: what it read may be missing them, so a later pass
+    // decides. Then the holds once more, right before the removal.
+    if (versionActivity !== activity) return;
+    candidates = candidates.filter((uuid) => !heldForVersion(uuid));
+    if (candidates.length === 0) return;
 
     // Images and attachments share one bucket and one path shape, and the
     // object name does not say which is which - removeRemoteOnly is the same

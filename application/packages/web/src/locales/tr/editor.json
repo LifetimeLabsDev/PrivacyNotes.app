@@ -92,7 +92,13 @@
       "goal": "Hedef",
       "decision": "Karar",
       "definition": "Tanım",
-      "seealso": "Ayrıca bkz."
+      "seealso": "Ayrıca bkz.",
+      "box": "Çerçeve",
+      "panel": "Panel",
+      "update": "Güncelleme",
+      "time": "Zaman",
+      "steps": "Adımlar",
+      "place": "Konum"
     }
   },
   "color": {
@@ -123,6 +129,7 @@
     "addColumnRight": "Sağa sütun ekle",
     "toggleHeaderRow": "Başlık satırını aç/kapat",
     "equalColumnWidths": "Sütunları eşitle",
+    "resizeHint": "Yalnızca bu sütunu değiştirmek için {{shift}}, daha ince adımlar için {{alt}} tuşunu basılı tutun",
     "deleteRow": "Satırı sil",
     "deleteColumn": "Sütunu sil",
     "deleteTable": "Tabloyu sil"
@@ -146,6 +153,8 @@
     "caseSensitiveTitle": "Büyük/küçük harfe duyarlı",
     "closeReplace": "Bul ve değiştir çubuğunu kapat",
     "closeReplaceTitle": "Kapat ({{keys}})",
+    "showReplace": "Bul ve değiştir",
+    "hideReplace": "Değiştirmeyi gizle",
     "replacedCount_one": "{{count}} değiştirildi",
     "replacedCount_other": "{{count}} değiştirildi"
   },
@@ -155,7 +164,7 @@
     "title": "Ana hat",
     "ariaLabel": "Not ana hattı",
     "hide": "Ana hattı gizle",
-    "hideTitle": "Ana hattı gizle (Esc)",
+    "hideTitle": "Ana hattı gizle ({{keys}})",
     "copyHeadingLink": "Başlık bağlantısını kopyala",
     "copyNoteLink": "Not bağlantısını kopyala",
     "copyHeadingShortcut": "Başlık kısayolunu kopyala",
@@ -168,6 +177,9 @@
   },
   "topRow": {
     "add": "En üste bir satır ekle"
+  },
+  "addLine": {
+    "add": "Bir satır ekle"
   },
   "link": {
     "popoverLabel": "Bağlantı ekle",
@@ -205,7 +217,9 @@
     "characters_other": "{{formatted}} karakter",
     "tasksChecked_one": "{{formatted}} öğeden {{done}} tanesi işaretli",
     "tasksChecked_other": "{{formatted}} öğeden {{done}} tanesi işaretli",
-    "tooLargeToSync": ", eşitlemek için çok büyük olabilir, yeni bir nota bölün",
+    "syncLimit": " · 1 MB eşitleme sınırının {{share}} kadarı",
+    "overSyncLimit": " · 1 MB eşitleme sınırını aşıyor, bu cihazda kalır",
+    "split": "Notu böl",
     "veryLong": ", çok uzun, düzenlemesi yavaş olabilir ve takılabilir",
     "gettingLong": ", uzuyor, yavaş cihazlarda takılabilir",
     "largeTableWarning": "Büyük tablo ({{rows}} satır) bu notun düzenlenmesini yavaşlatabilir, bölmeyi düşünün"
@@ -265,10 +279,13 @@
     "hintTap": "Seçenekleri için bir düğmeye dokunun.",
     "onBar": "Çubukta",
     "inMenu": "+ menüsünde",
+    "inAttachMenu": "Ekle menüsünde",
+    "attachMenuEmpty": "Boş, bu yüzden ekle düğmesi gösterilmez.",
     "menuEmpty": "Menü boş, bu yüzden + düğmesi gösterilmez.",
     "hidden": "Gizli",
     "hiddenNote": "Kısayolları ve Markdown ile çalışmaya devam ederler.",
     "hiddenDrop": "Gizlemek için bir düğmeyi buraya bırakın.",
+    "markdownViewNote": "Markdown görünümü kendi sabit düğme setini korur.",
     "hiddenEmpty": "Gizli bir şey yok.",
     "alwaysVisible": "Her zaman görünür",
     "pinned": "Bir panel açar, bu yüzden çubukta kalır veya gizlenir",
@@ -280,18 +297,23 @@
     "home": {
       "bar": "Çubukta",
       "menu": "+ menüsünde",
+      "attachMenu": "Ekle menüsünde",
       "hidden": "Gizli"
     },
     "opensPanel": "bir panel açar",
     "showsRecording": "kaydı gösterir",
     "refuse": {
       "menuNotAllowed": "{{item}} çubukta veya gizli olabilir, + menüsünde olamaz.",
+      "attachNotAllowed": "Ekle menüsüne yalnızca görsel, dosya ve kayıt düğmeleri sığar.",
       "lastOnBar": "Çubukta en az bir düğme bırakın."
     },
     "items": {
       "link": "Bağlantı",
       "notelink": "Not bağlantısı",
-      "audio": "Kayıt"
+      "audio": "Kayıt",
+      "attachMenu": "Ekle",
+      "separator": "Dikey ayırıcı çizgi",
+      "markdownView": "Markdown'ı göster"
     },
     "positionTitle": "Çubuk konumu",
     "positionNote": "Araç çubuğunun düzenleyicide nerede duracağını seçin.",

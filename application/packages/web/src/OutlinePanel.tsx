@@ -10,6 +10,7 @@ import { getWikiLinkCurrentNote } from './NoteLinkSuggestion';
 import { headingCodeAt, headingsFromDoc } from './noteHeadings';
 import { noteLinkTarget } from './noteLinks';
 import { HoverLabel } from './HoverLabel';
+import { keyText } from './shortcutMatch';
 import { EditorSlotPill } from './EditorSlotPill';
 import { CALLOUT_BY_TYPE, type CalloutType } from './calloutTypes';
 
@@ -251,7 +252,7 @@ export function OutlinePanel({ editor, open, onOpenChange, onReserve }: Props) {
         <span className="text-sm font-medium text-pn-soft">{t('outline.title')}</span>
         <span className="text-xs tabular-nums text-pn-muted">{headings.length}</span>
         <div className="flex-1" />
-        <HoverLabel label={t('outline.hideTitle')} position="below-end">
+        <HoverLabel label={t('outline.hideTitle', { keys: keyText('outline') })} position="below-end">
           <button
             type="button"
             onClick={() => onOpenChange(false)}

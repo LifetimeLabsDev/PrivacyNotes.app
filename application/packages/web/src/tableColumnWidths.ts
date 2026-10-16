@@ -27,8 +27,13 @@ export function columnFloor(columns: number): number {
   return Math.ceil(Math.min(10, 50 / columns));
 }
 
-/** The drag step for a table of this many columns: the grid, unless the grid cannot hold them all. */
-function gridFor(columns: number): number {
+/**
+ * The drag step for a table of this many columns: the grid, unless the grid
+ * cannot hold them all. A fine drag (Alt or Option held) moves in whole
+ * percent, which can write a longer dash row.
+ */
+function gridFor(columns: number, fine = false): number {
+  if (fine) return 1;
   return columns * Math.ceil(columnFloor(columns) / GRID) * GRID <= 100 ? GRID : 1;
 }
 
@@ -170,9 +175,9 @@ export function mirrorEdge(widths: readonly number[], border: number): number | 
  * of the pair keeps at least the floor. Within half a grid step of `magnet`
  * (the mirror position) it lands exactly there, on the grid or not.
  */
-export function dragWidths(start: readonly number[], border: number, delta: number, magnet: number | null = null): number[] {
+export function dragWidths(start: readonly number[], border: number, delta: number, magnet: number | null = null, fine = false): number[] {
   const n = start.length;
-  const grid = gridFor(n);
+  const grid = gridFor(n, fine);
   const floor = Math.ceil(columnFloor(n) / grid) * grid;
   const before = start.slice(0, border).reduce((a, b) => a + b, 0);
   const pair = start[border]! + start[border + 1]!;
@@ -195,9 +200,9 @@ export function dragWidths(start: readonly number[], border: number, delta: numb
  * cannot, the widths are rounded to whole percent instead. Null when the
  * result is equal columns, which is stored as no widths at all.
  */
-export function commitWidths(widths: readonly number[]): number[] | null {
+export function commitWidths(widths: readonly number[], fine = false): number[] | null {
   const n = widths.length;
-  const grid = gridFor(n);
+  const grid = gridFor(n, fine);
   const floor = columnFloor(n);
   const out: number[] = [];
   let prev = 0;
@@ -220,8 +225,30 @@ export const TABLE_MIN_WIDTH = 20;
  * the note: on the drag grid, never under TABLE_MIN_WIDTH, never wider than
  * the note. Null means full width, which stores nothing.
  */
-export function dragTableWidth(start: number, delta: number): number | null {
-  const width = Math.min(100, Math.max(TABLE_MIN_WIDTH, Math.round((start + delta) / GRID) * GRID));
+export function dragTableWidth(start: number, delta: number, fine = false): number | null {
+  const step = fine ? 1 : GRID;
+  const width = Math.min(100, Math.max(TABLE_MIN_WIDTH, Math.round((start + delta) / step) * step));
   return width >= 100 ? null : width;
+}
+
+/**
+ * A drag that changes one column and leaves the others alone (Shift held):
+ * column `column` grows or shrinks by `delta` percent of the note, and the
+ * table's own width moves with it, so every other column keeps its size on
+ * screen. The table edge lands on the drag step, never under TABLE_MIN_WIDTH
+ * and never past the note. Past the note the column takes the rest from the
+ * column after it, as a plain drag does; the last column has none and stops.
+ */
+export function dragColumn(start: readonly number[], tableWidth: number, column: number, delta: number, fine = false): { widths: number[]; tableWidth: number } {
+  const n = start.length;
+  const step = fine ? 1 : GRID;
+  const size = start.map((w) => (w * tableWidth) / 100);
+  const others = tableWidth - size[column]!;
+  const narrowest = Math.ceil(Math.max(TABLE_MIN_WIDTH, others / (1 - columnFloor(n) / 100)) / step) * step;
+  const wanted = tableWidth + delta;
+  const width = Math.min(100, Math.max(narrowest, Math.round(wanted / step) * step));
+  const widths = size.map((s, i) => ((i === column ? width - others : s) / width) * 100);
+  if (wanted > 100 && column < n - 1) return { widths: dragWidths(widths, column, wanted - 100, null, fine), tableWidth: 100 };
+  return { widths, tableWidth: width };
 }
 

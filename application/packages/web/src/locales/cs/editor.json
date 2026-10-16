@@ -92,7 +92,13 @@
       "goal": "Cíl",
       "decision": "Rozhodnutí",
       "definition": "Definice",
-      "seealso": "Viz také"
+      "seealso": "Viz také",
+      "box": "Rámeček",
+      "panel": "Panel",
+      "update": "Aktualizace",
+      "time": "Čas",
+      "steps": "Kroky",
+      "place": "Místo"
     }
   },
   "color": {
@@ -123,6 +129,7 @@
     "addColumnRight": "Přidat sloupec vpravo",
     "toggleHeaderRow": "Zapnout nebo vypnout řádek záhlaví",
     "equalColumnWidths": "Vyrovnat šířku sloupců",
+    "resizeHint": "Podrž {{shift}} a změníš jen tento sloupec, {{alt}} pro jemnější kroky",
     "deleteRow": "Smazat řádek",
     "deleteColumn": "Smazat sloupec",
     "deleteTable": "Smazat tabulku"
@@ -146,6 +153,8 @@
     "caseSensitiveTitle": "Rozlišovat velikost písmen",
     "closeReplace": "Zavřít najít a nahradit",
     "closeReplaceTitle": "Zavřít ({{keys}})",
+    "showReplace": "Najít a nahradit",
+    "hideReplace": "Skrýt nahrazení",
     "replacedCount_one": "{{count}} nahrazen",
     "replacedCount_few": "{{count}} nahrazeny",
     "replacedCount_many": "{{count}} nahrazeno",
@@ -157,7 +166,7 @@
     "title": "Osnova",
     "ariaLabel": "Osnova poznámky",
     "hide": "Skrýt osnovu",
-    "hideTitle": "Skrýt osnovu (Esc)",
+    "hideTitle": "Skrýt osnovu ({{keys}})",
     "copyHeadingLink": "Kopírovat odkaz na nadpis",
     "copyNoteLink": "Kopírovat odkaz na poznámku",
     "copyHeadingShortcut": "Kopírovat zástupce nadpisu",
@@ -170,6 +179,9 @@
   },
   "topRow": {
     "add": "Přidat řádek na začátek"
+  },
+  "addLine": {
+    "add": "Přidat řádek"
   },
   "link": {
     "popoverLabel": "Přidat odkaz",
@@ -213,7 +225,9 @@
     "tasksChecked_few": "Zaškrtnuto {{done}} z {{formatted}}",
     "tasksChecked_many": "Zaškrtnuto {{done}} z {{formatted}}",
     "tasksChecked_other": "Zaškrtnuto {{done}} z {{formatted}}",
-    "tooLargeToSync": ", možná je příliš velká pro synchronizaci, rozděl ji do nové poznámky",
+    "syncLimit": " · {{share}} z limitu synchronizace 1 MB",
+    "overSyncLimit": " · přesahuje limit synchronizace 1 MB, zůstane na tomto zařízení",
+    "split": "Rozdělit poznámku",
     "veryLong": ", velmi dlouhá, úpravy mohou být pomalé a trhané",
     "gettingLong": ", začíná být dlouhá, na pomalejších zařízeních se může zadrhávat",
     "largeTableWarning": "Velká tabulka ({{rows}} řádků) může zpomalit úpravy této poznámky, zvaž její rozdělení"
@@ -275,10 +289,13 @@
     "hintTap": "Klepni na tlačítko a otevři jeho možnosti.",
     "onBar": "Na liště",
     "inMenu": "V nabídce +",
+    "inAttachMenu": "V nabídce přiložení",
+    "attachMenuEmpty": "Je prázdná, proto se tlačítko přiložení nezobrazuje.",
     "menuEmpty": "Nabídka je prázdná, proto se tlačítko + nezobrazuje.",
     "hidden": "Skryté",
     "hiddenNote": "Dál fungují přes zkratku a Markdown.",
     "hiddenDrop": "Přetáhni sem tlačítko a skryješ ho.",
+    "markdownViewNote": "Zobrazení Markdown má vlastní pevnou sadu tlačítek.",
     "hiddenEmpty": "Nic není skryté.",
     "alwaysVisible": "Vždy viditelné",
     "pinned": "Otevírá panel, proto zůstává na liště nebo je skryté",
@@ -290,18 +307,23 @@
     "home": {
       "bar": "Na liště",
       "menu": "V nabídce +",
+      "attachMenu": "V nabídce přiložení",
       "hidden": "Skryté"
     },
     "opensPanel": "otevírá panel",
     "showsRecording": "zobrazuje nahrávání",
     "refuse": {
       "menuNotAllowed": "{{item}} může být na liště nebo skryté, ne v nabídce +.",
+      "attachNotAllowed": "Do nabídky přiložení patří jen tlačítka obrázku, souboru a nahrávky.",
       "lastOnBar": "Nech na liště aspoň jedno tlačítko."
     },
     "items": {
       "link": "Odkaz",
       "notelink": "Odkaz na poznámku",
-      "audio": "Nahrávka"
+      "audio": "Nahrávka",
+      "attachMenu": "Přiložit",
+      "separator": "Svislý oddělovač",
+      "markdownView": "Zobrazit markdown"
     },
     "positionTitle": "Umístění lišty",
     "positionNote": "Vyber, kde v editoru bude panel nástrojů.",

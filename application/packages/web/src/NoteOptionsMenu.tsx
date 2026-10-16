@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
@@ -10,7 +10,8 @@ import { formatInstant } from './intlFormat';
 import { prepareBurnPayload } from './burnShare';
 import { ColorSwatch } from './ColorSwatch';
 import { LOOK_COLORS, NOTE_NO_COLOR, type LookColor, type NoteOwnColor } from './itemStyles';
-import { PencilSimpleSlash, Shield, ClockCounterClockwise, PushPin, Export, Trash, Repeat, Copy, Folder, Fire, ArrowCounterClockwise, FileMd, TextAa, Swap, ListChecks, Broom, SortAscending, Palette, Info, CaretLeft, CaretRight, Calendar, Check, PILLAR_GLYPHS, iconArchive } from './icons';
+import { PencilSimpleSlash, Shield, ClockCounterClockwise, PushPin, Export, Trash, Repeat, Copy, Folder, Fire, ArrowCounterClockwise, ArticleMedium, TextAa, Swap, ListChecks, Broom, SortAscending, Palette, Info, CaretLeft, CaretRight, Calendar, Check, iconArchive } from './icons';
+import { typeGlyph } from './NoteRow';
 import { CONVERT_TARGETS, isConvertSource, type ConvertTarget } from './noteTypes';
 
 /**
@@ -52,7 +53,7 @@ export interface NoteColorInfo {
 }
 
 /** "Move to Work" or "Move to Personal": the name, its glyph, and the move. */
-export type SpaceMove = { label: string; icon: React.ReactNode; run: (ids: string[]) => void };
+export type SpaceMove = { label: React.ReactNode; icon: React.ReactNode; run: (ids: string[]) => void };
 
 type Props = NoteActionGuardDeps & {
   /** The space move, while spaces are on. Spec: ops/docs/plans/spaces.md */
@@ -80,6 +81,16 @@ type Props = NoteActionGuardDeps & {
   onSetJournalDate?: (day: string) => void;
   /** The days that hold a journal entry, dotted in the Entry date calendar. */
   journalDays?: JournalDays;
+  /** Attach a note or a task list to a day, or take it away (null).
+   *  Spec: ops/docs/plans/note-date.md */
+  onSetNoteDate?: (day: string | null) => void;
+  /** The Schedule view's edits (end day, time, repeat, alerts) and the
+   *  occurrence a repeating event was opened on.
+   *  Spec: ops/docs/plans/calendar-pillar-spec.md (step 4) */
+  schedule?: {
+    occurrence: string | null;
+    onEdit: (edit: ScheduleEdit) => void;
+  };
   /**
    * Body editor this note is currently showing. Absent wherever there is
    * no markdown editor to switch: bookmarks, vault items, a PIN-locked
@@ -124,6 +135,7 @@ const TYPE_LABEL = {
   note: 'noteOptionsMenu.typeNote',
   journal: 'noteOptionsMenu.typeJournal',
   task: 'noteOptionsMenu.typeTask',
+  event: 'noteOptionsMenu.typeEvent',
 } as const;
 
 /**
@@ -133,14 +145,11 @@ const TYPE_LABEL = {
  */
 const CONVERT_WIDTH = 'w-max min-w-48';
 
-/** A target wears the glyph of the pillar it moves the item to. */
-const CONVERT_GLYPHS = {
-  note: PILLAR_GLYPHS.notes,
-  journal: PILLAR_GLYPHS.journals,
-  task: PILLAR_GLYPHS.tasks,
-} as const;
+export type NoteOptionsView = 'main' | 'color' | 'details' | 'schedule' | 'convert';
 
-export type NoteOptionsView = 'main' | 'color' | 'details' | 'entryDate' | 'convert';
+// The Schedule view loads with the menu, outside the boot chunk.
+const loadScheduleView = () => import('./ScheduleView');
+const ScheduleViewLazy = lazy(loadScheduleView);
 
 export function NoteOptionsMenu({
   note,
@@ -163,6 +172,8 @@ export function NoteOptionsMenu({
   initialView = 'main',
   onSetJournalDate,
   journalDays,
+  onSetNoteDate,
+  schedule,
   onMoveToFolder,
   spaceMove,
   editorMode,
@@ -244,6 +255,9 @@ export function NoteOptionsMenu({
   const showSortTasksRow = !isTrash && !!onSortTasksByStatus;
   const showTaskRows = showUncheckRow || showDeleteCheckedRow || showSortTasksRow;
   const showConvertRow = !!onConvertType && isConvertSource(note.type);
+  const noteDay = note.type === 'note' || note.type === 'task' || note.type === 'event' ? journalDateOf(note) : null;
+  const noteSchedule = scheduleOf(note.trackers as Record<string, unknown> | undefined, note.type, note.type === 'journal' ? entryDayOf(note) : noteDay);
+  useEffect(() => { void loadScheduleView(); }, []);
 
   const bytes = computeNoteTotalSize(note);
   // A media-only note has nothing left to send once images and files are
@@ -298,33 +312,36 @@ export function NoteOptionsMenu({
           <BackRow title={t('noteOptionsMenu.color')} onBack={() => setView('main')} />
           <NoteColorPanel color={color} onSetColor={onSetColor} />
         </>
-      ) : view === 'entryDate' && onSetJournalDate ? (
-        <>
-          <BackRow title={t('noteOptionsMenu.entryDate')} onBack={() => setView('main')} />
-          <div className="flex justify-center px-2 pt-3 pb-2">
-            <MonthGrid
-              key={note.id}
-              marked={journalDays ?? new Set<string>()}
-              selected={entryDayOf(note)}
-              onPick={(day) => {
-                if (day !== entryDayOf(note)) onSetJournalDate(day);
-                setView('main');
-              }}
-            />
-          </div>
-        </>
+      ) : view === 'schedule' && (onSetJournalDate || onSetNoteDate) && schedule ? (
+        <Suspense fallback={null}>
+          <ScheduleViewLazy
+            ui={{ BackRow, Group, ActionItem, ToggleItem }}
+            note={note}
+            occurrence={schedule.occurrence}
+            journalDays={journalDays}
+            onSetJournalDate={onSetJournalDate}
+            onSetNoteDate={onSetNoteDate}
+            onEdit={schedule.onEdit}
+            onMakeEvent={() => setView('convert')}
+            alertsUnlocked={unlocked}
+            showPro={!isPro}
+            onUpgrade={() => { onClose(); onOpenUpgrade('alerts'); }}
+            onBack={() => setView('main')}
+          />
+        </Suspense>
       ) : view === 'convert' && showConvertRow ? (
         <>
           <BackRow title={t('noteOptionsMenu.convertTo')} onBack={() => setView('main')} />
           <Group>
             {CONVERT_TARGETS.map((target) => {
-              const Glyph = CONVERT_GLYPHS[target];
+              // The type's own glyph and color, as a list row and the quick add draw it.
+              const { Icon: Glyph, color } = typeGlyph(target);
               const current = note.type === target;
               return (
                 <ActionItem
                   key={target}
                   label={t(TYPE_LABEL[target])}
-                  icon={<Glyph size={16} aria-hidden="true" />}
+                  icon={<Glyph size={16} className={color} aria-hidden="true" />}
                   disabled={current}
                   value={current ? <Check size={14} aria-hidden="true" /> : undefined}
                   onClick={() => { onConvertType?.(target); onClose(); }}
@@ -332,6 +349,9 @@ export function NoteOptionsMenu({
               );
             })}
           </Group>
+          {noteSchedule?.repeat && (
+            <p className="px-4 py-2 text-[12px] text-pn-muted">{t('noteOptionsMenu.repeatRemoved')}</p>
+          )}
         </>
       ) : view === 'details' ? (
         <>
@@ -412,7 +432,7 @@ export function NoteOptionsMenu({
                 <ActionItem
                   label={editorMode === 'markdown' ? t('notes:editor.showFormatted') : t('notes:editor.showMarkdown')}
                   // The glyph names the DESTINATION, so it changes with the label.
-                  icon={editorMode === 'markdown' ? <TextAa size={17} aria-hidden="true" /> : <FileMd size={17} aria-hidden="true" />}
+                  icon={editorMode === 'markdown' ? <TextAa size={17} aria-hidden="true" /> : <ArticleMedium size={17} aria-hidden="true" />}
                   onClick={() => { onToggleEditorMode?.(); onClose(); }}
                 />
               )}
@@ -453,9 +473,18 @@ export function NoteOptionsMenu({
               <ActionItem
                 label={t('noteOptionsMenu.entryDate')}
                 icon={<Calendar size={16} aria-hidden="true" />}
-                value={formatInstant(dayAtNoon(entryDayOf(note)), 'date')}
+                value={scheduleValue(noteSchedule, formatInstant(dayAtNoon(entryDayOf(note)), 'date'))}
                 chevron
-                onClick={() => setView('entryDate')}
+                onClick={() => setView('schedule')}
+              />
+            )}
+            {onSetNoteDate && !isTrash && (note.type === 'note' || note.type === 'task' || note.type === 'event') && (
+              <ActionItem
+                label={t('noteOptionsMenu.schedule')}
+                icon={<Calendar size={16} aria-hidden="true" />}
+                value={noteDay ? scheduleValue(noteSchedule, formatInstant(dayAtNoon(noteDay), 'date')) : t('noteOptionsMenu.noDate')}
+                chevron
+                onClick={() => setView('schedule')}
               />
             )}
             {onMoveToFolder && (
@@ -470,6 +499,7 @@ export function NoteOptionsMenu({
               <ActionItem
                 label={spaceMove.label}
                 icon={spaceMove.icon}
+                pro={!isPro}
                 onClick={() => { onClose(); spaceMove.run([note.id]); }}
               />
             )}
@@ -587,8 +617,24 @@ function ProBadge() {
   );
 }
 
-function BackRow({ title, onBack }: { title: string; onBack: () => void }) {
+export function BackRow({ title, onBack, wide = false }: { title: string; onBack: () => void; wide?: boolean }) {
   const { t } = useTranslation('common');
+  // Wide: the whole row is the button, for a Back row at the top of a pane
+  // (the Calendar's), where the title names where it goes.
+  if (wide) {
+    return (
+      <button
+        type="button"
+        onClick={onBack}
+        className="w-full flex items-center gap-1 px-1.5 py-1 text-start rounded-md hover:bg-surface-1 focus-visible:bg-surface-1 outline-none transition"
+      >
+        <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 [@media(hover:none)]:w-11 [@media(hover:none)]:h-11 text-accent">
+          <CaretLeft size={16} aria-hidden="true" />
+        </span>
+        <span className="text-[14px] font-medium text-pn">{title}</span>
+      </button>
+    );
+  }
   return (
     <div className="flex items-center gap-1 px-1.5 py-1">
       <button
@@ -755,7 +801,7 @@ function ActionItem({
   chevron,
   tone = 'accent',
 }: {
-  label: string;
+  label: React.ReactNode;
   icon: React.ReactNode;
   onClick: () => void;
   pro?: boolean;
@@ -787,6 +833,13 @@ function ActionItem({
 }
 
 import { formatBytes } from './formatBytes';
-import { computeNoteTotalSize, editedAtOf, entryDayOf } from './notesViewUtils';
-import { MonthGrid, dayAtNoon } from './MonthGrid';
+import { computeNoteTotalSize, editedAtOf, entryDayOf, journalDateOf } from './notesViewUtils';
+import { dayAtNoon } from './MonthGrid';
 import type { JournalDays } from './notesViewUtils';
+import { scheduleOf, type Schedule, type ScheduleEdit } from './schedule';
+import { timeLabel } from './JournalCalendar';
+
+/** A Date row's value: the day, and the time when the item has one. */
+function scheduleValue(s: Schedule | null, day: string): string {
+  return s?.time ? `${day} · ${timeLabel(s.day, s.time)}` : day;
+}

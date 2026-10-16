@@ -19,7 +19,10 @@
  * updatedAt is the age signal, which relies on every writer of trashed=1
  * stamping it at trash time (trashNote, trashNotesWithTag, applyImport).
  * Anything that sets trashed=1 while keeping an older updatedAt is purged by
- * the next run, with no undo.
+ * the next run, with no undo. The other way round is safe and happens: a
+ * write that stamps a row already in the trash restarts its countdown. A tag
+ * rename or delete does that to the trashed notes carrying the tag, and a
+ * folder delete to the trashed notes it moves out of the removed folders.
  */
 import { db, type LocalNote } from './db';
 import { nextStamp } from './notesRepo';

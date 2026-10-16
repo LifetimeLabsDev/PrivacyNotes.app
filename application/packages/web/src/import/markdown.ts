@@ -159,8 +159,8 @@ function parseOneMd(
   if (isNaN(Date.parse(updatedAt))) updatedAt = fallback;
 
   // Trackers ride in the front-matter as one JSON line (see noteMarkdown.ts).
-  // Only `journal` is honoured as a type here: a plain .md exported from a
-  // VAULT item carries the readable `vaultToMarkdown` prose as its body, so
+  // Only `journal`, `task` and `event` are honoured as a type here, the types
+  // whose body is real markdown: a plain .md exported from a VAULT item carries the readable `vaultToMarkdown` prose as its body, so
   // trusting a `type: login` line would restore that prose as a login and
   // hide every field. The backup importer, which reads bodies that really are
   // vault JSON, is the one allowed to rebuild those.
@@ -170,11 +170,14 @@ function parseOneMd(
   // only fills the gap for a single dropped .md, which has no directory.
   const declaredFolder = parseFolderPath(meta['folder']);
   const isJournal = meta['type'] === 'journal' || (trackers !== undefined && !meta['type']);
+  // A task list and an event name themselves; a note is the default.
+  const isTask = meta['type'] === 'task';
+  const isEvent = meta['type'] === 'event';
 
   const note: ImportedNote = {
     ...(declaredFolder.length ? { folderPath: declaredFolder } : {}),
     ...(trackers ? { trackers } : {}),
-    ...(isJournal ? { type: 'journal' as const } : {}),
+    ...(isJournal ? { type: 'journal' as const } : isTask ? { type: 'task' as const } : isEvent ? { type: 'event' as const } : {}),
     title,
     // Bare URLs and emails come in as plain text: tiptap-markdown only builds
     // link nodes from `<...>` autolinks and `[text](url)`, and the Link

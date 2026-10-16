@@ -60,7 +60,7 @@ export function BookmarkItem({
   /** The website-icon explainer under the URL field, collapsed by default. */
   const [iconHintOpen, setIconHintOpen] = useState(false);
   const pinProtected = note.pinProtected === 1;
-  const savedUrl = parseLinkBody(note.body).url;
+  const { url: savedUrl, keyword: savedKeyword, keywordTag: savedKeywordTag } = parseLinkBody(note.body);
   const [draft, setDraft] = useState(savedUrl);
   const [invalid, setInvalid] = useState(false);
   const [duplicate, setDuplicate] = useState(false);
@@ -91,7 +91,7 @@ export function BookmarkItem({
       return;
     }
     setDuplicate(false);
-    onBodyChange(note.id, buildLinkBody(normalized));
+    onBodyChange(note.id, buildLinkBody(normalized, savedKeyword, savedKeywordTag));
   }
 
   return (

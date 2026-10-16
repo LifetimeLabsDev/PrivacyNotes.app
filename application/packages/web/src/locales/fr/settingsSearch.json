@@ -66,6 +66,7 @@
     "appearance_contentWidth": "largeur de colonne, large, pleine largeur, marges",
     "appearance_editor": "Markdown, texte enrichi, WYSIWYG, mode d’édition, éditeur",
     "appearance_copyFormat": "copier, presse-papiers, texte brut, coller, case à cocher",
+    "appearance_pasteFormat": "coller, presse-papiers, texte brut, mise en forme, sans mise en forme, conserver le style",
     "appearance_favicons": "favicon, icônes de site, logos",
     "appearance_invisibles": "pied-de-mouche, espaces, blancs, caractères invisibles, caractères cachés, marques de mise en forme",
     "appearance_startView": "page de démarrage, accueil, vue par défaut, ouvrir sur",
@@ -81,11 +82,19 @@
     "about_openSource": "code source, GitHub, open source, logiciel libre",
     "about_feedback": "avis, retour, contact, signaler un bug, suggestion",
     "about_dataStorage": "données, serveur, lieu de stockage, où sont stockées, confidentialité",
-    "about_singleKeys": "clavier, raccourcis, raccourcis clavier, hotkeys, touche unique, j, k, accessibilité, /, >",
+    "about_singleKeys": "clavier, raccourcis, raccourcis clavier, hotkeys, touche unique, j, k, q, calendrier, accessibilité, /, >",
     "about_changelog": "notes de version, nouveautés, quoi de neuf, mises à jour",
     "about_hotkeys": "raccourcis clavier, raccourcis, touches, hotkeys",
     "about_rating": "avis, noter, évaluer, étoiles, App Store",
     "appearance_openInTabs": "onglets, barre d'onglets, navigateur, ouvrir",
+    "section_calendar": "calendrier, événement, rappel, alerte, notification, semaine, mois, planning, agenda, anniversaire",
+    "calendar_alertTimed": "alerte, rappel, notification, par défaut, minutes, avant, événement",
+    "calendar_alertAllDay": "alerte, rappel, notification, par défaut, toute la journée, matin",
+    "calendar_alertBirthday": "anniversaire, contact, alerte, rappel",
+    "calendar_reminderTitles": "confidentialité, écran de verrouillage, titre, rappel, notification",
+    "calendar_where": "notification, autorisation, permission, navigateur, téléphone, ordinateur, bureau, rappel",
+    "calendar_weekNumbers": "numéro de semaine, semaine ISO, calendrier",
+    "calendar_hours": "heures, heures de travail, vue jour, vue semaine, matin",
     "appearance_formatBar": "barre d'outils, barre de mise en forme, boutons, personnaliser, organiser, liste à puces, barré, engrenage"
   }
 }

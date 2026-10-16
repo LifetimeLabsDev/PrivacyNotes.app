@@ -8,7 +8,6 @@
     "title": "Úkoly",
     "newTaskNote": "Nová poznámka s úkoly",
     "newTaskNoteWithHotkey": "Nová poznámka s úkoly ({{hotkey}})",
-    "new": "Nová",
     "hideCompleted": "Skrýt hotové úkoly",
     "showCompleted": "Zobrazit hotové úkoly",
     "searchPlaceholder": "Hledat úkoly…",
@@ -37,12 +36,9 @@
     "deselectAll": "Zrušit výběr",
     "selectAll": "Vybrat vše",
     "storage": "Úložiště",
-    "supportedTypesHint": "Maximální velikost souboru: {{max}} MB",
     "perFile": "Na soubor",
     "free": "Zdarma",
     "upgradeToPro": "Přejít na Pro",
-    "addStorage": "Přidat úložiště",
-    "upToMax": "až {{max}}",
     "filterAll": "Vše",
     "filterImages": "Obrázky",
     "filterAudio": "Zvuk",
@@ -115,6 +111,7 @@
     "video": "Video",
     "image": "Obrázek",
     "pdf": "PDF",
+    "email": "E-mail",
     "archive": "Archiv",
     "document": "Dokument",
     "spreadsheet": "Tabulka",
@@ -190,7 +187,8 @@
     "markdown": "Markdown",
     "markdownTip": "Nešifrované",
     "bookmarks": "Záložky",
-    "contacts": "Kontakty"
+    "contacts": "Kontakty",
+    "calendar": "Kalendář"
   },
   "browseToggle": {
     "label": "Procházet podle",
@@ -206,6 +204,12 @@
     "deleteConfirmTitle": "Smazat složku?",
     "deleteConfirmBodyRoot": "Složka „{{folder}}“ bude smazána. Její poznámky a podsložky se přesunou na nejvyšší úroveň. Žádná poznámka se nesmaže.",
     "deleteConfirmBodyNested": "Složka „{{folder}}“ bude smazána. Její poznámky a podsložky se přesunou do „{{parent}}“. Žádná poznámka se nesmaže.",
+    "deleteConfirmBranchRoot": "Složka „{{folder}}“ a její podsložky budou smazány. Jejich poznámky se přesunou na nejvyšší úroveň. Žádná poznámka se nesmaže.",
+    "deleteConfirmBranchNested": "Složka „{{folder}}“ a její podsložky budou smazány. Jejich poznámky se přesunou do „{{parent}}“. Žádná poznámka se nesmaže.",
+    "deleteSubfolders_one": "Smazat i její podsložku",
+    "deleteSubfolders_few": "Smazat i její {{count}} podsložky",
+    "deleteSubfolders_many": "Smazat i jejích {{count}} podsložky",
+    "deleteSubfolders_other": "Smazat i jejích {{count}} podsložek",
     "moveTo": "Přesunout do složky",
     "searchPlaceholder": "Hledat složky",
     "sortFolders": "Řadit složky",
@@ -223,7 +227,8 @@
     "saveName": "Uložit název složky",
     "actionsForFolder": "Akce pro složku {{folder}}",
     "seedSecurity": "Zabezpečení",
-    "seedTravel": "Cestování"
+    "seedTravel": "Cestování",
+    "seedTeam": "Tým"
   },
   "collapsedSidebar": {
     "newNote": "Nová poznámka",
@@ -271,6 +276,18 @@
     "tagCount_one": "{{count}} značka",
     "tagCount_other": "{{count}} značek",
     "entryDate": "Datum záznamu",
+    "noDate": "Žádné",
+    "schedule": "Termín",
+    "ends": "Končí",
+    "sameDay": "Tentýž den",
+    "allDay": "Celý den",
+    "starts": "Začíná",
+    "endsAt": "Končí v",
+    "noEnd": "Žádný",
+    "removeFromCalendar": "Odebrat z kalendáře",
+    "makeEvent": "Pro opakování z toho udělej událost",
+    "typeEvent": "Událost",
+    "repeatRemoved": "Opakování je odebrané",
     "tagCount_few": "{{count}} značky",
     "tagCount_many": "{{count}} značky"
   },
@@ -307,6 +324,8 @@
     "showSize": "Zobrazit velikost souboru",
     "showTags": "Zobrazit složku a značky",
     "showCalendar": "Zobrazit kalendář",
+    "showWorkItems": "Zobrazit položky z prostoru <b>Práce</b>",
+    "showPersonalItems": "Zobrazit položky z prostoru <b>Osobní</b>",
     "other": "Ostatní",
     "showReadOnly": "Zobrazit položky jen pro čtení",
     "showProtected": "Zobrazit chráněné",
@@ -335,7 +354,9 @@
     "nextMonth": "Další měsíc",
     "dayWithEntry": "{{date}}, má záznam",
     "dayWithEntryIn": "{{date}}, má záznam v prostoru {{space}}",
-    "dayWithEntryBoth": "{{date}}, má záznamy v prostorech Osobní a Práce",
+    "dayWithItems_one": "{{date}}, {{count}} položka",
+    "dayWithItems_few": "{{date}}, {{count}} položky",
+    "dayWithItems_other": "{{date}}, {{count}} položek",
     "previousWeek": "Předchozí týden",
     "nextWeek": "Další týden",
     "showMonth": "{{month}}, zobrazit celý měsíc",
@@ -381,11 +402,14 @@
     "copyBookmarkUrl": "Kopírovat URL",
     "editBookmark": "Upravit záložku",
     "openInTab": "Otevřít na kartě",
+    "openInTabHint": "{{key}}-klik",
     "closeTab": "Zavřít kartu",
     "closeOtherTabs": "Zavřít ostatní karty",
     "closeAllTabs": "Zavřít všechny karty",
     "pinTab": "Připnout kartu",
-    "unpinTab": "Odepnout kartu"
+    "unpinTab": "Odepnout kartu",
+    "newEvent": "Nová událost",
+    "quickAdd": "Rychlé přidání"
   },
   "demoBanner": {
     "title": "Vyzkoušej to bez rizika",
@@ -651,6 +675,9 @@
       "mastodon": "Mastodon"
     }
   },
+  "staleEditor": {
+    "copyToast": "Tato poznámka se změnila na jiném zařízení. Tvoje úpravy jsou v kopii „{{title}}“."
+  },
   "noteLinks": {
     "retargetedToast_one": "Aktualizován {{count}} odkaz na poznámku podle nového názvu.",
     "retargetedToast_other": "Aktualizováno {{count}} odkazů na poznámky podle nového názvu.",
@@ -661,7 +688,8 @@
   },
   "tabStrip": {
     "label": "Otevřené karty",
-    "close": "Zavřít {{title}}"
+    "close": "Zavřít {{title}}",
+    "moreTabs": "Více karet"
   },
   "shareInbox": {
     "saved": "Uloženo do PrivacyNotes",
@@ -690,10 +718,11 @@
   },
   "spaces": {
     "label": "Prostor",
+    "all": "Vše",
     "personal": "Osobní",
     "work": "Práce",
-    "moveToWork": "Přesunout do prostoru Práce",
-    "moveToPersonal": "Přesunout do prostoru Osobní",
+    "moveToWork": "Přesunout do prostoru <b>Práce</b>",
+    "moveToPersonal": "Přesunout do prostoru <b>Osobní</b>",
     "movedToWork": "Složka {{folder}} je přesunutá do prostoru Práce",
     "movedToPersonal": "Složka {{folder}} je přesunutá do prostoru Osobní",
     "itemMovedToWork": "Přesunuto do prostoru Práce",
@@ -702,6 +731,236 @@
     "switchedToPersonal": "Přepnuto na prostor Osobní",
     "switchToWork": "Přepnout do prostoru Práce",
     "switchToPersonal": "Přepnout do prostoru Osobní",
+    "switchToAll": "Zobrazit všechny prostory",
     "workEmpty": "Prostor Práce je prázdný. V prostoru Osobní otevři nabídku položky nebo složky a zvol Přesunout do prostoru Práce."
+  },
+  "calendar": {
+    "moveToToday": "Přesunout na dnešek",
+    "moveToTomorrow": "Přesunout na zítřek",
+    "moveToNextWeek": "Přesunout na příští týden",
+    "deleteEvent": "Smazat událost",
+    "openContact": "Otevřít kontakt",
+    "newOnDay": "Nová událost v tento den",
+    "showDay": "Zobrazit tento den",
+    "open": "Otevřít kalendář",
+    "back": "Kalendář",
+    "more_one": "+{{count}} další",
+    "more_few": "+{{count}} další",
+    "more_other": "+{{count}} dalších",
+    "addOn": "Přidat na {{date}}",
+    "nothingFor_one": "{{count}} den nic",
+    "nothingFor_few": "{{count}} dny nic",
+    "nothingFor_other": "{{count}} dní nic",
+    "nothingToday": "Dnes nic",
+    "allDay": "Celý den",
+    "now": "Teď",
+    "viewLabel": "Zobrazení kalendáře",
+    "views": {
+      "day": "Den",
+      "week": "Týden",
+      "month": "Měsíc"
+    },
+    "legendLabel": "Zobrazit v kalendáři",
+    "kinds": {
+      "event": "Události",
+      "note": "Poznámky",
+      "task": "Seznamy úkolů",
+      "journal": "Záznamy v deníku",
+      "contact": "Narozeniny"
+    },
+    "dragEnd": "Přetažením změníš poslední den",
+    "previousDay": "Předchozí den",
+    "nextDay": "Další den",
+    "seedWeeklyReview": "Týdenní revize",
+    "seedWeeklyReviewBody": "Každý pátek ve čtyři. Co se dodalo, co se posunulo a co přijde příští týden.",
+    "addToCalendar": "Přidat do kalendáře",
+    "showAgenda": "Zobrazit program",
+    "hideAgenda": "Skrýt program",
+    "seedDemo": {
+      "lunch": "Oběd se Samem",
+      "dentist": "Zubař",
+      "callAna": "Hovor s Anou",
+      "groceries": "Nákup potravin",
+      "concert": "Koncert",
+      "giftIdeas": "Nápady na dárek pro Kona",
+      "flight": "Let do Lisabonu",
+      "conference": "Konference v Lisabonu",
+      "nightTrain": "Noční vlak do Porta",
+      "yoga": "Jóga",
+      "sprint": "Plánování sprintu",
+      "bookClub": "Čtenářský klub",
+      "rent": "Zaplatit nájem"
+    }
+  },
+  "repeat": {
+    "changeTitle": "Změnit tuto položku?",
+    "deleteTitle": "Smazat tuto položku?",
+    "thisOccurrence": "Jen tento výskyt",
+    "thisAndFollowing": "Tento a následující",
+    "allOccurrences": "Všechny výskyty",
+    "label": "Opakovat",
+    "never": "Neopakuje se",
+    "daily_one": "Každý den",
+    "daily_few": "Každé {{count}} dny",
+    "daily_other": "Každých {{count}} dní",
+    "weekdays": "Každý pracovní den (pondělí až pátek)",
+    "weekly_one": "Každý týden: {{days}}",
+    "weekly_few": "Každé {{count}} týdny: {{days}}",
+    "weekly_other": "Každých {{count}} týdnů: {{days}}",
+    "monthlyDay_one": "Každý měsíc {{day}}. den",
+    "monthlyDay_few": "Každé {{count}} měsíce {{day}}. den",
+    "monthlyDay_other": "Každých {{count}} měsíců {{day}}. den",
+    "monthlyNth_one": "Každý měsíc: {{nth}} {{weekday}}",
+    "monthlyNth_few": "Každé {{count}} měsíce: {{nth}} {{weekday}}",
+    "monthlyNth_other": "Každých {{count}} měsíců: {{nth}} {{weekday}}",
+    "yearly_one": "Každý rok {{date}}",
+    "yearly_few": "Každé {{count}} roky {{date}}",
+    "yearly_other": "Každých {{count}} let {{date}}",
+    "withUntil": "{{rule}}, do {{date}}",
+    "withCount_one": "{{rule}}, {{count}}krát",
+    "withCount_few": "{{rule}}, {{count}}krát",
+    "withCount_other": "{{rule}}, {{count}}krát",
+    "nth": {
+      "1": "1.",
+      "2": "2.",
+      "3": "3.",
+      "4": "4.",
+      "last": "poslední"
+    },
+    "custom": "Vlastní",
+    "every": "Jednou za",
+    "units": {
+      "day_one": "den",
+      "day_few": "dny",
+      "day_other": "dní",
+      "week_one": "týden",
+      "week_few": "týdny",
+      "week_other": "týdnů",
+      "month_one": "měsíc",
+      "month_few": "měsíce",
+      "month_other": "měsíců",
+      "year_one": "rok",
+      "year_few": "roky",
+      "year_other": "let"
+    },
+    "onDays": "Ve dny",
+    "onDay": "{{day}}. den",
+    "onNth": "{{nth}} {{weekday}}",
+    "ends": "Konec",
+    "endsNever": "Nikdy",
+    "endsOn": "K datu",
+    "endsAfter": "Po počtu opakování",
+    "times_one": "{{count}}krát",
+    "times_few": "{{count}}krát",
+    "times_other": "{{count}}krát",
+    "apply": "Použít"
+  },
+  "alerts": {
+    "label": "Upozornění",
+    "none": "Žádné",
+    "atTime": "V daný čas",
+    "minutesBefore_one": "{{count}} minutu předem",
+    "minutesBefore_few": "{{count}} minuty předem",
+    "minutesBefore_other": "{{count}} minut předem",
+    "hoursBefore_one": "{{count}} hodinu předem",
+    "hoursBefore_few": "{{count}} hodiny předem",
+    "hoursBefore_other": "{{count}} hodin předem",
+    "daysBefore_one": "{{count}} den předem",
+    "daysBefore_few": "{{count}} dny předem",
+    "daysBefore_other": "{{count}} dní předem",
+    "weeksBefore_one": "{{count}} týden předem",
+    "weeksBefore_few": "{{count}} týdny předem",
+    "weeksBefore_other": "{{count}} týdnů předem",
+    "onDayAt": "Ten den v {{time}}",
+    "daysBeforeAt_one": "{{count}} den předem v {{time}}",
+    "daysBeforeAt_few": "{{count}} dny předem v {{time}}",
+    "daysBeforeAt_other": "{{count}} dní předem v {{time}}",
+    "custom": "Vlastní",
+    "add": "Přidat",
+    "max": "Nejvýš pět upozornění.",
+    "units": {
+      "minutes": "minut",
+      "hours": "hodin",
+      "days": "dní",
+      "weeks": "týdnů"
+    },
+    "at": "v",
+    "remove": "Odebrat {{alert}}",
+    "reminder": "Připomínka",
+    "open": "Otevřít",
+    "snooze": "Odložit o 10 min",
+    "offOnPhone": "Připomínky jsou v tomto telefonu vypnuté",
+    "turnOn": "Zapnout",
+    "openSettings": "Otevřít nastavení"
+  },
+  "quickAdd": {
+    "group": "Vytvořit",
+    "items": "Položky",
+    "createNamed": "{{type}}: {{title}}",
+    "types": {
+      "event": "Nová událost",
+      "note": "Nová poznámka",
+      "task": "Nový seznam úkolů",
+      "journal": "Nový záznam v deníku"
+    },
+    "keepAsText": "Ponechat jako text",
+    "placeholder": "Název, den, čas, opakování...",
+    "example": "Zkus: {{example}}",
+    "examples": {
+      "1": "Zubař pá 15:00 1 h předem",
+      "2": "Týdenní revize každý pátek 16-17",
+      "3": "Zavolat do banky zítra 11:30 na 30 min",
+      "4": "Nájem každý měsíc 1., 1 den předem",
+      "5": "Zkouška za 5 dní #škola",
+      "6": "úkol Seznam věcí na cestu čt 18:00"
+    },
+    "examplesGroup": "Ukázkové věty",
+    "syntax": {
+      "group": "Co můžeš napsat",
+      "day": {
+        "label": "Den",
+        "examples": "zítra · pá · příští st · 31.10. · za 5 dní",
+        "insert": "zítra"
+      },
+      "time": {
+        "label": "Čas",
+        "examples": "15:00 · 9:30 · 16-17 · v 9",
+        "insert": "15:00"
+      },
+      "length": {
+        "label": "Délka",
+        "examples": "na 30 min · na 3 dny · pá do ne",
+        "insert": "na 1 h"
+      },
+      "repeat": {
+        "label": "Opakování",
+        "examples": "každý pátek · každý den · každý měsíc 1.",
+        "insert": "každý pátek"
+      },
+      "alert": {
+        "label": "Upozornění",
+        "examples": "1 h předem · upozornit 10 min",
+        "insert": "1 h předem"
+      },
+      "place": {
+        "label": "Složka a značka",
+        "examples": "/Cestování · #škola",
+        "insert": "#"
+      },
+      "space": {
+        "label": "Prostor",
+        "examples": "@práce · @osobní",
+        "insert": "@práce"
+      },
+      "type": {
+        "label": "Typ",
+        "examples": "úkol · poznámka · deník (událost, když typ nenapíšeš)",
+        "insert": "úkol"
+      }
+    },
+    "label": "Rychlé přidání"
+  },
+  "offline": {
+    "notLoaded": "Jsi offline a tahle část aplikace se ještě nenačetla. Zkus to znovu, až budeš zpátky online."
   }
 }

@@ -26,6 +26,30 @@ export const APP_ORIGIN = 'https://use.privacynotes.app';
  */
 export const APEX_ORIGIN = 'https://privacynotes.app';
 
+/** The release files: update manifests and floors for every platform. */
+export const RELEASES_ORIGIN = 'https://releases.privacynotes.app';
+
+/**
+ * The sync host of the official builds. The CSP of every official build
+ * (worker.ts, tauri.conf.json) allows only this sync host, so a build whose
+ * VITE_SUPABASE_URL names another host was built by somebody else, for
+ * another server.
+ */
+const OFFICIAL_SYNC_HOSTNAME = 'sync.privacynotes.app';
+
+/**
+ * True when this build syncs with the official server. A build that syncs
+ * elsewhere must not call our other hosts on its own (the icon proxy, the
+ * update checks): the person running it chose not to send us anything.
+ */
+export function usesOfficialServer(): boolean {
+  try {
+    return new URL(import.meta.env.VITE_SUPABASE_URL).hostname === OFFICIAL_SYNC_HOSTNAME;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * The App Store listing of the iPhone and iPad app, in the country-less form
  * Apple forwards to the reader's own storefront. The landing page's download

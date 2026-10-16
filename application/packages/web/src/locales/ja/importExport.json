@@ -36,16 +36,29 @@
     "photosDescNoQuota_other": "写真 {{count}} 枚、アプリで縮小後は約 {{size}}。",
     "photosTooBig_other": "写真 {{count}} 枚（{{size}}）分の空きがないため、写真は除外されます。それ以外はすべて取り込まれます。{{shortfall}} を空けるか、ストレージを追加してから、もう一度インポートすると取り込めます。"
   },
+  "importCalendar": {
+    "location": "場所",
+    "videoCall": "ビデオ通話",
+    "organizer": "主催者",
+    "guests": "ゲスト",
+    "file": "ファイル",
+    "link": "リンク",
+    "timeZone": "タイムゾーン",
+    "ends": "終了",
+    "repeats": "繰り返し"
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeoutの.zip(Keepフォルダ)または単一の.jsonノート。チェックリストはネイティブのタスクリストとして読み込まれます。",
+    "googleCalendar": "GoogleカレンダーのSettings > Import & exportから書き出した.zip、または単一の.icsファイル。予定は時刻、繰り返し、リマインダーを保持します。",
     "appleNotes": "無料のExporterアプリでMarkdownとして書き出し、その.zipをここにドロップしてください。",
     "appleJournal": "Journal(ジャーナル)をMacまたはiPhoneから書き出し、AppleJournalEntriesフォルダを圧縮して、その.zipをドロップしてください。エントリーは写真、動画、ボイスメモ、位置情報とともにジャーナルのエントリーとして読み込まれます。",
     "evernote": ".enexが1つでも、複数をzipにまとめてでも読み込めます。書式、タグ、添付ファイル、ノートリンク、ノートブックを保持します。タスクはEvernoteが.enexに含めません。",
     "samsungNotes": "Word(.docx)またはテキスト(.txt)として書き出してください。複数ファイルはzipにまとめると一括で読み込めます。",
     "simplenote": "Simplenoteから書き出して(Settings -> Tools -> Export Notes)、その.zipをドロップしてください。",
-    "standardNotes": "Standard Notesの復号済み.zipまたは.txtバックアップ(File > Export > Decrypted)。",
+    "standardNotes": "Standard Notesの復号済み.zipまたは.txtバックアップ(Account settings > Backups > Data backups > Decrypted)。",
     "obsidian": "Obsidianの保管庫を.zipで。タグ、[[note links]]、フォルダ構造、本文中の#タグ、埋め込んだ画像とファイルを保持します。",
     "notesnook": "Notesnookの書き出しデータを.zipで。書き出し時にHTMLを選ぶと、書式、ノートブック、タグ、添付ファイルが保持されます。",
+    "bear": "BearでFile > Backup Notes...を選び、.bear2bkファイルをここにドロップしてください。タグと入れ子のタグ、ピン留め、アーカイブ、ゴミ箱、色付きのハイライト、ノートリンク、添付ファイルも引き継がれます。",
     "joplin": "File > Export all > 「JEX - Joplin Export File」で書き出した.jexファイル。ノートブックはフォルダになり、タグ、ToDo、ノートリンク、添付ファイルも引き継がれます。",
     "upnote": "UpNoteの設定 > 「Backup」で「Backup now」を実行し、バックアップフォルダの中身をすべてzipにしてください。ノートブック、タグ、ピン留め、ノートリンク、書式、添付ファイルを保持します。スマートフォンアプリからのノート単位の書き出しにも対応しています。その場合は「Export to HTML」を選んでください。",
     "markdownFolder": ".mdまたは.txtファイルを個別に、あるいは.zipでまとめて。zipにしたフォルダはサブフォルダを保ち、画像や添付ファイルも一緒に運びます。",
@@ -92,6 +105,10 @@
     "blobsNotInBackup_other": "ノートは復元されましたが、バックアップに記載されている{{items}}がバックアップ内にありません。"
   },
   "preview": {
+    "oversize_other": "{{count}}件のノートが1 MBを超えています。これらはこのデバイスに残り、同期されません。",
+    "splitOversize_other": "これら{{count}}件のノートを見出しごとに小さなノートに分割して、同期できるようにする",
+    "partTitle": "{{title}} ({{index}}/{{total}})",
+    "continuedIn": "{{link}}に続く",
     "sourceLabel": "読み込み元",
     "uniqueTags": "タグの種類",
     "empty": "空",
@@ -103,6 +120,7 @@
     "duplicateWarning": "読み込むと、これらは新しいノートとして追加されます。2回実行すると重複します。自動の重複排除はまだありません。",
     "duplicateSkipNote": "すでに保存済みのブックマークはスキップされるので、二度実行しても重複しません。",
     "contactSkipNote": "すでに保存済みの人はスキップされそのまま残るので、2 回実行しても誰も重複しません。",
+    "eventSkipNote": "すでに読み込み済みの予定はスキップされそのまま残るので、2 回実行しても重複しません。",
     "restoreMergeNote": "あなた自身のバックアップにあるノートはIDで照合されます。すでにあるノートは、バックアップの版のほうが新しい場合にだけ更新され、ゴミ箱にあるノートはゴミ箱から戻ります。",
     "quotaExceeded": "<strong>ストレージ不足のため読み込めません。</strong>推定{{needed}}が必要ですが、利用できるのは{{available}}です。空き容量を確保するか、アップグレードしてから読み込んでください。",
     "quotaWarning": "注意: この読み込みで、残りストレージ{{available}}のうち約{{needed}}を使用します。",
@@ -143,7 +161,11 @@
     "bookmarksExportDesc": "どのブラウザでも読める標準のブックマークファイルです。フォルダーごと Chrome、Firefox、Safari、Edge に取り込めます。",
     "contactsOnlyHeading": "連絡先のみ",
     "contactsExportTitle": "連絡先ファイル (.vcf)",
-    "contactsExportDesc": "どの電話や連絡帳でも読める vCard ファイルです。iPhone、Android、Google コンタクト、Mac の連絡先にラベルやグループごとインポートできます。"
+    "contactsExportDesc": "どの電話や連絡帳でも読める vCard ファイルです。iPhone、Android、Google コンタクト、Mac の連絡先にラベルやグループごとインポートできます。",
+    "calendarOnlyHeading": "カレンダーのみ",
+    "calendarExportTitle": "カレンダーファイル (.ics)",
+    "calendarExportDesc": "予定と、日付のあるノートやタスクリストです。Googleカレンダー、Appleカレンダー、Outlook で使えます。",
+    "calendarPrivate": "非公開"
   },
   "exportProgress": {
     "failedTitle": "書き出しに失敗しました",
@@ -202,5 +224,11 @@
     "title_other": "{{count}}件の項目がPrivacyNotesに共有されました",
     "line": "選択するまで何も保存されません。",
     "saveAll": "すべて保存"
+  },
+  "destination": {
+    "label": "追加先",
+    "none": "フォルダなし",
+    "newFolder": "新規フォルダ「{{name}}」",
+    "help": "読み込み元のフォルダは選んだフォルダの中に入り、フォルダのない項目はそのフォルダに直接入ります。"
   }
 }

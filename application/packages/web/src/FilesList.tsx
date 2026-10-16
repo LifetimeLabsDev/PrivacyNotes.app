@@ -23,6 +23,7 @@ import { noteLookStyle, useNoteLook } from './looks/LookGlyph';
 import { itemGridClass, routeItemClick, useContextTarget, useItemList } from './itemList';
 import { useCompactRows } from './viewMode';
 import { iconPin, iconTrash, iconEditPencil, Check, Folder, LinkSimple, Upload, FunnelSimple, Files, PILLAR_GLYPHS } from './icons';
+import { NewButton } from './NewButton';
 import { HoverLabel } from './HoverLabel';
 import { SelectionToolbar } from './SelectionToolbar';
 import { suppressShiftTextSelection } from './useMultiSelect';
@@ -33,12 +34,9 @@ import type { View } from './views';
 import { ListNav } from './notesView/ListNav';
 import { ListPrefsPopover } from './ListPrefsPopover';
 import { IconUpgrade } from './UpgradeModal';
-import { isStorageConfigured } from './paddle';
 import { proUnlocked } from './demo';
-import { STORAGE_PACKAGES } from './pricing';
-import { FILE_SIZE_LIMIT_PRO, FILE_SIZE_LIMIT_STORAGE } from './attachmentValidation';
 import { LazyPdfCover, LazyPicture } from './LazyPicture';
-import { isPdf, isPictureMime, openMediaViewer, type MediaRef } from './mediaRefs';
+import { isMail, isPdf, isPictureMime, openMediaViewer, type MediaRef } from './mediaRefs';
 import { useQuotaBlockedUuids } from './usePendingUploads';
 import { unescapeMarkdownText } from './fileNames';
 import { textMatcher } from './textMatch';
@@ -210,9 +208,14 @@ function isPdfFileItem(item: FileItem): boolean {
   return item.kind === 'attachment' && isPdf(item.mime, item.name);
 }
 
-/** Anything the viewer can open: a picture or a PDF. */
-function isViewableFileItem(item: FileItem): boolean {
+/** A file whose grid tile shows the file itself: a picture or a PDF's first page. */
+function hasCoverFileItem(item: FileItem): boolean {
   return isPictureFileItem(item) || isPdfFileItem(item);
+}
+
+/** Anything the viewer can open: a picture, a PDF or a saved email. */
+function isViewableFileItem(item: FileItem): boolean {
+  return hasCoverFileItem(item) || (item.kind === 'attachment' && isMail(item.mime, item.name));
 }
 
 /** The reference a note stores for this file. */
@@ -377,57 +380,6 @@ function ProUpsell({ onUpgrade, className = '' }: { onUpgrade: () => void; class
         className="mt-2 w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-medium text-xs px-3 py-2 transition"
       >
         <IconUpgrade size={12} /> {t('filesList.upgradeToPro')}
-      </button>
-    </div>
-  );
-}
-
-// Storage upsell shown to Pro users without a storage subscription (Files
-// view). Pitches capacity only - the per-file bump ships later alongside the
-// storage-backend change. Spec: ops/docs/file-size-storage-upsell.md (final per-file cap numbers still open; flat 100 MB is the plan)
-function StorageUpsell({
-  onManage,
-  currentMaxBytes,
-  className = '',
-}: {
-  onManage: () => void;
-  currentMaxBytes: number;
-  className?: string;
-}) {
-  const { t } = useTranslation('shell');
-  // Spec: ops/docs/design-decisions.md (Pro base 500 MB storage)
-  const MB = 1000 * 1000;
-  const GB = 1000 * MB;
-  const base = currentMaxBytes > 0 ? currentMaxBytes : 500 * MB;
-  const maxAddonGb = Math.max(...STORAGE_PACKAGES.map((p) => p.gb));
-  const fromLabel = base >= GB ? `${Math.round((base / GB) * 10) / 10} GB` : `${Math.round(base / MB)} MB`;
-  const targetLabel = `${Math.round((base / GB + maxAddonGb) * 10) / 10} GB`;
-  const perFileFrom = `${Math.round(FILE_SIZE_LIMIT_PRO / MB)} MB`;
-  const perFileTo = `${Math.round(FILE_SIZE_LIMIT_STORAGE / MB)} MB`;
-  return (
-    <div className={`w-full ${className}`}>
-      <div className="flex items-center justify-between gap-2 text-[11px] py-0.5">
-        <span className="text-pn-muted">{t('filesList.perFile')}</span>
-        <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
-          <span className="text-pn-muted">{perFileFrom}</span>
-          <span className="text-pn-muted" aria-hidden="true">{'→'}</span>
-          <span className="text-accent font-medium">{perFileTo}</span>
-        </span>
-      </div>
-      <div className="flex items-center justify-between gap-2 text-[11px] py-0.5">
-        <span className="text-pn-muted">{t('filesList.storage')}</span>
-        <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
-          <span className="text-pn-muted">{fromLabel}</span>
-          <span className="text-pn-muted" aria-hidden="true">{'→'}</span>
-          <span className="text-accent font-medium">{t('filesList.upToMax', { max: targetLabel })}</span>
-        </span>
-      </div>
-      <button
-        type="button"
-        onClick={onManage}
-        className="mt-2 w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-medium text-xs px-3 py-2 transition"
-      >
-        <IconUpgrade size={12} /> {t('filesList.addStorage')}
       </button>
     </div>
   );
@@ -850,7 +802,7 @@ export function FilesList({
           allTags={allTags}
         />
       ) : (
-      <div className="shrink-0 h-14 px-4 border-b border-divider flex items-center justify-between gap-3">
+      <div className="shrink-0 h-11 md:h-14 px-4 border-b border-divider flex items-center justify-between gap-3">
 
         <ListNav
           hiddenViews={hiddenViews}
@@ -860,15 +812,11 @@ export function FilesList({
           title={t('filesList.title')}
           icon={<PILLAR_GLYPHS.files size={26} className="text-accent shrink-0" aria-hidden="true" />}
         />
-        <button
-          type="button"
+        <NewButton
           onClick={() => onUploadFiles()}
           tabIndex={mobileTabIndex}
-          className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition"
-        >
-          <Upload size={18} />
-          {t('filesList.upload')}
-        </button>
+          label={t('filesList.upload')}
+        />
       </div>
       )}
 
@@ -897,28 +845,23 @@ export function FilesList({
         </div>
       )}
 
-      {/* ── Storage bar ──────────────────────────────────────────── */}
+      {/* ── Storage bar: one line that opens Settings > Storage; the
+          Free-vs-Pro comparison stays below it for a free account. The
+          add-ons live in Settings only, where somebody goes to look. ── */}
       {quotaMaxBytes > 0 && (
         <StorageBar
           label={t('filesList.storage')}
           usedBytes={quotaUsedBytes}
           maxBytes={quotaMaxBytes}
           onRefresh={onRefreshStorage}
+          onOpen={onManageStorage}
         />
       )}
-
-      {/* ── Supported types hint (Pro) / Free-vs-Pro upsell (free) ── */}
-      <div className="shrink-0 px-4 pb-1">
-        {!isPro ? (
+      {!isPro && (
+        <div className="shrink-0 px-4 pb-1">
           <ProUpsell onUpgrade={onOpenUpgrade} />
-        ) : !hasStorageSub && isStorageConfigured() ? (
-          <StorageUpsell onManage={onManageStorage} currentMaxBytes={quotaMaxBytes} />
-        ) : (
-          <p className="text-[11px] text-pn-soft leading-relaxed">
-            {t('filesList.supportedTypesHint', { max: hasStorageSub ? '100' : '50' })}
-          </p>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* ── Type filter tabs ─────────────────────────────────────── */}
       <div className="shrink-0 px-3 pt-2 pb-1 flex gap-1.5">
@@ -945,7 +888,7 @@ export function FilesList({
       </div>
 
       {/* ── Search row + sort button - matches NotesList layout ───── */}
-      <div className="shrink-0 p-3 border-b border-divider relative">
+      <div className="shrink-0 px-3 py-2 md:p-3 border-b border-divider relative">
         <div className="flex items-stretch gap-2">
           <HoverLabel label={t('filesList.sortOptions')} position="above-start">
           <button
@@ -1084,7 +1027,7 @@ export function FilesList({
               // PDF tile shows its first page the same way. A note the PIN
               // still guards shows neither, the way the note list hides its
               // preview: its tiles keep the file icon, like any other file.
-              const isImageBg = viewMode === 'grid' && !gatedNow.has(item.noteId) && isViewableFileItem(item);
+              const isImageBg = viewMode === 'grid' && !gatedNow.has(item.noteId) && hasCoverFileItem(item);
               // Same amber chip as the attachment card's meta line (#151): the
               // blob is kept local because it does not fit the quota.
               const localOnly = quotaBlockedUuids.has(item.uuid);

@@ -11,13 +11,17 @@
     "noContent": "Kein Inhalt",
     "notBackedUp": "Nicht gesichert",
     "archived": "Archiviert",
-    "entryDate": "Eintragsdatum"
+    "entryDate": "Eintragsdatum",
+    "date": "Datum",
+    "dayOf": "Tag {{n}} von {{total}}"
   },
   "header": {
     "new": "Neu",
     "newNote": "Neue Notiz",
     "newNoteHover": "Neue Notiz ({{hotkey}})",
-    "trash": "Papierkorb"
+    "trash": "Papierkorb",
+    "newEvent": "Neuer Termin",
+    "newEventHover": "Neuer Termin ({{hotkey}})"
   },
   "folderChip": {
     "clear": "Ordnerfilter aufheben: {{folder}}",
@@ -40,7 +44,9 @@
     "login": "Login",
     "file": "Datei",
     "bookmark": "Lesezeichen",
-    "contact": "Kontakt"
+    "contact": "Kontakt",
+    "event": "Termin",
+    "quickAdd": "Schnell hinzufügen"
   },
   "vaultFilter": {
     "all": "Alle",
@@ -94,7 +100,8 @@
     "vault": "Tresor",
     "pinned": "Angepinnt",
     "archive": "Archiv",
-    "notes": "Notizen"
+    "notes": "Notizen",
+    "calendar": "Kalender"
   },
   "footerStats": {
     "journals": "Tagebücher",
@@ -138,8 +145,17 @@
     "collapse": "Notizliste einklappen",
     "expand": "Notizliste ausklappen"
   },
+  "split": {
+    "action": "Notiz aufteilen",
+    "done": "Aufgeteilt in „{{title}}“",
+    "overLimit": "„{{title}}“ ist größer als 1 MB und bleibt auf diesem Gerät",
+    "cannot": "Diese Notiz kann hier nicht aufgeteilt werden. Setz den Cursor dorthin, wo die neue Notiz beginnen soll.",
+    "continuedTitle": "{{title}} (Fortsetzung)",
+    "continuedIn": "Fortsetzung in {{link}}"
+  },
   "paneResize": {
-    "hintCollapse": "Zum Einklappen klicken · Zum Anpassen ziehen"
+    "hintCollapse": "Zum Einklappen klicken · Zum Anpassen ziehen",
+    "hintExpand": "Zum Ausklappen klicken · Zum Anpassen ziehen"
   },
   "emptyEditor": {
     "selectFile": "Wähle eine Datei zur Vorschau",
@@ -176,6 +192,8 @@
     "findInNote": "In Notiz suchen",
     "navPrev": "Vorherige",
     "navNext": "Nächste",
+    "navPrevTab": "Vorheriger Tab",
+    "navNextTab": "Nächster Tab",
     "undo": "Rückgängig",
     "redo": "Wiederholen",
     "hide": "Verbergen",
@@ -227,6 +245,8 @@
     "words": "Wörter",
     "zen": "Zen-Modus",
     "appearance": "Design",
+    "goToTop": "Zum Anfang",
+    "goToEnd": "Zum Ende",
     "signOut": "Abmelden",
     "signingOut": "Wird abgemeldet…",
     "switchToLight": "Zum hellen Modus wechseln",
@@ -252,7 +272,8 @@
     "aboutLabel": "Über",
     "languageLabel": "Sprache",
     "dateLabel": "Datum",
-    "languageDesc": "Wähle die Sprache, in der PrivacyNotes angezeigt wird."
+    "languageDesc": "Wähle die Sprache, in der PrivacyNotes angezeigt wird.",
+    "calendarLabel": "Kalender"
   },
   "importStore": {
     "title": "Importieren oder speichern?",

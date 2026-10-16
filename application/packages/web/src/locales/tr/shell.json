@@ -8,7 +8,6 @@
     "title": "Görevler",
     "newTaskNote": "Yeni görev notu",
     "newTaskNoteWithHotkey": "Yeni görev notu ({{hotkey}})",
-    "new": "Yeni",
     "hideCompleted": "Tamamlanan görevleri gizle",
     "showCompleted": "Tamamlanan görevleri göster",
     "searchPlaceholder": "Görevlerde arayın…",
@@ -37,12 +36,9 @@
     "deselectAll": "Tüm seçimi kaldır",
     "selectAll": "Tümünü seç",
     "storage": "Depolama",
-    "supportedTypesHint": "En büyük dosya boyutu: {{max}} MB",
     "perFile": "Dosya başına",
     "free": "Ücretsiz",
     "upgradeToPro": "Pro'ya yükselt",
-    "addStorage": "Depolama ekle",
-    "upToMax": "en fazla {{max}}",
     "filterAll": "Tümü",
     "filterImages": "Görseller",
     "filterAudio": "Ses",
@@ -115,6 +111,7 @@
     "video": "Video",
     "image": "Görsel",
     "pdf": "PDF",
+    "email": "E-posta",
     "archive": "Arşiv",
     "document": "Belge",
     "spreadsheet": "E-tablo",
@@ -188,7 +185,8 @@
     "markdown": "Markdown",
     "markdownTip": "Şifresiz",
     "bookmarks": "Yer imleri",
-    "contacts": "Kişiler"
+    "contacts": "Kişiler",
+    "calendar": "Takvim"
   },
   "browseToggle": {
     "label": "Şuna göre göz at",
@@ -204,6 +202,10 @@
     "deleteConfirmTitle": "Klasör silinsin mi?",
     "deleteConfirmBodyRoot": "\"{{folder}}\" silinecek. İçindeki notlar ve alt klasörler en üst seviyeye taşınır. Hiçbir not silinmez.",
     "deleteConfirmBodyNested": "\"{{folder}}\" silinecek. İçindeki notlar ve alt klasörler \"{{parent}}\" klasörüne taşınır. Hiçbir not silinmez.",
+    "deleteConfirmBranchRoot": "\"{{folder}}\" ve alt klasörleri silinecek. İçindeki notlar en üst seviyeye taşınır. Hiçbir not silinmez.",
+    "deleteConfirmBranchNested": "\"{{folder}}\" ve alt klasörleri silinecek. İçindeki notlar \"{{parent}}\" klasörüne taşınır. Hiçbir not silinmez.",
+    "deleteSubfolders_one": "Alt klasörünü de sil",
+    "deleteSubfolders_other": "{{count}} alt klasörünü de sil",
     "moveTo": "Klasöre taşı",
     "searchPlaceholder": "Klasörlerde arayın",
     "sortFolders": "Klasörleri sırala",
@@ -221,7 +223,8 @@
     "saveName": "Klasör adını kaydet",
     "actionsForFolder": "{{folder}} klasörü için işlemler",
     "seedSecurity": "Güvenlik",
-    "seedTravel": "Seyahat"
+    "seedTravel": "Seyahat",
+    "seedTeam": "Ekip"
   },
   "collapsedSidebar": {
     "newNote": "Yeni not",
@@ -268,7 +271,19 @@
     "sizeHint": "Bu öğenin toplam şifrelenmiş boyutu.",
     "tagCount_one": "{{count}} etiket",
     "tagCount_other": "{{count}} etiket",
-    "entryDate": "Kayıt tarihi"
+    "entryDate": "Kayıt tarihi",
+    "noDate": "Yok",
+    "schedule": "Zamanlama",
+    "ends": "Bitiş",
+    "sameDay": "Aynı gün",
+    "allDay": "Tüm gün",
+    "starts": "Başlangıç",
+    "endsAt": "Bitiş saati",
+    "noEnd": "Yok",
+    "removeFromCalendar": "Takvimden kaldır",
+    "makeEvent": "Tekrarlamak için bunu etkinliğe dönüştürün",
+    "typeEvent": "Etkinlik",
+    "repeatRemoved": "Tekrar kaldırılır"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "Seçimden çık (Esc)",
@@ -303,6 +318,8 @@
     "showSize": "Dosya boyutunu göster",
     "showTags": "Klasörü ve etiketleri göster",
     "showCalendar": "Takvimi göster",
+    "showWorkItems": "<b>İş</b> öğelerini göster",
+    "showPersonalItems": "<b>Kişisel</b> öğeleri göster",
     "other": "Diğer",
     "showReadOnly": "Salt okunurları göster",
     "showProtected": "Korumalıları göster",
@@ -331,7 +348,8 @@
     "nextMonth": "Sonraki ay",
     "dayWithEntry": "{{date}}, kayıt var",
     "dayWithEntryIn": "{{date}}, {{space}} alanında kayıt var",
-    "dayWithEntryBoth": "{{date}}, Kişisel ve İş alanlarında kayıt var",
+    "dayWithItems_one": "{{date}}, {{count}} öğe",
+    "dayWithItems_other": "{{date}}, {{count}} öğe",
     "previousWeek": "Önceki hafta",
     "nextWeek": "Sonraki hafta",
     "showMonth": "{{month}}, tüm ayı göster",
@@ -375,11 +393,14 @@
     "copyBookmarkUrl": "URL'yi kopyala",
     "editBookmark": "Yer imini düzenle",
     "openInTab": "Sekmede aç",
+    "openInTabHint": "{{key}}-tıklama",
     "closeTab": "Sekmeyi kapat",
     "closeOtherTabs": "Diğer sekmeleri kapat",
     "closeAllTabs": "Tüm sekmeleri kapat",
     "pinTab": "Sekmeyi sabitle",
-    "unpinTab": "Sekmenin sabitlemesini kaldır"
+    "unpinTab": "Sekmenin sabitlemesini kaldır",
+    "newEvent": "Yeni etkinlik",
+    "quickAdd": "Hızlı ekle"
   },
   "demoBanner": {
     "title": "Risksiz deneyin",
@@ -636,6 +657,9 @@
       "mastodon": "Mastodon"
     }
   },
+  "staleEditor": {
+    "copyToast": "Bu not başka bir cihazda değişti. Düzenlemeleriniz \"{{title}}\" adlı bir kopyada."
+  },
   "noteLinks": {
     "retargetedToast_one": "{{count}} not bağlantısı yeni başlığa göre güncellendi.",
     "retargetedToast_other": "{{count}} not bağlantısı yeni başlığa göre güncellendi."
@@ -645,7 +669,8 @@
   },
   "tabStrip": {
     "label": "Açık sekmeler",
-    "close": "Kapat: {{title}}"
+    "close": "Kapat: {{title}}",
+    "moreTabs": "Daha fazla sekme"
   },
   "shareInbox": {
     "saved": "PrivacyNotes'a kaydedildi",
@@ -674,10 +699,11 @@
   },
   "spaces": {
     "label": "Alan",
+    "all": "Tümü",
     "personal": "Kişisel",
     "work": "İş",
-    "moveToWork": "İş alanına taşı",
-    "moveToPersonal": "Kişisel alana taşı",
+    "moveToWork": "<b>İş</b> alanına taşı",
+    "moveToPersonal": "<b>Kişisel</b> alana taşı",
     "movedToWork": "{{folder}} İş alanına taşındı",
     "movedToPersonal": "{{folder}} Kişisel alana taşındı",
     "itemMovedToWork": "İş alanına taşındı",
@@ -686,6 +712,218 @@
     "switchedToPersonal": "Kişisel alana geçildi",
     "switchToWork": "İş alanına geç",
     "switchToPersonal": "Kişisel alana geç",
+    "switchToAll": "Tüm alanları göster",
     "workEmpty": "İş alanı boş. Kişisel alanda bir öğenin ya da klasörün menüsünü açın ve İş alanına taşı seçeneğini seçin."
+  },
+  "calendar": {
+    "moveToToday": "Bugüne taşı",
+    "moveToTomorrow": "Yarına taşı",
+    "moveToNextWeek": "Gelecek haftaya taşı",
+    "deleteEvent": "Etkinliği sil",
+    "openContact": "Kişiyi aç",
+    "newOnDay": "Bu güne yeni etkinlik",
+    "showDay": "Bu günü göster",
+    "open": "Takvimi aç",
+    "back": "Takvim",
+    "more_other": "+{{count}} daha",
+    "addOn": "{{date}} tarihine ekle",
+    "nothingFor_other": "{{count}} gün boyunca bir şey yok",
+    "nothingToday": "Bugün bir şey yok",
+    "allDay": "Tüm gün",
+    "now": "Şimdi",
+    "viewLabel": "Takvim görünümü",
+    "views": {
+      "day": "Gün",
+      "week": "Hafta",
+      "month": "Ay"
+    },
+    "legendLabel": "Takvimde göster",
+    "kinds": {
+      "event": "Etkinlikler",
+      "note": "Notlar",
+      "task": "Görev listeleri",
+      "journal": "Günlük kayıtları",
+      "contact": "Doğum günleri"
+    },
+    "dragEnd": "Bitiş gününü değiştirmek için sürükleyin",
+    "previousDay": "Önceki gün",
+    "nextDay": "Sonraki gün",
+    "seedWeeklyReview": "Haftalık değerlendirme",
+    "seedWeeklyReviewBody": "Her cuma saat dörtte. Neler tamamlandı, neler kaydı ve gelecek hafta neler var.",
+    "addToCalendar": "Takvime ekle",
+    "showAgenda": "Ajandayı göster",
+    "hideAgenda": "Ajandayı gizle",
+    "seedDemo": {
+      "lunch": "Sam ile öğle yemeği",
+      "dentist": "Diş hekimi",
+      "callAna": "Ana ile görüşme",
+      "groceries": "Market alışverişi",
+      "concert": "Konser",
+      "giftIdeas": "Kon için hediye fikirleri",
+      "flight": "Lizbon uçuşu",
+      "conference": "Lizbon konferansı",
+      "nightTrain": "Porto'ya gece treni",
+      "yoga": "Yoga",
+      "sprint": "Sprint planlaması",
+      "bookClub": "Kitap kulübü",
+      "rent": "Kirayı öde"
+    },
+    "nothingFor_one": "{{count}} gün boyunca bir şey yok",
+    "more_one": "+{{count}} daha"
+  },
+  "repeat": {
+    "changeTitle": "Bu öğe değiştirilsin mi?",
+    "deleteTitle": "Bu öğe silinsin mi?",
+    "thisOccurrence": "Yalnızca bu tekrar",
+    "thisAndFollowing": "Bu ve sonrakiler",
+    "allOccurrences": "Tüm tekrarlar",
+    "label": "Tekrar",
+    "never": "Tekrarlanmaz",
+    "daily_other": "{{count}} günde bir",
+    "weekdays": "Hafta içi her gün (pazartesiden cumaya)",
+    "weekly_other": "{{count}} haftada bir, {{days}}",
+    "monthlyDay_other": "{{count}} ayda bir, ayın {{day}}. günü",
+    "monthlyNth_other": "{{count}} ayda bir, {{nth}} {{weekday}}",
+    "yearly_other": "{{count}} yılda bir, {{date}}",
+    "withUntil": "{{rule}}, {{date}} tarihine kadar",
+    "withCount_other": "{{rule}}, {{count}} kez",
+    "nth": {
+      "1": "ilk",
+      "2": "ikinci",
+      "3": "üçüncü",
+      "4": "dördüncü",
+      "last": "son"
+    },
+    "custom": "Özel",
+    "every": "Her",
+    "units": {
+      "day_other": "gün",
+      "week_other": "hafta",
+      "month_other": "ay",
+      "year_other": "yıl",
+      "year_one": "yıl",
+      "month_one": "ay",
+      "week_one": "hafta",
+      "day_one": "gün"
+    },
+    "onDays": "Günler",
+    "onDay": "Ayın {{day}}. günü",
+    "onNth": "{{nth}} {{weekday}}",
+    "ends": "Bitiş",
+    "endsNever": "Hiçbir zaman",
+    "endsOn": "Bir tarihte",
+    "endsAfter": "Belirli sayıda tekrardan sonra",
+    "times_other": "{{count}} kez",
+    "apply": "Uygula",
+    "times_one": "{{count}} kez",
+    "withCount_one": "{{rule}}, {{count}} kez",
+    "yearly_one": "Her yıl {{date}}",
+    "monthlyNth_one": "Her ay {{nth}} {{weekday}}",
+    "monthlyDay_one": "Her ayın {{day}}. günü",
+    "weekly_one": "Her hafta {{days}}",
+    "daily_one": "Her gün"
+  },
+  "alerts": {
+    "label": "Uyarı",
+    "none": "Yok",
+    "atTime": "Tam zamanında",
+    "minutesBefore_other": "{{count}} dakika önce",
+    "hoursBefore_other": "{{count}} saat önce",
+    "daysBefore_other": "{{count}} gün önce",
+    "weeksBefore_other": "{{count}} hafta önce",
+    "onDayAt": "O gün saat {{time}}",
+    "daysBeforeAt_other": "{{count}} gün önce saat {{time}}",
+    "custom": "Özel",
+    "add": "Ekle",
+    "max": "En fazla beş uyarı.",
+    "units": {
+      "minutes": "dakika",
+      "hours": "saat",
+      "days": "gün",
+      "weeks": "hafta"
+    },
+    "at": "saat",
+    "remove": "{{alert}} uyarısını kaldır",
+    "reminder": "Hatırlatıcı",
+    "open": "Aç",
+    "snooze": "10 dk ertele",
+    "offOnPhone": "Bu telefonda hatırlatıcılar kapalı",
+    "turnOn": "Etkinleştir",
+    "openSettings": "Ayarları aç",
+    "daysBeforeAt_one": "{{count}} gün önce saat {{time}}",
+    "weeksBefore_one": "{{count}} hafta önce",
+    "daysBefore_one": "{{count}} gün önce",
+    "hoursBefore_one": "{{count}} saat önce",
+    "minutesBefore_one": "{{count}} dakika önce"
+  },
+  "quickAdd": {
+    "group": "Oluştur",
+    "items": "Öğeler",
+    "createNamed": "{{type}}: {{title}}",
+    "types": {
+      "event": "Yeni etkinlik",
+      "note": "Yeni not",
+      "task": "Yeni görev listesi",
+      "journal": "Yeni günlük kaydı"
+    },
+    "keepAsText": "Bunu metin olarak bırak",
+    "placeholder": "Başlık, gün, saat, tekrar...",
+    "example": "Deneyin: {{example}}",
+    "examples": {
+      "1": "Dişçi cuma 15:00 1 saat önce",
+      "2": "Haftalık değerlendirme her cuma 16-17",
+      "3": "Bankayı ara yarın 11:30 süre 30 dk",
+      "4": "Kira her ayın 1'inde 1 gün önce",
+      "5": "Sınav 3 gün sonra #okul",
+      "6": "görev Bavul listesi perşembe 18:00"
+    },
+    "examplesGroup": "Örnek cümleler",
+    "syntax": {
+      "group": "Neler yazabilirsiniz",
+      "day": {
+        "label": "Gün",
+        "examples": "yarın · cuma · gelecek çarşamba · 31 Ekim · 3 gün sonra",
+        "insert": "yarın"
+      },
+      "time": {
+        "label": "Saat",
+        "examples": "15:00 · 9:30 · 16-17 · saat 9",
+        "insert": "15:00"
+      },
+      "length": {
+        "label": "Süre",
+        "examples": "süre 30 dk · süre 3 gün · cuma - pazar",
+        "insert": "süre 1 sa"
+      },
+      "repeat": {
+        "label": "Tekrar",
+        "examples": "her cuma · her haftaiçi · her ayın 1'inde",
+        "insert": "her cuma"
+      },
+      "alert": {
+        "label": "Uyarı",
+        "examples": "1 saat önce · hatırlat 10 dk",
+        "insert": "1 saat önce"
+      },
+      "place": {
+        "label": "Klasör ve etiket",
+        "examples": "/Seyahat · #okul",
+        "insert": "#"
+      },
+      "space": {
+        "label": "Alan",
+        "examples": "@iş · @kişisel",
+        "insert": "@iş"
+      },
+      "type": {
+        "label": "Tür",
+        "examples": "görev · not · günlük (hiçbiri yazılmazsa etkinlik)",
+        "insert": "görev"
+      }
+    },
+    "label": "Hızlı ekle"
+  },
+  "offline": {
+    "notLoaded": "Çevrimdışısınız ve uygulamanın bu bölümü henüz yüklenmedi. Tekrar çevrimiçi olduğunuzda yeniden deneyin."
   }
 }

@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Permissions every platform needs. The Markdown folder pillar's own filesystem and dialog grants moved to desktop.json, because that pillar reports itself unavailable on iOS and Android. The three that stayed are the ones `saveBlob` uses on every native platform, since the webview has no download handler anywhere: a Save As dialog, the write, and the stat that confirms the bytes are really there (Android's create-document flow makes an empty file the moment the user taps Save, so an unverified write hands somebody a backup that will not restore). `opener:allow-open-path` was granted here until 2026-08-14 for the row menu's Reveal in folder / Open in default app; both were removed as dead controls, so the grant went with them - nothing outside `openUrl` (covered by opener:default) uses the opener plugin now. `opener:default` opens http(s), mailto: and tel:; the one scope added beside it is sms:, which a contact's Message action hands to the messages app (every scheme the app opens must be listed, because the ACL refuses silently).",
+  "description": "Permissions every platform needs. The Markdown folder pillar's own filesystem and dialog grants moved to desktop.json, because that pillar reports itself unavailable on iOS and Android. The three that stayed are the ones `saveBlob` uses on every native platform, since the webview has no download handler anywhere: a Save As dialog, the write, and the stat that confirms the bytes are really there (Android's create-document flow makes an empty file the moment the user taps Save, so an unverified write hands somebody a backup that will not restore). `opener:allow-open-path` was granted here until 2026-08-14 for the row menu's Reveal in folder / Open in default app; both were removed as dead controls, so the grant went with them - nothing outside `openUrl` (covered by opener:default) uses the opener plugin now. `opener:default` opens http(s), mailto: and tel:; the one scope added beside it is sms:, which a contact's Message action hands to the messages app (every scheme the app opens must be listed, because the ACL refuses silently). `notification:default` is the calendar reminders: the webview schedules, cancels and lists its own local notifications and asks for the permission once; it carries no network or file access.",
   "windows": [
     "main",
     "about"
@@ -11,6 +11,7 @@
     "core:event:default",
     "core:window:allow-close",
     "deep-link:default",
+    "notification:default",
     "opener:default",
     {
       "identifier": "opener:allow-open-url",

@@ -64,5 +64,8 @@
   ],
   "twoFactor": [
     "lost-2fa"
+  ],
+  "spaces": [
+    "spaces"
   ]
 }

@@ -1,6 +1,6 @@
-import type { Dispatch, SetStateAction } from 'react';
+import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowsOutSimple, ChartBar, Gear, SignOut, Sun } from '../icons';
+import { ArrowCircleDown, ArrowCircleUp, ArrowsOutSimple, ChartBar, Gear, SignOut, Sun } from '../icons';
 import { JournalCalendarButton, type JournalCalendarHandlers } from '../JournalCalendar';
 import type { LocalNote } from '../db';
 import { detectPlatform } from '../devices';
@@ -19,6 +19,16 @@ import { intlLocale } from '../languages';
 const IS_DESKTOP_APP = detectPlatform() === 'desktop';
 
 type FooterStats = { notes: number; words: number; label: string };
+
+/** The one jump a long open note offers: to its end while it is read, to its
+ *  top once the reader is near the end. `scrolling` and `keepShown` drive the
+ *  desktop pill, which only shows while the note moves. */
+export type NoteJump = {
+  toTop: boolean;
+  go: (where: 'top' | 'end') => void;
+  scrolling: boolean;
+  keepShown: (on: boolean) => void;
+};
 
 /** What the footer's journal calendar opens and creates. */
 export type FooterCalendar = JournalCalendarHandlers;
@@ -61,18 +71,28 @@ export function FullFooter({
   const { t } = useTranslation('notes');
   return (
       <footer className="hidden [@media(min-width:768px)_and_(min-height:501px)]:flex shrink-0 items-center border-t border-divider text-[13px] text-pn-muted">
-        {/* Settings + Sync zone - matches sidebar width */}
+        {/* Settings + Sync zone - matches sidebar width. It is a sidebar
+            size container too (pn-sidebar in index.css), so a sidebar
+            narrower than 230px drops the Settings word for a tip, the way
+            the sidebar's own footer actions do, and the sync label keeps
+            its room. The padding sits on the inner row: a container
+            measures its content box, and padding on it would hide the
+            word at 240px too. */}
         {!zenMode && (
-          <div className={`shrink-0 self-stretch hidden lg:flex items-center justify-between px-5 py-1 ${sidebarCollapsed ? 'w-[52px] justify-center' : `w-[var(--pn-sidebar-render)] ${gridMode && selected ? 'min-[1400px]:w-[var(--pn-sidebar-render-dock)]' : ''}`}`}>
-            <button
-              onClick={() => setShowSettings(true)}
-              aria-label={t('footer.settings', exemptOpts('notes:footer.settings'))}
-              className="inline-flex items-center gap-2 text-pn hover:text-accent transition"
-            >
-              <Gear size={16} className="text-accent" />
-              {!sidebarCollapsed && <span className="text-[14px] font-medium">{t('footer.settings', exemptOpts('notes:footer.settings'))}</span>}
-            </button>
-            {!sidebarCollapsed && <SyncStatus onOpen={openSyncVerify} />}
+          <div className={`pn-sidebar shrink-0 self-stretch hidden lg:flex ${sidebarCollapsed ? 'w-[52px]' : `w-[var(--pn-sidebar-render)] ${gridMode && selected ? 'min-[1400px]:w-[var(--pn-sidebar-render-dock)]' : ''}`}`}>
+            <div className={`flex flex-1 min-w-0 items-center gap-2 px-5 py-1 ${sidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
+              <HoverLabel label={t('footer.settings', exemptOpts('notes:footer.settings'))} position="above-start" className="pn-sb-tip flex">
+                <button
+                  onClick={() => setShowSettings(true)}
+                  aria-label={t('footer.settings', exemptOpts('notes:footer.settings'))}
+                  className="inline-flex items-center gap-2 text-pn hover:text-accent transition"
+                >
+                  <Gear size={16} className="text-accent" />
+                  {!sidebarCollapsed && <span className="pn-sb-wide text-[14px] font-medium">{t('footer.settings', exemptOpts('notes:footer.settings'))}</span>}
+                </button>
+              </HoverLabel>
+              {!sidebarCollapsed && <SyncStatus onOpen={openSyncVerify} />}
+            </div>
           </div>
         )}
         {/* Main footer content. The divider is a border-s HERE (not a
@@ -210,8 +230,40 @@ export function FullFooter({
   );
 }
 
+/** One square touch target in the phone bar: 44px, the smallest either phone
+ *  platform recommends, with a tip on devices that hover. */
+function BarButton({
+  label,
+  position,
+  onClick,
+  pressed,
+  appearanceTrigger,
+  children,
+}: {
+  label: string;
+  position: 'above' | 'above-end';
+  onClick: () => void;
+  pressed?: boolean;
+  appearanceTrigger?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <HoverLabel label={label} position={position}>
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={label}
+        aria-pressed={pressed}
+        data-appearance-trigger={appearanceTrigger || undefined}
+        className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-accent hover:bg-pn/5 active:bg-pn/10 transition"
+      >
+        {children}
+      </button>
+    </HoverLabel>
+  );
+}
+
 export function MiniFooter({
-  zenMode,
   setZenMode,
   zenUnlocked,
   selected,
@@ -219,12 +271,13 @@ export function MiniFooter({
   footerStats,
   calendar,
   auth,
+  newSlotRef,
+  noteJump,
   setShowSettings,
   setShowStats,
   setShowAppearance,
   setShowUpgrade,
 }: {
-  zenMode: boolean;
   setZenMode: Dispatch<SetStateAction<boolean>>;
   zenUnlocked: boolean;
   selected: LocalNote | null;
@@ -232,31 +285,36 @@ export function MiniFooter({
   footerStats: FooterStats;
   calendar: FooterCalendar;
   auth: { isPro: boolean };
+  /** The box a list's New button moves into on a phone (see NewButton). */
+  newSlotRef: (node: HTMLDivElement | null) => void;
+  /** The one jump a long open note offers: to its end while it is read, to
+   *  its top once the reader is near the end. Absent for a short note. */
+  noteJump?: NoteJump;
   setShowSettings: Dispatch<SetStateAction<boolean>>;
   setShowStats: Dispatch<SetStateAction<boolean>>;
   setShowAppearance: Dispatch<SetStateAction<boolean>>;
   setShowUpgrade: (next: { trigger: 'zen' }) => void;
 }) {
   const { t } = useTranslation('notes');
+  const settingsLabel = t('footer.settings', exemptOpts('notes:footer.settings'));
   return (
-      <footer className={`[@media(min-width:768px)_and_(min-height:501px)]:hidden shrink-0 flex items-center justify-between gap-3 px-4 py-1.5 ${IS_DESKTOP_APP ? 'pb-1.5' : 'pb-[max(0.375rem,env(safe-area-inset-bottom))]'} md:pb-1.5 border-t border-divider text-[13px] text-pn-muted [@media(max-height:320px)]:hidden`}>
-        {/* Below md the row is exactly three items, so the flanking two get
-            equal-width flex boxes and the sync status lands on the true centre
-            of the bar. justify-between alone centred it only by accident - it
-            sat wherever "Settings" and "Zen" happened to leave it, and the
-            Android nav line right underneath made the few px of drift obvious
-            (GitHub #205). The boxes carry the width, not the buttons, so no
-            dead space becomes clickable. At md+ the stats readout joins the
-            row and justify-between spreads all four as before. */}
-        <div className="flex flex-1 md:flex-none min-w-0">
-          <button
-            onClick={() => setShowSettings(true)}
-            aria-label={t('footer.settings', exemptOpts('notes:footer.settings'))}
-            className="inline-flex items-center gap-1.5 text-[13px] text-pn-muted hover:text-accent transition shrink-0"
-          >
-            <Gear className="text-accent" />
-            <span>{t('footer.settings', exemptOpts('notes:footer.settings'))}</span>
-          </button>
+      <footer className={`[@media(min-width:768px)_and_(min-height:501px)]:hidden shrink-0 flex items-center justify-between gap-2 px-2 py-0.5 ${IS_DESKTOP_APP ? 'pb-0.5' : 'pb-[max(0.125rem,env(safe-area-inset-bottom))]'} md:pb-0.5 border-t border-divider text-[13px] text-pn-muted [@media(max-height:320px)]:hidden`}>
+        {/* Settings and Design hold the start of the bar on every screen, so
+            they never move under the thumb. The end holds the one action of
+            the screen on show: New on a list, Zen in an open item, where New
+            would act on a list nobody can see. The two end boxes are equal
+            flex boxes, so the sync status sits on the true centre of the bar
+            whatever they hold (GitHub #205). At md+ (a short window) the
+            stats readout joins the row and justify-between spreads it. */}
+        <div className="flex flex-1 md:flex-none items-center gap-1">
+          <BarButton label={settingsLabel} position="above" onClick={() => setShowSettings(true)}>
+            <Gear size={22} />
+          </BarButton>
+          {/* Opens the sheet rather than flipping light and dark: a straight
+              flip silently cancels Auto. */}
+          <BarButton label={t('footer.appearance')} position="above" onClick={() => setShowAppearance((open) => !open)} appearanceTrigger>
+            <Sun size={22} />
+          </BarButton>
         </div>
         <span className="shrink-0">
           <SyncStatus onOpen={openSyncVerify} tipPosition="above" />
@@ -284,47 +342,41 @@ export function MiniFooter({
         </button>
         <JournalCalendarButton {...calendar} />
         </span>
-        <div className="flex flex-1 md:flex-none md:shrink-0 items-center justify-end gap-3">
-          {/* One slot, two controls (GitHub #216). The mini footer has room
-              for exactly one trailing button, so it shows the one that acts
-              on what is currently on screen: Zen while a note is open, and
-              Appearance while it isn't. Zen with no note open only arms a
-              mode the next opened note will use - nothing visibly happens,
-              which reads as a dead button on a phone, where this is the only
-              trailing control there is. Appearance opens the sheet rather
-              than flipping light/dark inline, for the same reason the
-              desktop footer does: a straight flip silently cancels Auto.
-              The desktop footer is unchanged and still shows both. */}
+        {/* No min-w-0 on either side box: when the row runs short, a box keeps
+            its buttons and the sync status gives up exact centre instead of
+            sliding under them. */}
+        <div className="flex flex-1 md:flex-none md:shrink-0 items-center justify-end gap-1">
+          {selected && noteJump && (
+            noteJump.toTop ? (
+              <BarButton label={t('footer.goToTop')} position="above" onClick={() => noteJump.go('top')}>
+                <ArrowCircleUp size={22} />
+              </BarButton>
+            ) : (
+              <BarButton label={t('footer.goToEnd')} position="above" onClick={() => noteJump.go('end')}>
+                <ArrowCircleDown size={22} />
+              </BarButton>
+            )
+          )}
           {selected ? (
-            <button
+            <BarButton
+              label={t('zen.enterHover')}
+              position="above-end"
               onClick={() => {
                 if (!zenUnlocked) { setShowUpgrade({ trigger: 'zen' }); return; }
                 setZenMode((z) => !z);
               }}
-              aria-label={zenMode ? t('zen.exitHover') : t('zen.enterHover')}
-              aria-pressed={zenMode}
-              className={`inline-flex items-center gap-1 text-[13px] transition shrink-0 ${
-                zenMode ? 'text-accent' : 'text-pn-muted hover:text-accent'
-              }`}
             >
-              <ArrowsOutSimple size={13} />
-              <span>{t('footer.zen')}</span>
+              <ArrowsOutSimple size={22} />
+              {/* The corner the arrow leaves empty. The glyph does not mirror,
+                  so neither does the corner. */}
               {!auth.isPro && (
-                <span className="inline-flex items-center text-accent">
+                <span className="absolute bottom-1.5 right-1.5 inline-flex"> {/* rtl-ok: follows the unmirrored glyph */}
                   <IconUpgrade size={10} />
                 </span>
               )}
-            </button>
+            </BarButton>
           ) : (
-            <button
-              onClick={() => setShowAppearance((open) => !open)}
-              data-appearance-trigger
-              aria-label={t('footer.appearance')}
-              className="inline-flex items-center gap-1 text-[13px] text-pn-muted hover:text-accent transition shrink-0"
-            >
-              <Sun size={13} className="text-accent" />
-              <span>{t('footer.appearance')}</span>
-            </button>
+            <div ref={newSlotRef} className="flex md:hidden me-1" />
           )}
         </div>
       </footer>

@@ -172,8 +172,8 @@
     "startViewTitle": "Mostra en obrir",
     "viewTitle": "Mostra els elements com a",
     "viewDesc": "Auto segueix l'amplada de la teva pantalla.",
-    "openInTabsTitle": "Obre una pestanya a cada clic",
-    "openInTabsDesc": "Si està desactivat, clic dret > Obre en una pestanya continua obrint una pestanya. Les pestanyes no es mostren als telèfons.",
+    "openInTabsTitle": "Mostra l'element obert en una pestanya",
+    "openInTabsDesc": "La pestanya segueix el que obres després, com en un navegador. Fixa una pestanya per conservar-la. Si està desactivat, només «Obre en una pestanya» crea una pestanya. Les pestanyes no es mostren als telèfons.",
     "viewList": "Llista",
     "viewGrid": "Graella",
     "viewAuto": "Auto",
@@ -185,6 +185,10 @@
     "copyFormatDesc": "El que reben les altres apps quan copies des d'una nota. Només en aquest dispositiu.",
     "copyFormatMarkdown": "Markdown",
     "copyFormatPlain": "Text pla",
+    "pasteFormatTitle": "Text enganxat",
+    "pasteFormatDesc": "El que conserva el text que enganxes des d'una altra app. Només en aquest dispositiu.",
+    "pasteFormatFormatted": "Amb format",
+    "pasteFormatPlain": "Text pla",
     "faviconsTitle": "Icones dels llocs",
     "faviconsDesc": "El logotip del lloc al costat dels enllaços i dels inicis de sessió de la Caixa forta.",
     "faviconsExample": "Exemple:",
@@ -245,7 +249,10 @@
       "yours": "Teus",
       "noLightCommunity": "Encara no hi ha temes clars de la comunitat.",
       "noDarkCommunity": "Encara no hi ha temes foscos de la comunitat.",
-      "none": "Encara no hi ha temes aquí."
+      "none": "Encara no hi ha temes aquí.",
+      "sortLabel": "Ordre",
+      "sortVotes": "Més vots",
+      "sortNewest": "Més recents"
     },
     "custom": {
       "newTheme": "Tema nou",
@@ -254,7 +261,6 @@
       "logoOriginal": "Original",
       "logoHelp": "El logotip i «Privacy» prenen l’accent del tema o mantenen els colors originals.",
       "pasteCode": "Enganxa un codi de tema",
-      "community": "Explora els temes",
       "menu": "Opcions del tema {{name}}",
       "copyCode": "Copia el codi",
       "makeCopy": "Duplica",
@@ -285,7 +291,9 @@
       "suggestTitle": "Completa la resta a partir del teu accent",
       "suggestLight": "Clar",
       "suggestDark": "Fosc",
-      "communityNote": "L'app mostra els {{count}} temes de la comunitat més recents de cada mode.",
+      "websiteTitle": "Més temes al nostre lloc web",
+      "websiteDesc": "Tots els temes i els vots més recents. L'app rep temes nous amb cada actualització.",
+      "vote": "Vota a GitHub",
       "themeLimit": "Tens {{max}} temes. Elimina'n un per desar-ne un altre.",
       "credit": "Crèdit",
       "creditPlaceholder": "Nom d'usuari de GitHub (opcional)",
@@ -521,5 +529,27 @@
     "yearFirst": "Primer l'any (ISO)",
     "hour24": "24 hores",
     "hour12": "12 hores"
+  },
+  "calendar": {
+    "alertTimed": "Avís per defecte, elements amb hora",
+    "alertAllDay": "Avís per defecte, elements de tot el dia",
+    "alertBirthday": "Aniversaris",
+    "alertsHelp": "Un esdeveniment nou comença amb aquest avís. Després, cada element conserva els seus propis avisos.",
+    "reminderTitles": "Mostra els títols als recordatoris",
+    "reminderTitlesHelp": "Si està desactivat, un recordatori mostra la paraula Recordatori i l'hora. Un element protegit amb el teu PIN sempre ho fa així.",
+    "whereTitle": "Recordatoris en aquest dispositiu",
+    "reminderHint": {
+      "mobile": "Els recordatoris sonen en aquest telèfon, també quan PrivacyNotes està tancat.",
+      "desktop": "Els recordatoris sonen mentre PrivacyNotes s'executa en aquest ordinador.",
+      "browser": "Els recordatoris sonen mentre PrivacyNotes està obert en aquest navegador."
+    },
+    "scheduledThrough": "Recordatoris programats fins al {{date}}",
+    "permissionAsk": "Permet les notificacions",
+    "permissionOpenSettings": "Obre la configuració",
+    "permissionDenied": "Les notificacions estan bloquejades per a PrivacyNotes. Permet-les a la configuració d'aquest navegador o dispositiu.",
+    "weekNumbers": "Mostra els números de setmana",
+    "hours": "Hores visibles",
+    "hoursHelp": "El dia i la setmana s'obren a la primera hora.",
+    "to": "a"
   }
 }

@@ -78,8 +78,22 @@
     "import-from-other-apps": {
       "q": "Jak przenieść notatki z innej aplikacji?",
       "a": [
-        "Otwórz Ustawienia > Import & Export i wybierz swoje źródło. Lista obejmuje aplikacje, z których ludzie przychodzą: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes i Apple Journal. Bitwarden oraz hasła zapisane w przeglądarce trafiają do Sejfu, zakładki przeglądarki przychodzą jako zakładki, a ogólny importer Markdown przyjmuje dowolny folder z plikami .md.",
+        "Otwórz Ustawienia > Import & Export i wybierz swoje źródło. Lista obejmuje aplikacje, z których ludzie przychodzą: Apple Notes, Bear, Obsidian, Evernote, Standard Notes, Joplin, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes i Apple Journal. Bitwarden oraz hasła zapisane w przeglądarce trafiają do Sejfu, zakładki przeglądarki przychodzą jako zakładki, a ogólny importer Markdown przyjmuje dowolny folder z plikami .md.",
         "Importy działają w całości na Twoim urządzeniu: wyeksportowane pliki są parsowane, szyfrowane i zapisywane lokalnie, nic nie jest wysyłane do przetworzenia. Każda zaimportowana notatka dostaje tag swojego źródła, żebyś mógł później przejrzeć całą partię, a listy kontrolne z Google Keep zamieniają się nawet w natywne listy zadań."
+      ]
+    },
+    "import-bear": {
+      "q": "Jak przenieść notatki z Bear do PrivacyNotes?",
+      "a": [
+        "Zrób kopię zapasową w Bear i zaimportuj ją. W Bear wybierz File > Backup Notes... i zapisz plik .bear2bk. Potem otwórz Ustawienia > Import & Export, wybierz Bear i upuść plik. Kopia zawiera całą Twoją bibliotekę, więc razem z nią przychodzą notatki z archiwum i z kosza, a przypięte notatki i notatki tylko do odczytu zachowują ten stan.",
+        "Twoje tagi przychodzą jako tagi, a zagnieżdżone tagi, takie jak #work/projects, są dodatkowo odtwarzane jako foldery. Podświetlenia zachowują kolory z Bear, połączenia między notatkami stają się linkami do notatek, a obrazy i dołączone pliki są importowane do Twojej pamięci. [Przewodnik importu z Bear](/pl/help/import/bear/) pokazuje każdy krok."
+      ]
+    },
+    "import-joplin": {
+      "q": "Jak zaimportować notatki z Joplin?",
+      "a": [
+        "Wyeksportuj plik JEX z Joplin i zaimportuj go. W Joplin wybierz File > Export all > „JEX - Joplin Export File” i zapisz plik. Potem otwórz Ustawienia > Import & Export, wybierz Joplin i upuść plik .jex. Najnowszy plik z Tools > Create backup działa tak samo.",
+        "Notesy stają się folderami, zagnieżdżonymi tak głęboko jak w Joplin, a każda notatka zachowuje swoje tagi i daty. Elementy to-do stają się zadaniami, połączenia między notatkami stają się linkami do notatek, a załączniki są importowane do Twojej pamięci. Joplin pomija swój kosz w każdym eksporcie, więc przed eksportem przywróć z kosza każdą notatkę, którą chcesz zachować. [Przewodnik importu z Joplin](/pl/help/import/joplin/) pokazuje każdy krok."
       ]
     },
     "markdown-support": {
@@ -221,10 +235,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Nie pamiętam PIN-u. Jak wrócić do aplikacji?",
+      "q": "Nie pamiętam PIN-u ani kodu dostępu. Jak wrócić do aplikacji?",
       "a": [
-        "Nic nie przepada, a PIN możesz usunąć samodzielnie za pomocą frazy odzyskiwania. PIN to blokada ekranu, a nie klucz szyfrujący: twoje notatki są zaszyfrowane kluczami z frazy, więc to fraza je otwiera. Powiązanie szyfrowania z czterema cyframi oznaczałoby, że zapomniany PIN niszczy dane. Tutaj to się nigdy nie zdarza.",
-        "Wszędzie tam, gdzie aplikacja prosi o PIN, wybierz **Nie pamiętasz PIN-u?** i wpisz swoje 12 słów. Znajdziesz to na ekranie blokady, na chronionej notatce i w **Ustawienia > Bezpieczeństwo > PIN**. PIN zostanie usunięty na wszystkich urządzeniach i od razu możesz ustawić nowy. Odblokowanie biometryczne pozostaje bez zmian."
+        "Nic nie przepada, a PIN lub kod dostępu możesz usunąć samodzielnie za pomocą frazy odzyskiwania. To blokada ekranu, a nie klucz szyfrujący: twoje notatki są zaszyfrowane kluczami z frazy, więc to fraza je otwiera. Powiązanie szyfrowania z PIN-em oznaczałoby, że zapomniany PIN niszczy dane. Tutaj to się nigdy nie zdarza.",
+        "Wszędzie tam, gdzie aplikacja o to prosi, wybierz **Nie pamiętasz PIN-u?** lub **Nie pamiętasz kodu dostępu?** i wpisz swoje 12 słów. Znajdziesz to na ekranie blokady, na chronionej notatce i w **Ustawienia > Bezpieczeństwo > PIN**. Blokada zostanie usunięta na wszystkich urządzeniach i od razu możesz ustawić nową. Odblokowanie biometryczne pozostaje bez zmian. Urządzenie ze starszą wersją aplikacji prosi o 4 cyfry nawet po ustawieniu kodu dostępu; tam **Nie pamiętasz PIN-u?** działa tak samo."
       ]
     },
     "delete-account": {
@@ -238,7 +252,7 @@
       "q": "Co dokładnie synchronizuje się między urządzeniami, a co zostaje lokalnie?",
       "a": [
         "Wszystko, czego byś się spodziewał, i wszystko to zaszyfrowane na Twoim urządzeniu: notatki, zadania, wpisy w dzienniku, Twój sejf i pliki w nim. Ustawienia też idą za Tobą - ulubione tagi, preferencje sortowania i widoku, motyw kolorystyczny, Twój PIN (jako solony skrót, nigdy sam PIN), blokada aplikacji, konfiguracja trackerów i leków oraz automatyczne czyszczenie kosza. Ustaw coś raz, a każde urządzenie to podchwyci.",
-        "Kilka rzeczy zostaje celowo lokalnie: tryb jasny lub ciemny (każde urządzenie idzie za własnym ustawieniem systemowym), odblokowanie biometryczne (powiązane ze sprzętem każdego urządzenia) oraz stan odblokowania (zamknięcie aplikacji zawsze blokuje ją ponownie). Serwer przechowuje wyłącznie zaszyfrowane bloby i nie potrafi odczytać z nich niczego."
+        "Kilka rzeczy zostaje celowo lokalnie: tryb jasny lub ciemny (każde urządzenie idzie za własnym ustawieniem systemowym), odblokowanie biometryczne (powiązane ze sprzętem każdego urządzenia), przestrzeń pokazywana na pasku bocznym oraz stan odblokowania (zamknięcie aplikacji zawsze blokuje ją ponownie). Serwer przechowuje wyłącznie zaszyfrowane bloby i nie potrafi odczytać z nich niczego."
       ]
     },
     "offline": {
@@ -250,7 +264,7 @@
     "sync-conflicts": {
       "q": "Co się stanie, jeśli edytuję tę samą notatkę na dwóch urządzeniach naraz?",
       "a": [
-        "Gdy Twoje urządzenia znów się synchronizują, scalają notatkę szczegół po szczególe, więc zmiana wprowadzona tylko na jednym z nich zostaje zachowana. Jeśli oba edytowały tekst, będąc osobno (na przykład jedno było offline), urządzenie, które synchronizuje się jako drugie, pokazuje okno konfliktu: zachowaj wersję z tego urządzenia, zachowaj tę drugą albo zachowaj obie jako osobne notatki. Obie wersje zostają zachowane, dopóki nie wybierzesz.",
+        "Gdy Twoje urządzenia znów się synchronizują, scalają notatkę szczegół po szczególe, więc zmiana wprowadzona tylko na jednym z nich zostaje zachowana. Jeśli oba edytowały tekst, będąc osobno (na przykład jedno było offline), urządzenie, które synchronizuje się jako drugie, pokazuje okno konfliktu: zachowaj wersję z tego urządzenia, zachowaj tę drugą albo zachowaj obie jako osobne notatki. Obie wersje zostają zachowane, dopóki nie wybierzesz. Jeśli wersja z drugiego urządzenia dotrze, gdy piszesz w notatce, Twój tekst zostaje zachowany jako kopia oznaczona \"(conflict)\", a notatka pokazuje wersję z drugiego urządzenia.",
         "Gdy oba urządzenia, będąc osobno, zmieniły ten sam szczegół, na przykład przypięcie, folder albo tytuł, bez okna konfliktu zostaje zachowany szczegół z urządzenia, które jako ostatnie edytowało notatkę. Notatka usunięta na zawsze na jednym urządzeniu zostaje usunięta wszędzie, razem ze zmianą, którą wprowadziło w niej inne urządzenie, gdy urządzenia były osobno."
       ]
     },
@@ -359,7 +373,7 @@
     "buy-pro-anonymously": {
       "q": "Czy mogę kupić Pro, nie ujawniając, kim jestem?",
       "a": [
-        "Tak, przy pomocy dwóch standardowych narzędzi. Na potwierdzenie użyj aliasu e-mail: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) albo [addy.io](https://addy.io) przekierują wszystko do Twojej prawdziwej skrzynki, nie odsłaniając jej. Do płatności użyj karty maskowanej: [privacy.com](https://privacy.com) w USA generuje wirtualne karty działające z dowolnym wpisanym nazwiskiem, a wiele banków i usług gdzie indziej ([Revolut](https://www.revolut.com) na przykład) oferuje jednorazowe karty wirtualne robiące to samo.",
+        "Tak, przy pomocy dwóch standardowych narzędzi. Na potwierdzenie użyj aliasu e-mail: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) albo [addy.io](https://addy.io) przekierują wszystko do Twojej prawdziwej skrzynki, nie odsłaniając jej. Do płatności użyj karty maskowanej: [privacy.com](https://privacy.com) w USA generuje wirtualne karty działające z dowolnym wpisanym nazwiskiem, a poza USA to samo zadanie spełnia karta przedpłacona, którą można płacić online i którą kupisz za gotówkę, bez żadnego nazwiska.",
         "Przy płatności Paddle prosi o e-mail, metodę płatności i kraj (a w niektórych regionach też kod pocztowy), aby naliczyć podatek. Alias odbiera potwierdzenie, na karcie maskowanej widnieje podane przez Ciebie nazwisko, a lokalizacja podatkowa wskazuje jedynie Twój region. Utrzymuj jednak alias aktywny: e-mail z potwierdzeniem to Twój dowód zakupu i sposób kontaktu w sprawie zwrotu.",
         "W połączeniu z kontem na frazie żadna pojedyncza strona nie ma pełnego obrazu: Twój bank widzi doładowanie karty, Paddle widzi alias i kartę maskowaną, a my widzimy klucz publiczny, który dostał Pro, obok tego aliasu w naszym koncie Paddle."
       ]
@@ -402,7 +416,7 @@
     "languages": {
       "q": "W jakich językach mówi aplikacja?",
       "a": [
-        "Po angielsku, niemiecku, francusku, włosku, hiszpańsku, niderlandzku, polsku, czesku, katalońsku, turecku, szwedzku, ukraińsku, rosyjsku, japońsku, koreańsku, po chińsku tradycyjnym, po tajsku, po arabsku oraz po portugalsku w odmianie europejskiej i brazylijskiej. Aplikacja domyślnie idzie za językiem systemu, albo możesz wybrać jeden na stałe w Ustawienia > Język na każdym urządzeniu.",
+        "Po angielsku, niemiecku, francusku, włosku, hiszpańsku, niderlandzku, polsku, czesku, słowacku, katalońsku, turecku, szwedzku, ukraińsku, rosyjsku, japońsku, koreańsku, po chińsku tradycyjnym, po tajsku, po arabsku oraz po portugalsku w odmianie europejskiej i brazylijskiej. Aplikacja domyślnie idzie za językiem systemu, albo możesz wybrać jeden na stałe w Ustawienia > Język na każdym urządzeniu.",
         "Tłumaczenia są darmowe dla wszystkich, to nie dodatek Pro. Planujemy kolejne języki; jeśli brakuje Twojego, napisz nam na [GitHubie](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) albo [Reddicie](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -424,7 +438,7 @@
       "q": "Jak działają zadania?",
       "a": [
         "Każda linia, którą zapiszesz jako - [ ] w dowolnej notatce, staje się zadaniem, a widok Zadania na pasku bocznym zbiera je wszystkie w jednym miejscu. Odhaczenie zadania tam aktualizuje notatkę, w której ono żyje, a otwarcie zadania przeskakuje do tej notatki. Nie ma osobnej bazy zadań do utrzymywania: zadania to po prostu linie w Twoich notatkach, zaszyfrowane jak wszystko inne.",
-        "Pole szybkiego dodawania na górze widoku Zadania dopisuje do notatki o nazwie Quick Tasks (tworzonej dla Ciebie przy pierwszym użyciu), więc złapanie luźnego zadania zajmuje jedno naciśnięcie klawisza, a nie decyzję, gdzie je umieścić. Ten sam widok oferuje trzy układy (Hybrydowy, Zbiorczy, Lista), przełącznik ukończonych zadań oraz wyszukiwanie zadań, a przycisk New w widoku Wszystkie może od razu utworzyć notatkę-zadanie."
+        "Pole szybkiego dodawania na górze widoku Zadania dopisuje do notatki o nazwie Quick Tasks (tworzonej dla Ciebie przy pierwszym użyciu), więc złapanie luźnego zadania zajmuje jedno naciśnięcie klawisza, a nie decyzję, gdzie je umieścić. Ten sam widok oferuje trzy układy (Hybrydowy, Zbiorczy, Lista), przełącznik ukończonych zadań oraz wyszukiwanie zadań, a przycisk + w widoku Wszystkie może od razu utworzyć notatkę-zadanie."
       ]
     },
     "journal": {
@@ -488,8 +502,8 @@
     "biometric-unlock": {
       "q": "Odblokowanie biometryczne przestało działać. Co mogę zrobić?",
       "a": [
-        "Nigdy nie tracisz dostępu. Ekran blokady zawsze oferuje drogę awaryjną: „Odblokuj PIN-em” albo „Zaloguj się frazą odzyskiwania”. Biometria to lokalna bramka, a nie klucz szyfrowania, więc Twoje notatki i tak pozostają nietknięte.",
-        "Potem napraw samą bramkę. Rejestracja odbywa się osobno na każdym urządzeniu, więc nowy telefon, świeży profil przeglądarki albo ponowna instalacja wymagają ponownej rejestracji: Ustawienia > Bezpieczeństwo > „Blokada”, wyłącz, a potem znów „Włącz odblokowanie biometryczne”. Wymaga też „Ufaj temu urządzeniu” (niezaufane sesje czyszczą się przy zamknięciu karty) oraz sprzętu z uwierzytelniaczem platformy (Touch ID, Face ID, Windows Hello). Jeśli zamiast systemowego okna wyskoczy menedżer haseł w rodzaju Bitwarden albo 1Password, zamknij go i spróbuj ponownie, albo wyłącz przechwytywanie passkey dla tej strony - aplikacja prosi o wbudowany uwierzytelniacz, ale niektóre menedżery i tak się wtrącają."
+        "Nigdy nie tracisz dostępu. Ekran blokady zawsze oferuje drogę awaryjną: „Odblokuj PIN-em” („Odblokuj kodem dostępu”, jeśli go ustawisz) albo „Zaloguj się frazą odzyskiwania”. Odblokowanie biometryczne otwiera tylko kopię frazy odzyskiwania zapisaną na tym urządzeniu, a Twoje notatki są szyfrowane kluczami z samej frazy, więc w obu przypadkach pozostają nietknięte.",
+        "Potem skonfiguruj je ponownie. Jeśli ekran blokady pokaże „Odblokowanie biometryczne nie mogło otworzyć twoich notatek”, najpierw odblokuj inną drogą. Rejestracja odbywa się osobno na każdym urządzeniu, więc nowy telefon, świeży profil przeglądarki albo ponowna instalacja wymagają ponownej rejestracji: Ustawienia > Bezpieczeństwo > „Blokada”, wyłącz, a potem znów „Włącz odblokowanie biometryczne”. Wymaga też „Ufaj temu urządzeniu” (niezaufane sesje czyszczą się przy zamknięciu karty) oraz sprzętu z uwierzytelniaczem platformy (Touch ID, Face ID, Windows Hello). Jeśli zamiast systemowego okna wyskoczy menedżer haseł w rodzaju Bitwarden albo 1Password, zamknij go i spróbuj ponownie, albo wyłącz przechwytywanie passkey dla tej strony - aplikacja prosi o wbudowany uwierzytelniacz, ale niektóre menedżery i tak się wtrącają."
       ]
     },
     "phrase-compromised": {
@@ -647,7 +661,14 @@
       "q": "Jak sekcje, foldery, tagi i przestrzenie działają razem?",
       "a": [
         "Wszystko, co przechowujesz, jest w jednej bibliotece. Sekcje na pasku bocznym, takie jak Notatki, Sejf i Dzienniki, to widoki tej biblioteki według typu. Folder to miejsce, więc jeden folder może trzymać notatkę i pasujący do niej login, a drzewo folderów jest takie samo w każdej sekcji. Liczby przy folderze liczą tylko to, co zawiera otwarta sekcja, a folder bez takich elementów jest przyciemniony. Tag to etykieta, a pasek boczny pokazuje tylko tagi używane w otwartej sekcji.",
-        "Przestrzenie dzielą bibliotekę na Osobiste i Praca i pokazują jedną naraz. Folder najwyższego poziomu należy do jednej przestrzeni razem z całą zawartością, a **Przenieś do przestrzeni Praca** w jego menu przenosi go do drugiej. Element bez folderu należy do przestrzeni Osobiste, więc wszystko, co tworzysz w przestrzeni Praca, trafia do jej folderu. Tagi są darmowe, a foldery i przestrzenie wymagają Pro."
+        "Przestrzenie dzielą bibliotekę na Osobiste i Praca, a folder najwyższego poziomu należy do jednej przestrzeni razem z całą zawartością. [Jak działają przestrzenie](/pl/help/spaces/) opisuje przełącznik, przenoszenie elementów między przestrzeniami i wyłączanie przestrzeni. Tagi są darmowe, a foldery i przestrzenie wymagają Pro."
+      ]
+    },
+    "spaces": {
+      "q": "Jak działają przestrzenie Osobiste i Praca?",
+      "a": [
+        "Przestrzenie dzielą Twoją bibliotekę na Osobiste i Praca. Przełącznik obok **Przejdź** na pasku bocznym pokazuje **Wszystkie**, **Osobiste** albo **Praca**: Wszystkie pokazuje każdy element, a pozostałe dwie po jednej przestrzeni. Każde urządzenie pamięta własny wybór, więc telefon może pokazywać Osobiste, gdy laptop pokazuje Praca, a otwarcie elementu z drugiej przestrzeni przełącza na nią. Przestrzenie zmieniają tylko to, co pokazują listy: każdy element nadal synchronizuje się ze wszystkimi urządzeniami.",
+        "Folder najwyższego poziomu należy do jednej przestrzeni razem z całą zawartością, a **Przenieś do przestrzeni Praca** lub **Przenieś do przestrzeni Osobiste** w jego menu albo w menu dowolnego elementu przenosi go do drugiej. Element bez folderu jest w przestrzeni Osobiste, tak samo wszystko, co tworzysz, gdy otwarte jest Wszystkie. Żeby przestać korzystać z przestrzeni, wyłącz Ustawienia > Listy > Przestrzenie: wszystkie elementy są widoczne, nic się nie przenosi, a każdy folder zachowuje swoją przestrzeń na wypadek ponownego włączenia. Przestrzenie wymagają Pro."
       ]
     },
     "note-links": {
@@ -717,8 +738,8 @@
     "note-history": {
       "q": "Czy mogę odzyskać starszą wersję notatki?",
       "a": [
-        "Tak, z Pro. Otwórz menu „...” notatki i wybierz „Historia”, żeby przejrzeć i przywrócić do 20 wcześniejszych wersji. Przywracanie niczego nie gubi: bieżący tekst zapisuje się najpierw jako wersja, więc możesz chodzić w przód i w tył. Wersje są zaszyfrowane tak jak sama notatka, więc my też ich nie przeczytamy.",
-        "Migawka powstaje najwyżej raz na minutę, więc dwie zmiany w odstępie sekund dzielą jedną wersję. Historia to jedyna funkcja Pro, która idzie przez serwer, i dlatego wersja demo trzyma zamiast tego własną lokalną kopię. Każdy plan ma poza tym [kosz](/pl/help/trash-auto-delete/), który trzyma usuniętą notatkę przez 30 dni."
+        "Tak, z Pro. Otwórz menu „...” notatki i wybierz „Historia”, żeby przejrzeć do 50 wcześniejszych wersji, porównać wybraną z bieżącą notatką i ją przywrócić. Przywracanie niczego nie gubi: bieżący tekst zapisuje się najpierw jako wersja, więc możesz chodzić w przód i w tył. Wersje są zaszyfrowane tak jak sama notatka, więc my też ich nie przeczytamy.",
+        "Każda wersja to notatka w stanie sprzed zmiany: jedna zapisuje się przy pierwszej zmianie po pięciu minutach przerwy, jedna co dziesięć minut, gdy dalej piszesz, i jedna przed zmianą, która usuwa ponad połowę notatki liczącej 200 znaków lub więcej, chyba że ostatnia wersja ma mniej niż 30 sekund. Historia to jedyna funkcja Pro, która idzie przez serwer, i dlatego wersja demo trzyma zamiast tego własną lokalną kopię. Każdy plan ma poza tym [kosz](/pl/help/trash-auto-delete/), który trzyma usuniętą notatkę przez 30 dni."
       ]
     },
     "vault-totp": {
@@ -849,10 +870,10 @@
       ]
     },
     "quick-switcher": {
-      "q": "Co to jest funkcja „Przejdź do” i co potrafi znaleźć?",
+      "q": "Co to jest szybkie przechodzenie i co potrafi znaleźć?",
       "a": [
-        "Funkcja „Przejdź do” przenosi Cię do czegokolwiek po tytule. Naciśnij Cmd+K na Macu albo Ctrl+K na Windowsie i Linuksie (działa też Cmd+P albo Ctrl+P) albo kliknij **Przejdź do** na pasku bocznym lub w nagłówku listy. Wpisz część tytułu, żeby znaleźć notatki, zadania, wpisy w dzienniku, elementy Sejfu, zakładki, kontakty, załączone pliki i ustawienia. Enter otwiera element, a Option+Enter albo Alt+Enter otwiera go w karcie.",
-        "Wpisz najpierw >, żeby zamiast tego uruchomić polecenie, na przykład utworzyć nową notatkę albo przejść do sekcji. Żeby znaleźć słowa w treści zamiast w tytułach, wybierz wiersz **Szukaj wszędzie** albo naciśnij Cmd+Enter lub Ctrl+Enter w dowolnym wierszu. Dopasowywanie odbywa się na Twoim urządzeniu, więc nic, co wpisujesz, nie trafia do nas. Funkcja „Przejdź do” jest darmowa."
+        "Szybkie przechodzenie przenosi Cię do czegokolwiek po tytule. Naciśnij Cmd+K na Macu albo Ctrl+K na Windowsie i Linuksie (działa też Cmd+P albo Ctrl+P) albo kliknij **Przejdź** na pasku bocznym lub w nagłówku listy. Wpisz część tytułu, żeby znaleźć notatki, zadania, wpisy w dzienniku, elementy Sejfu, zakładki, kontakty, załączone pliki i ustawienia. Enter otwiera element, a Option+Enter albo Alt+Enter otwiera go w karcie.",
+        "Wpisz najpierw >, żeby zamiast tego uruchomić polecenie, na przykład utworzyć nową notatkę albo przejść do sekcji. Wpisz najpierw #, żeby zobaczyć tylko swoje tagi, albo /, żeby zobaczyć tylko swoje foldery; wybranie jednego z nich filtruje listę tak samo jak kliknięcie na pasku bocznym. Żeby znaleźć słowa w treści zamiast w tytułach, wybierz wiersz **Szukaj wszędzie** albo naciśnij Cmd+Enter lub Ctrl+Enter w dowolnym wierszu. Dopasowywanie odbywa się na Twoim urządzeniu, więc nic, co wpisujesz, nie trafia do nas. Szybkie przechodzenie jest darmowe."
       ]
     },
     "find-in-note": {
@@ -876,6 +897,27 @@
         "Metody logowania, która należy już do innego sejfu, nie da się połączyć, bo sejfy nigdy się nie łączą. **Odłącz** najpierw prosi o Twoje 12 słów. Jeśli przechowujemy Twoją frazę za Ciebie, ostatnie połączone konto zostaje, dopóki nie połączysz innego albo nie zapiszesz frazy i nie przejdziesz na samodzielne przechowywanie. Przy samodzielnym przechowywaniu nowe urządzenie nadal prosi o Twoje 12 słów. Połączone konta są w wersji beta."
       ]
     },
+    "calendar": {
+      "q": "Czy jest kalendarz i co się w nim pokazuje?",
+      "a": [
+        "Tak. Kalendarz na pasku bocznym pokazuje w jednym miejscu każdy element z datą: wydarzenia, wpisy w dzienniku, notatki i listy zadań z datą oraz urodziny Twoich kontaktów. Lista obok to plan najbliższych dni, a duży widok przełącza się między widokami Dzień, Tydzień i Miesiąc. Kliknij pusty dzień, aby coś do niego dodać, albo przeciągnij element na inny dzień.",
+        "Wydarzenie to osobny rodzaj elementu: notatka z dniem, dniem końca, godziną i powtarzaniem. Wpisz całą linijkę w Szybkie dodawanie, na przykład \"Dentysta pt 15:00 1h przed\", a odczyta za Ciebie dzień, godzinę i alert. Notatka lub lista zadań też może mieć dzień, godzinę i dzień końca, ustawione w wierszu Termin jej menu \"...\". Kalendarz jest darmowy."
+      ]
+    },
+    "reminders": {
+      "q": "Czy przypomnienia z kalendarza działają, gdy aplikacja jest zamknięta?",
+      "a": [
+        "Na telefonie tak: do 64 alertów, do 400 dni naprzód, jest przekazywanych samemu telefonowi, więc dzwonią, gdy PrivacyNotes jest zamknięte; otwarcie i odblokowanie aplikacji przekazuje kolejne. W aplikacji na komputer przypomnienie dzwoni, gdy aplikacja działa, a w przeglądarce, gdy PrivacyNotes jest otwarte w karcie. Każde urządzenie planuje swoje przypomnienia na podstawie elementów, które przechowuje, więc serwer nigdy nie poznaje tytułu, godziny ani dnia.",
+        "Dodaj alert w wierszu Alert w widoku Termin elementu, maksymalnie pięć na element, a wartości domyślne ustaw w Ustawienia > Kalendarz, gdzie jest też \"Pokazuj tytuły w przypomnieniach\". Element chroniony PIN-em zawsze dzwoni jako \"Przypomnienie\" z godziną, podobnie jak każdy alert zaplanowany, gdy blokada aplikacji jest włączona. Alert przekazany, zanim blokada została włączona, może zachować tytuł, dopóki nie zadzwoni. Przypomnienia są częścią Pro; sam kalendarz jest darmowy."
+      ]
+    },
+    "calendar-time-zones": {
+      "q": "Co dzieje się z godzinami wydarzeń, gdy podróżuję do innej strefy czasowej?",
+      "a": [
+        "Godzina w kalendarzu zostaje taka, jaką wpiszesz. Wydarzenie o 15:00 pokazuje się i dzwoni o 15:00 niezależnie od tego, gdzie jest Twoje urządzenie, tak jak przypomnienie w aplikacji z listą zadań, bo każda godzina jest zapisywana jako czas lokalny bez strefy czasowej. Telefon planuje każdy alert na dokładny moment, więc po zmianie strefy czasowej otwórz i odblokuj PrivacyNotes raz w nowej strefie, żeby przesunąć jego alerty; gdy aplikacja jest otwarta i odblokowana, przesuwa je sama.",
+        "Przy rozmowie z kimś z innej strefy czasowej wpisz godzinę taką, jaka jest u Ciebie. Jeśli zmiana czasu na letni pominie godzinę alertu, alert zadzwoni w pierwszej minucie po tej przerwie."
+      ]
+    },
     "session-expired": {
       "q": "Dlaczego aplikacja pokazuje „Sesja wygasła”?",
       "a": [
@@ -887,7 +929,7 @@
       "q": "Co robi archiwizacja i czym różni się od kosza?",
       "a": [
         "Archiwizacja zabiera element z Twoich list bez usuwania go. Wybierz **Archiwizuj** w menu „...” elementu albo w menu pod prawym przyciskiem myszy, albo na pasku zaznaczenia dla kilku elementów naraz. Zarchiwizowane elementy znikają z widoków Wszystkie i Przypięte, ze swojej sekcji oraz z liczników folderów i tagów, i czekają w widoku **Archiwum** na dole paska bocznego, który pojawia się, gdy coś zostanie zarchiwizowane. Aby zostały we Wszystkie i w licznikach, zaznacz Archiwum w kolumnie **Wszystkie** w Ustawienia > Listy. **Przywróć z archiwum** w tych samych miejscach przywraca element.",
-        "Kosz jest na rzeczy, których chcesz się pozbyć: [usuwa je na zawsze po 30 dniach](/pl/help/trash-auto-delete/), chyba że to wyłączysz. Archiwum nigdy niczego nie usuwa, a zarchiwizowane elementy zostają pod ręką, bo wyszukiwanie w widoku Wszystkie, funkcja „Przejdź do” i linki do notatek nadal je znajdują. Synchronizują się i pozostają zaszyfrowane jak wszystko inne, i nadal liczą się do Twojej pamięci. Archiwizacja działa dla każdego typu elementu i jest darmowa."
+        "Kosz jest na rzeczy, których chcesz się pozbyć: [usuwa je na zawsze po 30 dniach](/pl/help/trash-auto-delete/), chyba że to wyłączysz. Archiwum nigdy niczego nie usuwa, a zarchiwizowane elementy zostają pod ręką, bo wyszukiwanie w widoku Wszystkie, szybkie przechodzenie i linki do notatek nadal je znajdują. Synchronizują się i pozostają zaszyfrowane jak wszystko inne, i nadal liczą się do Twojej pamięci. Archiwizacja działa dla każdego typu elementu i jest darmowa."
       ]
     },
     "share-into-app": {

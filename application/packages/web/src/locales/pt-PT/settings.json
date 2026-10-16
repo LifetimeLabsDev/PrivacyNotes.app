@@ -168,8 +168,8 @@
     "startViewTitle": "Mostrar ao abrir",
     "viewTitle": "Mostrar itens como",
     "viewDesc": "Auto segue a largura do teu ecrã.",
-    "openInTabsTitle": "Abrir um separador a cada clique",
-    "openInTabsDesc": "Com isto desligado, botão direito > Abrir num separador continua a abrir um separador. Os separadores não aparecem nos telemóveis.",
+    "openInTabsTitle": "Mostrar o item aberto num separador",
+    "openInTabsDesc": "O separador segue o que abrires a seguir, como num navegador. Fixa um separador para o manteres. Com isto desligado, só \"Abrir num separador\" cria um separador. Os separadores não aparecem nos telemóveis.",
     "viewList": "Lista",
     "viewGrid": "Grelha",
     "viewAuto": "Auto",
@@ -181,6 +181,10 @@
     "copyFormatDesc": "O que as outras apps recebem quando copias de uma nota. Apenas neste dispositivo.",
     "copyFormatMarkdown": "Markdown",
     "copyFormatPlain": "Texto simples",
+    "pasteFormatTitle": "Texto colado",
+    "pasteFormatDesc": "O que é mantido quando colas de outra app. Apenas neste dispositivo.",
+    "pasteFormatFormatted": "Formatado",
+    "pasteFormatPlain": "Texto simples",
     "faviconsTitle": "Ícones dos sites",
     "faviconsDesc": "O logótipo do site junto aos links e aos logins do Cofre.",
     "faviconsExample": "Exemplo:",
@@ -241,7 +245,10 @@
       "yours": "Teus",
       "noLightCommunity": "Ainda não há temas claros da comunidade.",
       "noDarkCommunity": "Ainda não há temas escuros da comunidade.",
-      "none": "Ainda não há temas aqui."
+      "none": "Ainda não há temas aqui.",
+      "sortLabel": "Ordenar",
+      "sortVotes": "Mais votados",
+      "sortNewest": "Mais recentes"
     },
     "custom": {
       "newTheme": "Novo tema",
@@ -250,7 +257,6 @@
       "logoOriginal": "Original",
       "logoHelp": "O logótipo e “Privacy” usam a cor de destaque do tema ou mantêm as cores originais.",
       "pasteCode": "Colar código de tema",
-      "community": "Explorar temas",
       "menu": "Opções de {{name}}",
       "copyCode": "Copiar código",
       "makeCopy": "Duplicar",
@@ -281,7 +287,9 @@
       "suggestTitle": "Completar o resto a partir do teu destaque",
       "suggestLight": "Claro",
       "suggestDark": "Escuro",
-      "communityNote": "A app mostra os {{count}} temas mais recentes da comunidade em cada modo.",
+      "websiteTitle": "Mais temas no nosso site",
+      "websiteDesc": "Todos os temas e os votos mais recentes. A app recebe temas novos em cada atualização.",
+      "vote": "Votar no GitHub",
       "themeLimit": "Tens {{max}} temas. Elimina um para guardar outro.",
       "credit": "Crédito",
       "creditPlaceholder": "Nome de utilizador do GitHub (opcional)",
@@ -516,5 +524,27 @@
     "yearFirst": "Ano primeiro (ISO)",
     "hour24": "24 horas",
     "hour12": "12 horas"
+  },
+  "calendar": {
+    "alertTimed": "Alerta predefinido, itens com hora",
+    "alertAllDay": "Alerta predefinido, itens de dia inteiro",
+    "alertBirthday": "Aniversários",
+    "alertsHelp": "Um novo evento começa com este alerta. Depois disso, cada item mantém os seus próprios alertas.",
+    "reminderTitles": "Mostrar títulos nos lembretes",
+    "reminderTitlesHelp": "Desligado, um lembrete mostra a palavra Lembrete e a hora. Um item protegido pelo teu PIN mostra sempre só isso.",
+    "whereTitle": "Lembretes neste dispositivo",
+    "reminderHint": {
+      "mobile": "Os lembretes tocam neste telemóvel, também com o PrivacyNotes fechado.",
+      "desktop": "Os lembretes tocam enquanto o PrivacyNotes está aberto neste computador.",
+      "browser": "Os lembretes tocam enquanto o PrivacyNotes está aberto neste navegador."
+    },
+    "scheduledThrough": "Lembretes agendados até {{date}}",
+    "permissionAsk": "Permitir notificações",
+    "permissionOpenSettings": "Abrir as definições",
+    "permissionDenied": "As notificações estão bloqueadas para o PrivacyNotes. Permite-as nas definições deste navegador ou dispositivo.",
+    "weekNumbers": "Mostrar os números das semanas",
+    "hours": "Horas mostradas",
+    "hoursHelp": "O dia e a semana abrem na primeira hora.",
+    "to": "até"
   }
 }

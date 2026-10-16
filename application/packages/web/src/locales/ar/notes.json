@@ -11,13 +11,17 @@
     "noContent": "بلا محتوى",
     "notBackedUp": "غير منسوخة احتياطيًا",
     "archived": "مؤرشف",
-    "entryDate": "تاريخ التدوينة"
+    "entryDate": "تاريخ التدوينة",
+    "date": "التاريخ",
+    "dayOf": "اليوم {{n}} من {{total}}"
   },
   "header": {
     "new": "جديد",
     "newNote": "ملاحظة جديدة",
     "newNoteHover": "ملاحظة جديدة ({{hotkey}})",
-    "trash": "المهملات"
+    "trash": "المهملات",
+    "newEvent": "حدث جديد",
+    "newEventHover": "حدث جديد ({{hotkey}})"
   },
   "folderChip": {
     "clear": "مسح عامل تصفية المجلد: {{folder}}",
@@ -40,7 +44,9 @@
     "login": "بيانات تسجيل الدخول",
     "file": "ملف",
     "bookmark": "إشارة مرجعية",
-    "contact": "جهة اتصال"
+    "contact": "جهة اتصال",
+    "event": "حدث",
+    "quickAdd": "إضافة سريعة"
   },
   "vaultFilter": {
     "all": "الكل",
@@ -94,7 +100,8 @@
     "vault": "الخزنة",
     "pinned": "المثبتة",
     "archive": "الأرشيف",
-    "notes": "الملاحظات"
+    "notes": "الملاحظات",
+    "calendar": "التقويم"
   },
   "footerStats": {
     "journals": "اليوميات",
@@ -146,8 +153,17 @@
     "collapse": "طي قائمة الملاحظات",
     "expand": "توسيع قائمة الملاحظات"
   },
+  "split": {
+    "action": "تقسيم الملاحظة",
+    "done": "تم التقسيم إلى «{{title}}»",
+    "overLimit": "«{{title}}» تتجاوز 1 ميغابايت وتبقى على هذا الجهاز",
+    "cannot": "لا يمكن تقسيم هذه الملاحظة هنا. ضع المؤشر حيث يجب أن تبدأ الملاحظة الجديدة.",
+    "continuedTitle": "{{title}} (تتمة)",
+    "continuedIn": "التتمة في {{link}}"
+  },
   "paneResize": {
-    "hintCollapse": "انقر للطي · اسحب لتغيير الحجم"
+    "hintCollapse": "انقر للطي · اسحب لتغيير الحجم",
+    "hintExpand": "انقر للتوسيع · اسحب لتغيير الحجم"
   },
   "emptyEditor": {
     "selectFile": "اختر ملفًا للمعاينة",
@@ -184,6 +200,8 @@
     "findInNote": "بحث في الملاحظة",
     "navPrev": "السابق",
     "navNext": "التالي",
+    "navPrevTab": "علامة التبويب السابقة",
+    "navNextTab": "علامة التبويب التالية",
     "undo": "تراجع",
     "redo": "إعادة",
     "hide": "إخفاء",
@@ -235,6 +253,8 @@
     "words": "الكلمات",
     "zen": "وضع Zen",
     "appearance": "المظهر",
+    "goToTop": "الانتقال إلى الأعلى",
+    "goToEnd": "الانتقال إلى النهاية",
     "signOut": "تسجيل الخروج",
     "signingOut": "جارٍ تسجيل الخروج…",
     "switchToLight": "التبديل إلى الوضع الفاتح",
@@ -260,7 +280,8 @@
     "aboutLabel": "حول",
     "languageLabel": "اللغة",
     "dateLabel": "التاريخ",
-    "languageDesc": "اختر اللغة التي يُعرض بها PrivacyNotes."
+    "languageDesc": "اختر اللغة التي يُعرض بها PrivacyNotes.",
+    "calendarLabel": "التقويم"
   },
   "importStore": {
     "title": "استيراد أم تخزين؟",

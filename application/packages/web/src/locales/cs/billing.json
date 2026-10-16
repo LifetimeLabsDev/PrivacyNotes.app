@@ -22,7 +22,8 @@
       "totp": "Kódy 2FA jsou funkce Pro. Ulož ověřovací klíč k libovolným přihlašovacím údajům a měnící se kód uvidíš hned vedle hesla. Samotný klíč se ukládá a synchronizuje ve všech tarifech.",
       "replace": "Najít a nahradit je funkce Pro. Přejdi na Pro a nahraď jeden výskyt nebo všechny výskyty v poznámce najednou.",
       "passphrase": "Přístupové fráze jsou funkce Pro. Vygeneruj frázi z náhodných slov, která se snadno píše i říká.",
-      "default": "Jeden přechod na Pro odemkne všechno níže. Jednorázová platba."
+      "default": "Jeden přechod na Pro odemkne všechno níže. Jednorázová platba.",
+      "alerts": "Připomínky jsou funkce Pro. Tvoje zařízení zazvoní v čase, který si vybereš, a nic o položce je neopustí."
     },
     "features": {
       "devices": "Synchronizace neomezeného počtu zařízení, na každé platformě",
@@ -73,7 +74,7 @@
     "openingBody": "Mělo by se objevit platební okno Paddle. Pokud se neobjeví, prohlížeč možná zablokoval vyskakovací okno - obnov tuto stránku a zkus to znovu."
   },
   "history": {
-    "subtitle": "Až 20 verzí na položku. Nejstarší se automaticky mažou.",
+    "subtitle": "Až 50 verzí na položku. Nejstarší se automaticky mažou.",
     "empty": "Zatím žádná historie. Verze se začnou hromadit po další úpravě. Vrať se později.",
     "loadFailed": "Historii se nepodařilo načíst. Zkontroluj připojení a zkus to znovu.",
     "selectPrompt": "Vyber verzi pro náhled.",
@@ -82,7 +83,21 @@
     "restoring": "Obnovování…",
     "restoreSnapshotFailed": "Aktuální verzi se nepodařilo nejdřív uložit, takže se nic neobnovilo. Zkontroluj připojení a zkus to znovu.",
     "restoreFailed": "Tuto verzi se nepodařilo obnovit. Zkus to znovu.",
-    "loginExtrasNotRecorded": "Tato verze neuložila vlastní pole ani další weby. Její obnovení ponechá ty současné."
+    "loginExtrasNotRecorded": "Tato verze neuložila vlastní pole ani další weby. Její obnovení ponechá ty současné.",
+    "compare": "Porovnat s aktuální poznámkou",
+    "thisVersion": "Tehdy",
+    "currentNote": "Teď",
+    "onlyInVersion": "Od té doby odebráno",
+    "onlyInCurrent": "Od té doby přidáno",
+    "changeCount_one": "{{count}} změna",
+    "changeCount_few": "{{count}} změny",
+    "changeCount_other": "{{count}} změn",
+    "noChanges": "Žádné změny v textu",
+    "titleChanged": "Název se změnil",
+    "tagsChanged": "Značky se změnily",
+    "formatChanged": "Formátování se změnilo",
+    "tooLong": "Tato poznámka je na porovnání příliš dlouhá.",
+    "trackersNotRecorded": "Tato verze neuložila sledované hodnoty. Její obnovení ponechá ty současné."
   },
   "donation": {
     "eyebrow": "Máš odemčeno",

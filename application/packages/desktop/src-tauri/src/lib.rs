@@ -24,6 +24,16 @@ mod print;
 /// Spec: ops/docs/plans/app-switcher-privacy-screen.md
 mod privacy_screen;
 
+/// No previous, next and Done bar above the iOS keyboard: the note editor's
+/// format bar sits there (GitHub #533).
+#[cfg(target_os = "ios")]
+mod keyboard_accessory;
+
+/// The Windows title bar painted in the app's theme colors.
+/// Spec: ops/docs/color-themes.md (section 1, the Windows title bar)
+#[cfg(desktop)]
+mod title_bar;
+
 /// Links, text and files other apps shared into this one, waiting for the
 /// unlocked app to take them. Compiled everywhere so its tests run on the
 /// host; only the mobile builds expose its commands.
@@ -508,7 +518,11 @@ pub fn run() {
         // Save As dialog + file write. The webview has no download handler, so
         // exports/backups/QR saves go through these instead of <a download>.
         .plugin(tauri_plugin_dialog::init())
-        .plugin(tauri_plugin_fs::init());
+        .plugin(tauri_plugin_fs::init())
+        // Calendar reminders on every platform: scheduled with the OS on a
+        // phone, shown from the app's own timer on a desktop.
+        // Spec: ops/docs/plans/calendar-pillar-spec.md (section 8)
+        .plugin(tauri_plugin_notification::init());
 
     // Self-updater is desktop-only; iOS/Android update via their stores.
     // process plugin powers the updater's "Restart" button (relaunch()).
@@ -562,6 +576,7 @@ pub fn run() {
         markdown_assoc_open_os_settings,
         set_privacy_screen,
         set_capture_block,
+        set_title_bar_colors,
         pasteboard_pictures
     ]);
     #[cfg(mobile)]
@@ -577,6 +592,15 @@ pub fn run() {
         share_limit_set,
         pasteboard_pictures
     ]);
+
+    // A load can replace the web view's content view, so the iOS keyboard bar
+    // is taken off again after each one.
+    #[cfg(target_os = "ios")]
+    let builder = builder.on_page_load(|webview, payload| {
+        if payload.event() == tauri::webview::PageLoadEvent::Finished {
+            keyboard_accessory::hide_in(webview);
+        }
+    });
 
     builder
         .setup(|app| {
@@ -929,6 +953,21 @@ fn set_privacy_screen(enabled: bool) {
 #[tauri::command]
 fn set_capture_block(app: tauri::AppHandle, enabled: bool) {
     privacy_screen::set_capture_block(&app, enabled);
+}
+
+/// Paint the Windows title bar in the app shell's color and text color, and
+/// make it dark or light; `dark: None` follows the system. Takes the window it
+/// was called from and three-byte colors, so a caller can only recolor this
+/// app's own title bar. A no-op off Windows.
+#[cfg(desktop)]
+#[tauri::command]
+fn set_title_bar_colors(
+    window: tauri::WebviewWindow,
+    caption: [u8; 3],
+    text: [u8; 3],
+    dark: Option<bool>,
+) {
+    title_bar::paint(&window, caption, text, dark);
 }
 
 /// Opens (or focuses) the custom About window. The web bundle renders it:

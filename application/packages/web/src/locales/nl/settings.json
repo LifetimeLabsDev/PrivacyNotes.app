@@ -168,8 +168,8 @@
     "startViewTitle": "Tonen bij openen",
     "viewTitle": "Items tonen als",
     "viewDesc": "Auto volgt de breedte van je scherm.",
-    "openInTabsTitle": "Bij elke klik een tabblad openen",
-    "openInTabsDesc": "Staat dit uit, dan opent rechtsklik > Openen in tabblad toch een tabblad. Tabbladen verschijnen niet op telefoons.",
+    "openInTabsTitle": "Het geopende item in een tabblad tonen",
+    "openInTabsDesc": "Het tabblad volgt wat je daarna opent, net als in een browser. Zet een tabblad vast om het te houden. Staat dit uit, dan maakt alleen \"Openen in tabblad\" een tabblad. Tabbladen verschijnen niet op telefoons.",
     "viewList": "Lijst",
     "viewGrid": "Raster",
     "viewAuto": "Auto",
@@ -181,6 +181,10 @@
     "copyFormatDesc": "Wat andere apps krijgen als je uit een notitie kopieert. Alleen op dit apparaat.",
     "copyFormatMarkdown": "Markdown",
     "copyFormatPlain": "Platte tekst",
+    "pasteFormatTitle": "Geplakte tekst",
+    "pasteFormatDesc": "Wat behouden blijft als je uit een andere app plakt. Alleen op dit apparaat.",
+    "pasteFormatFormatted": "Opgemaakt",
+    "pasteFormatPlain": "Platte tekst",
     "faviconsTitle": "Website-iconen",
     "faviconsDesc": "Het logo van de site naast links en Kluis-logins.",
     "faviconsExample": "Voorbeeld:",
@@ -241,7 +245,10 @@
       "yours": "Van jou",
       "noLightCommunity": "Nog geen lichte communitythema's.",
       "noDarkCommunity": "Nog geen donkere communitythema's.",
-      "none": "Hier zijn nog geen thema's."
+      "none": "Hier zijn nog geen thema's.",
+      "sortLabel": "Volgorde",
+      "sortVotes": "Meeste stemmen",
+      "sortNewest": "Nieuwste"
     },
     "custom": {
       "newTheme": "Nieuw thema",
@@ -250,7 +257,6 @@
       "logoOriginal": "Origineel",
       "logoHelp": "Het logo en ‘Privacy’ nemen het accent van het thema over of houden hun oorspronkelijke kleuren.",
       "pasteCode": "Themacode plakken",
-      "community": "Thema's bekijken",
       "menu": "Opties voor {{name}}",
       "copyCode": "Code kopiëren",
       "makeCopy": "Dupliceren",
@@ -281,7 +287,9 @@
       "suggestTitle": "Vul de rest aan vanuit je accentkleur",
       "suggestLight": "Licht",
       "suggestDark": "Donker",
-      "communityNote": "De app toont per modus de {{count}} nieuwste communitythema's.",
+      "websiteTitle": "Meer thema's op onze website",
+      "websiteDesc": "Alle thema's en de nieuwste stemmen. De app krijgt bij elke update nieuwe thema's.",
+      "vote": "Stemmen op GitHub",
       "themeLimit": "Je hebt {{max}} thema's. Verwijder er een om een ander op te slaan.",
       "credit": "Vermelding",
       "creditPlaceholder": "GitHub-gebruikersnaam (optioneel)",
@@ -516,5 +524,27 @@
     "yearFirst": "Jaar eerst (ISO)",
     "hour24": "24 uur",
     "hour12": "12 uur"
+  },
+  "calendar": {
+    "alertTimed": "Standaardmelding, items met een tijd",
+    "alertAllDay": "Standaardmelding, items voor de hele dag",
+    "alertBirthday": "Verjaardagen",
+    "alertsHelp": "Een nieuwe afspraak begint met deze melding. Daarna houdt elk item zijn eigen meldingen.",
+    "reminderTitles": "Titels tonen in herinneringen",
+    "reminderTitlesHelp": "Uit: een herinnering toont het woord Herinnering en de tijd. Een item achter je PIN doet dat altijd.",
+    "whereTitle": "Herinneringen op dit apparaat",
+    "reminderHint": {
+      "mobile": "Herinneringen gaan af op deze telefoon, ook als PrivacyNotes gesloten is.",
+      "desktop": "Herinneringen gaan af zolang PrivacyNotes op deze computer draait.",
+      "browser": "Herinneringen gaan af zolang PrivacyNotes in deze browser open is."
+    },
+    "scheduledThrough": "Herinneringen ingepland tot en met {{date}}",
+    "permissionAsk": "Meldingen toestaan",
+    "permissionOpenSettings": "Instellingen openen",
+    "permissionDenied": "Meldingen zijn geblokkeerd voor PrivacyNotes. Sta ze toe in de instellingen van deze browser of dit apparaat.",
+    "weekNumbers": "Weeknummers tonen",
+    "hours": "Getoonde uren",
+    "hoursHelp": "De dag en de week openen op het eerste uur.",
+    "to": "tot"
   }
 }

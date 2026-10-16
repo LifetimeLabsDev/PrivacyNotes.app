@@ -169,7 +169,7 @@ export const FOLDER_NAME_MAX_LENGTH = 40;
 export const UNFILED_ID = '__unfiled__';
 
 /** Trim + collapse whitespace + cap length. Returns '' when unusable. */
-function normalizeFolderName(raw: string): string {
+export function normalizeFolderName(raw: string): string {
   return raw.trim().replace(/\s+/g, ' ').slice(0, FOLDER_NAME_MAX_LENGTH);
 }
 
@@ -413,34 +413,37 @@ export function applyFolderPlacement(
 }
 
 /**
- * Delete a folder. Child folders move up to the deleted folder's
- * parent; the caller must move the folder's notes to `reparentTo`
+ * Delete a folder. Child folders move up to the deleted folder's parent,
+ * or, with `withSubfolders`, go too, the whole branch at once. The caller
+ * must move the notes of every folder in `removed` to `reparentTo`
  * (bulkMoveToFolder). Notes are never deleted here.
  *
- * `deleted` gains the tombstone that carries this deletion to the other
- * devices. Removing the folder from the array is not enough on its own:
- * every other device would read the absence as a gap in this device's
- * knowledge and hand the folder back on the next merge.
+ * `deleted` gains one tombstone per removed folder, which carries the
+ * deletion to the other devices. Removing a folder from the array is not
+ * enough on its own: every other device would read the absence as a gap in
+ * this device's knowledge and hand the folder back on the next merge.
  */
 export function deleteFolder(
   tree: FolderTree,
-  id: string
-): { folders: FolderDef[]; deleted: FolderTombstone[]; reparentTo: string | null } {
+  id: string,
+  withSubfolders = false,
+): { folders: FolderDef[]; deleted: FolderTombstone[]; reparentTo: string | null; removed: Set<string> } {
   const target = tree.folders.find((f) => f.id === id);
   const reparentTo = target?.parentId ?? null;
   const at = stamp();
+  const removed = target && withSubfolders ? subtreeIds(tree.folders, id) : new Set([id]);
   // The children keep their own stamps. Being moved up is something that
   // HAPPENED to them, not an edit their owner made, and a stamp here would
   // beat a genuine rename of the same folder on another device. If the
   // re-parent is lost in a merge, `validateFolders` puts the folder at the
   // root rather than dropping it.
   const next = tree.folders
-    .filter((f) => f.id !== id)
+    .filter((f) => !removed.has(f.id))
     .map((f) => (f.parentId === id ? { ...f, parentId: reparentTo } : f));
   const deleted = target
-    ? [...tree.deleted.filter((d) => d.id !== id), { id, deletedAt: at }]
+    ? [...tree.deleted.filter((d) => !removed.has(d.id)), ...[...removed].map((r) => ({ id: r, deletedAt: at }))]
     : tree.deleted;
-  return { folders: next, deleted, reparentTo };
+  return { folders: next, deleted, reparentTo, removed };
 }
 
 /** Direct-member note counts per folder id. `folderTotals` rolls them up. */
@@ -532,6 +535,10 @@ export function folderNamePath(folders: FolderDef[], id: string | null): string[
  * siblings apart. A deleted folder is not in `existing`, so its id never
  * comes back; the name path builds a new folder in its place.
  *
+ * `rootParent` is the folder the person chose to add the import to: the
+ * source's top-level folders go under it, and the name match runs among its
+ * children, so an import never joins a same-named folder elsewhere.
+ *
  * Precondition: `imported` lists parents before children (every importer's
  * tree builder creates ancestors first), so a folder's parent is already
  * mapped when we reach it.
@@ -540,6 +547,7 @@ export function reconcileImportedFolders(
   existing: FolderDef[],
   imported: FolderDef[],
   originalIds?: ReadonlyMap<string, string>,
+  rootParent: string | null = null,
 ): { folders: FolderDef[]; idMap: Map<string, string> } {
   let folders = [...existing];
   const live = new Set(existing.map((f) => f.id));
@@ -550,7 +558,7 @@ export function reconcileImportedFolders(
       idMap.set(inc.id, original);
       continue;
     }
-    const parentId = inc.parentId ? idMap.get(inc.parentId) ?? null : null;
+    const parentId = inc.parentId ? idMap.get(inc.parentId) ?? rootParent : rootParent;
     const match = folders.find(
       (f) => f.parentId === parentId && f.name === inc.name
     );

@@ -22,7 +22,8 @@
       "totp": "2FA-Codes sind eine Pro-Funktion. Speichere einen Authenticator-Schlüssel bei jedem Login und du bekommst den wechselnden Code direkt neben dem Passwort. Der Schlüssel selbst wird in jedem Tarif gespeichert und synchronisiert.",
       "replace": "Suchen und Ersetzen ist eine Pro-Funktion. Mit einem Upgrade ersetzt du einen Treffer oder alle Treffer einer Notiz auf einmal.",
       "passphrase": "Passphrasen sind eine Pro-Funktion. Erzeuge eine Phrase aus zufälligen Wörtern, die sich leicht tippen und aussprechen lässt.",
-      "default": "Ein Upgrade schaltet alles unten frei. Einmalzahlung."
+      "default": "Ein Upgrade schaltet alles unten frei. Einmalzahlung.",
+      "alerts": "Erinnerungen sind eine Pro-Funktion. Deine Geräte melden sich zu der Zeit, die du wählst, und nichts über den Eintrag verlässt sie."
     },
     "features": {
       "devices": "Unbegrenzt viele Geräte synchronisieren, jede Plattform",
@@ -73,7 +74,7 @@
     "openingBody": "Ein Paddle-Checkout-Fenster sollte erscheinen. Falls nicht, hat dein Browser das Popup möglicherweise blockiert - lade diese Seite neu, um es erneut zu versuchen."
   },
   "history": {
-    "subtitle": "Bis zu 20 Versionen pro Eintrag. Älteste werden automatisch entfernt.",
+    "subtitle": "Bis zu 50 Versionen pro Eintrag. Älteste werden automatisch entfernt.",
     "empty": "Noch kein Verlauf. Versionen sammeln sich nach der nächsten Bearbeitung an. Schau später wieder vorbei.",
     "loadFailed": "Der Verlauf konnte nicht geladen werden. Prüfe deine Verbindung und versuche es noch einmal.",
     "selectPrompt": "Wähle eine Version für die Vorschau.",
@@ -82,7 +83,20 @@
     "restoring": "Wird wiederhergestellt…",
     "restoreSnapshotFailed": "Die aktuelle Version konnte nicht zuerst gesichert werden, deshalb wurde nichts wiederhergestellt. Prüfe deine Verbindung und versuche es noch einmal.",
     "restoreFailed": "Diese Version konnte nicht wiederhergestellt werden. Versuche es noch einmal.",
-    "loginExtrasNotRecorded": "Diese Version hat keine eigenen Felder und keine weiteren Websites gespeichert. Beim Wiederherstellen bleiben die aktuellen erhalten."
+    "loginExtrasNotRecorded": "Diese Version hat keine eigenen Felder und keine weiteren Websites gespeichert. Beim Wiederherstellen bleiben die aktuellen erhalten.",
+    "compare": "Mit aktueller Notiz vergleichen",
+    "thisVersion": "Damals",
+    "currentNote": "Jetzt",
+    "onlyInVersion": "Seitdem entfernt",
+    "onlyInCurrent": "Seitdem hinzugefügt",
+    "changeCount_other": "{{count}} Änderungen",
+    "noChanges": "Keine Änderungen im Text",
+    "titleChanged": "Titel geändert",
+    "tagsChanged": "Tags geändert",
+    "formatChanged": "Formatierung geändert",
+    "tooLong": "Diese Notiz ist zu lang für einen Vergleich.",
+    "trackersNotRecorded": "Diese Version hat keine Tracker-Werte gespeichert. Beim Wiederherstellen bleiben die aktuellen erhalten.",
+    "changeCount_one": "{{count}} Änderung"
   },
   "donation": {
     "eyebrow": "Du hast freigeschaltet",

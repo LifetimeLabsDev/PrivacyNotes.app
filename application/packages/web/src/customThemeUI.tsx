@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { parseThemeCode, resolveTheme, serializeThemeCode, themePasses, withoutAuthor, type CustomTheme } from './themeCode';
 import { canSaveCustomTheme, CUSTOM_THEME_MAX, deleteCustomTheme, liveCustomThemes, newCustomThemeId, saveCustomTheme, type CustomThemes } from './customThemes';
 import { TEAM_THEMES } from './teamThemes';
-import { COMMUNITY_THEMES } from './communityThemes';
-import { COMMUNITY_SHOWN_PER_MODE } from './communityShown';
+import { COMMUNITY_THEMES, THEME_DISCUSSIONS_URL } from './communityThemes';
+import { COMMUNITY_VOTES } from './communityVotes';
+import { pickCommunity, type CommunitySort } from './communityShown';
+import { openExternal } from './openExternal';
 import { customChoice, isFreeTheme, peekThemeMode, previewCustomTheme, type ColorTheme, type CustomSnapshot, type Theme, type ThemeChoice } from './theme';
 import { BUILTIN_THEME_CODES } from './builtinThemeCodes';
 import type { ContextMenuItem } from './ContextMenu';
@@ -13,7 +15,7 @@ import type { ThemeBuilderTarget } from './notesView/useThemeBuilder';
 import { ConfirmModal } from './ConfirmModal';
 import { CardMenuButton, CommunityCorner, ProCorner, QuickCorner, QuickStarButton } from './ThemeCardMenuButton';
 import { IconUpgrade } from './UpgradeModal';
-import { Copy, PencilSimple, Trash } from './icons';
+import { ArrowSquareOut, Copy, PencilSimple, Trash } from './icons';
 import { HoverLabel } from './HoverLabel';
 
 /**
@@ -36,6 +38,9 @@ export interface CustomThemeEntry {
   community?: boolean;
   /** A community theme's day of adding (YYYY-MM-DD). */
   added?: string;
+  /** A community theme's discussion thread, and its upvotes there. */
+  discussion?: number;
+  votes?: number;
 }
 
 
@@ -55,10 +60,13 @@ export function snapshotOf(id: string, theme: CustomTheme): CustomSnapshot {
  *  /themes may list newer ones. An entry is never removed: a slot that names
  *  a theme this version does not list goes back to Default (reconcileCustomSlots). */
 export function teamThemeEntries(): CustomThemeEntry[] {
-  const read = (list: { id: string; code: string; added?: string }[], community: boolean) =>
-    list.flatMap(({ id, code, added }) => {
+  const read = (list: { id: string; code: string; added?: string; discussion?: number }[], community: boolean) =>
+    list.flatMap(({ id, code, added, discussion }) => {
       const theme = parseThemeCode(code);
-      return theme ? [{ id, theme, snapshot: snapshotOf(id, theme), team: true, ...(community ? { community, added } : {}) }] : [];
+      const votes = discussion ? (COMMUNITY_VOTES[discussion] ?? 0) : 0;
+      return theme
+        ? [{ id, theme, snapshot: snapshotOf(id, theme), team: true, ...(community ? { community, added, discussion, votes } : {}) }]
+        : [];
     });
   // Community themes newest first.
   const community = [...COMMUNITY_THEMES].sort((a, b) => b.added.localeCompare(a.added));
@@ -117,11 +125,13 @@ export interface ThemeGalleryCtx {
 }
 
 /** The team's themes and your own of one mode, as gallery cards. */
-export function ExtraThemeCards({ mode, compact, ctx, madeBy = 'all', only }: {
+export function ExtraThemeCards({ mode, compact, ctx, madeBy = 'all', sort = 'newest', only }: {
   mode: Theme;
   compact: boolean;
   ctx: ThemeGalleryCtx;
   madeBy?: MadeBy;
+  /** The order of the community themes under Community. */
+  sort?: CommunitySort;
   /** One theme by id, for the quick menu; it draws nothing when the theme is gone. */
   only?: string;
 }) {
@@ -130,15 +140,17 @@ export function ExtraThemeCards({ mode, compact, ctx, madeBy = 'all', only }: {
   const own = useMemo(() => customThemeEntries(ctx.customThemes), [ctx.customThemes]);
   const [deleting, setDeleting] = useState<CustomThemeEntry | null>(null);
   const active = mode === 'dark' ? ctx.darkTheme : ctx.lightTheme;
-  // The newest community themes of this mode, plus the one this slot shows.
-  let communityShown = 0;
-  const entries = [...team, ...own].filter((e) => {
-    if (only !== undefined) return e.id === only;
-    if (e.snapshot.mode !== mode || !madeByShows(e, madeBy)) return false;
-    if (!e.community || active === customChoice(e.id)) return true;
-    communityShown += 1;
-    return communityShown <= COMMUNITY_SHOWN_PER_MODE;
-  });
+  const entries = useMemo(() => {
+    if (only !== undefined) return [...team, ...own].filter((e) => e.id === only);
+    const shown = [...team, ...own].filter((e) => e.snapshot.mode === mode && madeByShows(e, madeBy));
+    const community = shown.filter((e) => e.community);
+    if (community.length === 0 || (madeBy !== 'all' && madeBy !== 'community')) return shown;
+    // The picked community themes, plus the one this slot shows.
+    const picked = pickCommunity(community.map((e) => ({ e, added: e.added ?? '', votes: e.votes ?? 0 })), madeBy, sort).map((p) => p.e);
+    const current = community.find((e) => active === customChoice(e.id));
+    if (current && !picked.includes(current)) picked.push(current);
+    return [...shown.filter((e) => !e.community), ...picked];
+  }, [team, own, only, mode, madeBy, sort, active]);
 
   function copyCode(entry: CustomThemeEntry) {
     void navigator.clipboard?.writeText(entry.snapshot.code).then(() => ctx.onCopied(entry.theme.name));
@@ -154,7 +166,21 @@ export function ExtraThemeCards({ mode, compact, ctx, madeBy = 'all', only }: {
       { label: t('appearance.custom.copyCode'), icon: <Copy size={14} />, onSelect: () => copyCode(entry) },
     ];
     if (entry.team) {
-      ctx.openMenu(e, copyItems);
+      const thread = entry.discussion;
+      ctx.openMenu(
+        e,
+        thread
+          ? [
+              ...copyItems,
+              { type: 'separator' },
+              {
+                label: t('appearance.custom.vote'),
+                icon: <ArrowSquareOut size={14} />,
+                onSelect: () => openExternal(`${THEME_DISCUSSIONS_URL}/${thread}`),
+              },
+            ]
+          : copyItems,
+      );
       return;
     }
     const credit: ContextMenuItem[] = entry.theme.author

@@ -276,8 +276,11 @@ export default function BurnNote() {
               </button>
             </div>
 
-            {/* Note content */}
-            <div className="rounded-lg border border-divider bg-surface-2 overflow-hidden">
+            {/* Note content. `contain: paint` makes the card the containing
+                block and stacking context for everything inside it, so a
+                stranger's note can never place a fixed layer over the page,
+                whatever CSS path it finds past the sanitizer. */}
+            <div className="rounded-lg border border-divider bg-surface-2 overflow-hidden [contain:paint]">
               {note.title && (
                 <div className="px-6 pt-5 pb-2">
                   <h2 className="text-xl font-bold tracking-tight">{note.title}</h2>

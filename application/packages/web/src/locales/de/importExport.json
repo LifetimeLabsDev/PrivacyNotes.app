@@ -39,16 +39,29 @@
     "photosTooBig_one": "Nicht genug Platz für das Foto ({{size}}), es bleibt draußen. Alles andere kommt mit. Gib {{shortfall}} frei oder hol dir mehr Speicher und importiere erneut, um es nachzuholen.",
     "photosTooBig_other": "Nicht genug Platz für die {{count}} Fotos ({{size}}), sie bleiben draußen. Alles andere kommt mit. Gib {{shortfall}} frei oder hol dir mehr Speicher und importiere erneut, um sie nachzuholen."
   },
+  "importCalendar": {
+    "location": "Ort",
+    "videoCall": "Videoanruf",
+    "organizer": "Organisator",
+    "guests": "Gäste",
+    "file": "Datei",
+    "link": "Link",
+    "timeZone": "Zeitzone",
+    "ends": "Endet",
+    "repeats": "Wiederholung"
+  },
   "sourceDesc": {
     "googleKeep": "Google-Takeout-.zip (Keep-Ordner) oder eine einzelne .json-Notiz. Checklisten werden als native Aufgabenlisten importiert.",
+    "googleCalendar": "Die .zip aus Google Kalender unter Settings > Import & export oder eine einzelne .ics-Datei. Termine behalten ihre Uhrzeiten, Wiederholungen und Erinnerungen.",
     "appleNotes": "Exportiere über die kostenlose Exporter-App als Markdown und lege dann die .zip hier ab.",
     "appleJournal": "Exportiere aus Journal auf dem Mac oder iPhone, komprimiere den Ordner AppleJournalEntries und lege die .zip hier ab. Einträge werden als Tagebucheinträge importiert, mit ihren Fotos, Videos, Sprachmemos und Orten.",
     "evernote": "Eine einzelne .enex oder mehrere zusammen in einer Zip. Behält Formatierung, Tags, Anhänge, Notiz-Links und Notizbücher. Aufgaben legt Evernote nicht in die .enex.",
     "samsungNotes": "Exportiere als Word (.docx) oder Text (.txt). Packe mehrere Dateien in ein Zip für den Massenimport.",
     "simplenote": "Exportiere aus Simplenote (Einstellungen -> Tools -> Notizen exportieren). Lege die .zip ab.",
-    "standardNotes": "Entschlüsseltes .zip- oder .txt-Backup aus Standard Notes (Datei > Exportieren > Entschlüsselt).",
+    "standardNotes": "Entschlüsseltes .zip- oder .txt-Backup aus Standard Notes (Account settings > Backups > Data backups > Decrypted).",
     "obsidian": "Obsidian-Vault als .zip. Erhält Tags, [[note links]], Ordnerstruktur, inline #tags sowie eingebettete Bilder und Dateien.",
     "notesnook": "Notesnook-Export als .zip. Wähle beim Exportieren HTML, um Formatierung, Notizbücher, Tags und Anhänge zu behalten.",
+    "bear": "Wähle in Bear File > Backup Notes... und lege die .bear2bk-Datei hier ab. Tags und verschachtelte Tags, Pins, das Archiv, der Papierkorb, Hervorhebungen mit ihren Farben, Notiz-Links und Anhänge kommen mit.",
     "joplin": "Die .jex-Datei aus File > Export all > \"JEX - Joplin Export File\". Notizbücher werden zu Ordnern, und Tags, To-dos, Notiz-Links und Anhänge kommen mit.",
     "upnote": "In UpNote: Settings > Backup > Backup now, dann alles im Backup-Ordner zippen. Behält Notizbücher, Tags, Pins, note-links, Formatierung und Anhänge. Einzel-Exporte aus den Handy-Apps funktionieren auch - wähle \"Export to HTML\".",
     "markdownFolder": ".md- oder .txt-Dateien einzeln oder als .zip. Ein gezippter Ordner behält seine Unterordner und bringt seine Bilder und Anhänge mit.",
@@ -96,6 +109,12 @@
     "blobsNotInBackup_other": "Deine Notizen wurden wiederhergestellt, aber {{items}}, die im Backup aufgeführt sind, fehlen darin."
   },
   "preview": {
+    "oversize_one": "{{count}} Notiz ist größer als 1 MB. Sie bleibt auf diesem Gerät und wird nicht synchronisiert.",
+    "oversize_other": "{{count}} Notizen sind größer als 1 MB. Sie bleiben auf diesem Gerät und werden nicht synchronisiert.",
+    "splitOversize_one": "Diese Notiz an ihren Überschriften in kleinere Notizen aufteilen, damit sie synchronisiert wird",
+    "splitOversize_other": "Diese {{count}} Notizen an ihren Überschriften in kleinere Notizen aufteilen, damit sie synchronisiert werden",
+    "partTitle": "{{title}} ({{index}}/{{total}})",
+    "continuedIn": "Fortsetzung in {{link}}",
     "sourceLabel": "Quelle",
     "uniqueTags": "Eindeutige Tags",
     "empty": "Leer",
@@ -107,6 +126,7 @@
     "duplicateWarning": "beim Importieren werden diese als neue Notizen hinzugefügt. Wenn du das zweimal ausführst, erhältst du Duplikate. Eine automatische Duplikaterkennung gibt es noch nicht.",
     "duplicateSkipNote": "Lesezeichen, die du schon gespeichert hast, werden übersprungen. Ein zweiter Durchlauf legt also nichts doppelt an.",
     "contactSkipNote": "Personen, die du schon gespeichert hast, werden übersprungen und bleiben, wie sie sind. Ein zweiter Durchlauf legt also niemanden doppelt an.",
+    "eventSkipNote": "Termine, die du schon importiert hast, werden übersprungen und bleiben, wie sie sind. Ein zweiter Durchlauf legt also keine doppelt an.",
     "restoreMergeNote": "Notizen aus deinem eigenen Backup werden anhand ihrer ID zugeordnet. Eine Notiz, die du schon hast, wird nur aktualisiert, wenn die Fassung im Backup neuer ist, und eine Notiz im Papierkorb wird wieder herausgeholt.",
     "quotaExceeded": "<strong>Zu wenig Speicher zum Importieren.</strong> Geschätzt {{needed}} benötigt, {{available}} verfügbar. Schaffe Platz oder rüste auf, bevor du importierst.",
     "quotaWarning": "Hinweis: Dieser Import wird etwa {{needed}} deines verbleibenden Speichers von {{available}} belegen.",
@@ -154,7 +174,11 @@
     "bookmarksExportDesc": "Die Standard-Lesezeichendatei, die jeder Browser liest. Importiere sie mit deinen Ordnern in Chrome, Firefox, Safari oder Edge.",
     "contactsOnlyHeading": "Nur Kontakte",
     "contactsExportTitle": "Kontaktdatei (.vcf)",
-    "contactsExportDesc": "Die vCard-Datei, die jedes Telefon und jedes Adressbuch liest. Importiere sie in iPhone, Android, Google Kontakte oder Kontakte auf dem Mac, mit allen Labels und Gruppen."
+    "contactsExportDesc": "Die vCard-Datei, die jedes Telefon und jedes Adressbuch liest. Importiere sie in iPhone, Android, Google Kontakte oder Kontakte auf dem Mac, mit allen Labels und Gruppen.",
+    "calendarOnlyHeading": "Nur Kalender",
+    "calendarExportTitle": "Kalenderdatei (.ics)",
+    "calendarExportDesc": "Termine sowie Notizen und Aufgabenlisten mit Datum, für Google Kalender, Apple Kalender oder Outlook.",
+    "calendarPrivate": "Privat"
   },
   "exportProgress": {
     "failedTitle": "Export fehlgeschlagen",
@@ -220,5 +244,11 @@
     "title_other": "{{count}} Elemente wurden mit PrivacyNotes geteilt",
     "line": "Nichts wird gespeichert, bis du entscheidest.",
     "saveAll": "Alle speichern"
+  },
+  "destination": {
+    "label": "Hinzufügen zu",
+    "none": "Ohne Ordner",
+    "newFolder": "Neuer Ordner „{{name}}“",
+    "help": "Ordner aus der Quelle landen in dem Ordner, den du auswählst, und Elemente ohne Ordner kommen direkt hinein."
   }
 }

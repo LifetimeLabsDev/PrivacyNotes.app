@@ -37,7 +37,8 @@
   "storageBar": {
     "usage": "已使用 {{percent}}%（{{used}} / {{max}}）",
     "refresh": "重新整理儲存空間",
-    "cleanupInfo": "已刪除的項目會立即不再計入。加密檔案本身會在幾天內從伺服器移除。"
+    "cleanupInfo": "已刪除的項目會立即不再計入。加密檔案本身會在幾天內從伺服器移除。",
+    "open": "開啟儲存空間設定"
   },
   "updateToast": {
     "available": "有可用更新",
@@ -105,7 +106,23 @@
     "openInTab": "在分頁中開啟",
     "openLink": "開啟",
     "edit": "編輯",
-    "close": "關閉"
+    "close": "關閉",
+    "tags": "標籤",
+    "folders": "資料夾",
+    "tagItems_other": "{{count}} 個項目",
+    "emptyTags": "沒有符合此名稱的標籤",
+    "emptyFolders": "沒有符合此名稱的資料夾",
+    "onlyTags": "標籤",
+    "onlyFolders": "資料夾",
+    "showOnlyTags": "只顯示標籤",
+    "showOnlyFolders": "只顯示資料夾",
+    "showOnlyCommands": "只顯示指令",
+    "goToTag": "前往標籤",
+    "goToFolder": "前往資料夾",
+    "createTag": "建立標籤 #{{name}}",
+    "createFolder": "建立資料夾「{{name}}」",
+    "newTag": "新增標籤",
+    "newFolder": "新增資料夾"
   },
   "cardForm": {
     "cardholderName": "持卡人姓名",

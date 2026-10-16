@@ -37,11 +37,14 @@ export interface StoredNote {
  *   - 'link'    - bookmark; body is a small JSON document holding the URL
  *   - 'contact' - address-book entry; body is a JSON document of labelled
  *                 rows, the title is the display name (ContactForm)
+ *   - 'event'   - calendar event: a markdown note whose schedule (day, end,
+ *                 time, repeat, alerts) lives in `trackers`, listed under
+ *                 Calendar (TipTap editor)
  *
  * Stored inside the encrypted payload so the server never learns what
  * kind of data the user is storing.
  */
-export type NoteType = 'note' | 'task' | 'journal' | 'file' | 'login' | 'card' | 'ssh-key' | 'link' | 'contact';
+export type NoteType = 'note' | 'task' | 'journal' | 'file' | 'login' | 'card' | 'ssh-key' | 'link' | 'contact' | 'event';
 
 export interface DecryptedNote {
   id: string;

@@ -11,13 +11,17 @@
     "noContent": "Sin contenido",
     "notBackedUp": "Sin copia de seguridad",
     "archived": "Archivado",
-    "entryDate": "Fecha de la entrada"
+    "entryDate": "Fecha de la entrada",
+    "date": "Fecha",
+    "dayOf": "día {{n}} de {{total}}"
   },
   "header": {
     "new": "Nueva",
     "newNote": "Nota nueva",
     "newNoteHover": "Nota nueva ({{hotkey}})",
-    "trash": "Papelera"
+    "trash": "Papelera",
+    "newEvent": "Evento nuevo",
+    "newEventHover": "Evento nuevo ({{hotkey}})"
   },
   "folderChip": {
     "clear": "Quitar el filtro de carpeta: {{folder}}",
@@ -40,7 +44,9 @@
     "login": "Inicio de sesión",
     "file": "Archivo",
     "bookmark": "Marcador",
-    "contact": "Contacto"
+    "contact": "Contacto",
+    "event": "Evento",
+    "quickAdd": "Añadido rápido"
   },
   "vaultFilter": {
     "all": "Todos",
@@ -94,7 +100,8 @@
     "vault": "Bóveda",
     "pinned": "Fijadas",
     "archive": "Archivo",
-    "notes": "Notas"
+    "notes": "Notas",
+    "calendar": "Calendario"
   },
   "footerStats": {
     "journals": "Diarios",
@@ -138,8 +145,17 @@
     "collapse": "Contraer lista de notas",
     "expand": "Expandir lista de notas"
   },
+  "split": {
+    "action": "Dividir nota",
+    "done": "Dividida en “{{title}}”",
+    "overLimit": "“{{title}}” supera 1 MB y se queda en este dispositivo",
+    "cannot": "Esta nota no se puede dividir aquí. Pon el cursor donde debe empezar la nueva nota.",
+    "continuedTitle": "{{title}} (continuación)",
+    "continuedIn": "Continúa en {{link}}"
+  },
   "paneResize": {
-    "hintCollapse": "Haz clic para contraer · Arrastra para ajustar el tamaño"
+    "hintCollapse": "Haz clic para contraer · Arrastra para ajustar el tamaño",
+    "hintExpand": "Haz clic para expandir · Arrastra para ajustar el tamaño"
   },
   "emptyEditor": {
     "selectFile": "Selecciona un archivo para previsualizarlo",
@@ -176,6 +192,8 @@
     "findInNote": "Buscar en la nota",
     "navPrev": "Anterior",
     "navNext": "Siguiente",
+    "navPrevTab": "Pestaña anterior",
+    "navNextTab": "Pestaña siguiente",
     "undo": "Deshacer",
     "redo": "Rehacer",
     "hide": "Ocultar",
@@ -227,6 +245,8 @@
     "words": "Palabras",
     "zen": "Modo Zen",
     "appearance": "Apariencia",
+    "goToTop": "Ir al principio",
+    "goToEnd": "Ir al final",
     "signOut": "Cerrar sesión",
     "signingOut": "Cerrando sesión…",
     "switchToLight": "Cambiar a modo claro",
@@ -252,7 +272,8 @@
     "aboutLabel": "Acerca de",
     "languageLabel": "Idioma",
     "dateLabel": "Fecha",
-    "languageDesc": "Elige el idioma en el que se muestra PrivacyNotes."
+    "languageDesc": "Elige el idioma en el que se muestra PrivacyNotes.",
+    "calendarLabel": "Calendario"
   },
   "importStore": {
     "title": "¿Importar o guardar?",

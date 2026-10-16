@@ -22,7 +22,8 @@
       "totp": "I codici 2FA sono una funzione Pro. Salva una chiave di autenticazione su qualsiasi accesso e trovi il codice a rotazione accanto alla password. La chiave viene salvata e sincronizzata in tutti i piani.",
       "replace": "Trova e sostituisci è una funzione Pro. Passa a Pro per sostituire un'occorrenza o tutte le occorrenze di una nota in un colpo solo.",
       "passphrase": "Le passphrase sono una funzione Pro. Genera una frase di parole casuali, facile da digitare e da dire.",
-      "default": "Un upgrade sblocca tutto ciò che c'è qui sotto. Pagamento una tantum."
+      "default": "Un upgrade sblocca tutto ciò che c'è qui sotto. Pagamento una tantum.",
+      "alerts": "I promemoria sono una funzione Pro. I tuoi dispositivi suonano all'ora che scegli, e niente dell'elemento esce da lì."
     },
     "features": {
       "devices": "Sincronizza dispositivi illimitati, su ogni piattaforma",
@@ -73,7 +74,7 @@
     "openingBody": "Dovrebbe comparire una finestra di pagamento Paddle. In caso contrario, il tuo browser potrebbe aver bloccato il popup - ricarica questa pagina per riprovare."
   },
   "history": {
-    "subtitle": "Fino a 20 versioni per elemento. Le più vecchie vengono eliminate automaticamente.",
+    "subtitle": "Fino a 50 versioni per elemento. Le più vecchie vengono eliminate automaticamente.",
     "empty": "Ancora nessuna cronologia. Le versioni iniziano ad accumularsi dopo la prossima modifica. Torna più tardi.",
     "loadFailed": "Non è stato possibile caricare la cronologia. Controlla la connessione e riprova.",
     "selectPrompt": "Seleziona una versione per l'anteprima.",
@@ -82,7 +83,20 @@
     "restoring": "Ripristino…",
     "restoreSnapshotFailed": "Non è stato possibile salvare prima la versione attuale, quindi non è stato ripristinato nulla. Controlla la connessione e riprova.",
     "restoreFailed": "Non è stato possibile ripristinare questa versione. Riprova.",
-    "loginExtrasNotRecorded": "Questa versione non ha registrato campi personalizzati né siti web aggiuntivi. Ripristinarla mantiene quelli attuali."
+    "loginExtrasNotRecorded": "Questa versione non ha registrato campi personalizzati né siti web aggiuntivi. Ripristinarla mantiene quelli attuali.",
+    "compare": "Confronta con la nota attuale",
+    "thisVersion": "Prima",
+    "currentNote": "Ora",
+    "onlyInVersion": "Rimosso da allora",
+    "onlyInCurrent": "Aggiunto da allora",
+    "changeCount_one": "{{count}} modifica",
+    "changeCount_other": "{{count}} modifiche",
+    "noChanges": "Nessuna modifica nel testo",
+    "titleChanged": "Titolo modificato",
+    "tagsChanged": "Tag modificati",
+    "formatChanged": "Formattazione modificata",
+    "tooLong": "Questa nota è troppo lunga per il confronto.",
+    "trackersNotRecorded": "Questa versione non ha registrato i valori dei tracker. Ripristinarla mantiene quelli attuali."
   },
   "donation": {
     "eyebrow": "Hai sbloccato",

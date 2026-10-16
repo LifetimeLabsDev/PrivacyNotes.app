@@ -26,6 +26,7 @@ export type SectionId =
   | 'lists'
   | 'language'
   | 'date'
+  | 'calendar'
   | 'about'
   | 'help';
 
@@ -58,6 +59,7 @@ export const SECTION_LABEL: Record<SectionId, string> = {
   lists: 'notes:settings.listsLabel',
   language: 'notes:settings.languageLabel',
   date: 'notes:settings.dateLabel',
+  calendar: 'notes:settings.calendarLabel',
   about: 'notes:settings.aboutLabel',
   help: 'notes:settings.helpLabel',
 };
@@ -131,7 +133,9 @@ const ROW_ENTRIES: SettingEntry[] = [
   keyedImporter('vcard', 'importExport:sourceLabel.vcard'),
   importer('apple-journal', 'Apple Journal'),
   importer('apple-notes', 'Apple Notes'),
+  importer('bear', 'Bear'),
   importer('evernote', 'Evernote'),
+  importer('google-calendar', 'Google Calendar'),
   importer('google-keep', 'Google Keep'),
   importer('ia-writer', 'iA Writer'),
   importer('joplin', 'Joplin'),
@@ -153,6 +157,7 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'export.textBackup', section: 'import', tab: 'export', label: 'importExport:export.textBackupTitle' },
   { id: 'export.bookmarks', section: 'import', tab: 'export', label: 'importExport:export.bookmarksExportTitle' },
   { id: 'export.contacts', section: 'import', tab: 'export', label: 'importExport:export.contactsExportTitle' },
+  { id: 'export.calendar', section: 'import', tab: 'export', label: 'importExport:export.calendarExportTitle' },
   { id: 'export.vault', section: 'import', tab: 'export', label: 'importExport:export.vaultExportTitle' },
   { id: 'import.restore', section: 'import', tab: 'restore', label: 'importExport:shell.tabRestore' },
   { id: 'restore.fullBackup', section: 'import', tab: 'restore', label: 'importExport:restorePick.fullBackupTitle' },
@@ -186,6 +191,7 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'security.reaskAfter', section: 'security', tab: 'pin', label: 'security:pinTab.reaskAfter', keywords: true },
   { id: 'security.biometric', section: 'security', tab: 'biometric', label: 'security:modal.tabBiometric', keywords: true },
   { id: 'security.enableBiometric', section: 'security', tab: 'biometric', label: 'security:biometricTab.enable' },
+  { id: 'security.biometricSetUpAgain', section: 'security', tab: 'biometric', label: 'security:biometricTab.setUpAgain' },
   { id: 'security.appLock', section: 'security', tab: 'biometric', label: 'security:biometricTab.lockOnOpen', keywords: true },
   { id: 'security.relockAfter', section: 'security', tab: 'biometric', label: 'security:biometricTab.relockAfter', keywords: true },
   { id: 'security.blockCapture', section: 'security', tab: 'biometric', label: 'security:biometricTab.blockCapture', keywords: true, shownOn: 'captureBlock' },
@@ -207,7 +213,7 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'appearance.openInTabs', section: 'lists', label: 'settings:appearance.openInTabsTitle', keywords: true, shownOn: 'paneLayout' },
   { id: 'appearance.mode', section: 'design', label: 'settings:appearance.modeTitle', options: ['settings:appearance.modeAuto', 'settings:appearance.light', 'settings:appearance.dark'], keywords: true },
   { id: 'appearance.theme', section: 'design', label: 'settings:appearance.lightThemes', options: ['settings:appearance.darkThemes'], keywords: true },
-  { id: 'appearance.customThemes', section: 'design', label: 'settings:appearance.custom.newTheme', options: ['settings:appearance.custom.pasteCode', 'settings:appearance.custom.community'], keywords: true },
+  { id: 'appearance.customThemes', section: 'design', label: 'settings:appearance.custom.newTheme', options: ['settings:appearance.custom.pasteCode', 'settings:appearance.custom.websiteTitle'], keywords: true },
   { id: 'appearance.appZoom', section: 'design', label: 'settings:appearance.appZoomTitle', keywords: true, shownOn: 'desktopApp' },
   { id: 'appearance.tintNotes', section: 'design', label: 'settings:appearance.noteColorsTitle', options: ['settings:appearance.noteColorsBackground', 'settings:appearance.noteColorsAccent', 'settings:appearance.noteColorsOff'], keywords: true },
   { id: 'appearance.textSize', section: 'editor', label: 'settings:appearance.textSizeTitle', options: ['settings:appearance.textSizeSmallest', 'settings:appearance.textSizeSmall', 'settings:appearance.textSizeDefault', 'settings:appearance.textSizeLarge', 'settings:appearance.textSizeLargest'], keywords: true },
@@ -215,6 +221,7 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'appearance.contentWidth', section: 'editor', label: 'settings:appearance.contentWidthTitle', options: ['settings:appearance.contentWidthWide', 'settings:appearance.contentWidthFull'], keywords: true },
   { id: 'appearance.editor', section: 'editor', label: 'settings:appearance.editorTitle', options: ['settings:appearance.editorFormatted', 'settings:appearance.editorMarkdown'], keywords: true },
   { id: 'appearance.copyFormat', section: 'editor', label: 'settings:appearance.copyFormatTitle', options: ['settings:appearance.copyFormatMarkdown', 'settings:appearance.copyFormatPlain'], keywords: true },
+  { id: 'appearance.pasteFormat', section: 'editor', label: 'settings:appearance.pasteFormatTitle', options: ['settings:appearance.pasteFormatFormatted', 'settings:appearance.pasteFormatPlain'], keywords: true },
   { id: 'appearance.invisibles', section: 'editor', label: 'settings:appearance.invisiblesTitle', keywords: true },
   { id: 'appearance.favicons', section: 'lists', label: 'settings:appearance.faviconsTitle', keywords: true },
   { id: 'appearance.formatBar', section: 'formatBar', label: 'settings:appearance.tabFormatBar', keywords: true },
@@ -230,6 +237,15 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'language.dateFormat', section: 'date', label: 'settings:language.dateFormat', options: ['settings:language.dayFirst', 'settings:language.monthFirst', 'settings:language.yearFirst'], keywords: true },
   { id: 'language.clock', section: 'date', label: 'settings:language.clock', options: ['settings:language.hour24', 'settings:language.hour12'], keywords: true },
   { id: 'language.reportMistake', section: 'language', label: 'settings:language.reportMistake' },
+
+  // Calendar
+  { id: 'calendar.alertTimed', section: 'calendar', label: 'settings:calendar.alertTimed', keywords: true },
+  { id: 'calendar.alertAllDay', section: 'calendar', label: 'settings:calendar.alertAllDay', keywords: true },
+  { id: 'calendar.alertBirthday', section: 'calendar', label: 'settings:calendar.alertBirthday', keywords: true },
+  { id: 'calendar.reminderTitles', section: 'calendar', label: 'settings:calendar.reminderTitles', keywords: true },
+  { id: 'calendar.where', section: 'calendar', label: 'settings:calendar.whereTitle', keywords: true },
+  { id: 'calendar.weekNumbers', section: 'calendar', label: 'settings:calendar.weekNumbers', keywords: true },
+  { id: 'calendar.hours', section: 'calendar', label: 'settings:calendar.hours', keywords: true },
 
   // About
   { id: 'about.about', section: 'about', tab: 'about', label: 'landing:about.tabs.about' },

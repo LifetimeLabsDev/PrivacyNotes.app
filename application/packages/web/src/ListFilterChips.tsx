@@ -102,6 +102,7 @@ export function ListFilterChips({
           <button
             type="button"
             onClick={onClearTag}
+            data-tag-chip={untagged ? undefined : tagLabel}
             aria-label={t('tagChip.clear', { tag: tagLabel })}
             className={CHIP_CLASS}
           >

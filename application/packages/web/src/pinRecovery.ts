@@ -27,10 +27,12 @@ import {
   hasStoredPhrase,
   hydrateLocalPinWrap,
   removePinWrappedPhrase,
+  removeStoredPhrase,
 } from './biometric';
+import { isLivePhrase, signInStamp, signedOutSince, type SignInStamp } from './liveSignIn';
 import { persistStoredPhrase } from './phraseAtRest';
-import { clearPinFailures, clearPinFromSettings } from './pin';
-import { isPinWrapWithheld, type UserSettings } from './userSettings';
+import { clearPinFailures, clearPinFromSettings, syncPinCache } from './pin';
+import { isPinWrapWithheld, loadLocalSettings, type UserSettings } from './userSettings';
 
 /**
  * Strip every PIN artifact this device holds and return the settings that
@@ -54,12 +56,33 @@ import { isPinWrapWithheld, type UserSettings } from './userSettings';
  * Answers null, having changed nothing, when that phrase does not read back:
  * the wrap stays, and so does the PIN that opens it. Callers keep the PIN and
  * say so. Pinned by tests/pinRecovery.test.ts.
+ *
+ * `current` is a caller's answer to whether the secret it proved is still the
+ * account's, asked before the phrase write and again after it, with no await
+ * between that answer and the removal. A secret another tab replaced meanwhile
+ * also answers null, with nothing removed and no phrase left behind: a phrase
+ * this call put at rest goes again while the wrap it stood in for is still
+ * here and no sign-out began since the call started. After a sign-out, even
+ * one followed by a sign-in to the same account, the phrase at rest belongs
+ * to that newer sign-in. `wrotePhrase` and `since` let a caller whose save
+ * then fails take the phrase off again under the same rule
+ * (restoreUnsavedClear).
  */
-export async function clearPin(settings: UserSettings, phrase: string): Promise<UserSettings | null> {
+export async function clearPin(
+  settings: UserSettings,
+  phrase: string,
+  current: () => boolean = () => true,
+): Promise<{ settings: UserSettings; wrotePhrase: boolean; since: SignInStamp } | null> {
+  const since = signInStamp();
   // The phrase lands before the wrap goes, so a start in between still has
   // the wrap to open. The write can take a moment and can be refused.
   const lastDoor = hasPinWrappedPhrase() && !hasBiometricCredential() && !hasStoredPhrase();
+  if (!current()) return null;
   if (lastDoor && !(await persistStoredPhrase(phrase))) return null;
+  if (!current()) {
+    if (lastDoor && hasPinWrappedPhrase() && !signedOutSince(since) && isLivePhrase(phrase)) removeStoredPhrase();
+    return null;
+  }
   removePinWrappedPhrase();
   const next = clearPinFromSettings(settings);
   // Somebody who just proved the phrase has no business sitting out a
@@ -69,7 +92,29 @@ export async function clearPin(settings: UserSettings, phrase: string): Promise<
   next.pinWrapIV = null;
   next.pinWrapCiphertext = null;
   next.pinWrapIterations = null;
-  return next;
+  return { settings: next, wrotePhrase: lastDoor, since };
+}
+
+/**
+ * Put this device's PIN back after a clear whose save did not land
+ * (`saveCredential` answered false). clearPin already took the hash cache and
+ * the wrap off, and the settings still hold both, so the PIN the account keeps
+ * opens here again, as it would after the next start. A phrase the clear put
+ * at rest (`wrotePhrase`) goes again once the wrap is back, with no await
+ * between, so the refused removal leaves no door that was not there before;
+ * only while no sign-out began since the clear started (`since`), as in
+ * clearPin.
+ */
+export async function restoreUnsavedClear(
+  phrase: string,
+  cleared: { wrotePhrase: boolean; since: SignInStamp },
+): Promise<void> {
+  const saved = loadLocalSettings();
+  syncPinCache(saved);
+  await syncPinWrap(saved, phrase);
+  if (cleared.wrotePhrase && hasPinWrappedPhrase() && !signedOutSince(cleared.since) && isLivePhrase(phrase)) {
+    removeStoredPhrase();
+  }
 }
 
 /**

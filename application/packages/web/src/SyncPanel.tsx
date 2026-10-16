@@ -35,6 +35,8 @@ import { useSyncLog, lastOkSyncAt, type SyncPassEntry } from './syncLog';
 import { usePushFailures, usePushHalt, type PushFailure } from './pushFailures';
 import { db } from './db';
 import { readAuthLog } from './authDiag';
+import { readSyncFaults } from './syncFaults';
+import { buildSupportReport } from './supportReport';
 import { deriveDisplayTitle } from './notesViewUtils';
 import { useVerifyStamp } from './verifyStamp';
 import { EYEBROW_ICON_ROW, EyebrowGlyph, SETTINGS_EYEBROW } from './settingsUI';
@@ -553,38 +555,21 @@ function AccountIdRow({
   const [copied, setCopied] = useState<'id' | 'report' | null>(null);
 
   async function copy(kind: 'id' | 'report') {
-    // The support report is deliberately English: it is written for our
-    // support inbox, not for the user, and a fixed shape greps well.
     const text =
       kind === 'id'
         ? pubkey
-        : [
-            'PrivacyNotes support report',
-            `Account: ${pubkey}`,
-            `Device: ${buildDeviceName()}`,
-            `Version: ${VERSION}`,
-            `Unsynced notes: ${unsynced}`,
-            `Pending file uploads: ${pendingCount}`,
-            `Last sync: ${lastOkSyncAt() !== null ? new Date(lastOkSyncAt() as number).toISOString() : 'never'}`,
-            // The three things the 2026-09-04 case needed a dashboard for:
-            // which notes are stuck and why, whether passes run, and what
-            // the session did. Ids are prefixes, titles never appear.
-            ...(failed.length > 0
-              ? ['', 'Not backed up:', ...failed.map((f) => `  ${f.id.slice(0, 8)}  ${f.failure.reason}  ${f.chars} chars  ${f.failure.message}`)]
-              : []),
-            '',
-            'Recent passes (newest first):',
-            ...[...log].reverse().map((e) =>
-              `  ${new Date(e.at).toISOString()}  ${e.ok ? 'ok' : 'FAILED'}  up=${e.up} down=${e.down}${e.failed ? ` failed=${e.failed}` : ''}${e.halted ? ` halted=${e.halted.reason}:${e.halted.unreached}` : ''}${(e.n ?? 1) > 1 ? ` x${e.n}` : ''}  ${e.ms}ms`,
-            ),
-            '',
-            'Auth breadcrumbs (newest first):',
-            ...readAuthLog(20).reverse().map((b) => {
-              const { t: at, event, ...rest } = b;
-              const detail = Object.keys(rest).length > 0 ? `  ${JSON.stringify(rest)}` : '';
-              return `  ${at}  ${event}${detail}`;
-            }),
-          ].join('\n');
+        : buildSupportReport({
+            pubkey,
+            device: buildDeviceName(),
+            version: VERSION,
+            unsynced,
+            pendingUploads: pendingCount,
+            lastOkAt: lastOkSyncAt(),
+            failed: failed.map((f) => ({ id: f.id, reason: f.failure.reason, chars: f.chars })),
+            passes: log,
+            faults: readSyncFaults(),
+            breadcrumbs: readAuthLog(20),
+          });
     try {
       await navigator.clipboard.writeText(text);
       setCopied(kind);

@@ -10,6 +10,43 @@
     "otherGuides": "Other import guides"
   },
   "guides": {
+    "google-calendar": {
+      "app": "Google Calendar",
+      "title": "Export your Google Calendar",
+      "metaTitle": "How to export your Google Calendar - PrivacyNotes",
+      "lead": "Google Calendar exports every calendar you manage as one .zip from its settings, on a computer. PrivacyNotes reads that .zip as it is, no unzipping needed.",
+      "sections": [
+        {
+          "h": "Export all your calendars at once",
+          "steps": [
+            "Open [Google Calendar](https://calendar.google.com) in a browser on a computer. The phone app has no export.",
+            "Click the gear at the top right, then \"Settings\".",
+            "In the list on the left, click \"Import & export\".",
+            "In the Export section, click the Export button. Your browser downloads a .zip with one .ics file for each calendar.",
+            "Keep the .zip as it is."
+          ],
+          "p": [
+            "The .zip holds every calendar where you have the \"Make changes and manage sharing\" permission, your own included. Calendars you can only see, such as holidays or a colleague's calendar, are not in it. On a work or school account, your administrator may restrict export."
+          ]
+        },
+        {
+          "h": "Or export one calendar",
+          "steps": [
+            "In the list on the left, under \"My calendars\", point to the calendar name, click \"More\" (the three dots), then \"Settings and sharing\".",
+            "Under \"Calendar settings\", click \"Export calendar\". Your browser downloads a .zip that holds that calendar's .ics file. Keep it as it is."
+          ]
+        },
+        {
+          "h": "What comes along",
+          "p": [
+            "Every event arrives with its day, its time and how long it lasts, including events over several days. Repeating events keep their rule, and an occurrence you moved or deleted in Google stays moved or deleted. Each calendar becomes a folder.",
+            "Reminders you set on an event arrive too, e-mail reminders included: they become app reminders, which need PrivacyNotes Pro to ring. An event that used your calendar's default reminders arrives without one, because Google does not write defaults into the file. The place, the video call link, the guests and the description go into the event's text. Times show as they did on this device when you imported.",
+            "A single .ics file from any calendar app works too, Apple Calendar and Outlook included.",
+            "Import the same file again later and the events that are already here are skipped, so only new ones are added."
+          ]
+        }
+      ]
+    },
     "google-keep": {
       "app": "Google Keep",
       "title": "Export your Google Keep notes",
@@ -63,6 +100,40 @@
         }
       ]
     },
+    "bear": {
+      "app": "Bear",
+      "title": "Export your Bear notes",
+      "metaTitle": "How to export your Bear notes - PrivacyNotes",
+      "lead": "Bear exports your whole library as one backup file, and that is the file to bring: it holds every note, the archive and the trash included.",
+      "sections": [
+        {
+          "h": "Make a Bear backup",
+          "steps": [
+            "Open Bear on your Mac.",
+            "Choose File > Backup Notes...",
+            "Save the file. You get one .bear2bk file that holds your whole library.",
+            "Drop that .bear2bk in as it is."
+          ]
+        },
+        {
+          "h": "The backup carries more than an export",
+          "p": [
+            "File > Export Notes... writes only the notes of the view you have open, so archived and trashed notes are left out. The backup holds all of them, and it remembers which notes were pinned, archived, trashed or read-only.",
+            "If you only have a Markdown or Text Bundle export, zip it and drop the zip in. Your text, tags and attachments come across, but the archive, the trash and the pins do not, because those exports never write them.",
+            "Exporting from Bear by hand? Select at least two notes. A single note opens a save sheet that can give the file the wrong extension."
+          ]
+        },
+        {
+          "h": "What comes along",
+          "p": [
+            "Your tags come along as tags. Nested tags such as #work/projects are also rebuilt as folders, and each note lands in the folder of its deepest tag. Links between notes become note-links, and a link to a heading points at that heading.",
+            "Formatting survives: headings, bold, italic, underline, strikethrough, highlights in their Bear colors, task lists, tables, code blocks, quotes, callouts, math and footnotes. Images open at full width, and folded headings arrive open.",
+            "Pinned notes stay pinned, archived notes land in the archive, trashed notes land in the trash, read-only notes stay read-only, and every note keeps its original dates.",
+            "Images and files attached to your notes are imported into your storage. A note that points at a file the backup does not hold still imports, and the import preview tells you how many links that affects."
+          ]
+        }
+      ]
+    },
     "obsidian": {
       "app": "Obsidian",
       "title": "Export your Obsidian vault",
@@ -92,21 +163,21 @@
       "app": "Standard Notes",
       "title": "Export your Standard Notes",
       "metaTitle": "How to export your Standard Notes backup - PrivacyNotes",
-      "lead": "Standard Notes offers a decrypted backup export, and that is the file PrivacyNotes reads. One important detail up front: it must be the decrypted variant, not the encrypted one.",
+      "lead": "Standard Notes exports your account as one decrypted backup. It brings Super notes across with their formatting, plus checklists, tags, and 2FA codes.",
       "sections": [
         {
           "h": "Export your notes from Standard Notes",
           "steps": [
             "Open Standard Notes (web at app.standardnotes.com, or the desktop app) and sign in.",
-            "Open Preferences, then the Backups section.",
-            "Download a data backup and choose the decrypted format when asked.",
+            "Click the account icon at the bottom left, then Account settings > Backups.",
+            "Under Data backups, pick Decrypted, then click Download backup. That one file holds every note, Super notes included.",
             "You get a .zip containing a file named \"Standard Notes Backup and Import File.txt\". Keep the zip as it is."
           ]
         },
         {
           "h": "Super notes, checklists and 2FA codes keep their shape",
           "p": [
-            "Super notes keep their headings, lists, checklists, tables, code blocks, colors and collapsible sections. Checklists land in Tasks, spreadsheets become tables, and authenticator entries become logins in the Vault with their 2FA key. Nested tags become folders, and each note keeps its tags as well.",
+            "Super notes keep their formatting: headings, lists, checklists, tables, code blocks, highlights, colors, text alignment and collapsible sections. A link to another note becomes a note-link, and a #hashtag in the text becomes a tag on the note. Checklists land in Tasks, spreadsheets become tables, and authenticator entries become logins in the Vault with their 2FA key. Nested tags become folders, and each note keeps its tags as well.",
             "Files you uploaded to Standard Notes stay on their server, so the backup holds only their names. Each imported note marks where a file was. Download those files from Standard Notes and add them to the note again."
           ]
         },
@@ -444,6 +515,47 @@
           "h": "If images or files are missing",
           "p": [
             "A backup made before you ticked \"Backup attachments\" has no files in it, and the import preview will warn you that notes reference attachments the backup does not carry. If it does, cancel, turn the setting on in UpNote, click \"Backup now\" again, zip the fresh folder, and import that instead."
+          ]
+        }
+      ]
+    },
+    "joplin": {
+      "app": "Joplin",
+      "title": "Export your Joplin notes",
+      "metaTitle": "How to export your Joplin notes as JEX - PrivacyNotes",
+      "lead": "Joplin exports every notebook at once as one JEX file. It brings your notes across with their notebooks, tags, to-dos, note links, and attachments.",
+      "sections": [
+        {
+          "h": "Export everything as JEX",
+          "steps": [
+            "Open Joplin on your computer.",
+            "Choose File > Export all > \"JEX - Joplin Export File\".",
+            "Save the file. You get one .jex file that holds every notebook, so there is nothing to zip.",
+            "Drop that .jex in as it is."
+          ],
+          "p": [
+            "Tools > Create backup writes the same file, byte for byte, as all_notebooks.jex inside a JoplinBackup folder in your home folder. If Joplin already makes those backups for you, the newest one works just as well."
+          ]
+        },
+        {
+          "h": "Pick JEX, not Markdown, HTML or PDF",
+          "p": [
+            "Export all also offers MD, MD + Front Matter, HTML directory and PDF. Those are copies made for reading in other apps. The JEX file is Joplin's own record of every note, notebook, tag and attachment, and it is the one we read. Drop one of the other exports in and we will say so rather than import half of it.",
+            "If you already exported \"RAW - Joplin Export Directory\", zip that folder and drop the zip in. It holds the same items as the JEX file."
+          ]
+        },
+        {
+          "h": "Take notes out of the trash before you export",
+          "p": [
+            "Joplin leaves the trash out of every export and every backup. Move any note you want to keep out of the trash before you export, or it stays behind in Joplin."
+          ]
+        },
+        {
+          "h": "What comes along",
+          "p": [
+            "Your notebooks are rebuilt as real folders, nested as deep as Joplin nested them, and every note keeps its tags and the created and updated dates Joplin showed you.",
+            "To-dos become task notes with a checkbox you can tick off, already ticked when the to-do was done, and a due date stays written beside the title. Links between notes become note-links. Images and attachments are imported into your storage and stay in place in the note. Notes saved as HTML, such as many web clips, are converted with their formatting.",
+            "Notes from Joplin's Conflicts notebook arrive tagged \"conflict\", so you can find and sort them. If you use Joplin's encryption, let it finish decrypting before you export: an item that is still encrypted is skipped, and the import preview tells you how many."
           ]
         }
       ]

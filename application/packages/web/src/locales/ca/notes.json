@@ -11,13 +11,17 @@
     "noContent": "Sense contingut",
     "notBackedUp": "Sense còpia de seguretat",
     "archived": "Arxivat",
-    "entryDate": "Data de l'entrada"
+    "entryDate": "Data de l'entrada",
+    "date": "Data",
+    "dayOf": "dia {{n}} de {{total}}"
   },
   "header": {
     "new": "Nova",
     "newNote": "Nota nova",
     "newNoteHover": "Nota nova ({{hotkey}})",
-    "trash": "Paperera"
+    "trash": "Paperera",
+    "newEvent": "Esdeveniment nou",
+    "newEventHover": "Esdeveniment nou ({{hotkey}})"
   },
   "folderChip": {
     "clear": "Treu el filtre de carpeta: {{folder}}",
@@ -40,7 +44,9 @@
     "login": "Inici de sessió",
     "file": "Fitxer",
     "bookmark": "Marcador",
-    "contact": "Contacte"
+    "contact": "Contacte",
+    "event": "Esdeveniment",
+    "quickAdd": "Afegit ràpid"
   },
   "vaultFilter": {
     "all": "Tot",
@@ -94,7 +100,8 @@
     "vault": "Caixa forta",
     "pinned": "Fixats",
     "archive": "Arxiu",
-    "notes": "Notes"
+    "notes": "Notes",
+    "calendar": "Calendari"
   },
   "footerStats": {
     "journals": "Diaris",
@@ -140,8 +147,17 @@
     "collapse": "Replega la llista de notes",
     "expand": "Desplega la llista de notes"
   },
+  "split": {
+    "action": "Divideix la nota",
+    "done": "S’ha dividit a “{{title}}”",
+    "overLimit": "“{{title}}” supera 1 MB i es queda en aquest dispositiu",
+    "cannot": "Aquesta nota no es pot dividir aquí. Posa el cursor on ha de començar la nota nova.",
+    "continuedTitle": "{{title}} (continuació)",
+    "continuedIn": "Continua a {{link}}"
+  },
   "paneResize": {
-    "hintCollapse": "Fes clic per replegar · Arrossega per redimensionar"
+    "hintCollapse": "Fes clic per replegar · Arrossega per redimensionar",
+    "hintExpand": "Fes clic per desplegar · Arrossega per redimensionar"
   },
   "emptyEditor": {
     "selectFile": "Selecciona un fitxer per previsualitzar-lo",
@@ -178,6 +194,8 @@
     "findInNote": "Cerca dins la nota",
     "navPrev": "Anterior",
     "navNext": "Següent",
+    "navPrevTab": "Pestanya anterior",
+    "navNextTab": "Pestanya següent",
     "undo": "Desfés",
     "redo": "Refés",
     "hide": "Amaga",
@@ -229,6 +247,8 @@
     "words": "Paraules",
     "zen": "Mode Zen",
     "appearance": "Aparença",
+    "goToTop": "Vés a l'inici",
+    "goToEnd": "Vés al final",
     "signOut": "Tanca la sessió",
     "signingOut": "S'està tancant la sessió…",
     "switchToLight": "Canvia al mode clar",
@@ -254,7 +274,8 @@
     "aboutLabel": "Informació",
     "languageLabel": "Llengua",
     "dateLabel": "Data",
-    "languageDesc": "Tria la llengua en què es mostra PrivacyNotes."
+    "languageDesc": "Tria la llengua en què es mostra PrivacyNotes.",
+    "calendarLabel": "Calendari"
   },
   "importStore": {
     "title": "Importar o emmagatzemar?",

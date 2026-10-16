@@ -4,6 +4,8 @@ import type { RefObject } from 'react';
 export interface PopoverPos {
   top: number;
   left: number;
+  /** Set only with `shrink`, when the popover fits on neither side. */
+  maxHeight?: number;
 }
 
 interface PopoverPositionOptions {
@@ -18,6 +20,14 @@ interface PopoverPositionOptions {
    * shifts inward so it never spills off a viewport edge.
    */
   align?: 'start' | 'end' | 'center';
+  /**
+   * For a popover that scrolls: when it fits neither below nor above the
+   * trigger, keep it on the side with more room and return a `maxHeight`
+   * for that room, instead of sliding it over the trigger. With an on-screen
+   * keyboard up the viewport is short, and a menu laid over its own button
+   * hides the toolbar it belongs to.
+   */
+  shrink?: boolean;
 }
 
 /**
@@ -37,7 +47,7 @@ export function usePopoverPosition<A extends HTMLElement, P extends HTMLElement>
   open: boolean,
   anchorRef: RefObject<A | null>,
   popoverRef: RefObject<P | null>,
-  { gap = 4, margin = 8, align = 'start' }: PopoverPositionOptions = {},
+  { gap = 4, margin = 8, align = 'start', shrink = false }: PopoverPositionOptions = {},
 ): PopoverPos | null {
   const [pos, setPos] = useState<PopoverPos | null>(null);
 
@@ -57,14 +67,31 @@ export function usePopoverPosition<A extends HTMLElement, P extends HTMLElement>
 
     // Vertical: open below the trigger; flip above when the bottom would clip;
     // if neither side fits (very short viewport), shift up to the last spot.
+    // A shrinking popover is measured at its full content height, because the
+    // height it renders at is the room it was given last time.
+    const height = shrink ? pop.scrollHeight + (p.height - pop.clientHeight) : p.height;
     let top = a.bottom + gap;
-    if (top + p.height > vh - margin) {
-      const above = a.top - p.height - gap;
-      top = above >= margin ? above : Math.max(margin, vh - p.height - margin);
+    let maxHeight: number | undefined;
+    if (top + height > vh - margin) {
+      const above = a.top - height - gap;
+      if (above >= margin) {
+        top = above;
+      } else if (shrink) {
+        const roomBelow = vh - margin - top;
+        const roomAbove = a.top - gap - margin;
+        if (roomBelow >= roomAbove) {
+          maxHeight = roomBelow;
+        } else {
+          top = margin;
+          maxHeight = roomAbove;
+        }
+      } else {
+        top = Math.max(margin, vh - p.height - margin);
+      }
     }
 
-    setPos({ top, left });
-  }, [anchorRef, popoverRef, gap, margin, align]);
+    setPos({ top, left, maxHeight });
+  }, [anchorRef, popoverRef, gap, margin, align, shrink]);
 
   useLayoutEffect(() => {
     if (!open) {

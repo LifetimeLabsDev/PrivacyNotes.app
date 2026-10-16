@@ -1,22 +1,25 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { itemGridClass, useContextTarget, useScrollRestore } from './itemList';
+import { itemGridClass, useContextTarget, useItemList } from './itemList';
 import type { LocalNote } from './db';
 import { setPillarPrefs, type ListPrefs, type ListPrefsStore } from './listPrefs';
 import type { UserSettings } from './userSettings';
 import { selectTaskNotes, type TaskItem } from './tasks';
 import NoteRow, { itemDragSelection } from './NoteRow';
 import NoteCard from './NoteCard';
-import { compareNotes, stripToPlainText } from './notesViewUtils';
+import { compareNotes, stripToPlainText, type DayIndex } from './notesViewUtils';
 import type { ContextMenuItem } from './ContextMenu';
 import { HoverLabel } from './HoverLabel';
 import { SelectionToolbar } from './SelectionToolbar';
 import { suppressShiftTextSelection } from './useMultiSelect';
 import { ListSearchInput } from './ListSearchInput';
+import { JournalCalendarCard, useJournalCalendarShown, type CalendarCardExtras } from './JournalCalendar';
+import type { Space } from './spaces';
+import { toLocalIso } from './intlFormat';
 import { ActiveFilterEntry, ActiveSearchEntry, FilteredEmpty, ListFilterChips } from './ListFilterChips';
 import { ListPrefsPopover } from './ListPrefsPopover';
 import { Check, CheckSquare, CheckFat, NotePencil, Eye, EyeSlash, Plus, PushPin, FunnelSimple, PILLAR_GLYPHS, NEW_GLYPHS } from './icons';
-import { newButtonOpts } from './i18nExempt';
+import { NewButton } from './NewButton';
 import type { View } from './views';
 import { ListNav } from './notesView/ListNav';
 import { ImportPromptEntry, importPromptFor, type ImportOffer } from './ImportPrompt';
@@ -26,6 +29,11 @@ import { Switch } from './Switch';
 import { useListGroups } from './ListGroupHeader';
 
 export interface TasksListProps {
+  /** The calendar card, while a task list in the open space has a day.
+   *  Spec: ops/docs/plans/note-date.md (section 4) */
+  calendar?: ({ entries: DayIndex; onOpen: (id: string, occurrence?: string) => void; onCreate: (isoDate: string) => void } & CalendarCardExtras) | null;
+  /** With Spaces on, the space that is not open, for the calendar switch. */
+  otherSpace?: Space | null;
   allTasks: TaskItem[];
   activeNotes: LocalNote[];
   selectedId: string | null;
@@ -146,6 +154,8 @@ export default function TasksList({
   onBulkExport,
   onBulkTrash,
   allTags,
+  calendar,
+  otherSpace = null,
 }: TasksListProps) {
   const { t: tr } = useTranslation('shell');
   const [showListPrefs, setShowListPrefs] = useState(false);
@@ -153,9 +163,18 @@ export default function TasksList({
 
   /** ID of the note row that was right-clicked - highlighted while context menu is open. */
   const [contextTargetId, setContextTargetId] = useContextTarget();
-  // The scroll position across a hide and show of the pane (#186); a new
-  // search or filter starts at the top.
-  const scroll = useScrollRestore([search, activeFolderName, activeTag, viewMode]);
+  const calendarShown = useJournalCalendarShown();
+  const calendarCard = calendar && calendarShown && !search.trim() ? (
+    <JournalCalendarCard
+      grid={viewMode === 'grid'}
+      entries={calendar.entries}
+      onOpen={calendar.onOpen}
+      onPick={calendar.onCreate}
+      onToday={() => calendar.onCreate(toLocalIso(new Date()))}
+      onExpand={calendar.onExpand}
+      drop={calendar.drop}
+    />
+  ) : null;
 
   // Parent notes by id. The aggregate groups tasks by note, so it orders
   // and badges each group through the note it came from - same pinned
@@ -340,12 +359,41 @@ export default function TasksList({
     isNoteLocked,
     onContextMenu,
   });
+  // Both bands arrive in slices, like every other list (useProgressiveReveal):
+  // one budget counts the item rows first, then the task lines, so a vault
+  // with thousands of checklist lines no longer builds all of them on open.
+  // The scroll position across a hide and show of the pane (#186) rides
+  // along; a new search or filter starts at the top.
+  const noteItemCount = grouping.entries ? grouping.entries.length : taskContainingNotes.length;
+  const taskLineCount = viewMode === 'grid' ? 0 : taskGroups.reduce((sum, g) => sum + g.tasks.length, 0);
+  const revealTotal = noteItemCount + taskLineCount;
+  const list = useItemList([search, activeFolderName, activeTag, viewMode], revealTotal);
+  const reveal = list.reveal;
+  const revealedAll = reveal.visible >= revealTotal;
+  useEffect(() => {
+    if (!selectedId) return;
+    reveal.ensure(
+      grouping.entries
+        ? grouping.entries.findIndex((e) => e.kind === 'note' && e.note.id === selectedId)
+        : taskContainingNotes.findIndex((n) => n.id === selectedId),
+    );
+  }, [grouping.entries, taskContainingNotes, selectedId, reveal]);
+
   const taskNoteItems = (grid: boolean) =>
     grouping.entries
-      ? grouping.entries.map((e) => (e.kind === 'header' ? grouping.header(e, grid) : renderTaskNoteRow(e.note)))
-      : taskContainingNotes.map(renderTaskNoteRow);
+      ? grouping.entries.slice(0, reveal.visible).map((e) => (e.kind === 'header' ? grouping.header(e, grid) : renderTaskNoteRow(e.note)))
+      : taskContainingNotes.slice(0, reveal.visible).map(renderTaskNoteRow);
 
-  const renderTaskGroup = (g: { noteId: string; noteTitle: string; editedAt: string; tasks: TaskItem[] }) => {
+  // The task lines the budget still covers after the item rows, handed out
+  // group by group in drawing order: the own lists, then the other items.
+  let lineBudget = Math.max(0, reveal.visible - noteItemCount);
+  const takeLines = (g: { tasks: TaskItem[] }) => {
+    const n = Math.min(lineBudget, g.tasks.length);
+    lineBudget -= n;
+    return n;
+  };
+
+  const renderTaskGroup = (g: { noteId: string; noteTitle: string; editedAt: string; tasks: TaskItem[] }, shown: number) => {
         const groupActive = selectedId === g.noteId;
         return (
         <div
@@ -380,7 +428,7 @@ export default function TasksList({
           </button>
           </HoverLabel>
           <ul className="pb-2">
-            {g.tasks.map((t) => (
+            {g.tasks.slice(0, shown).map((t) => (
               <li
                 key={`${t.noteId}:${t.lineIdx}`}
                 className="pn-lazy-row group flex items-start gap-2.5 px-4 py-1.5 hover:bg-surface-1/60 transition"
@@ -431,9 +479,15 @@ export default function TasksList({
                 : tr('tasksList.noOpenTasks')}
         </div>
       ))}
-      {ownGroups.map(renderTaskGroup)}
-      {ownGroups.length > 0 && fromGroups.length > 0 && bandHeader}
-      {fromGroups.map(renderTaskGroup)}
+      {ownGroups.map((g) => {
+        const shown = takeLines(g);
+        return shown > 0 && renderTaskGroup(g, shown);
+      })}
+      {ownGroups.length > 0 && fromGroups.length > 0 && lineBudget > 0 && bandHeader}
+      {fromGroups.map((g) => {
+        const shown = takeLines(g);
+        return shown > 0 && renderTaskGroup(g, shown);
+      })}
     </>
   );
 
@@ -458,7 +512,7 @@ export default function TasksList({
           allTags={allTags}
         />
       ) : (
-      <div className="shrink-0 h-14 px-4 border-b border-divider flex items-center justify-between gap-3">
+      <div className="shrink-0 h-11 md:h-14 px-4 border-b border-divider flex items-center justify-between gap-3">
         <ListNav
           hiddenViews={hiddenViews}
           view="tasks"
@@ -467,16 +521,11 @@ export default function TasksList({
           title={tr('tasksList.title')}
           icon={<PILLAR_GLYPHS.tasks size={26} className="text-accent shrink-0" aria-hidden="true" />}
         />
-        <HoverLabel label={tr('tasksList.newTaskNoteWithHotkey', { hotkey: hotkeyLabel })} position="above">
-        <button
+        <NewButton
           onClick={() => void onNew()}
-          aria-label={tr('tasksList.newTaskNote')}
-          className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition"
-        >
-          <NEW_GLYPHS.task size={18} />
-          {tr('tasksList.new', newButtonOpts())}
-        </button>
-        </HoverLabel>
+          label={tr('tasksList.newTaskNote')}
+          hover={tr('tasksList.newTaskNoteWithHotkey', { hotkey: hotkeyLabel })}
+        />
       </div>
       )}
 
@@ -489,7 +538,7 @@ export default function TasksList({
       />
 
       {/* Row 3 -- show/hide done + sort/view prefs + search */}
-      <div className="shrink-0 p-3 border-b border-divider relative">
+      <div className="shrink-0 px-3 py-2 md:p-3 border-b border-divider relative">
         <div className="flex items-stretch gap-2">
           <HoverLabel label={showDoneTasks ? tr('tasksList.hideCompleted') : tr('tasksList.showCompleted')} position="above">
           <button
@@ -537,6 +586,8 @@ export default function TasksList({
             anchorRef={listPrefsButtonRef}
             className="absolute start-3 top-full mt-1"
             pillar="tasks"
+            calendarRows
+            otherSpace={otherSpace}
             showGroupsToggle
           />
         )}
@@ -579,11 +630,12 @@ export default function TasksList({
 
       {/* Content -- the tile grid, or the pane's one list shape */}
       <div
-        ref={scroll.ref as React.RefObject<HTMLDivElement>}
-        onScroll={(e) => scroll.onScroll(e.currentTarget)}
+        ref={list.ref as React.RefObject<HTMLDivElement>}
+        onScroll={(e) => list.onScroll(e.currentTarget)}
         className="flex-1 overflow-y-auto"
         onMouseDown={suppressShiftTextSelection}
       >
+        {viewMode !== 'grid' && calendarCard && <ul>{calendarCard}</ul>}
         {viewMode === 'grid' ? (
           <>
             {taskContainingNotes.length === 0 && (filteredEmpty ?? (
@@ -597,10 +649,11 @@ export default function TasksList({
             ))}
             {(taskContainingNotes.length > 0 || importEntry || searchEntry || filterEntry) && (
               <ul className={itemGridClass(true)}>
+                {calendarCard}
                 {taskNoteItems(true)}
                 {searchEntry}
-                {filterEntry}
-                {importEntry}
+                {revealedAll && filterEntry}
+                {revealedAll && importEntry}
               </ul>
             )}
           </>
@@ -625,7 +678,11 @@ export default function TasksList({
 
         {/* One entry for both list shapes, at the end of whatever the
             pane just drew. The grid puts its own tile inside the grid. */}
-        {(searchEntry || filterEntry || importEntry) && <ul>{searchEntry}{filterEntry}{importEntry}</ul>}
+        {/* Held back until the slice covers the whole list, so an entry is
+            never drawn mid-list and then pushed down by the next slice. */}
+        {(searchEntry || (revealedAll && (filterEntry || importEntry))) && (
+          <ul>{searchEntry}{revealedAll && filterEntry}{revealedAll && importEntry}</ul>
+        )}
           </>
         )}
       </div>
@@ -636,6 +693,18 @@ export default function TasksList({
 /* ── Clamped task text with See more / See less ──────────────── */
 
 const CLAMP_LINES = 2;
+
+/** One window listener for every clamped line, however many are drawn. */
+const clampMeasures = new Set<() => void>();
+const runClampMeasures = () => clampMeasures.forEach((m) => m());
+function onClampResize(measure: () => void): () => void {
+  if (clampMeasures.size === 0) window.addEventListener('resize', runClampMeasures);
+  clampMeasures.add(measure);
+  return () => {
+    clampMeasures.delete(measure);
+    if (clampMeasures.size === 0) window.removeEventListener('resize', runClampMeasures);
+  };
+}
 
 function ClampedTaskText({ text, checked, onClick }: {
   text: string;
@@ -657,8 +726,7 @@ function ClampedTaskText({ text, checked, onClick }: {
   useEffect(() => {
     measure();
     // Re-measure on resize (font size, container width changes).
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
+    return onClampResize(measure);
   }, [measure, text]);
 
   // Reset expansion when text changes (e.g. task toggled).

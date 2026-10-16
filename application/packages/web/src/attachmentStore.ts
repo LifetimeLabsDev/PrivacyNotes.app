@@ -19,6 +19,7 @@ import { db } from './db';
 import { isDemoMode } from './demo';
 import { ownsLocalData } from './authStorage';
 import { logAuthEvent } from './authDiag';
+import { recordStorageFault, recordSyncFault } from './syncFaults';
 import { isServerWriteBlocked } from './syncPause';
 import { uploadsHeldForWifi } from './wifiOnly';
 import { fetchQuotaUsage, recalculateQuota } from './devices';
@@ -296,6 +297,7 @@ export class AttachmentStore {
           await this._settleExistingObject(uuid, path, encrypted, attemptAt);
           return;
         }
+        recordStorageFault('file-up', error, uuid);
         if (isPermanentError(msg)) {
           // Keep local cache so restored attachments remain viewable offline,
           // and mark the row refused so the doomed upload is never retried.
@@ -320,11 +322,12 @@ export class AttachmentStore {
       }
 
       if (this.ownershipLost()) return;
-      const { error: rpcErr } = await this.supabase.rpc('adjust_blob_bytes', {
+      const { error: rpcErr, status: rpcStatus } = await this.supabase.rpc('adjust_blob_bytes', {
         delta: encrypted.length,
       });
       if (rpcErr) {
         const msg = rpcErr.message || '';
+        recordSyncFault({ step: 'file-up', status: rpcStatus, code: rpcErr.code || undefined, ref: uuid });
         if (isQuotaError(msg)) {
           // Remove the remote blob we just uploaded (it must not sit in
           // Storage uncounted), but leave pendingUpload=1 so a later pass
@@ -604,13 +607,16 @@ export class AttachmentStore {
     if (error.message?.includes('Bucket not found')) {
       const { error: refreshErr } = await this.supabase.auth.refreshSession();
       if (refreshErr) {
+        recordStorageFault('file-down', refreshErr, path.slice(path.lastIndexOf('/') + 1));
         throw new Error(`Attachment download failed (session refresh failed): ${refreshErr.message}`);
       }
       const retry = await this.supabase.storage.from(BUCKET).download(path);
       if (retry.error) {
         if (retry.error.message?.includes('not found') || retry.error.message?.includes('404')) {
+          recordStorageFault('file-down', retry.error, path.slice(path.lastIndexOf('/') + 1));
           return null;
         }
+        recordStorageFault('file-down', retry.error, path.slice(path.lastIndexOf('/') + 1));
         throw new Error(`Attachment download failed: ${retry.error.message}`);
       }
       return retry.data ?? null;
@@ -618,9 +624,11 @@ export class AttachmentStore {
 
     // Genuine "object not found".
     if (error.message?.includes('not found') || error.message?.includes('404')) {
+      recordStorageFault('file-down', error, path.slice(path.lastIndexOf('/') + 1));
       return null;
     }
 
+    recordStorageFault('file-down', error, path.slice(path.lastIndexOf('/') + 1));
     throw new Error(`Attachment download failed: ${error.message}`);
   }
 
@@ -642,6 +650,7 @@ export class AttachmentStore {
         .remove([path]);
 
       if (error) {
+        recordStorageFault('file-delete', error, uuid);
         console.warn(`Attachment delete failed for ${uuid}:`, error.message);
       }
     }
@@ -755,6 +764,7 @@ export class AttachmentStore {
       return { removed: uuids, failed: [] };
     }
 
+    recordStorageFault('file-delete', error);
     console.warn('[attachmentStore] sweepBlobGC remote removal failed:', error.message);
     return { removed: [], failed: uuids };
   }
@@ -780,6 +790,7 @@ export class AttachmentStore {
         .remove(paths);
 
       if (error) {
+        recordStorageFault('file-delete', error);
         console.warn('Bulk attachment delete failed:', error.message);
       }
     }

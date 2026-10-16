@@ -66,6 +66,7 @@
     "appearance_contentWidth": "amplada de columna, ample, amplada completa, marges",
     "appearance_editor": "markdown, text enriquit, wysiwyg, mode de l'editor",
     "appearance_copyFormat": "copiar, porta-retalls, text pla, enganxar, casella",
+    "appearance_pasteFormat": "enganxar, porta-retalls, text pla, format, sense format, adaptar l'estil",
     "appearance_favicons": "favicon, icones dels llocs, logotips",
     "appearance_invisibles": "calderó, espais en blanc, espais, caràcters ocults, marques de format",
     "appearance_startView": "pàgina d'inici, inici, vista per defecte, obrir a",
@@ -81,11 +82,19 @@
     "about_openSource": "codi font, github, codi obert, open source",
     "about_feedback": "opinió, comentaris, contacte, informar d'un error, suggeriment",
     "about_dataStorage": "dades, servidor, on es desen, privadesa",
-    "about_singleKeys": "teclat, dreceres, dreceres de teclat, hotkeys, tecla única, j, k, accessibilitat, /, >",
+    "about_singleKeys": "teclat, dreceres, dreceres de teclat, hotkeys, tecla única, j, k, q, calendari, accessibilitat, /, >",
     "about_changelog": "notes de la versió, novetats, actualitzacions",
     "about_hotkeys": "dreceres de teclat, dreceres, tecles, hotkeys",
     "about_rating": "ressenya, valorar, puntuar, estrelles, app store",
     "appearance_openInTabs": "pestanyes, barra de pestanyes, navegador, obrir",
+    "section_calendar": "calendari, esdeveniment, recordatori, avís, alerta, notificació, setmana, mes, agenda, programació, aniversari",
+    "calendar_alertTimed": "avís, alerta, recordatori, notificació, per defecte, minuts, abans, esdeveniment",
+    "calendar_alertAllDay": "avís, alerta, recordatori, notificació, per defecte, tot el dia, matí",
+    "calendar_alertBirthday": "aniversari, contacte, avís, alerta, recordatori",
+    "calendar_reminderTitles": "privadesa, pantalla de bloqueig, títol, recordatori, notificació",
+    "calendar_where": "notificació, permís, navegador, telèfon, escriptori, ordinador, recordatori",
+    "calendar_weekNumbers": "número de setmana, setmana ISO, calendari",
+    "calendar_hours": "hores, horari laboral, vista de dia, vista de setmana, matí",
     "appearance_formatBar": "barra d'eines, barra de format, botons, personalitzar, organitzar, llista amb pics, ratllat, engranatge"
   }
 }

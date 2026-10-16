@@ -95,6 +95,12 @@ export const GRID_DOCK_MIN = 320;
 // Spec: ops/docs/design-decisions.md (pane resize clamps)
 const STRIP_W = 12;
 export const STRIPS_W = STRIP_W * 2;
+// Derived reserves for the docked-grid clamp system. DOCK_SIDEBAR_RESERVE caps
+// the sidebar (strips + full grid floor + editor min); DOCK_GRID_RESERVE is what
+// the grid-floor formula subtracts (sidebar min + strips + editor min).
+// Spec: ops/docs/design-decisions.md (pane resize clamps)
+export const DOCK_SIDEBAR_RESERVE = STRIPS_W + GRID_DOCK_MIN + EDITOR_DOCK_MIN;
+export const DOCK_GRID_RESERVE = SIDEBAR_WIDTH_MIN + STRIPS_W + EDITOR_DOCK_MIN;
 const DRAG_THRESHOLD_PX = 4;
 const KEY_STEP_PX = 16;
 // How far past the limit the pointer travels before a release collapses.

@@ -92,7 +92,13 @@
       "goal": "Objectif",
       "decision": "Décision",
       "definition": "Définition",
-      "seealso": "Voir aussi"
+      "seealso": "Voir aussi",
+      "box": "Cadre",
+      "panel": "Panneau",
+      "update": "Mise à jour",
+      "time": "Temps",
+      "steps": "Étapes",
+      "place": "Lieu"
     }
   },
   "color": {
@@ -123,6 +129,7 @@
     "addColumnRight": "Ajouter une colonne à droite",
     "toggleHeaderRow": "Activer ou désactiver la ligne d'en-tête",
     "equalColumnWidths": "Égaliser les colonnes",
+    "resizeHint": "Maintiens {{shift}} pour ne modifier que cette colonne, {{alt}} pour un réglage plus fin",
     "deleteRow": "Supprimer la ligne",
     "deleteColumn": "Supprimer la colonne",
     "deleteTable": "Supprimer le tableau"
@@ -146,6 +153,8 @@
     "caseSensitiveTitle": "Respecter la casse",
     "closeReplace": "Fermer rechercher et remplacer",
     "closeReplaceTitle": "Fermer ({{keys}})",
+    "showReplace": "Rechercher et remplacer",
+    "hideReplace": "Masquer le remplacement",
     "replacedCount_one": "{{count}} remplacée",
     "replacedCount_other": "{{count}} remplacées"
   },
@@ -155,7 +164,7 @@
     "title": "Plan",
     "ariaLabel": "Plan de la note",
     "hide": "Masquer le plan",
-    "hideTitle": "Masquer le plan (Échap)",
+    "hideTitle": "Masquer le plan ({{keys}})",
     "copyHeadingLink": "Copier le lien vers le titre",
     "copyNoteLink": "Copier le lien de note",
     "copyHeadingShortcut": "Copier le raccourci vers le titre",
@@ -168,6 +177,9 @@
   },
   "topRow": {
     "add": "Ajouter une ligne en haut"
+  },
+  "addLine": {
+    "add": "Ajouter une ligne"
   },
   "link": {
     "popoverLabel": "Ajouter un lien",
@@ -205,7 +217,9 @@
     "characters_other": "{{formatted}} caractères",
     "tasksChecked_one": "{{done}} sur {{formatted}} coché",
     "tasksChecked_other": "{{done}} sur {{formatted}} cochés",
-    "tooLargeToSync": ", peut-être trop volumineux pour se synchroniser, scinde-la en une nouvelle note",
+    "syncLimit": " · {{share}} de la limite de synchronisation de 1 Mo",
+    "overSyncLimit": " · au-delà de la limite de synchronisation de 1 Mo, reste sur cet appareil",
+    "split": "Scinder la note",
     "veryLong": ", très long, l'édition peut être lente et saccadée",
     "gettingLong": ", devient long, peut ralentir sur les appareils plus lents",
     "largeTableWarning": "Un grand tableau ({{rows}} lignes) peut rendre cette note lente à éditer, envisage de la scinder"
@@ -266,10 +280,13 @@
     "hintTap": "Touche un bouton pour voir ses options.",
     "onBar": "Dans la barre",
     "inMenu": "Dans le menu +",
+    "inAttachMenu": "Dans le menu Joindre",
+    "attachMenuEmpty": "Vide, donc le bouton Joindre n'est pas affiché.",
     "menuEmpty": "Le menu est vide, donc le bouton + n'est pas affiché.",
     "hidden": "Masqués",
     "hiddenNote": "Ils fonctionnent toujours par raccourci et en Markdown.",
     "hiddenDrop": "Dépose un bouton ici pour le masquer.",
+    "markdownViewNote": "La vue Markdown garde son propre jeu de boutons fixe.",
     "hiddenEmpty": "Rien n'est masqué.",
     "alwaysVisible": "Toujours visibles",
     "pinned": "Ouvre un panneau, reste donc dans la barre ou masqué",
@@ -281,18 +298,23 @@
     "home": {
       "bar": "Dans la barre",
       "menu": "Dans le menu +",
+      "attachMenu": "Dans le menu Joindre",
       "hidden": "Masqué"
     },
     "opensPanel": "ouvre un panneau",
     "showsRecording": "affiche l'enregistrement",
     "refuse": {
       "menuNotAllowed": "{{item}} peut être dans la barre ou masqué, pas dans le menu +.",
+      "attachNotAllowed": "Seuls les boutons image, fichier et enregistrement peuvent aller dans le menu Joindre.",
       "lastOnBar": "Garde au moins un bouton dans la barre."
     },
     "items": {
       "link": "Lien",
       "notelink": "Lien de note",
-      "audio": "Enregistrement"
+      "audio": "Enregistrement",
+      "attachMenu": "Joindre",
+      "separator": "Séparateur vertical",
+      "markdownView": "Afficher le markdown"
     },
     "positionTitle": "Position de la barre",
     "positionNote": "Choisis où se place la barre de mise en forme dans l’éditeur.",

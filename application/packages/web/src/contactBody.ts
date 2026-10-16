@@ -482,6 +482,15 @@ function parseContactDate(value: string): { year: number | null; month: number; 
   return null;
 }
 
+/** The month and day of a contact's birthday row, or null when it has none
+ *  or its value is in no known shape. The year is left out: a birthday
+ *  comes back every year. */
+export function contactBirthday(c: Contact): { month: number; day: number } | null {
+  const row = c.dates.find((d) => d.label === BIRTHDAY_LABEL && d.value.trim() !== '');
+  const d = row ? parseContactDate(row.value) : null;
+  return d && d.month >= 1 && d.month <= 12 && d.day >= 1 && d.day <= 31 ? { month: d.month, day: d.day } : null;
+}
+
 /**
  * A stored date as the reader's language writes it: "14 March" for a date
  * with no year, "4 March 2015" with one. Unparseable text is shown as it is.

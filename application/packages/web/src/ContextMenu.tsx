@@ -39,7 +39,7 @@ import { matchesKey } from './shortcutMatch';
 export type ContextMenuItem =
   | {
       type?: 'item';
-      label: string;
+      label: ReactNode;
       onSelect: () => void;
       shortcut?: string;
       destructive?: boolean;
@@ -76,7 +76,7 @@ export type ContextMenuState = {
 
 function isSelectable(it: ContextMenuItem): it is Extract<
   ContextMenuItem,
-  { label: string; onSelect: () => void }
+  { onSelect: () => void }
 > {
   return !('type' in it && (it.type === 'separator' || it.type === 'header'));
 }

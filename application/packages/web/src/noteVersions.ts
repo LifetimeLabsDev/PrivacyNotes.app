@@ -3,15 +3,14 @@
  *
  * Each saved version is an encrypted snapshot of the note's
  * title/body/tags at the moment of save, plus a login's custom fields
- * and extra websites. The server never sees
+ * and extra websites, and a journal entry's tracker values. The server never sees
  * plaintext. Versions live in the `note_versions` table with a
- * BEFORE INSERT trigger that caps each note at 20 rows.
+ * BEFORE INSERT trigger that caps each note at 50 rows and trims the
+ * account's oldest versions once their bytes pass its storage quota.
  *
- * Version creation is debounced at the call site: we only snapshot
- * after the user has been idle for a few seconds AND the content
- * hashes out different from the previous version. Hash-compare
- * prevents burning capacity on no-op saves (the editor calls
- * updateNote on every keystroke-ish debounce).
+ * When a version is made is decided at the call site: the state before
+ * an edit, once per editing session (versionSchedule.ts, wired in
+ * useNoteEditing.ts), and the state a restore replaces (NotesView.tsx).
  */
 
 import {
@@ -25,15 +24,16 @@ import { db, type LocalNote } from './db';
 import { computeSnapshotTotalSize } from './notesViewUtils';
 import { isServerWriteBlocked } from './syncPause';
 import { isDemoMode } from './demo';
+import { trackerContent } from './editStamp';
 
 const TABLE = 'note_versions';
 
 /**
  * Rows the server's BEFORE INSERT trigger keeps per note. The demo path
  * below enforces the same number itself, so the two behave alike.
- * Spec: ops/docs/pro-features.md (also a 60s min gap, enforced in useNoteEditing.ts)
+ * Spec: ops/docs/pro-features.md (Note history row)
  */
-const MAX_VERSIONS = 20;
+const MAX_VERSIONS = 50;
 
 /** Compact shape the UI panel renders. `bodyBytes` drives the
  *  "how much changed" hint without exposing the plaintext body. */
@@ -48,6 +48,10 @@ export type NoteVersion = {
    *  the version did not record them (an older client, or not a login), null
    *  when it recorded none. */
   login?: unknown;
+  /** A journal entry's tracker values as recorded, bookkeeping keys left
+   *  out: undefined when the version did not record them (an older client,
+   *  or not a journal entry). */
+  trackers?: Record<string, unknown>;
   bodyBytes: number;
 };
 
@@ -55,6 +59,11 @@ export type NoteVersion = {
  *  its extras, with null standing for "recorded, and there were none". */
 function loginOf(note: LocalNote): { login?: unknown } {
   return note.type === 'login' ? { login: note.trackers?.login ?? null } : {};
+}
+
+/** A journal entry's tracker values, which a version records beside its text. */
+function journalOf(note: LocalNote): { trackers?: Record<string, unknown> } {
+  return note.type === 'journal' ? { trackers: trackerContent(note.trackers) } : {};
 }
 
 function loginFromTrackers(trackers: Record<string, unknown> | undefined): { login?: unknown } {
@@ -83,8 +92,7 @@ export type CreateNoteVersionResult =
  * Write a new version snapshot for `note`. Returns a structured
  * result so the caller can detect the Pro-lapsed RLS rejection
  * (code 42501) and surface a one-time toast. Other errors are
- * logged. The caller is expected to debounce + dedupe before
- * calling this.
+ * logged. The caller decides when, and dedupes, before calling this.
  */
 export async function createNoteVersion(
   supabase: SupabaseClient,
@@ -113,6 +121,7 @@ export async function createNoteVersion(
         body: note.body,
         tags: note.tags,
         ...loginOf(note),
+        ...journalOf(note),
       });
       const ids = await db.demoVersions.where('noteId').equals(note.id).sortBy('createdAt');
       if (ids.length > MAX_VERSIONS) {
@@ -134,7 +143,7 @@ export async function createNoteVersion(
         locked: note.locked === 1,
         pinProtected: note.pinProtected === 1,
         type: note.type,
-        ...(note.type === 'login' ? { trackers: loginOf(note) } : {}),
+        ...(note.type === 'login' ? { trackers: loginOf(note) } : journalOf(note)),
       },
       encryptionKey
     );
@@ -181,6 +190,7 @@ export async function listNoteVersions(
       body: v.body,
       tags: v.tags,
       ...(v.login !== undefined ? { login: v.login } : {}),
+      ...(v.trackers !== undefined ? { trackers: v.trackers } : {}),
       bodyBytes: computeSnapshotTotalSize(v.title, v.body, v.tags),
     }));
   }
@@ -210,6 +220,7 @@ export async function listNoteVersions(
         body: decrypted.body,
         tags: decrypted.tags,
         ...loginFromTrackers(decrypted.trackers),
+        ...(decrypted.type === 'journal' && decrypted.trackers ? { trackers: decrypted.trackers as Record<string, unknown> } : {}),
         bodyBytes: computeSnapshotTotalSize(
           decrypted.title ?? '', decrypted.body ?? '', decrypted.tags ?? [],
         ),

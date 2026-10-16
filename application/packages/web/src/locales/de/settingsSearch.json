@@ -66,6 +66,7 @@
     "appearance_contentWidth": "Spaltenbreite, breit, volle Breite, Ränder",
     "appearance_editor": "Markdown, Rich Text, WYSIWYG, Editormodus",
     "appearance_copyFormat": "kopieren, Zwischenablage, nur Text, einfügen, Kontrollkästchen",
+    "appearance_pasteFormat": "einfügen, Zwischenablage, nur Text, Formatierung, unformatiert, Format anpassen",
     "appearance_favicons": "Favicon, Website-Symbole, Logos",
     "appearance_invisibles": "Absatzmarke, Leerzeichen, Leerraum, versteckte Zeichen, Formatierungszeichen, Steuerzeichen",
     "appearance_startView": "Startseite, Start, Standardansicht, öffnen mit",
@@ -81,11 +82,19 @@
     "about_openSource": "Quellcode, GitHub, Open Source",
     "about_feedback": "Feedback, Kontakt, Fehler melden, Fehlerbericht, Vorschlag",
     "about_dataStorage": "Daten, Server, Speicherort, wo gespeichert, Datenschutz",
-    "about_singleKeys": "Tastatur, Tastenkürzel, Shortcuts, Hotkeys, Einzeltaste, j, k, Barrierefreiheit, /, >",
+    "about_singleKeys": "Tastatur, Tastenkürzel, Shortcuts, Hotkeys, Einzeltaste, j, k, q, Kalender, Barrierefreiheit, /, >",
     "about_changelog": "Versionshinweise, Neuigkeiten, was ist neu, Updates",
     "about_hotkeys": "Tastenkürzel, Tastaturkürzel, Shortcuts, Tasten, Hotkeys",
     "about_rating": "Bewertung, bewerten, Sterne, App Store",
     "appearance_openInTabs": "Tabs, Tab-Leiste, Registerkarten, Browser, öffnen",
+    "section_calendar": "Kalender, Termin, Erinnerung, Benachrichtigung, Mitteilung, Woche, Monat, Zeitplan, Geburtstag",
+    "calendar_alertTimed": "Erinnerung, Alarm, Benachrichtigung, Mitteilung, Standard, Minuten, vorher, Termin",
+    "calendar_alertAllDay": "Erinnerung, Alarm, Benachrichtigung, Mitteilung, Standard, ganztägig, Morgen",
+    "calendar_alertBirthday": "Geburtstag, Kontakt, Erinnerung, Alarm",
+    "calendar_reminderTitles": "Datenschutz, Sperrbildschirm, Titel, Erinnerung, Benachrichtigung, Mitteilung",
+    "calendar_where": "Benachrichtigung, Mitteilung, Berechtigung, Browser, Handy, Desktop, Erinnerung",
+    "calendar_weekNumbers": "Kalenderwoche, KW, ISO-Woche, Wochennummer, Kalender",
+    "calendar_hours": "Stunden, Arbeitszeit, Tagesansicht, Wochenansicht, Morgen",
     "appearance_formatBar": "Symbolleiste, Formatleiste, Schaltflächen, anpassen, anordnen, Aufzählung, Durchgestrichen, Zahnrad"
   }
 }

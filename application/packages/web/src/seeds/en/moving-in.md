@@ -4,6 +4,7 @@ title: Moving in
 tags: 
 folder: PrivacyNotes
 order: 1
+journalDay: today
 ---
 
 ![A quiet street at night. One shopfront is lit, with a paper lantern by the door.](/onboarding/moving-in.webp)

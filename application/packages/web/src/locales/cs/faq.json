@@ -78,8 +78,22 @@
     "import-from-other-apps": {
       "q": "Jak k vám přenesu poznámky z jiné aplikace?",
       "a": [
-        "Otevři Nastavení > Import & Export a vyber zdroj. Seznam pokrývá aplikace, ze kterých lidi přicházejí: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes a Apple Journal. Bitwarden a hesla uložená v prohlížeči skončí v Trezoru, záložky z prohlížeče dorazí jako záložky a obecný Markdown importér vezme jakoukoli složku se soubory .md.",
+        "Otevři Nastavení > Import & Export a vyber zdroj. Seznam pokrývá aplikace, ze kterých lidi přicházejí: Apple Notes, Bear, Obsidian, Evernote, Standard Notes, Joplin, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes a Apple Journal. Bitwarden a hesla uložená v prohlížeči skončí v Trezoru, záložky z prohlížeče dorazí jako záložky a obecný Markdown importér vezme jakoukoli složku se soubory .md.",
         "Import běží celý na tvém zařízení: exportované soubory se rozeberou, zašifrují a uloží lokálně, nic se nikam neposílá ke zpracování. Každá naimportovaná poznámka dostane značku podle zdroje, takže si celou dávku můžeš potom projít, a kontrolní seznamy z Google Keep se dokonce převedou na nativní seznamy úkolů."
+      ]
+    },
+    "import-bear": {
+      "q": "Jak přenesu poznámky z Bear do PrivacyNotes?",
+      "a": [
+        "Vytvoř zálohu v Bear a naimportuj ji. V Bear zvol File > Backup Notes... a ulož soubor .bear2bk. Pak otevři Nastavení > Import & Export, vyber Bear a přetáhni soubor dovnitř. Záloha obsahuje celou knihovnu, takže se přenesou i archivované poznámky a poznámky z koše a připnuté poznámky i poznámky jen pro čtení si svůj stav zachovají.",
+        "Tvoje značky dorazí jako značky a vnořené značky jako #work/projects se navíc znovu postaví jako složky. Zvýraznění si ponechají barvy z Bear, odkazy na jiné poznámky zůstanou funkční jako odkazy na poznámky a obrázky i připojené soubory se naimportují do tvého úložiště. [Průvodce importem z Bear](/cs/help/import/bear/) ukazuje každý krok."
+      ]
+    },
+    "import-joplin": {
+      "q": "Jak naimportuji poznámky z Joplin?",
+      "a": [
+        "Vyexportuj z Joplin soubor JEX a naimportuj ho. V Joplin zvol File > Export all > „JEX - Joplin Export File“ a ulož soubor. Pak otevři Nastavení > Import & Export, vyber Joplin a přetáhni soubor .jex dovnitř. Stejně funguje i nejnovější soubor z Tools > Create backup.",
+        "Zápisníky se změní na složky, zanořené stejně hluboko jako v Joplin, a každá poznámka si zachová své značky i data. Úkoly se stanou úkoly, odkazy na jiné poznámky zůstanou funkční jako odkazy na poznámky a přílohy se naimportují do tvého úložiště. Joplin vynechává svůj koš z každého exportu, takže poznámky, které chceš převést, nejdřív obnov z koše a teprve pak exportuj. [Průvodce importem z Joplin](/cs/help/import/joplin/) ukazuje každý krok."
       ]
     },
     "markdown-support": {
@@ -221,10 +235,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Zapomněl jsem PIN. Jak se dostanu zpátky?",
+      "q": "Nepamatuju si PIN ani přístupový kód. Jak se dostanu zpátky?",
       "a": [
-        "Nic se neztratí a PIN si můžeš smazat sám pomocí obnovovací fráze. PIN je zámek na obrazovce, ne šifrovací klíč: poznámky jsou šifrované klíči odvozenými z fráze, takže je otevírá fráze. Kdyby šifrování viselo na čtyřech číslicích, zapomenutý PIN by ničil data. Tady se to nikdy nestane.",
-        "Kdekoli se aplikace ptá na PIN, zvol **Nepamatuješ si PIN?** a zadej svých 12 slov. Najdeš to na zamykací obrazovce, u chráněné poznámky a v **Nastavení > Zabezpečení > PIN**. PIN se smaže na všech zařízeních a hned si můžeš nastavit nový. Biometrické odemknutí zůstane beze změny."
+        "Nic se neztratí a PIN nebo přístupový kód můžeš smazat pomocí obnovovací fráze bez cizí pomoci. Je to zámek na obrazovce, ne šifrovací klíč: poznámky jsou šifrované klíči odvozenými z fráze, takže je otevírá fráze. Kdyby bylo šifrování svázané s PINem, zapomenutý PIN by ničil data. Tady se to nikdy nestane.",
+        "Kdekoli se aplikace ptá na PIN nebo přístupový kód, zvol **Nepamatuješ si PIN?** nebo **Nepamatuješ si přístupový kód?** a zadej svých 12 slov. Najdeš to na zamykací obrazovce, u chráněné poznámky a v **Nastavení > Zabezpečení > PIN**. Smaže se na všech zařízeních a hned si můžeš nastavit nový. Biometrické odemknutí zůstane beze změny. Zařízení se starší verzí aplikace se ptá na 4 číslice i po nastavení přístupového kódu; **Nepamatuješ si PIN?** tam funguje stejně."
       ]
     },
     "delete-account": {
@@ -238,7 +252,7 @@
       "q": "Co přesně se mezi zařízeními synchronizuje a co zůstává lokálně?",
       "a": [
         "Všechno, co by člověk čekal, a všechno zašifrované na tvém zařízení: poznámky, úkoly, záznamy v deníku, tvůj trezor a soubory v něm. Putuje s tebou i nastavení - oblíbené značky, řazení a nastavení zobrazení, barevné téma, tvůj PIN (jako solený hash, nikdy samotný PIN), zámek aplikace, nastavení sledovaných hodnot a léků a automatické mazání koše. Nastav si to jednou a každé zařízení si to převezme.",
-        "Několik věcí zůstává záměrně jen na zařízení: světlý nebo tmavý režim (každé zařízení se řídí vlastním systémovým nastavením), biometrické odemknutí (svázané s hardwarem konkrétního zařízení) a stav odemčení (zavřením aplikace se vždycky znovu zamkne). Server ukládá vždycky jen šifrované bloky a nepřečte z nich nic."
+        "Několik věcí zůstává záměrně jen na zařízení: světlý nebo tmavý režim (každé zařízení se řídí vlastním systémovým nastavením), biometrické odemknutí (svázané s hardwarem konkrétního zařízení), prostor, který ukazuje postranní panel, a stav odemčení (zavřením aplikace se vždycky znovu zamkne). Server ukládá vždycky jen šifrované bloky a nepřečte z nich nic."
       ]
     },
     "offline": {
@@ -250,7 +264,7 @@
     "sync-conflicts": {
       "q": "Co se stane, když upravím stejnou poznámku na dvou zařízeních současně?",
       "a": [
-        "Když se tvoje zařízení znovu synchronizují, sloučí poznámku po jednotlivých údajích, takže změna provedená jen na jednom z nich zůstane zachovaná. Pokud obě bez vzájemné synchronizace upravila text (třeba jedno bylo offline), zařízení, které se synchronizuje jako druhé, zobrazí dialog o konfliktu: nechat verzi z tohoto zařízení, nechat tu druhou, nebo nechat obě jako samostatné poznámky. Obě verze zůstanou zachované, dokud si nevybereš.",
+        "Když se tvoje zařízení znovu synchronizují, sloučí poznámku po jednotlivých údajích, takže změna provedená jen na jednom z nich zůstane zachovaná. Pokud obě bez vzájemné synchronizace upravila text (třeba jedno bylo offline), zařízení, které se synchronizuje jako druhé, zobrazí dialog o konfliktu: nechat verzi z tohoto zařízení, nechat tu druhou, nebo nechat obě jako samostatné poznámky. Obě verze zůstanou zachované, dokud si nevybereš. Pokud verze z druhého zařízení dorazí ve chvíli, kdy v poznámce píšeš, tvůj text se uchová jako kopie označená \"(conflict)\" a poznámka zobrazí verzi z druhého zařízení.",
         "Když obě zařízení bez vzájemné synchronizace změnila stejný údaj, třeba připnutí, složku nebo název, zůstane bez dialogu údaj ze zařízení, které poznámku upravilo jako poslední. Poznámka smazaná navždy na jednom zařízení se smaže všude, a to i s úpravou, kterou v ní jiné zařízení provedlo bez vzájemné synchronizace."
       ]
     },
@@ -359,7 +373,7 @@
     "buy-pro-anonymously": {
       "q": "Můžu si Pro koupit bez prozrazení své identity?",
       "a": [
-        "Ano, se dvěma běžnými nástroji. Na účtenku použij e-mailový alias: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) i [addy.io](https://addy.io) přeposílají do tvé skutečné schránky, aniž by ji odhalily. Na platbu použij maskovanou kartu: [privacy.com](https://privacy.com) v USA generuje virtuální karty, které fungují s jakýmkoli jménem, jež napíšeš, a řada bank a služeb jinde (například [Revolut](https://www.revolut.com)) nabízí jednorázové virtuální karty, které dělají to samé.",
+        "Ano, se dvěma běžnými nástroji. Na účtenku použij e-mailový alias: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) i [addy.io](https://addy.io) přeposílají do tvé skutečné schránky, aniž by ji odhalily. Na platbu použij maskovanou kartu: [privacy.com](https://privacy.com) v USA generuje virtuální karty, které fungují s jakýmkoli jménem, jež napíšeš, a jinde ve světě udělá stejnou službu předplacená karta použitelná online, koupená za hotovost, na které není vůbec žádné jméno.",
         "U platby chce Paddle e-mail, platební metodu a zemi (v některých regionech i PSČ) kvůli výpočtu daně. Alias dostane účtenku, maskovaná karta nese jméno podle tvého zadání a daňová lokalita tě zúží na region, nic víc. Alias ale nech žít: e-mail s účtenkou je tvůj doklad o nákupu a kanál pro případné vrácení peněz.",
         "Ve spojení s účtem na frázi nikomu nezůstane celý obrázek: tvoje banka vidí dobití karty, Paddle vidí alias a maskovanou kartu a my vidíme veřejný klíč, ze kterého se stalo Pro, vedle toho aliasu v našem účtu u Paddlu."
       ]
@@ -402,7 +416,7 @@
     "languages": {
       "q": "Jakými jazyky aplikace mluví?",
       "a": [
-        "Angličtina, němčina, francouzština, italština, španělština, nizozemština, polština, čeština, katalánština, turečtina, švédština, ukrajinština, ruština, japonština, korejština, tradiční čínština, thajština, arabština a portugalština v evropské i brazilské variantě. Aplikace se ve výchozím nastavení řídí jazykem systému, nebo si na každém zařízení můžeš jeden pevně nastavit v Nastavení > Jazyk.",
+        "Angličtina, němčina, francouzština, italština, španělština, nizozemština, polština, čeština, slovenština, katalánština, turečtina, švédština, ukrajinština, ruština, japonština, korejština, tradiční čínština, thajština, arabština a portugalština v evropské i brazilské variantě. Aplikace se ve výchozím nastavení řídí jazykem systému, nebo si na každém zařízení můžeš jeden pevně nastavit v Nastavení > Jazyk.",
         "Překlady jsou zdarma pro všechny, ne bonus k Pro. Další jazyky jsou v plánu; pokud ten tvůj chybí, napiš nám na [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) nebo [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -424,7 +438,7 @@
       "q": "Jak fungují úkoly?",
       "a": [
         "Každý řádek, který v jakékoli poznámce napíšeš jako - [ ], se stane úkolem a zobrazení Úkoly v postranním panelu je posbírá na jedno místo. Když tam úkol odškrtneš, změna se propíše do poznámky, ve které leží, a otevřením úkolu skočíš do té poznámky. Není tu žádná samostatná databáze úkolů, kterou by bylo potřeba udržovat: úkoly jsou prostě řádky ve tvých poznámkách, zašifrované jako všechno ostatní.",
-        "Pole pro rychlé přidání nahoře v Úkolech připisuje do poznámky Quick Tasks (vytvoří se sama při prvním použití), takže zachytit nápad na úkol stojí jedno stisknutí klávesy, ne rozhodování, kam ho zařadit. Stejné zobrazení nabízí tři rozvržení (Hybridní, Souhrnné, Seznam), přepínač hotových úkolů a hledání v úkolech, a tlačítko Nový v zobrazení Vše umí založit poznámku s úkoly přímo."
+        "Pole pro rychlé přidání nahoře v Úkolech připisuje do poznámky Quick Tasks (vytvoří se sama při prvním použití), takže zachytit nápad na úkol stojí jedno stisknutí klávesy, ne rozhodování, kam ho zařadit. Stejné zobrazení nabízí tři rozvržení (Hybridní, Souhrnné, Seznam), přepínač hotových úkolů a hledání v úkolech, a tlačítko + v zobrazení Vše umí založit poznámku s úkoly přímo."
       ]
     },
     "journal": {
@@ -488,8 +502,8 @@
     "biometric-unlock": {
       "q": "Biometrické odemknutí přestalo fungovat. Co s tím?",
       "a": [
-        "O přístup nikdy nepřijdeš. Uzamykací obrazovka vždycky nabízí náhradní cestu: „Odemknout PINem“ nebo „Přihlásit se obnovovací frází“. Biometrika je lokální branka, ne šifrovací klíč, takže tvoje poznámky jsou tak i tak nedotčené.",
-        "Pak sprav samotnou branku. Registrace je pro každé zařízení zvlášť, takže nový telefon, čerstvý profil prohlížeče nebo reinstalace potřebují novou registraci: Nastavení > Zabezpečení > „Zámek“, vypnout a pak znovu „Zapnout biometrické odemknutí“. Vyžaduje to taky „Věřit tomuto zařízení“ (nedůvěryhodné relace se zavřením karty vymažou) a hardware s platformním autentikátorem (Touch ID, Face ID, Windows Hello). Pokud místo systémového dialogu vyskočí správce hesel jako Bitwarden nebo 1Password, zavři ho a zkus to znovu, nebo mu pro tuhle stránku vypni zachytávání passkeys - aplikace si žádá vestavěný autentikátor, ale někteří správci ho stejně odchytí."
+        "O přístup nikdy nepřijdeš. Uzamykací obrazovka vždycky nabízí náhradní cestu: „Odemknout PINem“ („Odemknout přístupovým kódem“, pokud máš nastavený přístupový kód), nebo „Přihlásit se obnovovací frází“. Biometrické odemknutí otevře jen kopii tvé obnovovací fráze uložené v tomhle zařízení a tvoje poznámky jsou šifrované klíči ze samotné fráze, takže jsou tak i tak nedotčené.",
+        "Pak ho nastav znovu. Když uzamykací obrazovka napíše „Biometrickým odemknutím se tvé poznámky otevřít nepodařilo“, nejdřív odemkni jiným způsobem. Registrace je pro každé zařízení zvlášť, takže nový telefon, čerstvý profil prohlížeče nebo reinstalace potřebují novou registraci: Nastavení > Zabezpečení > „Zámek“, vypnout a pak znovu „Zapnout biometrické odemknutí“. Vyžaduje to taky „Věřit tomuto zařízení“ (nedůvěryhodné relace se zavřením karty vymažou) a hardware s platformním autentikátorem (Touch ID, Face ID, Windows Hello). Pokud místo systémového dialogu vyskočí správce hesel jako Bitwarden nebo 1Password, zavři ho a zkus to znovu, nebo mu pro tuhle stránku vypni zachytávání přístupových klíčů - aplikace si žádá vestavěný autentikátor, ale někteří správci ho stejně odchytí."
       ]
     },
     "phrase-compromised": {
@@ -647,7 +661,14 @@
       "q": "Jak spolu fungují sekce, složky, značky a prostory?",
       "a": [
         "Všechno, co si ukládáš, je v jedné knihovně. Sekce v postranním panelu, třeba Poznámky, Trezor a Deníky, jsou pohledy na tuhle knihovnu podle typu. Složka je místo, takže jedna složka může držet poznámku i přihlašovací údaje, které k ní patří, a strom složek je v každé sekci stejný. Čísla u složek počítají jen to, co obsahuje otevřená sekce, a složka bez takových položek se zobrazí ztlumeně. Značka je štítek a postranní panel ukazuje jen značky, které otevřená sekce používá.",
-        "Prostory dělí knihovnu na Osobní a Práce a ukazují vždy jeden. Složka nejvyšší úrovně patří i s celým obsahem do jednoho prostoru a **Přesunout do prostoru Práce** v její nabídce ji přesune do druhého. Položka bez složky patří do prostoru Osobní, takže všechno, co vytvoříš v prostoru Práce, se uloží do jeho složky. Značky jsou zdarma, složky a prostory vyžadují Pro."
+        "Prostory dělí knihovnu na Osobní a Práce a složka nejvyšší úrovně patří i s celým obsahem do jednoho prostoru. [Jak fungují prostory](/cs/help/spaces/) popisuje přepínač, přesouvání položek mezi prostory a vypnutí prostorů. Značky jsou zdarma, složky a prostory vyžadují Pro."
+      ]
+    },
+    "spaces": {
+      "q": "Jak fungují prostory Osobní a Práce?",
+      "a": [
+        "Prostory dělí tvou knihovnu na Osobní a Práce. Přepínač vedle **Přejít** v postranním panelu ukazuje **Vše**, **Osobní** nebo **Práce**: Vše ukáže každou položku a zbylé dvě vždy jeden prostor. Každé zařízení si pamatuje vlastní volbu, takže telefon může ukazovat Osobní, zatímco notebook ukazuje Práce, a otevření položky z druhého prostoru na něj přepne. Prostory mění jen to, co ukazují seznamy: každá položka se pořád synchronizuje na všechna zařízení.",
+        "Složka nejvyšší úrovně patří i s celým obsahem do jednoho prostoru a **Přesunout do prostoru Práce** nebo **Přesunout do prostoru Osobní** v její nabídce, nebo v nabídce libovolné položky, ji přesune do druhého. Položka bez složky je Osobní a stejně tak všechno, co vytvoříš, když je otevřené Vše. Prostory přestaneš používat vypnutím Nastavení > Seznamy > Prostory: ukáže se každá položka, nic se nepřesune a každá složka si svůj prostor pamatuje pro případ, že je znovu zapneš. Prostory vyžadují Pro."
       ]
     },
     "note-links": {
@@ -717,8 +738,8 @@
     "note-history": {
       "q": "Můžu dostat zpátky starší verzi poznámky?",
       "a": [
-        "Ano, s Pro. Otevři nabídku „...“ u poznámky a zvol „Historie“, abys prošel a obnovil až 20 předchozích verzí. Obnovením se nic neztrácí: aktuální text se nejdřív uloží jako verze, takže můžeš chodit tam a zpět. Verze jsou šifrované jako samotná poznámka, takže je nepřečteme ani my.",
-        "Snímek vzniká nejvýš jednou za minutu, takže dvě úpravy pár sekund po sobě sdílejí jednu verzi. Historie je jediná Pro funkce, která jde přes server, a proto si ukázková verze drží vlastní lokální kopii. Každý tarif má navíc [koš](/cs/help/trash-auto-delete/), který smazanou poznámku drží 30 dní."
+        "Ano, s Pro. Otevři nabídku „...“ u poznámky, zvol „Historie“ a projdi si až 50 dřívějších verzí. Vybranou verzi můžeš porovnat s aktuální poznámkou a obnovit ji. Obnovením se nic neztrácí: aktuální text se nejdřív uloží jako verze, takže můžeš chodit tam a zpět. Verze jsou šifrované jako samotná poznámka, takže je nepřečteme ani my.",
+        "Každá verze je poznámka ve stavu před úpravou: jedna se uloží při první úpravě po pauze delší než pět minut, jedna každých deset minut, dokud píšeš, a jedna před úpravou, která odstraní víc než polovinu poznámky o 200 a více znacích, pokud poslední verze není mladší než 30 sekund. Historie poznámky je jediná Pro funkce, která jde přes server, a proto si ukázková verze drží vlastní lokální kopii. Každý tarif má navíc [koš](/cs/help/trash-auto-delete/), který smazanou poznámku drží 30 dní."
       ]
     },
     "vault-totp": {
@@ -849,10 +870,10 @@
       ]
     },
     "quick-switcher": {
-      "q": "Co je funkce „Přejít na“ a co umí najít?",
+      "q": "Co je rychlý přechod a co umí najít?",
       "a": [
-        "Funkce „Přejít na“ skočí na cokoli podle názvu. Stiskni Cmd+K na Macu nebo Ctrl+K na Windows a Linuxu (funguje i Cmd+P nebo Ctrl+P), nebo klikni na **Přejít na** v postranním panelu nebo v záhlaví seznamu. Napiš část názvu a najdeš poznámky, úkoly, záznamy v deníku, položky Trezoru, záložky, kontakty, přiložené soubory i nastavení. Enter položku otevře a Option+Enter nebo Alt+Enter ji otevře na kartě.",
-        "Když nejdřív napíšeš >, spustíš místo toho příkaz, třeba vytvoření nové poznámky nebo přechod do sekce. Pokud chceš hledat slova v textu, a ne v názvech, vyber řádek **Hledat všude**, nebo z libovolného řádku stiskni Cmd+Enter či Ctrl+Enter. Hledání probíhá na tvém zařízení, takže nic z toho, co napíšeš, se k nám neposílá. Funkce „Přejít na“ je zdarma."
+        "Rychlý přechod skočí na cokoli podle názvu. Stiskni Cmd+K na Macu nebo Ctrl+K na Windows a Linuxu (funguje i Cmd+P nebo Ctrl+P), nebo klikni na **Přejít** v postranním panelu nebo v záhlaví seznamu. Napiš část názvu a najdeš poznámky, úkoly, záznamy v deníku, položky Trezoru, záložky, kontakty, přiložené soubory i nastavení. Enter položku otevře a Option+Enter nebo Alt+Enter ji otevře na kartě.",
+        "Když nejdřív napíšeš >, spustíš místo toho příkaz, třeba vytvoření nové poznámky nebo přechod do sekce. Když nejdřív napíšeš #, uvidíš jen své značky, a když napíšeš /, jen své složky; výběr jedné z nich vyfiltruje seznam stejně jako kliknutí v postranním panelu. Pokud chceš hledat slova v textu, a ne v názvech, vyber řádek **Hledat všude**, nebo z libovolného řádku stiskni Cmd+Enter či Ctrl+Enter. Hledání probíhá na tvém zařízení, takže nic z toho, co napíšeš, se k nám neposílá. Rychlý přechod je zdarma."
       ]
     },
     "find-in-note": {
@@ -876,6 +897,27 @@
         "Způsob přihlášení, který už patří k jinému trezoru, propojit nejde, protože trezory se nikdy neslučují. **Odpojit** si nejdřív vyžádá tvých 12 slov. Pokud tvou frázi uchováváme my, poslední propojený účet zůstane, dokud nepropojíš jiný nebo si frázi neuložíš a nepřejdeš na vlastní správu. Při vlastní správě se nové zařízení na tvých 12 slov ptá dál. Propojené účty jsou v betaverzi."
       ]
     },
+    "calendar": {
+      "q": "Je tu kalendář a co se v něm zobrazuje?",
+      "a": [
+        "Ano. Kalendář v postranním panelu ukazuje na jednom místě každou položku s datem: události, záznamy v deníku, poznámky a seznamy úkolů s datem a narozeniny tvých kontaktů. Seznam vedle něj je přehled nejbližších dnů a velké zobrazení přepíná mezi Den, Týden a Měsíc. Klikni na prázdný den a něco do něj přidej, nebo přetáhni položku na jiný den.",
+        "Událost je samostatný druh položky: poznámka se dnem, posledním dnem, časem a opakováním. Napiš do Rychlého přidání celý řádek, třeba „Zubař pá 15:00 1 h předem“, a to za tebe přečte den, čas i upozornění. Poznámka nebo seznam úkolů může mít den, čas a poslední den taky, a to z řádku Termín v jejich nabídce „...“. Kalendář je zdarma."
+      ]
+    },
+    "reminders": {
+      "q": "Fungují připomínky z kalendáře, i když je aplikace zavřená?",
+      "a": [
+        "Na telefonu ano: až 64 upozornění, nejvýš 400 dní dopředu, se předá přímo telefonu, takže zazvoní, i když je PrivacyNotes zavřené; otevřením a odemknutím aplikace se předají další. V desktopové aplikaci připomínka zazvoní, dokud aplikace běží, a v prohlížeči, dokud je PrivacyNotes otevřené v kartě. Každé zařízení si plánuje připomínky z položek, které má u sebe, takže server se nikdy nedozví žádný název, čas ani den.",
+        "Upozornění přidáš z řádku Upozornění v zobrazení Termín u položky, nejvýš pět na položku, a výchozí hodnoty nastavíš v Nastavení > Kalendář, kde je také „Zobrazovat názvy v připomínkách“. Položka za tvým PINem vždycky zazvoní jen jako „Připomínka“ a čas, a stejně tak každé upozornění naplánované, když je zapnutý zámek aplikace. Upozornění předané dřív, než byl zámek zapnutý, si může název ponechat, dokud nezazvoní. Připomínky jsou součástí Pro; samotný kalendář je zdarma."
+      ]
+    },
+    "calendar-time-zones": {
+      "q": "Co se stane s časy událostí, když cestuji do jiného časového pásma?",
+      "a": [
+        "Čas v kalendáři zůstane přesně takový, jaký je napsaný. Událost v 15:00 se zobrazí i zazvoní v 15:00, ať je tvoje zařízení kdekoli, stejně jako připomínka v aplikaci s úkoly, protože každý čas se ukládá jako místní čas bez časového pásma. Telefon plánuje každé upozornění na přesný okamžik, takže po změně časového pásma jednou otevři a odemkni PrivacyNotes v novém pásmu, aby se jeho upozornění posunula; dokud je otevřené a odemčené, posouvá je samo.",
+        "U hovoru s někým v jiném časovém pásmu zadej čas tak, jak platí tam, kde jsi ty. Když přechod na letní čas přeskočí hodinu, na kterou připadá upozornění, upozornění zazvoní v první minutě po přeskočení."
+      ]
+    },
     "session-expired": {
       "q": "Proč aplikace hlásí „Relace vypršela“?",
       "a": [
@@ -887,7 +929,7 @@
       "q": "Co dělá Archiv a jak se liší od koše?",
       "a": [
         "Archivace vyjme položku z tvých seznamů, aniž by ji smazala. Zvol **Archivovat** v nabídce „...“ u položky nebo v nabídce po kliknutí pravým tlačítkem, případně na liště výběru pro víc položek najednou. Archivované položky zmizí z Vše, ze své sekce, z Připnutých a z počtů u složek a značek a čekají v zobrazení **Archiv** dole v postranním panelu, které se objeví, jakmile je něco archivované. Pokud je chceš nechat ve Vše a v počtech, zaškrtni Archiv ve sloupci **Vše** v Nastavení > Seznamy. **Zrušit archivaci** na stejných místech položku vrátí.",
-        "Koš je na věci, kterých se chceš zbavit: [po 30 dnech je trvale smaže](/cs/help/trash-auto-delete/), pokud to nevypneš. Archiv nikdy nic nemaže a archivované položky zůstávají na dosah, protože je dál najde hledání ve Vše, funkce „Přejít na“ i odkazy na poznámky. Synchronizují se a zůstávají šifrované jako všechno ostatní a dál se počítají do tvého úložiště. Archiv funguje u všech typů položek a je zdarma."
+        "Koš je na věci, kterých se chceš zbavit: [po 30 dnech je trvale smaže](/cs/help/trash-auto-delete/), pokud to nevypneš. Archiv nikdy nic nemaže a archivované položky zůstávají na dosah, protože je dál najde hledání ve Vše, rychlý přechod i odkazy na poznámky. Synchronizují se a zůstávají šifrované jako všechno ostatní a dál se počítají do tvého úložiště. Archiv funguje u všech typů položek a je zdarma."
       ]
     },
     "share-into-app": {

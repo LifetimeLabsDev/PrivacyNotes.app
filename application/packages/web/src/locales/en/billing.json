@@ -22,7 +22,8 @@
       "totp": "2FA codes are a Pro feature. Store an authenticator key with any login and get the rotating code next to the password. The key itself is saved and synced on every plan.",
       "replace": "Find and replace is a Pro feature. Upgrade to replace one match or every match in a note at once.",
       "passphrase": "Passphrases are a Pro feature. Generate a phrase of random words that is easy to type and to say.",
-      "default": "One upgrade unlocks everything below. One-time payment."
+      "default": "One upgrade unlocks everything below. One-time payment.",
+      "alerts": "Reminders are a Pro feature. Your devices ring at the time you pick, and nothing about the item leaves them."
     },
     "features": {
       "devices": "Sync unlimited devices, every platform",
@@ -73,7 +74,7 @@
     "openingBody": "A Paddle checkout window should appear. If it does not, your browser may have blocked the popup - reload this page to retry."
   },
   "history": {
-    "subtitle": "Up to 20 versions per item. Oldest auto-pruned.",
+    "subtitle": "Up to 50 versions per item. Oldest auto-pruned.",
     "empty": "No history yet. Versions start piling up after the next edit. Come back later.",
     "loadFailed": "Could not load the history. Check your connection and try again.",
     "selectPrompt": "Select a version to preview.",
@@ -82,7 +83,20 @@
     "restoring": "Restoring…",
     "restoreSnapshotFailed": "Could not save the current version first, so nothing was restored. Check your connection and try again.",
     "restoreFailed": "Could not restore this version. Try again.",
-    "loginExtrasNotRecorded": "This version did not record custom fields or additional websites. Restoring it keeps the current ones."
+    "loginExtrasNotRecorded": "This version did not record custom fields or additional websites. Restoring it keeps the current ones.",
+    "compare": "Compare with current note",
+    "thisVersion": "Then",
+    "currentNote": "Now",
+    "onlyInVersion": "Removed since then",
+    "onlyInCurrent": "Added since then",
+    "changeCount_one": "{{count}} change",
+    "changeCount_other": "{{count}} changes",
+    "noChanges": "No changes in the text",
+    "titleChanged": "Title changed",
+    "tagsChanged": "Tags changed",
+    "formatChanged": "Formatting changed",
+    "tooLong": "This note is too long to compare.",
+    "trackersNotRecorded": "This version did not record tracker values. Restoring it keeps the current ones."
   },
   "donation": {
     "eyebrow": "You unlocked",

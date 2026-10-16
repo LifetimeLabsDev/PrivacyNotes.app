@@ -22,7 +22,8 @@
       "totp": "2FA-koder är en Pro-funktion. Spara en autentiseringsnyckel på vilken inloggning som helst så får du den roterande koden bredvid lösenordet. Själva nyckeln sparas och synkas i alla planer.",
       "replace": "Sök och ersätt är en Pro-funktion. Uppgradera för att ersätta en träff eller alla träffar i en anteckning på en gång.",
       "passphrase": "Lösenfraser är en Pro-funktion. Skapa en fras av slumpmässiga ord som är lätt att skriva och att säga.",
-      "default": "En uppgradering låser upp allt nedan. Engångsbetalning."
+      "default": "En uppgradering låser upp allt nedan. Engångsbetalning.",
+      "alerts": "Påminnelser är en Pro-funktion. Dina enheter ringer vid den tid du väljer, och inget om objektet lämnar dem."
     },
     "features": {
       "devices": "Synka obegränsat antal enheter, på alla plattformar",
@@ -73,7 +74,7 @@
     "openingBody": "Ett kassafönster från Paddle bör dyka upp. Om det inte gör det kan webbläsaren ha blockerat popup-fönstret - ladda om sidan för att försöka igen."
   },
   "history": {
-    "subtitle": "Upp till 20 versioner per objekt. De äldsta gallras bort automatiskt.",
+    "subtitle": "Upp till 50 versioner per objekt. De äldsta gallras bort automatiskt.",
     "empty": "Ingen historik än. Versioner börjar samlas efter nästa ändring. Kom tillbaka senare.",
     "loadFailed": "Historiken kunde inte hämtas. Kontrollera anslutningen och försök igen.",
     "selectPrompt": "Välj en version för att förhandsgranska.",
@@ -82,7 +83,20 @@
     "restoring": "Återställer…",
     "restoreSnapshotFailed": "Den aktuella versionen kunde inte sparas först, så inget återställdes. Kontrollera anslutningen och försök igen.",
     "restoreFailed": "Den här versionen kunde inte återställas. Försök igen.",
-    "loginExtrasNotRecorded": "Den här versionen sparade inga egna fält eller extra webbplatser. Om du återställer den behålls de nuvarande."
+    "loginExtrasNotRecorded": "Den här versionen sparade inga egna fält eller extra webbplatser. Om du återställer den behålls de nuvarande.",
+    "compare": "Jämför med den aktuella anteckningen",
+    "thisVersion": "Då",
+    "currentNote": "Nu",
+    "onlyInVersion": "Borttaget sedan dess",
+    "onlyInCurrent": "Tillagt sedan dess",
+    "changeCount_other": "{{count}} ändringar",
+    "noChanges": "Inga ändringar i texten",
+    "titleChanged": "Titeln ändrades",
+    "tagsChanged": "Taggarna ändrades",
+    "formatChanged": "Formateringen ändrades",
+    "tooLong": "Den här anteckningen är för lång för att jämföras.",
+    "trackersNotRecorded": "Den här versionen sparade inga värden för mätvärden. Om du återställer den behålls de nuvarande.",
+    "changeCount_one": "{{count}} ändring"
   },
   "donation": {
     "eyebrow": "Du låste upp",

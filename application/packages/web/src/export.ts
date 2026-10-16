@@ -18,6 +18,8 @@ import { detectPlatform } from './devices';
 import type { LocalNote } from './db';
 import { noteToMarkdown } from './noteMarkdown';
 import { editedAtOf, toLocalIso } from './notesViewUtils';
+import { scheduleOf } from './schedule';
+import { describeSchedule } from './scheduleText';
 import type { ImageStore } from './imageStore';
 import type { AttachmentStore } from './attachmentStore';
 import { unescapeMarkdownText } from './fileNames';
@@ -569,6 +571,12 @@ async function buildFullBackupZip(
     zip.file(`${stem}.md`, noteToMarkdown({ ...note, body }, true, folderNamePath(folders, note.folderId)));
   }
 
+  // The calendar as one .ics for other apps. A restore reads only the
+  // root .md files, so it never brings an event back twice.
+  // Spec: ops/docs/plans/google-calendar-import.md (section 6)
+  const calendar = await calendarFileForBackup(notes);
+  if (calendar) zip.file('calendar.ics', calendar);
+
   // ── 5. Add manifest.json ────────────────────────────────────────────
 
   const manifest: BackupManifest = {
@@ -731,6 +739,33 @@ export async function exportContactsVcf(notes: LocalNote[]): Promise<void> {
   );
 }
 
+/**
+ * The calendar as an .ics file for Google Calendar, Apple Calendar or
+ * Outlook. Past Google's 1 MB import limit the file is cut into parts of
+ * whole events and saved as one .zip. Loaded on demand like the vCard writer.
+ * Spec: ops/docs/plans/google-calendar-import.md (section 5)
+ */
+export async function exportCalendarIcs(notes: LocalNote[]): Promise<void> {
+  const { buildCalendarFiles } = await import('./calendarIcs');
+  const parts = buildCalendarFiles(notes, { split: true });
+  if (parts.length === 0) return;
+  const stamp = toLocalIso(new Date());
+  if (parts.length === 1) {
+    await downloadBlob(new Blob([parts[0]!], { type: 'text/calendar;charset=utf-8' }), `privacynotes-calendar-${stamp}.ics`);
+    return;
+  }
+  const { default: JSZip } = await import('jszip');
+  const zip = new JSZip();
+  parts.forEach((text, i) => zip.file(`calendar-${i + 1}.ics`, text));
+  await downloadBlob(await zip.generateAsync({ type: 'blob' }), `privacynotes-calendar-${stamp}.zip`);
+}
+
+/** The one-file calendar a backup zip carries, or null when nothing is dated. */
+async function calendarFileForBackup(notes: LocalNote[]): Promise<string | null> {
+  const { buildCalendarFiles } = await import('./calendarIcs');
+  return buildCalendarFiles(notes, { split: false })[0] ?? null;
+}
+
 // ─── Printable HTML export ─────────────────────────────────────────────
 //
 // Pure client-side: renders the note's markdown body into a standalone
@@ -890,6 +925,14 @@ export function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []
   // missing half of what the entry recorded. HTML and print are terminal
   // formats (nothing reads them back), so this is the readable rendering;
   // the machine-readable copy rides in the markdown front-matter instead.
+  // The schedule under the title: an event's, or a dated note's or task
+  // list's, and a journal entry's time when it has one. The day of a journal
+  // entry is its title already.
+  // Spec: ops/docs/plans/calendar-pillar-spec.md (step 4)
+  const schedule = scheduleOf(note.trackers as Record<string, unknown> | undefined, note.type);
+  const scheduleHtml = schedule && !titleOnly && (note.type !== 'journal' || schedule.time)
+    ? `\n      <div class="meta schedule">${escapeHtml(describeSchedule(schedule, i18n.getFixedT(null, 'shell')))}</div>`
+    : '';
   const trackerSettings = loadLocalSettings().trackerSettings;
   const rows = trackerRows(note.trackers, trackerSettings.weightUnit, trackerSettings.customTrackers);
   const trackersHtml =
@@ -1316,18 +1359,32 @@ export function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []
       print-color-adjust: exact;
     }
     .content pre, .content blockquote, .content img,
-    .content ul, .content ol, .content table {
+    .content ul, .content ol {
       break-inside: avoid;
     }
-    /* A field table can be longer than a page. Kept whole, it moved to the
-       next page and left the first one empty under the title, so it breaks
-       between rows instead and only a row stays whole. A key row can itself
-       be longer than a page, so it is the one row that may break. */
-    .content .vault-fields {
+    /* A table kept whole moves to the next page when it does not fit and
+       leaves the rest of the page empty, so a table breaks between rows and
+       only a row stays whole. The header row repeats on each page. A vault
+       key row can itself be longer than a page, so it is the one row that
+       may break. */
+    .content table {
       break-inside: auto;
     }
-    .content .vault-fields tr:not(:has(td.mono)), .contact-row {
+    .content thead {
+      display: table-header-group;
+    }
+    .content tr:not(:has(td.mono)), .contact-row {
       break-inside: avoid;
+    }
+    /* Firefox leaves the header row alone at the foot of a page when the
+       first row does not fit under it, and repeats it over the rows on the
+       next page. No break rule keeps the two together there (it splits
+       neither a short row nor honors break-after: avoid), so Firefox keeps
+       a table whole, and splits only one taller than a page. */
+    @supports (-moz-appearance: none) {
+      .content table:not(.vault-fields) {
+        break-inside: avoid;
+      }
     }
     .vault-notes strong, .content .contact-group-title {
       break-after: avoid;
@@ -1406,7 +1463,7 @@ export function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []
 <body>
   <div class="page">
     <header class="note-head${contactTile ? ' has-tile' : ''}">${contactTile}<div class="note-head-text">
-      <h1 class="note-title">${escapeHtml(title)}</h1>${contactRole ? `
+      <h1 class="note-title">${escapeHtml(title)}</h1>${scheduleHtml}${contactRole ? `
       <div class="contact-role" dir="auto">${escapeHtml(contactRole)}</div>` : ''}${titleOnly ? '' : `
       <div class="meta">${escapeHtml(formatInstant(editedAtOf(note), 'dateTime'))}</div>
       ${folderHtml}
@@ -1483,6 +1540,8 @@ export async function exportAllHtmlZip(
     noteHtml = await inlineRenderedFavicons(noteHtml);
     zip.file(filename, noteHtml);
   }
+  const calendar = await calendarFileForBackup(notes);
+  if (calendar) zip.file('calendar.ics', calendar);
   onProgress?.(i18n.t('importExport:exportProgress.compressing'));
   const blob = await zip.generateAsync({ type: 'blob' });
   const stamp = toLocalIso(new Date());

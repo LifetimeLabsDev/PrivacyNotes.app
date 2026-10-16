@@ -158,8 +158,8 @@
     "startViewTitle": "앱을 열 때 표시",
     "viewTitle": "항목 표시 방식",
     "viewDesc": "자동은 화면 너비를 따라요.",
-    "openInTabsTitle": "클릭할 때마다 탭 열기",
-    "openInTabsDesc": "꺼져 있어도 오른쪽 클릭 > 탭에서 열기로 탭을 열 수 있어요. 휴대폰에서는 탭이 표시되지 않아요.",
+    "openInTabsTitle": "열린 항목을 탭에 표시",
+    "openInTabsDesc": "브라우저처럼 다음에 여는 항목을 탭이 따라가요. 탭을 유지하려면 고정하세요. 꺼져 있으면 \"탭에서 열기\"로만 탭이 만들어져요. 휴대폰에서는 탭이 표시되지 않아요.",
     "viewList": "목록",
     "viewGrid": "그리드",
     "viewAuto": "자동",
@@ -171,6 +171,10 @@
     "copyFormatDesc": "노트에서 복사할 때 다른 앱이 받는 내용이에요. 이 기기에서만 적용돼요.",
     "copyFormatMarkdown": "Markdown",
     "copyFormatPlain": "일반 텍스트",
+    "pasteFormatTitle": "붙여넣은 텍스트",
+    "pasteFormatDesc": "다른 앱에서 붙여넣을 때 유지되는 내용이에요. 이 기기에서만 적용돼요.",
+    "pasteFormatFormatted": "서식",
+    "pasteFormatPlain": "일반 텍스트",
     "faviconsTitle": "사이트 아이콘",
     "faviconsDesc": "링크와 보관함 로그인 옆에 표시되는 사이트 로고예요.",
     "faviconsExample": "예시:",
@@ -231,7 +235,10 @@
       "yours": "내 테마",
       "noLightCommunity": "아직 커뮤니티 라이트 테마가 없어요.",
       "noDarkCommunity": "아직 커뮤니티 다크 테마가 없어요.",
-      "none": "아직 여기에 테마가 없어요."
+      "none": "아직 여기에 테마가 없어요.",
+      "sortLabel": "정렬",
+      "sortVotes": "추천 많은 순",
+      "sortNewest": "최신순"
     },
     "custom": {
       "newTheme": "새 테마",
@@ -240,7 +247,6 @@
       "logoOriginal": "원래 색",
       "logoHelp": "로고와 “Privacy”가 테마의 강조색을 따르거나 원래 색을 유지해요.",
       "pasteCode": "테마 코드 붙여넣기",
-      "community": "테마 둘러보기",
       "menu": "{{name}} 옵션",
       "copyCode": "코드 복사",
       "makeCopy": "복제",
@@ -271,7 +277,9 @@
       "suggestTitle": "나머지를 강조색에서 채우기",
       "suggestLight": "라이트",
       "suggestDark": "다크",
-      "communityNote": "앱에는 모드마다 최신 커뮤니티 테마 {{count}}개가 표시돼요.",
+      "websiteTitle": "웹사이트에서 더 많은 테마 보기",
+      "websiteDesc": "모든 테마와 최신 추천 수를 볼 수 있어요. 앱에는 업데이트할 때마다 새 테마가 추가돼요.",
+      "vote": "GitHub에서 추천하기",
       "themeLimit": "테마가 {{max}}개 있어요. 새로 저장하려면 하나를 삭제하세요.",
       "credit": "크레딧",
       "creditPlaceholder": "GitHub 사용자 이름(선택)",
@@ -488,5 +496,27 @@
     "yearFirst": "연도 먼저 (ISO)",
     "hour24": "24시간제",
     "hour12": "12시간제"
+  },
+  "calendar": {
+    "alertTimed": "기본 알림, 시간이 있는 항목",
+    "alertAllDay": "기본 알림, 종일 항목",
+    "alertBirthday": "생일",
+    "alertsHelp": "새 일정은 이 알림으로 시작해요. 그 뒤로는 항목마다 자기 알림을 유지해요.",
+    "reminderTitles": "미리 알림에 제목 표시",
+    "reminderTitlesHelp": "끄면 미리 알림에 '미리 알림'이라는 말과 시간만 표시돼요. PIN으로 보호된 항목은 항상 그렇게 표시돼요.",
+    "whereTitle": "이 기기의 미리 알림",
+    "reminderHint": {
+      "mobile": "미리 알림은 이 휴대폰에서 울리고, PrivacyNotes가 닫혀 있을 때도 울려요.",
+      "desktop": "미리 알림은 이 컴퓨터에서 PrivacyNotes가 실행 중일 때 울려요.",
+      "browser": "미리 알림은 이 브라우저에서 PrivacyNotes가 열려 있을 때 울려요."
+    },
+    "scheduledThrough": "{{date}}까지 미리 알림이 예약됨",
+    "permissionAsk": "알림 허용",
+    "permissionOpenSettings": "설정 열기",
+    "permissionDenied": "PrivacyNotes의 알림이 차단되어 있어요. 이 브라우저나 기기의 설정에서 허용해 주세요.",
+    "weekNumbers": "주 번호 표시",
+    "hours": "표시할 시간",
+    "hoursHelp": "일 보기와 주 보기는 첫 시간에서 열려요.",
+    "to": "~"
   }
 }

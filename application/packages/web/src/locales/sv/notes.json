@@ -11,13 +11,17 @@
     "noContent": "Inget innehåll",
     "notBackedUp": "Inte säkerhetskopierad",
     "archived": "Arkiverad",
-    "entryDate": "Inläggsdatum"
+    "entryDate": "Inläggsdatum",
+    "date": "Datum",
+    "dayOf": "dag {{n}} av {{total}}"
   },
   "header": {
     "new": "Ny",
     "newNote": "Ny anteckning",
     "newNoteHover": "Ny anteckning ({{hotkey}})",
-    "trash": "Papperskorgen"
+    "trash": "Papperskorgen",
+    "newEvent": "Ny händelse",
+    "newEventHover": "Ny händelse ({{hotkey}})"
   },
   "folderChip": {
     "clear": "Rensa mappfilter: {{folder}}",
@@ -40,7 +44,9 @@
     "login": "Inloggning",
     "file": "Fil",
     "bookmark": "Bokmärke",
-    "contact": "Kontakt"
+    "contact": "Kontakt",
+    "event": "Händelse",
+    "quickAdd": "Snabbtillägg"
   },
   "vaultFilter": {
     "all": "Alla",
@@ -94,7 +100,8 @@
     "vault": "Valv",
     "pinned": "Fästa",
     "archive": "Arkiv",
-    "notes": "Anteckningar"
+    "notes": "Anteckningar",
+    "calendar": "Kalender"
   },
   "footerStats": {
     "journals": "Dagböcker",
@@ -138,8 +145,17 @@
     "collapse": "Fäll ihop anteckningslistan",
     "expand": "Fäll ut anteckningslistan"
   },
+  "split": {
+    "action": "Dela upp anteckning",
+    "done": "Uppdelad i ”{{title}}”",
+    "overLimit": "”{{title}}” är större än 1 MB och stannar på den här enheten",
+    "cannot": "Anteckningen kan inte delas upp här. Placera markören där den nya anteckningen ska börja.",
+    "continuedTitle": "{{title}} (forts.)",
+    "continuedIn": "Fortsätter i {{link}}"
+  },
   "paneResize": {
-    "hintCollapse": "Klicka för att fälla ihop · Dra för att ändra storlek"
+    "hintCollapse": "Klicka för att fälla ihop · Dra för att ändra storlek",
+    "hintExpand": "Klicka för att fälla ut · Dra för att ändra storlek"
   },
   "emptyEditor": {
     "selectFile": "Välj en fil att förhandsgranska",
@@ -176,6 +192,8 @@
     "findInNote": "Sök i anteckning",
     "navPrev": "Föregående",
     "navNext": "Nästa",
+    "navPrevTab": "Föregående flik",
+    "navNextTab": "Nästa flik",
     "undo": "Ångra",
     "redo": "Gör om",
     "hide": "Dölj",
@@ -227,6 +245,8 @@
     "words": "Ord",
     "zen": "Zenläge",
     "appearance": "Utseende",
+    "goToTop": "Gå till toppen",
+    "goToEnd": "Gå till slutet",
     "signOut": "Logga ut",
     "signingOut": "Loggar ut…",
     "switchToLight": "Byt till ljust läge",
@@ -252,7 +272,8 @@
     "aboutLabel": "Om",
     "languageLabel": "Språk",
     "dateLabel": "Datum",
-    "languageDesc": "Välj språket som PrivacyNotes visas på."
+    "languageDesc": "Välj språket som PrivacyNotes visas på.",
+    "calendarLabel": "Kalender"
   },
   "importStore": {
     "title": "Importera eller lagra?",

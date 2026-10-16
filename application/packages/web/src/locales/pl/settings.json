@@ -188,8 +188,8 @@
     "startViewTitle": "Pokaż po otwarciu",
     "viewTitle": "Pokaż elementy jako",
     "viewDesc": "Automatycznie dopasowuje się do szerokości twojego ekranu.",
-    "openInTabsTitle": "Otwieraj kartę przy każdym kliknięciu",
-    "openInTabsDesc": "Gdy to jest wyłączone, prawy przycisk > Otwórz w karcie nadal otwiera kartę. Na telefonach karty się nie wyświetlają.",
+    "openInTabsTitle": "Pokazuj otwarty element w karcie",
+    "openInTabsDesc": "Karta podąża za tym, co otworzysz jako następne, jak w przeglądarce. Przypnij kartę, aby ją zachować. Gdy to jest wyłączone, kartę tworzy tylko „Otwórz w karcie”. Na telefonach karty się nie wyświetlają.",
     "viewList": "Lista",
     "viewGrid": "Siatka",
     "viewAuto": "Auto",
@@ -201,6 +201,10 @@
     "copyFormatDesc": "Co dostają inne aplikacje, gdy kopiujesz z notatki. Tylko na tym urządzeniu.",
     "copyFormatMarkdown": "Markdown",
     "copyFormatPlain": "Zwykły tekst",
+    "pasteFormatTitle": "Wklejany tekst",
+    "pasteFormatDesc": "Co zachowuje tekst wklejony z innej aplikacji. Tylko na tym urządzeniu.",
+    "pasteFormatFormatted": "Sformatowane",
+    "pasteFormatPlain": "Zwykły tekst",
     "faviconsTitle": "Ikony stron",
     "faviconsDesc": "Logo strony obok linków i loginów w Sejfie.",
     "faviconsExample": "Przykład:",
@@ -261,7 +265,10 @@
       "yours": "Twoje",
       "noLightCommunity": "Nie ma jeszcze jasnych motywów społeczności.",
       "noDarkCommunity": "Nie ma jeszcze ciemnych motywów społeczności.",
-      "none": "Nie ma tu jeszcze motywów."
+      "none": "Nie ma tu jeszcze motywów.",
+      "sortLabel": "Kolejność",
+      "sortVotes": "Najwięcej głosów",
+      "sortNewest": "Najnowsze"
     },
     "custom": {
       "newTheme": "Nowy motyw",
@@ -270,7 +277,6 @@
       "logoOriginal": "Oryginalne",
       "logoHelp": "Logo i „Privacy” przyjmują akcent motywu albo zachowują oryginalne kolory.",
       "pasteCode": "Wklej kod motywu",
-      "community": "Przeglądaj motywy",
       "menu": "Opcje motywu {{name}}",
       "copyCode": "Kopiuj kod",
       "makeCopy": "Duplikuj",
@@ -301,7 +307,9 @@
       "suggestTitle": "Uzupełnij resztę na podstawie akcentu",
       "suggestLight": "Jasny",
       "suggestDark": "Ciemny",
-      "communityNote": "Aplikacja pokazuje {{count}} najnowszych motywów społeczności w każdym trybie.",
+      "websiteTitle": "Więcej motywów na naszej stronie",
+      "websiteDesc": "Wszystkie motywy i najnowsze głosy. Aplikacja dostaje nowe motywy z każdą aktualizacją.",
+      "vote": "Zagłosuj na GitHubie",
       "themeLimit": "Masz {{max}} motywów. Usuń jeden, aby zapisać kolejny.",
       "credit": "Autor",
       "creditPlaceholder": "Nazwa użytkownika GitHub (opcjonalnie)",
@@ -572,5 +580,27 @@
     "yearFirst": "Najpierw rok (ISO)",
     "hour24": "24-godzinny",
     "hour12": "12-godzinny"
+  },
+  "calendar": {
+    "alertTimed": "Domyślny alert, elementy z godziną",
+    "alertAllDay": "Domyślny alert, elementy całodniowe",
+    "alertBirthday": "Urodziny",
+    "alertsHelp": "Nowe wydarzenie zaczyna z tym alertem. Potem każdy element ma własne alerty.",
+    "reminderTitles": "Pokazuj tytuły w przypomnieniach",
+    "reminderTitlesHelp": "Gdy wyłączone, przypomnienie pokazuje słowo Przypomnienie i godzinę. Element chroniony PIN-em zawsze tak robi.",
+    "whereTitle": "Przypomnienia na tym urządzeniu",
+    "reminderHint": {
+      "mobile": "Przypomnienia dzwonią na tym telefonie, także gdy PrivacyNotes jest zamknięte.",
+      "desktop": "Przypomnienia dzwonią, gdy PrivacyNotes działa na tym komputerze.",
+      "browser": "Przypomnienia dzwonią, gdy PrivacyNotes jest otwarte w tej przeglądarce."
+    },
+    "scheduledThrough": "Przypomnienia zaplanowane do {{date}}",
+    "permissionAsk": "Zezwól na powiadomienia",
+    "permissionOpenSettings": "Otwórz ustawienia",
+    "permissionDenied": "Powiadomienia dla PrivacyNotes są zablokowane. Zezwól na nie w ustawieniach tej przeglądarki lub urządzenia.",
+    "weekNumbers": "Pokazuj numery tygodni",
+    "hours": "Widoczne godziny",
+    "hoursHelp": "Dzień i tydzień otwierają się na pierwszej godzinie.",
+    "to": "do"
   }
 }

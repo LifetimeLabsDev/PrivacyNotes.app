@@ -7,7 +7,7 @@ import type { LocalNote } from './db';
  * guards below raise, because it is the same prop the "..." menu declares
  * and both surfaces are wired from one object.
  */
-type NoteUpgradeTrigger = 'lock' | 'protect' | 'history' | 'devices' | 'folders' | null;
+type NoteUpgradeTrigger = 'lock' | 'protect' | 'history' | 'devices' | 'folders' | 'alerts' | null;
 
 export type NoteActionGuardDeps = {
   note: LocalNote;

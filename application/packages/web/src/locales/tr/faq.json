@@ -78,8 +78,22 @@
     "import-from-other-apps": {
       "q": "Notlarımı başka bir uygulamadan nasıl taşırım?",
       "a": [
-        "Ayarlar > Import & Export bölümünü açıp kaynağınızı seçin. Liste, insanların geldiği uygulamaları kapsıyor: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes ve Apple Journal. Bitwarden ve tarayıcınızda kayıtlı parolalar Kasa'ya iner, tarayıcı yer imleriniz yer imi olarak gelir, genel Markdown içe aktarıcısı da .md dosyalarından oluşan herhangi bir klasörü alır.",
+        "Ayarlar > Import & Export bölümünü açıp kaynağınızı seçin. Liste, insanların geldiği uygulamaları kapsıyor: Apple Notes, Bear, Obsidian, Evernote, Standard Notes, Joplin, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes ve Apple Journal. Bitwarden ve tarayıcınızda kayıtlı parolalar Kasa'ya iner, tarayıcı yer imleriniz yer imi olarak gelir, genel Markdown içe aktarıcısı da .md dosyalarından oluşan herhangi bir klasörü alır.",
         "İçe aktarma tamamen cihazınızda çalışır: dışa aktardığınız dosyalar ayrıştırılır, şifrelenir ve yerelde saklanır, işlenmek üzere hiçbir şey yüklenmez. İçe aktarılan her not kaynağıyla etiketlenir, böylece grubu sonradan gözden geçirebilirsiniz; Google Keep kontrol listeleri ise doğrudan görev listelerine dönüşür."
+      ]
+    },
+    "import-bear": {
+      "q": "Notlarımı Bear'dan PrivacyNotes'a nasıl taşırım?",
+      "a": [
+        "Bear'da bir yedek alın ve içe aktarın. Bear'da File > Backup Notes... seçeneğini seçip .bear2bk dosyasını kaydedin. Ardından Ayarlar > Import & Export bölümünü açın, Bear'ı seçin ve dosyayı bırakın. Yedek tüm kitaplığınızı içerir; yani arşivlenmiş ve çöp kutusundaki notlar da gelir, sabitlenmiş ve salt okunur notlar da durumlarını korur.",
+        "Etiketleriniz etiket olarak gelir; #work/projects gibi iç içe etiketler ayrıca klasör olarak yeniden kurulur. Vurgular Bear'daki renklerini korur, notlar arasındaki bağlantılar not bağlantısına dönüşür, görseller ve ekli dosyalar da depolamanıza aktarılır. [Bear içe aktarma kılavuzu](/tr/help/import/bear/) her adımı gösterir."
+      ]
+    },
+    "import-joplin": {
+      "q": "Joplin'deki notlarımı nasıl içe aktarırım?",
+      "a": [
+        "Joplin'den bir JEX dosyası dışa aktarın ve içe aktarın. Joplin'de File > Export all > \"JEX - Joplin Export File\" seçeneğini seçip dosyayı kaydedin. Ardından Ayarlar > Import & Export bölümünü açın, Joplin'i seçin ve .jex dosyasını bırakın. Tools > Create backup ile oluşan en yeni dosya da aynı şekilde çalışır.",
+        "Defterler, Joplin'deki kadar derin iç içe klasörlere dönüşür; her not etiketlerini ve tarihlerini korur. Yapılacaklar görev olur, notlar arasındaki bağlantılar not bağlantısına dönüşür, ekler de depolamanıza aktarılır. Joplin çöp kutusunu hiçbir dışa aktarmaya dahil etmez; bu yüzden dışa aktarmadan önce istediğiniz notları çöp kutusundan geri yükleyin. [Joplin içe aktarma kılavuzu](/tr/help/import/joplin/) her adımı gösterir."
       ]
     },
     "markdown-support": {
@@ -221,10 +235,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "PIN'imi unuttum. Nasıl geri girerim?",
+      "q": "PIN'imi veya geçiş kodumu unuttum. Nasıl geri girerim?",
       "a": [
-        "Hiçbir şey kaybolmaz ve PIN'i kurtarma ifadenizle kendiniz temizleyebilirsiniz. PIN bir ekran kilididir, şifreleme anahtarı değil: notlarınız kurtarma ifadesinden türetilen anahtarlarla şifrelenir, yani notları açan şey ifadedir. Şifrelemeyi dört haneye bağlamak, unutulan bir PIN'in veriyi yok etmesi demek olurdu. Burada bu asla olmaz.",
-        "Uygulama PIN sorduğu her yerde **PIN'inizi mi unuttunuz?** seçeneğini seçin ve 12 kelimenizi yazın. Kilit ekranında, korumalı bir notta ve **Ayarlar > Güvenlik > PIN** altında bulunur. PIN tüm cihazlarınızda temizlenir ve hemen yeni bir PIN belirleyebilirsiniz. Biyometrik kilit açma bundan etkilenmez."
+        "Hiçbir şey kaybolmaz ve PIN'i veya geçiş kodunu kurtarma ifadenizle kendiniz temizleyebilirsiniz. Bu bir ekran kilididir, şifreleme anahtarı değil: notlarınız kurtarma ifadesinden türetilen anahtarlarla şifrelenir, yani notları açan şey ifadedir. Şifrelemeyi PIN'e bağlamak, unutulan bir PIN'in veriyi yok etmesi demek olurdu. Burada bu asla olmaz.",
+        "Uygulama bunu sorduğu her yerde **PIN'inizi mi unuttunuz?** veya **Geçiş kodunuzu mu unuttunuz?** seçeneğini seçin ve 12 kelimenizi yazın. Kilit ekranında, korumalı bir notta ve **Ayarlar > Güvenlik > PIN** altında bulunur. Tüm cihazlarınızda temizlenir ve hemen yenisini belirleyebilirsiniz. Biyometrik kilit açma bundan etkilenmez. Uygulamanın eski bir sürümünü kullanan cihaz, geçiş kodu belirlemiş olsanız bile 4 hane ister; orada **PIN'inizi mi unuttunuz?** aynı şekilde çalışır."
       ]
     },
     "delete-account": {
@@ -238,7 +252,7 @@
       "q": "Cihazlarım arasında tam olarak ne eşitlenir, ne yerel kalır?",
       "a": [
         "Beklediğiniz her şey ve hepsi cihazınızda şifrelenmiş olarak: notlar, görevler, günlük kayıtları, kasanız ve içindeki dosyalar. Ayarlarınız da sizinle gelir - favori etiketler, sıralama ve görünüm tercihleri, renk teması, PIN'iniz (tuzlanmış özet olarak, asla PIN'in kendisi değil), uygulama kilidi, takip ve ilaç ayarları, çöp kutusu otomatik silme. Bir kez ayarlayın, her cihaz devralsın.",
-        "Birkaç şey bilerek cihaza özel kalır: açık ya da koyu mod (her cihaz kendi sistem tercihini izler), biyometrik kilit açma (her cihazın donanımına bağlıdır) ve kilit durumunuz (uygulamayı kapatmak her zaman yeniden kilitler). Sunucu yalnızca şifreli veri yığınları saklar ve hiçbirini okuyamaz."
+        "Birkaç şey bilerek cihaza özel kalır: açık ya da koyu mod (her cihaz kendi sistem tercihini izler), biyometrik kilit açma (her cihazın donanımına bağlıdır), kenar çubuğunun gösterdiği alan ve kilit durumunuz (uygulamayı kapatmak her zaman yeniden kilitler). Sunucu yalnızca şifreli veri yığınları saklar ve hiçbirini okuyamaz."
       ]
     },
     "offline": {
@@ -250,7 +264,7 @@
     "sync-conflicts": {
       "q": "Aynı notu iki cihazda aynı anda düzenlersem ne olur?",
       "a": [
-        "Cihazlarınız tekrar eşitlendiğinde notu ayrıntı ayrıntı birleştirir, böylece yalnızca birinde yapılan bir değişiklik korunur. İkisi de ayrıyken metni düzenlediyse (diyelim biri çevrimdışıydı), ikinci sırada eşitlenen cihaz bir çakışma penceresi gösterir: bu cihazdaki sürümü tut, diğerini tut ya da ikisini ayrı notlar olarak sakla. Siz seçim yapana kadar iki sürüm de korunur.",
+        "Cihazlarınız tekrar eşitlendiğinde notu ayrıntı ayrıntı birleştirir, böylece yalnızca birinde yapılan bir değişiklik korunur. İkisi de ayrıyken metni düzenlediyse (diyelim biri çevrimdışıydı), ikinci sırada eşitlenen cihaz bir çakışma penceresi gösterir: bu cihazdaki sürümü tut, diğerini tut ya da ikisini ayrı notlar olarak sakla. Siz seçim yapana kadar iki sürüm de korunur. Notta yazı yazarken diğer cihazın sürümü gelirse, metniniz \"(conflict)\" ile işaretli bir kopya olarak saklanır ve not diğer sürümü gösterir.",
         "İki cihaz da ayrıyken sabitleme, klasör ya da başlık gibi aynı ayrıntıyı değiştirdiğinde, pencere çıkmadan notu en son düzenleyen cihazdan gelen ayrıntı korunur. Bir cihazda kalıcı olarak silinen not her yerden silinir; cihazlar ayrıyken başka bir cihazın o notta yaptığı düzenleme de buna dahildir."
       ]
     },
@@ -359,7 +373,7 @@
     "buy-pro-anonymously": {
       "q": "Pro'yu kim olduğumu belli etmeden satın alabilir miyim?",
       "a": [
-        "Evet, iki standart araçla. Makbuz için bir e-posta takma adı kullanın: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) ve [addy.io](https://addy.io) gerçek gelen kutunuzu açığa çıkarmadan yönlendirir. Ödeme için maskeli bir kart kullanın: ABD'de [privacy.com](https://privacy.com) yazdığınız her isimle çalışan sanal kartlar üretir, başka ülkelerdeki birçok banka ve hizmet de (örneğin [Revolut](https://www.revolut.com)) aynı işi gören tek kullanımlık sanal kartlar sunar.",
+        "Evet, iki standart araçla. Makbuz için bir e-posta takma adı kullanın: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) ve [addy.io](https://addy.io) gerçek gelen kutunuzu açığa çıkarmadan yönlendirir. Ödeme için maskeli bir kart kullanın: ABD'de [privacy.com](https://privacy.com) yazdığınız her isimle çalışan sanal kartlar üretir, başka yerlerde ise nakitle satın alınan, çevrimiçi kullanılabilen bir ön ödemeli kart aynı işi görür ve üzerinde hiç isim bulunmaz.",
         "Ödeme sırasında Paddle, vergiyi hesaplamak için bir e-posta, bir ödeme yöntemi ve bir ülke (bazı bölgelerde ayrıca bir posta kodu) ister. Takma ad makbuzu alır, maskeli kart ona verdiğiniz ismi taşır ve vergi için alınan konum bilgisi yalnızca bulunduğunuz bölgeyi ortaya koyar. Yine de takma adı canlı tutun: makbuz e-postası hem satın alma kanıtınız hem de iade kanalınızdır.",
         "İfadeyle açılmış bir hesapla birleştiğinde hiçbir taraf resmin tamamını görmez: bankanız bir kart yüklemesi görür, Paddle bir takma ad ve maskeli bir kart görür, biz ise Pro olan bir genel anahtarı, Paddle hesabımızda o takma adın yanında görürüz."
       ]
@@ -402,7 +416,7 @@
     "languages": {
       "q": "Uygulama hangi dilleri konuşuyor?",
       "a": [
-        "İngilizce, Almanca, Fransızca, İtalyanca, İspanyolca, Felemenkçe, Lehçe, Çekçe, Katalanca, Türkçe, İsveççe, Ukraynaca, Rusça, Japonca, Korece, Geleneksel Çince, Tayca, Arapça ve hem Avrupa hem Brezilya varyantıyla Portekizce. Uygulama varsayılan olarak sistem dilinizi izler ya da her cihazda Ayarlar > Dil altında bir dili sabitleyebilirsiniz.",
+        "İngilizce, Almanca, Fransızca, İtalyanca, İspanyolca, Felemenkçe, Lehçe, Çekçe, Slovakça, Katalanca, Türkçe, İsveççe, Ukraynaca, Rusça, Japonca, Korece, Geleneksel Çince, Tayca, Arapça ve hem Avrupa hem Brezilya varyantıyla Portekizce. Uygulama varsayılan olarak sistem dilinizi izler ya da her cihazda Ayarlar > Dil altında bir dili sabitleyebilirsiniz.",
         "Çeviriler bir Pro ayrıcalığı değil, herkes için ücretsiz. Daha fazla dil planlanıyor; sizinki eksikse [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) veya [Reddit](https://www.reddit.com/r/PrivacyNotes/) üzerinden bize söyleyin."
       ]
     },
@@ -424,7 +438,7 @@
       "q": "Görevler nasıl çalışıyor?",
       "a": [
         "Herhangi bir notta - [ ] olarak yazdığınız her satır bir göreve dönüşür ve kenar çubuğundaki Görevler görünümü hepsini tek yerde toplar. Orada bir görevi işaretlemek, bulunduğu notu günceller; bir görevi açmak ise o nota atlar. Bakımını yapacağınız ayrı bir görev veritabanı yok: görevler sadece notlarınızdaki satırlardır, geri kalan her şey gibi şifreli.",
-        "Görevler'in üstündeki hızlı ekleme kutusu, Quick Tasks adlı bir notun sonuna ekler (ilk kullanımda sizin için oluşturulur), böylece aklınıza gelen bir işi yakalamak bir dosyalama kararı değil, tek tuş meselesi olur. Aynı görünüm üç düzen (Karma, Toplu, Liste), tamamlanan görevleri gösterip gizleyen bir düğme ve görev araması sunar; Tümü görünümündeki Yeni düğmesi de doğrudan bir görev notu başlatabilir."
+        "Görevler'in üstündeki hızlı ekleme kutusu, Quick Tasks adlı bir notun sonuna ekler (ilk kullanımda sizin için oluşturulur), böylece aklınıza gelen bir işi yakalamak bir dosyalama kararı değil, tek tuş meselesi olur. Aynı görünüm üç düzen (Karma, Toplu, Liste), tamamlanan görevleri gösterip gizleyen bir düğme ve görev araması sunar; Tümü görünümündeki + düğmesi de doğrudan bir görev notu başlatabilir."
       ]
     },
     "journal": {
@@ -488,8 +502,8 @@
     "biometric-unlock": {
       "q": "Biyometrik kilit açma çalışmayı bıraktı. Ne yapabilirim?",
       "a": [
-        "Asla dışarıda kalmazsınız. Kilit ekranı her zaman bir geri dönüş sunar: “PIN ile kilidi aç” ya da “Kurtarma ifadesiyle giriş yap”. Biyometri yerel bir kapıdır, şifreleme anahtarı değil, yani notlarınız her hâlükârda el değmemiş kalır.",
-        "Sonra kapıyı onarın. Kayıt cihaz başınadır, yani yeni bir telefon, yeni bir tarayıcı profili veya yeniden kurulum yeniden kayıt ister: Ayarlar > Güvenlik > “Kilit”, kapatın, sonra tekrar “Biyometrik kilit açmayı etkinleştir”. Ayrıca “Bu cihaza güven” gerekir (güvenilmeyen oturumlar sekme kapanınca temizlenir) ve platform doğrulayıcısı olan bir donanım (Touch ID, Face ID, Windows Hello). Sistem istemi yerine Bitwarden ya da 1Password gibi bir parola yöneticisi açılırsa onu kapatıp tekrar deneyin veya o site için geçiş anahtarı yakalamasını kapatın - uygulama yerleşik doğrulayıcıyı ister, ama bazı yöneticiler yine de araya girer."
+        "Asla dışarıda kalmazsınız. Kilit ekranı her zaman bir geri dönüş sunar: “PIN ile kilidi aç” (bir geçiş kodu belirlediyseniz “Geçiş kodu ile kilidi aç”) ya da “Kurtarma ifadesiyle giriş yap”. Biyometrik kilit açma yalnızca bu cihazda saklanan kurtarma ifadesi kopyasını açar ve notlarınız ifadenin kendisinden gelen anahtarlarla şifrelenir, yani notlarınız her hâlükârda el değmemiş kalır.",
+        "Sonra yeniden ayarlayın. Kilit ekranı “Biyometrik kilit açma notlarınızı açamadı.” diyorsa önce başka bir yolla kilidi açın. Kayıt cihaz başınadır, yani yeni bir telefon, yeni bir tarayıcı profili veya yeniden kurulum yeniden kayıt ister: Ayarlar > Güvenlik > “Kilit”, kapatın, sonra tekrar “Biyometrik kilit açmayı etkinleştir”. Ayrıca “Bu cihaza güven” gerekir (güvenilmeyen oturumlar sekme kapanınca temizlenir) ve platform doğrulayıcısı olan bir donanım (Touch ID, Face ID, Windows Hello). Sistem istemi yerine Bitwarden ya da 1Password gibi bir parola yöneticisi açılırsa onu kapatıp tekrar deneyin veya o site için geçiş anahtarı yakalamasını kapatın - uygulama yerleşik doğrulayıcıyı ister, ama bazı yöneticiler yine de araya girer."
       ]
     },
     "phrase-compromised": {
@@ -647,7 +661,14 @@
       "q": "Bölümler, klasörler, etiketler ve alanlar birlikte nasıl çalışır?",
       "a": [
         "Sakladığınız her şey tek bir kitaplıkta durur. Kenar çubuğundaki Notlar, Kasa ve Günlükler gibi bölümler, bu kitaplığın türe göre görünümleridir. Klasör bir yerdir; bu yüzden bir klasör, bir notu ve ona ait girişi birlikte tutabilir ve klasör ağacı her bölümde aynıdır. Klasörün yanındaki sayılar yalnızca açık bölümün içeriğini sayar ve o bölümden hiçbir şey içermeyen bir klasör soluk görünür. Etiket bir işarettir ve kenar çubuğu yalnızca açık bölümün kullandığı etiketleri listeler.",
-        "Alanlar kitaplığı Kişisel ve İş olarak ikiye ayırır ve bir seferde birini gösterir. En üst düzeydeki bir klasör, içindeki her şeyle birlikte bir alana aittir ve menüsündeki **İş alanına taşı** onu diğer alana taşır. Klasörde olmayan bir öğe Kişisel alana aittir; bu yüzden İş alanında oluşturduğunuz her şey bir İş klasörüne gider. Etiketler ücretsizdir, klasörler ve alanlar Pro gerektirir."
+        "Alanlar kitaplığı Kişisel ve İş olarak ikiye ayırır; en üst düzeydeki bir klasör, içindeki her şeyle birlikte tek bir alana aittir. [Alanlar nasıl çalışır](/tr/help/spaces/) sayfası geçişi, öğeleri alanlar arasında taşımayı ve alanları kapatmayı anlatır. Etiketler ücretsizdir, klasörler ve alanlar Pro gerektirir."
+      ]
+    },
+    "spaces": {
+      "q": "Kişisel ve İş alanları nasıl çalışır?",
+      "a": [
+        "Alanlar kitaplığınızı Kişisel ve İş olarak ikiye ayırır. Kenar çubuğunda **Git** düğmesinin yanındaki anahtar **Tümü**, **Kişisel** veya **İş** seçeneğini gösterir: Tümü her öğeyi gösterir, diğer ikisi birer alanı gösterir. Her cihaz kendi seçimini tutar; bu yüzden telefonunuz Kişisel alanı, dizüstü bilgisayarınız İş alanını gösterebilir ve diğer alandan bir öğe açmak o alana geçirir. Alanlar yalnızca listelerin gösterdiklerini değiştirir: her öğe yine her cihazla eşitlenir.",
+        "En üst düzeydeki bir klasör, içindeki her şeyle birlikte tek bir alana aittir; menüsündeki ya da herhangi bir öğenin menüsündeki **İş alanına taşı** veya **Kişisel alana taşı** onu diğer alana taşır. Klasörde olmayan bir öğe Kişisel alana aittir; Tümü açıkken oluşturduğunuz her şey de öyle. Alanları kullanmayı bırakmak için Ayarlar > Listeler > Alanlar seçeneğini kapatın: her öğe görünür, hiçbir şey taşınmaz ve her klasör, seçeneği yeniden açtığınızda kullanılmak üzere alanını korur. Alanlar Pro gerektirir."
       ]
     },
     "note-links": {
@@ -717,8 +738,8 @@
     "note-history": {
       "q": "Bir notun eski bir sürümünü geri alabilir miyim?",
       "a": [
-        "Evet, Pro ile. Notun \"...\" menüsünü açıp \"Geçmiş\"i seçin; önceki 20 sürüme kadar gezinip geri yükleyebilirsiniz. Geri yükleme hiçbir şey kaybetmez: güncel metin önce bir sürüm olarak kaydedilir, yani ileri geri gidebilirsiniz. Sürümler notun kendisi gibi şifrelidir, yani onları biz de okuyamayız.",
-        "Anlık görüntü en fazla dakikada bir alınır, yani saniyeler arayla yapılan iki düzenleme tek sürümü paylaşır. Not geçmişi, sunucu üzerinden işleyen tek Pro özelliğidir; demo bu yüzden bunun yerine kendi yerel kopyasını tutar. Ayrıca her planda, silinen bir notu 30 gün tutan [çöp kutusu](/tr/help/trash-auto-delete/) vardır."
+        "Evet, Pro ile. Notun \"...\" menüsünü açıp \"Geçmiş\"i seçin; önceki 50 sürüme kadar gezinebilir, birini güncel notla karşılaştırabilir ve geri yükleyebilirsiniz. Geri yükleme hiçbir şey kaybetmez: güncel metin önce bir sürüm olarak kaydedilir, yani ileri geri gidebilirsiniz. Sürümler notun kendisi gibi şifrelidir, yani onları biz de okuyamayız.",
+        "Her sürüm, notun bir düzenlemeden önceki halidir: beş dakikalık bir aradan sonraki ilk düzenlemenizde bir sürüm, yazmaya devam ettiğiniz sürece her on dakikada bir sürüm ve 200 karakter veya daha uzun bir notun yarısından fazlasını silen bir düzenlemeden önce bir sürüm kaydedilir; son sürüm 30 saniyeden yeniyse bu sonuncusu kaydedilmez. Not geçmişi, sunucu üzerinden işleyen tek Pro özelliğidir; demo bu yüzden bunun yerine kendi yerel kopyasını tutar. Ayrıca her planda, silinen bir notu 30 gün tutan [çöp kutusu](/tr/help/trash-auto-delete/) vardır."
       ]
     },
     "vault-totp": {
@@ -849,10 +870,10 @@
       ]
     },
     "quick-switcher": {
-      "q": "Git özelliği nedir ve neleri bulabilir?",
+      "q": "Hızlı geçiş nedir ve neleri bulabilir?",
       "a": [
-        "Git özelliği, başlığına göre her şeye atlar. Mac'te Cmd+K, Windows ve Linux'ta Ctrl+K tuşlarına basın (Cmd+P veya Ctrl+P de çalışır) ya da kenar çubuğunda veya liste başlığında **Git** düğmesine tıklayın. Notları, görevleri, günlük kayıtlarını, Kasa öğelerini, yer imlerini, kişileri, ekli dosyaları ve ayarları bulmak için bir başlığın bir kısmını yazın. Enter öğeyi açar, Option+Enter veya Alt+Enter ise onu bir sekmede açar.",
-        "Bunun yerine bir komut çalıştırmak, örneğin yeni bir not oluşturmak ya da bir bölüme gitmek için önce > yazın. Başlıklar yerine metninizin içindeki kelimeleri bulmak için **Her yerde ara** satırını seçin ya da herhangi bir satırdayken Cmd+Enter veya Ctrl+Enter tuşlarına basın. Eşleştirme cihazınızda yapılır, bu yüzden yazdığınız hiçbir şey bize gönderilmez. Git özelliği ücretsizdir."
+        "Hızlı geçiş, başlığına göre her şeye atlar. Mac'te Cmd+K, Windows ve Linux'ta Ctrl+K tuşlarına basın (Cmd+P veya Ctrl+P de çalışır) ya da kenar çubuğunda veya liste başlığında **Git** düğmesine tıklayın. Notları, görevleri, günlük kayıtlarını, Kasa öğelerini, yer imlerini, kişileri, ekli dosyaları ve ayarları bulmak için bir başlığın bir kısmını yazın. Enter öğeyi açar, Option+Enter veya Alt+Enter ise onu bir sekmede açar.",
+        "Bunun yerine bir komut çalıştırmak, örneğin yeni bir not oluşturmak ya da bir bölüme gitmek için önce > yazın. Yalnızca etiketlerinizi görmek için önce #, yalnızca klasörlerinizi görmek için önce / yazın; birini seçmek listeyi kenar çubuğundaki bir tıklamayla aynı şekilde filtreler. Başlıklar yerine metninizin içindeki kelimeleri bulmak için **Her yerde ara** satırını seçin ya da herhangi bir satırdayken Cmd+Enter veya Ctrl+Enter tuşlarına basın. Eşleştirme cihazınızda yapılır, bu yüzden yazdığınız hiçbir şey bize gönderilmez. Hızlı geçiş ücretsizdir."
       ]
     },
     "find-in-note": {
@@ -876,6 +897,27 @@
         "Başka bir kasaya ait bir giriş yöntemi bağlanamaz, çünkü kasalar hiçbir zaman birleştirilmez. **Bağlantıyı kaldır** önce 12 kelimenizi ister. İfadenizi sizin için biz saklıyorsak, son bağlı hesap siz başka bir hesap bağlayana ya da ifadenizi kaydedip kendi saklamaya geçene kadar kalır. Kendi saklamada yeni bir cihaz yine 12 kelimenizi ister. Bağlı hesaplar beta aşamasındadır."
       ]
     },
+    "calendar": {
+      "q": "Bir takvim var mı, üzerinde neler görünür?",
+      "a": [
+        "Evet. Kenar çubuğundaki Takvim, tarihi olan her öğeyi tek bir yerde gösterir: etkinlikler, günlük kayıtları, tarihli notlar ve görev listeleri, bir de kişilerinizin doğum günleri. Yanındaki liste önümüzdeki günlerin ajandasıdır; büyük görünüm ise Gün, Hafta ve Ay arasında geçiş yapar. Oraya bir şey eklemek için boş bir güne tıklayın ya da bir öğeyi başka bir güne sürükleyin.",
+        "Etkinlik kendi başına bir öğe türüdür: günü, bitiş günü, saati ve tekrarı olan bir not. Hızlı ekle alanına bütün bir satır yazın, örneğin \"Dişçi cuma 15:00 1 saat önce\"; günü, saati ve uyarıyı sizin yerinize okur. Bir not ya da görev listesi de \"...\" menüsündeki Zamanlama satırından bir gün, saat ve bitiş günü taşıyabilir. Takvim ücretsizdir."
+      ]
+    },
+    "reminders": {
+      "q": "Takvim hatırlatıcıları uygulama kapalıyken de çalışır mı?",
+      "a": [
+        "Telefonda evet: 400 güne kadar ilerisi için en fazla 64 uyarı telefonun kendisine verilir, bu yüzden PrivacyNotes kapalıyken de çalarlar; uygulamayı açıp kilidini açmak daha fazlasını verir. Masaüstü uygulamasında hatırlatıcı uygulama çalışırken, tarayıcıda ise PrivacyNotes bir sekmede açıkken çalar. Her cihaz hatırlatıcılarını kendi üzerindeki öğelerden planlar, bu yüzden sunucu hiçbir başlığı, saati ya da günü öğrenmez.",
+        "Bir öğenin Zamanlama görünümündeki Uyarı satırından, öğe başına en fazla beş uyarı ekleyin; varsayılanları ise \"Hatırlatıcılarda başlıkları göster\" seçeneğinin de bulunduğu Ayarlar > Takvim altında belirleyin. PIN'inizin arkasındaki bir öğe her zaman \"Hatırlatıcı\" ve saatle çalar; uygulama kilidi etkinken zamanlanan her uyarı da öyle. Kilit etkinleştirilmeden önce telefona verilmiş bir uyarı, çalana kadar başlığını koruyabilir. Hatırlatıcılar Pro'nun parçasıdır; takvimin kendisi ücretsizdir."
+      ]
+    },
+    "calendar-time-zones": {
+      "q": "Başka bir saat dilimine seyahat ettiğimde etkinlik saatlerine ne olur?",
+      "a": [
+        "Takvimdeki bir saat, yazdığınız saat olarak kalır. Saat 15:00'teki bir etkinlik, cihazınız nerede olursa olsun 15:00'te görünür ve çalar; tıpkı bir yapılacaklar uygulamasındaki hatırlatıcı gibi, çünkü her saat, saat dilimi olmayan yerel bir saat olarak saklanır. Telefon her uyarıyı kesin bir an için zamanlar; bu yüzden saat dilimi değiştikten sonra uyarıları taşımak için PrivacyNotes'u yeni dilimde bir kez açıp kilidini açın. Uygulama açık ve kilidi açıkken bunları kendisi taşır.",
+        "Başka bir saat dilimindeki biriyle yapacağınız bir görüşme için saati, bulunduğunuz yerdeki haliyle girin. Yaz saati değişikliği bir uyarının saatini atlarsa, uyarı atlanan saatten sonraki ilk dakikada çalar."
+      ]
+    },
     "session-expired": {
       "q": "Uygulama neden \"Oturum sona erdi\" diyor?",
       "a": [
@@ -887,7 +929,7 @@
       "q": "Arşiv ne işe yarar, Çöp kutusundan farkı nedir?",
       "a": [
         "Arşivleme bir öğeyi silmeden listelerinizden çıkarır. Öğenin \"...\" menüsünden ya da sağ tık menüsünden, birden fazla öğe için de seçim araç çubuğundan **Arşivle** seçeneğini seçin. Arşivlenen öğeler Tümü görünümünden, kendi bölümlerinden, Sabitlenmiş'ten ve klasör ile etiket sayılarından çıkar; kenar çubuğunun altında, bir şey arşivlenince beliren **Arşiv** görünümünde bekler. Tümü'nde ve sayılarda kalmalarını istiyorsanız Ayarlar > Listeler'deki **Tümü** sütununda Arşiv'i işaretleyin. Aynı yerlerdeki **Arşivden çıkar** bir öğeyi geri getirir.",
-        "Çöp kutusu, gitmesini istediğiniz şeyler içindir: siz kapatmadıkça [30 gün sonra onları kalıcı olarak siler](/tr/help/trash-auto-delete/). Arşiv hiçbir şeyi silmez ve arşivlenen öğeler elinizin altında kalır, çünkü Tümü'nde yapılan bir arama, Git özelliği ve not bağlantıları onları bulmaya devam eder. Diğer her şey gibi eşitlenir ve şifreli kalırlar, depolama alanınıza da sayılmaya devam ederler. Arşiv tüm öğe türlerinde çalışır ve ücretsizdir."
+        "Çöp kutusu, gitmesini istediğiniz şeyler içindir: siz kapatmadıkça [30 gün sonra onları kalıcı olarak siler](/tr/help/trash-auto-delete/). Arşiv hiçbir şeyi silmez ve arşivlenen öğeler elinizin altında kalır, çünkü Tümü'nde yapılan bir arama, hızlı geçiş ve not bağlantıları onları bulmaya devam eder. Diğer her şey gibi eşitlenir ve şifreli kalırlar, depolama alanınıza da sayılmaya devam ederler. Arşiv tüm öğe türlerinde çalışır ve ücretsizdir."
       ]
     },
     "share-into-app": {

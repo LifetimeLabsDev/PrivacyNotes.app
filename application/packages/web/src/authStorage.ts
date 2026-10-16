@@ -7,6 +7,7 @@ import {
 import { hasPin } from './pin';
 import { credentialKey } from './demo';
 import { clearSyncLog } from './syncLog';
+import { clearSyncFaults } from './syncFaults';
 
 // Demo-bucketed (see credentialKey in demo.ts): a demo session must
 // never read or write a real account's credential keys on the same
@@ -180,6 +181,11 @@ export function clearSupabaseAuthKeys(): void {
 }
 
 export function clearAccountScopedUiState(): void {
+  // When this account's last sync passes ran and which of its steps failed.
+  // Outside the try below: neither throws, and a key that fails to clear
+  // there must not leave either log for the next account's support report.
+  clearSyncLog();
+  clearSyncFaults();
   try {
     // Two folder keys, because the tree switched from storing which folders
     // are open to storing which are closed, and the retired one is still on
@@ -194,8 +200,6 @@ export function clearAccountScopedUiState(): void {
     localStorage.removeItem('privacynotes.movedFromApex'); // migrate.ts / MoveBanner.tsx
     // When this account last verified its sync, and how many rows matched.
     localStorage.removeItem('privacynotes.verifyStamp'); // verifyStamp.ts
-    // When this account's last sync passes ran, and what each one moved.
-    clearSyncLog();
     // Which items this account had open as tabs: ids only, but this account's.
     localStorage.removeItem('privacynotes.openTabs'); // notesView/useOpenTabs.ts
     // Which offers this account dismissed: the site announcement, and the
@@ -205,6 +209,16 @@ export function clearAccountScopedUiState(): void {
     for (const kind of ['notes', 'journal', 'tasks', 'vault', 'bookmarks', 'contacts']) {
       localStorage.removeItem(`privacynotes.importPrompt.hidden.${kind}`); // ImportPrompt.tsx
     }
+    // This account's reminders: the ids a phone handed the OS, in the map
+    // and in the handed list (cancelled before this runs, see
+    // cancelDeviceReminders), its snoozes, what fired, and the bell's item
+    // ids. Whether the OS was asked stays: that is the phone's answer, not
+    // the account's.
+    localStorage.removeItem('privacynotes.reminderScheduled'); // notesView/useReminders.tsx
+    localStorage.removeItem('privacynotes.reminderHanded'); // notesView/useReminders.tsx
+    localStorage.removeItem('privacynotes.reminderSnoozes'); // reminders.ts
+    localStorage.removeItem('privacynotes.reminderFired'); // notesView/useReminders.tsx
+    localStorage.removeItem('privacynotes.calendarUnseenAlerts'); // reminders.ts
   } catch { /* ignore */ }
 }
 

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UpdateToast } from './UpdateToast';
 import { detectPlatform } from './devices';
-import { APP_STORE_URL } from './hosts';
+import { APP_STORE_URL, RELEASES_ORIGIN } from './hosts';
 import { knownVersionFloor, reportVersionFloor, useBelowVersionFloor } from './versionFloor';
 
 /**
@@ -35,8 +35,8 @@ const IS_IOS = PLATFORM === 'ios';
 const IS_STORE_BUILD = IS_PLAY || IS_IOS;
 
 const POLICY_URL = IS_IOS
-  ? 'https://releases.privacynotes.app/ios/update-policy.json'
-  : 'https://releases.privacynotes.app/play/update-policy.json';
+  ? `${RELEASES_ORIGIN}/ios/update-policy.json`
+  : `${RELEASES_ORIGIN}/play/update-policy.json`;
 
 // Store listing URLs. The https forms route straight into the store apps on
 // device (verified app links), so no market:// / itms-apps:// schemes needed.

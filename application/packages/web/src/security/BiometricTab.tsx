@@ -3,17 +3,35 @@ import { useTranslation } from 'react-i18next';
 import { Check, Fingerprint, LockKey } from '../icons';
 import { ConfirmModal } from '../ConfirmModal';
 import {
+  answerBindingOffer,
+  buildPinWrap,
+  canSetUpBiometricAgain,
   canUseBiometric,
   enrollBiometric,
   hasBiometricCredential,
   hasPinWrappedPhrase,
+  isBiometricKeyBound,
+  onWrappedBlobChange,
   removeBiometricCredential,
   removeStoredPhrase,
-  wrapPhraseWithPin,
+  setUpBiometricAgain,
+  shouldOfferBinding,
+  storeBuiltPinWrap,
 } from '../biometric';
-import { hasPin, markPinUnlocked, verifyPin } from '../pin';
+import {
+  clearPinFailures,
+  getPinLockoutState,
+  hasPin,
+  markPinUnlocked,
+  pinCredentialStamp,
+  pinIsPasscode,
+  recordPinFailure,
+  verifyPin,
+} from '../pin';
 import { signInStamp } from '../liveSignIn';
-import { PinInput, type PinInputHandle } from '../PinInput';
+import type { PinInputHandle } from '../PinInput';
+import { SecretInput } from '../PasscodeInput';
+import { secretReady } from '../secretKind';
 import { SectionEyebrow, SETTINGS_HELP, SettingsCallout, ROW_TITLE } from '../settingsUI';
 import { Switch } from '../Switch';
 import { isTrustedDevice } from '../trustStorage';
@@ -37,7 +55,6 @@ const CAPTURE_BLOCK_SUPPORTED = captureBlockSupported();
 
 export function BiometricTab({
   phrase,
-  pubkey,
   userSettings,
   onSettingsChange,
   timeoutMinutes,
@@ -62,6 +79,39 @@ export function BiometricTab({
   const captureBlocked = useCaptureBlock();
   const [deviceSupported, setDeviceSupported] = useState<boolean | null>(null);
   const [enrolled, setEnrolled] = useState(() => hasBiometricCredential());
+  // Bound: the passkey's PRF gives the key and nothing beside the wrap opens
+  // it. An unbound browser enrollment is offered a set-up-again.
+  // Spec: ops/docs/plans/app-lock-passcode.md (section 4.6)
+  const [bound, setBound] = useState(() => isBiometricKeyBound());
+  const [canAgain, setCanAgain] = useState(() => canSetUpBiometricAgain());
+  const [againBusy, setAgainBusy] = useState(false);
+  const [cannotBind, setCannotBind] = useState(false);
+  // An unbound enrollment in a browser whose passkeys have PRF is asked once,
+  // with the reason, to set up again; the plain button stays after an answer.
+  // Spec: ops/docs/audit-release-qa-2026-10-15.md (QA-2)
+  const [offerBind, setOfferBind] = useState(false);
+  useEffect(() => {
+    if (!canAgain) {
+      setOfferBind(false);
+      return;
+    }
+    let live = true;
+    void shouldOfferBinding().then((offer) => { if (live) setOfferBind(offer); });
+    return () => { live = false; };
+  }, [canAgain]);
+  function answerOffer() {
+    answerBindingOffer();
+    setOfferBind(false);
+  }
+  function readBinding() {
+    setBound(isBiometricKeyBound());
+    setCanAgain(canSetUpBiometricAgain());
+  }
+  // Another tab can enroll, set up again or remove; this one follows.
+  useEffect(() => onWrappedBlobChange(() => {
+    setEnrolled(hasBiometricCredential());
+    readBinding();
+  }), []);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successFlash, setSuccessFlash] = useState(false);
@@ -91,7 +141,6 @@ export function BiometricTab({
     // draws its own cancel button, which is why that label goes too.
     const result = await enrollBiometric(
       phrase,
-      pubkey,
       t('biometricTab.enable'),
       t('common:actions.cancel'),
     );
@@ -100,9 +149,14 @@ export function BiometricTab({
       // created when the user enables app lock and enters their PIN.
       removeStoredPhrase();
       setEnrolled(true);
+      readBinding();
       onSettingsChange({ ...userSettings, appLockEnabled: true }, userSettings);
       setSuccessFlash(true);
       setTimeout(() => setSuccessFlash(false), 2000);
+    } else if (result.reason === 'changed') {
+      // Another tab enrolled meanwhile; this one follows it and says nothing.
+      setEnrolled(hasBiometricCredential());
+      readBinding();
     } else {
       setError(result.message);
     }
@@ -110,6 +164,23 @@ export function BiometricTab({
   }
 
   const [showDisableConfirm, setShowDisableConfirm] = useState(false);
+
+  async function handleSetUpAgain() {
+    setAgainBusy(true);
+    setError(null);
+    setCannotBind(false);
+    const result = await setUpBiometricAgain(phrase);
+    // A success needs no flash: the bound status line replaces the button. A
+    // cancel, or a change another tab made meanwhile, says nothing. A passkey
+    // without PRF answers the ask for good: asking again cannot change it.
+    if (!result.ok && result.reason === 'no_prf') {
+      setCannotBind(true);
+      answerOffer();
+    }
+    if (!result.ok && result.reason === 'error') setError(result.message);
+    readBinding();
+    setAgainBusy(false);
+  }
 
   async function doDisable() {
     // With no PIN wrap behind it the fingerprint is this device's last door,
@@ -125,6 +196,8 @@ export function BiometricTab({
     removeBiometricCredential();
     if (lastDoor) onSettingsChange({ ...userSettings, appLockEnabled: false }, userSettings);
     setEnrolled(false);
+    setCannotBind(false);
+    readBinding();
   }
 
   // The PIN-confirm step for turning app lock ON with an existing PIN
@@ -139,21 +212,56 @@ export function BiometricTab({
   const [pinConfirmBusy, setPinConfirmBusy] = useState(false);
   const [pinConfirmError, setPinConfirmError] = useState<string | null>(null);
   const pinConfirmRef = useRef<PinInputHandle>(null);
+  // Read on every render, from the cached hash `verifyPin` checks, so the
+  // field follows a secret changed on another device.
+  const pinConfirmKind = pinIsPasscode() ? 'passcode' : 'pin';
 
   async function confirmPinForAppLock(candidate: string) {
-    if (candidate.length !== 4 || pinConfirmBusy || !trusted) return;
+    if (!secretReady(pinConfirmKind, candidate) || pinConfirmBusy || !trusted) return;
+    // The lockout counter is shared by every PIN surface, so this one reads
+    // it at submit time and records its failures like the others do.
+    const lockout = getPinLockoutState();
+    if (lockout.locked) {
+      setPinConfirmError(t('pinTab.tooManyAttempts', { seconds: lockout.secondsLeft }));
+      setPinConfirmValue('');
+      pinConfirmRef.current?.clear();
+      return;
+    }
     setPinConfirmBusy(true);
     setPinConfirmError(null);
     const startedAt = signInStamp();
+    const stamp = pinCredentialStamp();
     const { valid } = await verifyPin(candidate);
+    // A secret changed on another device during the check or the wrap below
+    // answers for nothing: no wrap under the retired secret, no strip, no flag.
+    if (pinCredentialStamp() !== stamp) {
+      setPinConfirmValue('');
+      setPinConfirmBusy(false);
+      pinConfirmRef.current?.clear();
+      return;
+    }
     if (!valid) {
-      setPinConfirmError(t('pinTab.incorrectPin'));
+      const state = recordPinFailure();
+      setPinConfirmError(state.locked
+        ? t('pinTab.tooManyAttempts', { seconds: state.secondsLeft })
+        : pinConfirmKind === 'passcode' ? t('pinTab.incorrectPasscode') : t('pinTab.incorrectPin'));
       setPinConfirmValue('');
       pinConfirmRef.current?.clear();
       setPinConfirmBusy(false);
       return;
     }
-    const blob = await wrapPhraseWithPin(phrase, candidate, startedAt);
+    clearPinFailures();
+    // Built in memory and stored only once the secret is known to be still the
+    // account's, with no await in between: a wrap under a secret replaced
+    // meanwhile would overwrite the newer wrap another tab already stored.
+    const blob = await buildPinWrap(phrase, candidate);
+    if (pinCredentialStamp() !== stamp) {
+      setPinConfirmValue('');
+      setPinConfirmBusy(false);
+      pinConfirmRef.current?.clear();
+      return;
+    }
+    storeBuiltPinWrap(blob, startedAt);
     removeStoredPhrase();
     // The user proved the PIN seconds ago - no immediate re-prompt.
     markPinUnlocked();
@@ -197,6 +305,10 @@ export function BiometricTab({
       setPinConfirm(true);
       return;
     }
+    // A wrap or a fingerprint is already here, so the lock has a door. The
+    // switch-off above put the phrase back at rest; arming takes it off again,
+    // or the lock screen would guard a device whose phrase is still on disk.
+    removeStoredPhrase();
     onSettingsChange({ ...userSettings, appLockEnabled: true }, userSettings);
   }
 
@@ -242,6 +354,48 @@ export function BiometricTab({
                 <span className="text-sm font-medium text-emerald-800 dark:text-emerald-200">{t('biometricTab.enrolledOnDevice')}</span>
               </div>
             </div>
+
+            {bound && (
+              <p className={`${SETTINGS_HELP} leading-relaxed`}>{t('biometricTab.boundStatus')}</p>
+            )}
+            {canAgain && (
+              <div data-setting="security.biometricSetUpAgain">
+                {offerBind ? (
+                  <SettingsCallout>
+                    <p>{t('biometricTab.bindOffer')}</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <button
+                        onClick={() => void handleSetUpAgain()}
+                        disabled={againBusy}
+                        className="inline-flex items-center gap-1.5 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-1.5 text-xs font-medium transition disabled:opacity-50"
+                      >
+                        <Fingerprint size={14} />
+                        {againBusy ? t('biometricTab.settingUp') : t('biometricTab.setUpAgain')}
+                      </button>
+                      <button
+                        onClick={answerOffer}
+                        disabled={againBusy}
+                        className="rounded-md border border-divider text-pn-soft hover:bg-surface-1 hover:text-pn px-3 py-1.5 text-xs transition disabled:opacity-50"
+                      >
+                        {t('biometricTab.bindOfferLater')}
+                      </button>
+                    </div>
+                  </SettingsCallout>
+                ) : (
+                  <button
+                    onClick={() => void handleSetUpAgain()}
+                    disabled={againBusy}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-divider text-pn hover:bg-surface-1 px-3 py-2 text-sm transition disabled:opacity-50"
+                  >
+                    <Fingerprint size={16} />
+                    {againBusy ? t('biometricTab.settingUp') : t('biometricTab.setUpAgain')}
+                  </button>
+                )}
+              </div>
+            )}
+            {cannotBind && (
+              <SettingsCallout>{t('biometricTab.cannotBind')}</SettingsCallout>
+            )}
 
             <button
               onClick={() => setShowDisableConfirm(true)}
@@ -319,16 +473,17 @@ export function BiometricTab({
       {pinConfirm && (
         <div className="rounded-md border border-divider bg-surface-1 p-3 space-y-3">
           <p className={`${SETTINGS_HELP} leading-relaxed`}>
-            {t('biometricTab.confirmPinForLock')}
+            {pinConfirmKind === 'passcode' ? t('biometricTab.confirmPasscodeForLock') : t('biometricTab.confirmPinForLock')}
           </p>
           {/* Same shape as the PIN tab's current-PIN step: eyebrow, compact
               boxes, then the buttons. The keys live under pinTab because that
               tab owns this wording; the control is the same control. */}
           <div className="space-y-1.5">
             <SectionEyebrow className="text-center">
-              {t('pinTab.currentPin')}
+              {pinConfirmKind === 'passcode' ? t('pinTab.currentPasscode') : t('pinTab.currentPin')}
             </SectionEyebrow>
-            <PinInput
+            <SecretInput
+              kind={pinConfirmKind}
               ref={pinConfirmRef}
               value={pinConfirmValue}
               onChange={(v) => {
@@ -350,7 +505,7 @@ export function BiometricTab({
             <button
               type="button"
               onClick={() => void confirmPinForAppLock(pinConfirmValue)}
-              disabled={pinConfirmValue.length !== 4 || pinConfirmBusy}
+              disabled={!secretReady(pinConfirmKind, pinConfirmValue) || pinConfirmBusy}
               className="flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {pinConfirmBusy ? t('pinTab.checking') : t('pinTab.verify')}

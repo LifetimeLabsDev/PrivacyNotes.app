@@ -39,6 +39,10 @@ export interface ListItem {
   icon: ReactNode;
   /** The bare glyph the mini tile shows in place of the box. */
   glyph: ReactNode;
+  /** The item's own small picture (a site icon, a contact photo): the one
+   *  icon Compact rows keep, because it names the item where a type icon
+   *  only repeats the list. */
+  compactIcon?: ReactNode;
   title: string;
   /** Null when the row carries no preview line. */
   preview: { text: string; long: boolean; dir: 'auto' | 'ltr' } | null;
@@ -58,7 +62,8 @@ export interface ListItem {
 /**
  * Compact rows applied to an item, in the data, so the row and the tile of
  * one item carry the same parts: the type icon, the mini glyph and the status
- * flags go (the warnings stay). The
+ * flags go (the warnings stay), and the item's own picture takes the icon's
+ * place when it has one. The
  * layouts read `compact` for the rest - the short date and the flags on the
  * title line, less spacing. Adapters call it last, after any part of their own.
  */
@@ -67,7 +72,7 @@ export function applyCompactRows(item: ListItem, compact: boolean): ListItem {
   // The status flags go with the icon; the two warnings stay, because they
   // say the item is not safe yet.
   const flags = item.flags.filter((f) => FLAGS[f].warn);
-  return { ...item, icon: null, glyph: null, flags, compact: true };
+  return { ...item, icon: item.compactIcon ?? null, glyph: null, flags, compact: true };
 }
 
 /** What the pane knows about the item that the item does not. */
@@ -185,7 +190,7 @@ export function ItemRow({ item, state, as: Root = 'li', rootProps, onToggleSelec
       {...rootProps}
       // Touch only: long-press is the multi-select gesture, so the row must
       // not also hand the WebView something to select. Spec: issue #208.
-      className={`pn-row pn-lazy-row relative ${Root === 'button' ? 'block w-full text-start ' : ''}px-4 ${compact ? 'py-2' : 'py-3'} cursor-pointer border-b border-divider/50 transition [@media(hover:none)]:select-none ${itemStateClass(state, 'row')} ${state.selectionMode ? 'ps-10' : ''}`}
+      className={`pn-row pn-lazy-row relative ${Root === 'button' ? 'block w-full text-start ' : ''}px-4 ${compact ? 'py-2' : 'py-2 md:py-3'} cursor-pointer border-b border-divider/50 transition [@media(hover:none)]:select-none ${itemStateClass(state, 'row')} ${state.selectionMode ? 'ps-10' : ''}`}
     >
       {/* The saved-link marker, see the .pn-ribbon rules in index.css. */}
       {item.ribbon && <span data-slot="ribbon" className="pn-ribbon" aria-hidden="true" />}

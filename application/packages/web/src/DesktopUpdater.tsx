@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UpdateToast } from './UpdateToast';
 import { detectPlatform } from './devices';
+import { APEX_ORIGIN, RELEASES_ORIGIN } from './hosts';
 import { marketingHomeHref } from './siteLinks';
 import { compareSemver } from './versionCheck';
 import { VERSION } from './version';
@@ -20,13 +21,13 @@ const CHECK_FLOOR_MS = 12 * 60 * 60 * 1000; // 12h
 // Public changelog, opened in the system browser (a /changelog tab cannot
 // open inside the Tauri webview). Canonical no-www domain. Spec:
 // ops/docs/gotchas.md (canonical domain).
-const CHANGELOG_URL = 'https://privacynotes.app/changelog';
+const CHANGELOG_URL = `${APEX_ORIGIN}/changelog`;
 
 // The release floor for the .deb, the one desktop format that cannot self-update.
 // Published per platform, from the tracked packages/desktop/update-policy.json:
 // a global floor would let a Linux release force Android clients toward an APK
 // that does not satisfy it yet. Spec: ops/docs/android-update-check.md (floors are published per platform, never globally).
-const LINUX_POLICY_URL = 'https://releases.privacynotes.app/linux/update-policy.json';
+const LINUX_POLICY_URL = `${RELEASES_ORIGIN}/linux/update-policy.json`;
 
 // The command a Scoop user runs to move to the version this toast names. Scoop's
 // bucket carries each release within hours of it shipping, so there is always

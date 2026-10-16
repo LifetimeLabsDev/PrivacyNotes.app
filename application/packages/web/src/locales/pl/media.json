@@ -15,6 +15,8 @@
     "notFound": "Nie znaleziono obrazu",
     "saveFailed": "Zapis się nie udał, więc plik może być pusty albo niekompletny.",
     "viewAria": "Wyświetl obraz",
+    "copyAria": "Kopiuj obraz",
+    "copyFailed": "Nie udało się skopiować obrazu.",
     "picturesLeftOut": "Niektóre obrazy nie zostały dodane. Skopiuj obraz osobno, żeby go wkleić."
   },
   "attachment": {
@@ -58,6 +60,17 @@
     "pageCount_many": "{{count}} stron",
     "pageCount_other": "{{count}} strony",
     "pageLabel": "{{name}}, strona {{page}} z {{count}}"
+  },
+  "mail": {
+    "loading": "Otwieranie e-maila...",
+    "failed": "Nie można odczytać tego e-maila. Pobierz go, aby otworzyć go w innej aplikacji.",
+    "from": "Od",
+    "to": "Do",
+    "cc": "DW",
+    "date": "Data",
+    "noSubject": "(Bez tematu)",
+    "empty": "Ten e-mail nie zawiera tekstu.",
+    "attachments": "Załączniki"
   },
   "picker": {
     "title": "Obrazy w Plikach",

@@ -12,7 +12,7 @@
  *   id         4 hex characters. PERMANENT: it derives the note's UUID, so
  *              changing it re-seeds the note as a duplicate. Must be unique.
  *   title      Shown as the note title. Quote it if it contains a colon.
- *   type       note | task | journal | link          (default note)
+ *   type       note | task | journal | link | event  (default note)
  *   tags       comma separated, no leading #         (default none)
  *   starred    true pins it to the top of the list   (default false)
  *   folder     folder name. Files the note in every vault: the starter
@@ -21,6 +21,10 @@
  *              `tools/check-seeds.mjs` enforces.
  *   demoOnly   true seeds it only in the public demo (default false)
  *   order      sort weight, lower is newer and sits higher (default 100)
+ *   journalDay the item's day: `today`, or `thursday` | `friday` |
+ *              `saturday` | `sunday` of the most recent Tokyo weekend
+ *              (`seedDayIso`). Resolved at seed time, so it never ages
+ *   journalDayEnd  the last day of a multi-day item, from the same names
  *
  * Vite's `?raw` inlines the English files at build time, so they ship as
  * string constants inside the bundle: no fetch, no async at runtime.
@@ -40,7 +44,26 @@
  * a full seed directory today.
  */
 
-export type SeedType = 'note' | 'task' | 'journal' | 'link';
+import { toLocalIso } from '../intlFormat';
+
+export type SeedType = 'note' | 'task' | 'journal' | 'link' | 'event';
+
+/** The day names a seed's `journalDay` may hold. */
+const SEED_DAYS = ['today', 'thursday', 'friday', 'saturday', 'sunday'] as const;
+
+/**
+ * The local ISO day a seed's `journalDay` names, or null for a value the
+ * seeder does not know. The weekdays belong to the most recent weekend (today
+ * counts when today is a Sunday) and the Thursday before it, so the Tokyo
+ * story always lands on a recent week and never ages.
+ */
+export function seedDayIso(name: string | undefined, now = new Date()): string | null {
+  if (!name || !(SEED_DAYS as readonly string[]).includes(name)) return null;
+  if (name === 'today') return toLocalIso(now);
+  const sunday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay(), 12);
+  const back = { thursday: 3, friday: 2, saturday: 1, sunday: 0 }[name as 'thursday' | 'friday' | 'saturday' | 'sunday'];
+  return toLocalIso(new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate() - back, 12));
+}
 
 export interface SeedDoc {
   /** File stem, e.g. `welcome`. The same stem names the file in every locale. */
@@ -58,10 +81,12 @@ export interface SeedDoc {
   order: number;
   /** Journal tracker values, straight off the file's frontmatter. */
   trackers?: Record<string, unknown>;
-  /** `friday` | `saturday` | `sunday`: which day of the most recent weekend
-   *  this entry is FOR. Resolved to a real `journalDate` at seed time, so the
-   *  three Tokyo entries stay on a recent weekend instead of ageing. */
+  /** One of `SEED_DAYS`: the day this item is FOR. Resolved to a real
+   *  `journalDate` at seed time (`seedDayIso`), so the Tokyo entries stay on a
+   *  recent weekend and a dated note stays on today instead of ageing. */
   journalDay?: string;
+  /** The last day of a multi-day item, from the same names. */
+  journalDayEnd?: string;
 }
 
 /**

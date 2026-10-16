@@ -22,7 +22,8 @@
       "totp": "Els codis 2FA són una funció Pro. Desa una clau d'autenticació a qualsevol inici de sessió i tindràs el codi rotatiu al costat de la contrasenya. La clau es desa i se sincronitza en tots els plans.",
       "replace": "Cerca i substitueix és una funció Pro. Millora per substituir una coincidència o totes les d'una nota d'un sol cop.",
       "passphrase": "Les frases de pas són una funció Pro. Genera una frase de paraules a l'atzar, fàcil d'escriure i de dir.",
-      "default": "Una sola millora desbloqueja tot això. Pagament únic."
+      "default": "Una sola millora desbloqueja tot això. Pagament únic.",
+      "alerts": "Els recordatoris són una funció Pro. Els teus dispositius sonen a l'hora que triïs, i res de l'element no en surt."
     },
     "features": {
       "devices": "Sincronitza dispositius il·limitats, a totes les plataformes",
@@ -73,7 +74,7 @@
     "openingBody": "Hauria d'aparèixer una finestra de pagament de Paddle. Si no apareix, potser el navegador ha blocat la finestra emergent; torna a carregar aquesta pàgina per provar-ho de nou."
   },
   "history": {
-    "subtitle": "Fins a 20 versions per element. Les més antigues s'eliminen automàticament.",
+    "subtitle": "Fins a 50 versions per element. Les més antigues s'eliminen automàticament.",
     "empty": "Encara no hi ha historial. Les versions es comencen a acumular a partir de la propera edició. Torna més tard.",
     "loadFailed": "No s'ha pogut carregar l'historial. Comprova la connexió i torna-ho a provar.",
     "selectPrompt": "Selecciona una versió per previsualitzar-la.",
@@ -82,7 +83,20 @@
     "restoring": "S'està restaurant…",
     "restoreSnapshotFailed": "No s'ha pogut desar primer la versió actual, així que no s'ha restaurat res. Comprova la connexió i torna-ho a provar.",
     "restoreFailed": "No s'ha pogut restaurar aquesta versió. Torna-ho a provar.",
-    "loginExtrasNotRecorded": "Aquesta versió no va desar camps personalitzats ni llocs web addicionals. Restaurar-la manté els actuals."
+    "loginExtrasNotRecorded": "Aquesta versió no va desar camps personalitzats ni llocs web addicionals. Restaurar-la manté els actuals.",
+    "compare": "Compara amb la nota actual",
+    "thisVersion": "Abans",
+    "currentNote": "Ara",
+    "onlyInVersion": "Eliminat des d'aleshores",
+    "onlyInCurrent": "Afegit des d'aleshores",
+    "changeCount_one": "{{count}} canvi",
+    "changeCount_other": "{{count}} canvis",
+    "noChanges": "Cap canvi en el text",
+    "titleChanged": "S'ha canviat el títol",
+    "tagsChanged": "S'han canviat les etiquetes",
+    "formatChanged": "S'ha canviat el format",
+    "tooLong": "Aquesta nota és massa llarga per comparar-la.",
+    "trackersNotRecorded": "Aquesta versió no va desar els valors dels seguiments. Restaurar-la manté els actuals."
   },
   "donation": {
     "eyebrow": "Has desbloquejat",

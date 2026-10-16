@@ -65,6 +65,7 @@
     "appearance_contentWidth": "欄寬, 寬版, 全寬, 邊界",
     "appearance_editor": "Markdown, 富文本, 格式化文字, 所見即所得, WYSIWYG, 編輯器模式",
     "appearance_copyFormat": "複製, 剪貼簿, 純文字, 貼上, 核取方塊",
+    "appearance_pasteFormat": "貼上, 剪貼簿, 純文字, 格式, 無格式, 符合樣式, 保留格式",
     "appearance_favicons": "網站圖示, favicon, 標誌, 圖示",
     "appearance_invisibles": "段落符號, 空白, 空格, 隱藏字元, 格式標記",
     "appearance_startView": "起始頁, 首頁, 預設檢視, 開啟時",
@@ -80,11 +81,19 @@
     "about_openSource": "原始碼, GitHub, 開放原始碼, 開源",
     "about_feedback": "意見回饋, 回饋, 聯絡, 錯誤回報, 問題回報, 建議",
     "about_dataStorage": "資料, 伺服器, 儲存位置, 隱私",
-    "about_singleKeys": "鍵盤, 快捷鍵, 快速鍵, 單鍵, 無障礙, 協助工具, j, k, /, >",
+    "about_singleKeys": "鍵盤, 快捷鍵, 快速鍵, 單鍵, 無障礙, 協助工具, 日曆, j, k, q, /, >",
     "about_changelog": "版本說明, 更新紀錄, 新功能, 更新",
     "about_hotkeys": "鍵盤快速鍵, 快捷鍵, 快速鍵, 按鍵",
     "about_rating": "評論, 評分, 星星, App Store",
     "appearance_openInTabs": "分頁, 分頁列, 瀏覽器, 開啟",
+    "section_calendar": "日曆, 行事曆, 活動, 行程, 提醒, 通知, 週, 月, 排程, 生日",
+    "calendar_alertTimed": "提醒, 通知, 預設, 分鐘, 提前, 活動",
+    "calendar_alertAllDay": "提醒, 通知, 預設, 全天, 早上",
+    "calendar_alertBirthday": "生日, 聯絡人, 提醒, 通知",
+    "calendar_reminderTitles": "隱私, 鎖定畫面, 標題, 提醒, 通知",
+    "calendar_where": "通知, 權限, 瀏覽器, 手機, 桌面, 電腦, 提醒",
+    "calendar_weekNumbers": "週數, 週次, ISO 週, 日曆",
+    "calendar_hours": "時段, 工作時間, 上班時間, 日檢視, 週檢視, 早上",
     "appearance_formatBar": "工具列, 格式列, 按鈕, 自訂, 排列, 項目符號清單, 刪除線, 齒輪"
   }
 }

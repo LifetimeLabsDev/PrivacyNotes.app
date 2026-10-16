@@ -92,7 +92,13 @@
       "goal": "Objetivo",
       "decision": "Decisión",
       "definition": "Definición",
-      "seealso": "Ver también"
+      "seealso": "Ver también",
+      "box": "Recuadro",
+      "panel": "Panel",
+      "update": "Actualización",
+      "time": "Tiempo",
+      "steps": "Pasos",
+      "place": "Lugar"
     }
   },
   "color": {
@@ -123,6 +129,7 @@
     "addColumnRight": "Añadir columna a la derecha",
     "toggleHeaderRow": "Activar o desactivar la fila de encabezado",
     "equalColumnWidths": "Igualar columnas",
+    "resizeHint": "Mantén pulsado {{shift}} para cambiar solo esta columna, {{alt}} para pasos más finos",
     "deleteRow": "Eliminar fila",
     "deleteColumn": "Eliminar columna",
     "deleteTable": "Eliminar tabla"
@@ -146,6 +153,8 @@
     "caseSensitiveTitle": "Coincidir mayúsculas y minúsculas",
     "closeReplace": "Cerrar buscar y reemplazar",
     "closeReplaceTitle": "Cerrar ({{keys}})",
+    "showReplace": "Buscar y reemplazar",
+    "hideReplace": "Ocultar reemplazo",
     "replacedCount_one": "{{count}} reemplazada",
     "replacedCount_other": "{{count}} reemplazadas"
   },
@@ -155,7 +164,7 @@
     "title": "Esquema",
     "ariaLabel": "Esquema de la nota",
     "hide": "Ocultar esquema",
-    "hideTitle": "Ocultar esquema (Esc)",
+    "hideTitle": "Ocultar esquema ({{keys}})",
     "copyHeadingLink": "Copiar enlace al encabezado",
     "copyNoteLink": "Copiar enlace entre notas",
     "copyHeadingShortcut": "Copiar acceso directo al encabezado",
@@ -168,6 +177,9 @@
   },
   "topRow": {
     "add": "Añadir una línea arriba"
+  },
+  "addLine": {
+    "add": "Añadir una línea"
   },
   "link": {
     "popoverLabel": "Añadir enlace",
@@ -205,7 +217,9 @@
     "characters_other": "{{formatted}} caracteres",
     "tasksChecked_one": "{{done}} de {{formatted}} marcado",
     "tasksChecked_other": "{{done}} de {{formatted}} marcados",
-    "tooLargeToSync": ", puede ser demasiado grande para sincronizar, divídela en una nota nueva",
+    "syncLimit": " · {{share}} del límite de sincronización de 1 MB",
+    "overSyncLimit": " · supera el límite de sincronización de 1 MB, se queda en este dispositivo",
+    "split": "Dividir nota",
     "veryLong": ", muy larga, puede ir lenta al editar y dar tirones",
     "gettingLong": ", se está alargando, puede ir lenta en dispositivos más lentos",
     "largeTableWarning": "Una tabla grande ({{rows}} filas) puede hacer que esta nota vaya lenta al editar, plantéate dividirla"
@@ -266,10 +280,13 @@
     "hintTap": "Toca un botón para ver sus opciones.",
     "onBar": "En la barra",
     "inMenu": "En el menú +",
+    "inAttachMenu": "En el menú de adjuntar",
+    "attachMenuEmpty": "Está vacío, así que el botón de adjuntar no se muestra.",
     "menuEmpty": "El menú está vacío, así que el botón + no se muestra.",
     "hidden": "Ocultos",
     "hiddenNote": "Siguen funcionando con su atajo y en Markdown.",
     "hiddenDrop": "Suelta un botón aquí para ocultarlo.",
+    "markdownViewNote": "La vista Markdown tiene su propio conjunto fijo de botones.",
     "hiddenEmpty": "No hay nada oculto.",
     "alwaysVisible": "Siempre visibles",
     "pinned": "Abre un panel, así que queda en la barra u oculto",
@@ -281,18 +298,23 @@
     "home": {
       "bar": "En la barra",
       "menu": "En el menú +",
+      "attachMenu": "En el menú de adjuntar",
       "hidden": "Oculto"
     },
     "opensPanel": "abre un panel",
     "showsRecording": "muestra la grabación",
     "refuse": {
       "menuNotAllowed": "{{item}} puede estar en la barra u oculto, no en el menú +.",
+      "attachNotAllowed": "En el menú de adjuntar solo caben los botones de imagen, archivo y grabación.",
       "lastOnBar": "Deja al menos un botón en la barra."
     },
     "items": {
       "link": "Enlace",
       "notelink": "Enlace entre notas",
-      "audio": "Grabación"
+      "audio": "Grabación",
+      "attachMenu": "Adjuntar",
+      "separator": "Separador",
+      "markdownView": "Ver markdown"
     },
     "positionTitle": "Posición de la barra",
     "positionNote": "Elige dónde va la barra de formato en el editor.",

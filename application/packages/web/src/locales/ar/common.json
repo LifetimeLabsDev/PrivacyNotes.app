@@ -42,7 +42,8 @@
   "storageBar": {
     "usage": "{{percent}}% مستخدم ({{used}} / {{max}})",
     "refresh": "تحديث التخزين",
-    "cleanupInfo": "تتوقف العناصر المحذوفة عن الاحتساب فورًا. أما الملفات المشفرة نفسها فتُزال من الخادم خلال أيام قليلة."
+    "cleanupInfo": "تتوقف العناصر المحذوفة عن الاحتساب فورًا. أما الملفات المشفرة نفسها فتُزال من الخادم خلال أيام قليلة.",
+    "open": "فتح إعدادات مساحة التخزين"
   },
   "updateToast": {
     "available": "يتوفر تحديث",
@@ -97,7 +98,7 @@
   },
   "quickSwitcher": {
     "label": "الانتقال إلى عنصر أو إعداد",
-    "jumpTo": "الانتقال إلى",
+    "jumpTo": "انتقال",
     "placeholder": "اكتب عنوانًا أو اسم إعداد، أو > للأوامر",
     "recent": "الأخيرة",
     "empty": "لا يوجد عنصر أو إعداد بهذا الاسم",
@@ -110,7 +111,28 @@
     "openInTab": "فتح في علامة تبويب",
     "openLink": "فتح",
     "edit": "تعديل",
-    "close": "إغلاق"
+    "close": "إغلاق",
+    "tags": "الوسوم",
+    "folders": "المجلدات",
+    "tagItems_zero": "{{count}} عنصر",
+    "tagItems_one": "{{count}} عنصر",
+    "tagItems_two": "{{count}} عنصران",
+    "tagItems_few": "{{count}} عناصر",
+    "tagItems_many": "{{count}} عنصرًا",
+    "tagItems_other": "{{count}} عنصر",
+    "emptyTags": "لا يوجد وسم بهذا الاسم",
+    "emptyFolders": "لا يوجد مجلد بهذا الاسم",
+    "onlyTags": "الوسوم",
+    "onlyFolders": "المجلدات",
+    "showOnlyTags": "الوسوم فقط",
+    "showOnlyFolders": "المجلدات فقط",
+    "showOnlyCommands": "الأوامر فقط",
+    "goToTag": "الانتقال إلى وسم",
+    "goToFolder": "الانتقال إلى مجلد",
+    "createTag": "إنشاء الوسم #{{name}}",
+    "createFolder": "إنشاء المجلد «{{name}}»",
+    "newTag": "وسم جديد",
+    "newFolder": "مجلد جديد"
   },
   "cardForm": {
     "cardholderName": "اسم حامل البطاقة",

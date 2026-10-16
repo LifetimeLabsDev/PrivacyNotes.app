@@ -5,6 +5,7 @@ import { parseMarkdown } from './markdown';
 import { parseObsidian } from './obsidian';
 import { parseNotesnook } from './notesnook';
 import { parseJoplin } from './joplin';
+import { parseBear } from './bear';
 import { parseUpNote } from './upnote';
 import { parseAppleNotes } from './appleNotes';
 import { parseAppleJournal } from './appleJournal';
@@ -16,6 +17,7 @@ import { passwordCsvImporter } from './passwordCsv';
 import { simplenoteImporter } from './simplenote';
 import { parseBrowserBookmarks } from './browserBookmarks';
 import { parseVcard } from './vcard';
+import { parseGoogleCalendar } from './googleCalendar';
 
 /**
  * Registry of available importers, keyed by id at every call site. Each
@@ -73,6 +75,18 @@ export const IMPORTERS: Importer[] = [
     enabled: true,
     sourceTag: '',
     parse: parseVcard,
+  },
+  {
+    id: 'google-calendar',
+    label: 'Google Calendar',
+    // No sourceTag: each calendar arrives as a folder already.
+    // Spec: ops/docs/plans/google-calendar-import.md (section 4)
+    description:
+      'The .zip from Settings > Import & export, or one .ics file. Events keep their times, repeats and reminders.',
+    accept: '.ics,.zip',
+    enabled: true,
+    sourceTag: '',
+    parse: parseGoogleCalendar,
   },
   {
     id: 'evernote',
@@ -147,6 +161,16 @@ export const IMPORTERS: Importer[] = [
     enabled: true,
     sourceTag: 'joplin',
     parse: parseJoplin,
+  },
+  {
+    id: 'bear',
+    label: 'Bear',
+    description:
+      'In Bear: File > Backup Notes..., then drop the .bear2bk file here. Keeps tags, nested tags, pins, the archive, the trash, highlights, note-links, and attachments. A zipped Markdown or Text Bundle export works too.',
+    accept: '.bear2bk,.zip',
+    enabled: true,
+    sourceTag: 'bear',
+    parse: parseBear,
   },
   {
     id: 'upnote',

@@ -10,6 +10,7 @@ import { currentImageOptions, isSupportedImage, processImage } from '../imagePro
 import type { LocalNote } from '../db';
 import { parseMarkdown } from '../import/markdown';
 import { applyImport } from '../import/apply';
+import { fileUnfiled } from '../import/destination';
 import type { FolderDef } from '../folders';
 import { SUPPORTED_EXT } from '../markdownFolder/adapter';
 import { createNote } from '../notesRepo';
@@ -44,6 +45,7 @@ export function useFilesUpload({
   setView,
   setImportToast,
   onImportFolders,
+  importDestination,
   onBlobsRestored,
   inheritFilters,
 }: {
@@ -57,8 +59,16 @@ export function useFilesUpload({
   setSelectedId: Dispatch<SetStateAction<string | null>>;
   setView: (next: View) => void;
   setImportToast: Dispatch<SetStateAction<string | null>>;
-  /** Merge a rebuilt folder tree into settings; returns old id -> kept id. */
-  onImportFolders?: (folders: FolderDef[]) => Map<string, string> | undefined;
+  /** Merge a rebuilt folder tree into settings under `rootParent` (null: at
+   *  the top); returns old id -> kept id. */
+  onImportFolders?: (folders: FolderDef[], rootParent: string | null) => Map<string, string> | undefined;
+  /** The Import window's default "Add to", decided once per import before the
+   *  first await, so a space switch while the files are read cannot move the
+   *  import: null for none, else a function that makes (or reuses) the folder,
+   *  in Work a folder named after the source, since unfiled reads as Personal.
+   *  It is called once the first file has parsed, so a batch that fails to
+   *  parse leaves no empty folder. */
+  importDestination?: () => (() => string | null) | null;
   /** Kick the pending-upload passes once blobs have landed locally. */
   onBlobsRestored?: () => void;
   /** The folder and tags the list the upload started from is filtered by. A
@@ -116,20 +126,24 @@ export function useFilesUpload({
    *  modal UI for a streamlined experience from the Files pillar.
    *
    *  This has to do everything the modal's confirm step does, or the same zip
-   *  imports differently depending on where it was dropped: merge the rebuilt
-   *  folder tree and remap folderIds onto the ids that survived, then store
-   *  the blobs and rewrite the body references. Folder TAGS are the one thing
-   *  it leaves out - that is a toggle the modal asks about, and there is no
-   *  question to answer here. */
+   *  imports differently depending on where it was dropped: take the row's
+   *  default destination, merge the rebuilt folder tree under it and remap
+   *  folderIds onto the ids that survived, file the loose notes into it, then
+   *  store the blobs and rewrite the body references. Folder TAGS are the one
+   *  thing it leaves out - that is a toggle the modal asks about, and there
+   *  is no question to answer here. */
   async function handleImportFromFiles(files: File[]) {
     setPendingImportableFiles(null);
     let totalImported = 0;
+    const makeTarget = importDestination?.() ?? null;
+    let target: string | null | undefined;
     for (const file of files) {
       try {
         const parsed = await parseMarkdown(file);
+        if (target === undefined) target = makeTarget?.() ?? null;
         let toApply = parsed;
         if (parsed.folders && parsed.folders.length > 0) {
-          const idMap = onImportFolders?.(parsed.folders);
+          const idMap = onImportFolders?.(parsed.folders, target);
           if (idMap && idMap.size > 0) {
             toApply = {
               ...parsed,
@@ -141,6 +155,7 @@ export function useFilesUpload({
             };
           }
         }
+        toApply = { ...toApply, notes: fileUnfiled(toApply.notes, target) };
         // Pictures and attachments are stored and swapped into the bodies
         // before the notes are written: a row written with a placeholder
         // can be sent by a sync pass that the later rewrite cannot reach

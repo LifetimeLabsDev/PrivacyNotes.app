@@ -168,8 +168,8 @@
     "startViewTitle": "Visa när appen öppnas",
     "viewTitle": "Visa objekt som",
     "viewDesc": "Auto följer din skärmbredd.",
-    "openInTabsTitle": "Öppna en flik vid varje klick",
-    "openInTabsDesc": "När det här är av öppnar högerklick > Öppna i flik ändå en flik. Flikar visas inte på telefoner.",
+    "openInTabsTitle": "Visa det öppna objektet i en flik",
+    "openInTabsDesc": "Fliken följer det du öppnar härnäst, som i en webbläsare. Fäst en flik för att behålla den. När det här är av skapar bara \"Öppna i flik\" en flik. Flikar visas inte på telefoner.",
     "viewList": "Lista",
     "viewGrid": "Rutnät",
     "viewAuto": "Auto",
@@ -181,6 +181,10 @@
     "copyFormatDesc": "Det andra appar får när du kopierar från en anteckning. Bara den här enheten.",
     "copyFormatMarkdown": "Markdown",
     "copyFormatPlain": "Ren text",
+    "pasteFormatTitle": "Inklistrad text",
+    "pasteFormatDesc": "Det som behålls när du klistrar in från en annan app. Bara den här enheten.",
+    "pasteFormatFormatted": "Formaterad",
+    "pasteFormatPlain": "Ren text",
     "faviconsTitle": "Webbplatsikoner",
     "faviconsDesc": "Webbplatslogotyper bredvid länkar och inloggningar i valvet.",
     "faviconsExample": "Exempel:",
@@ -241,7 +245,10 @@
       "yours": "Dina",
       "noLightCommunity": "Inga ljusa communityteman än.",
       "noDarkCommunity": "Inga mörka communityteman än.",
-      "none": "Inga teman här än."
+      "none": "Inga teman här än.",
+      "sortLabel": "Ordning",
+      "sortVotes": "Flest röster",
+      "sortNewest": "Nyast"
     },
     "custom": {
       "newTheme": "Nytt tema",
@@ -250,7 +257,6 @@
       "logoOriginal": "Original",
       "logoHelp": "Logotypen och ”Privacy” tar temats accentfärg eller behåller sina ursprungliga färger.",
       "pasteCode": "Klistra in temakod",
-      "community": "Bläddra bland teman",
       "menu": "Alternativ för {{name}}",
       "copyCode": "Kopiera kod",
       "makeCopy": "Duplicera",
@@ -281,7 +287,9 @@
       "suggestTitle": "Fyll i resten utifrån din accentfärg",
       "suggestLight": "Ljust",
       "suggestDark": "Mörkt",
-      "communityNote": "Appen visar de {{count}} nyaste communitytemana för varje läge.",
+      "websiteTitle": "Fler teman på vår webbplats",
+      "websiteDesc": "Alla teman och de senaste rösterna. Appen får nya teman med varje uppdatering.",
+      "vote": "Rösta på GitHub",
       "themeLimit": "Du har {{max}} teman. Ta bort ett för att spara ett till.",
       "credit": "Upphov",
       "creditPlaceholder": "GitHub-användarnamn (valfritt)",
@@ -516,5 +524,27 @@
     "yearFirst": "År först (ISO)",
     "hour24": "24 timmar",
     "hour12": "12 timmar"
+  },
+  "calendar": {
+    "alertTimed": "Standardavisering, objekt med tid",
+    "alertAllDay": "Standardavisering, heldagsobjekt",
+    "alertBirthday": "Födelsedagar",
+    "alertsHelp": "En ny händelse börjar med den här aviseringen. Därefter behåller varje objekt sina egna aviseringar.",
+    "reminderTitles": "Visa titlar i påminnelser",
+    "reminderTitlesHelp": "Av: en påminnelse visar ordet Påminnelse och tiden. Ett objekt bakom din PIN gör det alltid.",
+    "whereTitle": "Påminnelser på den här enheten",
+    "reminderHint": {
+      "mobile": "Påminnelser ringer på den här telefonen, även när PrivacyNotes är stängt.",
+      "desktop": "Påminnelser ringer medan PrivacyNotes körs på den här datorn.",
+      "browser": "Påminnelser ringer medan PrivacyNotes är öppet i den här webbläsaren."
+    },
+    "scheduledThrough": "Påminnelser schemalagda till och med {{date}}",
+    "permissionAsk": "Tillåt aviseringar",
+    "permissionOpenSettings": "Öppna inställningar",
+    "permissionDenied": "Aviseringar är blockerade för PrivacyNotes. Tillåt dem i inställningarna för den här webbläsaren eller enheten.",
+    "weekNumbers": "Visa veckonummer",
+    "hours": "Visade timmar",
+    "hoursHelp": "Dagen och veckan öppnas vid den första timmen.",
+    "to": "till"
   }
 }

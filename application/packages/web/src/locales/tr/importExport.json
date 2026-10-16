@@ -39,16 +39,29 @@
     "photosTooBig_one": "Fotoğraf için yeterli alan yok ({{size}}), bu yüzden dışarıda bırakılır. Diğer her şey aktarılır. {{shortfall}} boşaltın veya depolama ekleyin, sonra getirmek için yeniden içe aktarın.",
     "photosTooBig_other": "{{count}} fotoğraf için yeterli alan yok ({{size}}), bu yüzden dışarıda bırakılır. Diğer her şey aktarılır. {{shortfall}} boşaltın veya depolama ekleyin, sonra getirmek için yeniden içe aktarın."
   },
+  "importCalendar": {
+    "location": "Konum",
+    "videoCall": "Görüntülü görüşme",
+    "organizer": "Düzenleyen",
+    "guests": "Katılımcılar",
+    "file": "Dosya",
+    "link": "Bağlantı",
+    "timeZone": "Saat dilimi",
+    "ends": "Bitiş",
+    "repeats": "Tekrar"
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip dosyası (Keep klasörü) veya tek bir .json notu. Kontrol listeleri gerçek görev listesi olarak aktarılır.",
+    "googleCalendar": "Google Calendar'ın Settings > Import & export bölümünden alınan .zip dosyası veya tek bir .ics dosyası. Etkinlikler saatlerini, tekrarlarını ve hatırlatıcılarını korur.",
     "appleNotes": "Ücretsiz Exporter uygulamasıyla Markdown olarak dışa aktarın, sonra .zip dosyasını buraya bırakın.",
     "appleJournal": "Mac veya iPhone'daki Journal uygulamasından dışa aktarın, AppleJournalEntries klasörünü sıkıştırın ve .zip dosyasını bırakın. Kayıtlar fotoğrafları, videoları, ses notları ve konumlarıyla birlikte günlük kaydı olarak içe aktarılır.",
     "evernote": "Tek başına bir .enex veya birkaçı birlikte sıkıştırılmış hâlde. Biçimlendirmeyi, etiketleri, ekleri, not bağlantılarını ve not defterlerini korur. Evernote görevleri .enex dosyasına koymaz.",
     "samsungNotes": "Word (.docx) veya Metin (.txt) olarak dışa aktarın. Toplu aktarım için birden fazla dosyayı sıkıştırın.",
     "simplenote": "Simplenote'tan dışa aktarın (Ayarlar -> Araçlar -> Notları Dışa Aktar). .zip dosyasını bırakın.",
-    "standardNotes": "Standard Notes'tan alınmış şifresi çözülmüş .zip veya .txt yedeği (Dosya > Dışa Aktar > Şifresi Çözülmüş).",
+    "standardNotes": "Standard Notes'tan alınmış şifresi çözülmüş .zip veya .txt yedeği (Account settings > Backups > Data backups > Decrypted).",
     "obsidian": "Obsidian kasası .zip olarak. Etiketleri, [[note link]] bağlantılarını, klasör yapısını, metin içi #etiketleri ve gömülü görsel ile dosyaları korur.",
     "notesnook": "Notesnook dışa aktarımı .zip olarak. Biçimlendirmeyi, not defterlerini, etiketleri ve ekleri korumak için dışa aktarırken HTML seçin.",
+    "bear": "Bear'da File > Backup Notes... seçeneğini seçin ve .bear2bk dosyasını buraya bırakın. Etiketler ve iç içe etiketler, sabitlemeler, arşiv, çöp kutusu, renkleriyle vurgular, not bağlantıları ve ekler de gelir.",
     "joplin": "File > Export all > \"JEX - Joplin Export File\" ile alınan .jex dosyası. Not defterleri klasöre dönüşür; etiketler, yapılacaklar, not bağlantıları ve ekler de gelir.",
     "upnote": "UpNote'ta: Settings > Backup > Backup now, ardından yedek klasöründeki her şeyi zipleyin. Not defterlerini, etiketleri, sabitlemeleri, not bağlantılarını, biçimlendirmeyi ve ekleri korur. Telefon uygulamalarından tekil not dışa aktarmaları da çalışır - \"Export to HTML\" seçin.",
     "markdownFolder": "Tek tek ya da bir .zip içinde .md veya .txt dosyaları. Ziplenmiş bir klasör alt klasörlerini korur, görsellerini ve eklerini de birlikte getirir.",
@@ -96,6 +109,12 @@
     "blobsNotInBackup_other": "Notlarınız geri yüklendi, ancak yedekte listelenen {{items}} yedeğin içinde yok."
   },
   "preview": {
+    "oversize_one": "{{count}} not 1 MB'tan büyük. Bu cihazda kalır ve eşitlenmez.",
+    "oversize_other": "{{count}} not 1 MB'tan büyük. Bu cihazda kalırlar ve eşitlenmezler.",
+    "splitOversize_one": "Eşitlenebilmesi için bu notu başlıklarından daha küçük notlara bölün",
+    "splitOversize_other": "Eşitlenebilmeleri için bu {{count}} notu başlıklarından daha küçük notlara bölün",
+    "partTitle": "{{title}} ({{index}}/{{total}})",
+    "continuedIn": "Devamı: {{link}}",
     "sourceLabel": "Kaynak",
     "uniqueTags": "Benzersiz etiket",
     "empty": "Boş",
@@ -107,6 +126,7 @@
     "duplicateWarning": "içe aktarma bunları yeni not olarak ekler. Bunu iki kez çalıştırırsanız kopyalar oluşur. Henüz otomatik kopya ayıklama yok.",
     "duplicateSkipNote": "zaten kaydettiğiniz yer imleri atlanır, bu yüzden ikinci kez çalıştırmak hiçbir şeyi çoğaltmaz.",
     "contactSkipNote": "zaten kaydettiğiniz kişiler atlanır ve olduğu gibi kalır, bu yüzden iki kez çalıştırmak kimseyi çoğaltmaz.",
+    "eventSkipNote": "zaten içe aktardığınız etkinlikler atlanır ve olduğu gibi kalır, bu yüzden iki kez çalıştırmak onları çoğaltmaz.",
     "restoreMergeNote": "kendi yedeğinizdeki notlar kimliklerine göre eşleştirilir. Zaten sahip olduğunuz bir not yalnızca yedekteki kopya daha yeniyse güncellenir, çöp kutusundaki bir not da oradan geri alınır.",
     "quotaExceeded": "<strong>Depolama alanı içe aktarmaya yetmiyor.</strong> Tahmini {{needed}} gerekiyor, {{available}} boş. İçe aktarmadan önce yer açın veya yükseltin.",
     "quotaWarning": "Dikkat: bu içe aktarma, kalan {{available}} depolama alanınızın yaklaşık {{needed}} kadarını kullanacak.",
@@ -154,7 +174,11 @@
     "bookmarksExportDesc": "Her tarayıcının okuduğu standart yer imi dosyası. Klasörlerinizle birlikte Chrome, Firefox, Safari veya Edge içine aktarın.",
     "contactsOnlyHeading": "Yalnızca kişiler",
     "contactsExportTitle": "Kişiler dosyası (.vcf)",
-    "contactsExportDesc": "Her telefonun ve adres defterinin okuduğu vCard dosyası. iPhone, Android, Google Kişiler veya Mac'teki Kişiler'e, etiketler ve gruplar bozulmadan aktarın."
+    "contactsExportDesc": "Her telefonun ve adres defterinin okuduğu vCard dosyası. iPhone, Android, Google Kişiler veya Mac'teki Kişiler'e, etiketler ve gruplar bozulmadan aktarın.",
+    "calendarOnlyHeading": "Yalnızca takvim",
+    "calendarExportTitle": "Takvim dosyası (.ics)",
+    "calendarExportDesc": "Google Calendar, Apple Takvim veya Outlook için etkinlikler ile tarihli notlar ve görev listeleri.",
+    "calendarPrivate": "Özel"
   },
   "exportProgress": {
     "failedTitle": "Dışa aktarma başarısız oldu",
@@ -220,5 +244,11 @@
     "title_other": "PrivacyNotes ile {{count}} öğe paylaşıldı",
     "line": "Siz seçene kadar hiçbir şey kaydedilmez.",
     "saveAll": "Tümünü kaydet"
+  },
+  "destination": {
+    "label": "Şuraya ekle",
+    "none": "Klasör yok",
+    "newFolder": "Yeni klasör \"{{name}}\"",
+    "help": "Kaynaktaki klasörler seçtiğiniz klasörün içine gider; klasörü olmayan öğeler de doğrudan ona eklenir."
   }
 }

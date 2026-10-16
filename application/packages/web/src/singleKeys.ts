@@ -4,7 +4,8 @@ const KEY = 'privacynotes.singleKeys';
 const listeners = new Set<() => void>();
 
 /**
- * Whether the shortcuts of one plain key (J, K and ?) run. On by default.
+ * Whether the shortcuts of one plain key (J, K, Q, / and ?, and the
+ * Calendar's T, D, W, M and N) run. On by default.
  * A switch can turn them off, because a key with no modifier fires on a
  * stray press and a speech or switch user may send letters on purpose
  * (WCAG 2.2, 2.1.4 Character Key Shortcuts). Device-local, like the

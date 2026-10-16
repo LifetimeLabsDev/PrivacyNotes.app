@@ -4,7 +4,7 @@ import type { Editor as TipTapEditor } from '@tiptap/react';
 import { MagnifyingGlass, X } from './icons';
 import { HoverLabel } from './HoverLabel';
 import { isImeComposing } from './imeComposing';
-import { BAR_BTN, MatchNav } from './MatchNav';
+import { BAR_BTN, MatchNav, ReplaceToggle } from './MatchNav';
 import { keyText } from './shortcutMatch';
 import {
   setSearchQuery,
@@ -24,6 +24,13 @@ type Props = {
    *  #288): the input starts filled, its hits marked, and the caret stays
    *  where it was. */
   initialQuery?: string;
+  /** The term to start on when the reader swapped here from the replace bar. */
+  startQuery?: string;
+  /** Grows the bar into the replace bar with the current term. Absent on a
+   *  read-only note, which refuses replace. */
+  onSwap?: (query: string) => void;
+  /** Free account: the swap button carries the Pro rocket. */
+  swapPro?: boolean;
   onClose: () => void;
 };
 
@@ -41,10 +48,10 @@ type Props = {
  * the control surface. ReplaceBar.tsx is its Pro twin on the same plugin,
  * and MatchNav.tsx holds the count and arrows both bars draw.
  */
-export function FindBar({ editor, focusTick, initialQuery, onClose }: Props) {
+export function FindBar({ editor, focusTick, initialQuery, startQuery, onSwap, swapPro = false, onClose }: Props) {
   const { t } = useTranslation('editor');
   const inputRef = useRef<HTMLInputElement>(null);
-  const [query, setQuery] = useState(initialQuery ?? '');
+  const [query, setQuery] = useState(initialQuery || startQuery || '');
   const [info, setInfo] = useState<SearchInfo>({ active: -1, total: 0, activeIsNode: false });
 
   const refresh = useCallback(() => {
@@ -54,7 +61,7 @@ export function FindBar({ editor, focusTick, initialQuery, onClose }: Props) {
   // Prefill from the current selection (single line, sane length), the way a
   // browser find does. Runs once on open. A seeded open already has its word.
   useEffect(() => {
-    if (initialQuery) return;
+    if (initialQuery || startQuery) return;
     const { from, to } = editor.state.selection;
     if (to > from) {
       const sel = editor.state.doc.textBetween(from, to, ' ').trim();
@@ -145,6 +152,7 @@ export function FindBar({ editor, focusTick, initialQuery, onClose }: Props) {
         className="w-36 sm:w-44 bg-transparent text-sm text-pn placeholder:text-pn-muted outline-none px-1"
       />
       <MatchNav count={count} noHits={noHits} canStep={info.total > 0} onStep={go} />
+      {onSwap && <ReplaceToggle open={false} pro={swapPro} onClick={() => onSwap(query)} />}
       <div className="w-px h-5 bg-divider mx-0.5 shrink-0" aria-hidden="true" />
       <HoverLabel label={t('find.closeTitle', { keys: keyText('find') })} position="below-end">
         <button

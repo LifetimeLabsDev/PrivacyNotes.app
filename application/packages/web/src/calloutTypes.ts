@@ -28,6 +28,12 @@ import {
   Gavel,
   BookOpen,
   Link,
+  Browser,
+  Rectangle,
+  ArrowsClockwise,
+  Clock,
+  ListNumbers,
+  MapPin,
 } from './icons';
 import { CALLOUT_COLORS, type CalloutColor, type CalloutType } from './calloutKeywords';
 
@@ -40,8 +46,11 @@ export interface CalloutTypeDef extends CalloutColor {
 
 const ICONS: Record<CalloutType, Icon> = {
   fold: CaretDown,
+  box: Browser,
+  panel: Rectangle,
   info: Info,
   note: PencilSimple,
+  update: ArrowsClockwise,
   tip: Lightbulb,
   idea: Sparkle,
   important: Star,
@@ -54,6 +63,9 @@ const ICONS: Record<CalloutType, Icon> = {
   todo: CheckSquare,
   goal: Target,
   decision: Gavel,
+  time: Clock,
+  steps: ListNumbers,
+  place: MapPin,
   quote: Quotes,
   example: ListChecks,
   abstract: ClipboardText,

@@ -38,7 +38,8 @@
   "storageBar": {
     "usage": "{{percent}}% utilizado ({{used}} / {{max}})",
     "refresh": "Atualizar armazenamento",
-    "cleanupInfo": "Os itens eliminados deixam de contar de imediato. Os próprios ficheiros encriptados saem do servidor em poucos dias."
+    "cleanupInfo": "Os itens eliminados deixam de contar de imediato. Os próprios ficheiros encriptados saem do servidor em poucos dias.",
+    "open": "Abrir as definições de armazenamento"
   },
   "updateToast": {
     "available": "Atualização disponível",
@@ -93,7 +94,7 @@
   },
   "quickSwitcher": {
     "label": "Ir para um item ou uma definição",
-    "jumpTo": "Ir para",
+    "jumpTo": "Ir",
     "placeholder": "Escreve um título ou uma definição, ou > para comandos",
     "recent": "Recentes",
     "empty": "Nenhum item ou definição com esse nome",
@@ -106,7 +107,24 @@
     "openInTab": "abrir num separador",
     "openLink": "Abrir",
     "edit": "editar",
-    "close": "fechar"
+    "close": "fechar",
+    "tags": "Etiquetas",
+    "folders": "Pastas",
+    "tagItems_one": "{{count}} item",
+    "tagItems_other": "{{count}} itens",
+    "emptyTags": "Nenhuma etiqueta com esse nome",
+    "emptyFolders": "Nenhuma pasta com esse nome",
+    "onlyTags": "etiquetas",
+    "onlyFolders": "pastas",
+    "showOnlyTags": "Só etiquetas",
+    "showOnlyFolders": "Só pastas",
+    "showOnlyCommands": "Só comandos",
+    "goToTag": "Ir para uma etiqueta",
+    "goToFolder": "Ir para uma pasta",
+    "createTag": "Criar a etiqueta #{{name}}",
+    "createFolder": "Criar a pasta “{{name}}”",
+    "newTag": "Nova etiqueta",
+    "newFolder": "Nova pasta"
   },
   "cardForm": {
     "cardholderName": "Nome do Titular",

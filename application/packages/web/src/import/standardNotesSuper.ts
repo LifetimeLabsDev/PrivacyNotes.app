@@ -1,4 +1,5 @@
 import { noteLinkTarget } from '../noteLinks';
+import { linkifyLiteralText } from './linkify';
 import type { ImportBlob } from './types';
 
 /**
@@ -71,6 +72,8 @@ export interface SuperResult {
   hashtags: string[];
   /** Uploaded files the note embedded, which the backup cannot carry. */
   missingFiles: number;
+  /** Bare URLs and emails in the typed text that became autolinks. */
+  links: number;
 }
 
 // Lexical's text format bitmask.
@@ -96,6 +99,23 @@ function parseState(text: string): LexNode | null {
   }
 }
 
+/** Text the user typed, escaped so markdown shows it as the same characters. */
+export function escapeMarkdownText(s: string): string {
+  return s
+    .replace(/[\\`*[\]<~$|]/g, '\\$&')
+    .replace(/==/g, '=\\=')
+    .replace(/&(?=#?\w+;)/g, '&amp;')
+    // An underscore inside a word never starts emphasis; one at a word edge can.
+    .replace(/(^|[^\p{L}\p{N}])_|_(?=$|[^\p{L}\p{N}])/gu, (hit) => hit.replace('_', '\\_'));
+}
+
+/** Keep a line that merely LOOKS like markdown block syntax from becoming it. */
+export function guardMarkdownLineStart(s: string): string {
+  if (/^\d+[.)](\s|$)/.test(s)) return s.replace(/[.)]/, '\\$&');
+  if (/^(#{1,6}(\s|$)|>|[-+](\s|$)|-{2,}\s*$)/.test(s)) return `\\${s}`;
+  return s;
+}
+
 /** Returns null when the text is not a Super state; the caller keeps it verbatim. */
 export function superToMarkdown(text: string, ctx: SuperContext): SuperResult | null {
   const root = parseState(text);
@@ -103,6 +123,24 @@ export function superToMarkdown(text: string, ctx: SuperContext): SuperResult | 
 
   const hashtags: string[] = [];
   let missingFiles = 0;
+  let links = 0;
+  // Inside a link's label a bare URL is only text: a link cannot hold another.
+  let linkDepth = 0;
+
+  /** Typed text as markdown; outside a link, a bare URL or email becomes an autolink. */
+  function literal(s: string): string {
+    if (linkDepth > 0) return escapeMarkdownText(s);
+    const res = linkifyLiteralText(s, escapeMarkdownText, autolink);
+    links += res.links;
+    return res.markdown;
+  }
+
+  // Inside a table, a list or quote in a cell included: the row splits on `|`
+  // before links are read, even inside an autolink, so there it is escaped.
+  let cellDepth = 0;
+  function autolink(url: string): string {
+    return `<${cellDepth > 0 ? url.replace(/\|/g, '\\|') : url}>`;
+  }
 
   function kids(node: LexNode): LexNode[] {
     return Array.isArray(node.children) ? node.children : [];
@@ -131,15 +169,6 @@ export function superToMarkdown(text: string, ctx: SuperContext): SuperResult | 
 
   /* ---------------- inline ---------------- */
 
-  function escapeMd(s: string): string {
-    return s
-      .replace(/[\\`*[\]<~$|]/g, '\\$&')
-      .replace(/==/g, '=\\=')
-      .replace(/&(?=#?\w+;)/g, '&amp;')
-      // An underscore inside a word never starts emphasis; one at a word edge can.
-      .replace(/(^|[^\p{L}\p{N}])_|_(?=$|[^\p{L}\p{N}])/gu, (hit) => hit.replace('_', '\\_'));
-  }
-
   function escapeHtml(s: string): string {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
@@ -161,14 +190,17 @@ export function superToMarkdown(text: string, ctx: SuperContext): SuperResult | 
   }
 
   function linkTarget(url: string): string {
-    return url.trim().replace(/ /g, '%20').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    return url.trim().replace(/ /g, '%20').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\|/g, '%7C')
+      // Markdown refuses a control character or an angle bracket in a link
+      // destination, and the rest of the line would then read as markdown.
+      .replace(/[\x00-\x1f\x7f<>]/g, (c) => encodeURIComponent(c));
   }
 
   function bubble(uuid: string | undefined): string {
     const item = uuid ? ctx.items.get(uuid) : undefined;
     if (!item) return '';
     if (item.kind === 'tag') return `#${item.title.replace(/\s+/g, '-')}`;
-    if (item.kind === 'file') return escapeMd(item.name);
+    if (item.kind === 'file') return escapeMarkdownText(item.name);
     const target = noteLinkTarget(item.title);
     return target ? `[[${target}]]` : '';
   }
@@ -186,7 +218,7 @@ export function superToMarkdown(text: string, ctx: SuperContext): SuperResult | 
     // Emphasis cannot open or close on whitespace, so it stays outside the markers.
     const [, lead, core, trail] = /^(\s*)([\s\S]*?)(\s*)$/.exec(raw)!;
     if (!core) return raw;
-    let out = escapeMd(core!);
+    let out = literal(core!);
     if (format & SUBSCRIPT) out = `<sub>${out}</sub>`;
     if (format & SUPERSCRIPT) out = `<sup>${out}</sup>`;
     if (format & UNDERLINE) out = `<u>${out}</u>`;
@@ -246,11 +278,13 @@ export function superToMarkdown(text: string, ctx: SuperContext): SuperResult | 
         case 'link':
         case 'autolink': {
           const url = n.url ?? '';
+          linkDepth++;
           const label = inline(kids(n), mode);
+          linkDepth--;
           if (!url) out += label;
           else if (mode === 'html') out += `<a href="${escapeHtml(url)}">${label}</a>`;
-          else if (label === escapeMd(url) && !/[\s<>]/.test(url)) out += `<${url}>`;
-          else out += `[${label || escapeMd(url)}](${linkTarget(url)})`;
+          else if (label === escapeMarkdownText(url) && !/[\s<>\x00-\x1f\x7f]/.test(url)) out += autolink(url);
+          else out += `[${label || escapeMarkdownText(url)}](${linkTarget(url)})`;
           break;
         }
         case 'snbubble':
@@ -272,13 +306,6 @@ export function superToMarkdown(text: string, ctx: SuperContext): SuperResult | 
 
   /* ---------------- blocks ---------------- */
 
-  /** Keep a paragraph that merely LOOKS like markdown syntax from becoming it. */
-  function guardLineStart(s: string): string {
-    if (/^\d+[.)](\s|$)/.test(s)) return s.replace(/[.)]/, '\\$&');
-    if (/^(#{1,6}(\s|$)|>|[-+](\s|$))/.test(s)) return `\\${s}`;
-    return s;
-  }
-
   function aligned(node: LexNode): string | null {
     return typeof node.format === 'string' && ALIGNED.has(node.format) ? node.format : null;
   }
@@ -290,7 +317,7 @@ export function superToMarkdown(text: string, ctx: SuperContext): SuperResult | 
       case 'inline-file': {
         const name = (n.fileName ?? '').replace(/[[\]]/g, '');
         const key = n.src ? addBlob(n.src, n.mimeType, n.fileName) : null;
-        if (!key) return escapeMd(name);
+        if (!key) return escapeMarkdownText(name);
         return (n.mimeType ?? '').startsWith('image/') ? `![${name}](${key})` : `[${name || 'attachment'}](${key})`;
       }
       case 'snfile': {
@@ -329,6 +356,7 @@ export function superToMarkdown(text: string, ctx: SuperContext): SuperResult | 
   }
 
   function table(node: LexNode): string {
+    cellDepth++;
     const rows = kids(node).map((row) =>
       kids(row).map((cell) =>
         kids(cell)
@@ -339,6 +367,7 @@ export function superToMarkdown(text: string, ctx: SuperContext): SuperResult | 
           .trim(),
       ),
     );
+    cellDepth--;
     if (rows.length === 0) return '';
     const width = Math.max(1, ...rows.map((r) => r.length));
     const line = (cells: string[]) =>
@@ -364,7 +393,7 @@ export function superToMarkdown(text: string, ctx: SuperContext): SuperResult | 
           return html ? `<p style="text-align: ${align}">${html}</p>` : '&nbsp;';
         }
         const text = inline(kids(node), 'md');
-        return text.trim() ? guardLineStart(text) : '&nbsp;';
+        return text.trim() ? guardMarkdownLineStart(text) : '&nbsp;';
       }
       case 'heading': {
         const level = Math.min(6, Math.max(1, Number((node.tag ?? 'h1').slice(1)) || 1));
@@ -403,7 +432,7 @@ export function superToMarkdown(text: string, ctx: SuperContext): SuperResult | 
       default: {
         // A node type this converter does not know: keep whatever text it holds.
         const children = kids(node);
-        if (children.length === 0) return node.text ? escapeMd(node.text) : '';
+        if (children.length === 0) return node.text ? literal(node.text) : '';
         const blockish = children.some((c) => Array.isArray(c.children) && c.type !== 'link' && c.type !== 'autolink');
         return blockish ? blocks(children) : inline(children, 'md');
       }
@@ -417,5 +446,5 @@ export function superToMarkdown(text: string, ctx: SuperContext): SuperResult | 
     return out.join('\n\n');
   }
 
-  return { markdown: blocks(kids(root)), hashtags, missingFiles };
+  return { markdown: blocks(kids(root)), hashtags, missingFiles, links };
 }

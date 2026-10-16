@@ -18,7 +18,7 @@ import {
   type FolderDef,
 } from '../folders';
 import { dropFolderLooks } from '../itemStyles';
-import { carrySpaces, setRootSpace, type Space } from '../spaces';
+import { carrySpaces, folderSpaces, setRootSpace, type Space } from '../spaces';
 import { liveItemIds } from '../itemDrag';
 import { bulkMoveToFolder } from '../notesRepo';
 import type { UserSettings } from '../userSettings';
@@ -77,11 +77,12 @@ export function useFolderActions({
   // Spec: ops/docs/plans/spaces.md (section 3)
   const spaceRef = useRef(activeSpace);
   spaceRef.current = activeSpace;
+  // `space` overrides the active space for a caller that decided it earlier.
   const mutateFolders = useCallback(
-    (updater: (prev: UserSettings) => UserSettings) => mutateSettings((prev) => {
+    (updater: (prev: UserSettings) => UserSettings, space?: Space) => mutateSettings((prev) => {
       const next = updater(prev);
       if (next === prev || next.folders === prev.folders) return next;
-      const itemStyles = carrySpaces(prev.folders, next.folders, next.itemStyles, spaceRef.current, prev.itemStyles);
+      const itemStyles = carrySpaces(prev.folders, next.folders, next.itemStyles, space ?? spaceRef.current, prev.itemStyles);
       return itemStyles === next.itemStyles ? next : { ...next, itemStyles };
     }),
     [mutateSettings],
@@ -109,8 +110,9 @@ export function useFolderActions({
   // imported-id -> final-id so the caller can remap each note's folderId.
   // Free accounts can browse the imported folders (folder actions stay
   // Pro-gated); an upgrade unlocks editing them with no re-import.
+  // `rootParent` is the folder the import window's "Add to" row names.
   const mergeImportedFolders = useCallback(
-    (incoming: FolderDef[], originalIds?: ReadonlyMap<string, string>): Map<string, string> => {
+    (incoming: FolderDef[], originalIds?: ReadonlyMap<string, string>, rootParent: string | null = null): Map<string, string> => {
       if (incoming.length === 0) return new Map();
       // Reconciled against the tree the updater is handed, never against a
       // copy from render: that copy can predate the first pull, and a tree
@@ -119,11 +121,33 @@ export function useFolderActions({
       // filled by the time the caller reads it.
       let idMap = new Map<string, string>();
       mutateFolders((prev) => {
-        const merged = reconcileImportedFolders(prev.folders, incoming, originalIds);
+        const merged = reconcileImportedFolders(prev.folders, incoming, originalIds, rootParent);
         idMap = merged.idMap;
         return { ...prev, folders: validateFolders(merged.folders) };
       });
       return idMap;
+    },
+    [mutateFolders]
+  );
+
+  // The "Add to" row's new folder, named after the source, at the top of the
+  // open space (or of `space`, when the caller decided it before an await).
+  // A second import from the same source reuses it.
+  const createImportFolder = useCallback(
+    (name: string, space?: Space): string | null => {
+      const into = space ?? spaceRef.current;
+      let id: string | null = null;
+      mutateFolders((prev) => {
+        const res = createFolder(prev.folders, name, null);
+        if (!res) return prev;
+        const spaces = folderSpaces(prev.folders, prev.itemStyles);
+        const same = prev.folders.find(
+          (f) => !f.parentId && f.name === res.created.name && (spaces.get(f.id) ?? 'personal') === into,
+        );
+        id = same?.id ?? res.created.id;
+        return same ? prev : { ...prev, folders: res.folders };
+      }, into);
+      return id;
     },
     [mutateFolders]
   );
@@ -251,33 +275,40 @@ export function useFolderActions({
     scheduleFolderSync();
   }
 
-  /** Delete a folder: subfolders and notes move up to its parent. */
-  async function handleDeleteFolder(id: string) {
+  /** Delete a folder: its notes move up to its parent, and its subfolders
+   *  move up too, or with `withSubfolders` are deleted with it. */
+  async function handleDeleteFolder(id: string, withSubfolders = false) {
     if (!canDeleteFolder(id, foldersUnlocked)) {
       openFoldersUpsell();
       return;
     }
-    const memberIds = activeNotes.filter((n) => n.folderId === id).map((n) => n.id);
-    // One call, against the tree the updater is handed, so the tombstone and
-    // the parent the notes move to describe the same delete. mutateSettings
-    // runs the updater before it returns, so reparentTo is set by the line
-    // after it.
+    // One call, against the tree the updater is handed, so the tombstones,
+    // the folders whose notes move and the parent they move to describe the
+    // same delete. mutateSettings runs the updater before it returns, so
+    // both are set by the line after it.
     let reparentTo: string | null = null;
+    let removed = new Set<string>([id]);
     mutateFolders((prev) => {
-      const next = deleteFolder({ folders: prev.folders, deleted: prev.foldersDeleted }, id);
+      const next = deleteFolder({ folders: prev.folders, deleted: prev.foldersDeleted }, id, withSubfolders);
       reparentTo = next.reparentTo;
+      removed = next.removed;
       return {
         ...prev,
         folders: next.folders,
         foldersDeleted: next.deleted,
-        itemStyles: dropFolderLooks(prev.itemStyles, [id]),
+        itemStyles: dropFolderLooks(prev.itemStyles, next.removed),
       };
     });
+    // Every note of every removed folder, in one move, so none is left
+    // pointing at a folder that no longer exists. The trash too: a restored
+    // note on a dead id is in no folder view, not in Unfiled, and reads as
+    // Personal whatever space the folder was in.
+    const memberIds = notes.filter((n) => n.folderId && removed.has(n.folderId)).map((n) => n.id);
     if (memberIds.length > 0) {
       await bulkMoveToFolder(memberIds, reparentTo);
       await refresh();
     }
-    if (selectedFolder === id) setSelectedFolder(reparentTo);
+    if (selectedFolder && removed.has(selectedFolder)) setSelectedFolder(reparentTo);
     void runSync();
   }
 
@@ -388,6 +419,7 @@ export function useFolderActions({
 
   return {
     mergeImportedFolders,
+    createImportFolder,
     folderPicker,
     setFolderPicker,
     folderDeleteConfirm,

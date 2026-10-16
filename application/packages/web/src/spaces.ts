@@ -18,6 +18,10 @@ import { folderLookKey, renameTagLook, setItemLook, type ItemStyles } from './it
 
 export type Space = 'personal' | 'work';
 
+/** What the switch shows on this device: one space, or every item. All is a
+ *  view only: an item made while it is open lands in Personal. */
+export type SpaceView = Space | 'all';
+
 const WORK = 'work';
 
 /** The space a root folder's own register names. */
@@ -132,7 +136,7 @@ export function tagAfterScopedChange<T extends { itemStyles: ItemStyles; favorit
   return { ...prev, itemStyles, favoriteTags };
 }
 
-// The active space: per device, never synced. The demo shares its origin with
+// The open view: per device, never synced. The demo shares its origin with
 // a real install, so it keeps its own copy in sessionStorage. NotesView holds
 // it in React state, so a switch lands in the same render as the selection
 // that caused it.
@@ -142,14 +146,15 @@ function store(): Storage {
   return isDemoMode() ? sessionStorage : localStorage;
 }
 
-export function readActiveSpace(): Space {
+export function readActiveSpace(): SpaceView {
   try {
-    return store().getItem(ACTIVE_KEY) === WORK ? 'work' : 'personal';
+    const v = store().getItem(ACTIVE_KEY);
+    return v === WORK || v === 'all' ? v : 'personal';
   } catch {
     return 'personal';
   }
 }
 
-export function saveActiveSpace(space: Space): void {
+export function saveActiveSpace(space: SpaceView): void {
   try { store().setItem(ACTIVE_KEY, space); } catch { /* storage unavailable */ }
 }

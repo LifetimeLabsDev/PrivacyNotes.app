@@ -46,9 +46,14 @@ type Props = {
   onStateChange?: (state: AudioRecordingState, duration: number) => void;
   /** Parent-owned ref that receives the stop function so the banner can trigger stop. */
   stopRef?: MutableRefObject<(() => void) | null>;
+  /** Receives the start function while idle, for a menu row that starts a recording. */
+  startRef?: MutableRefObject<(() => void) | null>;
+  /** Draw nothing while idle: the recorder sits in the attach menu, and its
+   *  stop button shows on the bar only while it records. */
+  idleHidden?: boolean;
 };
 
-export function AudioRecorder({ editorView, tabIndex, onStateChange, stopRef, tipSide = 'below' }: Props) {
+export function AudioRecorder({ editorView, tabIndex, onStateChange, stopRef, startRef, idleHidden = false, tipSide = 'below' }: Props) {
   const { t } = useTranslation('editor');
   const [state, setState] = useState<AudioRecordingState>('idle');
   const [duration, setDuration] = useState(0);
@@ -159,6 +164,11 @@ export function AudioRecorder({ editorView, tabIndex, onStateChange, stopRef, ti
   useEffect(() => {
     if (stopRef) stopRef.current = state === 'recording' ? stopRecording : null;
   }, [stopRef, state, stopRecording]);
+  useEffect(() => {
+    if (!startRef) return;
+    startRef.current = state === 'idle' ? () => { void startRecording(); } : null;
+    return () => { startRef.current = null; };
+  }, [startRef, state, startRecording]);
 
   // --- Toolbar button rendering ---
 
@@ -199,6 +209,8 @@ export function AudioRecorder({ editorView, tabIndex, onStateChange, stopRef, ti
       </HoverLabel>
     );
   }
+
+  if (idleHidden) return null;
 
   return (
     <HoverLabel label={t('audio.recordAudio')} position={tipSide === 'above' ? 'above-end' : 'below-end'}>

@@ -1,17 +1,18 @@
 import type { FormatBarBoardProps } from '../FormatBarBoard';
-import { lazy, Suspense, type ComponentType, type Dispatch, type MutableRefObject, type SetStateAction } from 'react';
+import type { Dispatch, MutableRefObject, SetStateAction } from 'react';
+import { lazyModal } from '../chunkLoad';
 import type { TFunction } from 'i18next';
 import type { AuthState } from '../auth';
 import type { AttachmentStore } from '../attachmentStore';
 import type { LocalNote } from '../db';
 import { journalOn } from '../notesViewUtils';
 import type { FolderDef } from '../folders';
+import type { ImportTarget } from '../import/destination';
 import type { ImageStore } from '../imageStore';
-import { AppearanceSheet, type AppearancePane } from '../AppearanceSheet';
-import { ImagesSheet } from '../ImagesSheet';
-import { DateSheet, LanguageSheet } from '../LanguageSheet';
+import type { AppearancePane } from '../AppearanceSheet';
 import { exemptOpts } from '../i18nExempt';
-import { Calendar, ChartBar, CreditCard, Database, Image as ImageIcon, Info, Question, Repeat, ListBullets, Palette, PencilLine, Shield, Toolbox, Translate, User, type Icon } from '../icons';
+import { Calendar, ChartBar, CreditCard, Database, Image as ImageIcon, Info, Question, Repeat, ListBullets, Palette, PencilLine, Shield, Toolbox, Translate, User, PILLAR_GLYPHS, type Icon } from '../icons';
+import { proUnlocked } from '../demo';
 import { activeLocale } from '../languages';
 import { helpPath } from '../localeRoutes';
 import { updateNote } from '../notesRepo';
@@ -27,31 +28,6 @@ import { setDeviceLabel } from '../deviceLabels';
 import type { ThemeBuilderTarget } from './useThemeBuilder';
 import type { UpgradeTrigger } from '../UpgradeModal';
 
-/**
- * Code-split a modal component while keeping its call sites identical.
- * The returned component lazy-loads the chunk on first render; the null
- * Suspense fallback means the modal simply appears a frame later (instant
- * on warm cache, ~one round-trip cold). This keeps the heavy, rarely-open
- * modals (stats, settings, security, about, feedback, import, history) out of the
- * boot-path bundle.
- */
-function lazyModal<P extends object>(
-  load: () => Promise<ComponentType<P>>,
-): ComponentType<P> {
-  // The casts paper over React.lazy's strict generic variance; the outer
-  // signature keeps every call site fully typed against the real props.
-  const Inner = lazy(async () => ({
-    default: (await load()) as ComponentType<unknown>,
-  })) as unknown as ComponentType<P>;
-  return function LazyModal(props: P) {
-    return (
-      <Suspense fallback={null}>
-        <Inner {...props} />
-      </Suspense>
-    );
-  };
-}
-
 export const StatsModal = lazyModal(() => import('../StatsModal').then((m) => m.StatsModal));
 export const AboutModal = lazyModal(() => import('../AboutModal').then((m) => m.AboutModal));
 export const FeedbackModal = lazyModal(() => import('../FeedbackModal').then((m) => m.FeedbackModal));
@@ -61,6 +37,13 @@ export const NoteHistoryModal = lazyModal(() => import('../NoteHistoryModal').th
 export const ImportModal = lazyModal(() => import('../import/ImportModal').then((m) => m.ImportModal));
 export const MediaViewer = lazyModal(() => import('../MediaViewer').then((m) => m.MediaViewer));
 export const PicturePicker = lazyModal(() => import('../PicturePicker').then((m) => m.PicturePicker));
+// The settings window itself, so a failed load is retried as a whole.
+export const SettingsShell = lazyModal(() => import('../SettingsWindow').then((m) => m.SettingsWindow));
+export const AppearanceSheet = lazyModal(() => import('../AppearanceSheet').then((m) => m.AppearanceSheet));
+const ImagesSheet = lazyModal(() => import('../ImagesSheet').then((m) => m.ImagesSheet));
+const LanguageSheet = lazyModal(() => import('../LanguageSheet').then((m) => m.LanguageSheet));
+const DateSheet = lazyModal(() => import('../LanguageSheet').then((m) => m.DateSheet));
+const CalendarSettings = lazyModal(() => import('../CalendarSettings').then((m) => m.CalendarSettings));
 
 type Authed = Extract<AuthState, { status: 'authenticated' }>;
 
@@ -79,6 +62,7 @@ export const SETTINGS_SECTION_ICONS: Record<SectionId, Icon> = {
   lists: ListBullets,
   language: Translate,
   date: Calendar,
+  calendar: PILLAR_GLYPHS.calendar,
   about: Info,
   help: Question,
 };
@@ -112,6 +96,8 @@ export function buildSettingsCategories({
   setImportToast,
   handleSignOutClick,
   mergeImportedFolders,
+  importTarget,
+  createImportFolder,
   mergeRestoredSettings,
   applyImportedTagColors,
   exportAllMarkdownZip,
@@ -123,6 +109,7 @@ export function buildSettingsCategories({
   exportVault,
   exportBookmarks,
   exportContacts,
+  exportCalendar,
   importEncryptedBackup,
   imageStoreRef,
   attachmentStoreRef,
@@ -161,7 +148,10 @@ export function buildSettingsCategories({
   mergeImportedFolders: (
     incoming: FolderDef[],
     originalIds?: ReadonlyMap<string, string>,
+    rootParent?: string | null,
   ) => Map<string, string>;
+  importTarget: ImportTarget | undefined;
+  createImportFolder: (name: string) => string | null;
   applyImportedTagColors: (colors: Map<string, string>) => void;
   mergeRestoredSettings: (
     settings: { itemStyles?: unknown; customThemes?: unknown },
@@ -176,6 +166,7 @@ export function buildSettingsCategories({
   exportVault: (ns: LocalNote[]) => Promise<void>;
   exportBookmarks: (ns: LocalNote[]) => Promise<void>;
   exportContacts: (ns: LocalNote[]) => Promise<void>;
+  exportCalendar: (ns: LocalNote[]) => Promise<void>;
   importEncryptedBackup: (file: File) => Promise<{ imported: number; updated: number; unchanged: number }>;
   imageStoreRef: MutableRefObject<ImageStore | null>;
   attachmentStoreRef: MutableRefObject<AttachmentStore | null>;
@@ -265,6 +256,8 @@ export function buildSettingsCategories({
                   initialTab={initialTab === 'export' || initialTab === 'restore' || initialTab === 'vault' ? initialTab : 'import'}
                   notes={notes}
                   onImportFolders={mergeImportedFolders}
+                  importTarget={importTarget}
+                  onCreateImportFolder={createImportFolder}
                   onImportSettings={mergeRestoredSettings}
                   onImportTagColors={applyImportedTagColors}
                   onExportAllMdZip={(ns) => void exportAllMarkdownZip(ns)}
@@ -276,6 +269,7 @@ export function buildSettingsCategories({
                   onExportVault={exportVault}
                   onExportBookmarks={exportBookmarks}
                   onExportContacts={exportContacts}
+                  onExportCalendar={exportCalendar}
                   onImportEncrypted={importEncryptedBackup}
                   onBlobsRestored={() => {
                     imageStoreRef.current?.processPendingUploads().catch((err) =>
@@ -354,6 +348,21 @@ export function buildSettingsCategories({
                   onDateOrderChange={(order) => mutateSettings((prev) => ({ ...prev, dateOrder: order }))}
                   clock={userSettings.clock}
                   onClockChange={(clock) => mutateSettings((prev) => ({ ...prev, clock }))}
+                />
+              ),
+            },
+            {
+              id: 'calendar',
+              label: t('settings.calendarLabel'),
+              group: t('settings.groupPreferences'),
+              icon: railIcon('calendar'),
+              render: () => (
+                <CalendarSettings
+                  value={userSettings.calendar}
+                  onChange={(next) => mutateSettings((prev) => ({ ...prev, calendar: next }))}
+                  alertsUnlocked={proUnlocked(auth.isPro)}
+                  showPro={!auth.isPro}
+                  onUpgrade={() => setShowUpgrade({ trigger: 'alerts' })}
                 />
               ),
             },

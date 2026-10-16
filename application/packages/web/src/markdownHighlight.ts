@@ -8,7 +8,7 @@
  * `all`, every hljs grammar there is - which quadrupled the lowlight chunk to
  * ~294 kB gz the first time it was tried. The STATIC import below tree-shakes
  * back down to `common`, the exact grammar set the editor's own instance
- * (editorExtensions.ts) already ships, so this module adds nothing the app
+ * (editorCodeBlock.ts) already ships, so this module adds nothing the app
  * was not already carrying.
  *
  * The output is hljs token <span>s, the same classes CodeBlockLowlight emits

@@ -15,6 +15,8 @@
     "notFound": "找不到圖片",
     "saveFailed": "儲存失敗，所以檔案可能是空的或不完整。",
     "viewAria": "檢視圖片",
+    "copyAria": "複製圖片",
+    "copyFailed": "無法複製圖片。",
     "picturesLeftOut": "部分圖片未加入。請單獨複製圖片後再貼上。"
   },
   "attachment": {
@@ -55,6 +57,17 @@
     "saveFailed": "儲存失敗，所以檔案可能是空的或不完整。",
     "pageCount_other": "{{count}} 頁",
     "pageLabel": "{{name}}，第 {{page}} 頁，共 {{count}} 頁"
+  },
+  "mail": {
+    "loading": "正在開啟電子郵件...",
+    "failed": "無法讀取這封電子郵件。請下載後用其他應用程式開啟。",
+    "from": "寄件者",
+    "to": "收件者",
+    "cc": "副本",
+    "date": "日期",
+    "noSubject": "（無主旨）",
+    "empty": "這封電子郵件沒有文字內容。",
+    "attachments": "附件"
   },
   "picker": {
     "title": "檔案中的圖片",

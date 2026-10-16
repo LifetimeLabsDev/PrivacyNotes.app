@@ -98,6 +98,53 @@ function escapeAboveCallout(state: EditorState, view: EditorView, requireStart: 
   return true;
 }
 
+/** An empty paragraph, or one holding only the no-break space a saved blank line reloads as. */
+function isBlankParagraph(node: ProseMirrorNode): boolean {
+  if (node.type.name !== 'paragraph') return false;
+  let blank = true;
+  node.content.forEach((child) => {
+    if (!child.isText || child.text!.replace(/ /g, '').length !== 0) blank = false;
+  });
+  return blank;
+}
+
+/**
+ * Enter on a blank last line of a callout or a quote. The box ends on the third
+ * Enter, the code block rule, so one blank line between paragraphs stays inside:
+ * a blank line under text gets another line below it, and a second blank line in
+ * a row removes both and puts the caret in a new paragraph after the box. The
+ * box always keeps one body block. Everything else falls through to the default
+ * Enter. Spec: ops/docs/callouts.md (Enter leaves a callout or a quote on the third press)
+ */
+function enterAtEndOfBox(state: EditorState, view: EditorView): boolean {
+  const { $from, empty } = state.selection;
+  if (!empty || !isBlankParagraph($from.parent)) return false;
+  const boxDepth = $from.depth - 1;
+  if (boxDepth < 0) return false;
+  const box = $from.node(boxDepth);
+  if (box.type.name !== 'callout' && box.type.name !== 'blockquote') return false;
+  const index = $from.index(boxDepth);
+  if (index !== box.childCount - 1) return false;
+  const firstBody = box.type.name === 'callout' ? 1 : 0;
+  const paragraph = state.schema.nodes.paragraph;
+  if (!paragraph) return false;
+  const lineStart = $from.before();
+  const prev = index > firstBody ? box.child(index - 1) : null;
+  const tr = state.tr;
+  if (!prev || !isBlankParagraph(prev)) {
+    tr.insert($from.after(), paragraph.create());
+    tr.setSelection(TextSelection.create(tr.doc, $from.after() + 1));
+  } else {
+    const removeFrom = index - 1 > firstBody ? lineStart - prev.nodeSize : lineStart;
+    tr.delete(removeFrom, $from.end(boxDepth));
+    const after = tr.mapping.map($from.after(boxDepth));
+    tr.insert(after, paragraph.create());
+    tr.setSelection(TextSelection.create(tr.doc, after + 1));
+  }
+  view.dispatch(tr.scrollIntoView());
+  return true;
+}
+
 /* ------------------------------------------------------------------ */
 /* Node view                                                          */
 /* ------------------------------------------------------------------ */
@@ -118,9 +165,10 @@ function CalloutView({
   const folded = node.attrs.folded;
   const def = CALLOUT_BY_TYPE[type] ?? CALLOUT_BY_TYPE.info;
   const Icon = def.icon;
-  const isFold = type === 'fold';
-  // Fold has no accent: its title and caret take the text color.
-  const accent = isFold
+  // A plain type (Fold, Box, Panel) has no accent: its title and caret take
+  // the text color, and the caret is the whole control.
+  const isPlain = !def.color;
+  const accent = isPlain
     ? { ['--cs' as string]: 'rgb(var(--pn-text))', ['--cc' as string]: 'var(--pn-text)' }
     : { ['--cc' as string]: def.rgb, ['--cs' as string]: def.color };
   const caret = folded ? <CaretRight size={15} weight="bold" /> : <CaretDown size={15} weight="bold" />;
@@ -148,7 +196,7 @@ function CalloutView({
         aria-label={folded ? t('callout.expand') : t('callout.collapse')}
         aria-expanded={!folded}
       >
-        {isFold ? (
+        {isPlain ? (
           caret
         ) : (
           <>
@@ -518,12 +566,22 @@ export const Callout = Node.create({
   addKeyboardShortcuts() {
     return {
       // Enter in the title jumps to the body instead of trying to split the
-      // (single, required) title node.
+      // (single, required) title node. A folded callout hides its body, so
+      // there Enter opens a new line below the callout instead.
       Enter: ({ editor }) => {
         const { state } = editor;
         const { $from, empty } = state.selection;
         if (!empty) return false;
-        if ($from.parent.type.name !== 'calloutTitle') return false;
+        if ($from.parent.type.name !== 'calloutTitle') return enterAtEndOfBox(state, editor.view);
+        const callout = $from.node($from.depth - 1);
+        const paragraph = state.schema.nodes.paragraph;
+        if (callout.attrs.folded && paragraph) {
+          const below = $from.after($from.depth - 1);
+          const tr = state.tr.insert(below, paragraph.create());
+          tr.setSelection(TextSelection.create(tr.doc, below + 1));
+          editor.view.dispatch(tr.scrollIntoView());
+          return true;
+        }
         // Move to the start of the first body block (the title's next sibling).
         const after = $from.after($from.depth);
         const $after = state.doc.resolve(after);

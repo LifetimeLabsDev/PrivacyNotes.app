@@ -66,6 +66,7 @@
     "appearance_contentWidth": "sütun genişliği, geniş, tam genişlik, kenar boşlukları",
     "appearance_editor": "markdown, zengin metin, wysiwyg, düzenleyici modu, editör",
     "appearance_copyFormat": "kopyala, pano, düz metin, yapıştır, onay kutusu",
+    "appearance_pasteFormat": "yapıştır, pano, düz metin, biçimlendirme, biçimsiz, stili eşleştir",
     "appearance_favicons": "favicon, site simgeleri, logolar",
     "appearance_invisibles": "paragraf işareti, boşluklar, beyaz alan, gizli karakterler, biçim işaretleri",
     "appearance_startView": "başlangıç sayfası, ana sayfa, varsayılan görünüm, açılış",
@@ -81,11 +82,19 @@
     "about_openSource": "kaynak kod, github, açık kaynak, open source",
     "about_feedback": "geri bildirim, iletişim, hata bildir, öneri",
     "about_dataStorage": "veri, sunucu, nerede saklanıyor, gizlilik",
-    "about_singleKeys": "klavye, kısayollar, kısayol tuşları, tek tuş, erişilebilirlik, hotkeys, j, k, /, >",
+    "about_singleKeys": "klavye, kısayollar, kısayol tuşları, tek tuş, takvim, erişilebilirlik, hotkeys, j, k, q, /, >",
     "about_changelog": "sürüm notları, yenilikler, güncellemeler",
     "about_hotkeys": "klavye kısayolları, kısayollar, tuşlar, hotkeys",
     "about_rating": "değerlendirme, puan ver, yıldız, yorum, app store",
     "appearance_openInTabs": "sekmeler, sekme çubuğu, tarayıcı, aç",
+    "section_calendar": "takvim, etkinlik, hatırlatıcı, uyarı, bildirim, hafta, ay, program, zamanlama, doğum günü",
+    "calendar_alertTimed": "uyarı, hatırlatıcı, bildirim, varsayılan, dakika, önce, etkinlik",
+    "calendar_alertAllDay": "uyarı, hatırlatıcı, bildirim, varsayılan, tüm gün, sabah",
+    "calendar_alertBirthday": "doğum günü, kişi, uyarı, hatırlatıcı",
+    "calendar_reminderTitles": "gizlilik, kilit ekranı, başlık, hatırlatıcı, bildirim",
+    "calendar_where": "bildirim, izin, tarayıcı, telefon, masaüstü, hatırlatıcı",
+    "calendar_weekNumbers": "hafta numarası, ISO hafta, takvim",
+    "calendar_hours": "saatler, çalışma saatleri, gün görünümü, hafta görünümü, sabah",
     "appearance_formatBar": "araç çubuğu, biçim çubuğu, düğmeler, özelleştir, düzenle, madde işaretli liste, üstü çizili, dişli"
   }
 }

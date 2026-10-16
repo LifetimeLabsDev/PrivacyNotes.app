@@ -92,7 +92,13 @@
       "goal": "目標",
       "decision": "決定",
       "definition": "定義",
-      "seealso": "另見"
+      "seealso": "另見",
+      "box": "方框",
+      "panel": "面板",
+      "update": "更新",
+      "time": "時間",
+      "steps": "步驟",
+      "place": "地點"
     }
   },
   "color": {
@@ -123,6 +129,7 @@
     "addColumnRight": "在右側插入欄",
     "toggleHeaderRow": "切換標題列",
     "equalColumnWidths": "平均分配欄寬",
+    "resizeHint": "按住 {{shift}} 只調整這一欄，按住 {{alt}} 可更精細地調整",
     "deleteRow": "刪除列",
     "deleteColumn": "刪除欄",
     "deleteTable": "刪除表格"
@@ -146,6 +153,8 @@
     "caseSensitiveTitle": "區分大小寫",
     "closeReplace": "關閉尋找與取代",
     "closeReplaceTitle": "關閉（{{keys}}）",
+    "showReplace": "尋找與取代",
+    "hideReplace": "隱藏取代",
     "replacedCount_other": "已取代 {{count}} 項"
   },
   "outline": {
@@ -154,7 +163,7 @@
     "title": "大綱",
     "ariaLabel": "筆記大綱",
     "hide": "隱藏大綱",
-    "hideTitle": "隱藏大綱（Esc）",
+    "hideTitle": "隱藏大綱（{{keys}}）",
     "copyHeadingLink": "複製標題連結",
     "copyNoteLink": "複製筆記連結",
     "copyHeadingShortcut": "複製標題捷徑",
@@ -167,6 +176,9 @@
   },
   "topRow": {
     "add": "在最上方加入一行"
+  },
+  "addLine": {
+    "add": "加入一行"
   },
   "link": {
     "popoverLabel": "插入連結",
@@ -201,7 +213,9 @@
     "words_other": "{{formatted}} 字",
     "characters_other": "{{formatted}} 個字元",
     "tasksChecked_other": "{{formatted}} 項中已勾選 {{done}} 項",
-    "tooLargeToSync": "，可能過大而無法同步，請拆成新筆記",
+    "syncLimit": " · 已用 1 MB 同步上限的 {{share}}",
+    "overSyncLimit": " · 超過 1 MB 同步上限，只保留在這台裝置上",
+    "split": "拆分筆記",
     "veryLong": "，篇幅很長，編輯可能變慢或卡頓",
     "gettingLong": "，篇幅漸長，較慢的裝置可能出現延遲",
     "largeTableWarning": "大型表格（{{rows}} 列）會讓這篇筆記編輯變慢，建議拆分"
@@ -260,10 +274,13 @@
     "hintTap": "點一下按鈕以開啟選項。",
     "onBar": "在工具列",
     "inMenu": "在 + 選單",
+    "inAttachMenu": "在附加選單",
+    "attachMenuEmpty": "是空的，所以不顯示附加按鈕。",
     "menuEmpty": "選單是空的，所以不顯示 + 按鈕。",
     "hidden": "已隱藏",
     "hiddenNote": "仍可透過快速鍵和 Markdown 使用。",
     "hiddenDrop": "把按鈕拖放到這裡即可隱藏。",
+    "markdownViewNote": "Markdown 檢視有自己固定的一組按鈕。",
     "hiddenEmpty": "沒有隱藏的項目。",
     "alwaysVisible": "一律顯示",
     "pinned": "會開啟面板，所以只能放在工具列或隱藏",
@@ -275,18 +292,23 @@
     "home": {
       "bar": "在工具列",
       "menu": "在 + 選單",
+      "attachMenu": "在附加選單",
       "hidden": "已隱藏"
     },
     "opensPanel": "會開啟面板",
     "showsRecording": "會顯示錄音",
     "refuse": {
       "menuNotAllowed": "{{item}} 可以放在工具列或隱藏，不能放進 + 選單。",
+      "attachNotAllowed": "附加選單只能放圖片、檔案和錄音按鈕。",
       "lastOnBar": "工具列上至少要保留一個按鈕。"
     },
     "items": {
       "link": "連結",
       "notelink": "筆記連結",
-      "audio": "錄音"
+      "audio": "錄音",
+      "attachMenu": "附加",
+      "separator": "垂直分隔線",
+      "markdownView": "顯示 Markdown"
     },
     "positionTitle": "工具列位置",
     "positionNote": "選擇工具列在編輯器中的位置。",

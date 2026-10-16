@@ -7,6 +7,7 @@ import { linkifyMarkdown } from './linkify';
 import { noteLinkTarget } from '../noteLinks';
 import { isBlobReferenced, mimeFromExt } from './blobImport';
 import { htmlNoteToMarkdown } from './notesnook';
+import { mapOutsideCode } from './codeSegments';
 import type { ImportBlob, ImportedNote, ParsedImport } from './types';
 import { toLocalIso } from '../notesViewUtils';
 
@@ -38,6 +39,9 @@ import { toLocalIso } from '../notesViewUtils';
  *   note-tag links       -> tags
  *   `:/<id>` links       -> note-links for a note, imported files for a resource
  *   `<img src=":/<id>">` -> an image (Joplin writes this when a picture is resized)
+ *   `<a href=":/<id>">`  -> the same as a Markdown link to that id
+ *   `:/<id>#<slug>`      -> a note-link to the heading whose slug matches
+ *   `<ins>`, `++text++`  -> underline (the Rich Text editor writes `<ins>`)
  *   is_todo              -> a checkbox line in front of the body
  *   markup_language 2    -> an HTML note, through the Notesnook converter
  *   deleted_time         -> trashed
@@ -148,7 +152,9 @@ async function readZip(file: File): Promise<Map<string, Uint8Array>> {
   const files = new Map<string, Uint8Array>();
   for (const entry of entries) {
     const path = strip && entry.name.startsWith(strip) ? entry.name.slice(strip.length) : entry.name;
-    files.set(path, await zipEntryBytes(entry, Infinity));
+    // Item files are text and keep the shared text bound; only attachments
+    // under resources/ inflate unbounded, as zipEntry.ts says binary media does.
+    files.set(path, await zipEntryBytes(entry, path.startsWith('resources/') ? Infinity : undefined));
   }
   return files;
 }
@@ -257,6 +263,31 @@ export async function parseJoplin(file: File, onProgress?: (msg: string) => void
   }
 
   const noteTitles = new Map(notesRaw.map((n) => [n.props.id!, n.title.trim()]));
+  const noteBodies = new Map(notesRaw.map((n) => [n.props.id!, n.body]));
+  /** Each note's headings by their Joplin anchor, built once per note on first use. */
+  const headingSlugs = new Map<string, Map<string, string>>();
+  /** The heading in note `id` whose Joplin anchor is `slug`, as Joplin's renderer slugs it. */
+  const headingFor = (id: string, slug: string): string | null => {
+    let want: string;
+    try {
+      want = decodeURIComponent(slug).toLowerCase();
+    } catch {
+      want = slug.toLowerCase();
+    }
+    let slugs = headingSlugs.get(id);
+    if (!slugs) {
+      slugs = new Map();
+      for (const line of (noteBodies.get(id) ?? '').split('\n')) {
+        const m = /^#{1,6}[ \t]+(.+)$/.exec(line);
+        if (!m) continue;
+        const text = m[1]!.replace(/[ \t]#+[ \t]*$/, '').trim();
+        const s = text.toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, '').trim().replace(/\s+/g, '-');
+        if (!slugs.has(s)) slugs.set(s, text);
+      }
+      headingSlugs.set(id, slugs);
+    }
+    return slugs.get(want) ?? null;
+  };
   const blobs = new Map<string, ImportBlob>();
   const resourceKey = new Map<string, string>();
   let missingResources = 0;
@@ -279,14 +310,16 @@ export async function parseJoplin(file: File, onProgress?: (msg: string) => void
     return key;
   };
 
-  const noteLink = (id: string, label: string): string | null => {
+  const noteLink = (id: string, label: string, anchor?: string): string | null => {
     const title = noteTitles.get(id);
     if (title === undefined) return null;
-    const target = noteLinkTarget(title);
+    const heading = anchor ? headingFor(id, anchor.slice(1)) : null;
+    const target = noteLinkTarget(title) + (heading ? `#${heading.replace(/[[\]|]/g, ' ').trim()}` : '');
     const clean = label.replace(/[[\]]/g, '').trim();
     if (!target) return clean;
     return !clean || clean === target ? `[[${target}]]` : `[[${target}|${clean}]]`;
   };
+  let unknownRefs = 0;
 
   /** Rewrite every `:/<id>` reference to a note-link or an imported file. */
   const rewriteRefs = (md: string): string =>
@@ -300,20 +333,32 @@ export async function parseJoplin(file: File, onProgress?: (msg: string) => void
         const alt = (/\balt=["']([^"']*)["']/.exec(tag)?.[1] ?? '').replace(/[[\]]/g, '');
         return `![${alt}](${key})`;
       })
+      .replace(/<a\b[^>]{0,500}?\bhref=["']:\/([0-9a-fA-F]{32})(#[^"'\n]{0,300})?["'][^>]{0,500}>([\s\S]{0,2000}?)<\/a>/g, (_tag, id: string, anchor: string | undefined, label: string) =>
+        `[${label.replace(/<[^>]+>/g, '').trim()}](:/${id}${anchor ?? ''})`,
+      )
       .replace(
-        /(!?)\[([^\]]*)\]\((?::\/|joplin:\/\/x-callback-url\/openNote\?id=)([0-9a-fA-F]{32})(#[^)\s]*)?(?:\s+"[^"]*")?\)/g,
-        (whole, bang: string, label: string, rawId: string) => {
+        /(!?)\[([^[\]]*)\]\((?::\/|joplin:\/\/x-callback-url\/openNote\?id=)([0-9a-fA-F]{32})(#[^)\s]*)?(?:\s+"[^"]*")?\)/g,
+        (whole, bang: string, label: string, rawId: string, anchor: string | undefined) => {
           const id = rawId.toLowerCase();
           if (!bang) {
-            const link = noteLink(id, label);
+            const link = noteLink(id, label, anchor);
             if (link !== null) return link;
           }
           const key = keyFor(id);
           if (key) return `${bang}[${label.replace(/[[\]]/g, '')}](${key})`;
           if (resources.has(id)) missingResources++;
+          else unknownRefs++;
           return whole;
         },
       );
+
+  /** Joplin's two underline forms, outside code. Bounded, like every pattern on a stranger's text. */
+  const underline = (md: string): string =>
+    mapOutsideCode(md, (prose) =>
+      prose
+        .replace(/<ins>([\s\S]{0,2000}?)<\/ins>/gi, '<u>$1</u>')
+        .replace(/(^|[^+\w])\+\+(?![\s+])([^+\n]{0,2000}?[^\s+])\+\+(?![+\w])/g, '$1<u>$2</u>'),
+    );
 
   onProgress?.('Building notes…');
   const now = new Date().toISOString();
@@ -333,7 +378,7 @@ export async function parseJoplin(file: File, onProgress?: (msg: string) => void
       body = htmlNoteToMarkdown(body).trim();
       htmlCount++;
     }
-    body = rewriteRefs(body);
+    body = underline(rewriteRefs(body));
 
     let type: 'task' | undefined;
     if (p.is_todo === '1') {
@@ -400,6 +445,9 @@ export async function parseJoplin(file: File, onProgress?: (msg: string) => void
   }
   if (missingResources > 0) {
     warnings.push(`${missingResources} attachment link${s(missingResources)} point${s(missingResources, 's', '')} at a file that is not in the export. ${s(missingResources, 'It stays', 'They stay')} as a link.`);
+  }
+  if (unknownRefs > 0) {
+    warnings.push(`${unknownRefs} link${s(unknownRefs)} point${s(unknownRefs, 's', '')} at a note or file that is not in the export. ${s(unknownRefs, 'It stays', 'They stay')} as a link.`);
   }
   if (droppedFolders > 0) {
     warnings.push(`${droppedFolders} notebook${s(droppedFolders)} nested too deep ${s(droppedFolders, 'was', 'were')} merged into ${s(droppedFolders, 'its', 'their')} parent.`);

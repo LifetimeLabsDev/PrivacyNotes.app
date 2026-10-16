@@ -37,7 +37,8 @@
   "storageBar": {
     "usage": "{{percent}}% 사용 중 ({{used}} / {{max}})",
     "refresh": "저장 공간 새로고침",
-    "cleanupInfo": "삭제한 항목은 바로 용량에서 빠져요. 암호화된 파일 자체는 며칠 안에 서버에서 삭제돼요."
+    "cleanupInfo": "삭제한 항목은 바로 용량에서 빠져요. 암호화된 파일 자체는 며칠 안에 서버에서 삭제돼요.",
+    "open": "저장 공간 설정 열기"
   },
   "updateToast": {
     "available": "업데이트가 있어요",
@@ -105,7 +106,23 @@
     "openInTab": "탭에서 열기",
     "openLink": "열기",
     "edit": "편집",
-    "close": "닫기"
+    "close": "닫기",
+    "tags": "태그",
+    "folders": "폴더",
+    "tagItems_other": "항목 {{count}}개",
+    "emptyTags": "해당 이름의 태그가 없어요",
+    "emptyFolders": "해당 이름의 폴더가 없어요",
+    "onlyTags": "태그",
+    "onlyFolders": "폴더",
+    "showOnlyTags": "태그만 보기",
+    "showOnlyFolders": "폴더만 보기",
+    "showOnlyCommands": "명령만 보기",
+    "goToTag": "태그로 이동",
+    "goToFolder": "폴더로 이동",
+    "createTag": "#{{name}} 태그 만들기",
+    "createFolder": "“{{name}}” 폴더 만들기",
+    "newTag": "새 태그",
+    "newFolder": "새 폴더"
   },
   "cardForm": {
     "cardholderName": "카드 소유자 이름",

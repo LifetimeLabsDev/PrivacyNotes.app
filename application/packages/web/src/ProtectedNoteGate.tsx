@@ -2,11 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Fingerprint, Lock, ShieldSlash } from './icons';
 import { PinInput, type PinInputHandle } from './PinInput';
-import { hasPin, setPin as storePin, verifyPin, recordPinFailure, clearPinFailures, getPinLockoutState } from './pin';
-import { hasBiometricCredential, unlockWithBiometric } from './biometric';
+import { SecretInput } from './PasscodeInput';
+import { hashPin, hasPin, pinCredentialStamp, pinIsPasscode, verifyPin, recordPinFailure, clearPinFailures, getPinLockoutState, stagePinHash } from './pin';
+import { secretReady, type SecretKind } from './secretKind';
+import { hasBiometricCredential, unlockWithBiometricDetailed } from './biometric';
 import { ForgotPinLink, PinRecoveryForm } from './PinRecoveryForm';
 import { useEscapeToClose } from './useEscapeToClose';
-import type { UserSettings } from './userSettings';
+import { signInStamp, signedOutSince } from './liveSignIn';
+import { saveCredential, type UserSettings } from './userSettings';
 
 /**
  * Inline gate for protected notes. Renders in the editor pane when
@@ -20,6 +23,11 @@ import type { UserSettings } from './userSettings';
  *      The PIN screen is one tap away, and so is the way back.
  *   2. **Verify** - a PIN is set; user enters it to unlock.
  *   3. **Bootstrap** - no PIN or biometric. Inline "Set a PIN" prompt.
+ *
+ * The verify screens draw the field of the secret the account holds, a PIN or
+ * a passcode, from the cached hash (`pinIsPasscode`). The bootstrap stays four
+ * digits: a passcode is set only in the PIN tab.
+ * Spec: ops/docs/plans/app-lock-passcode.md (section 4.4)
  *
  * A fourth screen sits behind all of them: the recovery phrase, for a PIN
  * nobody remembers. Without it a forgotten PIN shuts these notes forever,
@@ -60,6 +68,7 @@ export function ProtectedNoteGate({
 }) {
   const { t } = useTranslation('security');
   const pinIsSet = hasPin();
+  const kind: SecretKind = pinIsPasscode() ? 'passcode' : 'pin';
   const bioEnrolled = hasBiometricCredential();
   const [recovering, setRecovering] = useState(false);
   // Which of the two screens is showing. The PIN screen never sets this
@@ -92,9 +101,10 @@ export function ProtectedNoteGate({
     return (
       <div className="max-w-sm mx-auto mt-16 space-y-4">
         <h2 className="text-lg font-semibold tracking-tight text-center">
-          {t('pinRecovery.title')}
+          {kind === 'passcode' ? t('pinRecovery.titlePasscode') : t('pinRecovery.title')}
         </h2>
         <PinRecoveryForm
+          kind={kind}
           phrase={phrase}
           userSettings={userSettings}
           onSettingsChange={onSettingsChange}
@@ -115,12 +125,14 @@ export function ProtectedNoteGate({
         onCancelRemove={onCancelRemove}
         onCancel={onCancel}
         showPinFallback={pinIsSet}
+        pinKind={kind}
         onUsePin={() => setUsePin(true)}
       />
     );
   }
   return pinIsSet ? (
     <VerifyMode
+      kind={kind}
       done={done}
       removing={removing}
       onStartRemove={() => setIntent('remove')}
@@ -151,14 +163,14 @@ function useBiometricUnlock(setErr: (msg: string | null) => void) {
     setErr(null);
     // Reason line the OS prompt renders; reuses the lock-screen label. The
     // second string labels the cancel button Android draws itself.
-    const phrase = await unlockWithBiometric(
+    const { phrase, failure } = await unlockWithBiometricDetailed(
       t('lockScreen.unlockWithBiometrics'),
       t('common:actions.cancel'),
     );
     if (phrase) {
       onSuccess();
     } else {
-      setErr(t('protectedGate.biometricFailed'));
+      setErr(failure === 'unopened' ? t('lockScreen.biometricUnopened') : t('protectedGate.biometricFailed'));
       setBusy(false);
     }
   }
@@ -178,6 +190,7 @@ function BiometricMode({
   onCancelRemove,
   onCancel,
   showPinFallback,
+  pinKind = 'pin',
   onUsePin,
   compact = false,
 }: {
@@ -191,6 +204,8 @@ function BiometricMode({
   onCancelRemove?: () => void;
   onCancel?: () => void;
   showPinFallback: boolean;
+  /** Names the fallback button after the secret the account holds. */
+  pinKind?: SecretKind;
   onUsePin: () => void;
   /** Inside the modal the box supplies its own padding. */
   compact?: boolean;
@@ -240,7 +255,7 @@ function BiometricMode({
             className="inline-flex items-center justify-center gap-2 rounded-md border border-divider text-pn-muted hover:bg-surface-1 px-4 py-2 text-sm transition"
           >
             <Lock size={15} />
-            {t('protectedGate.usePinInstead')}
+            {pinKind === 'passcode' ? t('protectedGate.usePasscodeInstead') : t('protectedGate.usePinInstead')}
           </button>
         )}
         {offersRemove && (
@@ -284,6 +299,7 @@ function BiometricMode({
  * ──────────────────────────────────────────────────────────────── */
 
 function VerifyMode({
+  kind,
   done,
   removing = false,
   onStartRemove,
@@ -292,6 +308,7 @@ function VerifyMode({
   showBiometric = false,
   onForgotPin,
 }: {
+  kind: SecretKind;
   /** What a correct PIN performs: unlock the note, or take the lock off. */
   done: () => void;
   removing?: boolean;
@@ -333,10 +350,27 @@ function VerifyMode({
   }, [lockout.locked]);
 
   async function submit(candidate: string) {
-    if (candidate.length !== 4 || busy || lockout.locked) return;
+    if (!secretReady(kind, candidate) || busy) return;
+    // The counter is shared by every PIN surface, so it is read at submit and
+    // not only from the state this screen mounted with.
+    const current = getPinLockoutState();
+    if (current.locked) {
+      setLockout(current);
+      setErr(t('protectedGate.tooManyAttempts', { seconds: current.secondsLeft }));
+      return;
+    }
     setBusy(true);
     setErr(null);
+    const stamp = pinCredentialStamp();
     const { valid: ok } = await verifyPin(candidate);
+    // The secret changed on another device during the check: the answer is
+    // about a secret the account no longer holds, so it opens nothing.
+    if (pinCredentialStamp() !== stamp) {
+      setValue('');
+      setBusy(false);
+      inputRef.current?.clear();
+      return;
+    }
     if (ok) {
       clearPinFailures();
       done();
@@ -345,7 +379,7 @@ function VerifyMode({
       setLockout(state);
       setErr(state.locked
         ? t('protectedGate.tooManyAttempts', { seconds: state.secondsLeft })
-        : t('protectedGate.incorrectPinRetry'));
+        : kind === 'passcode' ? t('protectedGate.incorrectPasscodeRetry') : t('protectedGate.incorrectPinRetry'));
       setValue('');
       setBusy(false);
       inputRef.current?.clear();
@@ -357,11 +391,16 @@ function VerifyMode({
   return (
     <div className="max-w-sm mx-auto mt-16 space-y-4 text-center">
       <GateHeader
-        title={removing ? t('protectedGate.disableTitle') : t('protectedGate.protectedItem')}
-        subtitle={removing ? t('protectedGate.disableSubtitle') : t('protectedGate.verifySubtitle')}
+        title={removing
+          ? kind === 'passcode' ? t('protectedGate.disableTitlePasscode') : t('protectedGate.disableTitle')
+          : t('protectedGate.protectedItem')}
+        subtitle={removing
+          ? t('protectedGate.disableSubtitle')
+          : kind === 'passcode' ? t('protectedGate.verifySubtitlePasscode') : t('protectedGate.verifySubtitle')}
         icon={removing ? 'removeProtection' : 'lock'}
       />
-      <PinInput
+      <SecretInput
+        kind={kind}
         ref={inputRef}
         value={value}
         onChange={(v) => {
@@ -392,7 +431,7 @@ function VerifyMode({
           )}
           <button
             onClick={() => void submit(value)}
-            disabled={value.length !== 4 || disabled}
+            disabled={!secretReady(kind, value) || disabled}
             className={`flex-1 rounded-md text-white px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed ${
               removing ? 'bg-red-500 hover:bg-red-600' : 'bg-accent-fill hover:bg-accent-fill-hover'
             }`}
@@ -414,7 +453,7 @@ function VerifyMode({
             {bio.busy ? t('protectedGate.verifying') : t('protectedGate.useBiometricInstead')}
           </button>
         )}
-        {onForgotPin && !removing && <ForgotPinLink onClick={onForgotPin} />}
+        {onForgotPin && !removing && <ForgotPinLink kind={kind} onClick={onForgotPin} />}
         {onStartRemove && (
           <>
             <div className="border-t border-divider mt-1" />
@@ -476,9 +515,25 @@ function BootstrapMode({
       return;
     }
     setBusy(true);
+    const startedAt = signInStamp();
     try {
-      const updated = await storePin(pinVal, userSettings);
-      onSettingsChange(updated, userSettings);
+      const hashed = await hashPin(pinVal);
+      // A sign-out during the hash cleared the settings this would write back.
+      if (signedOutSince(startedAt)) {
+        setBusy(false);
+        return;
+      }
+      // The hash goes into this device's cache first, read back, then the
+      // settings save commits, read back too; a refusal of either says so and
+      // leaves no PIN anywhere. A PIN set elsewhere meanwhile is not replaced
+      // by this first one.
+      const putBackHash = stagePinHash(hashed);
+      if (!putBackHash || !saveCredential({ ...userSettings, ...hashed }, userSettings, onSettingsChange, { pinSalt: null, pinHash: null })) {
+        putBackHash?.();
+        setErr(t('pinTab.changeNotSaved'));
+        setBusy(false);
+        return;
+      }
       // Storing the PIN is enough - the session is now considered
       // unlocked and the parent advances.
       onUnlock();
@@ -577,6 +632,7 @@ export function PinGateModal({
 }) {
   const { t } = useTranslation('security');
   const pinIsSet = hasPin();
+  const kind: SecretKind = pinIsPasscode() ? 'passcode' : 'pin';
   const bioEnrolled = hasBiometricCredential();
   const [usePin, setUsePin] = useState(false);
   useEscapeToClose(onCancel);
@@ -591,11 +647,12 @@ export function PinGateModal({
           <BiometricMode
             done={onUnlock}
             showPinFallback={pinIsSet}
+            pinKind={kind}
             onUsePin={() => setUsePin(true)}
             compact
           />
         ) : pinIsSet ? (
-          <ModalVerifyMode onUnlock={onUnlock} showBiometric={bioEnrolled} purpose={purpose} />
+          <ModalVerifyMode kind={kind} onUnlock={onUnlock} showBiometric={bioEnrolled} purpose={purpose} />
         ) : (
           /* No PIN and no fingerprint: set a PIN first, as the read gate on
              the same note asks, and the action runs once it is stored. */
@@ -619,10 +676,12 @@ export function PinGateModal({
  * uses, so an export never reads as a deletion.
  */
 function ModalVerifyMode({
+  kind,
   onUnlock,
   showBiometric = false,
   purpose,
 }: {
+  kind: SecretKind;
   onUnlock: () => void;
   showBiometric?: boolean;
   purpose: PinGatePurpose;
@@ -646,10 +705,27 @@ function ModalVerifyMode({
   }, [lockout.locked]);
 
   async function submit(candidate: string) {
-    if (candidate.length !== 4 || busy || lockout.locked) return;
+    if (!secretReady(kind, candidate) || busy) return;
+    // The counter is shared by every PIN surface, so it is read at submit and
+    // not only from the state this screen mounted with.
+    const current = getPinLockoutState();
+    if (current.locked) {
+      setLockout(current);
+      setErr(t('protectedGate.tooManyAttempts', { seconds: current.secondsLeft }));
+      return;
+    }
     setBusy(true);
     setErr(null);
+    const stamp = pinCredentialStamp();
     const { valid: ok } = await verifyPin(candidate);
+    // The secret changed on another device during the check: the answer is
+    // about a secret the account no longer holds, so it opens nothing.
+    if (pinCredentialStamp() !== stamp) {
+      setValue('');
+      setBusy(false);
+      inputRef.current?.clear();
+      return;
+    }
     if (ok) {
       clearPinFailures();
       onUnlock();
@@ -658,7 +734,7 @@ function ModalVerifyMode({
       setLockout(state);
       setErr(state.locked
         ? t('protectedGate.tooManyAttempts', { seconds: state.secondsLeft })
-        : t('protectedGate.incorrectPinRetry'));
+        : kind === 'passcode' ? t('protectedGate.incorrectPasscodeRetry') : t('protectedGate.incorrectPinRetry'));
       setValue('');
       setBusy(false);
       inputRef.current?.clear();
@@ -670,11 +746,18 @@ function ModalVerifyMode({
   return (
     <div className="space-y-4 text-center">
       {purpose === 'delete' ? (
-        <GateHeader title={t('protectedGate.pinRequired')} subtitle={t('protectedGate.deleteSubtitle')} />
+        <GateHeader
+          title={kind === 'passcode' ? t('protectedGate.passcodeRequired') : t('protectedGate.pinRequired')}
+          subtitle={kind === 'passcode' ? t('protectedGate.deleteSubtitlePasscode') : t('protectedGate.deleteSubtitle')}
+        />
       ) : (
-        <GateHeader title={t('protectedGate.protectedItem')} subtitle={t('protectedGate.verifySubtitle')} />
+        <GateHeader
+          title={t('protectedGate.protectedItem')}
+          subtitle={kind === 'passcode' ? t('protectedGate.verifySubtitlePasscode') : t('protectedGate.verifySubtitle')}
+        />
       )}
-      <PinInput
+      <SecretInput
+        kind={kind}
         ref={inputRef}
         value={value}
         onChange={(v) => {
@@ -696,7 +779,7 @@ function ModalVerifyMode({
       <div className="flex flex-col gap-2">
         <button
           onClick={() => void submit(value)}
-          disabled={value.length !== 4 || disabled}
+          disabled={!secretReady(kind, value) || disabled}
           className={`w-full rounded-md text-white px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed ${
             purpose === 'delete' ? 'bg-red-500 hover:bg-red-600' : 'bg-accent-fill hover:bg-accent-fill-hover'
           }`}

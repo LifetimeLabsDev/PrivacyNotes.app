@@ -39,16 +39,29 @@
     "photosTooBig_one": "Niet genoeg ruimte voor de foto ({{size}}), dus die blijft achter. Al het andere komt mee. Maak {{shortfall}} vrij, of voeg opslag toe, en importeer opnieuw om hem alsnog binnen te halen.",
     "photosTooBig_other": "Niet genoeg ruimte voor de {{count}} foto's ({{size}}), dus die blijven achter. Al het andere komt mee. Maak {{shortfall}} vrij, of voeg opslag toe, en importeer opnieuw om ze alsnog binnen te halen."
   },
+  "importCalendar": {
+    "location": "Locatie",
+    "videoCall": "Videogesprek",
+    "organizer": "Organisator",
+    "guests": "Gasten",
+    "file": "Bestand",
+    "link": "Link",
+    "timeZone": "Tijdzone",
+    "ends": "Eindigt",
+    "repeats": "Herhaling"
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip (map Keep) of één losse .json-notitie. Checklists worden geïmporteerd als echte takenlijsten.",
+    "googleCalendar": "De .zip uit Google Calendar via Settings > Import & export, of één los .ics-bestand. Afspraken behouden hun tijden, herhalingen en herinneringen.",
     "appleNotes": "Exporteer via de gratis Exporter-app als Markdown en sleep de .zip hierheen.",
     "appleJournal": "Exporteer vanuit Dagboek op Mac of iPhone, comprimeer de map AppleJournalEntries en sleep de .zip hierheen. Items worden geïmporteerd als dagboeknotities met hun foto's, video's, spraakmemo's en locaties.",
     "evernote": "Eén .enex los, of meerdere samen in een zip. Behoudt opmaak, tags, bijlagen, notitiekoppelingen en notitieblokken. Taken laat Evernote uit de .enex weg.",
     "samsungNotes": "Exporteer als Word (.docx) of tekst (.txt). Zip meerdere bestanden om ze in één keer te importeren.",
     "simplenote": "Exporteer uit Simplenote (Settings -> Tools -> Export Notes). Sleep de .zip hierheen.",
-    "standardNotes": "Ontsleutelde back-up in .zip of .txt uit Standard Notes (File > Export > Decrypted).",
+    "standardNotes": "Ontsleutelde back-up in .zip of .txt uit Standard Notes (Account settings > Backups > Data backups > Decrypted).",
     "obsidian": "Obsidian-vault als .zip. Behoudt tags, [[note links]], mappenstructuur, inline #tags en ingesloten afbeeldingen en bestanden.",
     "notesnook": "Notesnook-export als .zip. Kies bij het exporteren HTML om opmaak, notitieboeken, tags en bijlagen te behouden.",
+    "bear": "Kies in Bear File > Backup Notes... en sleep het .bear2bk-bestand hierheen. Tags en geneste tags, vastgezette notities, het archief, de prullenbak, markeringen met hun kleuren, notitielinks en bijlagen komen mee.",
     "joplin": "Het .jex-bestand uit File > Export all > \"JEX - Joplin Export File\". Notitieboeken worden mappen, en tags, taken, notitielinks en bijlagen komen mee.",
     "upnote": "In UpNote: Settings > Backup > Backup now, en zip daarna alles in de back-upmap. Behoudt notitieboeken, tags, vastgezette notities, notitielinks, opmaak en bijlagen. Exports per notitie uit de telefoon-apps werken ook - kies \"Export to HTML\".",
     "markdownFolder": ".md- of .txt-bestanden los of als .zip. Een gezipte map houdt zijn submappen en neemt zijn afbeeldingen en bijlagen mee.",
@@ -96,6 +109,12 @@
     "blobsNotInBackup_other": "Je notities zijn hersteld, maar {{items}} die in de back-up staan vermeld, ontbreken erin."
   },
   "preview": {
+    "oversize_one": "{{count}} notitie is groter dan 1 MB. Die blijft op dit apparaat en wordt niet gesynchroniseerd.",
+    "oversize_other": "{{count}} notities zijn groter dan 1 MB. Die blijven op dit apparaat en worden niet gesynchroniseerd.",
+    "splitOversize_one": "Deze notitie bij de koppen splitsen in kleinere notities, zodat ze synchroniseert",
+    "splitOversize_other": "Deze {{count}} notities bij hun koppen splitsen in kleinere notities, zodat ze synchroniseren",
+    "partTitle": "{{title}} ({{index}}/{{total}})",
+    "continuedIn": "Verder in {{link}}",
     "sourceLabel": "Bron",
     "uniqueTags": "Unieke tags",
     "empty": "Leeg",
@@ -107,6 +126,7 @@
     "duplicateWarning": "importeren voegt deze toe als nieuwe notities. Doe je dit twee keer, dan krijg je dubbele notities. Er is nog geen automatische ontdubbeling.",
     "duplicateSkipNote": "bladwijzers die je al bewaard hebt worden overgeslagen, dus dit twee keer doen levert niets dubbels op.",
     "contactSkipNote": "mensen die je al hebt opgeslagen worden overgeslagen en blijven zoals ze zijn, dus twee keer draaien maakt van niemand een dubbel.",
+    "eventSkipNote": "afspraken die je al hebt geïmporteerd worden overgeslagen en blijven zoals ze zijn, dus twee keer draaien maakt geen dubbele afspraken.",
     "restoreMergeNote": "notities uit je eigen back-up worden op id gekoppeld. Een notitie die je al hebt wordt alleen bijgewerkt als de versie in de back-up nieuwer is, en een notitie in je prullenbak komt er weer uit.",
     "quotaExceeded": "<strong>Te weinig opslag om te importeren.</strong> Naar schatting {{needed}} nodig, {{available}} beschikbaar. Maak ruimte vrij of upgrade voordat je importeert.",
     "quotaWarning": "Let op: deze import gebruikt ongeveer {{needed}} van je resterende {{available}} opslag.",
@@ -154,7 +174,11 @@
     "bookmarksExportDesc": "Het standaard bladwijzerbestand dat elke browser leest. Importeer het in Chrome, Firefox, Safari of Edge met je mappen erbij.",
     "contactsOnlyHeading": "Alleen contacten",
     "contactsExportTitle": "Contactenbestand (.vcf)",
-    "contactsExportDesc": "Het vCard-bestand dat elke telefoon en elk adresboek leest. Importeer het in iPhone, Android, Google Contacten of Contacten op de Mac, met labels en groepen intact."
+    "contactsExportDesc": "Het vCard-bestand dat elke telefoon en elk adresboek leest. Importeer het in iPhone, Android, Google Contacten of Contacten op de Mac, met labels en groepen intact.",
+    "calendarOnlyHeading": "Alleen agenda",
+    "calendarExportTitle": "Agendabestand (.ics)",
+    "calendarExportDesc": "Afspraken en notities en takenlijsten met een datum, voor Google Calendar, Apple Agenda of Outlook.",
+    "calendarPrivate": "Privé"
   },
   "exportProgress": {
     "failedTitle": "Exporteren mislukt",
@@ -220,5 +244,11 @@
     "title_other": "{{count}} items zijn gedeeld met PrivacyNotes",
     "line": "Er wordt niets bewaard tot je kiest.",
     "saveAll": "Alles bewaren"
+  },
+  "destination": {
+    "label": "Toevoegen aan",
+    "none": "Geen map",
+    "newFolder": "Nieuwe map \"{{name}}\"",
+    "help": "Mappen uit de bron komen in de map die je kiest, en items zonder map komen erin terecht."
   }
 }

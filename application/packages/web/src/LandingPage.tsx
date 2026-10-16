@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import type { CSSProperties, ReactNode } from 'react';
-import { AndroidLogo, AppleLogo, Archive, ArrowLeft, ArrowUpRight, Book, Bookmarks, CaretDown, ChartBar, Check, CheckCircle, CheckFat, CheckSquare, Copy, Cube, FileText, Folder, GithubLogo, GooglePlayLogo, Key, List, Lock, LockSimple, Moon, Package, Pill, SealCheck, Shield, Smiley, Square, Sun, TerminalWindow, UserCheck, WindowsLogo, X } from './icons';
+import type { CSSProperties, MouseEvent, ReactNode } from 'react';
+import { AndroidLogo, AppleLogo, Archive, ArrowLeft, ArrowRight, ArrowUpRight, Bell, Book, Bookmarks, CalendarDots, CaretDown, ChartBar, Check, CheckCircle, CheckFat, CheckSquare, Copy, Cube, Export, FileText, Folder, GithubLogo, GooglePlayLogo, Image as ImageIcon, Key, List, Lock, LockSimple, Moon, MusicNotes, Package, Pill, PlusCircle, SealCheck, Shield, Square, Sun, TerminalWindow, UserCheck, VideoCamera, WindowsLogo, X } from './icons';
 import { LogoIcon } from './LogoIcon';
+import { TRACKER_ICONS } from './trackers/icons';
 import { Brand } from './Brand';
 import { openExternal } from './openExternal';
 import { LanguageMenu } from './LanguageMenu';
@@ -427,6 +428,27 @@ function usePlatformVersions(enabled: boolean) {
   return versions;
 }
 
+/* A pill's value bubble hangs off the pill's own edge, never centered: a
+   centered bubble is wider than its pill and ran off the page on the first
+   pill of a row. Pills in the left half of the viewport anchor it to their
+   start edge, pills in the right half to their end edge, so the bubble always
+   grows toward the middle of the page. Decided per hover, on the row. */
+function peekSide(e: MouseEvent<HTMLDivElement>) {
+  const pill = (e.target as HTMLElement).closest('.pn-fx-peek');
+  if (!pill) return;
+  const r = pill.getBoundingClientRect();
+  const rtl = getComputedStyle(pill).direction === 'rtl';
+  const farHalf = r.left + r.width / 2 > window.innerWidth / 2;
+  pill.classList.toggle('pn-fx-peek-end', rtl ? !farHalf : farHalf);
+}
+
+/* The built-in trackers in the app's own pill order, the first a person
+   meets at the top of a journal. A tracker added to TRACKER_ICONS belongs
+   here too; the landing row is the one place outside the app that lists them. */
+const LANDING_TRACKERS = ['mood', 'emotions', 'sleep', 'sleepScore', 'heartRate', 'activity', 'medication', 'energy', 'focus', 'weight', 'steps', 'water', 'screenTime', 'caffeine', 'pain', 'social'] as const;
+/* Two weeks of doses for the Medication card, two of them skipped. */
+const DOSE_DAYS = [true, true, true, false, true, true, true, true, true, false, true, true, true, true] as const;
+
 function FeaturePill({ children }: { children: ReactNode }) {
   return (
     <span className="rounded-full border-[1.5px] border-[var(--wl-chip-border)] bg-[var(--wl-card)] text-[var(--wl-chip-text)] px-3.5 py-1.5 text-xs font-semibold">
@@ -635,9 +657,10 @@ export const FX_CSS = `
 --wl-tint-blue:#E8EAF2;--wl-tint-green:#E4EBD5;--wl-tint-amber:#F7EAB8;
 --wl-amber-text:#92400E;--wl-amber-border:#B45309;
 --wl-emerald:#065F46;
+--wl-teal:#0B604A;--wl-tint-teal:#DDEFE6;
 --wl-chip-border:#1C1917;--wl-chip-text:#1C1917;
 --wl-footer:#161210;
---wl-tile-files:#ECE3C9;--wl-tile-marks:#FCF8EC;
+--wl-tile-files:#EDE6D3;
 --wl-grid-line:rgba(30,64,175,.12);
 }
 .dark .pn-washi{
@@ -649,9 +672,10 @@ export const FX_CSS = `
 --wl-tint-blue:#212940;--wl-tint-green:#1E2A1F;--wl-tint-amber:#2C230F;
 --wl-amber-text:#FBBF24;--wl-amber-border:rgba(251,191,36,.55);
 --wl-emerald:#34D399;
+--wl-teal:#5DCAA5;--wl-tint-teal:#182A25;
 --wl-chip-border:#3A3226;--wl-chip-text:#CFC8B8;
 --wl-footer:#1F1A14;
---wl-tile-files:#322818;--wl-tile-marks:#272119;
+--wl-tile-files:#2B2419;
 --wl-grid-line:rgba(122,155,232,.16);
 }
 @property --pn-spin{syntax:"<angle>";initial-value:0deg;inherits:false}
@@ -678,13 +702,40 @@ export const FX_CSS = `
 @keyframes pn-headshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
 .pn-fx-slab{transition:transform .15s ease,box-shadow .15s ease}
 .pn-fx-slab:hover{transform:translate(-4px,-4px);box-shadow:6px 6px 0 var(--wl-ink)}
-.pn-fx-scan{position:relative;overflow:hidden;transition:border-color .2s}
-.pn-fx-scan::before{content:"";position:absolute;inset:0;opacity:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(10,10,10,.05) 0 2px,transparent 2px 4px);transition:opacity .2s}
-.pn-fx-scan::after{content:"";position:absolute;left:0;right:0;height:30px;top:-30px;opacity:0;background:linear-gradient(to bottom,transparent,rgba(16,185,129,.18),transparent);pointer-events:none}
-.pn-fx-scan:hover{border-color:var(--wl-emerald)}
-.pn-fx-scan:hover::before{opacity:1}
-.pn-fx-scan:hover::after{opacity:1;animation:pn-scanline 1.4s linear infinite}
-@keyframes pn-scanline{to{top:100%}}
+.pn-fx-peek{position:relative;transition:background-color .15s ease,color .15s ease}
+.pn-fx-peek::after{content:attr(data-peek);position:absolute;bottom:calc(100% + 5px);inset-inline-start:0;transform-origin:bottom left;transform:translateY(6px) scale(.92);opacity:0;background:var(--wl-ink);color:var(--wl-bg);font-size:11px;font-weight:600;line-height:1;padding:5px 9px;border-radius:7px;white-space:nowrap;pointer-events:none;z-index:2;transition:opacity .15s ease,transform .2s cubic-bezier(.34,1.56,.64,1)}
+.pn-fx-peek-end::after{inset-inline-start:auto;inset-inline-end:0;transform-origin:bottom right}
+@media (hover:hover){
+.pn-fx-peek:hover::after{opacity:1;transform:translateY(0) scale(1)}
+.pn-fx-peek:hover{background:var(--wl-ink);color:var(--wl-bg)}
+.pn-fx-peek:hover svg{color:var(--wl-bg)}
+.pn-fx-peek-pro:hover{background:#f59e0b;border-color:#f59e0b;color:#1c1917}
+.pn-fx-peek-pro:hover svg{color:#1c1917}
+}
+.pn-fx-rank-bar{width:28%;transition:width .55s cubic-bezier(.22,1,.36,1)}
+.pn-fx-rank:hover .pn-fx-rank-bar{width:var(--w)}
+.pn-fx-rank:hover .pn-fx-rank-row:nth-child(2) .pn-fx-rank-bar{transition-delay:.08s}
+.pn-fx-rank:hover .pn-fx-rank-row:nth-child(3) .pn-fx-rank-bar{transition-delay:.16s}
+.pn-fx-next-arrow{transform:rotate(90deg);transition:margin-inline-start .4s cubic-bezier(.22,1,.36,1)}
+.pn-fx-next:hover .pn-fx-next-arrow{margin-inline-start:14px}
+.pn-fx-dose-dot{transform:scale(.55);opacity:.45;transition:transform .28s cubic-bezier(.34,1.56,.64,1),opacity .2s ease}
+.pn-fx-dose:hover .pn-fx-dose-dot{transform:scale(1);opacity:1}
+.pn-fx-dose:hover .pn-fx-dose-dot:nth-child(2){transition-delay:0.04s}
+.pn-fx-dose:hover .pn-fx-dose-dot:nth-child(3){transition-delay:0.08s}
+.pn-fx-dose:hover .pn-fx-dose-dot:nth-child(4){transition-delay:0.12s}
+.pn-fx-dose:hover .pn-fx-dose-dot:nth-child(5){transition-delay:0.16s}
+.pn-fx-dose:hover .pn-fx-dose-dot:nth-child(6){transition-delay:0.20s}
+.pn-fx-dose:hover .pn-fx-dose-dot:nth-child(7){transition-delay:0.24s}
+.pn-fx-dose:hover .pn-fx-dose-dot:nth-child(8){transition-delay:0.28s}
+.pn-fx-dose:hover .pn-fx-dose-dot:nth-child(9){transition-delay:0.32s}
+.pn-fx-dose:hover .pn-fx-dose-dot:nth-child(10){transition-delay:0.36s}
+.pn-fx-dose:hover .pn-fx-dose-dot:nth-child(11){transition-delay:0.40s}
+.pn-fx-dose:hover .pn-fx-dose-dot:nth-child(12){transition-delay:0.44s}
+.pn-fx-dose:hover .pn-fx-dose-dot:nth-child(13){transition-delay:0.48s}
+.pn-fx-dose:hover .pn-fx-dose-dot:nth-child(14){transition-delay:0.52s}
+.pn-fx-hand-chip{transition:transform .28s cubic-bezier(.34,1.56,.64,1),border-color .2s ease,box-shadow .2s ease}
+.pn-fx-hand:hover .pn-fx-hand-chip{transform:translateY(-4px) rotate(-2deg);border-color:var(--wl-emerald);box-shadow:0 8px 16px rgba(0,0,0,.12)}
+.pn-fx-hand:hover .pn-fx-hand-chip:nth-child(2){transform:translateY(-4px) rotate(2deg);transition-delay:.08s}
 .pn-fx-stamp{position:relative}
 .pn-fx-stamp::after{content:attr(data-stamp);position:absolute;top:14px;right:14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;font-weight:800;letter-spacing:.1em;white-space:nowrap;color:#dc2626;border:2px solid currentColor;padding:2px 8px;border-radius:4px;transform:rotate(8deg) scale(3);opacity:0;pointer-events:none;transition:transform .18s cubic-bezier(.34,1.56,.64,1),opacity .12s}
 .pn-fx-stamp:hover::after{transform:rotate(-6deg) scale(1);opacity:1}
@@ -700,13 +751,11 @@ export const FX_CSS = `
 .pn-fx-grid::before{content:"";position:absolute;inset:0;border-radius:14px;pointer-events:none;background-image:linear-gradient(var(--wl-grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--wl-grid-line) 1px,transparent 1px);background-size:20px 20px;transition:opacity .25s ease}
 .pn-fx-grid:hover{background-color:var(--wl-card)}
 .pn-fx-grid:hover::before{opacity:0}
-.pn-fx-meter-fill{width:32%}
-.pn-fx-meter-readout::before{content:"160"}
-@media (hover:hover) and (pointer:fine){
-.pn-fx-meter-fill{transition:width .45s cubic-bezier(.22,1,.36,1)}
-.pn-fx-meter:hover .pn-fx-meter-fill{width:82.4%}
-.pn-fx-meter:hover .pn-fx-meter-readout::before{content:"412"}
-}
+.pn-fx-seal-chip{transition:background-color .18s ease,color .18s ease,border-color .18s ease}
+.pn-fx-seal:hover .pn-fx-seal-chip{background:var(--wl-ink);color:var(--wl-bg);border-color:var(--wl-ink)}
+.pn-fx-seal:hover .pn-fx-seal-chip:nth-child(2){transition-delay:.08s}
+.pn-fx-seal:hover .pn-fx-seal-chip:nth-child(3){transition-delay:.16s}
+.pn-fx-seal:hover .pn-fx-seal-chip:nth-child(4){transition-delay:.24s}
 .pn-fx-draw{position:relative}
 .pn-fx-draw-rect{position:absolute;inset:-2px;width:calc(100% + 4px);height:calc(100% + 4px);pointer-events:none}
 .pn-fx-draw-rect rect{x:1.5px;y:1.5px;width:calc(100% - 3px);height:calc(100% - 3px);rx:16px;fill:none;stroke:rgb(var(--pn-accent));stroke-width:3;stroke-dasharray:1200;stroke-dashoffset:1200;transition:stroke-dashoffset .6s ease}
@@ -715,9 +764,20 @@ export const FX_CSS = `
 .pn-fx-ants:hover{animation:pn-ants .5s linear infinite}
 .pn-fx-fill{background-image:linear-gradient(110deg,rgb(var(--pn-accent)/.10) 50%,transparent 50%);background-size:230% 100%;background-position:100% 0;transition:background-position .3s ease}
 .pn-fx-fill:hover{background-position:0 0}
+.pn-fx-cal{position:relative}
+.pn-fx-cal-week{display:flex;gap:3px;position:relative}
+.pn-fx-cal-week>span{flex:1;height:20px;border-radius:5px;background:color-mix(in srgb,var(--wl-teal) 14%,transparent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;line-height:20px;text-align:center;color:var(--wl-teal)}
+.pn-fx-cal-week>.pn-fx-cal-today{background:var(--wl-teal);color:var(--wl-tint-teal);font-weight:700}
+.pn-fx-cal-week>.pn-fx-cal-pill{position:absolute;top:-8px;left:calc((100% - 18px) / 7 + 3px);width:calc((100% - 18px) / 7);height:5px;border-radius:3px;background:var(--wl-teal);flex:none;transition:width .45s cubic-bezier(.22,1,.36,1)}
+.pn-fx-cal:hover .pn-fx-cal-pill{width:calc((100% - 18px) / 7 * 3 + 6px)}
+.pn-fx-cal-bell{transform-origin:50% 0}
+.pn-fx-cal:hover .pn-fx-cal-bell{animation:pn-ring .6s ease}
+@keyframes pn-ring{0%,100%{transform:rotate(0)}20%{transform:rotate(16deg)}45%{transform:rotate(-13deg)}70%{transform:rotate(7deg)}}
 .pn-fx-ribbon{position:relative;overflow:hidden}
 .pn-fx-ribbon::before{content:"";position:absolute;top:-2px;inset-inline-end:26px;width:22px;height:40px;background:rgb(var(--pn-accent));clip-path:polygon(0 0,100% 0,100% 100%,50% 74%,0 100%);transition:top .3s cubic-bezier(.34,1.56,.64,1)}
 .pn-fx-ribbon:hover::before{top:-44px}
+.pn-fx-ribbon-ink::before{background:#60A5FA}
+.dark .pn-fx-ribbon-ink::before{background:#2563EB}
 @keyframes pn-ants{to{background-position:0 0,22.6px 0}}
 .pn-fx-type:hover .pn-fx-icons svg{animation:pn-icon-type .12s ease both}
 .pn-fx-type:hover .pn-fx-icons svg:nth-child(1){animation-delay:.08s}
@@ -735,8 +795,8 @@ export const FX_CSS = `
    press. Park the looping ones where there is no real pointer. The static
    halves of those rules (the gradient, the scanlines) stay; they cost one
    paint, not a frame budget. */
-@media (hover:none){.pn-fx-conic-btn:hover,.group:hover .pn-fx-conic-btn,.pn-fx-conic-tile:hover,.pn-fx-scan:hover::after,.pn-fx-ants:hover{animation:none!important}}
-@media (prefers-reduced-motion:reduce){.pn-sticky,.pn-fx-conic-btn,.pn-fx-conic-tile,.pn-fx-popmix>span,.pn-fx-shake:hover,.pn-fx-slab,.pn-fx-scan:hover::after,.pn-fx-stamp::after,.pn-fx-type:hover .pn-fx-icons svg,.pn-fx-ants:hover,.pn-fx-meter-fill,.pn-fx-fill{animation:none!important;transition:none!important}}
+@media (hover:none){.pn-fx-conic-btn:hover,.group:hover .pn-fx-conic-btn,.pn-fx-conic-tile:hover,.pn-fx-ants:hover,.pn-fx-cal:hover .pn-fx-cal-bell{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.pn-sticky,.pn-fx-conic-btn,.pn-fx-conic-tile,.pn-fx-popmix>span,.pn-fx-shake:hover,.pn-fx-slab,.pn-fx-stamp::after,.pn-fx-peek,.pn-fx-peek::after,.pn-fx-rank-bar,.pn-fx-next-arrow,.pn-fx-dose-dot,.pn-fx-hand-chip,.pn-fx-type:hover .pn-fx-icons svg,.pn-fx-ants:hover,.pn-fx-seal-chip,.pn-fx-fill,.pn-fx-cal-pill,.pn-fx-cal-bell{animation:none!important;transition:none!important}}
 `;
 
 export function LandingPage({
@@ -832,10 +892,12 @@ export function LandingPage({
   // pinch-zoom for accessibility. A locked viewport (user-scalable=no) is a
   // Lighthouse a11y failure. The gated app keeps the restrictive viewport from
   // index.html that blocks iOS auto-zoom on the editor; we restore it on
-  // unmount, when the authenticated app takes over.
+  // unmount, when the authenticated app takes over. The native apps keep the
+  // locked viewport: their webview has no page audit to pass, and an unlocked
+  // one zooms into the autofocused phrase field on the first start on iOS.
   useEffect(() => {
     const vp = document.querySelector('meta[name="viewport"]');
-    if (!vp) return;
+    if (!vp || IS_DESKTOP) return;
     const restrictive = vp.getAttribute('content');
     vp.setAttribute('content', 'width=device-width, initial-scale=1, viewport-fit=cover');
     return () => {
@@ -1527,109 +1589,115 @@ export function LandingPage({
           <p className="text-xs text-[var(--wl-muted)]">{t('badges.privacyToolsCaption')}</p>
         </div>
 
-        {/* ── Five pillars (tile grid) ────────────────────────── */}
+        {/* ── Pillars (tile grid) ─────────────────────────────── */}
         <div className="max-w-5xl mx-auto mb-2">
           <Kicker>{t('pillars.kicker')}</Kicker>
-          <div className="grid grid-cols-2 sm:grid-cols-6 gap-2.5 sm:gap-3">
-            <div className="pn-fx-invert col-span-2 rounded-2xl bg-[var(--wl-ink)] p-4 sm:p-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+            <div className="pn-fx-invert col-span-2 sm:col-span-1 rounded-2xl bg-[var(--wl-ink)] p-4 sm:p-6">
               <FileText size={30} weight="duotone" className="text-blue-400 dark:text-blue-600" />
-              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl font-extrabold tracking-tight text-[var(--wl-bg)]">{t('pillars.notesName')}</div>
+              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl lg:text-xl font-extrabold tracking-tight text-[var(--wl-bg)]">{t('pillars.notesName')}</div>
               <p className="mt-1 text-sm leading-relaxed text-[var(--wl-slab-sub)]">
                 {t('pillars.notesBlurb')}
               </p>
             </div>
-            <div className="pn-fx-draw sm:col-span-2 rounded-2xl bg-[var(--wl-tint-blue)] border-2 border-accent/30 p-4 sm:p-6">
+            <div className="pn-fx-draw rounded-2xl bg-[var(--wl-tint-blue)] border-2 border-accent/30 p-4 sm:p-6">
               <svg className="pn-fx-draw-rect" aria-hidden="true"><rect /></svg>
               <CheckCircle size={30} weight="duotone" className="text-accent" />
-              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl font-extrabold tracking-tight text-[var(--wl-ink)]">{t('pillars.tasksName')}</div>
+              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl lg:text-xl font-extrabold tracking-tight text-[var(--wl-ink)]">{t('pillars.tasksName')}</div>
               <p className="mt-1 text-sm leading-relaxed text-[var(--wl-sub)]">
                 {t('pillars.tasksBlurb')}
               </p>
             </div>
-            <div className="pn-fx-stamp sm:col-span-2 rounded-2xl bg-[var(--wl-tint-green)] border-2 border-[var(--wl-emerald)]/30 p-4 sm:p-6" data-stamp="SAFE">
+            <div className="pn-fx-stamp rounded-2xl bg-[var(--wl-tint-green)] border-2 border-[var(--wl-emerald)]/30 p-4 sm:p-6" data-stamp="SECURE">
               <Shield size={30} weight="duotone" className="text-[var(--wl-emerald)]" />
-              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl font-extrabold tracking-tight text-[var(--wl-ink)]">{t('pillars.vaultName')}</div>
+              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl lg:text-xl font-extrabold tracking-tight text-[var(--wl-ink)]">{t('pillars.vaultName')}</div>
               <p className="mt-1 text-sm leading-relaxed text-[var(--wl-sub)]">
                 {t('pillars.vaultBlurb')}
               </p>
             </div>
-            <div className="pn-fx-grid col-span-2 sm:col-span-2 rounded-2xl bg-[var(--wl-card)] border-2 border-accent p-4 sm:p-6">
+            <div className="pn-fx-grid col-span-2 sm:col-span-1 rounded-2xl bg-[var(--wl-card)] border-2 border-accent/30 p-4 sm:p-6">
               <Book size={30} weight="duotone" className="text-[var(--wl-ink)]" />
-              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl font-extrabold tracking-tight text-[var(--wl-ink)]">{t('pillars.journalName')}</div>
+              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl lg:text-xl font-extrabold tracking-tight text-[var(--wl-ink)]">{t('pillars.journalName')}</div>
               <p className="mt-1 text-sm leading-relaxed text-[var(--wl-sub)]">
                 {t('pillars.journalBlurb')}
               </p>
             </div>
-            {/* The one tile that shows a number. "Storage tracking" is in the
-                blurb, so the meter states the claim instead of decorating
-                around it, and the fill sweeps on hover. Warm grey rather than
-                a hue: row two already carries violet, and only a neutral
-                ground lets the fill stay pure black.
-                It carries the Vault tile's stamp as well, reading ENCRYPTED
-                rather than SAFE, so the two tiles that hold your bytes share
-                one gesture. The stamp text is a literal for the same reason
-                SAFE is, and pn-fx-stamp supplies its own position: relative.
-                The bar and the digits move together (160 MB / 32% at rest,
-                412 MB / 82.4% on hover) instead of the bar sweeping next to a
-                frozen number, which is what it used to do. Keep the two pairs
-                in step: they are one fact written twice, four lines apart in
-                FX_CSS.
-                The whole effect sits behind (hover:hover) and (pointer:fine),
-                so a phone gets the rest state and nothing else. iOS fakes a
-                hover on tap and then keeps it, which left the meter animating
-                at random while scrolling. The first attempt drove both halves
-                from one animated @property and read the digits out of a CSS
-                counter; that is elegant on Chrome and stuttered through 0 MB
-                on iOS, so the digits are plain ::before literals now.
-                Those literals are not locale keys - a numeral pair and a unit
-                symbol read identically in every catalog, the same call the
-                ~/notes/ideas.md path below makes.
-                Spec: ops/docs/pro-features.md (Pro storage cap is 500 MB) */}
-            <div className="pn-fx-meter pn-fx-stamp col-span-2 sm:col-span-2 rounded-2xl bg-[var(--wl-tile-files)] border-2 border-[var(--wl-ink)] p-4 sm:p-6 pb-11 sm:pb-12" data-stamp="ENCRYPTED">
+            {/* The blurb's four kinds as four chips, and on hover they seal
+                one after another: each chip fills with ink and its glyph
+                turns cream, start to end, while the ENCRYPTED stamp lands.
+                The tile shows what it says and counts nothing. It carries the
+                Vault tile's stamp as well, so the two tiles that hold your
+                bytes share one gesture; the stamp text is a literal for the
+                same reason SECURE is. The ground is a warm neutral so the sealed
+                chips can be pure ink. */}
+            <div className="pn-fx-seal pn-fx-stamp col-span-2 sm:col-span-1 rounded-2xl bg-[var(--wl-tile-files)] border-2 border-[var(--wl-ink)]/25 p-4 sm:p-6" data-stamp="ENCRYPTED">
               <Folder size={30} weight="duotone" className="text-[var(--wl-ink)]" />
-              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl font-extrabold tracking-tight text-[var(--wl-ink)]">{t('pillars.filesName')}</div>
+              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl lg:text-xl font-extrabold tracking-tight text-[var(--wl-ink)]">{t('pillars.filesName')}</div>
               <p className="mt-1 text-sm leading-relaxed text-[var(--wl-sub)]">
                 {t('pillars.filesBlurb')}
               </p>
-              <span dir="ltr" aria-hidden="true" className="pn-fx-meter-readout absolute end-4 sm:end-6 bottom-6 sm:bottom-7 font-mono text-[10px] text-[var(--wl-sub)]">{' / 500 MB'}</span> {/* rtl-ok: a numeric readout stays LTR */}
-              <span aria-hidden="true" className="absolute start-4 end-4 sm:start-6 sm:end-6 bottom-4 sm:bottom-5 h-1.5 overflow-hidden rounded-full bg-[var(--wl-ink)]/15">
-                <span className="pn-fx-meter-fill block h-full rounded-full bg-[var(--wl-ink)]" />
-              </span>
+              <div aria-hidden="true" className="mt-3 sm:mt-4 flex gap-1.5">
+                {[ImageIcon, FileText, MusicNotes, VideoCamera].map((Glyph, i) => (
+                  <span key={i} className="pn-fx-seal-chip flex h-7 w-7 items-center justify-center rounded-md border border-[var(--wl-ink)]/25 text-[var(--wl-ink)]">
+                    <Glyph size={15} weight="duotone" />
+                  </span>
+                ))}
+              </div>
+            </div>
+            {/* A week row with today filled, the pillar's own shape. On hover
+                a multi-day event stretches from one day to three and the alert
+                bell rings: the two things the calendar does that a date field
+                does not. The pill and the bell are the only hover here that
+                grows or swings. The digits are literals for the same reason the
+                meter's are: a numeral reads the same in every catalog. */}
+            <div className="pn-fx-cal col-span-2 sm:col-span-1 rounded-2xl bg-[var(--wl-tint-teal)] border-2 border-[var(--wl-teal)]/30 p-4 sm:p-6">
+              <CalendarDots size={30} weight="duotone" className="text-[var(--wl-teal)]" />
+              <Bell size={18} weight="duotone" aria-hidden="true" className="pn-fx-cal-bell absolute top-4 end-4 sm:top-6 sm:end-6 text-[var(--wl-teal)]" />
+              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl lg:text-xl font-extrabold tracking-tight text-[var(--wl-ink)]">{t('pillars.calendarName')}</div>
+              <p className="mt-1 text-sm leading-relaxed text-[var(--wl-sub)]">
+                {t('pillars.calendarBlurb')}
+              </p>
+              <div dir="ltr" aria-hidden="true" className="pn-fx-cal-week mt-3 sm:mt-4"> {/* rtl-ok: a week of digits stays LTR */}
+                <span>12</span><span>13</span><span className="pn-fx-cal-today">14</span><span>15</span><span>16</span><span>17</span><span>18</span>
+                <span className="pn-fx-cal-pill" />
+              </div>
             </div>
             {/* A faint accent wash slides across from the left, the one hover
                 on this grid that fills rather than outlines. A person glyph
                 rather than an address card: the pillar's own row chips are
                 circles holding initials, and the tile carries that reading
                 up to the homepage. */}
-            <div className="pn-fx-fill col-span-2 sm:col-span-2 rounded-2xl bg-[var(--wl-card)] border-2 border-[var(--wl-line)] p-4 sm:p-6">
+            <div className="pn-fx-fill col-span-2 sm:col-span-1 rounded-2xl bg-[var(--wl-card)] border-2 border-[var(--wl-line)] p-4 sm:p-6">
               <UserCheck size={30} weight="duotone" className="text-accent" />
-              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl font-extrabold tracking-tight text-[var(--wl-ink)]">{t('pillars.contactsName')}</div>
+              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl lg:text-xl font-extrabold tracking-tight text-[var(--wl-ink)]">{t('pillars.contactsName')}</div>
               <p className="mt-1 text-sm leading-relaxed text-[var(--wl-sub)]">
                 {t('pillars.contactsBlurb')}
               </p>
             </div>
-            {/* The full-width strip that closes the grid. It is a strip rather
-                than a seventh square because the row above it seats three, and
-                the shape lets the accent ribbon read as a bookmark tucked into
-                a page edge: it sits in the tile at rest (a bookmark IS the
-                feature) and slides away on hover, the one hover here that
-                moves on the vertical axis. The name and the blurb sit on one
-                line from sm up and stack below it, where a 52-character blurb
-                beside a label leaves the label no room. */}
-            <div className="pn-fx-ribbon col-span-2 sm:col-span-6 rounded-2xl bg-[var(--wl-tile-marks)] border-2 border-[var(--wl-line)] p-4 sm:px-6 sm:py-4 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
-              <Bookmarks size={30} weight="duotone" className="text-accent shrink-0" />
-              <div className="text-xl sm:text-2xl font-extrabold tracking-tight text-[var(--wl-ink)] shrink-0">{t('pillars.bookmarksName')}</div>
-              <p className="text-sm leading-relaxed text-[var(--wl-sub)]">
+            {/* The accent ribbon reads as a bookmark tucked into a page edge:
+                it sits in the tile at rest (a bookmark IS the feature) and
+                slides away on hover, the one hover here that moves on the
+                vertical axis. The tile is ink, the corner diagonal to Notes, so
+                the two anchors frame the grid; a blue tint made it a twin of
+                Tasks. The ribbon takes the Notes glyph's light blue, because
+                the accent blue sinks into ink.
+                Tile order is a checkerboard of grounds, not the app's pillar
+                order: ink, blue, green, cream above tan, teal, cream, ink, so
+                no tile sits beside or under one of its own hue. */}
+            <div className="pn-fx-ribbon pn-fx-ribbon-ink col-span-2 sm:col-span-1 rounded-2xl bg-[var(--wl-ink)] p-4 sm:p-6">
+              <Bookmarks size={30} weight="duotone" className="text-blue-400 dark:text-blue-600" />
+              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl lg:text-xl font-extrabold tracking-tight text-[var(--wl-bg)]">{t('pillars.bookmarksName')}</div>
+              <p className="mt-1 text-sm leading-relaxed text-[var(--wl-slab-sub)]">
                 {t('pillars.bookmarksBlurb')}
               </p>
             </div>
           </div>
-          {/* Row three of the same grid, and deliberately outside the "one key"
+          {/* The slab under the grid, and deliberately outside the "one key"
               story above it: the Markdown editor works on plain local files with
               no sync and no encryption, so it keeps the dashed (marching-ants)
               border the small tile used to carry - the selection marquee marks
               the odd one out. It spans the full width because it is the "and one
-              on your disk" half of the kicker, not a seventh pillar. */}
+              on your disk" half of the kicker, not a pillar. */}
           <div className="pn-fx-ants mt-2.5 sm:mt-3 grid sm:grid-cols-2 gap-6 sm:gap-8 items-center rounded-2xl p-6 sm:p-8">
             <div>
               <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-[var(--wl-ink)]">
@@ -2068,31 +2136,88 @@ export function LandingPage({
             {t('mood.intro')}
           </p>
 
-          <div className="mt-8 grid sm:grid-cols-2 gap-4">
-            {/* Mood & Emotions */}
-            <div className="pn-fx-scan rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)] p-5 space-y-2">
+          {/* Every built-in tracker as a pill, in the app's own order and with
+              the app's own glyphs (TRACKER_ICONS) and names (the trackers
+              catalog), so the row cannot drift from the real set. A pill
+              presses flat on hover like the "And also" pills, fills with ink,
+              and a sample value pops up above it: the one number a tracker
+              holds on a day. The rows sit 2rem apart where a pointer can hover, so
+              the bubble lands in the gap and covers no pill; a touch screen
+              keeps the tight rows and gets no bubble at all, because iOS
+              fakes a hover on tap and would leave it over the row before; a value inside the pill was tried
+              and widened it, which pushed the row's last pill onto a new line
+              while you looked. The samples are marketing copy, not app data.
+              The last pill is the custom tracker and the one Pro thing here.
+              Spec: ops/docs/pro-features.md (custom trackers) */}
+          <div className="pn-fx-popmix mt-7 flex flex-wrap gap-x-2.5 gap-y-2.5 [@media(hover:hover)]:gap-y-8" onMouseOver={peekSide}>
+            {LANDING_TRACKERS.map((id) => (
+              <span key={id} data-peek={t(`mood.peek.${id}`)} className="pn-fx-peek inline-flex items-center gap-1.5 rounded-full border-[1.5px] border-[var(--wl-chip-border)] bg-[var(--wl-card)] px-3 py-1.5 text-xs font-semibold text-[var(--wl-chip-text)] [&_svg]:size-3.5 [&_svg]:text-[var(--wl-emerald)]">
+                {TRACKER_ICONS[id]}
+                {t(`trackers:labels.${id}`)}
+              </span>
+            ))}
+            <span data-peek={t('mood.peek.custom')} className="pn-fx-peek pn-fx-peek-pro inline-flex items-center gap-1.5 rounded-full border-[1.5px] border-dashed border-[var(--wl-amber-border)] bg-[var(--wl-card)] px-3 py-1.5 text-xs font-semibold text-[var(--wl-amber-text)] [&_svg]:size-3.5">
+              <PlusCircle />
+              {t('mood.pillCustom')}
+            </span>
+          </div>
+
+          {/* What you get back: four cards, each with the shape of its own
+              result, and each result moves on hover. The digits are literals
+              for the same reason the pillar tiles' are: a numeral reads the
+              same in every catalog. */}
+          <div className="mt-6 grid sm:grid-cols-2 gap-4">
+            <div className="pn-fx-rank rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)] p-5 space-y-2">
               <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--wl-tint-green)] text-[var(--wl-emerald)]">
-                <Smiley size={20} weight="duotone" />
+                <ChartBar size={20} weight="duotone" />
               </div>
-              <div className="font-extrabold text-[var(--wl-ink)]">{t('mood.cardEmotionsTitle')}</div>
+              <div className="font-extrabold text-[var(--wl-ink)]">{t('mood.cardPatternsTitle')}</div>
               <p className="text-sm text-[var(--wl-sub)] leading-relaxed">
-                {t('mood.cardEmotionsBody')}
+                {t('mood.cardPatternsBody')}
               </p>
+              <div aria-hidden="true" className="pt-2 space-y-1.5 font-mono text-[11px] text-[var(--wl-sub)]">
+                {([['sleep', '70%', '+2.1'], ['steps', '48%', '+1.4'], ['caffeine', '22%', '-0.7']] as const).map(([id, w, delta]) => (
+                  <div key={id} className="pn-fx-rank-row flex items-center gap-2">
+                    <span className="shrink-0 min-w-16">{t(`trackers:labels.${id}`)}</span>
+                    <span className="flex-1 h-2 rounded-full bg-[var(--wl-ink)]/10 overflow-hidden">
+                      <span className={`pn-fx-rank-bar block h-full rounded-full ${delta.startsWith('-') ? 'bg-[var(--wl-amber-border)]' : 'bg-[var(--wl-emerald)]'}`} style={{ '--w': w } as CSSProperties} />
+                    </span>
+                    <span dir="ltr" className="w-9 text-end tabular-nums">{delta}</span> {/* rtl-ok: a signed number stays LTR */}
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Sleep & Activity */}
-            <div className="pn-fx-scan rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)] p-5 space-y-2">
+            <div className="pn-fx-rank pn-fx-next rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)] p-5 space-y-2">
               <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--wl-tint-green)] text-[var(--wl-emerald)]">
                 <Moon size={20} weight="duotone" />
               </div>
-              <div className="font-extrabold text-[var(--wl-ink)]">{t('mood.cardSleepTitle')}</div>
+              <div className="font-extrabold text-[var(--wl-ink)]">{t('mood.cardExploreTitle')}</div>
               <p className="text-sm text-[var(--wl-sub)] leading-relaxed">
-                {t('mood.cardSleepBody')}
+                {t('mood.cardExploreBody')}
               </p>
+              <div aria-hidden="true" className="pt-2 space-y-1.5 font-mono text-[11px] text-[var(--wl-sub)]">
+                <div className="pn-fx-rank-row flex items-center gap-2">
+                  <span className="shrink-0 min-w-16">{t('mood.vizTonight')}</span>
+                  <span className="flex-1 h-2 rounded-full bg-[var(--wl-ink)]/10 overflow-hidden">
+                    <span className="pn-fx-rank-bar block h-full rounded-full bg-[var(--wl-ink)]/60" style={{ '--w': '44%' } as CSSProperties} />
+                  </span>
+                  <span dir="ltr" className="w-14 text-end tabular-nums">7.5 h</span> {/* rtl-ok: a measurement stays LTR */}
+                </div>
+                <div className="flex items-center gap-2 ps-1 text-[var(--wl-emerald)]">
+                  <ArrowRight size={12} weight="bold" className="pn-fx-next-arrow" />
+                </div>
+                <div className="pn-fx-rank-row flex items-center gap-2">
+                  <span className="shrink-0 min-w-16">{t('mood.vizTomorrow')}</span>
+                  <span className="flex-1 h-2 rounded-full bg-[var(--wl-ink)]/10 overflow-hidden">
+                    <span className="pn-fx-rank-bar block h-full rounded-full bg-[var(--wl-emerald)]" style={{ '--w': '78%' } as CSSProperties} />
+                  </span>
+                  <span dir="ltr" className="w-14 text-end tabular-nums">7.8</span> {/* rtl-ok: a number stays LTR */}
+                </div>
+              </div>
             </div>
 
-            {/* Medication Tracking */}
-            <div className="pn-fx-scan rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)] p-5 space-y-2">
+            <div className="pn-fx-dose rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)] p-5 space-y-2">
               <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--wl-tint-green)] text-[var(--wl-emerald)]">
                 <Pill size={20} weight="duotone" />
               </div>
@@ -2100,17 +2225,31 @@ export function LandingPage({
               <p className="text-sm text-[var(--wl-sub)] leading-relaxed">
                 {t('mood.cardMedsBody')}
               </p>
+              <div aria-hidden="true" className="pt-2 grid grid-cols-14 gap-1.5">
+                {DOSE_DAYS.map((taken, i) => (
+                  <span key={i} className={`pn-fx-dose-dot block aspect-square rounded-full ${taken ? 'bg-[var(--wl-emerald)]' : 'bg-[var(--wl-line)]'}`} />
+                ))}
+              </div>
             </div>
 
-            {/* Analytics & Export */}
-            <div className="pn-fx-scan rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)] p-5 space-y-2">
+            <div className="pn-fx-hand rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)] p-5 space-y-2">
               <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--wl-tint-green)] text-[var(--wl-emerald)]">
-                <ChartBar size={20} weight="duotone" />
+                <Export size={20} weight="duotone" />
               </div>
-              <div className="font-extrabold text-[var(--wl-ink)]">{t('mood.cardAnalyticsTitle')}</div>
+              <div className="font-extrabold text-[var(--wl-ink)]">{t('mood.cardShareTitle')}</div>
               <p className="text-sm text-[var(--wl-sub)] leading-relaxed">
-                {t('mood.cardAnalyticsBody')}
+                {t('mood.cardShareBody')}
               </p>
+              <div aria-hidden="true" className="pt-2 flex gap-2">
+                <span className="pn-fx-hand-chip inline-flex items-center gap-1.5 rounded-lg border-[1.5px] border-[var(--wl-line)] bg-[var(--wl-bg)] px-2.5 py-1.5 text-xs font-semibold text-[var(--wl-ink)]">
+                  <FileText size={14} weight="duotone" className="text-[var(--wl-emerald)]" />
+                  {t('mood.vizReport')}
+                </span>
+                <span className="pn-fx-hand-chip inline-flex items-center gap-1.5 rounded-lg border-[1.5px] border-[var(--wl-line)] bg-[var(--wl-bg)] px-2.5 py-1.5 text-xs font-semibold text-[var(--wl-ink)]">
+                  <Copy size={14} weight="duotone" className="text-[var(--wl-emerald)]" />
+                  {t('mood.vizPrompt')}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -2582,7 +2721,7 @@ export function LandingPage({
                 components={{ tld: <span className="text-accent dark:text-blue-500" /> }}
               />
             </a>
-            <a href="https://itsfoss.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://itsfoss.com/privacy-notes/" target="_blank" rel="noopener noreferrer">
               {/* Two brand greens that hold up on cream and on sumi ink
                   alike, so this one mark stays as it was drawn. */}
               <img

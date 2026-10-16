@@ -49,14 +49,14 @@ export function EditorSlotPill({
       aria-label={label}
       aria-pressed={active}
       className={`group pointer-events-auto mt-1 flex items-center h-8 overflow-hidden rounded-lg border shadow-lg text-sm active:scale-95 transition outline-none ${
-        // The ON state keeps the same OPAQUE surface as the off state and
-        // says so with the border and the glyph. The tinted `bg-accent/10`
-        // the bordered toggles elsewhere use is translucent, and elsewhere
-        // it sits on a pane; here it sits on the note's own text, which
-        // read straight through it.
+        // Every state keeps an OPAQUE surface: the pill sits on the note's
+        // own text, which reads straight through a translucent tint such as
+        // `bg-accent/10` or `bg-pn/10`. ON says so with the border and the
+        // glyph; hover darkens the surface by mixing the text colour into it,
+        // which stays solid.
         active
           ? 'border-accent/60 bg-surface-1 text-accent'
-          : 'border-divider bg-surface-1 text-pn-soft [@media(hover:hover)]:hover:bg-pn/10'
+          : 'border-divider bg-surface-1 text-pn-soft [@media(hover:hover)]:hover:bg-[color-mix(in_srgb,var(--color-surface-1)_90%,var(--color-pn))]'
       }`}
     >
       {/* Label hidden by default; slides out on hover so it never sits over

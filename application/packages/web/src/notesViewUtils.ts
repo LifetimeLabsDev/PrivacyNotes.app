@@ -7,15 +7,16 @@ import type { NoteType } from '@notes/shared';
 import type { LocalNote } from './db';
 import type { Space } from './spaces';
 import { indexedBodyText, isPhraseQuery } from './search';
-import { textMatcher } from './textMatch';
-import { MARKDOWN_NOTE_TYPES } from './noteTypes';
+import { foldForMatch, textMatcher } from './textMatch';
+import { MARKDOWN_NOTE_TYPES, isKnownNoteType } from './noteTypes';
+import { SCHEDULE_KEYS, dayNumber, occurrencesOf, scheduleOf, shiftDay, spanLength, withSchedule, type Schedule } from './schedule';
 export { MARKDOWN_NOTE_TYPES, isKnownNoteType } from './noteTypes';
 import type { ListPrefs } from './listPrefs';
 import { formatBytes } from './formatBytes';
 import i18n from './i18n';
-import { formatInstant, formatPattern, toLocalIso, writtenDateLocale } from './intlFormat';
+import { formatDay, formatInstant, formatPattern, toLocalIso, writtenDateLocale } from './intlFormat';
 import { parseLinkBody, linkDomain } from './linkBody';
-import { contactDisplayName, contactPhotoBytes, contactSecondLine, parseContactBody } from './contactBody';
+import { contactBirthday, contactDisplayName, contactPhotoBytes, contactSecondLine, parseContactBody } from './contactBody';
 import type { PinGatePurpose } from './ProtectedNoteGate';
 import type { NoteConflict } from './sync';
 import { isDelimiterRow, tableWidthFromMarker } from './tableDelimiterRow';
@@ -169,9 +170,85 @@ export function computeSnapshotTotalSize(
   return estimateCiphertextBytes(payload) + sumAttachmentBlobBytes(body);
 }
 
-/** Strip HTML tags and decode common entities, returning only text content. */
+/** Drop the HTML tags the editor writes (highlight, color, underline, a
+ *  break in a table). A `<` that opens no tag is text, as markdown reads it. */
 function stripHtml(line: string): string {
-  return line.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
+  return line.replace(/<!--[\s\S]*?-->|<\/?[A-Za-z][A-Za-z0-9-]*(?:\s[^<>]*)?\/?>/g, '');
+}
+
+const NAMED_ENTITIES: Record<string, string> = { lt: '<', gt: '>', amp: '&', quot: '"', apos: "'", nbsp: ' ' };
+
+/**
+ * Decode the entity references a body holds. The editor saves a typed `<`,
+ * `>` and an `&` that would read as an entity as references, and an empty
+ * paragraph as `&nbsp;`; numeric references come in through imports. One
+ * pass, so `&amp;lt;` reads `&lt;`, as on screen.
+ */
+function decodeEntities(line: string): string {
+  return line.replace(/&(#\d{1,7}|#x[0-9a-f]{1,6}|[a-z]+);/gi, (ref, name: string) => {
+    if (name[0] !== '#') return NAMED_ENTITIES[name] ?? ref;
+    const code = name[1] === 'x' || name[1] === 'X' ? parseInt(name.slice(2), 16) : parseInt(name.slice(1), 10);
+    const valid = code > 0 && code <= 0x10ffff && (code < 0xd800 || code > 0xdfff);
+    return String.fromCodePoint(valid ? code : 0xfffd);
+  });
+}
+
+/**
+ * A character the markdown spells literally, by a backslash escape or inside
+ * a code span, crosses the strip passes as a private-use stand-in so that no
+ * pass reads it as syntax, and `unshield` puts it back at the end. Only ASCII
+ * punctuation is shielded, because no pass touches anything else.
+ */
+const SHIELD_BASE = 0xe000;
+const ASCII_PUNCT = /[!-/:-@[-`{-~]/;
+const shield = (c: string) => String.fromCharCode(SHIELD_BASE + c.charCodeAt(0));
+const shieldAll = (s: string) => s.replace(/[!-/:-@[-`{-~]/g, shield);
+const unshield = (s: string) =>
+  s.replace(/[-]/g, (c) => String.fromCharCode(c.charCodeAt(0) - SHIELD_BASE));
+
+/** Where the backtick run of exactly `n` that closes a code span starts, or -1. */
+function closingBackticks(line: string, from: number, n: number): number {
+  for (let j = line.indexOf('`', from); j !== -1; ) {
+    let k = j;
+    while (line[k] === '`') k++;
+    if (k - j === n) return j;
+    j = line.indexOf('`', k);
+  }
+  return -1;
+}
+
+/**
+ * Read a line left to right as markdown does: `\` before ASCII punctuation is
+ * that character, a code span is its text as typed (one space each side
+ * trimmed when both are there), and a backtick run that closes nothing is
+ * text too. Each of those leaves shielded.
+ */
+function shieldLiterals(line: string): string {
+  let out = '';
+  for (let i = 0; i < line.length; ) {
+    const c = line[i]!;
+    if (c === '\\' && i + 1 < line.length && ASCII_PUNCT.test(line[i + 1]!)) {
+      out += shield(line[i + 1]!);
+      i += 2;
+    } else if (c === '`') {
+      let n = 1;
+      while (line[i + n] === '`') n++;
+      const close = closingBackticks(line, i + n, n);
+      if (close === -1) {
+        out += shieldAll(line.slice(i, i + n));
+        i += n;
+        continue;
+      }
+      let code = line.slice(i + n, close);
+      if (/^ [\s\S]* $/.test(code) && /\S/.test(code)) code = code.slice(1, -1);
+      out += shieldAll(code);
+      i = close + n;
+    } else {
+      out += c;
+      i++;
+    }
+  }
+  return out;
 }
 
 /** Count file links in a note body. */
@@ -222,14 +299,27 @@ function stripInlineMarkdown(line: string): string {
     // hidden text, nor its length. Same guard as the parse rule in
     // editorSpoiler.ts.
     .replace(/(^|[^|\\])\|\|(?![\s|])[^\n]*?\S\|\|(?!\|)/g, '$1•••')
+    // ==highlight== -> highlight, with the guards of the parse rule in
+    // editorInlineSyntax.ts, so "a == b" stays as typed.
+    .replace(/==(?![\s=])([^\n]*?)==/g, (run, inner: string) => (inner && !/\s$/.test(inner) ? inner : run))
     // [text](url) -> text
     .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
     // [[note link]] -> note link
     .replace(/\[\[([^\]]+)\]\]/g, '$1')
     // <http://...> autolink -> http://...
     .replace(/<((?:https?|mailto):[^>\s]+)>/g, '$1')
-    // lingering bold/italic/code/strikethrough markers
-    .replace(/[*_`~]/g, '')
+    // Emphasis and strike delimiters. Every literal `*`, `~` and backtick is
+    // escaped on save, so what is left is syntax, except a run with space on
+    // both sides, a lone `~` (strike takes two) and an underscore inside a
+    // word (snake_case), which markdown reads as text too.
+    .replace(/[*_~]+/g, (run, at: number, s: string) => {
+      const before = s[at - 1] ?? ' ';
+      const after = s[at + run.length] ?? ' ';
+      if (/\s/.test(before) && /\s/.test(after)) return run;
+      if (run === '~') return run;
+      if (/^_+$/.test(run) && /[\p{L}\p{N}]/u.test(before) && /[\p{L}\p{N}]/u.test(after)) return run;
+      return '';
+    })
     // trailing backslash (markdown hard line break)
     .replace(/\\$/g, '');
 }
@@ -278,16 +368,22 @@ function stripTaskMarker(line: string): string {
  * Reduce one line of a note body to the plain text a preview may show.
  *
  * Every preview in the app goes through here, and that is the point. The
- * four passes only work as a set: block markers first (they sit at the
- * front of the line), then the task checkbox they were hiding, then
- * inline markdown, then HTML last. Call one pass on its own and the
- * preview leaks whatever the other three own - the Tasks list used
- * `stripInlineMarkdown` alone and printed a raw `<mark style="...">` at
- * the user, because the editor writes a highlight as HTML, not markdown.
+ * passes only work as a set: the literal characters are shielded first, so
+ * no later pass mistakes a typed `\*` or `#` for syntax; then block markers
+ * (they sit at the front of the line), the task checkbox they were hiding,
+ * inline markdown, HTML, and the entity references last, so a typed `&lt;b&gt;`
+ * is never read as a tag. Call one pass on its own and the preview leaks
+ * whatever the others own - the Tasks list used `stripInlineMarkdown` alone
+ * and printed a raw `<mark style="...">` at the user, because the editor
+ * writes a highlight as HTML, not markdown. Whatever the editor saves, a line
+ * of text comes back here as the text typed: `tests/notePreviewText.test.ts`
+ * holds that for every ASCII character.
  */
 export function stripToPlainText(line: string): string {
-  return stripHtml(
-    stripInlineMarkdown(stripTaskMarker(stripBlockMarkers(line))),
+  return unshield(
+    decodeEntities(
+      stripHtml(stripInlineMarkdown(stripTaskMarker(stripBlockMarkers(shieldLiterals(line))))),
+    ),
   ).trim();
 }
 
@@ -313,6 +409,10 @@ export function noteSaysPhrase(n: LocalNote, query: string): boolean {
   return false;
 }
 
+/** The line that opens or closes a code block, with its language: syntax,
+ *  never text, because the editor escapes a typed run of backticks. */
+const FENCE_LINE = /^(?:`{3,}[^`]*|~{3,}.*)$/;
+
 // First non-empty line of the body, stripped of the cheapest markdown
 // syntax (#, *, _, backtick, list markers, link syntax). Used as the
 // auto-title fallback, as the excerpt seed, and by any other preview
@@ -322,7 +422,7 @@ export function firstBodyLine(body: string): string {
   const lines = body.split(/\r?\n/);
   for (const line of lines) {
     const t = line.trim();
-    if (!t) continue;
+    if (!t || FENCE_LINE.test(t)) continue;
     const cleaned = stripToPlainText(t);
     if (cleaned) return cleaned;
   }
@@ -638,6 +738,7 @@ export function mimeToLabel(mime: string): string {
   if (m.startsWith('video/')) return i18n.t('shell:fileTypes.video');
   if (m.startsWith('image/')) return i18n.t('shell:fileTypes.image');
   if (m.includes('pdf')) return i18n.t('shell:fileTypes.pdf');
+  if (m === 'message/rfc822') return i18n.t('shell:fileTypes.email');
   if (m.includes('zip') || m.includes('compress') || m.includes('archive')) return i18n.t('shell:fileTypes.archive');
   if (m.includes('document') || m.includes('word')) return i18n.t('shell:fileTypes.document');
   if (m.includes('sheet') || m.includes('excel')) return i18n.t('shell:fileTypes.spreadsheet');
@@ -715,7 +816,7 @@ export function deriveExcerpt(n: LocalNote, long = false): string {
     const t = line.trim();
     // A table's dash row and its width marker say nothing, and with column
     // widths the dash row can run to dozens of dashes.
-    if (!t || isDelimiterRow(t) || tableWidthFromMarker(t) !== null) continue;
+    if (!t || FENCE_LINE.test(t) || isDelimiterRow(t) || tableWidthFromMarker(t) !== null) continue;
     if (!skipped) {
       skipped = true;
       continue;
@@ -822,9 +923,35 @@ export function journalEntriesByDay(notes: readonly LocalNote[]): Map<string, st
   return new Map([...newest].map(([day, n]) => [day, n.id]));
 }
 
-/** One entry the calendar offers for a day: its space (null with Spaces
- *  off) and the title the chooser shows. */
-type DayEntry = { id: string; space: Space | null; title: string };
+/** The item types a calendar day can hold: the four that keep a day in
+ *  `trackers.journalDate`, and a contact on its birthday. */
+export type DayKind = 'event' | 'journal' | 'note' | 'task' | 'contact';
+
+/** One item the calendar offers for a day: its type, its space (null with
+ *  Spaces off) and the title the chooser shows, plus what the large calendar
+ *  and the agenda draw: the time and end time, the span of a multi-day item
+ *  (`start` is the occurrence's first day), whether it repeats or has alerts,
+ *  and the day its occurrence starts on. The optional fields are absent when
+ *  they do not apply, so a plain entry stays `{ id, kind, space, title }`. */
+export type DayEntry = {
+  id: string;
+  kind: DayKind;
+  space: Space | null;
+  title: string;
+  time?: string;
+  timeEnd?: string;
+  span?: { start: string; end: string };
+  repeating?: true;
+  alerted?: true;
+  /** The first day of this occurrence of a repeating item. */
+  occurrence?: string;
+};
+
+/** What a calendar reads: whether a day holds anything, and what. */
+export type DayIndex = {
+  has(day: string): boolean;
+  entriesOf(day: string): readonly DayEntry[];
+};
 
 /** The journal calendar's day map: each day to its newest entry, as
  *  `journalEntriesByDay`, plus the newest entry of each space on a day. */
@@ -856,13 +983,13 @@ export function journalDaysIndex(
     entriesOf(day: string): readonly DayEntry[] {
       if (!spaces) {
         const id = newest.get(day);
-        return id ? [{ id, space: null, title: '' }] : [];
+        return id ? [{ id, kind: 'journal', space: null, title: '' }] : [];
       }
       const held = bySpace.get(day);
       if (!held) return [];
       return order.flatMap((space) => {
         const n = held.get(space);
-        return n ? [{ id: n.id, space, title: spaces.titleOf(n) }] : [];
+        return n ? [{ id: n.id, kind: 'journal', space, title: spaces.titleOf(n) }] : [];
       });
     },
   });
@@ -981,6 +1108,233 @@ export function journalDatePatch(
   };
 }
 
+/** The day of an item a calendar shows, by its type: a journal entry's
+ *  day (its creation day before the field), a note's, a task list's or an
+ *  event's `journalDate`, or null. A contact is placed by its birthday instead. */
+function itemDayOf(n: LocalNote): string | null {
+  if (n.type === 'journal') return entryDayOf(n);
+  if (n.type === 'note' || n.type === 'task' || n.type === 'event') return journalDateOf(n);
+  return null;
+}
+
+/** Whether an item shows on a calendar: a day of its own, or a birthday
+ *  on a contact its PIN does not guard. */
+export function isOnCalendar(n: LocalNote, isGated: (n: LocalNote) => boolean): boolean {
+  if (itemDayOf(n) !== null) return true;
+  return n.type === 'contact' && !isGated(n) && contactBirthday(parseContactBody(n.body)) !== null;
+}
+
+const KIND_ORDER: Record<DayKind, number> = { event: 0, journal: 1, note: 2, task: 3, contact: 4 };
+
+/** The days one expansion of a repeating event covers in the calendar index. */
+const SERIES_WINDOW = 64;
+
+/** The schedule of an item the index holds, read once. */
+function scheduleOfItem(n: LocalNote): Schedule | null {
+  return scheduleOf(n.trackers as Record<string, unknown> | undefined, n.type, itemDayOf(n));
+}
+
+/**
+ * Every dated item for the calendars: events, journal entries, notes and task
+ * lists on their day (every day of a multi-day item, every occurrence of a
+ * repeating event), and contacts on their birthday in every year (29 February
+ * on the 28th in a year without it). Trashed and archived items stay off, and
+ * so does the birthday of a contact behind its PIN, whose body is the secret;
+ * `openOnly` keeps the other space off too. A day lists the open space first,
+ * then the all-day items before the timed ones, the timed ones by time, then
+ * events, entries, notes, task lists and birthdays, newest first. A repeating
+ * event is expanded for the day asked, so no window is needed and a day is
+ * read once.
+ * Spec: ops/docs/plans/note-date.md (section 4), ops/docs/plans/calendar-pillar-spec.md (section 4.3)
+ */
+export function calendarIndex(
+  notes: readonly LocalNote[],
+  opts: { titleOf: (n: LocalNote) => string; isGated: (n: LocalNote) => boolean; spaceOf?: (n: LocalNote) => Space; open?: Space; openOnly?: boolean },
+): DayIndex {
+  type Placed = { n: LocalNote; s: Schedule; start: string };
+  const byDay = new Map<string, Placed[]>();
+  const byBirthday = new Map<string, LocalNote[]>();
+  const series: { n: LocalNote; s: Schedule; len: number }[] = [];
+  for (const n of notes) {
+    if (n.deleted !== 0 || n.trashed !== 0 || n.archived === 1) continue;
+    if (opts.openOnly && opts.spaceOf && opts.spaceOf(n) !== (opts.open ?? 'personal')) continue;
+    if (n.type === 'contact') {
+      if (opts.isGated(n)) continue;
+      const b = contactBirthday(parseContactBody(n.body));
+      if (b) {
+        const key = `${String(b.month).padStart(2, '0')}-${String(b.day).padStart(2, '0')}`;
+        byBirthday.set(key, [...(byBirthday.get(key) ?? []), n]);
+      }
+      continue;
+    }
+    const s = scheduleOfItem(n);
+    if (!s) continue;
+    const len = spanLength(s);
+    if (s.repeat) {
+      series.push({ n, s, len });
+      continue;
+    }
+    for (let i = 0; i <= len; i++) {
+      const day = shiftDay(s.day, i);
+      const list = byDay.get(day);
+      if (list) list.push({ n, s, start: s.day });
+      else byDay.set(day, [{ n, s, start: s.day }]);
+    }
+  }
+  const leap = (year: number) => new Date(year, 1, 29).getDate() === 29;
+  const birthdaysOn = (day: string): LocalNote[] => {
+    const md = day.slice(5);
+    const own = byBirthday.get(md) ?? [];
+    return md === '02-28' && !leap(Number(day.slice(0, 4))) ? [...own, ...(byBirthday.get('02-29') ?? [])] : own;
+  };
+  // Each series is expanded once per window of SERIES_WINDOW days: the start
+  // days that can cover a day of the window, kept per series. A day asked
+  // takes the starts that cover it, so a long span costs no placement on
+  // every day it covers.
+  const windows = new Map<number, string[][]>();
+  const seriesOn = (day: string): Placed[] => {
+    if (series.length === 0) return [];
+    const w = Math.floor(dayNumber(day) / SERIES_WINDOW);
+    let starts = windows.get(w);
+    if (!starts) {
+      const first = shiftDay(day, w * SERIES_WINDOW - dayNumber(day));
+      const lastDay = shiftDay(first, SERIES_WINDOW - 1);
+      starts = series.map(({ s, len }) => occurrencesOf(s.day, s.repeat, shiftDay(first, -len), lastDay));
+      windows.set(w, starts);
+    }
+    const out: Placed[] = [];
+    series.forEach(({ n, s, len }, i) => {
+      const from = len ? shiftDay(day, -len) : day;
+      for (const start of starts![i]!) if (start >= from && start <= day) out.push({ n, s, start });
+    });
+    return out;
+  };
+  const spaceRank = (sp: Space | null) => (sp === null || sp === (opts.open ?? 'personal') ? 0 : 1);
+  const cache = new Map<string, readonly DayEntry[]>();
+  const entriesOf = (day: string): readonly DayEntry[] => {
+    const held = cache.get(day);
+    if (held) return held;
+    const placed = [...(byDay.get(day) ?? []), ...seriesOn(day)];
+    const entries = [
+      ...placed.map(({ n, s, start }) => {
+        const len = spanLength(s);
+        const entry: DayEntry & { at: string } = {
+          id: n.id,
+          kind: n.type as DayKind,
+          space: opts.spaceOf ? opts.spaceOf(n) : null,
+          title: opts.titleOf(n),
+          at: n.createdAt,
+        };
+        if (s.time) entry.time = s.time;
+        if (s.timeEnd) entry.timeEnd = s.timeEnd;
+        if (len > 0) entry.span = { start, end: shiftDay(start, len) };
+        if (s.repeat) {
+          entry.repeating = true;
+          entry.occurrence = start;
+        }
+        if (s.alerts?.length) entry.alerted = true;
+        return entry;
+      }),
+      ...birthdaysOn(day).map((n): DayEntry & { at: string } => ({
+        id: n.id,
+        kind: 'contact',
+        space: opts.spaceOf ? opts.spaceOf(n) : null,
+        title: opts.titleOf(n),
+        at: n.createdAt,
+      })),
+    ]
+      .sort((a, b) =>
+        spaceRank(a.space) - spaceRank(b.space)
+        || (a.span ? 0 : 1) - (b.span ? 0 : 1)
+        || (a.time ? 1 : 0) - (b.time ? 1 : 0)
+        || (a.time ?? '').localeCompare(b.time ?? '')
+        || KIND_ORDER[a.kind] - KIND_ORDER[b.kind]
+        || (a.at < b.at ? 1 : a.at > b.at ? -1 : 0))
+      .map(({ at: _at, ...entry }) => entry);
+    cache.set(day, entries);
+    return entries;
+  };
+  return {
+    has: (day) => byDay.has(day) || birthdaysOn(day).length > 0 || seriesOn(day).length > 0,
+    entriesOf,
+  };
+}
+
+/**
+ * The items a typed date names: a journal entry, note or task list whose day
+ * reads as the query in one of the shapes the app writes a day in (ISO, and
+ * the date setting's full, numeric and day-and-month forms), part of a shape
+ * included, so "Oct 14" finds an item on 14 October; and a contact whose
+ * birthday falls on it this year, unless its PIN guards it. Read at query
+ * time, so a new date setting needs no index rebuild. A query with no digit,
+ * or shorter than four characters, names no day: a word never lists every
+ * dated item.
+ * Spec: ops/docs/plans/note-date.md
+ */
+export function itemsDatedAs(query: string, notes: readonly LocalNote[], isGated: (n: LocalNote) => boolean): Set<string> {
+  const found = new Set<string>();
+  const needle = foldForMatch(query).trim();
+  if (needle.length < 4 || !/\d/.test(needle)) return found;
+  const shapes = new Map<string, boolean>();
+  const named = (day: string): boolean => {
+    let hit = shapes.get(day);
+    if (hit === undefined) {
+      hit = [day, formatDay(day, 'date'), formatDay(day, 'numeric'), formatDay(day, 'dayMonth')]
+        .some((shape) => foldForMatch(shape).includes(needle));
+      shapes.set(day, hit);
+    }
+    return hit;
+  };
+  const year = new Date().getFullYear();
+  for (const n of notes) {
+    let day = itemDayOf(n);
+    if (n.type === 'contact' && !isGated(n)) {
+      const b = contactBirthday(parseContactBody(n.body));
+      // 29 February falls on the 28th in a year without it, as on the calendar.
+      const dayOfMonth = b && b.month === 2 && b.day === 29 && new Date(year, 1, 29).getDate() !== 29 ? 28 : b?.day;
+      if (b) day = `${year}-${String(b.month).padStart(2, '0')}-${String(dayOfMonth).padStart(2, '0')}`;
+    }
+    if (day !== null && named(day)) found.add(n.id);
+  }
+  return found;
+}
+
+/**
+ * The patch that puts a note, a task list or an event on a day, or takes a
+ * note or a task list off the calendar (`null`), or null when nothing
+ * changes. The day is the field a journal entry keeps its day in, so it syncs
+ * and merges as one, and a note converted to a journal entry and back keeps
+ * it. A move takes the whole schedule along: a multi-day item keeps its
+ * length. Taking the day away removes the whole schedule, and `backfilled`,
+ * which belongs to a journal entry, goes with it. An event always has a day.
+ * Spec: ops/docs/plans/note-date.md, ops/docs/plans/calendar-pillar-spec.md (step 4)
+ */
+export function schedulePatch(
+  n: Pick<LocalNote, 'type' | 'trackers'>,
+  day: string | null,
+): { trackers: Record<string, unknown> } | null {
+  if ((n.type !== 'note' && n.type !== 'task' && n.type !== 'event') || (day !== null && !isLocalIsoDay(day))) return null;
+  if (day === null && n.type === 'event') return null;
+  const old = journalDateOf(n as LocalNote);
+  if ((old ?? null) === day) return null;
+  if (day === null) {
+    const rest: Record<string, unknown> = { ...(n.trackers ?? {}) };
+    for (const key of [...SCHEDULE_KEYS, 'backfilled']) delete rest[key];
+    return { trackers: rest };
+  }
+  const { backfilled: _back, ...rest } = n.trackers ?? {};
+  const end = typeof rest.dateEnd === 'string' && old ? shiftDay(rest.dateEnd, dayNumber(day) - dayNumber(old)) : undefined;
+  return { trackers: withSchedule(rest, n.type, { day, ...(end ? { end } : {}) }) };
+}
+
+/**
+ * The body a new task list starts with: one empty checkbox, in the form the
+ * editor itself saves it. Written at creation with the birth timestamp, so an
+ * untouched list still reads as a draft and isNoteEmpty can discard it; on
+ * load the editor turns both `&nbsp;` back into empty paragraphs.
+ */
+export const TASK_LIST_EMPTY_BODY = '- [ ] &nbsp;\n\n&nbsp;';
+
 // Empty body templates for vault item types. Shared between note creation
 // and vault-type switching in NotesView.
 export const VAULT_EMPTY_BODIES: Record<string, string> = {
@@ -990,3 +1344,61 @@ export const VAULT_EMPTY_BODIES: Record<string, string> = {
   // A contact stores only what exists, so its empty body is the empty document.
   contact: '{}',
 };
+
+/**
+ * "Empty" = no title, no body, no tags, no schedule the person gave it.
+ * Used to decide whether a draft should be discarded when the user
+ * navigates away instead of lingering as clutter in the list and on the
+ * server. A note with a single space of body, a single tag or a day given
+ * on the calendar is NOT empty - that's real user intent and we respect it.
+ *
+ * Task and journal notes get system-generated titles on creation
+ * ("Tasks for Friday, May 15, 2026" / "Friday, May 15, 2026"), so
+ * for those types the title alone doesn't prove user intent. It
+ * doesn't disprove it either: someone who renames a journal entry
+ * and writes no body meant to keep it, and we used to hard-delete
+ * that on the next tap (#122). What tells the two apart is whether
+ * the note was ever written to - createNote sets createdAt equal to
+ * updatedAt, and every edit (title included) bumps updatedAt - so
+ * an untouched draft is the only thing we discard.
+ *
+ * Vault items (login/card/ssh-key) get template JSON bodies on
+ * creation. The Save button blocks empty saves (v0.135.8), but
+ * navigating away without saving bypasses that - the template body
+ * looks non-empty to a plain trim check. We treat template-matching
+ * bodies as empty so discardIfEmpty catches them.
+ */
+export function isNoteEmpty(note: LocalNote | undefined): boolean {
+  if (!note) return false;
+  // An item of a type this build does not know is opaque: nothing here can
+  // tell an empty one from a full one, so it is never discarded.
+  if (!isKnownNoteType(note.type)) return false;
+  const body = (note.body ?? '').trim();
+  const hasTags = (note.tags ?? []).length > 0;
+  const hasTitle = (note.title ?? '').trim() !== '';
+  // Vault items: template JSON body = empty.
+  const vaultTemplate = VAULT_EMPTY_BODIES[note.type];
+  const hasBody = vaultTemplate ? body !== '' && body !== vaultTemplate : body !== '';
+  // A schedule is content once it was written after the item was born, or
+  // when the item was born with more than its day and alerts (a time, an end
+  // or a repeat, as the quick add and a dragged range give it): the calendar
+  // shows it and its reminders ring. An item born on a day with only that
+  // day and the default alerts (the New button, a day in the calendar) is
+  // still a draft until something is written to it.
+  const trackers = note.trackers as Record<string, unknown> | undefined;
+  const schedule = SCHEDULE_KEYS.filter((key) => trackers?.[key] !== undefined);
+  const untouched = note.createdAt === note.updatedAt;
+  if (schedule.length > 0 && (!untouched || schedule.some((key) => key !== 'journalDate' && key !== 'alerts'))) return false;
+  if (note.type === 'event') return !hasTitle && !hasBody && !hasTags && untouched;
+  // Task & journal titles are auto-generated - body is the real
+  // signal, but only while the draft is still untouched (#122).
+  // A new task list starts with one empty checkbox, which is no content.
+  if (note.type === 'task' || note.type === 'journal') {
+    const content = hasBody && !(note.type === 'task' && body === TASK_LIST_EMPTY_BODY);
+    return !content && !hasTags && note.createdAt === note.updatedAt;
+  }
+  if (hasTitle) return false;
+  if (hasBody) return false;
+  if (hasTags) return false;
+  return true;
+}

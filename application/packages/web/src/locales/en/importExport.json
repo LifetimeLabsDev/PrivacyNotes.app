@@ -39,16 +39,29 @@
     "photosTooBig_one": "Not enough space for the photo ({{size}}), so it is left out. Everything else comes across. Free up {{shortfall}}, or add storage, and import again to bring it in.",
     "photosTooBig_other": "Not enough space for the {{count}} photos ({{size}}), so they are left out. Everything else comes across. Free up {{shortfall}}, or add storage, and import again to bring them in."
   },
+  "importCalendar": {
+    "location": "Location",
+    "videoCall": "Video call",
+    "organizer": "Organizer",
+    "guests": "Guests",
+    "file": "File",
+    "link": "Link",
+    "timeZone": "Time zone",
+    "ends": "Ends",
+    "repeats": "Repeats"
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip (Keep folder) or a single .json note. Checklists import as native task lists.",
+    "googleCalendar": "The .zip from Google Calendar's Settings > Import & export, or one .ics file. Events keep their times, repeats and reminders.",
     "appleNotes": "Export via the free Exporter app as Markdown, then drop the .zip here.",
     "appleJournal": "Export from Journal on Mac or iPhone, compress the AppleJournalEntries folder, and drop the .zip. Entries import as journal entries with their photos, videos, voice memos, and locations.",
     "evernote": "One .enex on its own, or several zipped together. Keeps formatting, tags, attachments, note links, and notebooks. Evernote leaves tasks out of .enex.",
     "samsungNotes": "Export as Word (.docx) or Text (.txt). Zip multiple files for bulk import.",
     "simplenote": "Export from Simplenote (Settings -> Tools -> Export Notes). Drop the .zip.",
-    "standardNotes": "Decrypted .zip or .txt backup from Standard Notes (File > Export > Decrypted).",
+    "standardNotes": "Decrypted .zip or .txt backup from Standard Notes (Account settings > Backups > Data backups > Decrypted).",
     "obsidian": "Obsidian vault as .zip. Preserves tags, [[note links]], folder structure, inline #tags, and embedded images and files.",
     "notesnook": "Notesnook export as .zip. Pick HTML when exporting to keep formatting, notebooks, tags, and attachments.",
+    "bear": "In Bear, choose File > Backup Notes... and drop the .bear2bk file here. Tags and nested tags, pins, the archive, the trash, highlights with their colors, note-links and attachments come along.",
     "joplin": "The .jex file from File > Export all > \"JEX - Joplin Export File\". Notebooks become folders, and tags, to-dos, note links and attachments come along.",
     "upnote": "In UpNote: Settings > Backup > Backup now, then zip everything in the backup folder. Keeps notebooks, tags, pins, note links, formatting, and attachments. Per-note exports from the phone apps work too - pick \"Export to HTML\".",
     "markdownFolder": ".md or .txt files individually or as a .zip. A zipped folder keeps its subfolders and brings its images and attachments along.",
@@ -96,6 +109,12 @@
     "blobsNotInBackup_other": "Your notes were restored, but {{items}} listed in the backup are missing from it."
   },
   "preview": {
+    "oversize_one": "{{count}} note is over 1 MB. It stays on this device and does not sync.",
+    "oversize_other": "{{count}} notes are over 1 MB. They stay on this device and do not sync.",
+    "splitOversize_one": "Split this note into smaller notes at its headings, so it syncs",
+    "splitOversize_other": "Split these {{count}} notes into smaller notes at their headings, so they sync",
+    "partTitle": "{{title}} ({{index}}/{{total}})",
+    "continuedIn": "Continued in {{link}}",
     "sourceLabel": "Source",
     "uniqueTags": "Unique tags",
     "empty": "Empty",
@@ -107,6 +126,7 @@
     "duplicateWarning": "importing adds these as new notes. If you run this twice, you’ll get duplicates. There’s no automatic dedupe yet.",
     "duplicateSkipNote": "bookmarks you have already saved are skipped, so running this twice will not duplicate anything.",
     "contactSkipNote": "people you have already saved are skipped and left as they are, so running this twice will not duplicate anyone.",
+    "eventSkipNote": "events you have already imported are skipped and left as they are, so running this twice will not duplicate them.",
     "restoreMergeNote": "notes from your own backup are matched by id. A note you already have is updated only when the backup's copy is newer, a note in your trash comes back out of it.",
     "quotaExceeded": "<strong>Storage too low to import.</strong> Estimated {{needed}} needed, {{available}} available. Free up space or upgrade before importing.",
     "quotaWarning": "Heads up: this import will use roughly {{needed}} of your {{available}} remaining storage.",
@@ -154,7 +174,11 @@
     "bookmarksExportDesc": "The standard bookmarks file every browser reads. Import it into Chrome, Firefox, Safari, or Edge with your folders intact.",
     "contactsOnlyHeading": "Contacts only",
     "contactsExportTitle": "Contacts file (.vcf)",
-    "contactsExportDesc": "The vCard file every phone and address book reads. Import it into iPhone, Android, Google Contacts, or Contacts on the Mac, labels and groups intact."
+    "contactsExportDesc": "The vCard file every phone and address book reads. Import it into iPhone, Android, Google Contacts, or Contacts on the Mac, labels and groups intact.",
+    "calendarOnlyHeading": "Calendar only",
+    "calendarExportTitle": "Calendar file (.ics)",
+    "calendarExportDesc": "Events and dated notes and task lists, for Google Calendar, Apple Calendar or Outlook.",
+    "calendarPrivate": "Private"
   },
   "exportProgress": {
     "failedTitle": "Export failed",
@@ -220,5 +244,11 @@
     "title_other": "{{count}} items were shared into PrivacyNotes",
     "line": "Nothing is saved until you choose.",
     "saveAll": "Save all"
+  },
+  "destination": {
+    "label": "Add to",
+    "none": "No folder",
+    "newFolder": "New folder \"{{name}}\"",
+    "help": "Folders from the source go inside the folder you pick, and items without a folder go into it."
   }
 }

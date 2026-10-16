@@ -8,7 +8,6 @@
     "title": "Tareas",
     "newTaskNote": "Nueva nota de tareas",
     "newTaskNoteWithHotkey": "Nueva nota de tareas ({{hotkey}})",
-    "new": "Nueva",
     "hideCompleted": "Ocultar tareas completadas",
     "showCompleted": "Mostrar tareas completadas",
     "searchPlaceholder": "Buscar tareas…",
@@ -37,12 +36,9 @@
     "deselectAll": "Deseleccionar todo",
     "selectAll": "Seleccionar todo",
     "storage": "Almacenamiento",
-    "supportedTypesHint": "Tamaño máximo de archivo: {{max}} MB",
     "perFile": "Por archivo",
     "free": "Gratis",
     "upgradeToPro": "Mejorar a Pro",
-    "addStorage": "Añadir almacenamiento",
-    "upToMax": "hasta {{max}}",
     "filterAll": "Todos",
     "filterImages": "Imágenes",
     "filterAudio": "Audio",
@@ -115,6 +111,7 @@
     "video": "Vídeo",
     "image": "Imagen",
     "pdf": "PDF",
+    "email": "Correo",
     "archive": "Comprimido",
     "document": "Documento",
     "spreadsheet": "Hoja de cálculo",
@@ -188,7 +185,8 @@
     "markdown": "Markdown",
     "markdownTip": "Sin cifrar",
     "bookmarks": "Marcadores",
-    "contacts": "Contactos"
+    "contacts": "Contactos",
+    "calendar": "Calendario"
   },
   "browseToggle": {
     "label": "Explorar por",
@@ -204,6 +202,10 @@
     "deleteConfirmTitle": "¿Eliminar carpeta?",
     "deleteConfirmBodyRoot": "\"{{folder}}\" se eliminará. Sus notas y subcarpetas se moverán al nivel superior. No se elimina ninguna nota.",
     "deleteConfirmBodyNested": "\"{{folder}}\" se eliminará. Sus notas y subcarpetas se moverán a \"{{parent}}\". No se elimina ninguna nota.",
+    "deleteConfirmBranchRoot": "\"{{folder}}\" y sus subcarpetas se eliminarán. Sus notas se moverán al nivel superior. No se elimina ninguna nota.",
+    "deleteConfirmBranchNested": "\"{{folder}}\" y sus subcarpetas se eliminarán. Sus notas se moverán a \"{{parent}}\". No se elimina ninguna nota.",
+    "deleteSubfolders_one": "Eliminar también su subcarpeta",
+    "deleteSubfolders_other": "Eliminar también sus {{count}} subcarpetas",
     "moveTo": "Mover a carpeta",
     "searchPlaceholder": "Buscar carpetas",
     "sortFolders": "Ordenar carpetas",
@@ -221,7 +223,8 @@
     "saveName": "Guardar el nombre de la carpeta",
     "actionsForFolder": "Acciones para la carpeta {{folder}}",
     "seedSecurity": "Seguridad",
-    "seedTravel": "Viajes"
+    "seedTravel": "Viajes",
+    "seedTeam": "Equipo"
   },
   "collapsedSidebar": {
     "newNote": "Nota nueva",
@@ -268,7 +271,19 @@
     "sizeHint": "Tamaño cifrado total de este elemento.",
     "tagCount_one": "{{count}} etiqueta",
     "tagCount_other": "{{count}} etiquetas",
-    "entryDate": "Fecha de la entrada"
+    "entryDate": "Fecha de la entrada",
+    "noDate": "Ninguna",
+    "schedule": "Programación",
+    "ends": "Termina",
+    "sameDay": "El mismo día",
+    "allDay": "Todo el día",
+    "starts": "Empieza",
+    "endsAt": "Termina a las",
+    "noEnd": "Ninguna",
+    "removeFromCalendar": "Quitar del calendario",
+    "makeEvent": "Conviértelo en un evento para repetirlo",
+    "typeEvent": "Evento",
+    "repeatRemoved": "Se quita la repetición"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "Salir de la selección (Esc)",
@@ -303,6 +318,8 @@
     "showSize": "Mostrar tamaño del archivo",
     "showTags": "Mostrar carpeta y etiquetas",
     "showCalendar": "Mostrar calendario",
+    "showWorkItems": "Mostrar elementos de <b>Trabajo</b>",
+    "showPersonalItems": "Mostrar elementos de <b>Personal</b>",
     "other": "Otros",
     "showReadOnly": "Mostrar solo lectura",
     "showProtected": "Mostrar protegidas",
@@ -331,7 +348,8 @@
     "nextMonth": "Mes siguiente",
     "dayWithEntry": "{{date}}, con entrada",
     "dayWithEntryIn": "{{date}}, con entrada en {{space}}",
-    "dayWithEntryBoth": "{{date}}, con entradas en Personal y Trabajo",
+    "dayWithItems_one": "{{date}}, {{count}} elemento",
+    "dayWithItems_other": "{{date}}, {{count}} elementos",
     "previousWeek": "Semana anterior",
     "nextWeek": "Semana siguiente",
     "showMonth": "{{month}}, mostrar el mes completo",
@@ -375,11 +393,14 @@
     "copyBookmarkUrl": "Copiar URL",
     "editBookmark": "Editar marcador",
     "openInTab": "Abrir en una pestaña",
+    "openInTabHint": "{{key}}+clic",
     "closeTab": "Cerrar pestaña",
     "closeOtherTabs": "Cerrar las demás pestañas",
     "closeAllTabs": "Cerrar todas las pestañas",
     "pinTab": "Fijar pestaña",
-    "unpinTab": "Dejar de fijar pestaña"
+    "unpinTab": "Dejar de fijar pestaña",
+    "newEvent": "Evento nuevo",
+    "quickAdd": "Añadido rápido"
   },
   "demoBanner": {
     "title": "Pruébalo sin ningún riesgo",
@@ -636,6 +657,9 @@
       "mastodon": "Mastodon"
     }
   },
+  "staleEditor": {
+    "copyToast": "Esta nota cambió en otro dispositivo. Tus cambios están en una copia, \"{{title}}\"."
+  },
   "noteLinks": {
     "retargetedToast_one": "{{count}} enlace entre notas actualizado al nuevo título.",
     "retargetedToast_other": "{{count}} enlaces entre notas actualizados al nuevo título."
@@ -645,7 +669,8 @@
   },
   "tabStrip": {
     "label": "Pestañas abiertas",
-    "close": "Cerrar {{title}}"
+    "close": "Cerrar {{title}}",
+    "moreTabs": "Más pestañas"
   },
   "shareInbox": {
     "saved": "Guardado en PrivacyNotes",
@@ -674,10 +699,11 @@
   },
   "spaces": {
     "label": "Espacio",
+    "all": "Todos",
     "personal": "Personal",
     "work": "Trabajo",
-    "moveToWork": "Mover a Trabajo",
-    "moveToPersonal": "Mover a Personal",
+    "moveToWork": "Mover a <b>Trabajo</b>",
+    "moveToPersonal": "Mover a <b>Personal</b>",
     "movedToWork": "{{folder}} se movió a Trabajo",
     "movedToPersonal": "{{folder}} se movió a Personal",
     "itemMovedToWork": "Movido a Trabajo",
@@ -686,6 +712,218 @@
     "switchedToPersonal": "Cambiado a Personal",
     "switchToWork": "Cambiar a Trabajo",
     "switchToPersonal": "Cambiar a Personal",
+    "switchToAll": "Mostrar todos los espacios",
     "workEmpty": "Trabajo está vacío. En Personal, abre el menú de un elemento o una carpeta y elige Mover a Trabajo."
+  },
+  "calendar": {
+    "moveToToday": "Mover a hoy",
+    "moveToTomorrow": "Mover a mañana",
+    "moveToNextWeek": "Mover a la próxima semana",
+    "deleteEvent": "Eliminar evento",
+    "openContact": "Abrir contacto",
+    "newOnDay": "Evento nuevo en este día",
+    "showDay": "Mostrar este día",
+    "open": "Abrir el calendario",
+    "back": "Calendario",
+    "more_other": "+{{count}} más",
+    "addOn": "Añadir el {{date}}",
+    "nothingFor_other": "Nada durante {{count}} días",
+    "nothingToday": "Nada hoy",
+    "allDay": "Todo el día",
+    "now": "Ahora",
+    "viewLabel": "Vista del calendario",
+    "views": {
+      "day": "Día",
+      "week": "Semana",
+      "month": "Mes"
+    },
+    "legendLabel": "Mostrar en el calendario",
+    "kinds": {
+      "event": "Eventos",
+      "note": "Notas",
+      "task": "Listas de tareas",
+      "journal": "Entradas del diario",
+      "contact": "Cumpleaños"
+    },
+    "dragEnd": "Arrastra para cambiar el día final",
+    "previousDay": "Día anterior",
+    "nextDay": "Día siguiente",
+    "seedWeeklyReview": "Revisión semanal",
+    "seedWeeklyReviewBody": "Todos los viernes a las cuatro. Qué salió, qué se retrasó y qué toca la semana que viene.",
+    "addToCalendar": "Añadir al calendario",
+    "showAgenda": "Mostrar agenda",
+    "hideAgenda": "Ocultar agenda",
+    "seedDemo": {
+      "lunch": "Comida con Sam",
+      "dentist": "Dentista",
+      "callAna": "Llamada con Ana",
+      "groceries": "Compra",
+      "concert": "Concierto",
+      "giftIdeas": "Ideas de regalo para Kon",
+      "flight": "Vuelo a Lisboa",
+      "conference": "Conferencia en Lisboa",
+      "nightTrain": "Tren nocturno a Oporto",
+      "yoga": "Yoga",
+      "sprint": "Planificación del sprint",
+      "bookClub": "Club de lectura",
+      "rent": "Pagar el alquiler"
+    },
+    "nothingFor_one": "Nada durante {{count}} día",
+    "more_one": "+{{count}} más"
+  },
+  "repeat": {
+    "changeTitle": "¿Cambiar este elemento?",
+    "deleteTitle": "¿Eliminar este elemento?",
+    "thisOccurrence": "Esta repetición",
+    "thisAndFollowing": "Esta y las siguientes",
+    "allOccurrences": "Todas las repeticiones",
+    "label": "Repetir",
+    "never": "No se repite",
+    "daily_other": "Cada {{count}} días",
+    "weekdays": "Cada día laborable (de lunes a viernes)",
+    "weekly_other": "Cada {{count}} semanas los {{days}}",
+    "monthlyDay_other": "Cada {{count}} meses el día {{day}}",
+    "monthlyNth_other": "Cada {{count}} meses el {{nth}} {{weekday}}",
+    "yearly_other": "Cada {{count}} años el {{date}}",
+    "withUntil": "{{rule}}, hasta el {{date}}",
+    "withCount_other": "{{rule}}, {{count}} veces",
+    "nth": {
+      "1": "primer",
+      "2": "segundo",
+      "3": "tercer",
+      "4": "cuarto",
+      "last": "último"
+    },
+    "custom": "Personalizado",
+    "every": "Cada",
+    "units": {
+      "day_other": "días",
+      "week_other": "semanas",
+      "month_other": "meses",
+      "year_other": "años",
+      "year_one": "año",
+      "month_one": "mes",
+      "week_one": "semana",
+      "day_one": "día"
+    },
+    "onDays": "Los días",
+    "onDay": "Día {{day}}",
+    "onNth": "El {{nth}} {{weekday}}",
+    "ends": "Termina",
+    "endsNever": "Nunca",
+    "endsOn": "En una fecha",
+    "endsAfter": "Tras un número de veces",
+    "times_other": "{{count}} veces",
+    "apply": "Aplicar",
+    "times_one": "{{count}} vez",
+    "withCount_one": "{{rule}}, {{count}} vez",
+    "yearly_one": "Cada año el {{date}}",
+    "monthlyNth_one": "Cada mes el {{nth}} {{weekday}}",
+    "monthlyDay_one": "Cada mes el día {{day}}",
+    "weekly_one": "Cada semana los {{days}}",
+    "daily_one": "Cada día"
+  },
+  "alerts": {
+    "label": "Alerta",
+    "none": "Ninguna",
+    "atTime": "A la hora del evento",
+    "minutesBefore_other": "{{count}} minutos antes",
+    "hoursBefore_other": "{{count}} horas antes",
+    "daysBefore_other": "{{count}} días antes",
+    "weeksBefore_other": "{{count}} semanas antes",
+    "onDayAt": "El mismo día a las {{time}}",
+    "daysBeforeAt_other": "{{count}} días antes a las {{time}}",
+    "custom": "Personalizada",
+    "add": "Añadir",
+    "max": "Hasta cinco alertas.",
+    "units": {
+      "minutes": "minutos",
+      "hours": "horas",
+      "days": "días",
+      "weeks": "semanas"
+    },
+    "at": "a las",
+    "remove": "Quitar {{alert}}",
+    "reminder": "Recordatorio",
+    "open": "Abrir",
+    "snooze": "Posponer 10 min",
+    "offOnPhone": "Los recordatorios están desactivados en este móvil",
+    "turnOn": "Activar",
+    "openSettings": "Abrir ajustes",
+    "daysBeforeAt_one": "{{count}} día antes a las {{time}}",
+    "weeksBefore_one": "{{count}} semana antes",
+    "daysBefore_one": "{{count}} día antes",
+    "hoursBefore_one": "{{count}} hora antes",
+    "minutesBefore_one": "{{count}} minuto antes"
+  },
+  "quickAdd": {
+    "group": "Crear",
+    "items": "Elementos",
+    "createNamed": "{{type}}: {{title}}",
+    "types": {
+      "event": "Evento nuevo",
+      "note": "Nota nueva",
+      "task": "Lista de tareas nueva",
+      "journal": "Entrada del diario nueva"
+    },
+    "keepAsText": "Dejarlo como texto",
+    "placeholder": "Título, día, hora, repetición...",
+    "example": "Prueba: {{example}}",
+    "examples": {
+      "1": "Dentista vie 15:00 1h antes",
+      "2": "Resumen de la semana cada viernes 16:00-17:00",
+      "3": "Llamar al banco mañana 11:30 durante 30 min",
+      "4": "Alquiler cada mes el día 1 aviso 1 día",
+      "5": "Examen dentro de 3 días #escuela",
+      "6": "tarea Lista de equipaje jue 18:00"
+    },
+    "examplesGroup": "Frases de ejemplo",
+    "syntax": {
+      "group": "Qué puedes escribir",
+      "day": {
+        "label": "Día",
+        "examples": "mañana · vie · el próximo mié · 31 oct · dentro de 3 días",
+        "insert": "mañana"
+      },
+      "time": {
+        "label": "Hora",
+        "examples": "15:00 · 15h · 16-17 · 9:00-10:00",
+        "insert": "15:00"
+      },
+      "length": {
+        "label": "Duración",
+        "examples": "durante 30 min · durante 3 días · vie a dom",
+        "insert": "durante 1h"
+      },
+      "repeat": {
+        "label": "Repetir",
+        "examples": "cada viernes · cada laborable · cada mes el día 1",
+        "insert": "cada viernes"
+      },
+      "alert": {
+        "label": "Alerta",
+        "examples": "1h antes · alerta 10 min",
+        "insert": "1h antes"
+      },
+      "place": {
+        "label": "Carpeta y etiqueta",
+        "examples": "/Viajes · #escuela",
+        "insert": "#"
+      },
+      "space": {
+        "label": "Espacio",
+        "examples": "@trabajo · @personal",
+        "insert": "@trabajo"
+      },
+      "type": {
+        "label": "Tipo",
+        "examples": "tarea · nota · diario (un evento si no escribes ninguno)",
+        "insert": "tarea"
+      }
+    },
+    "label": "Añadido rápido"
+  },
+  "offline": {
+    "notLoaded": "Estás sin conexión y esta parte de la app aún no se ha cargado. Vuelve a intentarlo cuando vuelvas a estar en línea."
   }
 }

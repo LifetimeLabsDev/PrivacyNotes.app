@@ -38,7 +38,8 @@
   "storageBar": {
     "usage": "%{{percent}} kullanıldı ({{used}} / {{max}})",
     "refresh": "Depolamayı yenile",
-    "cleanupInfo": "Silinen öğeler depolama kullanımından hemen düşülür. Şifreli dosyaların kendisi birkaç gün içinde sunucudan kaldırılır."
+    "cleanupInfo": "Silinen öğeler depolama kullanımından hemen düşülür. Şifreli dosyaların kendisi birkaç gün içinde sunucudan kaldırılır.",
+    "open": "Depolama ayarlarını aç"
   },
   "updateToast": {
     "available": "Güncelleme mevcut",
@@ -106,7 +107,24 @@
     "openInTab": "sekmede aç",
     "openLink": "Aç",
     "edit": "düzenle",
-    "close": "kapat"
+    "close": "kapat",
+    "tags": "Etiketler",
+    "folders": "Klasörler",
+    "tagItems_one": "{{count}} öğe",
+    "tagItems_other": "{{count}} öğe",
+    "emptyTags": "Bu adda etiket yok",
+    "emptyFolders": "Bu adda klasör yok",
+    "onlyTags": "etiketler",
+    "onlyFolders": "klasörler",
+    "showOnlyTags": "Yalnızca etiketler",
+    "showOnlyFolders": "Yalnızca klasörler",
+    "showOnlyCommands": "Yalnızca komutlar",
+    "goToTag": "Bir etikete git",
+    "goToFolder": "Bir klasöre git",
+    "createTag": "#{{name}} etiketini oluştur",
+    "createFolder": "“{{name}}” klasörünü oluştur",
+    "newTag": "Yeni etiket",
+    "newFolder": "Yeni klasör"
   },
   "cardForm": {
     "cardholderName": "Kart sahibinin adı",

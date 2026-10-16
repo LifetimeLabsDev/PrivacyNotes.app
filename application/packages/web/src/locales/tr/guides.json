@@ -10,6 +10,43 @@
     "otherGuides": "Diğer içe aktarma rehberleri"
   },
   "guides": {
+    "google-calendar": {
+      "app": "Google Calendar",
+      "title": "Google Calendar takvimlerinizi dışa aktarın",
+      "metaTitle": "Google Calendar nasıl dışa aktarılır - PrivacyNotes",
+      "lead": "Google Calendar, yönettiğiniz her takvimi ayarlarından, bir bilgisayarda tek bir .zip olarak dışa aktarır. PrivacyNotes bu .zip dosyasını olduğu gibi okur, arşivi açmanıza gerek kalmaz.",
+      "sections": [
+        {
+          "h": "Tüm takvimlerinizi tek seferde dışa aktarın",
+          "steps": [
+            "Bir bilgisayardaki tarayıcıda [Google Calendar](https://calendar.google.com) sayfasını açın. Telefon uygulamasında dışa aktarma yoktur.",
+            "Sağ üstteki dişli simgesine, ardından \"Settings\" (ayarlar) seçeneğine tıklayın.",
+            "Soldaki listede \"Import & export\" seçeneğine tıklayın.",
+            "\"Export\" başlığının altındaki \"Export\" düğmesine tıklayın. Tarayıcınız, her takvim için bir .ics dosyası içeren bir .zip indirir.",
+            ".zip dosyasını olduğu gibi bırakın."
+          ],
+          "p": [
+            ".zip, \"Make changes and manage sharing\" iznine sahip olduğunuz her takvimi içerir, kendi takvimleriniz de dahil. Yalnızca görüntüleyebildiğiniz takvimler, örneğin tatiller ya da bir iş arkadaşınızın takvimi, içinde olmaz. İş veya okul hesabında yöneticiniz dışa aktarmayı kısıtlayabilir."
+          ]
+        },
+        {
+          "h": "Ya da tek bir takvimi dışa aktarın",
+          "steps": [
+            "Soldaki listede \"My calendars\" altında takvimin adının üzerine gelin, \"More\" (üç nokta) düğmesine, ardından \"Settings and sharing\" seçeneğine tıklayın.",
+            "\"Calendar settings\" altında \"Export calendar\" seçeneğine tıklayın. Tarayıcınız, o takvimin .ics dosyasını içeren bir .zip indirir. Onu olduğu gibi bırakın."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Her etkinlik günüyle, saatiyle ve süresiyle gelir, birkaç güne yayılan etkinlikler de dahil. Tekrarlayan etkinlikler kurallarını korur; Google'da taşıdığınız ya da sildiğiniz bir tekrar, taşınmış ya da silinmiş olarak kalır. Her takvim bir klasör olur.",
+            "Bir etkinliğe koyduğunuz hatırlatıcılar da gelir, e-posta hatırlatıcıları dahil: bunlar uygulama hatırlatıcılarına dönüşür ve çalmaları için PrivacyNotes Pro gerekir. Takviminizin varsayılan hatırlatıcılarını kullanan bir etkinlik hatırlatıcısız gelir, çünkü Google varsayılanları dosyaya yazmaz. Yer, görüntülü görüşme bağlantısı, katılımcılar ve açıklama etkinliğin metnine girer. Saatler, içe aktardığınız sırada bu cihazda göründükleri gibi gösterilir.",
+            "Herhangi bir takvim uygulamasından tek bir .ics dosyası da işe yarar, Apple Takvim ve Outlook dahil.",
+            "Aynı dosyayı sonra bir kez daha içe aktarırsanız burada zaten bulunan etkinlikler atlanır, böylece yalnızca yeniler eklenir."
+          ]
+        }
+      ]
+    },
     "google-keep": {
       "app": "Google Keep",
       "title": "Google Keep notlarınızı dışa aktarın",
@@ -63,6 +100,40 @@
         }
       ]
     },
+    "bear": {
+      "app": "Bear",
+      "title": "Bear notlarınızı dışa aktarın",
+      "metaTitle": "Bear notlarını dışa aktarma - PrivacyNotes",
+      "lead": "Bear, tüm kitaplığınızı tek bir yedek dosyası olarak dışa aktarır ve getirmeniz gereken dosya da bu: arşiv ve çöp kutusu dahil her notu içerir.",
+      "sections": [
+        {
+          "h": "Bear yedeği alın",
+          "steps": [
+            "Mac'inizde Bear'ı açın.",
+            "File > Backup Notes... seçeneğini seçin.",
+            "Dosyayı kaydedin. Tüm kitaplığınızı içeren tek bir .bear2bk dosyası elde edersiniz.",
+            "Bu .bear2bk dosyasını olduğu gibi bırakın."
+          ]
+        },
+        {
+          "h": "Yedek, dışa aktarmadan fazlasını taşır",
+          "p": [
+            "File > Export Notes... yalnızca açık olan görünümdeki notları yazar; bu yüzden arşivlenmiş ve çöp kutusundaki notlar dışarıda kalır. Yedek hepsini içerir; ayrıca hangi notların sabitlendiğini, arşivlendiğini, çöp kutusuna atıldığını ya da salt okunur olduğunu da hatırlar.",
+            "Elinizde yalnızca bir Markdown ya da Text Bundle dışa aktarması varsa, onu zipleyip zipi bırakın. Metniniz, etiketleriniz ve ekleriniz gelir; ama arşiv, çöp kutusu ve sabitlemeler gelmez, çünkü bu dışa aktarmalar onları hiç yazmaz.",
+            "Bear'dan elle mi dışa aktarıyorsunuz? En az iki not seçin. Tek bir not, dosyaya yanlış uzantı verebilen bir kaydetme penceresi açar."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Etiketleriniz etiket olarak gelir. #work/projects gibi iç içe etiketler ayrıca klasör olarak yeniden kurulur ve her not en derin etiketinin klasörüne iner. Notlar arasındaki bağlantılar not bağlantısına dönüşür; bir başlığa verilen bağlantı da o başlığı gösterir.",
+            "Biçimlendirme korunur: başlıklar, kalın, italik, altı çizili, üstü çizili, Bear renklerindeki vurgular, görev listeleri, tablolar, kod blokları, alıntılar, bilgi kutuları, matematik ve dipnotlar. Görseller tam genişlikte açılır, katlanmış başlıklar ise açık gelir.",
+            "Sabitlenmiş notlar sabit kalır, arşivlenmiş notlar Arşiv'e, çöp kutusundaki notlar Çöp kutusu'na iner, salt okunur notlar salt okunur kalır ve her not özgün tarihlerini korur.",
+            "Notlarınıza ekli görseller ve dosyalar depolamanıza aktarılır. Yedekte bulunmayan bir dosyayı gösteren not yine de içe aktarılır; içe aktarma önizlemesi de bunun kaç bağlantıyı etkilediğini söyler."
+          ]
+        }
+      ]
+    },
     "obsidian": {
       "app": "Obsidian",
       "title": "Obsidian kasanızı dışa aktarın",
@@ -92,21 +163,21 @@
       "app": "Standard Notes",
       "title": "Standard Notes notlarınızı dışa aktarın",
       "metaTitle": "Standard Notes yedeğini dışa aktarma - PrivacyNotes",
-      "lead": "Standard Notes şifresi çözülmüş bir yedek dışa aktarması sunuyor ve PrivacyNotes'un okuduğu dosya da bu. Baştan söyleyelim: şifreli olan değil, şifresi çözülmüş olan gerekiyor.",
+      "lead": "Standard Notes, hesabınızı şifresi çözülmüş tek bir yedek olarak dışa aktarır. Super notları biçimlendirmeleriyle, ayrıca kontrol listelerini, etiketleri ve 2FA kodlarını getirir.",
       "sections": [
         {
           "h": "Notlarınızı Standard Notes'tan dışa aktarın",
           "steps": [
             "Standard Notes'u açın (app.standardnotes.com üzerinden web ya da masaüstü uygulaması) ve oturum açın.",
-            "Preferences (tercihler) bölümünü, ardından Backups (yedekler) kısmını açın.",
-            "Bir veri yedeği indirin ve sorulduğunda şifresi çözülmüş (decrypted) biçimi seçin.",
+            "Sol alttaki hesap simgesine tıklayın, ardından Account settings (hesap ayarları) > Backups (yedekler) yolunu izleyin.",
+            "Data backups (veri yedekleri) altında Decrypted (şifresi çözülmüş) seçeneğini seçin, ardından Download backup (yedeği indir) düğmesine tıklayın. Bu tek dosya, Super notlar dahil her notu içerir.",
             "İçinde \"Standard Notes Backup and Import File.txt\" adlı bir dosya bulunan bir .zip elde edersiniz. Zip'i olduğu gibi bırakın."
           ]
         },
         {
           "h": "Super notlar, kontrol listeleri ve 2FA kodları biçimlerini korur",
           "p": [
-            "Super notlar başlıklarını, listelerini, kontrol listelerini, tablolarını, kod bloklarını, renklerini ve daraltılabilir bölümlerini korur. Kontrol listeleri Görevler'e düşer, hesap tabloları tabloya dönüşür ve kimlik doğrulayıcı kayıtları 2FA anahtarlarıyla birlikte Kasa'da giriş bilgisi olur. İç içe etiketler klasöre dönüşür ve her not etiketlerini de korur.",
+            "Super notlar biçimlendirmesini korur: başlıklar, listeler, kontrol listeleri, tablolar, kod blokları, vurgular, renkler, metin hizalama ve daraltılabilir bölümler. Başka bir nota verilen bağlantı not bağlantısına dönüşür ve metindeki #hashtag notun etiketi olur. Kontrol listeleri Görevler'e düşer, hesap tabloları tabloya dönüşür ve kimlik doğrulayıcı kayıtları 2FA anahtarlarıyla birlikte Kasa'da giriş bilgisi olur. İç içe etiketler klasöre dönüşür ve her not etiketlerini de korur.",
             "Standard Notes'a yüklediğiniz dosyalar onların sunucusunda kalır, bu yüzden yedekte yalnızca adları bulunur. İçe aktarılan her not, bir dosyanın bulunduğu yeri işaretler. Bu dosyaları Standard Notes'tan indirin ve nota yeniden ekleyin."
           ]
         },
@@ -444,6 +515,47 @@
           "h": "Görseller veya dosyalar eksikse",
           "p": [
             "\"Backup attachments\" seçeneğini işaretlemeden önce alınmış bir yedekte dosya yoktur ve içe aktarma önizlemesi, notların yedekte bulunmayan eklere başvurduğu konusunda sizi uyarır. Uyarırsa iptal edin, ayarı UpNote'ta açın, yeniden \"Backup now\" düğmesine tıklayın, yeni klasörü zipleyin ve onu içe aktarın."
+          ]
+        }
+      ]
+    },
+    "joplin": {
+      "app": "Joplin",
+      "title": "Joplin notlarınızı dışa aktarın",
+      "metaTitle": "Joplin notlarını JEX olarak dışa aktarma - PrivacyNotes",
+      "lead": "Joplin, tüm defterleri tek bir JEX dosyası olarak bir seferde dışa aktarır. Notlarınızı defterleri, etiketleri, yapılacakları, not bağlantıları ve ekleriyle birlikte getirir.",
+      "sections": [
+        {
+          "h": "Her şeyi JEX olarak dışa aktarın",
+          "steps": [
+            "Bilgisayarınızda Joplin'i açın.",
+            "File > Export all > \"JEX - Joplin Export File\" seçeneğini seçin.",
+            "Dosyayı kaydedin. Her defteri içeren tek bir .jex dosyası elde edersiniz; yani ziplemeniz gereken bir şey yok.",
+            "Bu .jex dosyasını olduğu gibi bırakın."
+          ],
+          "p": [
+            "Tools > Create backup, aynı dosyayı bayt bayt aynı şekilde, ana klasörünüzdeki JoplinBackup klasörünün içine all_notebooks.jex olarak yazar. Joplin bu yedekleri sizin için zaten alıyorsa, en yenisi de aynı işi görür."
+          ]
+        },
+        {
+          "h": "Markdown, HTML ya da PDF değil, JEX seçin",
+          "p": [
+            "Export all ayrıca MD, MD + Front Matter, HTML directory ve PDF seçeneklerini sunar. Bunlar başka uygulamalarda okumak için yapılmış kopyalardır. JEX dosyası ise Joplin'in her not, defter, etiket ve ekin kendi kaydıdır ve bizim okuduğumuz da odur. Diğer dışa aktarmalardan birini bırakırsanız, yarısını içe aktarmak yerine bunu size söyleriz.",
+            "Daha önce \"RAW - Joplin Export Directory\" dışa aktardıysanız, o klasörü zipleyip zipi bırakın. JEX dosyasıyla aynı öğeleri içerir."
+          ]
+        },
+        {
+          "h": "Dışa aktarmadan önce notları çöp kutusundan çıkarın",
+          "p": [
+            "Joplin, çöp kutusunu her dışa aktarmanın ve her yedeğin dışında bırakır. Saklamak istediğiniz notları dışa aktarmadan önce çöp kutusundan çıkarın, yoksa Joplin'de kalırlar."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Defterleriniz, Joplin'de iç içe oldukları kadar derin gerçek klasörler olarak yeniden kurulur ve her not etiketlerini ile Joplin'in size gösterdiği oluşturulma ve güncellenme tarihlerini korur.",
+            "Yapılacaklar, işaretleyebileceğiniz bir onay kutusu olan görev notlarına dönüşür; yapılacak tamamlanmışsa kutu zaten işaretli gelir, bitiş tarihi de başlığın yanında yazılı kalır. Notlar arasındaki bağlantılar not bağlantısına dönüşür. Görseller ve ekler depolamanıza aktarılır ve notta yerinde kalır. Web kırpıntıları gibi HTML olarak kaydedilmiş notlar biçimlendirmeleriyle dönüştürülür.",
+            "Joplin'in Conflicts defterindeki notlar \"conflict\" etiketiyle gelir; böylece onları bulup ayıklayabilirsiniz. Joplin'in şifrelemesini kullanıyorsanız, dışa aktarmadan önce şifre çözmeyi bitirmesine izin verin: hâlâ şifreli olan bir öğe atlanır ve içe aktarma önizlemesi kaç tane olduğunu söyler."
           ]
         }
       ]

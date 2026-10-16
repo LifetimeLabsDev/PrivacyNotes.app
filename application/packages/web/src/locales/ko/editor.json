@@ -92,7 +92,13 @@
       "goal": "목표",
       "decision": "결정",
       "definition": "정의",
-      "seealso": "참고"
+      "seealso": "참고",
+      "box": "상자",
+      "panel": "패널",
+      "update": "업데이트",
+      "time": "시간",
+      "steps": "단계",
+      "place": "장소"
     }
   },
   "color": {
@@ -123,6 +129,7 @@
     "addColumnRight": "오른쪽에 열 추가",
     "toggleHeaderRow": "머리글 행 전환",
     "equalColumnWidths": "열 너비 같게",
+    "resizeHint": "{{shift}} 키를 누른 채 끌면 이 열만 바뀌고, {{alt}} 키를 누르면 더 세밀하게 조절돼요",
     "deleteRow": "행 삭제",
     "deleteColumn": "열 삭제",
     "deleteTable": "표 삭제"
@@ -146,6 +153,8 @@
     "caseSensitiveTitle": "대소문자 구분",
     "closeReplace": "찾기 및 바꾸기 닫기",
     "closeReplaceTitle": "닫기 ({{keys}})",
+    "showReplace": "찾기 및 바꾸기",
+    "hideReplace": "바꾸기 숨기기",
     "replacedCount_other": "{{count}}개 바꿈"
   },
   "outline": {
@@ -154,7 +163,7 @@
     "title": "개요",
     "ariaLabel": "노트 개요",
     "hide": "개요 숨기기",
-    "hideTitle": "개요 숨기기 (Esc)",
+    "hideTitle": "개요 숨기기 ({{keys}})",
     "copyHeadingLink": "제목 링크 복사",
     "copyNoteLink": "노트 링크 복사",
     "copyHeadingShortcut": "제목 바로가기 복사",
@@ -167,6 +176,9 @@
   },
   "topRow": {
     "add": "맨 위에 줄 추가"
+  },
+  "addLine": {
+    "add": "줄 추가"
   },
   "link": {
     "popoverLabel": "링크 추가",
@@ -201,7 +213,9 @@
     "words_other": "{{formatted}} 단어",
     "characters_other": "{{formatted}}자",
     "tasksChecked_other": "{{formatted}}개 중 {{done}}개 체크됨",
-    "tooLargeToSync": ", 동기화하기에 너무 클 수 있어요. 새 노트로 나누세요",
+    "syncLimit": " · 1MB 동기화 한도의 {{share}}",
+    "overSyncLimit": " · 1MB 동기화 한도를 넘어 이 기기에만 남아요",
+    "split": "노트 나누기",
     "veryLong": ", 매우 길어요. 편집이 느려지거나 끊길 수 있어요",
     "gettingLong": ", 길어지고 있어요. 느린 기기에서는 버벅일 수 있어요",
     "largeTableWarning": "큰 표({{rows}}행)는 이 노트의 편집을 느리게 만들 수 있어요. 나누는 것을 고려하세요"
@@ -260,10 +274,13 @@
     "hintTap": "버튼을 탭해서 옵션을 열어요.",
     "onBar": "도구 모음에",
     "inMenu": "+ 메뉴에",
+    "inAttachMenu": "첨부 메뉴에",
+    "attachMenuEmpty": "비어 있어서 첨부 버튼이 보이지 않아요.",
     "menuEmpty": "메뉴가 비어 있어서 + 버튼이 보이지 않아요.",
     "hidden": "숨김",
     "hiddenNote": "단축키와 Markdown으로 계속 쓸 수 있어요.",
     "hiddenDrop": "버튼을 여기에 놓으면 숨겨져요.",
+    "markdownViewNote": "markdown 보기에는 고정된 버튼 세트가 따로 있어요.",
     "hiddenEmpty": "숨긴 항목이 없어요.",
     "alwaysVisible": "항상 표시",
     "pinned": "패널을 열기 때문에 도구 모음에 두거나 숨겨요",
@@ -275,18 +292,23 @@
     "home": {
       "bar": "도구 모음에",
       "menu": "+ 메뉴에",
+      "attachMenu": "첨부 메뉴에",
       "hidden": "숨김"
     },
     "opensPanel": "패널을 열어요",
     "showsRecording": "녹음을 보여 줘요",
     "refuse": {
       "menuNotAllowed": "{{item}}은(는) 도구 모음에 두거나 숨길 수 있지만 + 메뉴에는 넣을 수 없어요.",
+      "attachNotAllowed": "첨부 메뉴에는 이미지, 파일, 녹음 버튼만 넣을 수 있어요.",
       "lastOnBar": "도구 모음에 버튼을 하나 이상 남겨 두세요."
     },
     "items": {
       "link": "링크",
       "notelink": "노트 링크",
-      "audio": "녹음"
+      "audio": "녹음",
+      "attachMenu": "첨부",
+      "separator": "세로 구분선",
+      "markdownView": "markdown 보기"
     },
     "positionTitle": "도구 모음 위치",
     "positionNote": "편집기에서 도구 모음이 놓일 위치를 골라요.",

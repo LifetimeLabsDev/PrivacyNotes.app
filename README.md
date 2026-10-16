@@ -1,6 +1,3 @@
-> [!IMPORTANT]
-> **The apps are now open source.** As of August 31, 2026, the full client code for web, desktop and mobile is in [`application/`](application/), licensed under AGPL-3.0. If you came to check our claims, start with [VERIFY.md](VERIFY.md).
-
 <div align="center">
 
 <picture>
@@ -28,7 +25,12 @@ Signed apps for [**macOS**](https://privacynotes.app/en#downloads), [**Windows**
 
 <div align="center">
 
-<a href="https://try.privacynotes.app"><img src="assets/app.webp" alt="The PrivacyNotes editor" width="820"></a>
+<a href="https://try.privacynotes.app">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/app-dark.webp">
+  <img src="assets/app.webp" alt="The PrivacyNotes app" width="820">
+</picture>
+</a>
 
 <em>This screenshot is a link. It opens the <a href="https://try.privacynotes.app">live demo</a> in your browser:<br>
 no account, nothing saved, the real app with the real encryption.</em>
@@ -71,7 +73,7 @@ Three claims we make, and where to check each one without taking our word for it
 | The claim | Check it here |
 | :--- | :--- |
 | Under self-custody, your phrase never leaves your device | [`crypto/crypto.ts`](crypto/crypto.ts), and the derivation strings in the live bundle |
-| Notes are encrypted before they touch our server | [`crypto/crypto.ts`](crypto/crypto.ts), the XChaCha20-Poly1305 path |
+| Your notes are encrypted on your device, at rest and on the way to us | [`crypto/crypto.ts`](crypto/crypto.ts), the XChaCha20-Poly1305 path |
 | The server stores only ciphertext | [VERIFY.md](VERIFY.md) tier 1: watch your own notes leave in your browser's network tab |
 
 If any of those stops holding, the claim is broken and you can prove it. That is the entire point of this repo.
@@ -177,40 +179,11 @@ Losing your phrase, under self-custody, means losing your notes. There is no res
 
 ---
 
-## Coming from another app
-
-The importer already reads your export:
-
-| Coming from | What to drop in |
-| :--- | :--- |
-| [Evernote](https://privacynotes.app/help/import/evernote) | `.enex`, on its own or several zipped. Keeps formatting, tags, attachments, note links and notebooks |
-| [Apple Notes](https://privacynotes.app/help/import/apple-notes) | `.zip` of a Markdown export |
-| [Apple Journal](https://privacynotes.app/help/import/apple-journal) | `.zip` of `AppleJournalEntries`, with photos, videos, voice memos and locations |
-| [Obsidian](https://privacynotes.app/help/import/obsidian) | vault `.zip`, keeping tags, `[[note links]]` and folder structure |
-| [Notesnook](https://privacynotes.app/help/import/notesnook) | `.zip` HTML export or `.nnbackupz` |
-| [Standard Notes](https://privacynotes.app/help/import/standard-notes) | `.zip` or `.txt` backup |
-| [Simplenote](https://privacynotes.app/help/import/simplenote) | `.zip` or `.json` export |
-| [Google Keep](https://privacynotes.app/help/import/google-keep) | Takeout `.zip` or `.json` |
-| [Samsung Notes](https://privacynotes.app/help/import/samsung-notes) | `.zip`, `.docx` or `.txt` |
-| [UpNote](https://privacynotes.app/help/import/upnote) | `.zip` export |
-| [Nextcloud Notes](https://privacynotes.app/help/import/nextcloud-notes) | `.zip` of the notes folder from your server |
-| [iA Writer](https://privacynotes.app/help/import/ia-writer) | `.zip` of the library, or the `.md` files |
-| [Typora](https://privacynotes.app/help/import/typora) | the `.md` files, individually or zipped |
-| [Zettlr](https://privacynotes.app/help/import/zettlr) | `.zip` of the workspace folder |
-| [Bitwarden](https://privacynotes.app/help/import/bitwarden) | `.json` export, into the password vault |
-| [Browser passwords](https://privacynotes.app/help/import/browser-passwords) | `.csv` export from Chrome, Firefox, Safari or Edge, into the password vault |
-| [Browser bookmarks](https://privacynotes.app/help/import/browser-bookmarks) | the exported `.html` bookmarks file |
-| [Anything else](https://privacynotes.app/help/import/markdown) | `.md` files, individually or zipped |
-
-Nothing in that list is uploaded for conversion. The parser runs in your browser and the result is encrypted on the device, which is the only reason importing a decade of Evernote into a service like this is a reasonable thing to do.
-
----
-
 ## Security contact
 
-Found a flaw in the crypto, the derivation, or the client? Email **privacynotes@lifetimelabs.dev** rather than opening a public issue, so it can be fixed before it is public.
+Found a flaw in the crypto, the derivation, or the client? [**Report it privately on GitHub**](https://github.com/LifetimeLabsDev/PrivacyNotes.app/security/advisories/new) rather than opening a public issue, so it can be fixed before it is public. A private report there reaches us fastest and keeps the whole exchange in one place.
 
-That address is published in our PGP-signed [security.txt](https://privacynotes.app/.well-known/security.txt) so you can confirm it is really us, and our [public key](https://privacynotes.app/.well-known/pgp-key.txt) is there if you want to encrypt the report. If a fix needs coordination we will work with you on timing before disclosure. There is no paid bounty program yet.
+If you cannot use GitHub, email **privacynotes@lifetimelabs.dev** as a backup. That address is published in our PGP-signed [security.txt](https://privacynotes.app/.well-known/security.txt) so you can confirm it is really us, and our [public key](https://privacynotes.app/.well-known/pgp-key.txt) is there if you want to encrypt the report. If a fix needs coordination we will work with you on timing before disclosure. There is no paid bounty program yet.
 
 **No third-party audit has been performed yet.** The first serious spend out of revenue is one, with Cure53 as the target firm.
 

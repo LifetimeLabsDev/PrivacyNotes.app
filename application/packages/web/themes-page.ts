@@ -4,12 +4,13 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss } from './static-page-theme.ts';
 import { CHROME_CSS, LIGHTBOX_CSS, OG_IMAGE_TAGS, ogLocaleTag, SITE_FOOTER, siteNav } from './static-page-chrome.ts';
-// Type-only, so they erase at build time and leave the two source files the
-// import-free modules loadThemes() transpiles and imports as data URLs.
+// Type-only, so they erase at build time and leave the import-free modules
+// that loadThemes() transpiles and imports as data URLs.
 import type * as ThemeCode from './src/themeCode.ts';
 import type { CommunityTheme } from './src/communityThemes.ts';
 import type { TeamTheme } from './src/teamThemes.ts';
 import type { BUILTIN_THEME_CODES } from './src/builtinThemeCodes.ts';
+import type { COMMUNITY_VOTES } from './src/communityVotes.ts';
 import { THEME_SHOT_DIR, themeShotFile } from '../../ops/theme-shots/shotName.mjs';
 
 // Pre-renders /themes: the community themes from src/communityThemes.ts, then
@@ -27,7 +28,8 @@ import { THEME_SHOT_DIR, themeShotFile } from '../../ops/theme-shots/shotName.mj
 // The page ships zero inline scripts (script-src is 'self' only): the Copy
 // buttons ship hidden and /static-pages.js wires them (data-static-page
 // "themes"), and the All, Light and Dark filter is three radio inputs and
-// CSS. Every code stays selectable without JavaScript.
+// CSS. Every code stays selectable without JavaScript. The Load more buttons
+// ship hidden too: without JavaScript every card shows.
 // Spec: ops/docs/color-themes.md (section 6)
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -39,6 +41,8 @@ const DESC =
 /** The theme form: a new discussion in the Themes category of the public
  *  repository, where each theme keeps an open thread. */
 const SUBMIT_URL = 'https://github.com/LifetimeLabsDev/PrivacyNotes.app/discussions/new?category=themes';
+/** Cards a list shows before its Load more button, and how many each press adds. */
+const PAGE_SIZE = 40;
 
 interface ThemeCard {
   name: string;
@@ -48,6 +52,13 @@ interface ThemeCard {
   author?: string;
   /** A community theme's day of adding (YYYY-MM-DD). */
   added?: string;
+  /** A community theme's thread in the Themes discussions, and its upvotes there. */
+  discussion?: number;
+  votes?: number;
+  /** Its place when the page lists the community themes newest first. */
+  newestRank?: number;
+  /** Its place when the page lists them by votes. */
+  votesRank?: number;
   colors: Record<string, string>;
 }
 
@@ -60,17 +71,22 @@ async function importTs<T>(file: string): Promise<T> {
 interface ThemeLists {
   community: ThemeCard[];
   team: ThemeCard[];
+  discussionsUrl: string;
 }
 
 async function loadThemes(): Promise<ThemeLists> {
   const tc = await importTs<typeof ThemeCode>(path.join(SRC, 'themeCode.ts'));
-  const { COMMUNITY_THEMES } = await importTs<{ COMMUNITY_THEMES: CommunityTheme[] }>(
+  const { COMMUNITY_THEMES, THEME_DISCUSSIONS_URL } = await importTs<{ COMMUNITY_THEMES: CommunityTheme[]; THEME_DISCUSSIONS_URL: string }>(
     path.join(SRC, 'communityThemes.ts'),
+  );
+  const { COMMUNITY_VOTES } = await importTs<{ COMMUNITY_VOTES: typeof COMMUNITY_VOTES }>(
+    path.join(SRC, 'communityVotes.ts'),
   );
   const { TEAM_THEMES } = await importTs<{ TEAM_THEMES: TeamTheme[] }>(path.join(SRC, 'teamThemes.ts'));
   const builtin = await importTs<{ BUILTIN_THEME_CODES: typeof BUILTIN_THEME_CODES }>(path.join(SRC, 'builtinThemeCodes.ts'));
-  // One id and one name per theme across every list: a pasted code that
-  // matches a theme picks it by its canonical code, and a slot stores the id.
+  // One id per theme across every list, and one name per mode: a pasted code
+  // that matches a theme picks it by its canonical code, and a slot stores the
+  // id, so a light and a dark theme may share a name; each card shows its mode.
   const ids = new Set<string>();
   const names = new Set<string>();
   const read = (code: string, where: string, credited: boolean): ThemeCard => {
@@ -91,9 +107,10 @@ async function loadThemes(): Promise<ThemeLists> {
     if ([...theme.name].length > tc.THEME_NAME_INPUT_MAX) {
       throw new Error(`themes-page: "${theme.name}" is longer than ${tc.THEME_NAME_INPUT_MAX} characters, the most the builder takes`);
     }
-    if (names.has(theme.name)) throw new Error(`themes-page: two themes are called "${theme.name}"`);
-    names.add(theme.name);
     const resolved = tc.resolveTheme(theme);
+    const named = `${resolved.mode}:${theme.name}`;
+    if (names.has(named)) throw new Error(`themes-page: two ${resolved.mode} themes are called "${theme.name}"`);
+    names.add(named);
     return { name: theme.name, mode: resolved.mode, code, author, colors: resolved.colors };
   };
   const listed = ({ id, code }: { id: string; code: string }, where: string, credited: boolean): ThemeCard => {
@@ -102,16 +119,25 @@ async function loadThemes(): Promise<ThemeLists> {
     return read(code, where, credited);
   };
   const palettes = [...Object.values(builtin.BUILTIN_THEME_CODES.light), ...Object.values(builtin.BUILTIN_THEME_CODES.dark)];
-  return {
-    // Newest first, the order the app uses; a malformed date stops the build.
-    community: [...COMMUNITY_THEMES]
+  // Newest first; a malformed date stops the build.
+  const newest = [...COMMUNITY_THEMES]
       .map((t, i) => {
         if (!/^\d{4}-\d{2}-\d{2}$/.test(t.added) || Number.isNaN(Date.parse(t.added))) {
           throw new Error(`themes-page: community entry ${i + 1} needs added: 'YYYY-MM-DD'`);
         }
-        return { ...listed(t, `community entry ${i + 1}`, true), added: t.added };
+        if (t.discussion !== undefined && !(Number.isInteger(t.discussion) && t.discussion > 0)) {
+          throw new Error(`themes-page: community entry ${i + 1} needs discussion: <a discussion number>`);
+        }
+        const votes = t.discussion ? (COMMUNITY_VOTES[t.discussion] ?? 0) : 0;
+        if (!Number.isInteger(votes) || votes < 0) throw new Error(`themes-page: community entry ${i + 1} has a bad vote count`);
+        return { ...listed(t, `community entry ${i + 1}`, true), added: t.added, votes, ...(t.discussion ? { discussion: t.discussion } : {}) };
       })
-      .sort((a, b) => b.added!.localeCompare(a.added!)),
+      .sort((a, b) => b.added!.localeCompare(a.added!))
+      .map((t, i) => ({ ...t, newestRank: i }));
+  return {
+    // Most votes first, the app's order under Community; a tie goes to the newer.
+    community: [...newest].sort((a, b) => b.votes - a.votes).map((t, i) => ({ ...t, votesRank: i })),
+    discussionsUrl: THEME_DISCUSSIONS_URL,
     team: [...palettes.map((code) => read(code, 'a built-in palette', false)), ...TEAM_THEMES.map((t, i) => listed(t, `team entry ${i + 1}`, false))],
   };
 }
@@ -130,6 +156,7 @@ const P_DISK = 'M219.31,72,184,36.69A15.86,15.86,0,0,0,172.69,32H48A16,16,0,0,0,
 const P_EXPAND = 'M216,48V96a8,8,0,0,1-16,0V67.31l-42.34,42.35a8,8,0,0,1-11.32-11.32L188.69,56H160a8,8,0,0,1,0-16h48A8,8,0,0,1,216,48ZM98.34,146.34,56,188.69V160a8,8,0,0,0-16,0v48a8,8,0,0,0,8,8H96a8,8,0,0,0,0-16H67.31l42.35-42.34a8,8,0,0,0-11.32-11.32ZM208,152a8,8,0,0,0-8,8v28.69l-42.34-42.35a8,8,0,0,0-11.32,11.32L188.69,200H160a8,8,0,0,0,0,16h48a8,8,0,0,0,8-8V160A8,8,0,0,0,208,152ZM67.31,56H96a8,8,0,0,0,0-16H48a8,8,0,0,0-8,8V96a8,8,0,0,0,16,0V67.31l42.34,42.35a8,8,0,0,0,11.32-11.32Z';
 const P_SUN = 'M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z';
 const P_MOON = 'M233.54,142.23a8,8,0,0,0-8-2,88.08,88.08,0,0,1-109.8-109.8,8,8,0,0,0-10-10,104.84,104.84,0,0,0-52.91,37A104,104,0,0,0,136,224a103.09,103.09,0,0,0,62.52-20.88,104.84,104.84,0,0,0,37-52.91A8,8,0,0,0,233.54,142.23ZM188.9,190.34A88,88,0,0,1,65.66,67.11a89,89,0,0,1,31.4-26A106,106,0,0,0,96,56,104.11,104.11,0,0,0,200,160a106,106,0,0,0,14.92-1.06A89,89,0,0,1,188.9,190.34Z';
+const P_ARROW_UP = 'M205.66,117.66a8,8,0,0,1-11.32,0L136,59.31V216a8,8,0,0,1-16,0V59.31L61.66,117.66a8,8,0,0,1-11.32-11.32l72-72a8,8,0,0,1,11.32,0l72,72A8,8,0,0,1,205.66,117.66Z';
 const GITHUB_ICON =
   '<svg width="14" height="14" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,104v8a56.06,56.06,0,0,1-48.44,55.47A39.8,39.8,0,0,1,176,192v40a8,8,0,0,1-8,8H104a8,8,0,0,1-8-8V216H72a40,40,0,0,1-40-40A24,24,0,0,0,8,152a8,8,0,0,1,0-16,40,40,0,0,1,40,40,24,24,0,0,0,24,24H96v-8a39.8,39.8,0,0,1,8.44-24.53A56.06,56.06,0,0,1,56,112v-8a58.14,58.14,0,0,1,7.69-28.32A59.78,59.78,0,0,1,69.07,28,8,8,0,0,1,76,24a59.75,59.75,0,0,1,48,24h24a59.75,59.75,0,0,1,48-24,8,8,0,0,1,6.93,4,59.74,59.74,0,0,1,5.37,47.68A58,58,0,0,1,216,104Z"/></svg>';
 const COPY_ICON =
@@ -151,18 +178,30 @@ function shotPath(t: ThemeCard): string {
   return `/${THEME_SHOT_DIR}/${file}`;
 }
 
-function card(t: ThemeCard, i: number): string {
+function card(t: ThemeCard, i: number, discussionsUrl: string): string {
   const added = t.added
     ? ` <span class="added">&middot; ${new Date(`${t.added}T00:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}</span>`
     : '';
+  // The credit opens the theme's discussion thread, where its author and its
+  // users talk about it; a theme without one links the author's profile.
+  const thread = t.discussion ? `${discussionsUrl}/${t.discussion}` : undefined;
+  const creditHref = thread ?? `https://github.com/${t.author}`;
+  // Votes happen on the thread; the count is the snapshot the page was built with.
+  const vote = thread
+    ? `<a class="vote" href="${thread}" target="_blank" rel="noopener noreferrer nofollow" data-thread="${t.discussion}" aria-label="${t.votes} ${t.votes === 1 ? 'vote' : 'votes'}, vote on GitHub">${glyph(P_ARROW_UP, 12)}<span class="vc">${t.votes}</span> &middot; Vote</a>`
+    : '';
   const by = t.author
-    ? `by <a href="https://github.com/${t.author}" target="_blank" rel="noopener noreferrer nofollow">@${t.author}</a>${added}`
+    ? `<span>by <a href="${creditHref}" target="_blank" rel="noopener noreferrer nofollow">@${t.author}</a>${added}</span>${vote}`
     : 'Made by the team, already in the app';
   const id = `theme-code-${i + 1}`;
   const dots = SWATCHES.map(
     ([k, label]) => `<li style="background:${t.colors[k]}" title="${label} ${t.colors[k]}"><span class="vh">${label} ${t.colors[k]}</span></li>`,
   ).join('');
-  return `<article class="tc" data-mode="${t.mode}">
+  // The Worker rewrites --ov and the counts from the live votes (worker.ts, withThemeVotes).
+  const rank = t.newestRank !== undefined && t.discussion
+    ? ` data-thread="${t.discussion}" style="--ov:${t.votesRank};--on:${t.newestRank}"`
+    : t.newestRank !== undefined ? ` style="--ov:${t.votesRank};--on:${t.newestRank}"` : '';
+  return `<article class="tc" data-mode="${t.mode}"${rank}>
 <figure class="shot"><a href="${shotPath(t)}" data-shot data-alt="${esc(t.name)}" aria-label="Show the ${esc(t.name)} screenshot full size"><img src="${shotPath(t)}" width="2560" height="1600" alt="The app in the ${esc(t.name)} theme" loading="${i < 4 ? 'eager' : 'lazy'}" decoding="async" draggable="false"><span class="zoom" aria-hidden="true">${glyph(P_EXPAND, 18)}View full size</span></a><span class="mode">${t.mode === 'dark' ? 'Dark' : 'Light'}</span></figure>
 <div class="tc-body">
 <div class="tc-head"><h2 dir="auto">${esc(t.name)}</h2><ul class="sw" aria-label="Colors">${dots}</ul></div>
@@ -195,8 +234,8 @@ const PAGE_CSS = `.hero{display:flex;align-items:flex-end;justify-content:space-
 .seg{display:inline-flex;gap:2px;padding:3px;border-radius:10px;background:var(--chip)}
 .filter label{display:inline-flex;align-items:center;gap:5px;border-radius:7px;padding:5px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted)}
 .filter label:hover{color:var(--fg)}
-#tf-all:checked~.filters label[for=tf-all],#tf-light:checked~.filters label[for=tf-light],#tf-dark:checked~.filters label[for=tf-dark],#mb-all:checked~.filters label[for=mb-all],#mb-community:checked~.filters label[for=mb-community],#mb-team:checked~.filters label[for=mb-team]{background:var(--bg);color:var(--fg);box-shadow:0 0 0 1px var(--line),0 1px 2px rgb(0 0 0/.08)}
-#tf-all:focus-visible~.filters label[for=tf-all],#tf-light:focus-visible~.filters label[for=tf-light],#tf-dark:focus-visible~.filters label[for=tf-dark],#mb-all:focus-visible~.filters label[for=mb-all],#mb-community:focus-visible~.filters label[for=mb-community],#mb-team:focus-visible~.filters label[for=mb-team]{outline:2px solid var(--accent);outline-offset:2px}
+#so-votes:checked~.filters label[for=so-votes],#so-new:checked~.filters label[for=so-new],#tf-all:checked~.filters label[for=tf-all],#tf-light:checked~.filters label[for=tf-light],#tf-dark:checked~.filters label[for=tf-dark],#mb-all:checked~.filters label[for=mb-all],#mb-community:checked~.filters label[for=mb-community],#mb-team:checked~.filters label[for=mb-team]{background:var(--bg);color:var(--fg);box-shadow:0 0 0 1px var(--line),0 1px 2px rgb(0 0 0/.08)}
+#so-votes:focus-visible~.filters label[for=so-votes],#so-new:focus-visible~.filters label[for=so-new],#tf-all:focus-visible~.filters label[for=tf-all],#tf-light:focus-visible~.filters label[for=tf-light],#tf-dark:focus-visible~.filters label[for=tf-dark],#mb-all:focus-visible~.filters label[for=mb-all],#mb-community:focus-visible~.filters label[for=mb-community],#mb-team:focus-visible~.filters label[for=mb-team]{outline:2px solid var(--accent);outline-offset:2px}
 #tf-light:checked~.tgrid .tc[data-mode=dark],#tf-dark:checked~.tgrid .tc[data-mode=light]{display:none}
 #mb-community:checked~.by-team,#mb-team:checked~.by-community{display:none}
 .sec-empty{display:none;margin:0;padding:16px 18px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:14px}
@@ -228,7 +267,12 @@ const PAGE_CSS = `.hero{display:flex;align-items:flex-end;justify-content:space-
 .sw{display:flex;gap:4px;list-style:none;margin:0;padding:0;flex-shrink:0}
 .sw li{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1px rgb(127 127 127/.35)}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.by{margin:-4px 0 0;font-size:13px;color:var(--muted)}
+.by{margin:-4px 0 0;font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px}
+.vote{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;font-weight:600;color:var(--muted);text-decoration:none}
+.vote:hover{color:var(--accent);border-color:var(--accent)}
+.tgrid.by-community .tc{order:var(--ov)}
+#so-new:checked~.tgrid.by-community .tc{order:var(--on)}
+#mb-team:checked~.filters .by-order{display:none}
 .cbtn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--rail);color:var(--accent);font-size:13.5px;font-weight:600;cursor:pointer}
 .cbtn[hidden]{display:none}
 .cbtn:hover{border-color:var(--accent)}
@@ -245,10 +289,23 @@ const PAGE_CSS = `.hero{display:flex;align-items:flex-end;justify-content:space-
 .submit h2{font-size:16px;margin:0 0 4px}
 .submit p{margin:0;color:var(--muted);max-width:620px}
 .submit .btn{flex-shrink:0}
+.tc.tc-more{display:none}
+.more-btn{display:block;width:50%;margin:18px auto 0;padding:9px 18px;border:1px solid var(--line);border-radius:9px;background:var(--rail);color:var(--accent);font-size:13.5px;font-weight:600;cursor:pointer}
+.more-btn[hidden]{display:none}
+.more-btn:hover{border-color:var(--accent)}
+.more-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .btn-tint{background:var(--imp-bg);color:var(--mark-fg);font-size:14px;font-weight:600;padding:10px 16px;border:1px solid transparent}
 .btn-tint:hover{border-color:var(--mark-fg)}`;
 
-function renderHtml({ community, team }: ThemeLists): string {
+const MORE_BUTTON = (list: string) => `<button class="more-btn ${list}" type="button" data-more hidden>Load more</button>`;
+
+function renderHtml({ community, team, discussionsUrl }: ThemeLists): string {
+  // The threads newest first with their baked counts, for the Worker's live rewrite.
+  const shipped = [...community]
+    .filter((t) => t.discussion)
+    .sort((a, b) => a.newestRank! - b.newestRank!)
+    .map((t) => `${t.discussion}:${t.votes}`)
+    .join(',');
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -256,6 +313,7 @@ function renderHtml({ community, team }: ThemeLists): string {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${TITLE}</title>
 <meta name="description" content="${DESC}">
+${shipped ? `<meta name="pn-theme-votes" content="${shipped}">` : ''}
 <link rel="canonical" href="${CANONICAL}">
 <meta property="og:title" content="${TITLE}">
 <meta property="og:description" content="${DESC}">
@@ -295,24 +353,29 @@ ${siteNav({ active: 'themes' })}
 ${community.length > 0 ? `<input class="tfi" type="radio" name="mb" id="mb-all" checked>
 <input class="tfi" type="radio" name="mb" id="mb-community">
 <input class="tfi" type="radio" name="mb" id="mb-team">
+<input class="tfi" type="radio" name="so" id="so-votes" checked>
+<input class="tfi" type="radio" name="so" id="so-new">
 <div class="filters">
 <div class="filter" role="group" aria-label="Made by"><span class="fl" aria-hidden="true">Made by</span><span class="seg"><label for="mb-all">All</label><label for="mb-community">Community</label><label for="mb-team">Team</label></span></div>
 <div class="filter" role="group" aria-label="Mode"><span class="fl" aria-hidden="true">Mode</span><span class="seg"><label for="tf-all">All</label><label for="tf-light">${glyph(P_SUN, 14)}Light</label><label for="tf-dark">${glyph(P_MOON, 14)}Dark</label></span></div>
+<div class="filter by-order" role="group" aria-label="Order"><span class="fl" aria-hidden="true">Order</span><span class="seg"><label for="so-votes">Most votes</label><label for="so-new">Newest</label></span></div>
 </div>
 <h2 class="sec by-community">Community themes</h2>
-<p class="sec-d by-community">Made by people who use the app.</p>
-<div class="tgrid by-community">
-${community.map(card).join('\n')}
+<p class="sec-d by-community">Made by people who use the app. Vote for the ones you like on their GitHub thread; the counts update once a day.</p>
+<div class="tgrid by-community" data-page="${PAGE_SIZE}">
+${community.map((t, i) => card(t, i, discussionsUrl)).join('\n')}
 </div>
+${MORE_BUTTON('by-community')}
 ${(['light', 'dark'] as const)
   .filter((m) => !community.some((t) => t.mode === m))
   .map((m) => `<p class="sec-empty by-community" data-empty="${m}">No ${m} themes from the community yet. <a href="${SUBMIT_URL}" target="_blank" rel="noopener noreferrer">Be the first</a>.</p>`)
   .join('\n')}` : `<div class="filters"><div class="filter" role="group" aria-label="Show"><span class="seg"><label for="tf-all">All</label><label for="tf-light">${glyph(P_SUN, 14)}Light</label><label for="tf-dark">${glyph(P_MOON, 14)}Dark</label></span></div></div>`}
 <h2 class="sec by-team">Made by the team</h2>
 <p class="sec-d by-team">Already in the app. Each code lists the colors, so you can change any of them and paste your own version.</p>
-<div class="tgrid by-team">
-${team.map((t, i) => card(t, community.length + i)).join('\n')}
+<div class="tgrid by-team" data-page="${PAGE_SIZE}">
+${team.map((t, i) => card(t, community.length + i, discussionsUrl)).join('\n')}
 </div>
+${MORE_BUTTON('by-team')}
 <section class="submit">
 <div>
 <h2>${community.length > 0 ? 'Made a theme you like?' : 'Be the first community theme'}</h2>

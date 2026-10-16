@@ -79,15 +79,17 @@ export function noteToMarkdown(
     fm.push(`pinProtected: ${note.pinProtected === 1}`);
     if (note.archived === 1) fm.push('archived: true');
     if (note.folderId) fm.push(`folderId: ${note.folderId}`);
-  } else if (note.type === 'journal') {
-    // The ONE type a single .md may declare. A journal's body is its real
-    // markdown, so restoring it as a journal is lossless - and without the
-    // line its trackers would come back attached to a plain note, where the
-    // app never shows them. Vault types stay unwritten here on purpose: a
-    // login exports as the READABLE `vaultToMarkdown` text, so declaring the
+  } else if (note.type === 'journal' || note.type === 'task' || note.type === 'event') {
+    // The types whose body is their real markdown, so a single .md restores
+    // them losslessly - and trackers with no type read back as a journal
+    // entry, which never repeats. Vault types stay unwritten here on purpose:
+    // a login exports as the READABLE `vaultToMarkdown` text, so declaring the
     // type would restore that prose as a login and hide every field. See
     // exportSingleMarkdown.
-    fm.push('type: journal');
+    fm.push(`type: ${note.type}`);
+  } else if ((note.type ?? 'note') === 'note') {
+    // A note is the default, so it names itself only when it carries trackers.
+    if (note.trackers && Object.keys(note.trackers).length > 0) fm.push('type: note');
   }
   // Written for every export, not only the full backup: trackers are the one
   // field a single exported journal entry would otherwise lose silently - the

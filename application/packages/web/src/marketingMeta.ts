@@ -33,6 +33,7 @@ export const HREFLANG: Record<string, string> = {
   'zh-TW': 'zh-TW',
   ca: 'ca',
   cs: 'cs',
+  sk: 'sk',
   tr: 'tr',
   sv: 'sv',
   ar: 'ar',
@@ -117,6 +118,10 @@ export const META: Record<string, { title: string; description: string }> = {
     title: 'PrivacyNotes: šifrované poznámky, úkoly a deník',
     description: 'Soukromý prostor pro poznámky, úkoly a tvůj deník. Šifrovaný na tvém zařízení. Začni zdarma, importuj své poznámky a za Pro zaplať jen jednou.',
   },
+  sk: {
+    title: 'PrivacyNotes: šifrované poznámky, úlohy a denník',
+    description: 'Súkromný priestor pre poznámky, úlohy a tvoj denník. Šifrovaný na tvojom zariadení. Začni zadarmo, importuj svoje poznámky a za Pro zaplať iba raz.',
+  },
   tr: {
     title: 'PrivacyNotes: Şifreli notlar, görevler ve günlük',
     description: 'Notlarınız, görevleriniz ve günlüğünüz için özel bir çalışma alanı. Cihazınızda şifrelenir. Ücretsiz başlayın, notlarınızı içe aktarın ve Pro için bir kez ödeyin.',
@@ -200,6 +205,7 @@ const OG_LOCALE: Record<string, string> = {
   'zh-TW': 'zh_TW',
   ca: 'ca_ES',
   cs: 'cs_CZ',
+  sk: 'sk_SK',
   tr: 'tr_TR',
   sv: 'sv_SE',
   // Arabic is the one language with no territory to name, and the rest of the

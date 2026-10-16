@@ -5,12 +5,14 @@
  * is the habit a browser teaches with the bar in its bottom corner, and the
  * reason GitHub #406 asks for it inside a note as well.
  *
- * The address lands in the editor's own bottom corner rather than in a tip
- * above the link, and that is the whole design decision. A tip hung on the
- * link is clipped: the note scroller clips horizontally, so a centered pill
- * over a link near either margin loses an end, and an address is both long
- * and the one string that must never be read half. The corner is as wide as
- * the pane, never clipped on any axis, and holds a long address whole.
+ * The address lands in the bottom corner of the pane's visible area, flush
+ * against both edges, the place and the look of a browser's status bar. A tip
+ * hung on the link is clipped: the note scroller clips horizontally, so a
+ * centered pill over a link near either margin loses an end, and an address
+ * is both long and the one string that must never be read half. The corner
+ * is as wide as the pane and holds a long address whole. It is fixed to the
+ * pane, not to the note, so a short note does not carry it up under its last
+ * line, where it reads as a stray element of the note.
  *
  * It is not the `title` attribute either, which the house forbids for every
  * tip: it waits about a second, wears OS chrome, and differs per platform.
@@ -22,7 +24,8 @@
  */
 
 import { useEffect, useState, type RefObject } from 'react';
-import { TIP_PILL_LOOK } from './HoverLabel';
+import { createPortal } from 'react-dom';
+import { visibleBox } from './HoverLabel';
 
 /** The anchor under the pointer whose address is worth showing, or null. */
 function addressOf(target: EventTarget | null): string | null {
@@ -35,8 +38,10 @@ function addressOf(target: EventTarget | null): string | null {
   return anchor.getAttribute('href') || null;
 }
 
+type Shown = { href: string; left: number; right: number; bottom: number; rtl: boolean };
+
 export function LinkAddressPill({ rootRef }: { rootRef: RefObject<HTMLDivElement | null> }) {
-  const [href, setHref] = useState<string | null>(null);
+  const [shown, setShown] = useState<Shown | null>(null);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -45,8 +50,21 @@ export function LinkAddressPill({ rootRef }: { rootRef: RefObject<HTMLDivElement
     // fires again on each element the pointer enters and the answer for
     // plain text is null. Leaving the editor enters no element here, so
     // that one case needs its own listener.
-    const onOver = (e: Event) => setHref(addressOf(e.target));
-    const onLeave = () => setHref(null);
+    const onOver = (e: Event) => {
+      const href = addressOf(e.target);
+      if (!href) return setShown(null);
+      // Read once per link: the pointer rests on the link, so the pane does
+      // not move under it.
+      const box = visibleBox(root);
+      setShown({
+        href,
+        left: box.left,
+        right: window.innerWidth - box.right,
+        bottom: window.innerHeight - box.bottom,
+        rtl: getComputedStyle(root).direction === 'rtl',
+      });
+    };
+    const onLeave = () => setShown(null);
     root.addEventListener('mouseover', onOver);
     root.addEventListener('mouseleave', onLeave);
     return () => {
@@ -55,19 +73,25 @@ export function LinkAddressPill({ rootRef }: { rootRef: RefObject<HTMLDivElement
     };
   }, [rootRef]);
 
-  if (!href) return null;
-  return (
-    // Sticky and zero height, the same trick the find bar uses at the top of
-    // this pane: the pill floats over the note instead of reserving a row,
-    // and it stays in the corner while the note scrolls under it. On a short
-    // note there is nothing to scroll and it sits below the last line.
+  if (!shown) return null;
+  const width = window.innerWidth - shown.left - shown.right;
+  return createPortal(
+    // The pane's start corner: the bottom left, or the bottom right in a
+    // right-to-left layout. Only the corner that faces into the pane is round.
+    // The pill itself is always left to right (an address), so its classes
+    // name physical sides.
     <div
       aria-hidden="true"
-      className="sticky bottom-0 z-[5] flex h-0 items-end justify-start overflow-visible pointer-events-none"
+      dir="ltr"
+      className={`pointer-events-none fixed z-50 truncate border-t border-divider bg-surface-2 px-2 py-0.5 text-[11px] leading-4 text-pn-muted [@media(hover:none)]:hidden ${shown.rtl ? 'border-l rounded-tl-md' : 'border-r rounded-tr-md'}`} // rtl-ok: physical sides of an always-LTR pill, chosen by the pane's direction
+      style={{
+        bottom: shown.bottom,
+        maxWidth: Math.max(0, width * 0.75),
+        ...(shown.rtl ? { right: shown.right } : { left: shown.left }), // rtl-ok: the pane's own start edge, measured
+      }}
     >
-      <div className={`${TIP_PILL_LOOK} mb-1 max-w-full truncate`} dir="ltr">
-        {href}
-      </div>
-    </div>
+      {shown.href}
+    </div>,
+    document.body,
   );
 }

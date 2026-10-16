@@ -11,13 +11,17 @@
     "noContent": "Bez obsahu",
     "notBackedUp": "Bez zálohy",
     "archived": "Archivováno",
-    "entryDate": "Datum záznamu"
+    "entryDate": "Datum záznamu",
+    "date": "Datum",
+    "dayOf": "den {{n}} z {{total}}"
   },
   "header": {
     "new": "Nový",
     "newNote": "Nová poznámka",
     "newNoteHover": "Nová poznámka ({{hotkey}})",
-    "trash": "Koš"
+    "trash": "Koš",
+    "newEvent": "Nová událost",
+    "newEventHover": "Nová událost ({{hotkey}})"
   },
   "folderChip": {
     "clear": "Zrušit filtr složky: {{folder}}",
@@ -40,7 +44,9 @@
     "login": "Přihlašovací údaje",
     "file": "Soubor",
     "bookmark": "Záložka",
-    "contact": "Kontakt"
+    "contact": "Kontakt",
+    "event": "Událost",
+    "quickAdd": "Rychlé přidání"
   },
   "vaultFilter": {
     "all": "Vše",
@@ -94,7 +100,8 @@
     "vault": "Trezor",
     "pinned": "Připnuté",
     "archive": "Archiv",
-    "notes": "Poznámky"
+    "notes": "Poznámky",
+    "calendar": "Kalendář"
   },
   "footerStats": {
     "journals": "Deníků",
@@ -142,8 +149,17 @@
     "collapse": "Sbalit seznam poznámek",
     "expand": "Rozbalit seznam poznámek"
   },
+  "split": {
+    "action": "Rozdělit poznámku",
+    "done": "Rozděleno do „{{title}}“",
+    "overLimit": "„{{title}}“ má více než 1 MB a zůstane na tomto zařízení",
+    "cannot": "Tuto poznámku tady nejde rozdělit. Umísti kurzor tam, kde má začít nová poznámka.",
+    "continuedTitle": "{{title}} (pokračování)",
+    "continuedIn": "Pokračování v {{link}}"
+  },
   "paneResize": {
-    "hintCollapse": "Kliknutím sbalíš · Přetažením změníš velikost"
+    "hintCollapse": "Kliknutím sbalíš · Přetažením změníš velikost",
+    "hintExpand": "Kliknutím rozbalíš · Přetažením změníš velikost"
   },
   "emptyEditor": {
     "selectFile": "Vyber soubor pro náhled",
@@ -180,6 +196,8 @@
     "findInNote": "Najít v poznámce",
     "navPrev": "Předchozí",
     "navNext": "Další",
+    "navPrevTab": "Předchozí karta",
+    "navNextTab": "Další karta",
     "undo": "Vrátit zpět",
     "redo": "Znovu",
     "hide": "Skrýt",
@@ -231,6 +249,8 @@
     "words": "Slov",
     "zen": "Režim Zen",
     "appearance": "Vzhled",
+    "goToTop": "Přejít nahoru",
+    "goToEnd": "Přejít na konec",
     "signOut": "Odhlásit se",
     "signingOut": "Odhlašování…",
     "switchToLight": "Přepnout na světlý režim",
@@ -256,7 +276,8 @@
     "aboutLabel": "O aplikaci",
     "languageLabel": "Jazyk",
     "dateLabel": "Datum",
-    "languageDesc": "Vyber jazyk, ve kterém se PrivacyNotes zobrazuje."
+    "languageDesc": "Vyber jazyk, ve kterém se PrivacyNotes zobrazuje.",
+    "calendarLabel": "Kalendář"
   },
   "importStore": {
     "title": "Importovat, nebo uložit?",

@@ -4,16 +4,20 @@
  * the icon set. calloutTypes.ts adds the icons and the picker order.
  *
  * Colors reuse the editor's text-color palette (editorColors.ts) so callouts
- * and text color share one legible-on-light-and-dark set of hues. The Fold
- * type has no color: it draws in the text color with no box.
+ * and text color share one legible-on-light-and-dark set of hues. The plain
+ * types (Fold, Box, Panel) have no color: they draw in the text color, and
+ * the caret is their only control.
  *
  * Spec: ops/docs/callouts.md (the type table)
  */
 
 export type CalloutType =
   | 'fold'
+  | 'box'
+  | 'panel'
   | 'info'
   | 'note'
+  | 'update'
   | 'tip'
   | 'idea'
   | 'important'
@@ -26,6 +30,9 @@ export type CalloutType =
   | 'todo'
   | 'goal'
   | 'decision'
+  | 'time'
+  | 'steps'
+  | 'place'
   | 'quote'
   | 'example'
   | 'abstract'
@@ -50,13 +57,16 @@ const RED = { color: '#e03131', rgb: '224 49 49' };
 const GREEN = { color: '#2f9e44', rgb: '47 158 68' };
 const GRAY = { color: '#868e96', rgb: '134 142 150' };
 
-/** Every type with its color, in picker order: seven rows of three grouped
- *  by meaning (plain, ideas, warnings, outcomes, plans, content, learning),
- *  Fold first. */
+/** Every type with its color, in picker order: rows of three grouped by
+ *  meaning (fold styles, plain, ideas, warnings, outcomes, plans, practical,
+ *  content, learning). An empty color marks a plain type. */
 export const CALLOUT_COLORS: Record<CalloutType, CalloutColor> = {
   fold: { color: '', rgb: '' },
+  box: { color: '', rgb: '' },
+  panel: { color: '', rgb: '' },
   info: BLUE,
   note: BLUE,
+  update: BLUE,
   tip: TEAL,
   idea: YELLOW,
   important: PURPLE,
@@ -69,6 +79,9 @@ export const CALLOUT_COLORS: Record<CalloutType, CalloutColor> = {
   todo: BLUE,
   goal: GREEN,
   decision: PURPLE,
+  time: TEAL,
+  steps: GREEN,
+  place: ORANGE,
   quote: GRAY,
   example: PURPLE,
   abstract: TEAL,
@@ -90,8 +103,15 @@ const CALLOUT_ALIASES: Record<string, CalloutType> = {
   toggle: 'fold',
   details: 'fold',
   collapse: 'fold',
+  box: 'box',
+  frame: 'box',
+  panel: 'panel',
+  card: 'panel',
   info: 'info',
   note: 'note',
+  update: 'update',
+  edit: 'update',
+  updated: 'update',
   tip: 'tip',
   hint: 'tip',
   idea: 'idea',
@@ -113,6 +133,16 @@ const CALLOUT_ALIASES: Record<string, CalloutType> = {
   todo: 'todo',
   goal: 'goal',
   decision: 'decision',
+  time: 'time',
+  deadline: 'time',
+  date: 'time',
+  due: 'time',
+  steps: 'steps',
+  howto: 'steps',
+  'how-to': 'steps',
+  place: 'place',
+  location: 'place',
+  address: 'place',
   quote: 'quote',
   cite: 'quote',
   example: 'example',

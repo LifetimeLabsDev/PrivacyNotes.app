@@ -434,13 +434,13 @@ export type EncryptedPayload = Pick<
   'title' | 'body' | 'tags' | 'trashed' | 'starred' | 'locked' | 'pinProtected' | 'type' | 'trackers' | 'folderId' | 'archived' | 'editedAt'
 >;
 
-export function encryptNote(
-  note: EncryptedPayload,
-  key: Uint8Array
-): { ciphertext: Uint8Array; nonce: Uint8Array } {
-  const nonce = randomBytes(24);
-  const cipher = xchacha20poly1305(key, nonce);
-  const plaintext = utf8.encode(
+/**
+ * The bytes encryptNote seals: one JSON document. The ciphertext is these
+ * bytes plus the 16-byte Poly1305 tag, so a caller can size a note's stored
+ * row exactly without encrypting it.
+ */
+export function notePlaintext(note: EncryptedPayload): Uint8Array {
+  return utf8.encode(
     JSON.stringify({
       title: note.title,
       body: note.body,
@@ -460,6 +460,15 @@ export function encryptNote(
       ...(note.editedAt ? { editedAt: note.editedAt } : {}),
     })
   );
+}
+
+export function encryptNote(
+  note: EncryptedPayload,
+  key: Uint8Array
+): { ciphertext: Uint8Array; nonce: Uint8Array } {
+  const nonce = randomBytes(24);
+  const cipher = xchacha20poly1305(key, nonce);
+  const plaintext = notePlaintext(note);
   const ciphertext = cipher.encrypt(plaintext);
   return { ciphertext, nonce };
 }

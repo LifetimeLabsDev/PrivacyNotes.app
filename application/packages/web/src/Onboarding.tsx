@@ -1345,6 +1345,8 @@ function SignInStep({
   // isn't stranded - without them the only escape from a failed sign-in
   // is reloading the entire page and re-entering the phrase.
   if (error) {
+    // A published phrase is refused every time, so a retry cannot help.
+    const retryable = error !== t('signIn.publicPhrase');
     return (
       <div className="space-y-4">
         <div className="rounded-md border border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-3 text-sm text-red-700 dark:text-red-300 leading-relaxed">
@@ -1354,11 +1356,11 @@ function SignInStep({
           <button
             type="button"
             onClick={onBack}
-            className="rounded-md border border-[var(--wl-line)] hover:bg-[var(--wl-tint)] px-4 py-2 text-sm transition"
+            className={`${retryable ? '' : 'flex-1 '}rounded-md border border-[var(--wl-line)] hover:bg-[var(--wl-tint)] px-4 py-2 text-sm transition`}
           >
             {t('common:actions.back')}
           </button>
-          <button
+          {retryable && <button
             type="button"
             onClick={() => {
               setError(null);
@@ -1380,7 +1382,7 @@ function SignInStep({
             className="flex-1 rounded-md bg-[var(--wl-pro)] text-white hover:bg-[var(--wl-pro)]/90 px-4 py-2 text-sm font-medium transition"
           >
             {t('signIn.tryAgain')}
-          </button>
+          </button>}
         </div>
         {needsChallenge && (
           <TurnstileWidget

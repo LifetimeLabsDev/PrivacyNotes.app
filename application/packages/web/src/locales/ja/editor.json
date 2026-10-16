@@ -92,7 +92,13 @@
       "goal": "目標",
       "decision": "決定",
       "definition": "定義",
-      "seealso": "関連項目"
+      "seealso": "関連項目",
+      "box": "ボックス",
+      "panel": "パネル",
+      "update": "更新",
+      "time": "時間",
+      "steps": "手順",
+      "place": "場所"
     }
   },
   "color": {
@@ -123,6 +129,7 @@
     "addColumnRight": "右に列を追加",
     "toggleHeaderRow": "見出し行を切り替え",
     "equalColumnWidths": "列の幅をそろえる",
+    "resizeHint": "{{shift}} を押しながらドラッグでこの列だけを変更、{{alt}} で細かく調整",
     "deleteRow": "行を削除",
     "deleteColumn": "列を削除",
     "deleteTable": "表を削除"
@@ -146,6 +153,8 @@
     "caseSensitiveTitle": "大文字と小文字を区別",
     "closeReplace": "検索と置換を閉じる",
     "closeReplaceTitle": "閉じる({{keys}})",
+    "showReplace": "検索と置換",
+    "hideReplace": "置換を隠す",
     "replacedCount_other": "{{count}}件を置換しました"
   },
   "outline": {
@@ -154,7 +163,7 @@
     "title": "アウトライン",
     "ariaLabel": "ノートのアウトライン",
     "hide": "アウトラインを隠す",
-    "hideTitle": "アウトラインを隠す(Esc)",
+    "hideTitle": "アウトラインを隠す({{keys}})",
     "copyHeadingLink": "見出しへのリンクをコピー",
     "copyNoteLink": "ノートリンクをコピー",
     "copyHeadingShortcut": "見出しへのショートカットをコピー",
@@ -167,6 +176,9 @@
   },
   "topRow": {
     "add": "先頭に行を追加"
+  },
+  "addLine": {
+    "add": "行を追加"
   },
   "link": {
     "popoverLabel": "リンクを追加",
@@ -201,7 +213,9 @@
     "words_other": "{{formatted}}語",
     "characters_other": "{{formatted}}文字",
     "tasksChecked_other": "{{formatted}}件中{{done}}件チェック済み",
-    "tooLargeToSync": "、同期には大きすぎる可能性があります。新しいノートに分割してください",
+    "syncLimit": " · 同期の上限1 MBの{{share}}",
+    "overSyncLimit": " · 同期の上限1 MBを超えているため、このデバイスにのみ保存されます",
+    "split": "ノートを分割",
     "veryLong": "、非常に長いため、編集が重くなったりカクつくことがあります",
     "gettingLong": "、長くなってきました。遅いデバイスでは重くなることがあります",
     "largeTableWarning": "大きな表({{rows}}行)があるため、このノートは編集が重くなることがあります。分割を検討してください"
@@ -260,10 +274,13 @@
     "hintTap": "ボタンをタップしてオプションを開きます。",
     "onBar": "バー",
     "inMenu": "+ メニュー",
+    "inAttachMenu": "添付メニュー",
+    "attachMenuEmpty": "空なので、添付ボタンは表示されません。",
     "menuEmpty": "メニューが空なので、+ ボタンは表示されません。",
     "hidden": "非表示",
     "hiddenNote": "ショートカットとMarkdownで引き続き使えます。",
     "hiddenDrop": "ボタンをここにドロップすると非表示になります。",
+    "markdownViewNote": "Markdown表示には独自の固定ボタンセットがあります。",
     "hiddenEmpty": "非表示のものはありません。",
     "alwaysVisible": "常に表示",
     "pinned": "パネルを開くため、バーに置くか非表示にします",
@@ -275,18 +292,23 @@
     "home": {
       "bar": "バー",
       "menu": "+ メニュー",
+      "attachMenu": "添付メニュー",
       "hidden": "非表示"
     },
     "opensPanel": "パネルを開きます",
     "showsRecording": "録音を表示します",
     "refuse": {
       "menuNotAllowed": "{{item}} はバーに置くか非表示にできます。+ メニューには入れられません。",
+      "attachNotAllowed": "添付メニューに入れられるのは、画像、ファイル、録音のボタンだけです。",
       "lastOnBar": "バーに少なくとも1つボタンを残してください。"
     },
     "items": {
       "link": "リンク",
       "notelink": "ノートリンク",
-      "audio": "録音"
+      "audio": "録音",
+      "attachMenu": "添付",
+      "separator": "縦の区切り線",
+      "markdownView": "Markdownを表示"
     },
     "positionTitle": "バーの位置",
     "positionNote": "エディタ内のツールバーの位置を選びます。",

@@ -1,0 +1,333 @@
+{
+  "placeholder": "Začni písať…",
+  "toolbar": {
+    "bold": "Tučné",
+    "italic": "Kurzíva",
+    "underline": "Podčiarknuté",
+    "heading": "Nadpis",
+    "taskList": "Zoznam úloh",
+    "bulletList": "Odrážky",
+    "addLink": "Pridať odkaz ({{keys}})",
+    "noteLink": "Odkaz na inú poznámku (alebo napíš [[)",
+    "numberedList": "Číslovaný zoznam",
+    "textColor": "Farba textu",
+    "textColorApply": "Farba textu: {{color}}",
+    "pickColor": "Vybrať farbu textu",
+    "table": "Tabuľka",
+    "quote": "Citát",
+    "callout": "Callout",
+    "inlineCode": "Kód v riadku",
+    "strikethrough": "Prečiarknuté",
+    "codeBlock": "Blok kódu",
+    "divider": "Oddeľovač",
+    "moreFormatting": "Ďalšie formátovanie",
+    "fewerFormatting": "Menej možností formátovania",
+    "image": "Obrázok",
+    "attachFile": "Priložiť súbor",
+    "insert": "Vložiť",
+    "highlight": "Zvýraznenie",
+    "highlightApply": "Zvýraznenie: {{color}}",
+    "pickHighlight": "Vybrať farbu zvýraznenia",
+    "superscript": "Horný index",
+    "subscript": "Dolný index",
+    "math": "Matematický vzorec",
+    "blockMath": "Blokový vzorec",
+    "align": "Zarovnanie",
+    "font": "Písmo",
+    "pictureFromFiles": "Obrázok zo Súborov",
+    "date": "Dátum",
+    "dateTime": "Dátum a čas",
+    "footnote": "Poznámka pod čiarou",
+    "spoiler": "Spoiler",
+    "copyBox": "Pole na kopírovanie",
+    "withHint": "{{label}} ({{hint}})",
+    "customize": "Prispôsobiť panel nástrojov"
+  },
+  "align": {
+    "left": "Zarovnať doľava",
+    "center": "Na stred",
+    "right": "Zarovnať doprava",
+    "justify": "Do bloku"
+  },
+  "font": {
+    "families": {
+      "sans": "Sans",
+      "serif": "Serif",
+      "mono": "Mono"
+    },
+    "sizes": {
+      "small": "Malé",
+      "large": "Veľké",
+      "huge": "Veľmi veľké"
+    },
+    "reset": "Obnoviť písmo"
+  },
+  "heading": {
+    "normalText": "Normálny text",
+    "level": "Nadpis {{level}}"
+  },
+  "callout": {
+    "pickerLabel": "Vložiť callout",
+    "remove": "Odstrániť callout",
+    "collapse": "Zbaliť callout",
+    "expand": "Rozbaliť callout",
+    "types": {
+      "info": "Informácia",
+      "success": "Úspech",
+      "warning": "Varovanie",
+      "tip": "Tip",
+      "danger": "Nebezpečenstvo",
+      "question": "Otázka",
+      "quote": "Citát",
+      "example": "Príklad",
+      "bug": "Chyba",
+      "note": "Poznámka",
+      "abstract": "Zhrnutie",
+      "failure": "Zlyhanie",
+      "fold": "Zbaliteľné",
+      "idea": "Nápad",
+      "important": "Dôležité",
+      "caution": "Pozor",
+      "todo": "Úloha",
+      "goal": "Cieľ",
+      "decision": "Rozhodnutie",
+      "definition": "Definícia",
+      "seealso": "Pozri tiež",
+      "box": "Rámček",
+      "panel": "Panel",
+      "update": "Aktualizácia",
+      "time": "Čas",
+      "steps": "Kroky",
+      "place": "Miesto"
+    }
+  },
+  "color": {
+    "remove": "Odstrániť farbu",
+    "removeHighlight": "Odstrániť zvýraznenie",
+    "names": {
+      "gray": "Sivá",
+      "red": "Červená",
+      "orange": "Oranžová",
+      "yellow": "Žltá",
+      "green": "Zelená",
+      "teal": "Modrozelená",
+      "blue": "Modrá",
+      "purple": "Fialová",
+      "pink": "Ružová"
+    }
+  },
+  "insertGroup": {
+    "format": "Formátovanie",
+    "insert": "Vkladanie",
+    "blocks": "Bloky",
+    "notation": "Zápis"
+  },
+  "table": {
+    "addRowAbove": "Pridať riadok nad",
+    "addRowBelow": "Pridať riadok pod",
+    "addColumnLeft": "Pridať stĺpec vľavo",
+    "addColumnRight": "Pridať stĺpec vpravo",
+    "toggleHeaderRow": "Zapnúť alebo vypnúť riadok hlavičky",
+    "equalColumnWidths": "Vyrovnať šírku stĺpcov",
+    "resizeHint": "Podrž {{shift}} a zmeníš len tento stĺpec, {{alt}} pre jemnejšie kroky",
+    "deleteRow": "Odstrániť riadok",
+    "deleteColumn": "Odstrániť stĺpec",
+    "deleteTable": "Odstrániť tabuľku"
+  },
+  "find": {
+    "placeholder": "Hľadaj v poznámke",
+    "label": "Nájsť v poznámke",
+    "previous": "Predchádzajúci výskyt (Shift+Enter)",
+    "previousTitle": "Predchádzajúci (Shift+Enter)",
+    "next": "Ďalší výskyt (Enter)",
+    "nextTitle": "Ďalší (Enter)",
+    "close": "Zavrieť hľadanie",
+    "closeTitle": "Zavrieť ({{keys}})",
+    "replacePlaceholder": "Zadaj náhradný text",
+    "replaceLabel": "Nahradiť čím",
+    "replace": "Nahradiť",
+    "replaceTitle": "Nahradiť tento výskyt (Enter)",
+    "replaceAll": "Všetko",
+    "replaceAllTitle": "Nahradiť všetky výskyty",
+    "caseSensitive": "Rozlišovať veľké a malé písmená",
+    "caseSensitiveTitle": "Rozlišovať veľké a malé písmená",
+    "closeReplace": "Zavrieť Nájsť a nahradiť",
+    "closeReplaceTitle": "Zavrieť ({{keys}})",
+    "showReplace": "Nájsť a nahradiť",
+    "hideReplace": "Skryť nahradenie",
+    "replacedCount_one": "Nahradené: {{count}}",
+    "replacedCount_few": "Nahradené: {{count}}",
+    "replacedCount_many": "Nahradené: {{count}}",
+    "replacedCount_other": "Nahradené: {{count}}"
+  },
+  "outline": {
+    "show": "Zobraziť osnovu",
+    "showTitle": "Osnova (Cmd/Ctrl+Shift+O)",
+    "title": "Osnova",
+    "ariaLabel": "Osnova poznámky",
+    "hide": "Skryť osnovu",
+    "hideTitle": "Skryť osnovu ({{keys}})",
+    "copyHeadingLink": "Kopírovať odkaz na nadpis",
+    "copyNoteLink": "Kopírovať odkaz na poznámku",
+    "copyHeadingShortcut": "Kopírovať skratku k nadpisu",
+    "copied": "Skopírované"
+  },
+  "bodyMenu": {
+    "cut": "Vystrihnúť",
+    "sortAsc": "Zoradiť riadky od A po Z",
+    "sortDesc": "Zoradiť riadky od Z po A"
+  },
+  "topRow": {
+    "add": "Pridať riadok na začiatok"
+  },
+  "addLine": {
+    "add": "Pridať riadok"
+  },
+  "link": {
+    "popoverLabel": "Pridať odkaz",
+    "placeholder": "Vlož alebo napíš URL",
+    "apply": "Použiť",
+    "addTitle": "Pridať odkaz",
+    "editTitle": "Upraviť odkaz",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "errorEnterUrl": "Zadaj adresu URL",
+    "errorInvalidUrl": "Zadaj platnú adresu URL",
+    "textLabel": "Text odkazu",
+    "textPlaceholder": "Voliteľné, nechaj prázdne a zobrazí sa URL",
+    "selectedTextHint": "Ako odkaz sa použije vybraný text",
+    "update": "Aktualizovať",
+    "menuOpen": "Otvoriť odkaz",
+    "menuCopy": "Kopírovať odkaz",
+    "menuEdit": "Upraviť odkaz",
+    "menuRemove": "Odstrániť odkaz"
+  },
+  "audio": {
+    "uploadingRecording": "Nahráva sa záznam…",
+    "uploading": "Nahráva sa…",
+    "stopRecording": "Zastaviť nahrávanie",
+    "recordAudio": "Nahrať zvuk",
+    "savingRecording": "Ukladá sa záznam…",
+    "recording": "Nahráva sa",
+    "secondsLeft": "Zostáva {{count}} s",
+    "stop": "Zastaviť"
+  },
+  "wordCount": {
+    "words_one": "{{formatted}} slovo",
+    "words_few": "{{formatted}} slová",
+    "words_many": "{{formatted}} slova",
+    "words_other": "{{formatted}} slov",
+    "characters_one": "{{formatted}} znak",
+    "characters_few": "{{formatted}} znaky",
+    "characters_many": "{{formatted}} znaku",
+    "characters_other": "{{formatted}} znakov",
+    "tasksChecked_one": "Zaškrtnuté: {{done}} z {{formatted}}",
+    "tasksChecked_few": "Zaškrtnuté: {{done}} z {{formatted}}",
+    "tasksChecked_many": "Zaškrtnuté: {{done}} z {{formatted}}",
+    "tasksChecked_other": "Zaškrtnuté: {{done}} z {{formatted}}",
+    "syncLimit": " · {{share}} z limitu synchronizácie 1 MB",
+    "overSyncLimit": " · nad limitom synchronizácie 1 MB, zostáva na tomto zariadení",
+    "split": "Rozdeliť poznámku",
+    "veryLong": ", veľmi dlhá, úpravy môžu byť pomalé a trhané",
+    "gettingLong": ", začína byť dlhá, na pomalších zariadeniach sa môže sekať",
+    "largeTableWarning": "Veľká tabuľka ({{rows}} riadkov) môže spomaliť úpravy tejto poznámky, zváž jej rozdelenie"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "Žiadne zodpovedajúce poznámky",
+    "create": "Vytvoriť „{{query}}“",
+    "headingsIn": "Nadpisy v poznámke {{title}}",
+    "noHeadingMatches": "Žiadne zodpovedajúce nadpisy"
+  },
+  "copyBox": {
+    "placeholder": "Text na skopírovanie jedným kliknutím"
+  },
+  "inlineCode": {
+    "copyHint": "{{key}}+kliknutím skopíruješ",
+    "copied": "Skopírované"
+  },
+  "codeBlock": {
+    "copy": "Kopírovať",
+    "copied": "Skopírované",
+    "copyFailed": "Nepodarilo sa",
+    "wrap": "Zalamovať dlhé riadky",
+    "showAll_one": "Zobraziť {{count}} riadok",
+    "showAll_few": "Zobraziť všetky {{count}} riadky",
+    "showAll_many": "Zobraziť všetkých {{count}} riadka",
+    "showAll_other": "Zobraziť všetkých {{count}} riadkov",
+    "showLess": "Zobraziť menej",
+    "plainText": "Obyčajný text",
+    "language": "Jazyk kódu: {{name}}",
+    "searchLanguages": "Hľadaj jazyk",
+    "placeholder": "Napíš alebo vlož kód. Pre farby vyber hore jazyk."
+  },
+  "math": {
+    "sourceLabel": "Kód LaTeX"
+  },
+  "noteLink": {
+    "open": "Otvoriť poznámku",
+    "remove": "Odobrať odkaz",
+    "linkHeading": "Odkázať na nadpis…",
+    "headingNotFound": "Nadpis sa nenašiel",
+    "headingsLocked": "Nadpisy uvidíš po odomknutí poznámky",
+    "noHeadings": "Táto poznámka nemá nadpisy"
+  },
+  "footnote": {
+    "placeholder": "Text poznámky pod čiarou",
+    "back": "Späť do textu",
+    "unused": "Nepoužitá v texte",
+    "remove": "Odobrať poznámku pod čiarou",
+    "missing": "Poznámka pod čiarou nemá text. Klikni a pridaj ho.",
+    "ariaRef": "Poznámka pod čiarou {{n}}",
+    "ariaSection": "Poznámky pod čiarou"
+  },
+  "formatBar": {
+    "tryIt": "Vyskúšaj si to: usporiadaj lištu tu a uvidíš, ako ti sedí.",
+    "previewOnly": "Iba náhľad. Tvoje rozloženie sa uloží, len čo budeš mať Pro.",
+    "discard": "Zahodiť",
+    "keepLayout": "Ponechať toto rozloženie",
+    "hintDrag": "Potiahnutím presunieš, kliknutím otvoríš možnosti.",
+    "hintTap": "Ťukni na tlačidlo a otvor jeho možnosti.",
+    "onBar": "Na lište",
+    "inMenu": "V ponuke +",
+    "inAttachMenu": "V ponuke príloh",
+    "attachMenuEmpty": "Prázdne, preto sa tlačidlo príloh nezobrazuje.",
+    "menuEmpty": "Ponuka je prázdna, preto sa tlačidlo + nezobrazuje.",
+    "hidden": "Skryté",
+    "hiddenNote": "Naďalej fungujú cez skratku a Markdown.",
+    "hiddenDrop": "Potiahni sem tlačidlo a skryješ ho.",
+    "markdownViewNote": "Zobrazenie Markdown má vlastnú pevnú sadu tlačidiel.",
+    "hiddenEmpty": "Nič nie je skryté.",
+    "alwaysVisible": "Vždy viditeľné",
+    "pinned": "Otvára panel, preto zostáva na lište alebo je skryté",
+    "optionsFor": "Možnosti pre {{item}}",
+    "moveUp": "Posunúť nahor",
+    "moveDown": "Posunúť nadol",
+    "moveLeft": "Posunúť doľava",
+    "moveRight": "Posunúť doprava",
+    "home": {
+      "bar": "Na lište",
+      "menu": "V ponuke +",
+      "attachMenu": "V ponuke príloh",
+      "hidden": "Skryté"
+    },
+    "opensPanel": "otvára panel",
+    "showsRecording": "zobrazuje nahrávanie",
+    "refuse": {
+      "menuNotAllowed": "{{item}} môže byť na lište alebo skryté, nie v ponuke +.",
+      "attachNotAllowed": "Do ponuky príloh patria len tlačidlá obrázka, súboru a nahrávky.",
+      "lastOnBar": "Nechaj na lište aspoň jedno tlačidlo."
+    },
+    "items": {
+      "link": "Odkaz",
+      "notelink": "Odkaz na poznámku",
+      "audio": "Nahrávka",
+      "attachMenu": "Priložiť",
+      "separator": "Zvislá čiara",
+      "markdownView": "Zobraziť markdown"
+    },
+    "positionTitle": "Poloha lišty",
+    "positionNote": "Vyber, kde sa v editore nachádza panel nástrojov.",
+    "positionTop": "Hore",
+    "positionBottom": "Dole"
+  }
+}

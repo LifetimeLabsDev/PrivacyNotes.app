@@ -25,7 +25,7 @@ import { loadLocalSettings, saveLocalSettings } from './userSettings';
 import { hasStoredSession, isTrustedDevice } from './trustStorage';
 import { isDemoMode } from './demo';
 import { detectPlatform, warmAuthEdgeFunctions } from './devices';
-import { isApexHost } from './hosts';
+import { isApexHost, usesOfficialServer } from './hosts';
 import { isTouchPointer } from './useIsMobile';
 import { isComputerBrowser, openShortcutInApp, peekPendingShortcut } from './noteShortcut';
 import { localeFromPath } from './localeRoutes';
@@ -370,7 +370,7 @@ export default function App() {
    */
   async function applyPinRecovery(phrase: string) {
     const cleared = await clearPin(loadLocalSettings(), phrase);
-    if (cleared) saveLocalSettings(cleared);
+    if (cleared) saveLocalSettings(cleared.settings);
     unlockRecoverRef.current = false;
   }
 
@@ -665,9 +665,14 @@ export default function App() {
   return (
     <>
       <VersionUpdateToast />
-      <DesktopUpdater />
-      <AndroidUpdateToast />
-      <StoreUpdateToast />
+      {/* A build that syncs with another server never asks our release host. */}
+      {usesOfficialServer() && (
+        <>
+          <DesktopUpdater />
+          <AndroidUpdateToast />
+          <StoreUpdateToast />
+        </>
+      )}
       <Suspense fallback={suspenseFallback}>{screen}</Suspense>
     </>
   );

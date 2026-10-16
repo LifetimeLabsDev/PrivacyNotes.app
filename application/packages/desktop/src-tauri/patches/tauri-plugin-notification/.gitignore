@@ -1,0 +1,2 @@
+# The mobile builds generate the Tauri API bindings here.
+.tauri/

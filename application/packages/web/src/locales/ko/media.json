@@ -15,6 +15,8 @@
     "notFound": "이미지를 찾을 수 없어요",
     "saveFailed": "저장에 실패해서 파일이 비어 있거나 불완전할 수 있어요.",
     "viewAria": "이미지 보기",
+    "copyAria": "이미지 복사",
+    "copyFailed": "이미지를 복사하지 못했어요.",
     "picturesLeftOut": "일부 이미지는 추가되지 않았어요. 이미지는 따로 복사해서 붙여 넣으세요."
   },
   "attachment": {
@@ -55,6 +57,17 @@
     "saveFailed": "저장에 실패해서 파일이 비어 있거나 불완전할 수 있어요.",
     "pageCount_other": "{{count}}페이지",
     "pageLabel": "{{name}}, {{count}}페이지 중 {{page}}페이지"
+  },
+  "mail": {
+    "loading": "이메일을 여는 중...",
+    "failed": "이 이메일을 읽을 수 없어요. 다운로드해서 다른 앱에서 열어 보세요.",
+    "from": "보낸 사람",
+    "to": "받는 사람",
+    "cc": "참조",
+    "date": "날짜",
+    "noSubject": "(제목 없음)",
+    "empty": "이 이메일에는 텍스트가 없어요.",
+    "attachments": "첨부 파일"
   },
   "picker": {
     "title": "파일의 이미지",

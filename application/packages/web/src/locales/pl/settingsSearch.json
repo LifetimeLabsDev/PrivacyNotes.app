@@ -68,6 +68,7 @@
     "appearance_contentWidth": "szerokość kolumny, szeroki, pełna szerokość, marginesy",
     "appearance_editor": "markdown, tekst sformatowany, wysiwyg, tryb edytora",
     "appearance_copyFormat": "kopiuj, schowek, zwykły tekst, wklej, pole wyboru",
+    "appearance_pasteFormat": "wklej, schowek, zwykły tekst, formatowanie, bez formatowania, dopasuj styl",
     "appearance_favicons": "favicon, ikony stron, logo",
     "appearance_invisibles": "znak akapitu, białe znaki, spacje, ukryte znaki, znaki formatowania",
     "appearance_startView": "strona startowa, start, domyślny widok, otwieraj na",
@@ -83,11 +84,19 @@
     "about_openSource": "kod źródłowy, github, open source, otwarte oprogramowanie",
     "about_feedback": "opinia, kontakt, zgłoś błąd, sugestia",
     "about_dataStorage": "dane, serwer, gdzie przechowywane, prywatność",
-    "about_singleKeys": "klawiatura, skróty, skróty klawiszowe, pojedynczy klawisz, j, k, dostępność, /, >",
+    "about_singleKeys": "klawiatura, skróty, skróty klawiszowe, pojedynczy klawisz, j, k, q, kalendarz, dostępność, /, >",
     "about_changelog": "informacje o wydaniu, co nowego, aktualizacje, lista zmian",
     "about_hotkeys": "skróty klawiszowe, skróty, klawisze",
     "about_rating": "recenzja, oceń, gwiazdki, app store",
     "appearance_openInTabs": "karty, pasek kart, przeglądarka, otwórz, zakładki",
+    "section_calendar": "kalendarz, wydarzenie, przypomnienie, alert, powiadomienie, tydzień, miesiąc, harmonogram, termin, urodziny",
+    "calendar_alertTimed": "alert, przypomnienie, powiadomienie, domyślny, minuty, przed, wcześniej, wydarzenie",
+    "calendar_alertAllDay": "alert, przypomnienie, powiadomienie, domyślny, cały dzień, całodniowe, rano",
+    "calendar_alertBirthday": "urodziny, kontakt, alert, przypomnienie",
+    "calendar_reminderTitles": "prywatność, ekran blokady, tytuł, przypomnienie, powiadomienie",
+    "calendar_where": "powiadomienie, uprawnienie, zgoda, przeglądarka, telefon, komputer, przypomnienie",
+    "calendar_weekNumbers": "numer tygodnia, tydzień ISO, kalendarz",
+    "calendar_hours": "godziny, godziny pracy, widok dnia, widok tygodnia, rano",
     "appearance_formatBar": "pasek narzędzi, pasek formatowania, przyciski, dostosuj, ułóż, lista punktowana, przekreślenie, koło zębate"
   }
 }

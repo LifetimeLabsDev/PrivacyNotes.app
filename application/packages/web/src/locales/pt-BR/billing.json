@@ -22,7 +22,8 @@
       "totp": "Códigos 2FA são um recurso Pro. Guarde uma chave de autenticação em qualquer login e veja o código rotativo ao lado da senha. A chave em si é salva e sincronizada em todos os planos.",
       "replace": "Buscar e substituir é um recurso Pro. Faça upgrade para substituir uma ocorrência ou todas as ocorrências de uma nota de uma vez.",
       "passphrase": "As frases-senha são um recurso Pro. Gere uma frase de palavras aleatórias, fácil de digitar e de falar.",
-      "default": "Um upgrade libera tudo abaixo. Pagamento único."
+      "default": "Um upgrade libera tudo abaixo. Pagamento único.",
+      "alerts": "Lembretes são um recurso Pro. Seus dispositivos tocam no horário que você escolher, e nada sobre o item sai deles."
     },
     "features": {
       "devices": "Sincronize dispositivos ilimitados, em todas as plataformas",
@@ -73,7 +74,7 @@
     "openingBody": "Uma janela de checkout do Paddle deve aparecer. Se não aparecer, seu navegador pode ter bloqueado o pop-up - recarregue esta página para tentar de novo."
   },
   "history": {
-    "subtitle": "Até 20 versões por item. As mais antigas são removidas automaticamente.",
+    "subtitle": "Até 50 versões por item. As mais antigas são removidas automaticamente.",
     "empty": "Nenhum histórico ainda. As versões começam a se acumular após a próxima edição. Volte depois.",
     "loadFailed": "Não foi possível carregar o histórico. Verifique a conexão e tente de novo.",
     "selectPrompt": "Selecione uma versão para visualizar.",
@@ -82,7 +83,20 @@
     "restoring": "Restaurando…",
     "restoreSnapshotFailed": "Não foi possível salvar a versão atual antes, então nada foi restaurado. Verifique a conexão e tente de novo.",
     "restoreFailed": "Não foi possível restaurar esta versão. Tente de novo.",
-    "loginExtrasNotRecorded": "Esta versão não registrou campos personalizados nem sites adicionais. Restaurá-la mantém os atuais."
+    "loginExtrasNotRecorded": "Esta versão não registrou campos personalizados nem sites adicionais. Restaurá-la mantém os atuais.",
+    "compare": "Comparar com a nota atual",
+    "thisVersion": "Antes",
+    "currentNote": "Agora",
+    "onlyInVersion": "Removido desde então",
+    "onlyInCurrent": "Adicionado desde então",
+    "changeCount_one": "{{count}} alteração",
+    "changeCount_other": "{{count}} alterações",
+    "noChanges": "Nenhuma alteração no texto",
+    "titleChanged": "Título alterado",
+    "tagsChanged": "Etiquetas alteradas",
+    "formatChanged": "Formatação alterada",
+    "tooLong": "Esta nota é longa demais para comparar.",
+    "trackersNotRecorded": "Esta versão não registrou valores de rastreadores. Restaurá-la mantém os atuais."
   },
   "donation": {
     "eyebrow": "Você liberou",

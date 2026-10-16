@@ -189,7 +189,7 @@ interface EditorDocCacheEntry {
  * calls. So demo keeps its snapshots here, in the throwaway demo database,
  * in the same plaintext form the notes themselves are stored in locally.
  * They die with the tab session like everything else in that database.
- * Spec: ops/docs/pro-features.md (note history: Pro-only, 20 versions per note)
+ * Spec: ops/docs/pro-features.md (note history: Pro-only, 50 versions per note)
  */
 interface DemoNoteVersion {
   id: string;
@@ -201,6 +201,8 @@ interface DemoNoteVersion {
   tags: string[];
   /** A login's extras, as noteVersions.ts records them. Unindexed. */
   login?: unknown;
+  /** A journal entry's tracker values, as noteVersions.ts records them. Unindexed. */
+  trackers?: Record<string, unknown>;
 }
 
 /**

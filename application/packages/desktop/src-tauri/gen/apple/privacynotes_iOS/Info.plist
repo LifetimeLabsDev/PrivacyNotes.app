@@ -15,9 +15,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.621.0</string>
+	<string>0.653.1</string>
 	<key>CFBundleVersion</key>
-	<string>0.621.0</string>
+	<string>0.653.1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -62,6 +62,7 @@
 		<string>zh-Hant</string>
 		<string>ca</string>
 		<string>cs</string>
+		<string>sk</string>
 		<string>tr</string>
 		<string>sv</string>
 		<string>ar</string>

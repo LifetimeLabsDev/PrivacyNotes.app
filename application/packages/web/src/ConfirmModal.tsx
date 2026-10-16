@@ -32,6 +32,12 @@ type Props = {
    * Spec: ops/docs/plans/keyboard-shortcuts.md (decision D10)
    */
   enterConfirms?: boolean;
+  /**
+   * Several answers in place of one confirm button, stacked, the first in the
+   * variant's fill (the "Change this item?" question of a repeating event).
+   * `confirmLabel` and `onConfirm` are then unused.
+   */
+  choices?: readonly { label: string; onSelect: () => void }[];
 };
 
 /* ── Icon per variant ──────────────────────────────────── */
@@ -81,6 +87,7 @@ export function ConfirmModal({
   onClose,
   onCancel,
   enterConfirms = false,
+  choices,
 }: Props) {
   const { t } = useTranslation('common');
   useEscapeToClose(onClose);
@@ -137,6 +144,24 @@ export function ConfirmModal({
         </div>
 
         {/* Actions */}
+        {choices ? (
+          <div className="flex flex-col gap-2 pt-2">
+            {choices.map((c, i) => (
+              <button
+                key={c.label}
+                onClick={() => { c.onSelect(); onClose(); }}
+                className={`rounded-md px-4 py-2 text-sm font-medium transition ${i === 0 ? confirmBtnClass[variant] : 'border border-divider hover:bg-pn/5'}`}
+              >
+                {c.label}
+              </button>
+            ))}
+            {resolvedCancelLabel !== null && (
+              <button ref={cancelRef} onClick={onCancel ?? onClose} className="rounded-md px-4 py-2 text-sm text-pn-muted hover:bg-pn/5 transition">
+                {resolvedCancelLabel}
+              </button>
+            )}
+          </div>
+        ) : (
         <div className="flex gap-2 pt-2">
           {resolvedCancelLabel !== null && (
             <button
@@ -154,6 +179,7 @@ export function ConfirmModal({
             {confirmLabel}
           </button>
         </div>
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
 import {
@@ -14,6 +14,7 @@ import {
   Monitor,
   Palette,
   Password,
+  BellSimple,
   RocketLaunch,
   X,
 } from './icons';
@@ -44,7 +45,7 @@ type Props = {
 /** Which Pro feature opened the modal; picks the intro line. */
 export type UpgradeTrigger =
   | 'lock' | 'protect' | 'history' | 'devices' | 'zen' | 'theme' | 'storage'
-  | 'fileSize' | 'folders' | 'looks' | 'spaces' | 'formatBar' | 'totp' | 'replace' | 'passphrase' | null;
+  | 'fileSize' | 'folders' | 'looks' | 'spaces' | 'formatBar' | 'totp' | 'replace' | 'passphrase' | 'alerts' | null;
 
 const FEATURES: Array<{ icon: React.JSX.Element; labelKey: string }> = [
   { icon: <IconDevices />, labelKey: 'upgrade.features.devices' },
@@ -87,6 +88,8 @@ function introKey(trigger: Props['trigger']): string {
       return 'upgrade.intro.replace';
     case 'passphrase':
       return 'upgrade.intro.passphrase';
+    case 'alerts':
+      return 'upgrade.intro.alerts';
     case 'fileSize':
       // Reuse the already-translated upload upsell string (importExport ns)
       // so the file-size context doesn't need its own billing copy.
@@ -128,6 +131,8 @@ function triggerIcon(trigger: Props['trigger']): React.JSX.Element {
       return <MagnifyingGlass size={size} aria-hidden="true" />;
     case 'passphrase':
       return <Password size={size} aria-hidden="true" />;
+    case 'alerts':
+      return <BellSimple size={size} aria-hidden="true" />;
     default:
       return <IconUpgrade size={size} />;
   }
@@ -369,6 +374,22 @@ export function IconUpgrade({ size = 18, onFill = false }: { size?: number; onFi
   // in it at 11px; the solid body is what makes the mark legible.
   // Spec: ops/docs/design-decisions.md (Pro mark colour)
   return <RocketLaunch size={size} weight="fill" className={onFill ? 'text-white' : 'text-pro'} aria-hidden="true" />;
+}
+
+/** An icon-only Pro door's glyph with the rocket on its top-end corner (the
+ *  collapsed rail's Folders button, the Work icon of the space switch). The
+ *  rocket is anchored to the glyph, not the button, so it sits on the icon's
+ *  own corner at every button size, and the glyph never moves. */
+export function ProGlyph({ pro, children }: { pro: boolean; children: ReactNode }) {
+  if (!pro) return <>{children}</>;
+  return (
+    <span className="relative flex">
+      {children}
+      <span className="pointer-events-none absolute -top-1.5 -end-1.5 flex" aria-hidden="true">
+        <IconUpgrade size={9} />
+      </span>
+    </span>
+  );
 }
 
 /** The rocket and the word, at the end of a menu row that opens a Pro

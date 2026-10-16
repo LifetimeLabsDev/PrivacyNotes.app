@@ -62,7 +62,7 @@ const LOCALES_DIR = path.resolve(__dirname, 'src/locales');
 const ORIGIN = 'https://privacynotes.app';
 
 /** Locales with static Help pages. English first: it is the fallback. */
-const HELP_LOCALES = ['en', 'de', 'fr', 'it', 'es', 'nl', 'pl', 'pt-PT', 'pt-BR', 'ja', 'ko', 'zh-TW', 'ca', 'cs', 'tr', 'sv', 'ar', 'uk', 'ru', 'th'] as const;
+const HELP_LOCALES = ['en', 'de', 'fr', 'it', 'es', 'nl', 'pl', 'pt-PT', 'pt-BR', 'ja', 'ko', 'zh-TW', 'ca', 'cs', 'sk', 'tr', 'sv', 'ar', 'uk', 'ru', 'th'] as const;
 type HelpLocale = (typeof HELP_LOCALES)[number];
 
 /** `dir="rtl"` for RTL locales, empty string otherwise - splice straight into `<html lang="${locale}"${htmlDir(locale)}>`. */
@@ -381,6 +381,11 @@ function normalize(s: string): string {
   return foldText(stripMd(s));
 }
 
+/** One entry's question and answer, as the hub filter and the leaf search read it. */
+function entryHaystack(e: { q: string; a: string[] }): string {
+  return normalize(`${e.q} ${e.a.join(' ')}`);
+}
+
 /** Excerpt for a meta description (~155 chars, word boundary). */
 function excerpt(text: string): string {
   const plain = stripMd(text);
@@ -429,7 +434,7 @@ function railRows(items: RailItem[], cls: string): string {
 /**
  * The published documents, as rail rows.
  *
- * Four file names rather than one row saying "GitHub", because the file
+ * The file names rather than one row saying "GitHub", because the file
  * names are the claim: a reader deciding whether this project is worth
  * trusting learns more from seeing THREAT_MODEL.md listed than from any
  * sentence we could write about it. They sit between the topics and the
@@ -551,7 +556,7 @@ function renderSections(
           // inside the answer.
           const paragraphs = e.a.map((par) => renderParagraph(par, cat.page)).join('');
           const extra = entryShowcase(e.id, cat.page);
-          const hay = normalize(`${e.q} ${e.a.join(' ')}`);
+          const hay = entryHaystack(e);
           const leaf = leafPath(locale, e.id);
           return `<details class="entry" id="${esc(e.id)}" data-s="${esc(hay)}" data-leaf="${leaf}">
 <summary><span class="q">${esc(e.q)}</span><a class="perma" href="${leaf}" aria-label="${esc(permaLabel)}: ${esc(e.q)}">${LINK_ICON}</a><span class="chev" aria-hidden="true"></span></summary>
@@ -620,8 +625,8 @@ function icon(d: string, size: number): string {
  * the first line and one addressed line below, and no new rule: everything
  * the address block names is already covered by "Use only those pages".
  *
- * The documentation line names the INDEX and nothing else. The four published
- * documents run to about 21,000 tokens together, so a model handed four URLs
+ * The documentation line names the INDEX and nothing else. The published
+ * documents run to about 13,000 tokens together, so a model handed every URL
  * with no way to choose reads all of them or none; /docs/index.md lists the
  * sections of each, and the choice happens there for the price of 2 KB.
  *
@@ -947,7 +952,12 @@ const CONTENT_UPDATED: Record<string, string> = {
   'upnote': '2026-08-31',
   'browser-passwords': '2026-08-31',
   'nextcloud-notes': '2026-08-31',
-  'standard-notes': '2026-09-26',
+  'standard-notes': '2026-10-16',
+  'joplin': '2026-10-16',
+  'bear': '2026-10-16',
+  'import-from-other-apps': '2026-10-16',
+  'import-bear': '2026-10-16',
+  'import-joplin': '2026-10-16',
 };
 
 /** The day one page last changed, or the baseline when it has not since. */
@@ -1750,7 +1760,7 @@ ${input('id="faq-q"')}
 ${clear('faq-clear')}
 <kbd>/</kbd>
 </div>`;
-  return `<form class="search" action="${helpPath(locale)}" method="get" role="search" id="faq-lform" data-index="${esc(index)}" data-search-all="${esc(p.searchAll)}">
+  return `<form class="search" action="${helpPath(locale)}" method="get" role="search" id="faq-lform" data-index="${esc(index)}" data-full="${fullSearchPath(locale)}" data-search-all="${esc(p.searchAll)}">
 ${SEARCH_ICON}
 ${input('name="q" id="faq-lq"')}
 ${clear('faq-lclear')}
@@ -1761,13 +1771,28 @@ ${clear('faq-lclear')}
 
 /**
  * Question titles + their leaf URLs, baked into the leaf search box so it
- * can answer as you type instead of making you submit and land on the hub.
- * Titles only, which keeps the payload small: the full-text haystack lives
- * on the hub, and the results list always offers to take the query there.
+ * can answer as you type before anything else loads. Titles only, which
+ * keeps every leaf small; the answer text comes from `fullSearchIndex`,
+ * fetched on the first keystroke.
  */
 function leafSearchIndex(sections: Section[], locale: HelpLocale): string {
   return JSON.stringify(
     sections.flatMap((s) => s.entries.map((e) => [stripMd(e.q), leafPath(locale, e.id)]))
+  );
+}
+
+function fullSearchPath(locale: HelpLocale): string {
+  return `${helpPath(locale)}/search-index.json`;
+}
+
+/**
+ * The leaf search's full-text index, one file per locale: leaf URL and the
+ * same folded haystack the hub filters on, so a word that only appears in
+ * an answer is found from every leaf too.
+ */
+function fullSearchIndex(sections: Section[], locale: HelpLocale): string {
+  return JSON.stringify(
+    sections.flatMap((s) => s.entries.map((e) => [leafPath(locale, e.id), entryHaystack(e)]))
   );
 }
 
@@ -2376,6 +2401,10 @@ async function renderAll(): Promise<Rendered[]> {
     out.push({
       fileName: `${base}/index.html`,
       source: renderHubHtml(locale, order, rows, cat, guideOrder, guidesCat, suggest),
+    });
+    out.push({
+      fileName: `${base}/search-index.json`,
+      source: fullSearchIndex(buildSections(order, rows, cat), locale),
     });
     for (const r of rows) {
       if (!cat.entries[r.id]?.q) continue;

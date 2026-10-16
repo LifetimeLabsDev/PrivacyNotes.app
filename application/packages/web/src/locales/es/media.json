@@ -15,6 +15,8 @@
     "notFound": "Imagen no encontrada",
     "saveFailed": "No se pudo guardar, así que el archivo puede estar vacío o incompleto.",
     "viewAria": "Ver imagen",
+    "copyAria": "Copiar imagen",
+    "copyFailed": "No se pudo copiar la imagen.",
     "picturesLeftOut": "Algunas imágenes no se añadieron. Copia una imagen sola para pegarla."
   },
   "attachment": {
@@ -56,6 +58,17 @@
     "pageCount_one": "{{count}} página",
     "pageCount_other": "{{count}} páginas",
     "pageLabel": "{{name}}, página {{page}} de {{count}}"
+  },
+  "mail": {
+    "loading": "Abriendo el correo...",
+    "failed": "No se puede leer este correo. Descárgalo para abrirlo en otra app.",
+    "from": "De",
+    "to": "Para",
+    "cc": "Cc",
+    "date": "Fecha",
+    "noSubject": "(Sin asunto)",
+    "empty": "Este correo no tiene texto.",
+    "attachments": "Adjuntos"
   },
   "picker": {
     "title": "Imágenes en Archivos",

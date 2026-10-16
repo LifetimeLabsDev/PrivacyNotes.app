@@ -29,6 +29,7 @@ export function viewRows(t: TFunction): ViewRow[] {
     { key: 'vault', label: t('tagsRail.vault'), icon: PILLAR_GLYPHS.vault },
     { key: 'files', label: t('tagsRail.files'), icon: PILLAR_GLYPHS.files },
     { key: 'journal', label: t('tagsRail.journals'), icon: PILLAR_GLYPHS.journals },
+    { key: 'calendar', label: t('tagsRail.calendar'), icon: PILLAR_GLYPHS.calendar },
     // Plain-text files on the user's own disk. Absent wherever no filesystem
     // API exists, so the row is never offered on a platform that cannot open
     // a folder.

@@ -78,8 +78,22 @@
     "import-from-other-apps": {
       "q": "Com puc portar les meves notes des d'una altra aplicació?",
       "a": [
-        "Obre Configuració > Import & Export i tria l'origen. La llista cobreix les aplicacions d'on ve la gent: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes i Apple Journal. Bitwarden i les contrasenyes desades del teu navegador acaben a la Caixa forta, els marcadors del navegador arriben com a marcadors, i un importador de Markdown genèric accepta qualsevol carpeta de fitxers .md.",
+        "Obre Configuració > Import & Export i tria l'origen. La llista cobreix les aplicacions d'on ve la gent: Apple Notes, Bear, Obsidian, Evernote, Standard Notes, Joplin, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes i Apple Journal. Bitwarden i les contrasenyes desades del teu navegador acaben a la Caixa forta, els marcadors del navegador arriben com a marcadors, i un importador de Markdown genèric accepta qualsevol carpeta de fitxers .md.",
         "Les importacions s'executen íntegrament al teu dispositiu: els fitxers exportats s'analitzen, es xifren i es desen localment; no es puja res enlloc per processar-ho. Cada nota importada s'etiqueta amb el seu origen perquè després puguis repassar el lot sencer, i les llistes de comprovació de Google Keep es converteixen fins i tot en llistes de tasques natives."
+      ]
+    },
+    "import-bear": {
+      "q": "Com puc passar les meves notes de Bear a PrivacyNotes?",
+      "a": [
+        "Fes una còpia de seguretat de Bear i importa-la. A Bear, tria File > Backup Notes... i desa el fitxer .bear2bk. Després obre Configuració > Import & Export, tria Bear i deixa anar el fitxer. La còpia conté tota la teva biblioteca, així que les notes arxivades i les de la paperera també hi arriben, i les notes fixades i les de només lectura conserven aquest estat.",
+        "Les teves etiquetes arriben com a etiquetes, i les etiquetes niades com #work/projects es reconstrueixen també com a carpetes. Els ressaltats conserven els colors de Bear, els enllaços entre notes es converteixen en enllaços entre notes, i les imatges i els fitxers adjunts s'importen al teu emmagatzematge. La [guia d'importació de Bear](/ca/help/import/bear/) mostra tots els passos."
+      ]
+    },
+    "import-joplin": {
+      "q": "Com puc importar les meves notes de Joplin?",
+      "a": [
+        "Exporta un fitxer JEX des de Joplin i importa'l. A Joplin, tria File > Export all > «JEX - Joplin Export File» i desa el fitxer. Després obre Configuració > Import & Export, tria Joplin i deixa anar el fitxer .jex. El fitxer més recent de Tools > Create backup funciona de la mateixa manera.",
+        "Les llibretes es converteixen en carpetes, niades tan endins com a Joplin, i cada nota conserva les seves etiquetes i les seves dates. Les tasques pendents es converteixen en tasques, els enllaços entre notes es converteixen en enllaços entre notes, i els adjunts s'importen al teu emmagatzematge. Joplin deixa la seva paperera fora de totes les exportacions, així que restaura de la paperera les notes que vulguis abans d'exportar. La [guia d'importació de Joplin](/ca/help/import/joplin/) mostra tots els passos."
       ]
     },
     "markdown-support": {
@@ -221,10 +235,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "He oblidat el PIN. Com hi torno a entrar?",
+      "q": "He oblidat el PIN o el codi d'accés. Com hi torno a entrar?",
       "a": [
-        "No es perd res, i pots esborrar el PIN tu mateix amb la teva frase de recuperació. El PIN és un pany de pantalla, no una clau de xifratge: les teves notes estan xifrades amb claus derivades de la frase, així que és la frase la que les obre. Lligar el xifratge a quatre xifres faria que un PIN oblidat destruís dades. Aquí no passa mai.",
-        "Allà on l'aplicació demani el PIN, tria **Has oblidat el PIN?** i escriu les teves 12 paraules. Hi és a la pantalla de bloqueig, en una nota protegida i a **Configuració > Seguretat > PIN**. El PIN s'esborra a tots els teus dispositius i en pots establir un de nou tot seguit. El desbloqueig biomètric no es veu afectat."
+        "No es perd res, i pots esborrar tu mateix el PIN o el codi d'accés amb la teva frase de recuperació. És un pany de pantalla, no una clau de xifratge: les teves notes estan xifrades amb claus derivades de la frase, així que és la frase la que les obre. Lligar el xifratge al PIN faria que un PIN oblidat destruís dades. Aquí no passa mai.",
+        "Allà on l'aplicació el demani, tria **Has oblidat el PIN?** o **Has oblidat el codi d'accés?** i escriu les teves 12 paraules. Hi és a la pantalla de bloqueig, en una nota protegida i a **Configuració > Seguretat > PIN**. S'esborra a tots els teus dispositius i en pots establir un de nou tot seguit. El desbloqueig biomètric no es veu afectat. Un dispositiu amb una versió més antiga de l'aplicació continua demanant 4 xifres encara que hagis establert un codi d'accés; allà, **Has oblidat el PIN?** funciona igual."
       ]
     },
     "delete-account": {
@@ -238,7 +252,7 @@
       "q": "Què se sincronitza exactament entre els meus dispositius, i què es queda en local?",
       "a": [
         "Tot el que esperaries, i tot plegat xifrat al teu dispositiu: notes, tasques, entrades del diari, la caixa forta i els fitxers que hi ha dins. La teva configuració també et segueix - etiquetes preferides, preferències d'ordre i de vista, tema de color, el PIN (com a hash amb sal, mai el PIN en si), bloqueig de l'aplicació, configuració dels seguiments i de la medicació, i la supressió automàtica de la paperera. Configura-ho un cop i tots els dispositius ho recullen.",
-        "Unes quantes coses es queden expressament en local a cada dispositiu: el mode clar o fosc (cada dispositiu segueix la preferència del seu propi sistema), el desbloqueig biomètric (lligat al maquinari de cada dispositiu) i l'estat de desbloqueig (en tancar l'aplicació, sempre es torna a bloquejar). El servidor només emmagatzema blobs xifrats i no en pot llegir res."
+        "Unes quantes coses es queden expressament en local a cada dispositiu: el mode clar o fosc (cada dispositiu segueix la preferència del seu propi sistema), el desbloqueig biomètric (lligat al maquinari de cada dispositiu), l'espai que mostra la barra lateral i l'estat de desbloqueig (en tancar l'aplicació, sempre es torna a bloquejar). El servidor només emmagatzema blobs xifrats i no en pot llegir res."
       ]
     },
     "offline": {
@@ -250,7 +264,7 @@
     "sync-conflicts": {
       "q": "Què passa si edito la mateixa nota en dos dispositius alhora?",
       "a": [
-        "Els teus dispositius fusionen la nota detall per detall quan tornen a sincronitzar-se, de manera que un canvi fet només en un d'ells es conserva. Si tots dos han editat el text mentre estaven separats (per exemple, un era fora de línia), el dispositiu que se sincronitza en segon lloc mostra un diàleg de conflicte: conserva la versió d'aquest dispositiu, conserva l'altra o conserva totes dues com a notes separades. Les dues versions es conserven fins que triïs.",
+        "Els teus dispositius fusionen la nota detall per detall quan tornen a sincronitzar-se, de manera que un canvi fet només en un d'ells es conserva. Si tots dos han editat el text mentre estaven separats (per exemple, un era fora de línia), el dispositiu que se sincronitza en segon lloc mostra un diàleg de conflicte: conserva la versió d'aquest dispositiu, conserva l'altra o conserva totes dues com a notes separades. Les dues versions es conserven fins que triïs. Si la versió de l'altre dispositiu arriba mentre escrius a la nota, el teu text es conserva com a còpia marcada amb \"(conflict)\" i la nota mostra l'altra versió.",
         "Quan tots dos dispositius han canviat el mateix detall mentre estaven separats, com ara la fixació, la carpeta o el títol, es conserva el detall del dispositiu que ha editat la nota per última vegada, sense cap diàleg. Una nota suprimida permanentment en un dispositiu se suprimeix a tot arreu, inclòs un canvi que un altre dispositiu hi hagi fet mentre estaven separats."
       ]
     },
@@ -359,7 +373,7 @@
     "buy-pro-anonymously": {
       "q": "Puc comprar Pro sense revelar qui soc?",
       "a": [
-        "Sí, amb dues eines estàndard. Per al rebut, fes servir un àlies de correu: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) o [addy.io](https://addy.io) reenvien tots a la teva bústia real sense exposar-la. Per al pagament, fes servir una targeta emmascarada: [privacy.com](https://privacy.com) als EUA genera targetes virtuals que funcionen amb qualsevol nom que hi escriguis, i molts bancs i serveis d'altres llocs ([Revolut](https://www.revolut.com), per exemple) ofereixen targetes virtuals d'un sol ús que fan la mateixa feina.",
+        "Sí, amb dues eines estàndard. Per al rebut, fes servir un àlies de correu: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) o [addy.io](https://addy.io) reenvien tots a la teva bústia real sense exposar-la. Per al pagament, fes servir una targeta emmascarada: [privacy.com](https://privacy.com) als EUA genera targetes virtuals que funcionen amb qualsevol nom que hi escriguis, i a la resta de llocs una targeta de prepagament que funcioni en línia, comprada en efectiu, fa la mateixa feina sense cap nom.",
         "En pagar, Paddle demana una adreça electrònica, un mètode de pagament i un país (més un codi postal en algunes regions) per calcular els impostos. L'àlies rep el rebut, la targeta emmascarada porta el nom que li hagis posat, i la ubicació fiscal només t'acota a una regió, res més. Això sí, mantén l'àlies viu: el correu del rebut és la teva prova de compra i el teu canal per a un reemborsament.",
         "Combinat amb un compte amb frase, cap part no acaba tenint la imatge completa: el teu banc veu una recàrrega de targeta, Paddle veu un àlies i una targeta emmascarada, i nosaltres veiem una clau pública que ha passat a ser Pro, al costat d'aquest àlies al nostre compte de Paddle."
       ]
@@ -402,7 +416,7 @@
     "languages": {
       "q": "Quins idiomes parla l'aplicació?",
       "a": [
-        "Anglès, alemany, francès, italià, espanyol, neerlandès, polonès, txec, català, turc, suec, ucraïnès, rus, japonès, coreà, xinès tradicional, tailandès, àrab i portuguès, en les variants europea i brasilera. L'aplicació segueix per defecte l'idioma del sistema, o pots fixar-ne un explícitament a Configuració > Llengua a cada dispositiu.",
+        "Anglès, alemany, francès, italià, espanyol, neerlandès, polonès, txec, eslovac, català, turc, suec, ucraïnès, rus, japonès, coreà, xinès tradicional, tailandès, àrab i portuguès, en les variants europea i brasilera. L'aplicació segueix per defecte l'idioma del sistema, o pots fixar-ne un explícitament a Configuració > Llengua a cada dispositiu.",
         "Les traduccions són gratuïtes per a tothom, no pas un avantatge de Pro. Hi ha més idiomes previstos; si el teu hi falta, digue'ns-ho a [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) o a [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -424,7 +438,7 @@
       "q": "Com funcionen les tasques?",
       "a": [
         "Qualsevol línia que escriguis com a - [ ] en qualsevol nota es converteix en una tasca, i la vista Tasques de la barra lateral les aplega totes en un sol lloc. Si hi marques una tasca com a feta, s'actualitza la nota on és, i si l'obres, saltes a aquella nota. No hi ha cap base de dades de tasques a part per mantenir: les tasques són simplement línies de les teves notes, xifrades com tota la resta.",
-        "La casella d'afegit ràpid de la part superior de Tasques afegeix el que escrius a una nota anomenada Quick Tasks (que es crea per tu el primer cop que la fas servir), així que apuntar una tasca solta costa una sola tecla, no pas una decisió d'arxivament. La mateixa vista ofereix tres disposicions (Híbrida, Agregada, Llista), un interruptor per a les tasques completades i cerca de tasques, i el botó New de la vista Tot pot començar directament una nota de tasques."
+        "La casella d'afegit ràpid de la part superior de Tasques afegeix el que escrius a una nota anomenada Quick Tasks (que es crea per tu el primer cop que la fas servir), així que apuntar una tasca solta costa una sola tecla, no pas una decisió d'arxivament. La mateixa vista ofereix tres disposicions (Híbrida, Agregada, Llista), un interruptor per a les tasques completades i cerca de tasques, i el botó + de la vista Tot pot començar directament una nota de tasques."
       ]
     },
     "journal": {
@@ -488,8 +502,8 @@
     "biometric-unlock": {
       "q": "El desbloqueig biomètric ha deixat de funcionar. Què puc fer?",
       "a": [
-        "Mai no et quedes fora. La pantalla de bloqueig sempre ofereix una alternativa: «Desbloqueja amb el PIN» o «Inicia la sessió amb la frase de recuperació». La biometria és una barrera local, no pas una clau de xifratge, així que les teves notes queden intactes en tots dos casos.",
-        "Després, arregla la barrera. El registre és per dispositiu, així que un telèfon nou, un perfil de navegador acabat de fer o una reinstal·lació s'han de tornar a registrar: Configuració > Seguretat > «Bloqueig», desactiva'l i torna a «Activa el desbloqueig biomètric». També cal «Confia en aquest dispositiu» (les sessions no fiables s'esborren en tancar la pestanya) i maquinari amb un autenticador de plataforma (Touch ID, Face ID, Windows Hello). Si un gestor de contrasenyes com ara Bitwarden o 1Password apareix en lloc de la sol·licitud del sistema, descarta'l i torna-ho a provar, o desactiva-li la captura de claus d'accés per a aquest lloc - l'aplicació demana l'autenticador integrat, però alguns gestors l'intercepten igualment."
+        "Mai no et quedes fora. La pantalla de bloqueig sempre ofereix una alternativa: «Desbloqueja amb el PIN» («Desbloqueja amb el codi d'accés» si n'has definit un) o «Inicia la sessió amb la frase de recuperació». El desbloqueig biomètric només obre la còpia de la teva frase de recuperació desada en aquest dispositiu, i les teves notes es xifren amb claus derivades de la mateixa frase, així que queden intactes en tots dos casos.",
+        "Després, torna'l a configurar. Si la pantalla de bloqueig diu «El desbloqueig biomètric no ha pogut obrir les teves notes.», desbloqueja primer d'una altra manera. El registre és per dispositiu, així que un telèfon nou, un perfil de navegador acabat de fer o una reinstal·lació s'han de tornar a registrar: Configuració > Seguretat > «Bloqueig», desactiva'l i torna a «Activa el desbloqueig biomètric». També cal «Confia en aquest dispositiu» (les sessions no fiables s'esborren en tancar la pestanya) i maquinari amb un autenticador de plataforma (Touch ID, Face ID, Windows Hello). Si un gestor de contrasenyes com ara Bitwarden o 1Password apareix en lloc de la sol·licitud del sistema, descarta'l i torna-ho a provar, o desactiva-li la captura de claus d'accés per a aquest lloc - l'aplicació demana l'autenticador integrat, però alguns gestors l'intercepten igualment."
       ]
     },
     "phrase-compromised": {
@@ -647,7 +661,14 @@
       "q": "Com funcionen junts les seccions, carpetes, etiquetes i espais?",
       "a": [
         "Tot el que guardes viu en una sola biblioteca. Les seccions de la barra lateral, com Notes, Caixa forta i Diaris, són vistes d'aquesta biblioteca per tipus. Una carpeta és un lloc, així que una mateixa carpeta pot guardar una nota i l'inici de sessió que hi va, i l'arbre de carpetes és el mateix a cada secció. Els seus números compten el que conté la secció oberta, i una carpeta sense res d'aquesta secció es mostra atenuada. Una etiqueta és un rètol, i la barra lateral només llista les etiquetes que fa servir la secció oberta.",
-        "Els espais divideixen la biblioteca en Personal i Feina i en mostren un cada cop. Una carpeta de primer nivell pertany a un espai, amb tot el que conté, i **Mou a Feina** al seu menú la passa a l'altre. Un element sense carpeta pertany a Personal, així que tot el que crees a Feina va a una carpeta de Feina. Les etiquetes són gratuïtes, i les carpetes i els espais requereixen Pro."
+        "Els espais divideixen la biblioteca en Personal i Feina. Una carpeta de primer nivell pertany a un espai, amb tot el que conté. [Com funcionen els espais](/ca/help/spaces/) explica el selector, com moure elements d'un espai a l'altre i com desactivar els espais. Les etiquetes són gratuïtes, i les carpetes i els espais requereixen Pro."
+      ]
+    },
+    "spaces": {
+      "q": "Com funcionen els espais Personal i Feina?",
+      "a": [
+        "Els espais divideixen la teva biblioteca en Personal i Feina. El selector al costat de **Salta** a la barra lateral mostra **Tot**, **Personal** o **Feina**: Tot mostra tots els elements, i els altres dos mostren un espai cadascun. Cada dispositiu conserva la seva pròpia tria, així que el mòbil pot mostrar Personal mentre l'ordinador mostra Feina, i en obrir un element de l'altre espai es canvia a aquest. Els espais només canvien el que mostren les llistes: tots els elements es continuen sincronitzant amb tots els dispositius.",
+        "Una carpeta de primer nivell pertany a un espai, amb tot el que conté, i **Mou a Feina** o **Mou a Personal** al seu menú, o al menú de qualsevol element, la passa a l'altre. Un element sense carpeta és de Personal, igual que tot el que crees mentre Tot és obert. Per deixar de fer servir els espais, desactiva Configuració > Llistes > Espais: es mostra tot, no es mou res, i cada carpeta conserva el seu espai per a quan els tornis a activar. Els espais requereixen Pro."
       ]
     },
     "note-links": {
@@ -717,8 +738,8 @@
     "note-history": {
       "q": "Puc recuperar una versió anterior d'una nota?",
       "a": [
-        "Sí, amb Pro. Obre el menú \"...\" de la nota i tria \"Historial\" per recórrer i restaurar fins a 20 versions anteriors. En restaurar no perds res: el text actual es desa abans com a versió, així que pots anar endavant i enrere. Les versions estan xifrades com la nota mateixa, així que nosaltres tampoc no les podem llegir.",
-        "Es pren una instantània com a molt un cop per minut, així que dues edicions separades per segons comparteixen versió. L'historial és l'única funció Pro que passa pel servidor, i per això la demo en guarda una còpia local pròpia. Tots els plans tenen a més la [paperera](/ca/help/trash-auto-delete/), que guarda una nota esborrada 30 dies."
+        "Sí, amb Pro. Obre el menú \"...\" de la nota i tria \"Historial\" per recórrer fins a 50 versions anteriors, comparar-ne una amb la nota actual i restaurar-la. En restaurar no perds res: el text actual es desa abans com a versió, així que pots anar endavant i enrere. Les versions estan xifrades com la nota mateixa, així que nosaltres tampoc no les podem llegir.",
+        "Cada versió és la nota tal com era abans d'una edició: se'n desa una a la primera edició després d'una pausa de cinc minuts, una cada deu minuts mentre continues escrivint, i una abans d'una edició que elimina més de la meitat d'una nota de 200 caràcters o més, tret que l'última versió tingui menys de 30 segons. L'historial és l'única funció Pro que passa pel servidor, i per això la demo en guarda una còpia local pròpia. Tots els plans tenen a més la [paperera](/ca/help/trash-auto-delete/), que guarda una nota esborrada 30 dies."
       ]
     },
     "vault-totp": {
@@ -849,10 +870,10 @@
       ]
     },
     "quick-switcher": {
-      "q": "Què és la funció «Vés a» i què pot trobar?",
+      "q": "Què és la navegació ràpida i què pot trobar?",
       "a": [
-        "La funció «Vés a» salta a qualsevol cosa pel títol. Prem Cmd+K en un Mac o Ctrl+K a Windows i Linux (també funciona Cmd+P o Ctrl+P), o fes clic a **Vés a** a la barra lateral o a la capçalera de la llista. Escriu part d'un títol per trobar notes, tasques, entrades de diari, elements de la Caixa forta, marcadors, contactes, fitxers adjunts i opcions de configuració. Retorn obre l'element, i Option+Retorn o Alt+Retorn l'obre en una pestanya.",
-        "Escriu > primer per executar una ordre, com crear una nota nova o anar a una secció. Per trobar paraules dins del teu text en lloc dels títols, tria la fila **Cerca a tot arreu**, o prem Cmd+Retorn o Ctrl+Retorn des de qualsevol fila. La cerca passa al teu dispositiu, així que no se'ns envia res del que escrius. La funció «Vés a» és gratuïta."
+        "La navegació ràpida salta a qualsevol cosa pel títol. Prem Cmd+K en un Mac o Ctrl+K a Windows i Linux (també funciona Cmd+P o Ctrl+P), o fes clic a **Salta** a la barra lateral o a la capçalera de la llista. Escriu part d'un títol per trobar notes, tasques, entrades de diari, elements de la Caixa forta, marcadors, contactes, fitxers adjunts i opcions de configuració. Retorn obre l'element, i Option+Retorn o Alt+Retorn l'obre en una pestanya.",
+        "Escriu > primer per executar una ordre, com crear una nota nova o anar a una secció. Escriu # primer per veure només les teves etiquetes, o / per veure només les teves carpetes; si en tries una, la llista es filtra igual que amb un clic a la barra lateral. Per trobar paraules dins del teu text en lloc dels títols, tria la fila **Cerca a tot arreu**, o prem Cmd+Retorn o Ctrl+Retorn des de qualsevol fila. La cerca passa al teu dispositiu, així que no se'ns envia res del que escrius. La navegació ràpida és gratuïta."
       ]
     },
     "find-in-note": {
@@ -876,6 +897,27 @@
         "Un mètode d'inici de sessió que ja pertany a una altra caixa forta no es pot connectar, perquè les caixes fortes no es fusionen mai. **Desconnecta** et demana primer les teves 12 paraules. Si et guardem la frase nosaltres, l'últim compte connectat es queda fins que en connectis un altre o desis la frase i passis a l'autocustòdia. Amb autocustòdia, un dispositiu nou continua demanant-te les 12 paraules. Els comptes connectats són en beta."
       ]
     },
+    "calendar": {
+      "q": "Hi ha un calendari, i què s'hi mostra?",
+      "a": [
+        "Sí. Calendari, a la barra lateral, mostra en un sol lloc tots els elements amb data: esdeveniments, entrades de diari, notes i llistes de tasques amb data, i els aniversaris dels teus contactes. La llista del costat és l'agenda dels propers dies, i la vista gran canvia entre Dia, Setmana i Mes. Fes clic en un dia buit per afegir-hi alguna cosa, o arrossega un element a un altre dia.",
+        "Un esdeveniment és un tipus d'element propi: una nota amb un dia, un dia final, una hora i una repetició. Escriu una línia sencera a Afegit ràpid, per exemple \"Dentista dv. 15:00 1 h abans\", i en llegeix el dia, l'hora i l'avís per tu. Una nota o una llista de tasques també pot tenir un dia, una hora i un dia final, des de la fila Programació del seu menú \"...\". El calendari és gratuït."
+      ]
+    },
+    "reminders": {
+      "q": "Els recordatoris del calendari funcionen quan l'app està tancada?",
+      "a": [
+        "En un telèfon, sí: fins a 64 avisos, fins a 400 dies vista, es lliuren al mateix telèfon, de manera que sonen encara que PrivacyNotes estigui tancat; obrir i desbloquejar l'app en lliura més. A l'app d'escriptori, un recordatori sona mentre l'app s'executa, i en un navegador, mentre PrivacyNotes està obert en una pestanya. Cada dispositiu planifica els seus recordatoris a partir dels elements que conté, de manera que el servidor no coneix mai cap títol, hora ni dia.",
+        "Afegeix un avís des de la fila Avís de la vista Programació d'un element, fins a cinc per element, i defineix els valors per defecte a Configuració > Calendari, on també hi ha \"Mostra els títols als recordatoris\". Un element protegit amb el teu PIN sempre sona com a \"Recordatori\" i l'hora, i també qualsevol avís programat mentre el bloqueig de l'app està activat. Un avís lliurat abans d'activar el bloqueig pot conservar el títol fins que soni. Els recordatoris formen part de Pro; el calendari en si és gratuït."
+      ]
+    },
+    "calendar-time-zones": {
+      "q": "Què passa amb les hores dels esdeveniments quan viatjo a una altra zona horària?",
+      "a": [
+        "Una hora del calendari es manté tal com la vas escriure. Un esdeveniment a les 15:00 es mostra i sona a les 15:00 sigui on sigui el teu dispositiu, com un recordatori d'una app de tasques, perquè cada hora es desa com a hora local, sense zona horària. Un telèfon programa cada avís per a un moment exacte, així que després d'un canvi de zona horària, obre i desbloqueja PrivacyNotes un cop a la zona nova per moure'n els avisos; mentre està obert i desbloquejat, els mou tot sol.",
+        "Per a una trucada amb algú d'una altra zona horària, introdueix l'hora tal com és on ets tu. Si un canvi d'horari d'estiu se salta l'hora d'un avís, l'avís sona al primer minut després del salt."
+      ]
+    },
     "session-expired": {
       "q": "Per què l'app diu «La sessió ha caducat»?",
       "a": [
@@ -887,7 +929,7 @@
       "q": "Què fa Arxiva i en què es diferencia de la paperera?",
       "a": [
         "Arxivar treu un element de les teves llistes sense suprimir-lo. Tria **Arxiva** al menú \"...\" de l'element o al seu menú de clic dret, o a la barra de selecció per a diversos elements alhora. Els elements arxivats surten de Tot, de la seva secció, de Fixats i dels recomptes de carpetes i etiquetes, i esperen a la vista **Arxiu** a la part de baix de la barra lateral, que apareix quan arxives alguna cosa. Per mantenir-los a Tot i als recomptes, marca Arxiu a la columna **Tot** de Configuració > Llistes. **Desarxiva**, als mateixos llocs, recupera un element.",
-        "La paperera és per a les coses de les quals et vols desfer: [les suprimeix per sempre al cap de 30 dies](/ca/help/trash-auto-delete/), tret que ho desactivis. Arxivar no suprimeix mai res, i els elements arxivats continuen a mà, perquè una cerca a Tot, la funció «Vés a» i els enllaços entre notes encara els troben. Se sincronitzen i continuen xifrats com tota la resta, i encara compten dins del teu emmagatzematge. Arxivar funciona amb tots els tipus d'elements i és gratuït."
+        "La paperera és per a les coses de les quals et vols desfer: [les suprimeix per sempre al cap de 30 dies](/ca/help/trash-auto-delete/), tret que ho desactivis. Arxivar no suprimeix mai res, i els elements arxivats continuen a mà, perquè una cerca a Tot, la navegació ràpida i els enllaços entre notes encara els troben. Se sincronitzen i continuen xifrats com tota la resta, i encara compten dins del teu emmagatzematge. Arxivar funciona amb tots els tipus d'elements i és gratuït."
       ]
     },
     "share-into-app": {

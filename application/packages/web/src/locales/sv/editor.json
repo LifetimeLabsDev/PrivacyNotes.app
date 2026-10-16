@@ -92,7 +92,13 @@
       "goal": "Mål",
       "decision": "Beslut",
       "definition": "Definition",
-      "seealso": "Se även"
+      "seealso": "Se även",
+      "box": "Ruta",
+      "panel": "Panel",
+      "update": "Uppdatering",
+      "time": "Tid",
+      "steps": "Steg",
+      "place": "Plats"
     }
   },
   "color": {
@@ -123,6 +129,7 @@
     "addColumnRight": "Lägg till kolumn till höger",
     "toggleHeaderRow": "Slå på eller av rubrikrad",
     "equalColumnWidths": "Gör kolumnerna lika breda",
+    "resizeHint": "Håll ned {{shift}} för att bara ändra den här kolumnen, {{alt}} för finare steg",
     "deleteRow": "Radera rad",
     "deleteColumn": "Radera kolumn",
     "deleteTable": "Radera tabell"
@@ -146,6 +153,8 @@
     "caseSensitiveTitle": "Matcha skiftläge",
     "closeReplace": "Stäng sök och ersätt",
     "closeReplaceTitle": "Stäng ({{keys}})",
+    "showReplace": "Sök och ersätt",
+    "hideReplace": "Dölj ersättning",
     "replacedCount_one": "{{count}} ersatt",
     "replacedCount_other": "{{count}} ersatta"
   },
@@ -155,7 +164,7 @@
     "title": "Översikt",
     "ariaLabel": "Anteckningens översikt",
     "hide": "Dölj översikt",
-    "hideTitle": "Dölj översikt (Esc)",
+    "hideTitle": "Dölj översikt ({{keys}})",
     "copyHeadingLink": "Kopiera länk till rubriken",
     "copyNoteLink": "Kopiera anteckningslänk",
     "copyHeadingShortcut": "Kopiera genväg till rubriken",
@@ -168,6 +177,9 @@
   },
   "topRow": {
     "add": "Lägg till en rad högst upp"
+  },
+  "addLine": {
+    "add": "Lägg till en rad"
   },
   "link": {
     "popoverLabel": "Lägg till länk",
@@ -205,7 +217,9 @@
     "characters_other": "{{formatted}} tecken",
     "tasksChecked_one": "{{done}} av {{formatted}} markerad",
     "tasksChecked_other": "{{done}} av {{formatted}} markerade",
-    "tooLargeToSync": ", kan vara för stor för att synka, dela upp i en ny anteckning",
+    "syncLimit": " · {{share}} av synkgränsen på 1 MB",
+    "overSyncLimit": " · över synkgränsen på 1 MB, stannar på den här enheten",
+    "split": "Dela upp anteckning",
     "veryLong": ", mycket lång, kan bli trög att redigera och hacka",
     "gettingLong": ", börjar bli lång, kan lagga på långsammare enheter",
     "largeTableWarning": "En stor tabell ({{rows}} rader) kan göra anteckningen trög att redigera, överväg att dela upp den"
@@ -265,10 +279,13 @@
     "hintTap": "Tryck på en knapp för att se dess alternativ.",
     "onBar": "I fältet",
     "inMenu": "I +-menyn",
+    "inAttachMenu": "I bifoga-menyn",
+    "attachMenuEmpty": "Tom, så bifoga-knappen visas inte.",
     "menuEmpty": "Menyn är tom, så +-knappen visas inte.",
     "hidden": "Dolda",
     "hiddenNote": "De fungerar fortfarande med kortkommando och Markdown.",
     "hiddenDrop": "Släpp en knapp här för att dölja den.",
+    "markdownViewNote": "Markdown-vyn har sin egen fasta uppsättning knappar.",
     "hiddenEmpty": "Inget är dolt.",
     "alwaysVisible": "Alltid synliga",
     "pinned": "Öppnar en panel, så den stannar i fältet eller döljs",
@@ -280,18 +297,23 @@
     "home": {
       "bar": "I fältet",
       "menu": "I +-menyn",
+      "attachMenu": "I bifoga-menyn",
       "hidden": "Dold"
     },
     "opensPanel": "öppnar en panel",
     "showsRecording": "visar inspelningen",
     "refuse": {
       "menuNotAllowed": "{{item}} kan ligga i fältet eller vara dold, inte i +-menyn.",
+      "attachNotAllowed": "Bara knapparna för bild, fil och inspelning får plats i bifoga-menyn.",
       "lastOnBar": "Behåll minst en knapp i fältet."
     },
     "items": {
       "link": "Länk",
       "notelink": "Anteckningslänk",
-      "audio": "Inspelning"
+      "audio": "Inspelning",
+      "attachMenu": "Bifoga",
+      "separator": "Avgränsare",
+      "markdownView": "Visa markdown"
     },
     "positionTitle": "Fältets placering",
     "positionNote": "Välj var formatfältet sitter i redigeraren.",

@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
+import { isOversizeImport, splitImportedNote } from '../noteSplit';
 import i18n from '../i18n';
 import { IMPORTERS } from './registry';
 import { applyImport } from './apply';
@@ -14,8 +15,10 @@ import { recordAdminEvent, type ImportSource } from '../adminEvents';
 import type { LocalNote } from '../db';
 import { missingItemsLabel } from '../export';
 import type { FolderDef } from '../folders';
+import { destinationGroups, existingImportFolder, fileUnfiled, type ImportDestination, type ImportTarget } from './destination';
 import { useEscapeToClose } from '../useEscapeToClose';
-import { ArrowCounterClockwise, BookOpenText, BracketsCurly, Check, CircleNotch, Download, FileHtml, FileZip, Key, Lock, Upload, X, AddressBook } from '../icons';
+import { ArrowCounterClockwise, BookOpenText, BracketsCurly, CalendarDots, Check, CircleNotch, Download, FileHtml, FileZip, Key, Lock, Upload, X, AddressBook } from '../icons';
+import { goesToCalendarFile } from '../schedule';
 import { fetchQuotaUsage, recalculateQuota } from '../devices';
 import { estimateNoteStoredBytes, estimateBlobBytes } from '../notesViewUtils';
 import { proUnlocked } from '../demo';
@@ -178,6 +181,7 @@ export function ImportModal({
   onExportVault,
   onExportBookmarks,
   onExportContacts,
+  onExportCalendar,
   onImportEncrypted,
   onExportEncryptedZip,
   decryptFullBackup,
@@ -185,6 +189,8 @@ export function ImportModal({
   onImportFolders,
   onImportSettings,
   onImportTagColors,
+  importTarget,
+  onCreateImportFolder,
   embedded = false,
 }: {
   onClose: () => void;
@@ -200,6 +206,7 @@ export function ImportModal({
   onExportVault: (ns: LocalNote[]) => void;
   onExportBookmarks: (ns: LocalNote[]) => void;
   onExportContacts: (ns: LocalNote[]) => void;
+  onExportCalendar: (ns: LocalNote[]) => void;
   onImportEncrypted: (file: File) => Promise<RestoreCounts & { imported: number }>;
   onExportEncryptedZip: (ns: LocalNote[]) => void;
   /** Decrypts a .pnbackupz into the plain full-backup zip; the modal
@@ -216,7 +223,13 @@ export function ImportModal({
   onImportFolders?: (
     folders: FolderDef[],
     originalIds?: ReadonlyMap<string, string>,
+    rootParent?: string | null,
   ) => Map<string, string> | void;
+  /** The folders the "Add to" row offers. Absent while folders are locked,
+   *  and then the row does not show. */
+  importTarget?: ImportTarget;
+  /** Makes (or finds) the "Add to" row's new folder; returns its id. */
+  onCreateImportFolder?: (name: string) => string | null;
   /** Give imported tags their colors (Google Keep's note colors): tag ->
    *  color key. The parent colors only a tag that has no color yet. */
   onImportTagColors?: (colors: Map<string, string>) => void;
@@ -246,6 +259,12 @@ export function ImportModal({
   const selectedFileRef = useRef<File | null>(null);
   const [activeImporter, setActiveImporter] = useState<Importer | null>(null);
   const [autoTag, setAutoTag] = useState(true);
+  // With Work open, an import goes into a new Work folder: an unfiled item is
+  // always in Personal, so otherwise it would seem to vanish.
+  // Spec: ops/issues/0471.md
+  const [destination, setDestination] = useState<ImportDestination>(
+    importTarget?.openSpace === 'work' ? 'new' : 'none',
+  );
   /** Obsidian only: also add each folder name as a tag. Folders are
    *  rebuilt regardless; this is extra tag-based navigation. Defaults on
    *  for free (folder actions are locked for them) and off for Pro. */
@@ -253,6 +272,13 @@ export function ImportModal({
   // Firefox tags and address-bar keywords. On by default: they are the
   // user's own labels, and dropping data silently is the worse default.
   const [browserTags, setBrowserTags] = useState(true);
+  // Notes too large to sync are cut at their headings unless the person
+  // unticks it in the preview. Spec: ops/docs/plans/note-size-limit.md
+  const [splitOversize, setSplitOversize] = useState(true);
+  const oversizeCount = useMemo(
+    () => (phase.kind === 'preview' ? phase.parsed.notes.filter(isOversizeImport).length : 0),
+    [phase],
+  );
   /** Contacts: whether the address book's photos come along. On by
    *  default, forced off when the estimate does not fit the quota. */
   const [importPhotos, setImportPhotos] = useState(true);
@@ -382,6 +408,12 @@ export function ImportModal({
     }
   }
 
+  function resolveDestination(importer: Importer): string | null {
+    if (!importTarget || destination === 'none') return null;
+    if (destination === 'new') return onCreateImportFolder?.(sourceLabel(importer, t)) ?? null;
+    return importTarget.folders.some((f) => f.id === destination.folderId) ? destination.folderId : null;
+  }
+
   async function handleConfirm() {
     if (phase.kind !== 'preview') return;
     const { importer, parsed } = phase;
@@ -400,10 +432,12 @@ export function ImportModal({
     // folder tree: merge it into settings so notes' folderId pointers
     // resolve, then derive folder tags per the toggle (see folderImport).
     let notesForApply = parsed.notes;
+    // A restore keeps the backup's own folders, so the row is for other apps.
+    const target = importer.id === 'privacynotes' ? null : resolveDestination(importer);
     if (parsed.folders && parsed.folders.length > 0) {
       // Merge the tree into settings (reusing existing folders) and remap
       // note folderIds to the ids that survived reconciliation.
-      const idMap = onImportFolders?.(parsed.folders, parsed.originalFolderIds);
+      const idMap = onImportFolders?.(parsed.folders, parsed.originalFolderIds, target);
       const remapped =
         idMap && idMap.size > 0
           ? parsed.notes.map((n) =>
@@ -426,6 +460,7 @@ export function ImportModal({
     } else if (parsed.settings) {
       onImportSettings?.(parsed.settings, new Map());
     }
+    notesForApply = fileUnfiled(notesForApply, target);
     notesForApply = withBrowserTags(notesForApply, browserTags);
     // A note color from the source (Google Keep) becomes a tag named after
     // the color, in the reader's language, and that tag takes the color:
@@ -441,6 +476,17 @@ export function ImportModal({
         return n.tags.includes(tag) ? n : { ...n, tags: [...n.tags, tag] };
       });
       if (colorTags.size > 0) onImportTagColors?.(colorTags);
+    }
+    if (splitOversize && notesForApply.some(isOversizeImport)) {
+      notesForApply = notesForApply.flatMap((n) =>
+        isOversizeImport(n)
+          ? splitImportedNote(
+              n,
+              (index, total) => t('preview.partTitle', { title: n.title || t('common:state.untitled'), index, total }),
+              (title) => t('preview.continuedIn', { link: `[[${title}]]` }),
+            )
+          : [n],
+      );
     }
     let parsedForApply =
       notesForApply === parsed.notes
@@ -659,6 +705,17 @@ export function ImportModal({
                   photoEstimate={photoEstimate}
                   importPhotos={importPhotos}
                   onImportPhotosChange={setImportPhotos}
+                  oversizeCount={oversizeCount}
+                  splitOversize={splitOversize}
+                  onSplitOversizeChange={setSplitOversize}
+                  destinationRow={importTarget && phase.importer.id !== 'privacynotes' && (
+                    <DestinationRow
+                      target={importTarget}
+                      newFolderName={sourceLabel(phase.importer, t)}
+                      value={destination}
+                      onChange={setDestination}
+                    />
+                  )}
                 />
               )}
 
@@ -742,6 +799,7 @@ export function ImportModal({
               onExportEncryptedZip={onExportEncryptedZip}
               onExportBookmarks={onExportBookmarks}
               onExportContacts={onExportContacts}
+              onExportCalendar={onExportCalendar}
               onExportVault={onExportVault}
             />
           )}
@@ -855,8 +913,10 @@ const IMPORT_ICON: Record<string, string> = {
   // asset as the /help guide tile and the homepage import pill.
   'browser-bookmarks': '/help/icons/browser-bookmarks.svg',
   'google-keep': '/help/icons/google-keep.svg',
+  'google-calendar': '/help/icons/google-calendar.svg',
   'apple-notes': '/help/icons/apple-notes.svg',
   'apple-journal': '/help/icons/apple-journal.webp',
+  'bear': '/help/icons/bear.webp',
   'evernote': '/help/icons/evernote.svg',
   'samsung-notes': '/help/icons/samsung-notes.webp',
   'simplenote': '/help/icons/simplenote.svg',
@@ -879,10 +939,13 @@ const GUIDE_SLUG: Record<string, string> = {
   'apple-journal': 'apple-journal',
   'browser-bookmarks': 'browser-bookmarks',
   'apple-notes': 'apple-notes',
+  'bear': 'bear',
   'bitwarden': 'bitwarden',
   'browser-passwords': 'browser-passwords',
   'evernote': 'evernote',
   'google-keep': 'google-keep',
+  'google-calendar': 'google-calendar',
+  'joplin': 'joplin',
   'markdown-folder': 'markdown',
   'typora': 'typora',
   'ia-writer': 'ia-writer',
@@ -930,8 +993,10 @@ const SOURCE_DESC_KEY: Record<string, string> = {
   'browser-bookmarks': 'sourceDesc.browserBookmarks',
   'vcard': 'sourceDesc.vcard',
   'google-keep': 'sourceDesc.googleKeep',
+  'google-calendar': 'sourceDesc.googleCalendar',
   'apple-notes': 'sourceDesc.appleNotes',
   'apple-journal': 'sourceDesc.appleJournal',
+  'bear': 'sourceDesc.bear',
   'evernote': 'sourceDesc.evernote',
   'samsung-notes': 'sourceDesc.samsungNotes',
   'simplenote': 'sourceDesc.simplenote',
@@ -1022,7 +1087,7 @@ function ImporterRow({ imp, onPick }: { imp: Importer; onPick: (imp: Importer) =
             className="flex flex-col items-center gap-1"
           >
             <BookOpenText size={18} aria-hidden="true" />
-            <span className="text-[11px] leading-none">{t('importPick.guideLabel')}</span>
+            <span className="max-w-full px-0.5 text-center text-[11px] leading-tight hyphens-auto break-words">{t('importPick.guideLabel')}</span>
           </HoverLabel>
         </a>
       )}
@@ -1037,7 +1102,7 @@ function ImportPickPhase({ onPick, autoTag, onAutoTagChange }: { onPick: (imp: I
   // Browser bookmarks leads on purpose; everything below it is
   // alphabetical. It is the only entry that is not a note app, and it is
   // the one people arrive looking for. Spec: ops/docs/plans/bookmarks-pillar.md
-  const noteIds = ['browser-bookmarks', 'vcard', 'apple-journal', 'apple-notes', 'evernote', 'google-keep', 'ia-writer', 'joplin', 'markdown-folder', 'nextcloud-notes', 'notesnook', 'obsidian', 'samsung-notes', 'simplenote', 'standard-notes', 'typora', 'upnote', 'zettlr'];
+  const noteIds = ['browser-bookmarks', 'vcard', 'apple-journal', 'apple-notes', 'bear', 'evernote', 'google-calendar', 'google-keep', 'ia-writer', 'joplin', 'markdown-folder', 'nextcloud-notes', 'notesnook', 'obsidian', 'samsung-notes', 'simplenote', 'standard-notes', 'typora', 'upnote', 'zettlr'];
 
   return (
     <div className="space-y-3">
@@ -1212,6 +1277,62 @@ function formatTypeCountsShort(notes: ImportedNote[]): string {
   return parts.map((p) => `${p.count} ${p.label}`).join(', ');
 }
 
+/** The "Add to" row: where the import puts its items. */
+function DestinationRow({
+  target,
+  newFolderName,
+  value,
+  onChange,
+}: {
+  target: ImportTarget;
+  newFolderName: string;
+  value: ImportDestination;
+  onChange: (v: ImportDestination) => void;
+}) {
+  const { t } = useTranslation('importExport');
+  const groups = destinationGroups(target.folders, target.spaceOf, target.openSpace);
+  const newSpace = target.openSpace ?? 'personal';
+  // A second import from the same source goes into the folder the first one
+  // made, so that folder is selected and no "New folder" is offered.
+  const existing = existingImportFolder(target, newFolderName);
+  const selected = value === 'new' && existing ? `f:${existing}` : typeof value === 'string' ? value : `f:${value.folderId}`;
+  const newOption = !existing && <option value="new">{t('destination.newFolder', { name: newFolderName })}</option>;
+  const folderOptions = (entries: (typeof groups)[number]['entries']) =>
+    entries.map((e) => (
+      <option key={e.id} value={`f:${e.id}`}>{'\u00a0\u00a0'.repeat(e.depth) + e.name}</option>
+    ));
+  return (
+    <div className="rounded-lg border border-divider p-3">
+      <label htmlFor="import-destination" className="text-sm font-medium">{t('destination.label')}</label>
+      <select
+        id="import-destination"
+        value={selected}
+        onChange={(e) => {
+          const v = e.target.value;
+          onChange(v === 'none' || v === 'new' ? v : { folderId: v.slice(2) });
+        }}
+        className="mt-1.5 w-full rounded-md bg-track border border-divider px-2.5 py-1.5 text-sm text-pn focus:border-accent focus:outline-none"
+      >
+        <option value="none">{t('destination.none')}</option>
+        {!target.spaceOf ? (
+          <>
+            {newOption}
+            {groups.flatMap((g) => folderOptions(g.entries))}
+          </>
+        ) : (
+          groups.map((g) => (
+            <optgroup key={g.space} label={t(`shell:spaces.${g.space}`)}>
+              {g.space === newSpace && newOption}
+              {folderOptions(g.entries)}
+            </optgroup>
+          ))
+        )}
+      </select>
+      <div className="text-xs text-pn-soft mt-1.5">{t('destination.help')}</div>
+    </div>
+  );
+}
+
 function PreviewPhase({
   importerLabel,
   parsed,
@@ -1223,6 +1344,10 @@ function PreviewPhase({
   photoEstimate,
   importPhotos,
   onImportPhotosChange,
+  oversizeCount = 0,
+  splitOversize,
+  onSplitOversizeChange,
+  destinationRow,
 }: {
   importerLabel: string;
   parsed: ParsedImport;
@@ -1234,6 +1359,11 @@ function PreviewPhase({
   photoEstimate?: PhotoEstimate | null;
   importPhotos?: boolean;
   onImportPhotosChange?: (v: boolean) => void;
+  /** Notes over the 1 MB sync limit, and the choice to cut them at headings. */
+  oversizeCount?: number;
+  splitOversize?: boolean;
+  onSplitOversizeChange?: (v: boolean) => void;
+  destinationRow?: ReactNode;
 }) {
   const { t } = useTranslation('importExport');
   const { stats, warnings, transforms, notes } = parsed;
@@ -1250,6 +1380,7 @@ function PreviewPhase({
   const showBrowserTags = notes.some((n) => (n.browserTags?.length ?? 0) > 0);
   const allLinks = notes.length > 0 && notes.every((n) => n.type === 'link');
   const allContacts = notes.length > 0 && notes.every((n) => n.type === 'contact');
+  const allEvents = notes.length > 0 && notes.every((n) => n.type === 'event');
   // Our own backups carry each note's id, and a restore matches it to the
   // copy the vault holds. A backup written before ids were carried adds
   // everything again, so it keeps the duplicates warning. Only the
@@ -1333,6 +1464,23 @@ function PreviewPhase({
               <span>{t}</span>
             </div>
           ))}
+        </div>
+      )}
+
+      {destinationRow}
+
+      {oversizeCount > 0 && onSplitOversizeChange && (
+        <div className="rounded-lg border border-amber-300 dark:border-amber-800 bg-amber-50/60 dark:bg-amber-950/20 p-3 space-y-2">
+          <div className="text-sm text-amber-800 dark:text-amber-300">{t('preview.oversize', { count: oversizeCount })}</div>
+          <label className="flex items-start gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={splitOversize ?? false}
+              onChange={(e) => onSplitOversizeChange(e.target.checked)}
+              className="h-4 w-4 mt-0.5 shrink-0 accent-accent"
+            />
+            <span className="text-sm font-medium">{t('preview.splitOversize', { count: oversizeCount })}</span>
+          </label>
         </div>
       )}
 
@@ -1454,7 +1602,9 @@ function PreviewPhase({
             ? t('preview.duplicateSkipNote')
             : allContacts
               ? t('preview.contactSkipNote')
-              : t('preview.duplicateWarning')}
+              : allEvents
+                ? t('preview.eventSkipNote')
+                : t('preview.duplicateWarning')}
       </SettingsCallout>
     </div>
   );
@@ -1520,6 +1670,7 @@ function ExportPanel({
   onExportVault,
   onExportBookmarks,
   onExportContacts,
+  onExportCalendar,
 }: {
   notes: LocalNote[];
   onExportAllMdZip: (ns: LocalNote[]) => void;
@@ -1530,8 +1681,10 @@ function ExportPanel({
   onExportVault: (ns: LocalNote[]) => void;
   onExportBookmarks: (ns: LocalNote[]) => void;
   onExportContacts: (ns: LocalNote[]) => void;
+  onExportCalendar: (ns: LocalNote[]) => void;
 }) {
   const { t } = useTranslation('importExport');
+  const hasCalendar = notes.some(goesToCalendarFile);
   const hasContacts = notes.some((n) => n.type === 'contact' && n.trashed !== 1);
   const hasVaultItems = notes.some(
     (n) => n.type === 'login' || n.type === 'card' || n.type === 'ssh-key',
@@ -1631,6 +1784,23 @@ function ExportPanel({
               description={t('export.contactsExportDesc')}
               glyph={<AddressBook size={20} aria-hidden="true" />}
               onClick={() => onExportContacts(notes)}
+            />
+          </div>
+        </div>
+      )}
+
+      {hasCalendar && (
+        <div>
+          <SectionEyebrow className="mb-1.5">
+            {t('export.calendarOnlyHeading')}
+          </SectionEyebrow>
+          <div className="space-y-1.5">
+            <ActionRow
+              setting="export.calendar"
+              title={t('export.calendarExportTitle')}
+              description={t('export.calendarExportDesc')}
+              glyph={<CalendarDots size={20} aria-hidden="true" />}
+              onClick={() => onExportCalendar(notes)}
             />
           </div>
         </div>

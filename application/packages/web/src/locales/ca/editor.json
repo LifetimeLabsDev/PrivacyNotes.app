@@ -92,7 +92,13 @@
       "goal": "Objectiu",
       "decision": "Decisió",
       "definition": "Definició",
-      "seealso": "Vegeu també"
+      "seealso": "Vegeu també",
+      "box": "Marc",
+      "panel": "Panell",
+      "update": "Actualització",
+      "time": "Temps",
+      "steps": "Passos",
+      "place": "Lloc"
     }
   },
   "color": {
@@ -123,6 +129,7 @@
     "addColumnRight": "Afegeix una columna a la dreta",
     "toggleHeaderRow": "Activa o desactiva la fila de capçalera",
     "equalColumnWidths": "Iguala les columnes",
+    "resizeHint": "Mantén premuda {{shift}} per canviar només aquesta columna, {{alt}} per a passos més fins",
     "deleteRow": "Suprimeix la fila",
     "deleteColumn": "Suprimeix la columna",
     "deleteTable": "Suprimeix la taula"
@@ -146,6 +153,8 @@
     "caseSensitiveTitle": "Distingeix majúscules i minúscules",
     "closeReplace": "Tanca cerca i substitueix",
     "closeReplaceTitle": "Tanca ({{keys}})",
+    "showReplace": "Cerca i substitueix",
+    "hideReplace": "Amaga la substitució",
     "replacedCount_one": "{{count}} substituïda",
     "replacedCount_many": "{{count}} substituïdes",
     "replacedCount_other": "{{count}} substituïdes"
@@ -156,7 +165,7 @@
     "title": "Esquema",
     "ariaLabel": "Esquema de la nota",
     "hide": "Amaga l'esquema",
-    "hideTitle": "Amaga l'esquema (Esc)",
+    "hideTitle": "Amaga l'esquema ({{keys}})",
     "copyHeadingLink": "Copia l'enllaç a l'encapçalament",
     "copyNoteLink": "Copia l'enllaç entre notes",
     "copyHeadingShortcut": "Copia la drecera a l'encapçalament",
@@ -169,6 +178,9 @@
   },
   "topRow": {
     "add": "Afegeix una línia a dalt"
+  },
+  "addLine": {
+    "add": "Afegeix una línia"
   },
   "link": {
     "popoverLabel": "Afegeix un enllaç",
@@ -209,7 +221,9 @@
     "tasksChecked_one": "{{done}} de {{formatted}} marcat",
     "tasksChecked_many": "{{done}} de {{formatted}} marcats",
     "tasksChecked_other": "{{done}} de {{formatted}} marcats",
-    "tooLargeToSync": ", potser és massa gran per sincronitzar-se, divideix-la en una nota nova",
+    "syncLimit": " · {{share}} del límit de sincronització d’1 MB",
+    "overSyncLimit": " · supera el límit de sincronització d’1 MB, es queda en aquest dispositiu",
+    "split": "Divideix la nota",
     "veryLong": ", molt llarga, pot anar lenta en editar-la i encallar-se",
     "gettingLong": ", es va fent llarga, pot anar lenta en dispositius més lents",
     "largeTableWarning": "Una taula gran ({{rows}} files) pot fer que aquesta nota vagi lenta en editar-la; considera dividir-la"
@@ -270,10 +284,13 @@
     "hintTap": "Toca un botó per veure’n les opcions.",
     "onBar": "A la barra",
     "inMenu": "Al menú +",
+    "inAttachMenu": "Al menú d’adjuntar",
+    "attachMenuEmpty": "És buit, per això el botó d’adjuntar no es mostra.",
     "menuEmpty": "El menú és buit, per això el botó + no es mostra.",
     "hidden": "Amagats",
     "hiddenNote": "Continuen funcionant amb la drecera i en Markdown.",
     "hiddenDrop": "Deixa anar un botó aquí per amagar-lo.",
+    "markdownViewNote": "La vista Markdown té el seu propi conjunt fix de botons.",
     "hiddenEmpty": "No hi ha res amagat.",
     "alwaysVisible": "Sempre visibles",
     "pinned": "Obre un tauler, així que es queda a la barra o amagat",
@@ -285,18 +302,23 @@
     "home": {
       "bar": "A la barra",
       "menu": "Al menú +",
+      "attachMenu": "Al menú d’adjuntar",
       "hidden": "Amagat"
     },
     "opensPanel": "obre un tauler",
     "showsRecording": "mostra l'enregistrament",
     "refuse": {
       "menuNotAllowed": "{{item}} pot ser a la barra o amagat, no al menú +.",
+      "attachNotAllowed": "Al menú d’adjuntar només hi caben els botons d’imatge, de fitxer i d’enregistrament.",
       "lastOnBar": "Deixa almenys un botó a la barra."
     },
     "items": {
       "link": "Enllaç",
       "notelink": "Enllaç entre notes",
-      "audio": "Enregistrament"
+      "audio": "Enregistrament",
+      "attachMenu": "Adjunta",
+      "separator": "Separador",
+      "markdownView": "Mostra el markdown"
     },
     "positionTitle": "Posició de la barra",
     "positionNote": "Tria on va la barra de format a l’editor.",

@@ -39,16 +39,29 @@
     "photosTooBig_one": "No hay espacio suficiente para la foto ({{size}}), así que se queda fuera. Todo lo demás se importa. Libera {{shortfall}}, o añade almacenamiento, e importa de nuevo para traerla.",
     "photosTooBig_other": "No hay espacio suficiente para las {{count}} fotos ({{size}}), así que se quedan fuera. Todo lo demás se importa. Libera {{shortfall}}, o añade almacenamiento, e importa de nuevo para traerlas."
   },
+  "importCalendar": {
+    "location": "Ubicación",
+    "videoCall": "Videollamada",
+    "organizer": "Organizador",
+    "guests": "Invitados",
+    "file": "Archivo",
+    "link": "Enlace",
+    "timeZone": "Zona horaria",
+    "ends": "Termina",
+    "repeats": "Se repite"
+  },
   "sourceDesc": {
     "googleKeep": "Archivo .zip de Google Takeout (carpeta Keep) o una sola nota .json. Las listas de tareas se importan como listas de tareas nativas.",
+    "googleCalendar": "El .zip de Settings > Import & export en Google Calendar, o un solo archivo .ics. Los eventos conservan sus horas, repeticiones y recordatorios.",
     "appleNotes": "Exporta con la app gratuita Exporter como Markdown y luego suelta el .zip aquí.",
     "appleJournal": "Exporta desde Diario en Mac o iPhone, comprime la carpeta AppleJournalEntries y suelta el .zip. Las entradas se importan como entradas de diario con sus fotos, vídeos, notas de voz y ubicaciones.",
     "evernote": "Un solo .enex, o varios dentro de un zip. Conserva el formato, las etiquetas, los adjuntos, los enlaces entre notas y los cuadernos. Evernote deja las tareas fuera del .enex.",
     "samsungNotes": "Exporta como Word (.docx) o Texto (.txt). Comprime varios archivos en un zip para importación masiva.",
     "simplenote": "Exporta desde Simplenote (Ajustes -> Herramientas -> Exportar notas). Suelta el .zip.",
-    "standardNotes": "Copia de seguridad descifrada .zip o .txt de Standard Notes (Archivo > Exportar > Descifrado).",
+    "standardNotes": "Copia de seguridad descifrada .zip o .txt de Standard Notes (Account settings > Backups > Data backups > Decrypted).",
     "obsidian": "Bóveda de Obsidian en .zip. Conserva etiquetas, [[note links]], estructura de carpetas, #tags en línea, e imágenes y archivos incrustados.",
     "notesnook": "Exportación de Notesnook como .zip. Elige HTML al exportar para conservar el formato, los cuadernos, las etiquetas y los adjuntos.",
+    "bear": "En Bear, elige File > Backup Notes... y suelta aquí el archivo .bear2bk. Vienen con él las etiquetas y las etiquetas anidadas, las notas fijadas, el archivo, la papelera, los resaltados con sus colores, los enlaces entre notas y los adjuntos.",
     "joplin": "El archivo .jex de File > Export all > \"JEX - Joplin Export File\". Los cuadernos se convierten en carpetas, y las etiquetas, las tareas pendientes, los enlaces entre notas y los adjuntos vienen con ellos.",
     "upnote": "En UpNote: Settings > Backup > Backup now, y luego comprime en un .zip todo lo que hay en la carpeta de backup. Conserva los cuadernos, las etiquetas, las notas fijadas, los enlaces entre notas, el formato y los adjuntos. Las exportaciones nota a nota desde las apps de móvil también funcionan: elige \"Export to HTML\".",
     "markdownFolder": "Archivos .md o .txt sueltos o dentro de un .zip. Una carpeta comprimida mantiene sus subcarpetas y trae sus imágenes y adjuntos.",
@@ -96,6 +109,12 @@
     "blobsNotInBackup_other": "Tus notas se restauraron, pero {{items}} que figuran en la copia de seguridad faltan en ella."
   },
   "preview": {
+    "oversize_one": "{{count}} nota supera 1 MB. Se queda en este dispositivo y no se sincroniza.",
+    "oversize_other": "{{count}} notas superan 1 MB. Se quedan en este dispositivo y no se sincronizan.",
+    "splitOversize_one": "Divide esta nota en notas más pequeñas por sus encabezados, para que se sincronice",
+    "splitOversize_other": "Divide estas {{count}} notas en notas más pequeñas por sus encabezados, para que se sincronicen",
+    "partTitle": "{{title}} ({{index}}/{{total}})",
+    "continuedIn": "Continúa en {{link}}",
     "sourceLabel": "Origen",
     "uniqueTags": "Etiquetas únicas",
     "empty": "Vacío",
@@ -107,6 +126,7 @@
     "duplicateWarning": "importar las añade como notas nuevas. Si lo ejecutas dos veces, tendrás duplicados. Aún no hay deduplicación automática.",
     "duplicateSkipNote": "los marcadores que ya guardaste se omiten, así que repetir esta importación no duplica nada.",
     "contactSkipNote": "las personas que ya guardaste se omiten y quedan como están, así que ejecutarlo dos veces no duplicará a nadie.",
+    "eventSkipNote": "los eventos que ya importaste se omiten y quedan como están, así que ejecutarlo dos veces no los duplicará.",
     "restoreMergeNote": "las notas de tu propia copia de seguridad se emparejan por identificador. Una nota que ya tienes solo se actualiza si la versión de la copia es más reciente, y una nota de tu papelera sale de ella.",
     "quotaExceeded": "<strong>Almacenamiento insuficiente para importar.</strong> Se estiman {{needed}} necesarios, {{available}} disponibles. Libera espacio o mejora tu plan antes de importar.",
     "quotaWarning": "Aviso: esta importación usará aproximadamente {{needed}} de tus {{available}} de almacenamiento restante.",
@@ -154,7 +174,11 @@
     "bookmarksExportDesc": "El archivo de marcadores estándar que lee cualquier navegador. Impórtalo en Chrome, Firefox, Safari o Edge con tus carpetas intactas.",
     "contactsOnlyHeading": "Solo contactos",
     "contactsExportTitle": "Archivo de contactos (.vcf)",
-    "contactsExportDesc": "El archivo vCard que lee cualquier teléfono y agenda. Impórtalo en iPhone, Android, Contactos de Google o Contactos en el Mac, con etiquetas y grupos intactos."
+    "contactsExportDesc": "El archivo vCard que lee cualquier teléfono y agenda. Impórtalo en iPhone, Android, Contactos de Google o Contactos en el Mac, con etiquetas y grupos intactos.",
+    "calendarOnlyHeading": "Solo calendario",
+    "calendarExportTitle": "Archivo de calendario (.ics)",
+    "calendarExportDesc": "Eventos y notas y listas de tareas con fecha, para Google Calendar, Apple Calendar u Outlook.",
+    "calendarPrivate": "Privado"
   },
   "exportProgress": {
     "failedTitle": "La exportación falló",
@@ -221,5 +245,11 @@
     "title_other": "Se compartieron {{count}} elementos con PrivacyNotes",
     "line": "No se guarda nada hasta que elijas.",
     "saveAll": "Guardar todo"
+  },
+  "destination": {
+    "label": "Añadir a",
+    "none": "Sin carpeta",
+    "newFolder": "Nueva carpeta \"{{name}}\"",
+    "help": "Las carpetas del origen se colocan dentro de la carpeta que elijas, y los elementos sin carpeta van a ella."
   }
 }

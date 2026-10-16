@@ -67,6 +67,7 @@ import {
 import { clearStoredSource, detectChannel, getStoredSource } from './campaignSource';
 import { clearPanelCache } from './accountPanelCache';
 import {
+  dropDoorsLeftBySignOut,
   removeBiometricCredential,
   removePinWrappedPhrase,
 } from './biometric';
@@ -118,7 +119,23 @@ import { logAuthEvent } from './authDiag';
 import { checkEarlySupporter, useProStatus } from './authProStatus';
 import { useCustody } from './authCustody';
 import { useOAuthFlows } from './authOAuth';
+import { isRefusedPhrase } from './refusedPhrases';
 import { accountOAuthFetch, detectAutomaticOAuthSession, supabaseAuthStorageKey } from './accountOAuth';
+
+const NATIVE_MOBILE = __PN_BUILD_PLATFORM__ === 'ios' || __PN_BUILD_PLATFORM__ === 'android';
+
+/** Take a phone's scheduled reminders off the OS (cancelDeviceReminders).
+ *  Only a phone hands reminders to the OS, so no other build loads the
+ *  module from here. A failure never stops the wipe that follows. */
+async function cancelPhoneReminders(): Promise<void> {
+  if (!NATIVE_MOBILE) return;
+  try {
+    const { cancelDeviceReminders } = await import('./notesView/useReminders');
+    await cancelDeviceReminders();
+  } catch {
+    /* the module did not load: nothing of the sign-out waits on it */
+  }
+}
 
 /**
  * "Trust this device" storage model:
@@ -743,6 +760,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
      * drops this tab to the signed-out screen and unmounts it.
      */
     const wipePriorLocalData = async () => {
+      // The prior account's reminders on a phone, while the map that names
+      // them exists: clearAccountScopedUiState below removes it.
+      await cancelPhoneReminders();
       await clearLocalDatabase();
       clearLocalSettings();
       clearCachedAccountFlags();
@@ -849,6 +869,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let mintedThisPass = false;
     let authUid: string | undefined;
     let accessToken: string | undefined;
+    // The auth user behind that session as last read. It says whether the
+    // link below can attach the phrase credential, which decides how the
+    // session continues after the link.
+    let linkedUser: { email?: string | null; is_anonymous?: boolean } | undefined;
     // Every session this pass creates: a mint, or the password grant after
     // the link. Recorded at creation, never re-read, because a session read
     // back later can be one another tab signed in meanwhile.
@@ -879,6 +903,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await revokeCreatedSession();
     };
 
+    // A refresh that failed on the network answers no session, and auth-js
+    // keeps the stored one for its next try. When that stored session passed
+    // a two-factor code for this vault, a mint would put an unverified one in
+    // its place and ask for the code again. A network failure is no verdict
+    // on it, so the pass fails as any offline pass does: this answers the
+    // error to throw, or null when a mint may go ahead. A stored session of
+    // another vault, or one that never passed a code, does not stop a mint.
+    // tests/authHandlers.test.ts (a verified two-factor session survives the handshake)
+    const verifiedSessionKept = (readError: { name?: string; message?: string } | null): Error | null => {
+      if (readError?.name !== 'AuthRetryableFetchError') return null;
+      const stored = trustAwareStorage.getItem(AUTH_STORAGE_KEY);
+      const storedToken = stored ? storedAccessToken(stored) : null;
+      if (!storedToken || jwtPayloadAal(storedToken) !== 'aal2' || jwtPayloadPubkey(storedToken) !== pubkey) return null;
+      logAuthEvent('auth:verified-session-kept');
+      return new Error(`Sign-in failed: ${readError.message}`);
+    };
+
     if (oauthSession) {
       // Trust the caller - session was already validated by getUser()
       // in hydrateFromOAuthSession or completeCustodyChoice.
@@ -905,6 +946,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!userCheckError && userCheck.user?.id) {
           authUid = userCheck.user.id;
           accessToken = cached.data.session.access_token;
+          linkedUser = userCheck.user;
         } else if (userCheckError?.name === 'AuthSessionMissingError') {
           // The session vanished between getSession and getUser (a
           // concurrent sign-out or wipe won the race - seen when HMR
@@ -945,12 +987,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           });
           authUid = cached.data.session.user.id;
           accessToken = cached.data.session.access_token;
+          linkedUser = cached.data.session.user;
         }
       } else {
         logAuthEvent('auth:no-cached-session', {
           name: cached.error?.name,
           message: cached.error?.message,
         });
+        const kept = verifiedSessionKept(cached.error);
+        if (kept) throw kept;
       }
     }
 
@@ -964,7 +1009,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // error) rather than returning a session; callers set mintedThisPass on
     // the result. Reused by the stale-token retry in the link step below.
     // Spec: ops/docs/design-decisions.md (phrase-derived auth credential)
-    const remintSession = async (): Promise<{ authUid: string; accessToken: string }> => {
+    const remintSession = async (): Promise<{ authUid: string; accessToken: string; user: typeof linkedUser }> => {
       if (!freshVault) {
         // Skipped when the caller KNOWS the vault is brand new: the
         // credential cannot exist yet, so the grant would be a guaranteed
@@ -979,6 +1024,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return {
             authUid: pwData.session.user.id,
             accessToken: pwData.session.access_token,
+            user: pwData.session.user,
           };
         }
         const pwCode = (pwError as { code?: string } | null)?.code ?? '';
@@ -1046,6 +1092,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return {
         authUid: signInData.session.user.id,
         accessToken: signInData.session.access_token,
+        user: signInData.session.user,
       };
     };
 
@@ -1063,6 +1110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const minted = await remintSession();
       authUid = minted.authUid;
       accessToken = minted.accessToken;
+      linkedUser = minted.user;
       mintedThisPass = true;
       createdSession = mfaSessionIdentity({ access_token: minted.accessToken, user: { id: minted.authUid } });
       createdToken = minted.accessToken;
@@ -1134,8 +1182,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       //    rotation-reuse, a sign-out in another tab, or an admin - while
       //    still unexpired locally, so getSession hands it over and only
       //    link-pubkey's own getUser catches it, returning 401 "invalid or
-      //    expired JWT". Mint a provably-fresh session from the phrase and
-      //    retry the link ONCE. Phrase-only: OAuth never reaches the
+      //    expired JWT". The same answer comes for a token the session has
+      //    already moved past: getUser above refreshes an expired token
+      //    after the read this pass captured, and a token can expire during
+      //    the retries. So the session is read again first. A newer token
+      //    of this vault is the device's own session, possibly one that
+      //    passed a two-factor code, and the link retries ONCE with it.
+      //    Only a token that comes back unchanged, or no session, is the
+      //    dead one: then mint a provably-fresh session from the phrase
+      //    and retry the link ONCE. Phrase-only: OAuth never reaches the
       //    cached-adopt branch and must never be re-minted anonymously.
       //
       // 2. FRESH TOKEN, TRANSIENT SERVER REFUSAL. A token minted THIS
@@ -1186,14 +1241,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (attempt > 0) break;
         const staleVerdict = isStaleTokenLinkError(linkError, linkBody);
         if (staleVerdict && !mintedThisPass && method !== 'oauth') {
-          // Failure shape 1: the cached token we adopted is dead
-          // server-side. Re-mint from the phrase and retry with a token
-          // we KNOW is live; register below then rides the same fresh
-          // session.
+          // Failure shape 1. A session that moved on since the capture is
+          // retried as it is; a refresh that failed on the network keeps a
+          // verified session of this vault (verifiedSessionKept).
+          // tests/authHandlers.test.ts (a verified two-factor session survives the handshake)
+          const current = await supabase.auth.getSession();
+          const now = current.data.session;
+          if (now && now.access_token !== accessToken && !sessionBelongsElsewhere(now, pubkey)) {
+            logAuthEvent('auth:link-stale-token-moved-on');
+            authUid = now.user.id;
+            accessToken = now.access_token;
+            linkedUser = now.user;
+            continue;
+          }
+          const kept = verifiedSessionKept(current.error);
+          if (kept) return failHandshake(kept);
+          // The cached token is dead server-side. Re-mint from the phrase
+          // and retry with a token we KNOW is live; register below then
+          // rides the same fresh session.
           logAuthEvent('auth:link-stale-token-remint');
           const minted = await remintSession();
           authUid = minted.authUid;
           accessToken = minted.accessToken;
+          linkedUser = minted.user;
           mintedThisPass = true;
           createdSession = mfaSessionIdentity({ access_token: minted.accessToken, user: { id: minted.authUid } });
           createdToken = minted.accessToken;
@@ -1233,6 +1303,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (fnCode === 'signups_paused') {
           return failHandshake(new Error(i18n.t('auth:signIn.signupsPaused')));
         }
+        // The server refuses phrases that are printed in public. A current
+        // client stops these before the network; this reaches a person when
+        // the server list is newer than the client's.
+        if (fnCode === 'phrase_refused') {
+          return failHandshake(new Error(i18n.t('auth:signIn.publicPhrase')));
+        }
         // Same treatment as the pause above: the raw function error says
         // nothing a person can act on, and waiting is the whole answer.
         if (fnCode === 'auth_rate_limited') {
@@ -1270,33 +1346,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // that nothing durable is left on the app host.
       if (freshVault) clearStoredSource();
 
-      // Pick up the new claim. Two paths on purpose:
-      // - Credential sent (phrase): a successful attach SET A PASSWORD
-      //   on this auth user, and GoTrue revokes the user's refresh
-      //   tokens on any password change - the anonymous session this
-      //   handshake is holding just died with it. refreshSession()
-      //   comes back "Refresh Token Not Found" (broke every
-      //   first-attach boot in live testing), so mint the post-link
-      //   session with the credential itself. When the attach did NOT
-      //   take (old function still deployed, provider toggle off, or
-      //   the email already lives on another auth user), the grant
-      //   fails, this session's refresh token was never revoked, and
-      //   the refreshSession() fallback works exactly as it always did.
+      // Pick up the new claim. The linked auth user decides how:
+      // - No credential yet (anonymous, no email, or unknown): the link
+      //   can attach one, which SETS A PASSWORD on this auth user, and
+      //   GoTrue revokes the user's refresh tokens on any password change
+      //   - the anonymous session this handshake is holding dies with it.
+      //   refreshSession() then comes back "Refresh Token Not Found"
+      //   (broke every first-attach boot in live testing), so mint the
+      //   post-link session with the credential itself. When the attach
+      //   did NOT take (old function still deployed, provider toggle off,
+      //   or the email already lives on another auth user), the grant
+      //   fails or signs in to the auth user that holds the credential; a
+      //   failed grant leaves the refreshSession() fallback, and this
+      //   session's refresh token was never revoked.
+      // - Credential already held: the link sets no password, so this
+      //   session goes on. A grant would replace it with a new session at
+      //   the first assurance level and ask a two-factor user for a code
+      //   on every daily link. It is kept as it is when its token already
+      //   carries this vault's claim, and refreshed when it does not.
       // - OAuth: no credential, no password change, plain refresh.
       // Spec: ops/docs/design-decisions.md (phrase-derived auth credential)
+      // tests/authHandlers.test.ts (a verified two-factor session survives the handshake)
+      const holdsCredential = Boolean(linkedUser?.email) || linkedUser?.is_anonymous === false;
       let sessionEstablished = false;
       if (method !== 'oauth' && !oauthSession) {
-        const { data: postLink, error: postLinkErr } =
-          await supabase.auth.signInWithPassword({
-            email: authEmailForPubkey(pubkey),
-            password: deriveAuthPassword(seed),
-          });
-        if (!postLinkErr && postLink.session?.access_token) {
-          accessToken = postLink.session.access_token;
-          authUid = postLink.session.user.id;
+        if (!holdsCredential) {
+          const { data: postLink, error: postLinkErr } =
+            await supabase.auth.signInWithPassword({
+              email: authEmailForPubkey(pubkey),
+              password: deriveAuthPassword(seed),
+            });
+          if (!postLinkErr && postLink.session?.access_token) {
+            accessToken = postLink.session.access_token;
+            authUid = postLink.session.user.id;
+            sessionEstablished = true;
+            createdSession = mfaSessionIdentity(postLink.session);
+            createdToken = postLink.session.access_token;
+          }
+        } else if (jwtPayloadPubkey(accessToken) === pubkey) {
           sessionEstablished = true;
-          createdSession = mfaSessionIdentity(postLink.session);
-          createdToken = postLink.session.access_token;
         }
       }
       if (!sessionEstablished) {
@@ -1310,7 +1398,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    // Verify after the final password grant: signing in again creates an
+    // Verify once the session is final: a password grant above creates an
     // AAL1 token. Never route a pending/dismissed challenge through the
     // cleanup in failHandshake. tests/mfaIntegration.test.ts.
     try {
@@ -1982,6 +2070,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         error: 'Invalid phrase. Check spelling and word order.',
       };
     }
+    if (await isRefusedPhrase(trimmed)) {
+      return { ok: false as const, error: i18n.t('auth:signIn.publicPhrase') };
+    }
     try {
       // Mark this as a user-initiated sign-in so a still-pending OAuth
       // hydration aborts instead of signing out / setAuth-ing over the
@@ -2169,6 +2260,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         /* storage unavailable: there is nothing to remove */
       }
       clearTabPinWrapCopy();
+      // A tab on an older bundle signs out without knowing every door this
+      // bundle writes (the bound biometric record came later), and the next
+      // start would open the signed-out account through the one it left. So
+      // this tab removes the doors it knows as well, on the same proof the
+      // boot asks for: a notice can be late or replayed by a tab that was
+      // frozen, and by then a newer sign-in can own the doors on disk.
+      dropDoorsLeftBySignOut();
       setAuth((prev) =>
         prev.status === 'authenticated' || prev.status === 'device_limit_reached'
           ? { status: 'onboarding' }
@@ -2416,6 +2514,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // the phrase between the two lines, and it lands where a full store
     // refused the first one, because the removals freed the room.
     announceSignOut();
+    // A phone's scheduled reminders carry this account's titles, and the OS
+    // rings them whoever is signed in. They go now, while the map that names
+    // them exists (the wipe below removes it), and no plan schedules behind
+    // them, because the live sign-in ended above.
+    await cancelPhoneReminders();
     // The flush below can outlive this function when it times out. Its
     // settings sync takes this stamp, which the notice at the end of the
     // sign-out makes stale, so a late answer writes nothing back.

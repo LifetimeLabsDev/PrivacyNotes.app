@@ -27,7 +27,8 @@
 import { Extension } from '@tiptap/core';
 import { DOMSerializer, Fragment, Slice, type Node as ProseMirrorNode, type ResolvedPos, type Schema } from '@tiptap/pm/model';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
-import { paragraphGapCss, readLineSpacing } from './theme';
+import type { EditorView } from '@tiptap/pm/view';
+import { paragraphGapCss, readLineSpacing, readPasteFormat } from './theme';
 import { END_BREAK_ATTR, LINES_ATTR, LINE_BREAK_ATTR, joinParagraphLines } from './paragraphLines';
 import { keepPaletteStyles } from './pasteStyles';
 
@@ -446,7 +447,146 @@ function styleCopiedParagraphs(root: HTMLElement | DocumentFragment, gap: string
       p.style.marginBottom = gap;
     }
     if (!p.hasChildNodes()) p.appendChild(p.ownerDocument.createElement('br'));
+    else if (p.querySelector('br') && /\S/.test(p.textContent ?? '') && !p.closest('li, td, th')) breaksInDiv(p);
   }
+}
+
+/**
+ * Marks a paragraph that leaves the app as a `<div>`. Google Keep on Android
+ * drops every `<br>` inside a `<p>`, so a paragraph of lines pasted there as
+ * one run-on line; inside a `<div>` it keeps them, and every other target
+ * draws the two the same. The paste half turns it back (`copiedParagraphsBack`).
+ */
+function breaksInDiv(p: HTMLParagraphElement): void {
+  const div = p.ownerDocument.createElement('div');
+  for (const at of Array.from(p.attributes)) div.setAttribute(at.name, at.value);
+  div.setAttribute(PARAGRAPH_ATTR, '');
+  div.append(...Array.from(p.childNodes));
+  p.replaceWith(div);
+}
+
+const PARAGRAPH_ATTR = 'data-pn-p';
+
+function copiedParagraphsBack(html: string): string {
+  if (!html.includes(PARAGRAPH_ATTR)) return html;
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  for (const div of Array.from(doc.body.querySelectorAll(`div[${PARAGRAPH_ATTR}]`))) {
+    const p = doc.createElement('p');
+    for (const at of Array.from(div.attributes)) if (at.name !== PARAGRAPH_ATTR) p.setAttribute(at.name, at.value);
+    p.append(...Array.from(div.childNodes));
+    div.replaceWith(p);
+  }
+  return doc.body.innerHTML;
+}
+
+/**
+ * The last copy that left as plain text alone, so a paste of it back into
+ * the app is the exact slice again. Plain text cannot say which `*` was
+ * typed and which is emphasis, or how many blank lines a capped run held.
+ */
+let lastPlainCopy: { text: string; slice: ReturnType<Slice['toJSON']> } | null = null;
+
+/** Whether `text` is the plain text of the app's last copy. */
+function ownPlainCopy(text: string): boolean {
+  return !!lastPlainCopy && lastPlainCopy.text === text;
+}
+
+/** Only lines of unformatted text: what a plain-text copy carries in full. */
+function isPlainLines(slice: Slice): boolean {
+  let plain = slice.content.childCount > 0;
+  slice.content.forEach((node) => {
+    if (node.type.name !== 'paragraph' || Object.values(node.attrs).some((v) => v != null)) plain = false;
+    node.forEach((child) => {
+      if (!(child.isText && child.marks.length === 0) && child.type.name !== 'hardBreak') plain = false;
+    });
+  });
+  return plain;
+}
+
+/**
+ * On Android a copy of plain lines carries the plain text alone. An HTML
+ * flavour beside it is read by whatever sits between the copy and the paste
+ * (Keep's own converter, a vendor's clipboard), and some of them turn every
+ * line break into a paragraph break, so one blank line arrived as three
+ * (GitHub #345). Plain text has nothing to convert, and it holds the whole
+ * of a copy that is only lines of text on Compact and Tight. Normal keeps
+ * the HTML, because its plain text marks a paragraph gap with a blank line,
+ * and a paste back into the app reads a run of them as one gap. Desktop keeps the HTML too: a word
+ * processor gives every pasted plain-text line its own paragraph spacing.
+ */
+function copyPlainLinesAsText(view: EditorView, event: ClipboardEvent, cut: boolean): boolean {
+  // ProseMirror's own cut refuses a read-only note, and this one runs first.
+  if (cut && !view.editable) return false;
+  if (!/android/i.test(navigator.userAgent) || !event.clipboardData || view.state.selection.empty) return false;
+  if (readLineSpacing() === 'normal') return false;
+  const slice = view.state.selection.content();
+  if (!isPlainLines(slice)) return false;
+  const text = view.someProp('clipboardTextSerializer', (f) => f(slice, view));
+  if (!text) return false;
+  event.preventDefault();
+  event.clipboardData.clearData();
+  event.clipboardData.setData('text/plain', text);
+  lastPlainCopy = { text, slice: slice.toJSON() };
+  if (cut) view.dispatch(view.state.tr.deleteSelection().scrollIntoView().setMeta('uiEvent', 'cut'));
+  return true;
+}
+
+/**
+ * Marks the HTML of a copy from this app, so Pasted text: Plain text can tell
+ * it from another ProseMirror editor's, which carries `data-pm-slice` too.
+ */
+const COPY_ATTR = 'data-pn-copy';
+
+/**
+ * The views in which Pasted text: Plain text is handing its text to
+ * ProseMirror, so the paste is placed by `placePlainPaste` and TipTap's paste
+ * rules never read it.
+ */
+const plainPasteRunning = new WeakMap<EditorView, boolean>();
+
+/**
+ * Settings > Editor > Pasted text: Plain text. Every paste from another app
+ * takes the path of a paste with Shift held: lines of text, no marks, no
+ * Markdown read. A copy from a note keeps its formatting. A file goes to the
+ * attachment handler and a picture to the picture handler, unless the clip
+ * also holds the text the picture shows (a spreadsheet's cells), which the
+ * picture handler leaves to the formatted paste. No event is passed on, so
+ * those handlers never see the clipboard of a paste that became text.
+ * Spec: ops/issues/0508.md (Spec)
+ */
+function pasteAsPlainText(view: EditorView, event: ClipboardEvent): boolean {
+  if (readPasteFormat() !== 'plain') return false;
+  const data = event.clipboardData;
+  const text = data?.getData('text/plain');
+  if (!data || !text || ownPlainCopy(text)) return false;
+  const html = data.getData('text/html');
+  const body = html ? new DOMParser().parseFromString(html, 'text/html').body : null;
+  if (body?.querySelector(`[${COPY_ATTR}]`)) return false;
+  const files = Array.from(data.files);
+  if (files.length > 0 && (files.some((f) => !f.type.startsWith('image/')) || !body?.textContent.trim())) return false;
+  event.preventDefault();
+  const outer = plainPasteRunning.get(view) ?? false;
+  plainPasteRunning.set(view, true);
+  try {
+    return view.pasteText(text);
+  } finally {
+    plainPasteRunning.set(view, outer);
+  }
+}
+
+/**
+ * Places the slice of a Plain text paste the way ProseMirror places a paste,
+ * but without its `uiEvent: 'paste'` mark: TipTap's paste rules read that mark
+ * and would turn a pasted `**word**` into bold, which plain text never asks for.
+ * It is the last `handlePaste` (`PlainPastePlacement`), so the table paste
+ * over selected cells and a link pasted over a selection still take theirs.
+ */
+function placePlainPaste(view: EditorView, slice: Slice): boolean {
+  if (!plainPasteRunning.get(view)) return false;
+  const single = slice.openStart === 0 && slice.openEnd === 0 && slice.content.childCount === 1 ? slice.content.firstChild : null;
+  const tr = single ? view.state.tr.replaceSelectionWith(single, true) : view.state.tr.replaceSelection(slice);
+  view.dispatch(tr.scrollIntoView().setMeta('paste', true));
+  return true;
 }
 
 /**
@@ -461,10 +601,24 @@ function spacedClipboardSerializer(schema: Schema): DOMSerializer {
     const out = base.serializeFragment(fragment, options, target);
     if (readLineSpacing() !== 'normal') joinParagraphLines(out as HTMLElement | DocumentFragment, true);
     styleCopiedParagraphs(out as HTMLElement | DocumentFragment, paragraphGapCss());
+    for (const el of Array.from((out as HTMLElement | DocumentFragment).children)) el.setAttribute(COPY_ATTR, '');
     return out;
   };
   return serializer;
 }
+
+const PlainPastePlacement = Extension.create({
+  name: 'plainPastePlacement',
+  priority: 1,
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        key: new PluginKey('plainPastePlacement'),
+        props: { handlePaste: (view, _event, slice) => placePlainPaste(view, slice) },
+      }),
+    ];
+  },
+});
 
 /**
  * Wires both halves into the editor. The paste half runs after the image sanitizer,
@@ -475,6 +629,9 @@ function spacedClipboardSerializer(schema: Schema): DOMSerializer {
 export const ClipboardSpacing = Extension.create({
   name: 'clipboardSpacing',
   priority: 1000,
+  addExtensions() {
+    return [PlainPastePlacement];
+  },
   addProseMirrorPlugins() {
     // Which text path the paste in progress took. ProseMirror names it in
     // transformPastedText and forgets it by transformPasted.
@@ -491,8 +648,27 @@ export const ClipboardSpacing = Extension.create({
         props: {
           clipboardSerializer: spacedClipboardSerializer(this.editor.schema),
           handleDOMEvents: {
-            paste(_view, event) {
-              pastedText = appleSeparatorsAsNewlines(event.clipboardData?.getData('text/plain') ?? '') || undefined;
+            copy: (view, event) => copyPlainLinesAsText(view, event, false),
+            cut: (view, event) => copyPlainLinesAsText(view, event, true),
+            paste(view, event) {
+              // ProseMirror refuses a paste into a read-only note only in its
+              // own handler, which runs after this one.
+              if (!view.editable) return false;
+              const data = event.clipboardData;
+              const inCode = !!view.state.selection.$from.parent.type.spec.code;
+              if (data && !inCode && !data.getData('text/html') && ownPlainCopy(data.getData('text/plain')) && lastPlainCopy) {
+                // Each editor builds its own schema, so the slice is rebuilt
+                // in this one's; a node of another schema fits nowhere. No
+                // paste mark on the step: the paste rules would read a typed
+                // `*word*` as emphasis, which an exact copy never does. Code
+                // takes ProseMirror's own paste, which keeps the text as code.
+                const own = Slice.fromJSON(view.state.schema, lastPlainCopy.slice);
+                event.preventDefault();
+                view.dispatch(view.state.tr.replaceSelection(own).scrollIntoView());
+                return true;
+              }
+              if (pasteAsPlainText(view, event)) return true;
+              pastedText = appleSeparatorsAsNewlines(data?.getData('text/plain') ?? '') || undefined;
               return false;
             },
           },
@@ -504,7 +680,7 @@ export const ClipboardSpacing = Extension.create({
             const breaks = html.replace(/\u2029/g, '<br><br>').replace(/\u2028/g, '<br>');
             const text = pastedText;
             pastedText = undefined;
-            return blankLinesInPastedHtml(splitCopiedLines(breaks), gapsWanted(view.state.selection.$from), text);
+            return blankLinesInPastedHtml(splitCopiedLines(copiedParagraphsBack(breaks)), gapsWanted(view.state.selection.$from), text);
           },
           transformPastedText(raw, plain, view) {
             textPath = plain ? null : 'markdown';

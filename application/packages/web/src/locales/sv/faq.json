@@ -78,8 +78,22 @@
     "import-from-other-apps": {
       "q": "Hur flyttar jag in mina anteckningar från en annan app?",
       "a": [
-        "Öppna Inställningar > Import & Export och välj din källa. Listan täcker de appar folk kommer från: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes och Apple Journal. Bitwarden och de lösenord webbläsaren sparat hamnar i Valvet, dina bokmärken kommer in som bokmärken, och en generell Markdown-import tar vilken mapp med .md-filer som helst.",
+        "Öppna Inställningar > Import & Export och välj din källa. Listan täcker de appar folk kommer från: Apple Notes, Bear, Obsidian, Evernote, Standard Notes, Joplin, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes och Apple Journal. Bitwarden och de lösenord webbläsaren sparat hamnar i Valvet, dina bokmärken kommer in som bokmärken, och en generell Markdown-import tar vilken mapp med .md-filer som helst.",
         "Importen körs helt på din enhet: dina exportfiler tolkas, krypteras och sparas lokalt, ingenting laddas upp för bearbetning. Varje importerad anteckning taggas med sin källa så att du kan gå igenom omgången efteråt, och checklistor från Google Keep blir till och med riktiga uppgiftslistor."
+      ]
+    },
+    "import-bear": {
+      "q": "Hur flyttar jag mina anteckningar från Bear till PrivacyNotes?",
+      "a": [
+        "Skapa en säkerhetskopia i Bear och importera den. Välj File > Backup Notes... i Bear och spara .bear2bk-filen. Öppna sedan Inställningar > Import & Export, välj Bear och släpp in filen. Säkerhetskopian innehåller hela ditt bibliotek, så arkiverade anteckningar och anteckningar i papperskorgen följer med, och fästa och skrivskyddade anteckningar behåller sitt läge.",
+        "Dina taggar kommer in som taggar, och nästlade taggar som #work/projects byggs också upp som mappar. Markeringar behåller sina Bear-färger, länkar mellan anteckningar blir anteckningslänkar, och bilder och bifogade filer importeras till din lagring. [Importguiden för Bear](/sv/help/import/bear/) visar varje steg."
+      ]
+    },
+    "import-joplin": {
+      "q": "Hur importerar jag mina anteckningar från Joplin?",
+      "a": [
+        "Exportera en JEX-fil från Joplin och importera den. Välj File > Export all > \"JEX - Joplin Export File\" i Joplin och spara filen. Öppna sedan Inställningar > Import & Export, välj Joplin och släpp in .jex-filen. Den senaste filen från Tools > Create backup fungerar på samma sätt.",
+        "Anteckningsböcker blir mappar, nästlade lika djupt som i Joplin, och varje anteckning behåller sina taggar och sina datum. To-dos blir uppgifter, länkar mellan anteckningar blir anteckningslänkar och bilagor importeras till din lagring. Joplin lämnar sin papperskorg utanför varje export, så återställ de anteckningar du vill ha från papperskorgen innan du exporterar. [Importguiden för Joplin](/sv/help/import/joplin/) visar varje steg."
       ]
     },
     "markdown-support": {
@@ -221,10 +235,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Jag har glömt min PIN. Hur kommer jag in igen?",
+      "q": "Jag har glömt min PIN eller lösenkod. Hur kommer jag in igen?",
       "a": [
-        "Inget går förlorat, och du kan ta bort PIN-koden själv med din återställningsfras. PIN-koden är ett lås på skärmen, inte en krypteringsnyckel: dina anteckningar krypteras med nycklar som härleds ur frasen, så det är frasen som öppnar dem. Att binda krypteringen till fyra siffror skulle betyda att en glömd PIN-kod förstör data. Här sker det aldrig.",
-        "Överallt där appen frågar efter PIN-koden väljer du **Glömt din PIN?** och skriver dina 12 ord. Den finns på låsskärmen, på en skyddad anteckning och under **Inställningar > Säkerhet > PIN**. PIN-koden tas bort på alla dina enheter och du kan ange en ny direkt. Biometrisk upplåsning påverkas inte."
+        "Inget går förlorat, och du kan ta bort PIN-koden eller lösenkoden själv med din återställningsfras. Det är ett lås på skärmen, inte en krypteringsnyckel: dina anteckningar krypteras med nycklar som härleds ur frasen, så det är frasen som öppnar dem. Att binda krypteringen till PIN-koden skulle betyda att en glömd PIN-kod förstör data. Här sker det aldrig.",
+        "Överallt där appen frågar efter den väljer du **Glömt din PIN?** eller **Glömt din lösenkod?** och skriver dina 12 ord. Den finns på låsskärmen, på en skyddad anteckning och under **Inställningar > Säkerhet > PIN**. Den tas bort på alla dina enheter och du kan ange en ny direkt. Biometrisk upplåsning påverkas inte. En enhet med en äldre version av appen frågar efter 4 siffror även när du har skapat en lösenkod. **Glömt din PIN?** fungerar på samma sätt där."
       ]
     },
     "delete-account": {
@@ -238,7 +252,7 @@
       "q": "Vad exakt synkas mellan mina enheter, och vad stannar lokalt?",
       "a": [
         "Allt du skulle förvänta dig, och allt krypterat på din enhet: anteckningar, uppgifter, dagboksinlägg, ditt valv och filerna i det. Dina inställningar följer också med - favorittaggar, sorterings- och vyval, färgtema, din PIN (som en saltad hash, aldrig själva PIN-koden), applås, uppsättning av mätvärden och mediciner samt automatisk tömning av papperskorgen. Ställ in något en gång så plockar varje enhet upp det.",
-        "Några saker stannar medvetet på enheten: ljust eller mörkt läge (varje enhet följer sin egen systeminställning), biometrisk upplåsning (bunden till varje enhets hårdvara) och ditt upplåsta läge (stänger du appen låses den alltid igen). Servern lagrar bara krypterade block och kan inte läsa något av dem."
+        "Några saker stannar medvetet på enheten: ljust eller mörkt läge (varje enhet följer sin egen systeminställning), biometrisk upplåsning (bunden till varje enhets hårdvara), vilket utrymme sidofältet visar och ditt upplåsta läge (stänger du appen låses den alltid igen). Servern lagrar bara krypterade block och kan inte läsa något av dem."
       ]
     },
     "offline": {
@@ -250,7 +264,7 @@
     "sync-conflicts": {
       "q": "Vad händer om jag redigerar samma anteckning på två enheter samtidigt?",
       "a": [
-        "Dina enheter slår ihop anteckningen detalj för detalj när de synkar igen, så en ändring som bara gjorts på en av dem behålls. Om båda har redigerat texten medan de var åtskilda (till exempel om en var offline) visar den enhet som synkar som nummer två en konfliktdialog: behåll versionen på den här enheten, behåll den andra eller behåll båda som separata anteckningar. Båda versionerna behålls tills du väljer.",
+        "Dina enheter slår ihop anteckningen detalj för detalj när de synkar igen, så en ändring som bara gjorts på en av dem behålls. Om båda har redigerat texten medan de var åtskilda (till exempel om en var offline) visar den enhet som synkar som nummer två en konfliktdialog: behåll versionen på den här enheten, behåll den andra eller behåll båda som separata anteckningar. Båda versionerna behålls tills du väljer. Om den andra enhetens version kommer in medan du skriver i anteckningen behålls din text som en kopia markerad med \"(conflict)\", och anteckningen visar den andra versionen.",
         "När båda enheterna har ändrat samma detalj medan de var åtskilda, till exempel om anteckningen är fäst, mappen eller titeln, behålls detaljen från den enhet som senast redigerade anteckningen, utan någon dialog. En anteckning som raderas permanent på en enhet raderas överallt, inklusive en ändring som en annan enhet gjorde i den medan de var åtskilda."
       ]
     },
@@ -359,7 +373,7 @@
     "buy-pro-anonymously": {
       "q": "Kan jag köpa Pro utan att avslöja vem jag är?",
       "a": [
-        "Ja, med två standardverktyg. För kvittot, använd ett e-postalias: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) och [addy.io](https://addy.io) vidarebefordrar alla till din riktiga inkorg utan att avslöja den. För betalningen, använd ett maskerat kort: [privacy.com](https://privacy.com) i USA skapar virtuella kort som fungerar med vilket namn du än skriver, och många banker och tjänster på annat håll ([Revolut](https://www.revolut.com), till exempel) erbjuder engångskort som gör samma jobb.",
+        "Ja, med två standardverktyg. För kvittot, använd ett e-postalias: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) och [addy.io](https://addy.io) vidarebefordrar alla till din riktiga inkorg utan att avslöja den. För betalningen, använd ett maskerat kort: [privacy.com](https://privacy.com) i USA skapar virtuella kort som fungerar med vilket namn du än skriver, och på andra håll gör ett förbetalt kort som fungerar online, köpt med kontanter, samma jobb helt utan namn på.",
         "I kassan ber Paddle om en e-postadress, ett betalsätt och ett land (plus postnummer i vissa regioner) för att räkna ut skatten. Aliaset tar emot kvittot, det maskerade kortet bär vilket namn du än gav det, och skatteuppgiften placerar dig i en region, inte mer. Men håll aliaset vid liv: kvittomejlet är ditt köpbevis och din väg till en återbetalning.",
         "Kombinerat med ett fraskonto är det ingen enskild part som sitter med hela bilden: din bank ser en kortpåfyllning, Paddle ser ett alias och ett maskerat kort, och vi ser en publik nyckel som blev Pro, bredvid det aliaset i vårt Paddle-konto."
       ]
@@ -402,7 +416,7 @@
     "languages": {
       "q": "Vilka språk talar appen?",
       "a": [
-        "Engelska, tyska, franska, italienska, spanska, nederländska, polska, tjeckiska, katalanska, turkiska, svenska, ukrainska, ryska, japanska, koreanska, traditionell kinesiska, thailändska, arabiska och portugisiska i både europeisk och brasiliansk variant. Appen följer ditt systemspråk som standard, eller så låser du ett språk uttryckligen under Inställningar > Språk på varje enhet.",
+        "Engelska, tyska, franska, italienska, spanska, nederländska, polska, tjeckiska, slovakiska, katalanska, turkiska, svenska, ukrainska, ryska, japanska, koreanska, traditionell kinesiska, thailändska, arabiska och portugisiska i både europeisk och brasiliansk variant. Appen följer ditt systemspråk som standard, eller så låser du ett språk uttryckligen under Inställningar > Språk på varje enhet.",
         "Översättningar är gratis för alla, ingen Pro-förmån. Fler språk är på gång; saknas ditt, säg till på [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) eller [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -424,7 +438,7 @@
       "q": "Hur fungerar uppgifter?",
       "a": [
         "Varje rad du skriver som - [ ] i en anteckning blir en uppgift, och vyn Uppgifter i sidofältet samlar dem alla på ett ställe. Bockar du av en uppgift där uppdateras anteckningen den bor i, och öppnar du en uppgift hoppar du till den anteckningen. Det finns ingen separat uppgiftsdatabas att underhålla: uppgifter är bara rader i dina anteckningar, krypterade som allt annat.",
-        "Snabbfältet högst upp i Uppgifter lägger till i en anteckning som heter Quick Tasks (skapas åt dig första gången), så det tar ett tangenttryck att fånga en lös att göra-punkt, inte ett arkiveringsbeslut. Samma vy erbjuder tre layouter (Blandad, Samlad, Lista), en växel för slutförda uppgifter och sökning bland uppgifter, och knappen Ny i vyn Alla kan starta en uppgiftsanteckning direkt."
+        "Snabbfältet högst upp i Uppgifter lägger till i en anteckning som heter Quick Tasks (skapas åt dig första gången), så det tar ett tangenttryck att fånga en lös att göra-punkt, inte ett arkiveringsbeslut. Samma vy erbjuder tre layouter (Blandad, Samlad, Lista), en växel för slutförda uppgifter och sökning bland uppgifter, och knappen + i vyn Alla kan starta en uppgiftsanteckning direkt."
       ]
     },
     "journal": {
@@ -488,8 +502,8 @@
     "biometric-unlock": {
       "q": "Biometrisk upplåsning slutade fungera. Vad kan jag göra?",
       "a": [
-        "Du blir aldrig utelåst. Låsskärmen erbjuder alltid en reservväg: ”Lås upp med PIN” eller ”Logga in med återställningsfras”. Biometrin är en lokal grind, inte en krypteringsnyckel, så dina anteckningar är orörda i vilket fall.",
-        "Fixa sedan grinden. Registreringen sker per enhet, så en ny telefon, en ny webbläsarprofil eller en ominstallation kräver ny registrering: Inställningar > Säkerhet > ”Lås”, stäng av, sedan ”Aktivera biometrisk upplåsning” igen. Det kräver också ”Lita på den här enheten” (sessioner på enheter du inte litar på rensas när fliken stängs) och hårdvara med en plattformsautentiserare (Touch ID, Face ID, Windows Hello). Om en lösenordshanterare som Bitwarden eller 1Password dyker upp i stället för systemdialogen, stäng den och försök igen, eller stäng av dess passkey-hantering för sajten - appen ber om den inbyggda autentiseraren, men vissa hanterare lägger sig i ändå."
+        "Du blir aldrig utelåst. Låsskärmen erbjuder alltid en reservväg: ”Lås upp med PIN” (”Lås upp med lösenkod” om du har ställt in en) eller ”Logga in med återställningsfras”. Biometrisk upplåsning öppnar bara kopian av din återställningsfras som är lagrad på den här enheten, och dina anteckningar är krypterade med nycklar från själva frasen, så de är orörda i vilket fall.",
+        "Ställ sedan in den igen. Om låsskärmen säger ”Biometrisk upplåsning kunde inte öppna dina anteckningar”, lås först upp på ett annat sätt. Registreringen sker per enhet, så en ny telefon, en ny webbläsarprofil eller en ominstallation kräver ny registrering: Inställningar > Säkerhet > ”Lås”, stäng av, sedan ”Aktivera biometrisk upplåsning” igen. Det kräver också ”Lita på den här enheten” (sessioner på enheter du inte litar på rensas när fliken stängs) och hårdvara med en plattformsautentiserare (Touch ID, Face ID, Windows Hello). Om en lösenordshanterare som Bitwarden eller 1Password dyker upp i stället för systemdialogen, stäng den och försök igen, eller stäng av dess passkey-hantering för sajten - appen ber om den inbyggda autentiseraren, men vissa hanterare lägger sig i ändå."
       ]
     },
     "phrase-compromised": {
@@ -647,7 +661,14 @@
       "q": "Hur hänger avsnitt, mappar, taggar och utrymmen ihop?",
       "a": [
         "Allt du sparar finns i ett enda bibliotek. Avsnitten i sidofältet, som Anteckningar, Valv och Dagböcker, är vyer av biblioteket efter typ. En mapp är en plats, så en mapp kan rymma en anteckning och inloggningen som hör till den, och mappträdet är detsamma i varje avsnitt. Siffrorna räknar det som det öppna avsnittet innehåller, och en mapp utan något därifrån visas nedtonad. En tagg är en etikett, och sidofältet listar bara de taggar som det öppna avsnittet använder.",
-        "Utrymmen delar biblioteket i Privat och Arbete och visar ett i taget. En mapp på översta nivån hör till ett utrymme, med allt innehåll, och **Flytta till Arbete** i dess meny flyttar över den. Ett objekt utan mapp hör till Privat, så allt du skapar i Arbete hamnar i en mapp i Arbete. Taggar är gratis, mappar och utrymmen kräver Pro."
+        "Utrymmen delar biblioteket i Privat och Arbete, och en mapp på översta nivån hör till ett utrymme, med allt innehåll. [Så fungerar utrymmen](/sv/help/spaces/) går igenom växlaren, hur du flyttar objekt mellan utrymmen och hur du stänger av utrymmen. Taggar är gratis, mappar och utrymmen kräver Pro."
+      ]
+    },
+    "spaces": {
+      "q": "Hur fungerar utrymmena Privat och Arbete?",
+      "a": [
+        "Utrymmen delar ditt bibliotek i Privat och Arbete. Växlaren bredvid **Gå till** i sidofältet visar **Alla**, **Privat** eller **Arbete**: Alla visar varje objekt, och de andra två visar ett utrymme var. Varje enhet behåller sitt eget val, så din telefon kan visa Privat medan din dator visar Arbete, och när du öppnar ett objekt från det andra utrymmet byter vyn till det. Utrymmen ändrar bara vad listorna visar: varje objekt synkas fortfarande till alla enheter.",
+        "En mapp på översta nivån hör till ett utrymme, med allt innehåll, och **Flytta till Arbete** eller **Flytta till Privat** i dess meny, eller i menyn för vilket objekt som helst, flyttar över den. Ett objekt utan mapp hör till Privat, och det gör också allt du skapar medan Alla är öppet. För att sluta använda utrymmen stänger du av Inställningar > Listor > Utrymmen: alla objekt visas, inget flyttas, och varje mapp behåller sitt utrymme till den dag du slår på det igen. Utrymmen kräver Pro."
       ]
     },
     "note-links": {
@@ -717,8 +738,8 @@
     "note-history": {
       "q": "Kan jag få tillbaka en äldre version av en anteckning?",
       "a": [
-        "Ja, med Pro. Öppna anteckningens \"...\"-meny och välj \"Historik\" för att bläddra bland och återställa upp till 20 tidigare versioner. Att återställa förlorar inget: den nuvarande texten sparas först som en version, så du kan kliva fram och tillbaka. Versionerna är krypterade som anteckningen själv, så vi kan inte läsa dem heller.",
-        "En ögonblicksbild tas som mest en gång i minuten, så två ändringar med sekunder emellan delar en version. Historiken är den enda Pro-funktionen som går via servern, och därför håller demon en egen lokal kopia i stället. Alla planer har dessutom [papperskorgen](/sv/help/trash-auto-delete/), som håller en raderad anteckning i 30 dagar."
+        "Ja, med Pro. Öppna anteckningens \"...\"-meny och välj \"Historik\" för att bläddra bland upp till 50 tidigare versioner, jämföra en av dem med den nuvarande anteckningen och återställa den. Att återställa förlorar inget: den nuvarande texten sparas först som en version, så du kan kliva fram och tillbaka. Versionerna är krypterade som anteckningen själv, så vi kan inte läsa dem heller.",
+        "Varje version är anteckningen så som den såg ut före en ändring: en sparas vid din första ändring efter en paus på fem minuter, en var tionde minut medan du fortsätter skriva, och en före en ändring som tar bort mer än hälften av en anteckning på 200 tecken eller fler, om inte den senaste versionen är yngre än 30 sekunder. Historiken är den enda Pro-funktionen som går via servern, och därför håller demon en egen lokal kopia i stället. Alla planer har dessutom [papperskorgen](/sv/help/trash-auto-delete/), som håller en raderad anteckning i 30 dagar."
       ]
     },
     "vault-totp": {
@@ -852,7 +873,7 @@
       "q": "Vad är funktionen Gå till, och vad kan den hitta?",
       "a": [
         "Funktionen Gå till hoppar till vad som helst via titeln. Tryck på Cmd+K på en Mac eller Ctrl+K på Windows och Linux (Cmd+P eller Ctrl+P fungerar också), eller klicka på **Gå till** i sidofältet eller i listans rubrik. Skriv en del av en titel för att hitta anteckningar, uppgifter, dagboksinlägg, objekt i Valv, bokmärken, kontakter, bifogade filer och inställningar. Enter öppnar objektet, och Option+Enter eller Alt+Enter öppnar det i en flik.",
-        "Skriv > först för att köra ett kommando i stället, till exempel skapa en ny anteckning eller gå till en sektion. För att hitta ord i din text i stället för i titlar väljer du raden **Sök överallt**, eller trycker på Cmd+Enter eller Ctrl+Enter från valfri rad. Matchningen sker på din enhet, så inget du skriver skickas till oss. Funktionen Gå till är gratis."
+        "Skriv > först för att köra ett kommando i stället, till exempel skapa en ny anteckning eller gå till en sektion. Skriv # först för att bara se dina taggar, eller / för att bara se dina mappar; när du väljer en filtreras listan på samma sätt som när du klickar i sidofältet. För att hitta ord i din text i stället för i titlar väljer du raden **Sök överallt**, eller trycker på Cmd+Enter eller Ctrl+Enter från valfri rad. Matchningen sker på din enhet, så inget du skriver skickas till oss. Funktionen Gå till är gratis."
       ]
     },
     "find-in-note": {
@@ -874,6 +895,27 @@
       "a": [
         "Ja. Öppna Inställningar > Konto > Konton och anslut Google, Apple eller GitHub för att lägga till ett inloggningssätt som öppnar samma valv. Du kan ansluta flera, till och med två konton från samma leverantör, och din återställningsfras fungerar fortfarande vid sidan av dem. Att ansluta eller koppla bort ett konto lämnar dina anteckningar och din kryptering orörda.",
         "Ett inloggningssätt som redan hör till ett annat valv kan inte anslutas, eftersom valv aldrig slås ihop. **Koppla bort** ber först om dina 12 ord. Om vi förvarar din fras åt dig stannar det sista anslutna kontot kvar tills du ansluter ett annat eller sparar din fras och byter till egen förvaring. Med egen förvaring ber en ny enhet fortfarande om dina 12 ord. Anslutna konton är i beta."
+      ]
+    },
+    "calendar": {
+      "q": "Finns det en kalender, och vad visas i den?",
+      "a": [
+        "Ja. Kalender i sidofältet visar alla objekt med ett datum på ett ställe: händelser, dagboksinlägg, anteckningar och uppgiftslistor med ett datum, och dina kontakters födelsedagar. Listan bredvid är agendan för de kommande dagarna, och den stora vyn växlar mellan Dag, Vecka och Månad. Klicka på en tom dag för att lägga till något där, eller dra ett objekt till en annan dag.",
+        "En händelse är en egen sorts objekt: en anteckning med en dag, en slutdag, en tid och en upprepning. Skriv en hel rad i Snabbtillägg, till exempel ”Tandläkare fre 15:00 1 tim före”, så läser den ut dagen, tiden och aviseringen åt dig. En anteckning eller en uppgiftslista kan också ha en dag, en tid och en slutdag, via raden Schema i dess ”...”-meny. Kalendern är gratis."
+      ]
+    },
+    "reminders": {
+      "q": "Fungerar kalenderpåminnelser när appen är stängd?",
+      "a": [
+        "På en telefon, ja: upp till 64 aviseringar, upp till 400 dagar framåt, lämnas över till själva telefonen, så de ringer även när PrivacyNotes är stängt; när du öppnar och låser upp appen lämnas fler över. I skrivbordsappen ringer en påminnelse medan appen körs, och i en webbläsare medan PrivacyNotes är öppet i en flik. Varje enhet planerar sina påminnelser utifrån de objekt den har, så servern får aldrig veta en titel, en tid eller en dag.",
+        "Lägg till en avisering från raden Avisering i ett objekts Schema-vy, upp till fem per objekt, och ställ in standardvärdena under Inställningar > Kalender, där även ”Visa titlar i påminnelser” finns. Ett objekt bakom din PIN ringer alltid som ”Påminnelse” och tiden, och det gör även varje avisering som schemaläggs medan applåset är på. En avisering som lämnades över innan låset var på kan behålla sin titel tills den ringer. Påminnelser ingår i Pro; själva kalendern är gratis."
+      ]
+    },
+    "calendar-time-zones": {
+      "q": "Vad händer med tiderna för händelser när jag reser till en annan tidszon?",
+      "a": [
+        "En tid i kalendern förblir den tid du skrev. En händelse kl. 15:00 visas och ringer kl. 15:00 var din enhet än befinner sig, på samma sätt som en påminnelse i en att göra-app, eftersom varje tid sparas som lokal tid utan tidszon. En telefon schemalägger varje avisering för ett exakt ögonblick, så efter ett byte av tidszon öppnar och låser du upp PrivacyNotes en gång i den nya zonen för att flytta dess aviseringar; medan appen är öppen och upplåst flyttar den dem själv.",
+        "För ett samtal med någon i en annan tidszon anger du tiden som den är där du befinner dig. Om ett byte till sommartid hoppar över timmen för en avisering ringer aviseringen den första minuten efter hoppet."
       ]
     },
     "session-expired": {

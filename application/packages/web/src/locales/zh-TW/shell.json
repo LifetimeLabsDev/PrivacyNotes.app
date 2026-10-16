@@ -8,7 +8,6 @@
     "title": "任務",
     "newTaskNote": "新增任務筆記",
     "newTaskNoteWithHotkey": "新增任務筆記（{{hotkey}}）",
-    "new": "新增",
     "hideCompleted": "隱藏已完成任務",
     "showCompleted": "顯示已完成任務",
     "searchPlaceholder": "搜尋任務…",
@@ -37,12 +36,9 @@
     "deselectAll": "取消全選",
     "selectAll": "全選",
     "storage": "儲存空間",
-    "supportedTypesHint": "檔案大小上限：{{max}} MB",
     "perFile": "單檔",
     "free": "免費",
     "upgradeToPro": "升級至 Pro",
-    "addStorage": "加購儲存空間",
-    "upToMax": "最高 {{max}}",
     "filterAll": "全部",
     "filterImages": "圖片",
     "filterAudio": "音訊",
@@ -115,6 +111,7 @@
     "video": "影片",
     "image": "圖片",
     "pdf": "PDF",
+    "email": "電子郵件",
     "archive": "壓縮檔",
     "document": "文件",
     "spreadsheet": "試算表",
@@ -187,7 +184,8 @@
     "markdown": "Markdown",
     "markdownTip": "未加密",
     "bookmarks": "書籤",
-    "contacts": "聯絡人"
+    "contacts": "聯絡人",
+    "calendar": "日曆"
   },
   "browseToggle": {
     "label": "瀏覽方式",
@@ -203,6 +201,9 @@
     "deleteConfirmTitle": "要刪除資料夾嗎？",
     "deleteConfirmBodyRoot": "「{{folder}}」將被刪除。其中的筆記與子資料夾會移到最上層。不會刪除任何筆記。",
     "deleteConfirmBodyNested": "「{{folder}}」將被刪除。其中的筆記與子資料夾會移到「{{parent}}」。不會刪除任何筆記。",
+    "deleteConfirmBranchRoot": "「{{folder}}」及其子資料夾將被刪除。其中的筆記會移到最上層。不會刪除任何筆記。",
+    "deleteConfirmBranchNested": "「{{folder}}」及其子資料夾將被刪除。其中的筆記會移到「{{parent}}」。不會刪除任何筆記。",
+    "deleteSubfolders_other": "同時刪除其中的 {{count}} 個子資料夾",
     "moveTo": "移至資料夾",
     "searchPlaceholder": "搜尋資料夾",
     "sortFolders": "排序資料夾",
@@ -220,7 +221,8 @@
     "saveName": "儲存資料夾名稱",
     "actionsForFolder": "資料夾 {{folder}} 的動作",
     "seedSecurity": "安全性",
-    "seedTravel": "旅行"
+    "seedTravel": "旅行",
+    "seedTeam": "團隊"
   },
   "collapsedSidebar": {
     "newNote": "新增筆記",
@@ -266,7 +268,19 @@
     "size": "使用空間：{{size}}",
     "sizeHint": "這個項目加密後的總大小。",
     "tagCount_other": "{{count}} 個標籤",
-    "entryDate": "日誌日期"
+    "entryDate": "日誌日期",
+    "noDate": "無",
+    "schedule": "排程",
+    "ends": "結束",
+    "sameDay": "同一天",
+    "allDay": "全天",
+    "starts": "開始",
+    "endsAt": "結束時間",
+    "noEnd": "無",
+    "removeFromCalendar": "從日曆移除",
+    "makeEvent": "改成活動就能重複",
+    "typeEvent": "活動",
+    "repeatRemoved": "重複設定會被移除"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "離開選取（Esc）",
@@ -301,6 +315,8 @@
     "showSize": "顯示檔案大小",
     "showTags": "顯示資料夾與標籤",
     "showCalendar": "顯示行事曆",
+    "showWorkItems": "顯示<b>工作</b>項目",
+    "showPersonalItems": "顯示<b>個人</b>項目",
     "other": "其他",
     "showReadOnly": "顯示唯讀",
     "showProtected": "顯示受保護",
@@ -329,7 +345,7 @@
     "nextMonth": "下個月",
     "dayWithEntry": "{{date}}，有日誌",
     "dayWithEntryIn": "{{date}}，「{{space}}」有日誌",
-    "dayWithEntryBoth": "{{date}}，「個人」和「工作」都有日誌",
+    "dayWithItems_other": "{{date}}，{{count}} 個項目",
     "previousWeek": "上一週",
     "nextWeek": "下一週",
     "showMonth": "{{month}}，顯示整個月",
@@ -372,11 +388,14 @@
     "copyBookmarkUrl": "複製網址",
     "editBookmark": "編輯書籤",
     "openInTab": "在分頁中開啟",
+    "openInTabHint": "{{key}}-點按",
     "closeTab": "關閉分頁",
     "closeOtherTabs": "關閉其他分頁",
     "closeAllTabs": "關閉所有分頁",
     "pinTab": "釘選分頁",
-    "unpinTab": "取消釘選分頁"
+    "unpinTab": "取消釘選分頁",
+    "newEvent": "新增活動",
+    "quickAdd": "快速新增"
   },
   "demoBanner": {
     "title": "零風險試用",
@@ -628,6 +647,9 @@
       "mastodon": "Mastodon"
     }
   },
+  "staleEditor": {
+    "copyToast": "這則筆記已在另一台裝置上變更。你的編輯已存入副本「{{title}}」。"
+  },
   "noteLinks": {
     "retargetedToast_other": "已將 {{count}} 個筆記連結更新為新標題。"
   },
@@ -636,7 +658,8 @@
   },
   "tabStrip": {
     "label": "已開啟的分頁",
-    "close": "關閉「{{title}}」"
+    "close": "關閉「{{title}}」",
+    "moreTabs": "更多分頁"
   },
   "shareInbox": {
     "saved": "已儲存到 PrivacyNotes",
@@ -665,10 +688,11 @@
   },
   "spaces": {
     "label": "空間",
+    "all": "全部",
     "personal": "個人",
     "work": "工作",
-    "moveToWork": "移到工作",
-    "moveToPersonal": "移到個人",
+    "moveToWork": "移到<b>工作</b>",
+    "moveToPersonal": "移到<b>個人</b>",
     "movedToWork": "已將 {{folder}} 移到工作",
     "movedToPersonal": "已將 {{folder}} 移到個人",
     "itemMovedToWork": "已移到工作",
@@ -677,6 +701,200 @@
     "switchedToPersonal": "已切換到個人",
     "switchToWork": "切換到工作",
     "switchToPersonal": "切換到個人",
+    "switchToAll": "顯示所有空間",
     "workEmpty": "「工作」是空的。在「個人」中打開項目或資料夾的選單，選擇「移到工作」。"
+  },
+  "calendar": {
+    "moveToToday": "移到今天",
+    "moveToTomorrow": "移到明天",
+    "moveToNextWeek": "移到下週",
+    "deleteEvent": "刪除活動",
+    "openContact": "開啟聯絡人",
+    "newOnDay": "在這一天新增活動",
+    "showDay": "顯示這一天",
+    "open": "開啟日曆",
+    "back": "日曆",
+    "more_other": "還有 {{count}} 個",
+    "addOn": "新增到 {{date}}",
+    "nothingFor_other": "{{count}} 天內沒有項目",
+    "nothingToday": "今天沒有項目",
+    "allDay": "全天",
+    "now": "現在",
+    "viewLabel": "日曆檢視",
+    "views": {
+      "day": "日",
+      "week": "週",
+      "month": "月"
+    },
+    "legendLabel": "在日曆上顯示",
+    "kinds": {
+      "event": "活動",
+      "note": "筆記",
+      "task": "任務清單",
+      "journal": "日誌紀錄",
+      "contact": "生日"
+    },
+    "dragEnd": "拖曳以變更結束日",
+    "previousDay": "前一天",
+    "nextDay": "後一天",
+    "seedWeeklyReview": "每週檢討",
+    "seedWeeklyReviewBody": "每週五下午四點。完成了什麼、延誤了什麼，以及下週要做什麼。",
+    "addToCalendar": "加入日曆",
+    "showAgenda": "顯示議程",
+    "hideAgenda": "隱藏議程",
+    "seedDemo": {
+      "lunch": "和山姆吃午餐",
+      "dentist": "看牙醫",
+      "callAna": "和安娜通話",
+      "groceries": "採買雜貨",
+      "concert": "音樂會",
+      "giftIdeas": "送給康的禮物點子",
+      "flight": "飛往里斯本的班機",
+      "conference": "里斯本研討會",
+      "nightTrain": "前往波多的夜車",
+      "yoga": "瑜伽",
+      "sprint": "衝刺規劃",
+      "bookClub": "讀書會",
+      "rent": "繳房租"
+    }
+  },
+  "repeat": {
+    "changeTitle": "要變更這個項目嗎？",
+    "deleteTitle": "要刪除這個項目嗎？",
+    "thisOccurrence": "只有這一次",
+    "thisAndFollowing": "這一次及之後",
+    "allOccurrences": "所有重複",
+    "label": "重複",
+    "never": "不重複",
+    "daily_other": "每 {{count}} 天",
+    "weekdays": "每個工作日（星期一到星期五）",
+    "weekly_other": "每 {{count}} 週的{{days}}",
+    "monthlyDay_other": "每 {{count}} 個月的第 {{day}} 天",
+    "monthlyNth_other": "每 {{count}} 個月的{{nth}}個{{weekday}}",
+    "yearly_other": "每 {{count}} 年的{{date}}",
+    "withUntil": "{{rule}}，直到 {{date}}",
+    "withCount_other": "{{rule}}，共 {{count}} 次",
+    "nth": {
+      "1": "第一",
+      "2": "第二",
+      "3": "第三",
+      "4": "第四",
+      "last": "最後一"
+    },
+    "custom": "自訂",
+    "every": "每",
+    "units": {
+      "day_other": "天",
+      "week_other": "週",
+      "month_other": "個月",
+      "year_other": "年"
+    },
+    "onDays": "於",
+    "onDay": "第 {{day}} 天",
+    "onNth": "{{nth}}個{{weekday}}",
+    "ends": "結束",
+    "endsNever": "永不",
+    "endsOn": "於某個日期",
+    "endsAfter": "重複一定次數後",
+    "times_other": "{{count}} 次",
+    "apply": "套用"
+  },
+  "alerts": {
+    "label": "提醒",
+    "none": "無",
+    "atTime": "準時",
+    "minutesBefore_other": "{{count}} 分鐘前",
+    "hoursBefore_other": "{{count}} 小時前",
+    "daysBefore_other": "{{count}} 天前",
+    "weeksBefore_other": "{{count}} 週前",
+    "onDayAt": "當天 {{time}}",
+    "daysBeforeAt_other": "{{count}} 天前的 {{time}}",
+    "custom": "自訂",
+    "add": "新增",
+    "max": "最多五個提醒。",
+    "units": {
+      "minutes": "分鐘",
+      "hours": "小時",
+      "days": "天",
+      "weeks": "週"
+    },
+    "at": "時間",
+    "remove": "移除 {{alert}}",
+    "reminder": "提醒",
+    "open": "開啟",
+    "snooze": "10 分鐘後再提醒",
+    "offOnPhone": "這支手機上的提醒已關閉",
+    "turnOn": "啟用",
+    "openSettings": "開啟設定"
+  },
+  "quickAdd": {
+    "group": "建立",
+    "items": "項目",
+    "createNamed": "{{type}}：{{title}}",
+    "types": {
+      "event": "新增活動",
+      "note": "新增筆記",
+      "task": "新增任務清單",
+      "journal": "新增日誌紀錄"
+    },
+    "keepAsText": "保留為文字",
+    "placeholder": "標題、日期、時間、重複...",
+    "example": "試試看：{{example}}",
+    "examples": {
+      "1": "看牙醫 週五 15:00 1小時 前",
+      "2": "每週檢討 每 週五 16:00-17:00",
+      "3": "打電話給銀行 明天 11:30 持續 30分鐘",
+      "4": "房租 每 月 1號 1天 前",
+      "5": "考試 3 天後 #學校",
+      "6": "任務 打包清單 週四 18:00"
+    },
+    "examplesGroup": "範例句子",
+    "syntax": {
+      "group": "可以輸入的內容",
+      "day": {
+        "label": "日期",
+        "examples": "明天 · 週五 · 下 週三 · 10月 31日 · 3 天後",
+        "insert": "明天"
+      },
+      "time": {
+        "label": "時間",
+        "examples": "15:00 · 15 點 · 16:00-17:00 · 在 9 點",
+        "insert": "15:00"
+      },
+      "length": {
+        "label": "長度",
+        "examples": "持續 30分鐘 · 持續 3天 · 週五 到 週日",
+        "insert": "持續 1小時"
+      },
+      "repeat": {
+        "label": "重複",
+        "examples": "每 週五 · 每 工作日 · 每 月 1號",
+        "insert": "每 週五"
+      },
+      "alert": {
+        "label": "提醒",
+        "examples": "1小時 前 · 提醒 10分鐘",
+        "insert": "1小時 前"
+      },
+      "place": {
+        "label": "資料夾和標籤",
+        "examples": "/旅行 · #學校",
+        "insert": "#"
+      },
+      "space": {
+        "label": "空間",
+        "examples": "@工作 · @個人",
+        "insert": "@工作"
+      },
+      "type": {
+        "label": "類型",
+        "examples": "任務 · 筆記 · 日誌（沒有輸入時就是活動）",
+        "insert": "任務"
+      }
+    },
+    "label": "快速新增"
+  },
+  "offline": {
+    "notLoaded": "你目前離線，App 的這個部分還沒載入。恢復連線後再試一次。"
   }
 }

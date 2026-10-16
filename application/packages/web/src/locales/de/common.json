@@ -38,7 +38,8 @@
   "storageBar": {
     "usage": "{{percent}} % belegt ({{used}} / {{max}})",
     "refresh": "Speicher aktualisieren",
-    "cleanupInfo": "Gelöschte Elemente zählen sofort nicht mehr mit. Die verschlüsselten Dateien selbst verschwinden innerhalb weniger Tage vom Server."
+    "cleanupInfo": "Gelöschte Elemente zählen sofort nicht mehr mit. Die verschlüsselten Dateien selbst verschwinden innerhalb weniger Tage vom Server.",
+    "open": "Speichereinstellungen öffnen"
   },
   "updateToast": {
     "available": "Update verfügbar",
@@ -93,7 +94,7 @@
   },
   "quickSwitcher": {
     "label": "Zu einem Eintrag oder einer Einstellung springen",
-    "jumpTo": "Gehe zu",
+    "jumpTo": "Springen",
     "placeholder": "Titel oder Einstellung eingeben, oder > für Befehle",
     "recent": "Zuletzt",
     "empty": "Kein Eintrag und keine Einstellung mit diesem Namen",
@@ -106,7 +107,24 @@
     "openInTab": "im Tab öffnen",
     "openLink": "Öffnen",
     "edit": "bearbeiten",
-    "close": "schließen"
+    "close": "schließen",
+    "tags": "Tags",
+    "folders": "Ordner",
+    "tagItems_one": "{{count}} Eintrag",
+    "tagItems_other": "{{count}} Einträge",
+    "emptyTags": "Kein Tag mit diesem Namen",
+    "emptyFolders": "Kein Ordner mit diesem Namen",
+    "onlyTags": "Tags",
+    "onlyFolders": "Ordner",
+    "showOnlyTags": "Nur Tags",
+    "showOnlyFolders": "Nur Ordner",
+    "showOnlyCommands": "Nur Befehle",
+    "goToTag": "Zu einem Tag springen",
+    "goToFolder": "Zu einem Ordner springen",
+    "createTag": "Tag #{{name}} erstellen",
+    "createFolder": "Ordner „{{name}}“ erstellen",
+    "newTag": "Neues Tag",
+    "newFolder": "Neuer Ordner"
   },
   "cardForm": {
     "cardholderName": "Karteninhaber",

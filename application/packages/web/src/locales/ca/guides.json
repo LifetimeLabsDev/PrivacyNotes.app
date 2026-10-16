@@ -10,6 +10,43 @@
     "otherGuides": "Altres guies d'importació"
   },
   "guides": {
+    "google-calendar": {
+      "app": "Google Calendar",
+      "title": "Exporta el teu Google Calendar",
+      "metaTitle": "Exportar Google Calendar - PrivacyNotes",
+      "lead": "Google Calendar exporta tots els calendaris que gestiones en un sol .zip des de la configuració, en un ordinador. PrivacyNotes llegeix aquest .zip tal com és, sense necessitat de descomprimir res.",
+      "sections": [
+        {
+          "h": "Exporta tots els calendaris alhora",
+          "steps": [
+            "Obre [Google Calendar](https://calendar.google.com) en un navegador d'un ordinador. L'aplicació del mòbil no té exportació.",
+            "Fes clic a la roda dentada de dalt a la dreta i després a «Settings» (configuració).",
+            "A la llista de l'esquerra, fes clic a «Import & export».",
+            "Sota «Export», fes clic a «Export». El navegador baixa un .zip amb un fitxer .ics per a cada calendari.",
+            "Deixa el .zip tal com és."
+          ],
+          "p": [
+            "El .zip conté tots els calendaris on tens el permís «Make changes and manage sharing», el teu inclòs. Els calendaris que només pots veure, com els de festius o el d'un company, no hi són. En un compte de feina o de centre educatiu, l'administrador pot restringir l'exportació."
+          ]
+        },
+        {
+          "h": "O exporta un sol calendari",
+          "steps": [
+            "A la llista de l'esquerra, sota «My calendars», posa el cursor sobre el nom del calendari, fes clic a «More» (els tres punts) i després a «Settings and sharing».",
+            "Sota «Calendar settings», fes clic a «Export calendar». El navegador baixa un .zip que conté el fitxer .ics d'aquell calendari. Deixa'l tal com és."
+          ]
+        },
+        {
+          "h": "Què hi arriba",
+          "p": [
+            "Cada esdeveniment arriba amb el seu dia, la seva hora i la seva durada, també els que duren diversos dies. Els esdeveniments que es repeteixen conserven la seva regla, i una ocurrència que hagis mogut o suprimit a Google continua moguda o suprimida. Cada calendari es converteix en una carpeta.",
+            "Els recordatoris que has posat en un esdeveniment també hi arriben, els de correu inclosos: es converteixen en recordatoris de l'app, que necessiten PrivacyNotes Pro per sonar. Un esdeveniment que feia servir els recordatoris predeterminats del calendari arriba sense cap, perquè Google no escriu els valors predeterminats al fitxer. El lloc, l'enllaç de la videotrucada, els convidats i la descripció van al text de l'esdeveniment. Les hores es mostren tal com eren en aquest dispositiu quan vas importar.",
+            "Un sol fitxer .ics de qualsevol aplicació de calendari també funciona, Apple Calendar i Outlook inclosos.",
+            "Si més endavant importes el mateix fitxer una altra vegada, els esdeveniments que ja hi són s'ometen, així que només s'afegeixen els nous."
+          ]
+        }
+      ]
+    },
     "google-keep": {
       "app": "Google Keep",
       "title": "Exporta les teves notes de Google Keep",
@@ -63,6 +100,40 @@
         }
       ]
     },
+    "bear": {
+      "app": "Bear",
+      "title": "Exporta les teves notes de Bear",
+      "metaTitle": "Exportar les notes de Bear - PrivacyNotes",
+      "lead": "Bear exporta tota la teva biblioteca en un sol fitxer de còpia de seguretat, i aquest és el fitxer que has de portar: conté totes les notes, amb l'arxiu i la paperera inclosos.",
+      "sections": [
+        {
+          "h": "Fes una còpia de seguretat de Bear",
+          "steps": [
+            "Obre Bear al teu Mac.",
+            "Tria File > Backup Notes...",
+            "Desa el fitxer. Obtens un sol fitxer .bear2bk que conté tota la teva biblioteca.",
+            "Deixa anar aquest .bear2bk tal com és."
+          ]
+        },
+        {
+          "h": "La còpia de seguretat porta més que una exportació",
+          "p": [
+            "File > Export Notes... escriu només les notes de la vista que tens oberta, així que les notes arxivades i les de la paperera es queden fora. La còpia de seguretat les porta totes, i recorda quines notes eren fixades, arxivades, a la paperera o de només lectura.",
+            "Si només tens una exportació en Markdown o en Text Bundle, comprimeix-la en un zip i deixa anar el zip. El teu text, les etiquetes i els adjunts hi arriben, però l'arxiu, la paperera i les notes fixades no, perquè aquestes exportacions mai no ho escriuen.",
+            "Exportes de Bear a mà? Selecciona almenys dues notes. Una sola nota obre un full de desament que pot donar al fitxer una extensió equivocada."
+          ]
+        },
+        {
+          "h": "Què hi arriba",
+          "p": [
+            "Les teves etiquetes arriben com a etiquetes. Les etiquetes niades com #work/projects es reconstrueixen també com a carpetes, i cada nota va a la carpeta de la seva etiqueta més profunda. Els enllaços entre notes es converteixen en enllaços entre notes, i un enllaç a un encapçalament apunta a aquest encapçalament.",
+            "El format sobreviu: encapçalaments, negreta, cursiva, subratllat, ratllat, ressaltats amb els colors de Bear, llistes de tasques, taules, blocs de codi, citacions, requadres destacats, matemàtiques i notes al peu. Les imatges s'obren a tota l'amplada, i els encapçalaments plegats arriben desplegats.",
+            "Les notes fixades continuen fixades, les notes arxivades van a l'arxiu, les notes de la paperera van a la paperera, les notes de només lectura continuen de només lectura, i cada nota conserva les seves dates originals.",
+            "Les imatges i els fitxers adjunts a les teves notes s'importen al teu emmagatzematge. Una nota que apunta a un fitxer que la còpia de seguretat no porta s'importa igualment, i la previsualització de la importació t'indica a quants enllaços afecta."
+          ]
+        }
+      ]
+    },
     "obsidian": {
       "app": "Obsidian",
       "title": "Exporta el teu vault d'Obsidian",
@@ -92,21 +163,21 @@
       "app": "Standard Notes",
       "title": "Exporta les teves notes de Standard Notes",
       "metaTitle": "Exportar una còpia de Standard Notes - PrivacyNotes",
-      "lead": "Standard Notes ofereix una exportació de còpia de seguretat desxifrada, i aquest és el fitxer que PrivacyNotes llegeix. Un detall important abans de començar: ha de ser la variant desxifrada, no pas la xifrada.",
+      "lead": "Standard Notes exporta el teu compte com una sola còpia de seguretat desxifrada. Hi porta les notes Super amb la seva formatació, a més de les llistes de control, les etiquetes i els codis 2FA.",
       "sections": [
         {
           "h": "Exporta les notes des de Standard Notes",
           "steps": [
             "Obre Standard Notes (la web a app.standardnotes.com o l'aplicació d'escriptori) i inicia la sessió.",
-            "Obre les preferències i després la secció «Backups».",
-            "Baixa una còpia de seguretat de les dades i tria el format desxifrat quan t'ho demani.",
+            "Fes clic a la icona del compte, a baix a l'esquerra, i després a «Account settings» > «Backups».",
+            "A «Data backups», tria «Decrypted» i fes clic a «Download backup». Aquest únic fitxer conté totes les notes, també les notes Super.",
             "Obtens un .zip que conté un fitxer anomenat «Standard Notes Backup and Import File.txt». Deixa el zip tal com és."
           ]
         },
         {
           "h": "Les notes Super, les llistes de control i els codis 2FA mantenen la forma",
           "p": [
-            "Les notes Super mantenen els encapçalaments, les llistes, les llistes de control, les taules, els blocs de codi, els colors i les seccions plegables. Les llistes de control van a Tasques, els fulls de càlcul es converteixen en taules i les entrades de l'autenticador es converteixen en inicis de sessió a la Caixa forta, amb la seva clau 2FA. Les etiquetes niades es converteixen en carpetes, i cada nota conserva també les seves etiquetes.",
+            "Les notes Super mantenen la formatació: encapçalaments, llistes, llistes de control, taules, blocs de codi, ressaltats, colors, alineació del text i seccions plegables. Un enllaç a una altra nota es converteix en un enllaç entre notes, i un #hashtag dins del text es converteix en una etiqueta de la nota. Les llistes de control van a Tasques, els fulls de càlcul es converteixen en taules i les entrades de l'autenticador es converteixen en inicis de sessió a la Caixa forta, amb la seva clau 2FA. Les etiquetes niades es converteixen en carpetes, i cada nota conserva també les seves etiquetes.",
             "Els fitxers que vas pujar a Standard Notes es queden al seu servidor, així que la còpia només en guarda els noms. Cada nota importada marca on hi havia un fitxer. Baixa aquests fitxers de Standard Notes i torna'ls a afegir a la nota."
           ]
         },
@@ -444,6 +515,47 @@
           "h": "Si falten imatges o fitxers",
           "p": [
             "Una còpia de seguretat feta abans de marcar «Backup attachments» no conté cap fitxer, i la previsualització de la importació t'avisarà que hi ha notes que fan referència a adjunts que la còpia no porta. Si passa, cancel·la, activa l'opció a UpNote, torna a fer clic a «Backup now», comprimeix la carpeta nova i importa aquesta."
+          ]
+        }
+      ]
+    },
+    "joplin": {
+      "app": "Joplin",
+      "title": "Exporta les teves notes de Joplin",
+      "metaTitle": "Exportar les notes de Joplin en JEX - PrivacyNotes",
+      "lead": "Joplin exporta totes les llibretes alhora en un sol fitxer JEX. Hi porta les teves notes amb les seves llibretes, etiquetes, tasques pendents, enllaços entre notes i adjunts.",
+      "sections": [
+        {
+          "h": "Exporta-ho tot com a JEX",
+          "steps": [
+            "Obre Joplin al teu ordinador.",
+            "Tria File > Export all > «JEX - Joplin Export File».",
+            "Desa el fitxer. Obtens un sol fitxer .jex que conté totes les llibretes, així que no hi ha res per comprimir.",
+            "Deixa anar aquest .jex tal com és."
+          ],
+          "p": [
+            "Tools > Create backup escriu el mateix fitxer, byte per byte, com a all_notebooks.jex dins d'una carpeta JoplinBackup a la teva carpeta personal. Si Joplin ja et fa aquestes còpies de seguretat, la més recent funciona igual de bé."
+          ]
+        },
+        {
+          "h": "Tria JEX, no pas Markdown, HTML ni PDF",
+          "p": [
+            "Export all també ofereix MD, MD + Front Matter, HTML directory i PDF. Són còpies fetes per llegir-les en altres aplicacions. El fitxer JEX és el registre propi de Joplin de cada nota, llibreta, etiqueta i adjunt, i és el que llegim. Si hi deixes anar una de les altres exportacions, t'ho direm en lloc d'importar-ne només una part.",
+            "Si ja has exportat «RAW - Joplin Export Directory», comprimeix aquesta carpeta en un zip i deixa anar el zip. Conté els mateixos elements que el fitxer JEX."
+          ]
+        },
+        {
+          "h": "Treu les notes de la paperera abans d'exportar",
+          "p": [
+            "Joplin deixa la paperera fora de totes les exportacions i de totes les còpies de seguretat. Treu de la paperera qualsevol nota que vulguis conservar abans d'exportar, o es quedarà a Joplin."
+          ]
+        },
+        {
+          "h": "Què hi arriba",
+          "p": [
+            "Les teves llibretes es reconstrueixen com a carpetes de debò, niades tan endins com les va niar Joplin, i cada nota conserva les seves etiquetes i les dates de creació i d'actualització que et mostrava Joplin.",
+            "Les tasques pendents es converteixen en notes de tasques amb una casella que pots marcar, ja marcada si la tasca estava feta, i una data de venciment es queda escrita al costat del títol. Els enllaços entre notes es converteixen en enllaços entre notes. Les imatges i els adjunts s'importen al teu emmagatzematge i es queden al seu lloc dins de la nota. Les notes desades com a HTML, com ara molts retalls web, es converteixen amb la seva formatació.",
+            "Les notes de la llibreta Conflicts de Joplin arriben etiquetades «conflict», perquè les puguis trobar i ordenar. Si fas servir el xifratge de Joplin, deixa que acabi de desxifrar abans d'exportar: un element que encara és xifrat s'omet, i la previsualització de la importació t'indica quants n'hi ha."
           ]
         }
       ]

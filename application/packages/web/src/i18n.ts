@@ -36,6 +36,7 @@ export const SUPPORTED_LOCALES = [
   'zh-TW',
   'ca',
   'cs',
+  'sk',
   'tr',
   'sv',
   'ar',
@@ -217,6 +218,9 @@ const FALLBACK_BEFORE_ENGLISH: Record<string, string[]> = {
   // no entry on purpose, and falls to English: which language a Belarusian
   // reader wants is not ours to assume. Mirrored in normalizeLocale.
   kk: ['ru'],
+  // Slovak reads Czech before English: the two languages are mutually
+  // intelligible, so a key the Slovak catalog lacks is closer in Czech.
+  sk: ['cs'],
 };
 
 /**

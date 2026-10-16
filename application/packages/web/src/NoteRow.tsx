@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { activeLocale } from './languages';
 import type { LocalNote } from './db';
 import type { ListPrefs } from './listPrefs';
-import { deriveDisplayTitle, deriveExcerpt, editedAtOf, emptyExcerptLabel, entryDayOf, rowSizeLabel, fileCount, noteLinkName } from './notesViewUtils';
+import { deriveDisplayTitle, deriveExcerpt, editedAtOf, emptyExcerptLabel, entryDayOf, journalDateOf, rowSizeLabel, fileCount, noteLinkName } from './notesViewUtils';
 import { formatDay, formatInstant, useDateFormatKey } from './intlFormat';
 import { noteLinkTarget } from './noteLinks';
 import { setItemDragImage, writeItemDrag, type ItemDragPayload } from './itemDrag';
@@ -13,7 +13,7 @@ import { parseLoginBody, domainFromUrl } from './LoginForm';
 import { parseLinkBody, linkDomain } from './linkBody';
 import { contactHue, contactInitials, contactInitialsFor, parseContactBody } from './contactBody';
 import { loadEncryptedImageUrl } from './EncryptedImage';
-import { Archive, Book, CheckSquare, File, Image, MusicNotes, Key, CreditCard, Lock, Globe, BookmarkSimple, User, type Icon } from './icons';
+import { Archive, Book, CalendarDots, CheckSquare, File, Image, MusicNotes, Key, CreditCard, Lock, Globe, BookmarkSimple, User, type Icon } from './icons';
 import { useFolderName } from './folderNames';
 import { ChipFilterContext } from './chipFilter';
 import { sortTags } from './notesRepo';
@@ -119,17 +119,20 @@ export function useNoteItem(p: NoteRowProps): ListItem {
   // date line names that day.
   const created = sortAwareDate && listPrefs.sortField === 'created';
   const entryDay = entryDays && created && n.type === 'journal';
-  const dateLabel = entryDay ? t('noteRow.entryDate') : created ? t('noteRow.created') : t('noteRow.modified');
+  // A note or a task list attached to a day names that day in place of the stamp.
+  // Spec: ops/docs/plans/note-date.md
+  const noteDay = n.type === 'note' || n.type === 'task' ? journalDateOf(n) : null;
+  const dateLabel = noteDay ? t('noteRow.date') : entryDay ? t('noteRow.entryDate') : created ? t('noteRow.created') : t('noteRow.modified');
   // A new date setting or language formats the date again without a remount.
   const dateFormatKey = useDateFormatKey();
   const dates = useMemo(() => {
-    if (entryDay) {
-      const day = formatDay(entryDayOf(n), 'tile');
+    if (noteDay || entryDay) {
+      const day = formatDay(noteDay ?? entryDayOf(n), 'tile');
       return { row: day, tile: day };
     }
     const at = created ? n.createdAt : editedAtOf(n);
     return { row: formatInstant(at, 'row'), tile: formatInstant(at, 'tile') };
-  }, [n, created, dateFormatKey, entryDay]);
+  }, [n, created, dateFormatKey, entryDay, noteDay]);
 
   const flags: ItemFlag[] = [];
   if (pushFailure) flags.push('notBackedUp');
@@ -142,6 +145,7 @@ export function useNoteItem(p: NoteRowProps): ListItem {
     id: n.id,
     icon: <RowIcon note={n} isVault={isVault} isFile={n.type === 'file'} isJournal={n.type === 'journal'} hasTasks={n.type === 'task'} trashTint={trashTint} locked={locked} />,
     glyph: <CardGlyph type={n.type} domain={faviconDomain} />,
+    compactIcon: <CompactPicture note={n} domain={faviconDomain} hidden={trashTint || locked} />,
     title: displayTitle,
     preview: listPrefs.showPreview && !locked
       ? { text: excerpt || emptyExcerptLabel(n), long: listPrefs.longPreview, dir: 'auto' }
@@ -326,6 +330,10 @@ function RowIcon({ note, isVault, isFile, isJournal, hasTasks, trashTint, locked
   } else if (isJournal) {
     bg = 'bg-purple-100/80 dark:bg-purple-900/30';
     text = 'text-purple-600 dark:text-purple-400';
+  } else if (note.type === 'event') {
+    // theme-ok: the event teal, a fixed hue like the journal purple
+    bg = 'bg-teal-100/80 dark:bg-teal-900/30';
+    text = typeGlyph('event').color;
   } else if (hasTasks) {
     bg = 'bg-emerald-100/80 dark:bg-emerald-900/30';
     text = 'text-success';
@@ -336,7 +344,7 @@ function RowIcon({ note, isVault, isFile, isJournal, hasTasks, trashTint, locked
 
   return (
     <span className={`shrink-0 w-7 h-7 rounded-md ${bg} flex items-center justify-center ${text} mt-px`}>
-      {isJournal ? <Book size={ROW_ICON_PX} /> : hasTasks ? <CheckSquare size={ROW_ICON_PX} /> : <File size={ROW_ICON_PX} />}
+      {isJournal ? <Book size={ROW_ICON_PX} /> : note.type === 'event' ? <CalendarDots size={ROW_ICON_PX} /> : hasTasks ? <CheckSquare size={ROW_ICON_PX} /> : <File size={ROW_ICON_PX} />}
     </span>
   );
 }
@@ -553,7 +561,7 @@ export function TagChips({ tags, folderId }: { tags: string[]; folderId?: string
       : undefined;
   const pickable = filter ? ' pn-chip-pick cursor-pointer transition' : '';
   return (
-    <div data-slot="tags" className="mt-1.5 flex flex-wrap gap-1">
+    <div data-slot="tags" className="mt-1 md:mt-1.5 flex flex-wrap gap-1">
       {folderName && folderId && (
         <span
           data-slot="folder"
@@ -627,6 +635,32 @@ function CardFavGlyph({ type, domain }: { type: LocalNote['type']; domain: strin
   );
 }
 
+/** The size of the picture a Compact row keeps in place of the 28px chip. */
+const COMPACT_PICTURE_PX = 16;
+
+/** A Compact row's picture: a bookmark's or a login's site icon, or a
+ *  contact's photo. Nothing for any other item, behind the PIN, in the
+ *  trash, or while the site icon is missing (the demo, site icons off). */
+function CompactPicture({ note, domain, hidden }: { note: LocalNote; domain: string; hidden: boolean }) {
+  if (hidden) return null;
+  if (note.type === 'contact') {
+    const photo = parseContactBody(note.body).photo;
+    return photo ? <ContactChip name={note.title} photo={photo} size={COMPACT_PICTURE_PX} tile /> : null;
+  }
+  return domain ? <CompactSiteIcon domain={domain} /> : null;
+}
+
+/** A site icon at the Compact row size, gone while it has not loaded. */
+export function CompactSiteIcon({ domain }: { domain: string }) {
+  const [missing, setMissing] = useState(false);
+  const onMissing = useCallback((m: boolean) => setMissing(m), []);
+  return (
+    <span className="shrink-0 inline-flex" style={missing ? { display: 'none' } : undefined} aria-hidden="true">
+      <Favicon domain={domain} size={COMPACT_PICTURE_PX} onMissing={onMissing} />
+    </span>
+  );
+}
+
 /** The small glyph and its color for each item type, shared by the mini grid
  *  tile and the tab strip so the two cannot name a type differently. */
 export function typeGlyph(type: LocalNote['type']): { Icon: Icon; color: string } {
@@ -640,6 +674,10 @@ export function typeGlyph(type: LocalNote['type']): { Icon: Icon; color: string 
   } else if (type === 'task') {
     Icon = CheckSquare;
     color = 'text-success';
+  } else if (type === 'event') {
+    // theme-ok: a fixed hue like the journal purple, the same in every theme.
+    Icon = CalendarDots;
+    color = 'text-teal-600 dark:text-teal-400';
   } else if (type === 'card') {
     Icon = CreditCard;
     color = 'text-warning';

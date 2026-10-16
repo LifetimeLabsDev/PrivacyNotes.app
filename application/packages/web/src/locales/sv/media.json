@@ -15,6 +15,8 @@
     "notFound": "Bilden hittades inte",
     "saveFailed": "Det gick inte att spara, så filen kan vara tom eller ofullständig.",
     "viewAria": "Visa bild",
+    "copyAria": "Kopiera bild",
+    "copyFailed": "Det gick inte att kopiera bilden.",
     "picturesLeftOut": "Vissa bilder lades inte till. Kopiera en bild för sig för att klistra in den."
   },
   "attachment": {
@@ -56,6 +58,17 @@
     "pageCount_one": "{{count}} sida",
     "pageCount_other": "{{count}} sidor",
     "pageLabel": "{{name}}, sida {{page}} av {{count}}"
+  },
+  "mail": {
+    "loading": "Öppnar e-post...",
+    "failed": "Det går inte att läsa det här e-postmeddelandet. Ladda ner det för att öppna det i en annan app.",
+    "from": "Från",
+    "to": "Till",
+    "cc": "Kopia",
+    "date": "Datum",
+    "noSubject": "(Inget ämne)",
+    "empty": "Det här e-postmeddelandet har ingen text.",
+    "attachments": "Bilagor"
   },
   "picker": {
     "title": "Bilder i Filer",

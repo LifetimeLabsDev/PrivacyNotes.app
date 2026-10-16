@@ -32,7 +32,8 @@ import { Color } from '@tiptap/extension-color';
 import { FontSize } from '@tiptap/extension-text-style/font-size';
 import { FontFamily } from '@tiptap/extension-text-style/font-family';
 import { TextSelection, type EditorState } from '@tiptap/pm/state';
-import { Fragment } from '@tiptap/pm/model';
+import { Fragment, type Node as ProseMirrorNode } from '@tiptap/pm/model';
+import { splitIndex } from './noteSplit';
 import { Markdown, type MarkdownStorage } from 'tiptap-markdown';
 
 // TipTap 3 types editor.storage as an empty augmentable interface instead of a
@@ -46,7 +47,7 @@ declare module '@tiptap/core' {
 }
 import { invisibleCharacterBuilders, LazyInvisibleCharacters } from './editorInvisibles';
 import { FaviconChips, refreshFavicons } from './editorFavicons';
-import { EncryptedImage, sanitizePastedHtml } from './EncryptedImage';
+import { EncryptedImage, isPictureSelection, sanitizePastedHtml } from './EncryptedImage';
 import { ClipboardSpacing } from './clipboardSpacing';
 import { EncryptedAttachment, holdsOneFile, requestAttachmentRename } from './EncryptedAttachment';
 import { WikiLink } from './NoteLink';
@@ -62,6 +63,7 @@ import {
 } from './icons';
 import { Spoiler } from './editorSpoiler';
 import { InlineCodeCopy, inlineCodeHint } from './editorCodeCopy';
+import { AddLineBetweenBlocks } from './editorAddLine';
 import { LinkModifierOpen, MarkdownLinkTyping, SelfLinkTyping, linkHrefAt, linkSelectionIfUrl, openLinkHref } from './editorLinks';
 import { createLongPressGuard } from './softKeyboard';
 import { planLineSort } from './sortLines';
@@ -76,6 +78,7 @@ import { OutlinePanel } from './OutlinePanel';
 import { TableControls } from './TableControls';
 import { Toolbar } from './EditorToolbar';
 import { useEditorPanels } from './useEditorPanels';
+import { NodeViewMount } from './editorNodeViewMount';
 import { APP_KEYS, matchesKey } from './shortcutMatch';
 import { useDebouncedMarkdownSave } from './useDebouncedMarkdownSave';
 import {
@@ -85,6 +88,7 @@ import {
   TaskItemMobileSafe,
   fixEmptyTaskItems,
   collapseMediaGaps,
+  cleanEmptyTaskItems,
   CodeBlockPlainCopy,
   lowlight,
   CodeBlockWithCopy,
@@ -106,6 +110,7 @@ import {
   indentText,
   NbspParagraphCleaner,
   MixedListSplitter,
+  clipboardRenderer,
   markdownForClipboard,
   replaceBodyUndoably,
 } from './editorExtensions';
@@ -157,6 +162,8 @@ type Props = {
    * keeps under its scrolling column. Nothing is drawn until it exists.
    */
   toolbarSlot?: HTMLElement | null;
+  /** The format bar's "Show markdown"; absent where the note has no Markdown view. */
+  onShowMarkdown?: () => void;
   /**
    * Called when a file chip in this note is renamed and that note's name
    * lives outside the document too. Only fires for a note holding exactly
@@ -172,6 +179,9 @@ type Props = {
   /** Whether a ticked task moves below the open ones (the synced
    *  `sinkCheckedTasks` setting). Defaults to on. */
   sinkCheckedTasks?: boolean;
+  /** Called once with the editor after it is created. The history
+   *  comparison adds its decorations through it. */
+  onReady?: (editor: TipTapEditor) => void;
 };
 
 /**
@@ -187,7 +197,6 @@ type Props = {
  */
 export type EditorHandle = {
   focus: () => void;
-  toggleTaskList: () => void;
   /** Open the find-in-note bar, or close it if it is already open. The
    *  corner magnifier and Cmd/Ctrl+F share this one action. */
   toggleFind: () => void;
@@ -220,6 +229,9 @@ export type EditorHandle = {
   /** Put a rewritten body in as one undoable step (replaceBodyUndoably).
    *  False when this editor cannot take it, the history preview included. */
   replaceBody: (md: string) => boolean;
+  /** The note as two Markdown halves for "Split note", cut at `splitIndex`
+   *  (noteSplit.ts) from the cursor. Null when the note cannot be divided. */
+  splitParts: () => { head: string; tail: string } | null;
   /** Serialize and save any pending debounced edit NOW, synchronously.
    *  The editor-mode toggle calls this before it swaps editors: the
    *  unmount flush runs after the replacement has already rendered, so
@@ -232,7 +244,7 @@ export type EditorHandle = {
 const TOUCH_HANDLE_HEIGHT = 32;
 
 const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }>(function EditorInner(
-  { value, onChange, readOnly = false, onFocusChange, toolbarVisible = true, isPro = false, onOpenUpgrade, noteId, cachedDoc, hideEncryptedMedia, onInsertFiles, bodyControls, toolbarSlot, onRenameFile, fileNote = false, preview = false, sinkCheckedTasks = true },
+  { value, onChange, readOnly = false, onFocusChange, toolbarVisible = true, isPro = false, onOpenUpgrade, noteId, cachedDoc, hideEncryptedMedia, onInsertFiles, bodyControls, toolbarSlot, onShowMarkdown, onRenameFile, fileNote = false, preview = false, sinkCheckedTasks = true, onReady },
   ref
 ) {
   const { t } = useTranslation('editor');
@@ -380,11 +392,13 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     if (touch && !href) return;
     if (!href) {
       // Only a click inside a selection that existed before it gets the app
-      // menu. A caret, an empty line and a word keep the browser menu, with
-      // its spelling, Look Up and Paste. Spec: ops/issues/0414.md
+      // menu. A caret, an empty line, a word and a selected picture keep the
+      // browser menu, with its spelling, Look Up, Paste and Copy image.
+      // Spec: ops/issues/archive/0414.md, ops/issues/0488.md
       const before = preClickRef.current;
       const sel = before?.selection;
       if (!before || !sel || sel.empty || before.doc !== ed.state.doc || at.pos < sel.from || at.pos > sel.to) return;
+      if (isPictureSelection(sel)) return;
       if (!ed.state.selection.eq(sel)) ed.view.dispatch(ed.state.tr.setSelection(sel));
       linkMenu.open(e, selectionMenuItems(ed));
       return;
@@ -627,6 +641,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       // ||spoiler|| mark, blurred until the caret or a click shows it.
       Spoiler,
       InlineCodeCopy,
+      AddLineBetweenBlocks,
       // <sup>/<sub> marks (Mod+. / Mod+,). Same inline-HTML round-trip.
       Superscript,
       // Subscript keeps its toolbar button but loses its default Mod-,
@@ -661,6 +676,8 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       // Website icons on links. Decorations only, and only for icons that
       // actually downloaded - see editorFavicons.
       FaviconChips,
+      // One draw of the note on mount instead of two - see editorNodeViewMount.
+      NodeViewMount,
       Markdown.configure({
         html: true,
         breaks: true,
@@ -700,18 +717,23 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         // engine's, not ours)
         ...(spellcheck ? {} : { spellcheck: 'false' }),
       },
-      // Copying to another app: the note's markdown, with its line breaks
-      // written as two trailing spaces instead of a backslash. tiptap-markdown
+      // Copying to another app: lines of unformatted text as they show, and
+      // anything else as the note's markdown, with its line breaks written as
+      // two trailing spaces instead of a backslash and only the escapes its
+      // text needs (editorClipboard.ts). tiptap-markdown
       // supplies this prop too, and editorProps is consulted before any
       // plugin, so this wins; an empty string falls back to its version, which
       // is what the first paint before the editor lands would get.
       clipboardTextSerializer: (slice) => {
-        // `serializer` is real but missing from tiptap-markdown's published
+        // `serializer` and `parser` are real but missing from tiptap-markdown's published
         // types, which declare getMarkdown() alone - and getMarkdown() is no
         // use here, because it serializes the whole note rather than the
         // selection. Hence the cast.
         const md = editorRef.current?.storage.markdown as
-          | { serializer?: { serialize(content: Fragment): string } }
+          | {
+              serializer?: { serialize(content: Fragment): string };
+              parser?: Parameters<typeof clipboardRenderer>[0];
+            }
           | undefined;
         const ser = md?.serializer;
         if (!ser) return '';
@@ -722,6 +744,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           (fragment) => ser.serialize(fragment),
           readLineSpacing() !== 'normal',
           readCopyFormat(),
+          md.parser ? clipboardRenderer(md.parser) : undefined,
         );
       },
       // Sort the pictures of pasted HTML: ours stay, the ones whose bytes the
@@ -764,7 +787,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         // Fix: GitHub #204 (extra blank line pasting from the keyboard clipboard)
         beforeinput: (view, event) => {
           const input = event as InputEvent;
-          if (input.inputType !== 'insertText' || !input.data?.includes('\n')) return false;
+          if (!view.editable || input.inputType !== 'insertText' || !input.data?.includes('\n')) return false;
           // Drop the blank lines the selection happened to start and end on.
           // They are an artifact of how the text was picked up, not content
           // anyone asked for, and on this path a blank line is a real empty
@@ -841,6 +864,12 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
   });
   endEditorCreate();
 
+  useEffect(() => {
+    if (editor && onReady) onReady(editor);
+    // Once per editor instance; a new callback identity is not a new editor.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editor]);
+
   // Sync readOnly prop to TipTap's editable state. The editor is keyed by
   // note id so it doesn't remount when `locked` toggles - this effect
   // makes prevent-editing take effect immediately.
@@ -900,6 +929,8 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     closeBar,
     toggleFind,
     toggleReplace,
+    swapBar,
+    swapTerm,
   } = useEditorPanels({ rootRef, editorRef, editor, isMobile, readOnly, preview, toolbarVisible, isPro, onOpenUpgrade });
 
   /**
@@ -1016,10 +1047,6 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     ref,
     () => ({
       focus: () => editor?.commands.focus(),
-      toggleTaskList: () => {
-        editor?.commands.focus();
-        editor?.commands.toggleTaskList();
-      },
       toggleFind,
       toggleReplace,
       scrollToFile: (uuid: string) => {
@@ -1074,11 +1101,23 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       clearSearchHighlight: closeSeededFind,
       getEditor: () => editor,
       replaceBody: (md: string) => !preview && replaceBodyUndoably(editor, md),
+      splitParts: () => {
+        if (!editor || preview || readOnly) return null;
+        const { doc } = editor.state;
+        const index = splitIndex(doc, editor.state.selection.head);
+        if (index === null) return null;
+        let cut = 0;
+        for (let i = 0; i < index; i++) cut += doc.child(i).nodeSize;
+        const ser = (editor.storage.markdown as { serializer?: { serialize(content: ProseMirrorNode): string } }).serializer;
+        if (!ser) return null;
+        const md = (node: ProseMirrorNode) => collapseMediaGaps(cleanEmptyTaskItems(ser.serialize(node)));
+        return { head: md(doc.cut(0, cut)), tail: md(doc.cut(cut)) };
+      },
       flushPendingSave: () => {
         if (editor) flushNow(editor);
       },
     }),
-    [editor, preview, openFindWith, closeSeededFind]
+    [editor, preview, readOnly, openFindWith, closeSeededFind]
   );
 
   return (
@@ -1109,6 +1148,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           audioStopRef={audioStopRef}
           hideEncryptedMedia={hideEncryptedMedia}
           onInsertFiles={onInsertFiles}
+          onShowMarkdown={onShowMarkdown}
         />,
         toolbarSlot,
       )}
@@ -1122,6 +1162,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           audioStopRef={audioStopRef}
           hideEncryptedMedia={hideEncryptedMedia}
           onInsertFiles={onInsertFiles}
+          onShowMarkdown={onShowMarkdown}
         />
       )}
       {/* Where the link panel falls back to when the link button is not on
@@ -1151,10 +1192,13 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
               editor={editor}
               focusTick={barFocusTick}
               initialQuery={findSeed?.term}
+              startQuery={swapTerm}
+              onSwap={readOnly ? undefined : swapBar}
+              swapPro={!isPro}
               onClose={closeBar}
             />
           ) : (
-            <ReplaceBar editor={editor} focusTick={barFocusTick} onClose={closeBar} />
+            <ReplaceBar editor={editor} focusTick={barFocusTick} startQuery={swapTerm} onSwap={swapBar} swapPro={!isPro} onClose={closeBar} />
           )}
         </div>
       )}
@@ -1219,8 +1263,6 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         </div>
       )}
       <EditorContent editor={editor} />
-      {/* After the content, so the sticky pill pins to the bottom of the
-          scrolling pane rather than to the top of it. */}
       <LinkAddressPill rootRef={rootRef} />
       {/* Always mounted, hidden by itself until the caret is in a table: a
           gate read here would only be as fresh as the last render of this

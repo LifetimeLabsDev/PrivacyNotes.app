@@ -10,6 +10,7 @@ const BODY_KIND: Record<NoteType, 'markdown' | 'form'> = {
   note: 'markdown',
   task: 'markdown',
   journal: 'markdown',
+  event: 'markdown',
   file: 'markdown',
   link: 'form',
   contact: 'form',
@@ -38,7 +39,7 @@ export function isKnownNoteType(type: string | undefined): boolean {
  * draws as a file card, and a note with none or several has no such card.
  * Spec: ops/docs/plans/convert-type.md
  */
-export const CONVERT_TARGETS = ['note', 'task', 'journal'] as const;
+export const CONVERT_TARGETS = ['note', 'task', 'journal', 'event'] as const;
 export type ConvertTarget = (typeof CONVERT_TARGETS)[number];
 
 /** Whether the "..." menu offers Convert to: the editor writes the body. */
@@ -48,11 +49,14 @@ export function isConvertSource(type: string | undefined): boolean {
 }
 
 /**
- * The patch that converts an item. Only `type` changes and no field is
- * removed, so converting back restores the item. An item that becomes a
- * journal entry with no entry date takes `today` (a local ISO day), because
- * the fallback, the UTC day of createdAt, would file its tracker values
- * under the day the item was made.
+ * The patch that converts an item. Only `type` changes, and no field is
+ * removed but one, so converting back restores the item. An item that
+ * becomes a journal entry or an event with no day takes `today` (a local ISO
+ * day): the journal fallback, the UTC day of createdAt, would file its
+ * tracker values under the day the item was made, and an event lives on the
+ * calendar. An event that becomes anything else loses its repeat, because a
+ * series is an event; the Convert to view says so.
+ * Spec: ops/docs/plans/convert-type.md, ops/docs/plans/calendar-pillar-spec.md (decision 10)
  */
 export function convertPatch(
   trackers: Record<string, unknown> | undefined,
@@ -60,7 +64,13 @@ export function convertPatch(
   today: string,
 ): { type: ConvertTarget; trackers?: Record<string, unknown> } {
   const existing = trackers ?? {};
-  return target === 'journal' && typeof existing.journalDate !== 'string'
-    ? { type: target, trackers: { ...existing, journalDate: today } }
-    : { type: target };
+  let next = existing;
+  if ((target === 'journal' || target === 'event') && typeof existing.journalDate !== 'string') {
+    next = { ...next, journalDate: today };
+  }
+  if (target !== 'event' && 'repeat' in next) {
+    const { repeat: _repeat, ...rest } = next;
+    next = rest;
+  }
+  return next === existing ? { type: target } : { type: target, trackers: next };
 }

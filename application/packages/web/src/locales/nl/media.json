@@ -15,6 +15,8 @@
     "notFound": "Afbeelding niet gevonden",
     "saveFailed": "Opslaan is mislukt, dus het bestand kan leeg of onvolledig zijn.",
     "viewAria": "Afbeelding bekijken",
+    "copyAria": "Afbeelding kopiëren",
+    "copyFailed": "De afbeelding kon niet worden gekopieerd.",
     "picturesLeftOut": "Sommige afbeeldingen zijn niet toegevoegd. Kopieer een afbeelding los om hem te plakken."
   },
   "attachment": {
@@ -56,6 +58,17 @@
     "pageCount_one": "{{count}} pagina",
     "pageCount_other": "{{count}} pagina's",
     "pageLabel": "{{name}}, pagina {{page}} van {{count}}"
+  },
+  "mail": {
+    "loading": "E-mail openen...",
+    "failed": "Deze e-mail kan niet worden gelezen. Download hem om hem in een andere app te openen.",
+    "from": "Van",
+    "to": "Aan",
+    "cc": "Cc",
+    "date": "Datum",
+    "noSubject": "(Geen onderwerp)",
+    "empty": "Deze e-mail bevat geen tekst.",
+    "attachments": "Bijlagen"
   },
   "picker": {
     "title": "Afbeeldingen in Bestanden",

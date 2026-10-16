@@ -4,30 +4,41 @@
  *
  * A bookmark is a note with `type: 'link'` whose body is a small JSON
  * document, mirroring the vault's login body convention (LoginForm's
- * parseLoginBody). Two fields only, per the v1 spec:
+ * parseLoginBody):
  *   - title: the user-given name. Stored EMPTY when the user gave none;
  *     display falls back to the domain at render time (deriveDisplayTitle),
  *     never at save time, so an edited URL can never leave a stale name
  *     behind and user intent stays distinguishable from the default.
- *   - body:  JSON { url } - the normalized http(s) URL.
+ *   - body:  JSON { url, keyword?, keywordTag? } - the normalized http(s)
+ *     URL, and the Firefox address-bar keyword (SHORTCUTURL) when the
+ *     bookmark came from a Firefox file. `keywordTag` is true when Firefox
+ *     also had a tag of the keyword's name, so the export keeps that tag.
+ *     Both are carried so the export can write them back; nothing in the app
+ *     reads them otherwise.
  *
  * Spec: ops/docs/plans/bookmarks-pillar.md (section 2)
  */
 
 import { domainFromUrlString } from './favicon';
 
-/** Parsed bookmark body. `url` is '' when the body does not parse. */
-export function parseLinkBody(body: string): { url: string } {
+/**
+ * Parsed bookmark body. `url` is '' when the body does not parse; `keyword`
+ * is present only when the body carries a non-empty one.
+ */
+export function parseLinkBody(body: string): { url: string; keyword?: string; keywordTag?: true } {
   try {
     const data = JSON.parse(body);
-    return { url: typeof data.url === 'string' ? data.url : '' };
+    const url = typeof data.url === 'string' ? data.url : '';
+    if (typeof data.keyword !== 'string' || !data.keyword) return { url };
+    return data.keywordTag === true ? { url, keyword: data.keyword, keywordTag: true } : { url, keyword: data.keyword };
   } catch {
     return { url: '' };
   }
 }
 
-export function buildLinkBody(url: string): string {
-  return JSON.stringify({ url });
+export function buildLinkBody(url: string, keyword?: string, keywordTag?: boolean): string {
+  if (!keyword) return JSON.stringify({ url });
+  return JSON.stringify(keywordTag ? { url, keyword, keywordTag: true } : { url, keyword });
 }
 
 /**

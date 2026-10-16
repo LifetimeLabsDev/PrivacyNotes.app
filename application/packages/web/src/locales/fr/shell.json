@@ -8,7 +8,6 @@
     "title": "Tâches",
     "newTaskNote": "Nouvelle note de tâches",
     "newTaskNoteWithHotkey": "Nouvelle note de tâches ({{hotkey}})",
-    "new": "Nouveau",
     "hideCompleted": "Masquer les tâches terminées",
     "showCompleted": "Afficher les tâches terminées",
     "searchPlaceholder": "Rechercher des tâches…",
@@ -37,12 +36,9 @@
     "deselectAll": "Tout désélectionner",
     "selectAll": "Tout sélectionner",
     "storage": "Stockage",
-    "supportedTypesHint": "Taille maximale par fichier : {{max}} Mo",
     "perFile": "Par fichier",
     "free": "Gratuit",
     "upgradeToPro": "Passer à Pro",
-    "addStorage": "Ajouter du stockage",
-    "upToMax": "jusqu'à {{max}}",
     "filterAll": "Tous",
     "filterImages": "Images",
     "filterAudio": "Audio",
@@ -115,6 +111,7 @@
     "video": "Vidéo",
     "image": "Image",
     "pdf": "PDF",
+    "email": "E-mail",
     "archive": "Archive",
     "document": "Document",
     "spreadsheet": "Feuille de calcul",
@@ -188,7 +185,8 @@
     "markdown": "Markdown",
     "markdownTip": "Non chiffré",
     "bookmarks": "Signets",
-    "contacts": "Contacts"
+    "contacts": "Contacts",
+    "calendar": "Calendrier"
   },
   "browseToggle": {
     "label": "Parcourir par",
@@ -204,6 +202,10 @@
     "deleteConfirmTitle": "Supprimer le dossier ?",
     "deleteConfirmBodyRoot": "« {{folder}} » sera supprimé. Ses notes et sous-dossiers seront déplacés au niveau supérieur. Aucune note ne sera supprimée.",
     "deleteConfirmBodyNested": "« {{folder}} » sera supprimé. Ses notes et sous-dossiers seront déplacés vers « {{parent}} ». Aucune note ne sera supprimée.",
+    "deleteConfirmBranchRoot": "« {{folder}} » et ses sous-dossiers seront supprimés. Leurs notes seront déplacées au niveau supérieur. Aucune note ne sera supprimée.",
+    "deleteConfirmBranchNested": "« {{folder}} » et ses sous-dossiers seront supprimés. Leurs notes seront déplacées vers « {{parent}} ». Aucune note ne sera supprimée.",
+    "deleteSubfolders_one": "Supprimer aussi son sous-dossier",
+    "deleteSubfolders_other": "Supprimer aussi ses {{count}} sous-dossiers",
     "moveTo": "Déplacer vers un dossier",
     "searchPlaceholder": "Rechercher des dossiers",
     "sortFolders": "Trier les dossiers",
@@ -221,7 +223,8 @@
     "saveName": "Enregistrer le nom du dossier",
     "actionsForFolder": "Actions pour le dossier {{folder}}",
     "seedSecurity": "Sécurité",
-    "seedTravel": "Voyages"
+    "seedTravel": "Voyages",
+    "seedTeam": "Équipe"
   },
   "collapsedSidebar": {
     "newNote": "Nouvelle note",
@@ -268,7 +271,19 @@
     "sizeHint": "Taille chiffrée totale de cet élément.",
     "tagCount_one": "{{count}} étiquette",
     "tagCount_other": "{{count}} étiquettes",
-    "entryDate": "Date de l'entrée"
+    "entryDate": "Date de l'entrée",
+    "noDate": "Aucune",
+    "schedule": "Planification",
+    "ends": "Fin",
+    "sameDay": "Le même jour",
+    "allDay": "Toute la journée",
+    "starts": "Début",
+    "endsAt": "Se termine à",
+    "noEnd": "Aucune",
+    "removeFromCalendar": "Retirer du calendrier",
+    "makeEvent": "Fais-en un événement pour le répéter",
+    "typeEvent": "Événement",
+    "repeatRemoved": "La répétition est supprimée"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "Quitter la sélection (Échap)",
@@ -303,6 +318,8 @@
     "showSize": "Afficher la taille du fichier",
     "showTags": "Afficher le dossier et les étiquettes",
     "showCalendar": "Afficher le calendrier",
+    "showWorkItems": "Afficher les éléments <b>Travail</b>",
+    "showPersonalItems": "Afficher les éléments <b>Personnel</b>",
     "other": "Autre",
     "showReadOnly": "Afficher les éléments en lecture seule",
     "showProtected": "Afficher les éléments protégés",
@@ -331,7 +348,8 @@
     "nextMonth": "Mois suivant",
     "dayWithEntry": "{{date}}, avec une entrée",
     "dayWithEntryIn": "{{date}}, avec une entrée dans {{space}}",
-    "dayWithEntryBoth": "{{date}}, avec des entrées dans Personnel et Travail",
+    "dayWithItems_one": "{{date}}, {{count}} élément",
+    "dayWithItems_other": "{{date}}, {{count}} éléments",
     "previousWeek": "Semaine précédente",
     "nextWeek": "Semaine suivante",
     "showMonth": "{{month}}, afficher le mois entier",
@@ -375,11 +393,14 @@
     "copyBookmarkUrl": "Copier l'URL",
     "editBookmark": "Modifier le signet",
     "openInTab": "Ouvrir dans un onglet",
+    "openInTabHint": "{{key}}+clic",
     "closeTab": "Fermer l'onglet",
     "closeOtherTabs": "Fermer les autres onglets",
     "closeAllTabs": "Fermer tous les onglets",
     "pinTab": "Épingler l'onglet",
-    "unpinTab": "Désépingler l'onglet"
+    "unpinTab": "Désépingler l'onglet",
+    "newEvent": "Nouvel événement",
+    "quickAdd": "Ajout rapide"
   },
   "demoBanner": {
     "title": "Essaie sans aucun risque",
@@ -636,6 +657,9 @@
       "mastodon": "Mastodon"
     }
   },
+  "staleEditor": {
+    "copyToast": "Cette note a été modifiée sur un autre appareil. Tes modifications sont dans une copie, \"{{title}}\"."
+  },
   "noteLinks": {
     "retargetedToast_one": "{{count}} lien de note mis à jour vers le nouveau titre.",
     "retargetedToast_other": "{{count}} liens de note mis à jour vers le nouveau titre."
@@ -645,7 +669,8 @@
   },
   "tabStrip": {
     "label": "Onglets ouverts",
-    "close": "Fermer {{title}}"
+    "close": "Fermer {{title}}",
+    "moreTabs": "Autres onglets"
   },
   "shareInbox": {
     "saved": "Enregistré dans PrivacyNotes",
@@ -674,10 +699,11 @@
   },
   "spaces": {
     "label": "Espace",
+    "all": "Tous",
     "personal": "Personnel",
     "work": "Travail",
-    "moveToWork": "Déplacer vers Travail",
-    "moveToPersonal": "Déplacer vers Personnel",
+    "moveToWork": "Déplacer vers <b>Travail</b>",
+    "moveToPersonal": "Déplacer vers <b>Personnel</b>",
     "movedToWork": "{{folder}} est maintenant dans Travail",
     "movedToPersonal": "{{folder}} est maintenant dans Personnel",
     "itemMovedToWork": "Déplacé vers Travail",
@@ -686,6 +712,218 @@
     "switchedToPersonal": "Passé à Personnel",
     "switchToWork": "Passer à Travail",
     "switchToPersonal": "Passer à Personnel",
+    "switchToAll": "Afficher tous les espaces",
     "workEmpty": "Travail est vide. Dans Personnel, ouvre le menu d'un élément ou d'un dossier et choisis Déplacer vers Travail."
+  },
+  "calendar": {
+    "moveToToday": "Déplacer à aujourd'hui",
+    "moveToTomorrow": "Déplacer à demain",
+    "moveToNextWeek": "Déplacer à la semaine prochaine",
+    "deleteEvent": "Supprimer l'événement",
+    "openContact": "Ouvrir le contact",
+    "newOnDay": "Nouvel événement ce jour-là",
+    "showDay": "Afficher ce jour",
+    "open": "Ouvrir le calendrier",
+    "back": "Calendrier",
+    "more_one": "+{{count}} autre",
+    "more_other": "+{{count}} autres",
+    "addOn": "Ajouter le {{date}}",
+    "nothingFor_one": "Rien pendant {{count}} jour",
+    "nothingFor_other": "Rien pendant {{count}} jours",
+    "nothingToday": "Rien aujourd'hui",
+    "allDay": "Toute la journée",
+    "now": "Maintenant",
+    "viewLabel": "Vue du calendrier",
+    "views": {
+      "day": "Jour",
+      "week": "Semaine",
+      "month": "Mois"
+    },
+    "legendLabel": "Afficher dans le calendrier",
+    "kinds": {
+      "event": "Événements",
+      "note": "Notes",
+      "task": "Listes de tâches",
+      "journal": "Entrées de journal",
+      "contact": "Anniversaires"
+    },
+    "dragEnd": "Fais glisser pour changer le jour de fin",
+    "previousDay": "Jour précédent",
+    "nextDay": "Jour suivant",
+    "seedWeeklyReview": "Revue de la semaine",
+    "seedWeeklyReviewBody": "Chaque vendredi à seize heures. Ce qui est sorti, ce qui a pris du retard, et ce qui vient la semaine prochaine.",
+    "addToCalendar": "Ajouter au calendrier",
+    "showAgenda": "Afficher l'agenda",
+    "hideAgenda": "Masquer l'agenda",
+    "seedDemo": {
+      "lunch": "Déjeuner avec Sam",
+      "dentist": "Dentiste",
+      "callAna": "Appel avec Ana",
+      "groceries": "Courses",
+      "concert": "Concert",
+      "giftIdeas": "Idées de cadeaux pour Kon",
+      "flight": "Vol pour Lisbonne",
+      "conference": "Conférence à Lisbonne",
+      "nightTrain": "Train de nuit pour Porto",
+      "yoga": "Yoga",
+      "sprint": "Planification du sprint",
+      "bookClub": "Club de lecture",
+      "rent": "Payer le loyer"
+    }
+  },
+  "repeat": {
+    "changeTitle": "Modifier cet élément ?",
+    "deleteTitle": "Supprimer cet élément ?",
+    "thisOccurrence": "Cette occurrence",
+    "thisAndFollowing": "Celle-ci et les suivantes",
+    "allOccurrences": "Toutes les occurrences",
+    "label": "Répétition",
+    "never": "Ne se répète pas",
+    "daily_one": "Chaque jour",
+    "daily_other": "Tous les {{count}} jours",
+    "weekdays": "Chaque jour de semaine (du lundi au vendredi)",
+    "weekly_one": "Chaque semaine le {{days}}",
+    "weekly_other": "Toutes les {{count}} semaines le {{days}}",
+    "monthlyDay_one": "Chaque mois le {{day}}",
+    "monthlyDay_other": "Tous les {{count}} mois le {{day}}",
+    "monthlyNth_one": "Chaque mois le {{nth}} {{weekday}}",
+    "monthlyNth_other": "Tous les {{count}} mois le {{nth}} {{weekday}}",
+    "yearly_one": "Chaque année le {{date}}",
+    "yearly_other": "Tous les {{count}} ans le {{date}}",
+    "withUntil": "{{rule}}, jusqu'au {{date}}",
+    "withCount_one": "{{rule}}, {{count}} fois",
+    "withCount_other": "{{rule}}, {{count}} fois",
+    "nth": {
+      "1": "premier",
+      "2": "deuxième",
+      "3": "troisième",
+      "4": "quatrième",
+      "last": "dernier"
+    },
+    "custom": "Personnalisé",
+    "every": "Tous les",
+    "units": {
+      "day_one": "jour",
+      "day_other": "jours",
+      "week_one": "semaine",
+      "week_other": "semaines",
+      "month_one": "mois",
+      "month_other": "mois",
+      "year_one": "an",
+      "year_other": "ans"
+    },
+    "onDays": "Le",
+    "onDay": "Jour {{day}}",
+    "onNth": "Le {{nth}} {{weekday}}",
+    "ends": "Fin",
+    "endsNever": "Jamais",
+    "endsOn": "À une date",
+    "endsAfter": "Après un nombre de fois",
+    "times_one": "{{count}} fois",
+    "times_other": "{{count}} fois",
+    "apply": "Appliquer"
+  },
+  "alerts": {
+    "label": "Alerte",
+    "none": "Aucune",
+    "atTime": "À l'heure prévue",
+    "minutesBefore_one": "{{count}} minute avant",
+    "minutesBefore_other": "{{count}} minutes avant",
+    "hoursBefore_one": "{{count}} heure avant",
+    "hoursBefore_other": "{{count}} heures avant",
+    "daysBefore_one": "{{count}} jour avant",
+    "daysBefore_other": "{{count}} jours avant",
+    "weeksBefore_one": "{{count}} semaine avant",
+    "weeksBefore_other": "{{count}} semaines avant",
+    "onDayAt": "Le jour même à {{time}}",
+    "daysBeforeAt_one": "{{count}} jour avant à {{time}}",
+    "daysBeforeAt_other": "{{count}} jours avant à {{time}}",
+    "custom": "Personnalisée",
+    "add": "Ajouter",
+    "max": "Jusqu'à cinq alertes.",
+    "units": {
+      "minutes": "minutes",
+      "hours": "heures",
+      "days": "jours",
+      "weeks": "semaines"
+    },
+    "at": "à",
+    "remove": "Retirer {{alert}}",
+    "reminder": "Rappel",
+    "open": "Ouvrir",
+    "snooze": "Rappeler dans 10 min",
+    "offOnPhone": "Les rappels sont désactivés sur ce téléphone",
+    "turnOn": "Activer",
+    "openSettings": "Ouvrir les paramètres"
+  },
+  "quickAdd": {
+    "group": "Créer",
+    "items": "Éléments",
+    "createNamed": "{{type}} : {{title}}",
+    "types": {
+      "event": "Nouvel événement",
+      "note": "Nouvelle note",
+      "task": "Nouvelle liste de tâches",
+      "journal": "Nouvelle entrée de journal"
+    },
+    "keepAsText": "Garder ceci comme texte",
+    "placeholder": "Titre, jour, heure, répétition...",
+    "example": "Essaie : {{example}}",
+    "examples": {
+      "1": "Dentiste ven. 15h 1h avant",
+      "2": "Revue de la semaine chaque vendredi de 16h à 17h",
+      "3": "Appeler la banque demain 11h30 pendant 30 min",
+      "4": "Loyer chaque mois le 1er 1 jour avant",
+      "5": "Examen dans 3 jours #école",
+      "6": "tâche Liste de bagages jeu. 18h"
+    },
+    "examplesGroup": "Exemples de phrases",
+    "syntax": {
+      "group": "Ce que tu peux taper",
+      "day": {
+        "label": "Jour",
+        "examples": "demain · ven. · après-demain · 31 oct. · dans 3 jours",
+        "insert": "demain"
+      },
+      "time": {
+        "label": "Heure",
+        "examples": "15h · 15:00 · de 16h à 17h · à 9h",
+        "insert": "15h"
+      },
+      "length": {
+        "label": "Durée",
+        "examples": "pendant 30 min · pendant 3 jours · ven. au dim.",
+        "insert": "pendant 1h"
+      },
+      "repeat": {
+        "label": "Répétition",
+        "examples": "chaque vendredi · chaque jour · chaque mois le 1er",
+        "insert": "chaque vendredi"
+      },
+      "alert": {
+        "label": "Alerte",
+        "examples": "1h avant · rappel 10 min",
+        "insert": "1h avant"
+      },
+      "place": {
+        "label": "Dossier et étiquette",
+        "examples": "/Voyages · #école",
+        "insert": "#"
+      },
+      "space": {
+        "label": "Espace",
+        "examples": "@travail · @perso",
+        "insert": "@travail"
+      },
+      "type": {
+        "label": "Type",
+        "examples": "tâche · note · journal (un événement si rien n'est précisé)",
+        "insert": "tâche"
+      }
+    },
+    "label": "Ajout rapide"
+  },
+  "offline": {
+    "notLoaded": "Tu es hors ligne, et cette partie de l'app n'est pas encore chargée. Réessaie quand tu seras de nouveau en ligne."
   }
 }

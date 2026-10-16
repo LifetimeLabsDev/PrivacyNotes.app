@@ -34,7 +34,7 @@ const TRANSLATED = import.meta.glob<string>(['./*/*.md', '!./en/*.md'], {
   import: 'default',
 });
 
-const VALID_TYPES: SeedType[] = ['note', 'task', 'journal', 'link'];
+const VALID_TYPES: SeedType[] = ['note', 'task', 'journal', 'link', 'event'];
 
 function stemOf(path: string): string {
   return path.slice(path.lastIndexOf('/') + 1).replace(/\.md$/, '');
@@ -107,6 +107,7 @@ function toDoc(stem: string, raw: string): SeedDoc | null {
     order: Number.isFinite(Number(fields.order)) && fields.order ? Number(fields.order) : 100,
     ...(parseTrackers(fields.trackers) ? { trackers: parseTrackers(fields.trackers) } : {}),
     ...(fields.journalDay ? { journalDay: fields.journalDay } : {}),
+    ...(fields.journalDayEnd ? { journalDayEnd: fields.journalDayEnd } : {}),
   };
 }
 

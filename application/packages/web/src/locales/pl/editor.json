@@ -92,7 +92,13 @@
       "goal": "Cel",
       "decision": "Decyzja",
       "definition": "Definicja",
-      "seealso": "Zobacz też"
+      "seealso": "Zobacz też",
+      "box": "Obramowanie",
+      "panel": "Panel",
+      "update": "Aktualizacja",
+      "time": "Czas",
+      "steps": "Kroki",
+      "place": "Miejsce"
     }
   },
   "color": {
@@ -123,6 +129,7 @@
     "addColumnRight": "Dodaj kolumnę z prawej",
     "toggleHeaderRow": "Włącz lub wyłącz wiersz nagłówka",
     "equalColumnWidths": "Wyrównaj szerokość kolumn",
+    "resizeHint": "Przytrzymaj {{shift}}, aby zmienić tylko tę kolumnę, lub {{alt}}, aby zmieniać dokładniej",
     "deleteRow": "Usuń wiersz",
     "deleteColumn": "Usuń kolumnę",
     "deleteTable": "Usuń tabelę"
@@ -146,6 +153,8 @@
     "caseSensitiveTitle": "Uwzględniaj wielkość liter",
     "closeReplace": "Zamknij znajdź i zamień",
     "closeReplaceTitle": "Zamknij ({{keys}})",
+    "showReplace": "Znajdź i zamień",
+    "hideReplace": "Ukryj zamianę",
     "replacedCount_one": "Zamieniono {{count}}",
     "replacedCount_few": "Zamieniono {{count}}",
     "replacedCount_many": "Zamieniono {{count}}",
@@ -157,7 +166,7 @@
     "title": "Konspekt",
     "ariaLabel": "Konspekt notatki",
     "hide": "Ukryj konspekt",
-    "hideTitle": "Ukryj konspekt (Esc)",
+    "hideTitle": "Ukryj konspekt ({{keys}})",
     "copyHeadingLink": "Kopiuj link do nagłówka",
     "copyNoteLink": "Kopiuj link do notatki",
     "copyHeadingShortcut": "Kopiuj skrót do nagłówka",
@@ -170,6 +179,9 @@
   },
   "topRow": {
     "add": "Dodaj wiersz na górze"
+  },
+  "addLine": {
+    "add": "Dodaj wiersz"
   },
   "link": {
     "popoverLabel": "Dodaj link",
@@ -213,7 +225,9 @@
     "tasksChecked_few": "Zaznaczono {{done}} z {{formatted}}",
     "tasksChecked_many": "Zaznaczono {{done}} z {{formatted}}",
     "tasksChecked_other": "Zaznaczono {{done}} z {{formatted}}",
-    "tooLargeToSync": ", może być za duża do synchronizacji, podziel ją na mniejsze notatki",
+    "syncLimit": " · {{share}} limitu synchronizacji 1 MB",
+    "overSyncLimit": " · powyżej limitu synchronizacji 1 MB, zostaje na tym urządzeniu",
+    "split": "Podziel notatkę",
     "veryLong": ", bardzo długa, edycja może być wolna i przycinać",
     "gettingLong": ", robi się długa, na wolniejszych urządzeniach może zwalniać",
     "largeTableWarning": "Duża tabela (wiersze: {{rows}}) może spowolnić edycję tej notatki, rozważ podzielenie jej"
@@ -275,10 +289,13 @@
     "hintTap": "Stuknij przycisk, aby zobaczyć jego opcje.",
     "onBar": "Na pasku",
     "inMenu": "W menu +",
+    "inAttachMenu": "W menu załączników",
+    "attachMenuEmpty": "Puste, więc przycisk załączania nie jest pokazywany.",
     "menuEmpty": "Menu jest puste, więc przycisk + nie jest pokazywany.",
     "hidden": "Ukryte",
     "hiddenNote": "Nadal działają przez skrót i Markdown.",
     "hiddenDrop": "Upuść tu przycisk, aby go ukryć.",
+    "markdownViewNote": "Widok Markdown ma własny, stały zestaw przycisków.",
     "hiddenEmpty": "Nic nie jest ukryte.",
     "alwaysVisible": "Zawsze widoczne",
     "pinned": "Otwiera panel, więc zostaje na pasku albo jest ukryty",
@@ -290,18 +307,23 @@
     "home": {
       "bar": "Na pasku",
       "menu": "W menu +",
+      "attachMenu": "W menu załączników",
       "hidden": "Ukryty"
     },
     "opensPanel": "otwiera panel",
     "showsRecording": "pokazuje nagranie",
     "refuse": {
       "menuNotAllowed": "{{item}} może być na pasku albo ukryty, nie w menu +.",
+      "attachNotAllowed": "W menu załączników mieszczą się tylko przyciski obrazu, pliku i nagrania.",
       "lastOnBar": "Zostaw na pasku przynajmniej jeden przycisk."
     },
     "items": {
       "link": "Link",
       "notelink": "Link do notatki",
-      "audio": "Nagranie"
+      "audio": "Nagranie",
+      "attachMenu": "Załącz",
+      "separator": "Pionowa kreska",
+      "markdownView": "Pokaż markdown"
     },
     "positionTitle": "Położenie paska",
     "positionNote": "Wybierz, gdzie w edytorze ma być pasek formatowania.",

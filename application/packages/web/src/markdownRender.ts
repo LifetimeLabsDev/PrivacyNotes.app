@@ -32,9 +32,10 @@ import { CALLOUT_COLORS, canonicalCalloutType, type CalloutType } from './callou
 // a callout has none.
 
 const CALLOUT_LABELS: Record<CalloutType, string> = {
-  fold: 'Fold', info: 'Info', note: 'Note', tip: 'Tip', idea: 'Idea', important: 'Important',
+  fold: 'Fold', box: 'Box', panel: 'Panel', info: 'Info', note: 'Note', update: 'Update', tip: 'Tip',
+  idea: 'Idea', important: 'Important',
   warning: 'Warning', caution: 'Caution', danger: 'Danger', success: 'Success', failure: 'Failure',
-  bug: 'Bug', todo: 'Todo', goal: 'Goal', decision: 'Decision', quote: 'Quote', example: 'Example',
+  bug: 'Bug', todo: 'Todo', goal: 'Goal', decision: 'Decision', time: 'Time', steps: 'Steps', place: 'Place', quote: 'Quote', example: 'Example',
   abstract: 'Abstract', question: 'Question', definition: 'Definition', seealso: 'See also',
 };
 
@@ -264,7 +265,7 @@ function renderFenceCode(code: string, lang: string): string | null {
 }
 
 /**
- * Inline `$..$`, mirroring `inlineMathRule` in editorExtensions.ts guard for
+ * Inline `$..$`, mirroring `inlineMathRule` in editorInlineSyntax.ts guard for
  * guard: no `$$`, no space just inside either delimiter, no newline, and no
  * digit after the closing `$` so "$5 and $10" stays prose. Written as a
  * scanner rather than a regex for one reason - the editor's version is a
@@ -684,6 +685,13 @@ function cssUnescape(text: string): string {
   );
 }
 
+// The only classes a rendered surface styles inside passed-through HTML: a
+// spoiler the editor wrote into a table cell or an aligned block. Every other
+// class goes, because the burn viewer runs on the app origin with the app's
+// stylesheet loaded, and its utilities (`fixed`, `inset-0`, `z-50`) build the
+// same overlay the style denylist refuses.
+const KEPT_CLASSES = new Set(['pn-spoiler', 'pn-spoiler-text']);
+
 function sanitizeEditorHtml(html: string): string {
   const doc = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html');
   // `noscript` is here for a reason the others are not: this parser runs with
@@ -731,6 +739,10 @@ function sanitizeEditorHtml(html: string): string {
           .join(';');
         if (kept.trim()) el.setAttribute('style', kept);
         else el.removeAttribute('style');
+      } else if (name === 'class') {
+        const kept = attr.value.split(/\s+/).filter((c) => KEPT_CLASSES.has(c));
+        if (kept.length) el.setAttribute('class', kept.join(' '));
+        else el.removeAttribute('class');
       }
     }
   });
@@ -771,7 +783,7 @@ function taskTextHtml(checked: boolean, body: string, subHtml: string): string {
  * markdown path produces for `- [ ] item`.
  *
  * A task list with an aligned item is stored as one HTML block (see
- * TaskListWithMarkdown in editorExtensions.ts). Passing that through raw
+ * TaskListWithMarkdown in editorTasks.ts). Passing that through raw
  * would export a checklist that only looks right with the app's own CSS
  * loaded - a bullet, a checkbox and the text on separate lines. Returns
  * null for any other list, which then takes the ordinary path.
@@ -1077,7 +1089,7 @@ function renderBlocks(text: string): string {
 
   // Display math `$$..$$`, both the one-line form our serializer writes and
   // the multi-line form Obsidian and pandoc write (blockMathRule in
-  // editorExtensions.ts reads both, so this has to as well). It runs AFTER
+  // editorInlineSyntax.ts reads both, so this has to as well). It runs AFTER
   // the fence pass, so a `$$` inside a code block is already behind a
   // sentinel and stays literal. The result is pushed into the same `fences`
   // array: both are block HTML that is finished before the line loop starts,
@@ -1222,11 +1234,20 @@ function renderBlocks(text: string): string {
         const titleHtml = title ? renderInline(title) : escapeHtml(CALLOUT_LABELS[canon]);
         const bodyMd = buf.slice(1).join('\n');
         const bodyHtml = bodyMd.trim() === '' ? '' : renderMarkdown(bodyMd);
-        // Fold has no box and no accent: the caret and the title in the text color.
+        // Fold has no box and no accent: the caret and the title in the text
+        // color. Box frames it with a gray title strip over a plain body;
+        // Panel frames it with one soft wash. A neutral gray reads on a light
+        // and a dark export alike.
+        const frame = 'margin:1em 0;border:1px solid rgba(128,128,128,0.35);border-radius:6px;overflow:hidden';
         const detailsStyle = canon === 'fold'
           ? 'margin:1em 0'
-          : `margin:1em 0;border:1px solid rgba(${tint},0.35);border-inline-start:3px solid ${color};border-radius:6px;background:rgba(${tint},0.09);overflow:hidden`;
-        const summaryStyle = `cursor:pointer;list-style:none;display:flex;align-items:center;gap:0.4em;padding:${canon === 'fold' ? '0.15em 0' : '0.4em 0.85em'};font-weight:600${color ? `;color:${color}` : ''}`;
+          : canon === 'box'
+            ? frame
+            : canon === 'panel'
+              ? `${frame};background:rgba(128,128,128,0.06)`
+              : `margin:1em 0;border:1px solid rgba(${tint},0.35);border-inline-start:3px solid ${color};border-radius:6px;background:rgba(${tint},0.09);overflow:hidden`;
+        const summaryStrip = canon === 'box' ? ';background:rgba(128,128,128,0.09)' : '';
+        const summaryStyle = `cursor:pointer;list-style:none;display:flex;align-items:center;gap:0.4em;padding:${canon === 'fold' ? '0.15em 0' : '0.4em 0.85em'};font-weight:600${color ? `;color:${color}` : ''}${summaryStrip}`;
         const caret = `<span class="pn-callout-caret" style="flex-shrink:0;line-height:0" aria-hidden="true"><svg class="pn-caret-down" viewBox="0 0 256 256" width="14" height="14" fill="currentColor"><path d="${CALLOUT_CARET_DOWN}"/></svg><svg class="pn-caret-right" viewBox="0 0 256 256" width="14" height="14" fill="currentColor" style="display:none"><path d="${CALLOUT_CARET_RIGHT}"/></svg></span>`;
         // The `-` suffix carries the fold state into the export and the burn
         // viewer, the same as the editor: a folded callout starts closed and
@@ -1238,7 +1259,7 @@ function renderBlocks(text: string): string {
         out.push(
           `<details class="pn-callout pn-callout-${canon}"${folded ? '' : ' open'} style="${detailsStyle}">` +
             `<summary class="pn-callout-summary" style="${summaryStyle}">${caret}<span>${titleHtml}</span></summary>` +
-            `<div class="pn-callout-body" style="${canon === 'fold' ? 'padding-inline-start:1.4em' : 'padding:0.15em 0.85em 0.55em'}">${bodyHtml}</div>` +
+            `<div class="pn-callout-body" style="${canon === 'fold' ? 'padding-inline-start:1.4em' : canon === 'box' ? 'padding:0.5em 0.85em 0.55em;border-top:1px solid rgba(128,128,128,0.25)' : 'padding:0.15em 0.85em 0.55em'}">${bodyHtml}</div>` +
           `</details>`
         );
         continue;

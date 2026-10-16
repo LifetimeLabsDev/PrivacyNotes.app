@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
 import { setPillarPrefs, type ListPrefs, type ListPrefsStore } from './listPrefs';
 import type { View } from './views';
-import NoteRow, { SiteChip, CardGlyph, itemDragSelection } from './NoteRow';
+import NoteRow, { SiteChip, CardGlyph, CompactSiteIcon, itemDragSelection, typeGlyph } from './NoteRow';
 import NoteCard from './NoteCard';
 import { ListNav } from './notesView/ListNav';
 import { ListSearchInput } from './ListSearchInput';
@@ -21,7 +21,8 @@ import { ImportPromptEntry, importPromptFor, type ImportOffer } from './ImportPr
 import { normalizeUrl, linkDomain, linkDedupeKey, duplicateBookmarkId } from './linkBody';
 import { textMatcher } from './textMatch';
 import { isImeComposing } from './imeComposing';
-import { Bookmark, Bookmarks, BookmarkSimple, FunnelSimple, Plus, Download, File, CheckSquare, Book, PILLAR_GLYPHS, NEW_GLYPHS } from './icons';
+import { Bookmark, Bookmarks, BookmarkSimple, FunnelSimple, Plus, Download, PILLAR_GLYPHS, NEW_GLYPHS } from './icons';
+import { NewButton } from './NewButton';
 
 /**
  * The Bookmarks pillar list COLUMN - the vault anatomy: a normal-width
@@ -363,7 +364,7 @@ export function BookmarksList({
           allTags={allTags}
         />
       ) : (
-      <div className="shrink-0 h-14 px-4 border-b border-divider flex items-center justify-between gap-3">
+      <div className="shrink-0 h-11 md:h-14 px-4 border-b border-divider flex items-center justify-between gap-3">
         <ListNav
           hiddenViews={hiddenViews}
           view="bookmarks"
@@ -372,15 +373,11 @@ export function BookmarksList({
           title={t('pillars.bookmarks')}
           icon={<PILLAR_GLYPHS.bookmarks size={26} className="text-accent shrink-0" aria-hidden="true" />}
         />
-        <button
-          type="button"
+        <NewButton
           onClick={() => quickInputRef.current?.focus()}
           tabIndex={mobileTabIndex}
-          className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition"
-        >
-          <NEW_GLYPHS.bookmark size={18} />
-          {t('bookmarks.new')}
-        </button>
+          label={t('bookmarks.new')}
+        />
       </div>
       )}
 
@@ -392,7 +389,7 @@ export function BookmarksList({
       />
 
       {/* ── Search row + sort button - matches the other lists ───── */}
-      <div className="shrink-0 p-3 border-b border-divider relative">
+      <div className="shrink-0 px-3 py-2 md:p-3 border-b border-divider relative">
         <div className="flex items-stretch gap-2">
           <HoverLabel label={t('bookmarks.sortOptions')} position="above-start">
             <button
@@ -667,6 +664,7 @@ function DerivedLinkItem({ link: d, grid, showPreview, compact, onOpen, onOpenNo
   const item: ListItem = applyCompactRows({
     icon: <SiteChip domain={domain} fallback="globe" />,
     glyph: <CardGlyph type="link" domain={domain} />,
+    compactIcon: domain ? <CompactSiteIcon domain={domain} /> : null,
     title: d.name || domain,
     preview: showPreview ? { text: d.url, long: false, dir: 'ltr' } : null,
     date: null,
@@ -687,13 +685,10 @@ function DerivedLinkItem({ link: d, grid, showPreview, compact, onOpen, onOpenNo
           aria-label={t('bookmarks.openSourceNote')}
           className={button}
         >
-          {d.noteType === 'journal' ? (
-            <Book size={14} className="text-purple-600 dark:text-purple-400" />
-          ) : d.noteType === 'task' ? (
-            <CheckSquare size={14} className="text-success" />
-          ) : (
-            <File size={14} className="text-accent" />
-          )}
+          {(() => {
+            const { Icon: SourceGlyph, color } = typeGlyph(d.noteType);
+            return <SourceGlyph size={14} className={color} />;
+          })()}
         </button>
       </HoverLabel>
       <HoverLabel label={t('bookmarks.saveAsBookmark')} position={position}>

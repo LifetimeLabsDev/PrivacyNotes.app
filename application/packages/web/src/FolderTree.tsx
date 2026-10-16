@@ -91,9 +91,10 @@ export interface FolderTreeProps {
   /** A dragged list item files into a folder, or out of one on Unfiled.
    *  The rail's list runs the drop and names the row the pointer is over. */
   itemDrop?: FolderTreeViewProps['itemDrop'];
-  /** The root folder menu's "Move to Work" or "Move to Personal" item, and
-   *  the empty tree's text, while spaces are on. Spec: ops/docs/plans/spaces.md */
-  spaceMove?: { label: string; icon: Icon; run: (id: string) => void };
+  /** The root folder menu's "Move to Work" or "Move to Personal" item for a
+   *  folder, and the empty tree's text, while spaces are on.
+   *  Spec: ops/docs/plans/spaces.md */
+  spaceMove?: (id: string) => { label: React.ReactNode; icon: Icon; run: () => void };
   emptyText?: string;
   /** Sibling sort (persisted per-device in NotesView, like tag sort). */
   sortField: FolderSortField;
@@ -437,18 +438,21 @@ export function FolderTree({
                   <ArrowElbowDownRight className="text-accent" />
                   {t('folders.move')}
                 </button>
-                {spaceMove && menuFolder.parentId === null && (
-                  <button
-                    onClick={() => {
-                      setMenu(null);
-                      spaceMove.run(menuFolder.id);
-                    }}
-                    className="w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2"
-                  >
-                    <spaceMove.icon className="text-accent" />
-                    {spaceMove.label}
-                  </button>
-                )}
+                {spaceMove && menuFolder.parentId === null && (() => {
+                  const move = spaceMove(menuFolder.id);
+                  return (
+                    <button
+                      onClick={() => {
+                        setMenu(null);
+                        move.run();
+                      }}
+                      className="w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2"
+                    >
+                      <move.icon className="text-accent" />
+                      {move.label}
+                    </button>
+                  );
+                })()}
                 <button
                   onClick={() => {
                     setMenu(null);

@@ -8,7 +8,6 @@
     "title": "Aufgaben",
     "newTaskNote": "Neue Aufgabennotiz",
     "newTaskNoteWithHotkey": "Neue Aufgabennotiz ({{hotkey}})",
-    "new": "Neu",
     "hideCompleted": "Erledigte Aufgaben ausblenden",
     "showCompleted": "Erledigte Aufgaben anzeigen",
     "searchPlaceholder": "Aufgaben durchsuchen…",
@@ -37,12 +36,9 @@
     "deselectAll": "Auswahl aufheben",
     "selectAll": "Alle auswählen",
     "storage": "Speicher",
-    "supportedTypesHint": "Maximale Dateigröße: {{max}} MB",
     "perFile": "Pro Datei",
     "free": "Gratis",
     "upgradeToPro": "Auf Pro upgraden",
-    "addStorage": "Speicher hinzufügen",
-    "upToMax": "bis zu {{max}}",
     "filterAll": "Alle",
     "filterImages": "Bilder",
     "filterAudio": "Audio",
@@ -115,6 +111,7 @@
     "video": "Video",
     "image": "Bild",
     "pdf": "PDF",
+    "email": "E-Mail",
     "archive": "Archiv",
     "document": "Dokument",
     "spreadsheet": "Tabelle",
@@ -176,7 +173,7 @@
     "sortLastActive": "Zuletzt aktiv",
     "noTagsYet": "Noch keine Tags.",
     "tagNamePlaceholder": "Tag-Name",
-    "createTag": "Neuer Tag",
+    "createTag": "Neues Tag",
     "untagged": "Ohne Tag",
     "trashTooltip": "Gelöschte Einträge",
     "trash": "Papierkorb",
@@ -188,7 +185,8 @@
     "markdown": "Markdown",
     "markdownTip": "Unverschlüsselt",
     "bookmarks": "Lesezeichen",
-    "contacts": "Kontakte"
+    "contacts": "Kontakte",
+    "calendar": "Kalender"
   },
   "browseToggle": {
     "label": "Anzeigen nach",
@@ -204,6 +202,10 @@
     "deleteConfirmTitle": "Ordner löschen?",
     "deleteConfirmBodyRoot": "„{{folder}}“ wird gelöscht. Notizen und Unterordner werden auf die oberste Ebene verschoben. Es werden keine Notizen gelöscht.",
     "deleteConfirmBodyNested": "„{{folder}}“ wird gelöscht. Notizen und Unterordner werden nach „{{parent}}“ verschoben. Es werden keine Notizen gelöscht.",
+    "deleteConfirmBranchRoot": "„{{folder}}“ und seine Unterordner werden gelöscht. Ihre Notizen werden auf die oberste Ebene verschoben. Es werden keine Notizen gelöscht.",
+    "deleteConfirmBranchNested": "„{{folder}}“ und seine Unterordner werden gelöscht. Ihre Notizen werden nach „{{parent}}“ verschoben. Es werden keine Notizen gelöscht.",
+    "deleteSubfolders_one": "Auch seinen Unterordner löschen",
+    "deleteSubfolders_other": "Auch seine {{count}} Unterordner löschen",
     "moveTo": "In Ordner verschieben",
     "searchPlaceholder": "Ordner suchen",
     "sortFolders": "Ordner sortieren",
@@ -221,7 +223,8 @@
     "saveName": "Ordnernamen speichern",
     "actionsForFolder": "Aktionen für Ordner {{folder}}",
     "seedSecurity": "Sicherheit",
-    "seedTravel": "Reisen"
+    "seedTravel": "Reisen",
+    "seedTeam": "Team"
   },
   "collapsedSidebar": {
     "newNote": "Neue Notiz",
@@ -268,7 +271,19 @@
     "sizeHint": "Gesamte verschlüsselte Größe dieses Eintrags.",
     "tagCount_one": "{{count}} Tag",
     "tagCount_other": "{{count}} Tags",
-    "entryDate": "Eintragsdatum"
+    "entryDate": "Eintragsdatum",
+    "noDate": "Kein Datum",
+    "schedule": "Zeitplan",
+    "ends": "Endet",
+    "sameDay": "Am selben Tag",
+    "allDay": "Ganztägig",
+    "starts": "Beginnt",
+    "endsAt": "Endet um",
+    "noEnd": "Kein Ende",
+    "removeFromCalendar": "Aus dem Kalender entfernen",
+    "makeEvent": "Mach daraus einen Termin, um ihn zu wiederholen",
+    "typeEvent": "Termin",
+    "repeatRemoved": "Die Wiederholung wird entfernt"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "Auswahl beenden (Esc)",
@@ -303,6 +318,8 @@
     "showSize": "Dateigröße anzeigen",
     "showTags": "Ordner & Tags anzeigen",
     "showCalendar": "Kalender anzeigen",
+    "showWorkItems": "Einträge aus <b>Arbeit</b> anzeigen",
+    "showPersonalItems": "Einträge aus <b>Privat</b> anzeigen",
     "other": "Sonstiges",
     "showReadOnly": "Schreibgeschützte anzeigen",
     "showProtected": "Geschützte anzeigen",
@@ -331,7 +348,8 @@
     "nextMonth": "Nächster Monat",
     "dayWithEntry": "{{date}}, mit Eintrag",
     "dayWithEntryIn": "{{date}}, mit Eintrag in „{{space}}“",
-    "dayWithEntryBoth": "{{date}}, mit Einträgen in „Privat“ und „Arbeit“",
+    "dayWithItems_one": "{{date}}, {{count}} Eintrag",
+    "dayWithItems_other": "{{date}}, {{count}} Einträge",
     "previousWeek": "Vorherige Woche",
     "nextWeek": "Nächste Woche",
     "showMonth": "{{month}}, ganzen Monat anzeigen",
@@ -375,11 +393,14 @@
     "copyBookmarkUrl": "URL kopieren",
     "editBookmark": "Lesezeichen bearbeiten",
     "openInTab": "In Tab öffnen",
+    "openInTabHint": "{{key}}-Klick",
     "closeTab": "Tab schließen",
     "closeOtherTabs": "Andere Tabs schließen",
     "closeAllTabs": "Alle Tabs schließen",
     "pinTab": "Tab anpinnen",
-    "unpinTab": "Tab lösen"
+    "unpinTab": "Tab lösen",
+    "newEvent": "Neuer Termin",
+    "quickAdd": "Schnell hinzufügen"
   },
   "demoBanner": {
     "title": "Ohne Risiko ausprobieren",
@@ -636,6 +657,9 @@
       "mastodon": "Mastodon"
     }
   },
+  "staleEditor": {
+    "copyToast": "Diese Notiz wurde auf einem anderen Gerät geändert. Deine Änderungen sind in einer Kopie, „{{title}}“."
+  },
   "noteLinks": {
     "retargetedToast_one": "{{count}} Notiz-Link auf den neuen Titel aktualisiert.",
     "retargetedToast_other": "{{count}} Notiz-Links auf den neuen Titel aktualisiert."
@@ -645,7 +669,8 @@
   },
   "tabStrip": {
     "label": "Offene Tabs",
-    "close": "{{title}} schließen"
+    "close": "{{title}} schließen",
+    "moreTabs": "Weitere Tabs"
   },
   "shareInbox": {
     "saved": "In PrivacyNotes gespeichert",
@@ -674,10 +699,11 @@
   },
   "spaces": {
     "label": "Bereich",
+    "all": "Alle",
     "personal": "Privat",
     "work": "Arbeit",
-    "moveToWork": "Nach „Arbeit“ verschieben",
-    "moveToPersonal": "Nach „Privat“ verschieben",
+    "moveToWork": "Nach <b>Arbeit</b> verschieben",
+    "moveToPersonal": "Nach <b>Privat</b> verschieben",
     "movedToWork": "{{folder}} nach „Arbeit“ verschoben",
     "movedToPersonal": "{{folder}} nach „Privat“ verschoben",
     "itemMovedToWork": "Nach „Arbeit“ verschoben",
@@ -686,6 +712,218 @@
     "switchedToPersonal": "Zu „Privat“ gewechselt",
     "switchToWork": "Zu „Arbeit“ wechseln",
     "switchToPersonal": "Zu „Privat“ wechseln",
+    "switchToAll": "Alle Bereiche anzeigen",
     "workEmpty": "„Arbeit“ ist leer. Öffne in „Privat“ das Menü eines Eintrags oder Ordners und wähl Nach „Arbeit“ verschieben."
+  },
+  "calendar": {
+    "moveToToday": "Auf heute verschieben",
+    "moveToTomorrow": "Auf morgen verschieben",
+    "moveToNextWeek": "Auf nächste Woche verschieben",
+    "deleteEvent": "Termin löschen",
+    "openContact": "Kontakt öffnen",
+    "newOnDay": "Neuer Termin an diesem Tag",
+    "showDay": "Diesen Tag anzeigen",
+    "open": "Kalender öffnen",
+    "back": "Kalender",
+    "more_other": "+{{count}} weitere",
+    "addOn": "Am {{date}} hinzufügen",
+    "nothingFor_other": "{{count}} Tage lang nichts",
+    "nothingToday": "Heute nichts",
+    "allDay": "Ganztägig",
+    "now": "Jetzt",
+    "viewLabel": "Kalenderansicht",
+    "views": {
+      "day": "Tag",
+      "week": "Woche",
+      "month": "Monat"
+    },
+    "legendLabel": "Im Kalender anzeigen",
+    "kinds": {
+      "event": "Termine",
+      "note": "Notizen",
+      "task": "Aufgabenlisten",
+      "journal": "Tagebucheinträge",
+      "contact": "Geburtstage"
+    },
+    "dragEnd": "Ziehen, um den letzten Tag zu ändern",
+    "previousDay": "Vorheriger Tag",
+    "nextDay": "Nächster Tag",
+    "seedWeeklyReview": "Wochenbesprechung",
+    "seedWeeklyReviewBody": "Jeden Freitag um vier. Was fertig wurde, was liegen blieb und was nächste Woche kommt.",
+    "addToCalendar": "Zum Kalender hinzufügen",
+    "showAgenda": "Agenda anzeigen",
+    "hideAgenda": "Agenda ausblenden",
+    "seedDemo": {
+      "lunch": "Mittagessen mit Sam",
+      "dentist": "Zahnarzt",
+      "callAna": "Telefonat mit Ana",
+      "groceries": "Einkaufen",
+      "concert": "Konzert",
+      "giftIdeas": "Geschenkideen für Kon",
+      "flight": "Flug nach Lissabon",
+      "conference": "Konferenz in Lissabon",
+      "nightTrain": "Nachtzug nach Porto",
+      "yoga": "Yoga",
+      "sprint": "Sprintplanung",
+      "bookClub": "Buchclub",
+      "rent": "Miete zahlen"
+    },
+    "nothingFor_one": "{{count}} Tag lang nichts",
+    "more_one": "+{{count}} weiterer"
+  },
+  "repeat": {
+    "changeTitle": "Diesen Eintrag ändern?",
+    "deleteTitle": "Diesen Eintrag löschen?",
+    "thisOccurrence": "Nur diesen Termin",
+    "thisAndFollowing": "Diesen und alle folgenden",
+    "allOccurrences": "Alle Termine der Serie",
+    "label": "Wiederholen",
+    "never": "Keine Wiederholung",
+    "daily_other": "Alle {{count}} Tage",
+    "weekdays": "Jeden Werktag (Montag bis Freitag)",
+    "weekly_other": "Alle {{count}} Wochen am {{days}}",
+    "monthlyDay_other": "Alle {{count}} Monate am {{day}}.",
+    "monthlyNth_other": "Alle {{count}} Monate am {{nth}} {{weekday}}",
+    "yearly_other": "Alle {{count}} Jahre am {{date}}",
+    "withUntil": "{{rule}}, bis {{date}}",
+    "withCount_other": "{{rule}}, {{count}}-mal",
+    "nth": {
+      "1": "ersten",
+      "2": "zweiten",
+      "3": "dritten",
+      "4": "vierten",
+      "last": "letzten"
+    },
+    "custom": "Eigene",
+    "every": "Alle",
+    "units": {
+      "day_other": "Tage",
+      "week_other": "Wochen",
+      "month_other": "Monate",
+      "year_other": "Jahre",
+      "year_one": "Jahr",
+      "month_one": "Monat",
+      "week_one": "Woche",
+      "day_one": "Tag"
+    },
+    "onDays": "Am",
+    "onDay": "Am {{day}}.",
+    "onNth": "Am {{nth}} {{weekday}}",
+    "ends": "Endet",
+    "endsNever": "Nie",
+    "endsOn": "An einem Datum",
+    "endsAfter": "Nach einer Anzahl von Malen",
+    "times_other": "{{count}}-mal",
+    "apply": "Übernehmen",
+    "times_one": "{{count}}-mal",
+    "withCount_one": "{{rule}}, {{count}}-mal",
+    "yearly_one": "Jedes Jahr am {{date}}",
+    "monthlyNth_one": "Jeden Monat am {{nth}} {{weekday}}",
+    "monthlyDay_one": "Jeden Monat am {{day}}.",
+    "weekly_one": "Jede Woche am {{days}}",
+    "daily_one": "Jeden Tag"
+  },
+  "alerts": {
+    "label": "Erinnerung",
+    "none": "Keine",
+    "atTime": "Zum Zeitpunkt",
+    "minutesBefore_other": "{{count}} Minuten vorher",
+    "hoursBefore_other": "{{count}} Stunden vorher",
+    "daysBefore_other": "{{count}} Tage vorher",
+    "weeksBefore_other": "{{count}} Wochen vorher",
+    "onDayAt": "Am Tag selbst um {{time}}",
+    "daysBeforeAt_other": "{{count}} Tage vorher um {{time}}",
+    "custom": "Eigene",
+    "add": "Hinzufügen",
+    "max": "Bis zu fünf Erinnerungen.",
+    "units": {
+      "minutes": "Minuten",
+      "hours": "Stunden",
+      "days": "Tage",
+      "weeks": "Wochen"
+    },
+    "at": "um",
+    "remove": "{{alert}} entfernen",
+    "reminder": "Erinnerung",
+    "open": "Öffnen",
+    "snooze": "In 10 Min. erinnern",
+    "offOnPhone": "Erinnerungen sind auf diesem Handy ausgeschaltet",
+    "turnOn": "Einschalten",
+    "openSettings": "Einstellungen öffnen",
+    "daysBeforeAt_one": "{{count}} Tag vorher um {{time}}",
+    "weeksBefore_one": "{{count}} Woche vorher",
+    "daysBefore_one": "{{count}} Tag vorher",
+    "hoursBefore_one": "{{count}} Stunde vorher",
+    "minutesBefore_one": "{{count}} Minute vorher"
+  },
+  "quickAdd": {
+    "group": "Erstellen",
+    "items": "Einträge",
+    "createNamed": "{{type}}: {{title}}",
+    "types": {
+      "event": "Neuer Termin",
+      "note": "Neue Notiz",
+      "task": "Neue Aufgabenliste",
+      "journal": "Neuer Tagebucheintrag"
+    },
+    "keepAsText": "Als Text behalten",
+    "placeholder": "Titel, Tag, Uhrzeit, Wiederholung...",
+    "example": "Probier: {{example}}",
+    "examples": {
+      "1": "Zahnarzt Fr 15 Uhr 1 Std. vorher",
+      "2": "Wochenbesprechung jeden Freitag 16:00-17:00",
+      "3": "Bank anrufen morgen 11:30 für 30 Min.",
+      "4": "Miete jeden Monat am 1. 1 Tag vorher",
+      "5": "Prüfung in 3 Tagen #schule",
+      "6": "aufgabe Packliste Do 18 Uhr"
+    },
+    "examplesGroup": "Beispielsätze",
+    "syntax": {
+      "group": "Was du tippen kannst",
+      "day": {
+        "label": "Tag",
+        "examples": "morgen · Fr · nächsten Mi · 31. Okt. · in 3 Tagen",
+        "insert": "morgen"
+      },
+      "time": {
+        "label": "Uhrzeit",
+        "examples": "15 Uhr · 15:00 · 16:00-17:00 · um 9",
+        "insert": "15 Uhr"
+      },
+      "length": {
+        "label": "Dauer",
+        "examples": "für 30 Min. · für 3 Tage · Fr bis So",
+        "insert": "für 1 Std."
+      },
+      "repeat": {
+        "label": "Wiederholung",
+        "examples": "jeden Freitag · jeden Werktag · jeden Monat am 1.",
+        "insert": "jeden Freitag"
+      },
+      "alert": {
+        "label": "Erinnerung",
+        "examples": "1 Std. vorher · Erinnerung 10 Min.",
+        "insert": "1 Std. vorher"
+      },
+      "place": {
+        "label": "Ordner und Tag",
+        "examples": "/Reisen · #schule",
+        "insert": "#"
+      },
+      "space": {
+        "label": "Bereich",
+        "examples": "@arbeit · @privat",
+        "insert": "@arbeit"
+      },
+      "type": {
+        "label": "Art",
+        "examples": "aufgabe · notiz · tagebuch (ein Termin, wenn du keine Art angibst)",
+        "insert": "aufgabe"
+      }
+    },
+    "label": "Schnell hinzufügen"
+  },
+  "offline": {
+    "notLoaded": "Du bist offline, und dieser Teil der App ist noch nicht geladen. Versuch es erneut, sobald du wieder online bist."
   }
 }

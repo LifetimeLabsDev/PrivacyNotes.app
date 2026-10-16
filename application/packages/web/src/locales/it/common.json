@@ -38,7 +38,8 @@
   "storageBar": {
     "usage": "{{percent}}% usato ({{used}} / {{max}})",
     "refresh": "Aggiorna spazio",
-    "cleanupInfo": "Gli elementi eliminati smettono subito di essere conteggiati. I file cifrati veri e propri lasciano il server entro pochi giorni."
+    "cleanupInfo": "Gli elementi eliminati smettono subito di essere conteggiati. I file cifrati veri e propri lasciano il server entro pochi giorni.",
+    "open": "Apri le impostazioni dello spazio"
   },
   "updateToast": {
     "available": "Aggiornamento disponibile",
@@ -93,7 +94,7 @@
   },
   "quickSwitcher": {
     "label": "Vai a un elemento o a un'impostazione",
-    "jumpTo": "Vai a",
+    "jumpTo": "Vai",
     "placeholder": "Digita un titolo o un'impostazione, oppure > per i comandi",
     "recent": "Recenti",
     "empty": "Nessun elemento o impostazione con questo nome",
@@ -106,7 +107,24 @@
     "openInTab": "apri in una scheda",
     "openLink": "Apri",
     "edit": "modifica",
-    "close": "chiudi"
+    "close": "chiudi",
+    "tags": "Tag",
+    "folders": "Cartelle",
+    "tagItems_one": "{{count}} elemento",
+    "tagItems_other": "{{count}} elementi",
+    "emptyTags": "Nessun tag con questo nome",
+    "emptyFolders": "Nessuna cartella con questo nome",
+    "onlyTags": "tag",
+    "onlyFolders": "cartelle",
+    "showOnlyTags": "Solo tag",
+    "showOnlyFolders": "Solo cartelle",
+    "showOnlyCommands": "Solo comandi",
+    "goToTag": "Vai a un tag",
+    "goToFolder": "Vai a una cartella",
+    "createTag": "Crea il tag #{{name}}",
+    "createFolder": "Crea la cartella “{{name}}”",
+    "newTag": "Nuovo tag",
+    "newFolder": "Nuova cartella"
   },
   "cardForm": {
     "cardholderName": "Nome del titolare",

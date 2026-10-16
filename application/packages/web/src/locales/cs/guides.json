@@ -10,6 +10,43 @@
     "otherGuides": "Další návody k importu"
   },
   "guides": {
+    "google-calendar": {
+      "app": "Google Calendar",
+      "title": "Vyexportuj si Google Calendar",
+      "metaTitle": "Jak vyexportovat Google Calendar - PrivacyNotes",
+      "lead": "Google Calendar vyexportuje všechny kalendáře, které spravuješ, jako jeden .zip z nastavení na počítači. PrivacyNotes ten .zip čte přímo, není potřeba ho rozbalovat.",
+      "sections": [
+        {
+          "h": "Vyexportuj všechny kalendáře najednou",
+          "steps": [
+            "Otevři [Google Calendar](https://calendar.google.com) v prohlížeči na počítači. Mobilní aplikace export nemá.",
+            "Klikni na ozubené kolo vpravo nahoře a pak na „Settings“.",
+            "V seznamu vlevo klikni na „Import & export“.",
+            "V části „Export“ klikni na „Export“. Prohlížeč stáhne .zip s jedním souborem .ics pro každý kalendář.",
+            "Nech ten .zip přesně tak, jak je."
+          ],
+          "p": [
+            "V .zipu je každý kalendář, ve kterém máš oprávnění „Make changes and manage sharing“, včetně tvého vlastního. Kalendáře, které můžeš jen prohlížet, třeba svátky nebo kalendář kolegy, v něm nejsou. U pracovního nebo školního účtu může správce export omezit."
+          ]
+        },
+        {
+          "h": "Nebo vyexportuj jeden kalendář",
+          "steps": [
+            "V seznamu vlevo najeď v části „My calendars“ na název kalendáře, klikni na „More“ (tři tečky) a pak na „Settings and sharing“.",
+            "V části „Calendar settings“ klikni na „Export calendar“. Prohlížeč stáhne .zip se souborem .ics toho kalendáře. Nech ho tak, jak je."
+          ]
+        },
+        {
+          "h": "Co se přenese",
+          "p": [
+            "Každá událost dorazí se svým dnem, časem a délkou, včetně událostí na několik dní. Opakované události si zachovají své pravidlo a výskyt, který byl v Google přesunutý nebo smazaný, zůstane přesunutý nebo smazaný. Každý kalendář se stane složkou.",
+            "Připomínky nastavené u události dorazí také, včetně e-mailových: stanou se připomínkami v aplikaci, a aby zazvonily, potřebují PrivacyNotes Pro. Událost, která používala výchozí připomínky kalendáře, dorazí bez připomínky, protože Google výchozí hodnoty do souboru nezapisuje. Místo, odkaz na videohovor, hosté i popis se zapíšou do textu události. Časy se zobrazí tak, jak je ukazovalo toto zařízení při importu.",
+            "Funguje i jeden soubor .ics z libovolné aplikace s kalendářem, včetně Apple Calendar a Outlooku.",
+            "Když později naimportuješ stejný soubor znovu, události, které tu už jsou, se přeskočí, takže se přidají jen nové."
+          ]
+        }
+      ]
+    },
     "google-keep": {
       "app": "Google Keep",
       "title": "Vyexportuj si poznámky z Google Keepu",
@@ -63,6 +100,40 @@
         }
       ]
     },
+    "bear": {
+      "app": "Bear",
+      "title": "Vyexportuj si poznámky z Bear",
+      "metaTitle": "Export poznámek z Bear - PrivacyNotes",
+      "lead": "Bear exportuje celou tvoji knihovnu jako jeden soubor se zálohou a právě ten je potřeba přinést: obsahuje všechny poznámky, včetně archivu a koše.",
+      "sections": [
+        {
+          "h": "Vytvoř zálohu v Bear",
+          "steps": [
+            "Otevři Bear na Macu.",
+            "Zvol File > Backup Notes...",
+            "Ulož soubor. Dostaneš jeden soubor .bear2bk, který obsahuje celou tvoji knihovnu.",
+            "Přetáhni ten .bear2bk sem tak, jak je."
+          ]
+        },
+        {
+          "h": "Záloha obsahuje víc než export",
+          "p": [
+            "File > Export Notes... zapíše jen poznámky ze zobrazení, které máš otevřené, takže archivované poznámky a poznámky z koše zůstanou stranou. Záloha obsahuje všechny a pamatuje si, které poznámky byly připnuté, archivované, v koši nebo jen pro čtení.",
+            "Pokud máš jen export do Markdownu nebo Text Bundle, zabal ho do zipu a přetáhni sem ten zip. Text, značky i přílohy se přenesou, ale archiv, koš a připnutí ne, protože tyhle exporty je nezapisují.",
+            "Exportuješ z Bear ručně? Vyber aspoň dvě poznámky. Jedna poznámka otevře dialog pro uložení, který může souboru dát špatnou příponu."
+          ]
+        },
+        {
+          "h": "Co se přenese",
+          "p": [
+            "Tvoje značky se přenesou jako značky. Vnořené značky jako #work/projects se navíc znovu postaví jako složky a každá poznámka skončí ve složce své nejhlouběji zanořené značky. Odkaz na jinou poznámku se změní na odkaz na poznámku a odkaz na nadpis míří na ten nadpis.",
+            "Formátování přežije: nadpisy, tučné písmo, kurzíva, podtržení, přeškrtnutí, zvýraznění v barvách z Bear, seznamy úkolů, tabulky, bloky kódu, citace, callouty, matematika a poznámky pod čarou. Obrázky se otevřou v plné šířce a sbalené nadpisy dorazí rozbalené.",
+            "Připnuté poznámky zůstanou připnuté, archivované poznámky skončí v archivu, poznámky z koše v koši, poznámky jen pro čtení zůstanou jen pro čtení a každá poznámka si zachová svá původní data.",
+            "Obrázky a soubory připojené k poznámkám se naimportují do tvého úložiště. Poznámka, která odkazuje na soubor, jenž v záloze není, se přesto naimportuje a náhled importu ti řekne, kolika odkazů se to týká."
+          ]
+        }
+      ]
+    },
     "obsidian": {
       "app": "Obsidian",
       "title": "Vyexportuj si vault z Obsidianu",
@@ -92,21 +163,21 @@
       "app": "Standard Notes",
       "title": "Vyexportuj si poznámky ze Standard Notes",
       "metaTitle": "Export zálohy ze Standard Notes - PrivacyNotes",
-      "lead": "Standard Notes nabízí export dešifrované zálohy a právě ten soubor PrivacyNotes čte. Jedna důležitá věc hned na začátek: musí to být dešifrovaná varianta, ne šifrovaná.",
+      "lead": "Standard Notes exportuje celý tvůj účet jako jednu dešifrovanou zálohu. Poznámky Super přenese s formátováním, k tomu zaškrtávací seznamy, značky a kódy 2FA.",
       "sections": [
         {
           "h": "Vyexportuj poznámky ze Standard Notes",
           "steps": [
             "Otevři Standard Notes (web na app.standardnotes.com nebo desktopovou aplikaci) a přihlas se.",
-            "Otevři Preferences a v nich sekci Backups.",
-            "Stáhni zálohu dat a až se aplikace zeptá, zvol dešifrovaný formát.",
+            "Klikni vlevo dole na ikonu účtu a pak na Account settings > Backups.",
+            "V části Data backups vyber Decrypted a klikni na Download backup. Tento jediný soubor obsahuje všechny poznámky, včetně poznámek Super.",
             "Dostaneš .zip se souborem „Standard Notes Backup and Import File.txt“. Zip nech tak, jak je."
           ]
         },
         {
           "h": "Poznámky Super, zaškrtávací seznamy a kódy 2FA si zachovají podobu",
           "p": [
-            "Poznámky Super si zachovají nadpisy, seznamy, zaškrtávací seznamy, tabulky, bloky kódu, barvy a sbalitelné sekce. Zaškrtávací seznamy skončí v Úkolech, tabulkové poznámky se stanou tabulkami a položky autentizátoru se stanou přihlašovacími údaji v Trezoru i s klíčem 2FA. Vnořené značky se stanou složkami a každá poznámka si navíc ponechá své značky.",
+            "Poznámky Super si zachovají formátování: nadpisy, seznamy, zaškrtávací seznamy, tabulky, bloky kódu, zvýraznění, barvy, zarovnání textu a sbalitelné sekce. Odkaz na jinou poznámku se stane odkazem na poznámku a #hashtag v textu se stane značkou poznámky. Zaškrtávací seznamy skončí v Úkolech, tabulkové poznámky se stanou tabulkami a položky autentizátoru se stanou přihlašovacími údaji v Trezoru i s klíčem 2FA. Vnořené značky se stanou složkami a každá poznámka si navíc ponechá své značky.",
             "Soubory nahrané do Standard Notes zůstávají na jejich serveru, takže záloha obsahuje jen jejich názvy. Každá importovaná poznámka označí místo, kde byl soubor. Stáhni tyto soubory ze Standard Notes a přidej je do poznámky znovu."
           ]
         },
@@ -444,6 +515,47 @@
           "h": "Když chybí obrázky nebo soubory",
           "p": [
             "Záloha vytvořená předtím, než jsi zaškrtl „Backup attachments“, žádné soubory neobsahuje a náhled importu tě upozorní, že poznámky odkazují na přílohy, které záloha nenese. Pokud se to stane, import zruš, zapni v UpNote to nastavení, klikni znovu na „Backup now“, zabal čerstvou složku do zipu a naimportuj tu."
+          ]
+        }
+      ]
+    },
+    "joplin": {
+      "app": "Joplin",
+      "title": "Vyexportuj si poznámky z Joplin",
+      "metaTitle": "Export poznámek z Joplin ve formátu JEX - PrivacyNotes",
+      "lead": "Joplin exportuje všechny zápisníky najednou jako jeden soubor JEX. Poznámky přenese i s jejich zápisníky, značkami, úkoly, odkazy na poznámky a přílohy.",
+      "sections": [
+        {
+          "h": "Vyexportuj všechno jako JEX",
+          "steps": [
+            "Otevři Joplin na počítači.",
+            "Zvol File > Export all > „JEX - Joplin Export File“.",
+            "Ulož soubor. Dostaneš jeden soubor .jex, který obsahuje všechny zápisníky, takže není co zabalovat do zipu.",
+            "Přetáhni ten .jex sem tak, jak je."
+          ],
+          "p": [
+            "Tools > Create backup zapíše stejný soubor, bajt po bajtu, jako all_notebooks.jex ve složce JoplinBackup v tvé domovské složce. Pokud ti Joplin takové zálohy už dělá, stejně dobře poslouží ta nejnovější."
+          ]
+        },
+        {
+          "h": "Vyber JEX, ne Markdown, HTML ani PDF",
+          "p": [
+            "Export all nabízí i MD, MD + Front Matter, HTML directory a PDF. To jsou kopie určené ke čtení v jiných aplikacích. Soubor JEX je vlastní záznam Joplin o každé poznámce, zápisníku, značce a příloze a právě ten čteme. Když sem přetáhneš jiný z exportů, řekneme ti to, místo abychom naimportovali jen jeho půlku.",
+            "Pokud už máš vyexportované „RAW - Joplin Export Directory“, zabal tu složku do zipu a přetáhni sem ten zip. Obsahuje stejné položky jako soubor JEX."
+          ]
+        },
+        {
+          "h": "Vyndej poznámky z koše dřív, než exportuješ",
+          "p": [
+            "Joplin vynechává koš z každého exportu i z každé zálohy. Každou poznámku, kterou chceš zachovat, před exportem z koše vyndej, jinak zůstane v Joplin."
+          ]
+        },
+        {
+          "h": "Co se přenese",
+          "p": [
+            "Tvoje zápisníky se znovu postaví jako skutečné složky, zanořené tak hluboko, jak je zanořil Joplin, a každá poznámka si zachová své značky i data vytvoření a úpravy, která ti Joplin ukazoval.",
+            "Úkoly se stanou poznámkami s políčkem, které můžeš odškrtnout, a pokud byl úkol hotový, je už odškrtnuté; termín zůstane zapsaný vedle názvu. Odkazy na jiné poznámky zůstanou funkční jako odkazy na poznámky. Obrázky a přílohy se naimportují do tvého úložiště a v poznámce zůstanou na svém místě. Poznámky uložené jako HTML, například mnoho výstřižků z webu, se převedou i s formátováním.",
+            "Poznámky ze zápisníku Conflicts v Joplin dorazí se značkou „conflict“, takže je snadno najdeš a roztřídíš. Pokud používáš šifrování v Joplin, nech ho před exportem dokončit dešifrování: položka, která je ještě šifrovaná, se přeskočí a náhled importu ti řekne, kolik jich je."
           ]
         }
       ]

@@ -14,6 +14,7 @@
 
 import type { Dispatch, MutableRefObject, ReactNode, SetStateAction } from 'react';
 import i18n from '../i18n';
+import { keyText } from '../shortcutMatch';
 import { isShortcutId, shortcutNoun } from '../noteShortcut';
 import type { ContextMenuItem } from '../ContextMenu';
 import type { LocalNote } from '../db';
@@ -26,6 +27,7 @@ import {
   iconSignOut, iconTrash, iconUpload, iconZen, LinkSimple, NEW_GLYPHS, EXPORT_GLYPHS,
 } from '../icons';
 import { bulkActionGuards, noteActionGuards } from '../noteActionGuards';
+import { isMac } from '../editorLinks';
 import type { ImageStore } from '../imageStore';
 import type { View } from '../views';
 
@@ -62,6 +64,7 @@ export type ContextMenuDeps = {
    *  this navigates there and focuses the bar. */
   onNewBookmark: () => void;
   onNewContact: () => void;
+  onQuickAdd: () => void;
   // Bookmark row actions (type 'link')
   onOpenBookmark: (n: LocalNote) => void;
   onCopyBookmarkUrl: (n: LocalNote) => void;
@@ -119,8 +122,9 @@ export type ContextMenuDeps = {
   requestTrash: (ids: string[]) => void;
   /** Pro: open the folder picker for this note. */
   onMoveToFolder: (id: string) => void;
-  /** "Move to Work" or "Move to Personal", while spaces are on. */
-  spaceMove?: { label: string; icon: ReactNode; run: (ids: string[]) => void };
+  /** "Move to Work" or "Move to Personal" for these items, while spaces are
+   *  on; undefined when they sit in both spaces (All open, mixed selection). */
+  spaceMove?: (ids: string[]) => { label: ReactNode; icon: ReactNode; run: (ids: string[]) => void } | undefined;
   handleBurnShare: (n: LocalNote) => Promise<void> | void;
   exportSingleMarkdown: (n: LocalNote) => Promise<void> | void;
   exportSingleHtml: (n: LocalNote) => Promise<void> | void;
@@ -152,9 +156,15 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
   // The letter that picks each entry above the first separator when the
   // menu opens from the keyboard (NEW_MENU_PICKS, same order).
   // Order MUST match the sidebar pillar nav (TagsRail.tsx) and the "New" dropdown
-  // (NotesList.tsx allNewOptions): Note, Task, Login, File, Journal, Bookmark.
+  // (NotesList.tsx allNewOptions): Note, Task, Login, File, Journal, Event, Contact, Bookmark.
   // Spec: ops/docs/ui-patterns.md section 45 (New-menu order invariant)
   const buildGlobalMenu = (): ContextMenuItem[] => [
+    {
+      label: i18n.t('shell:contextMenu.quickAdd'),
+      icon: <NEW_GLYPHS.event size={14} />,
+      shortcut: keyText('quickAdd'),
+      onSelect: () => deps.onQuickAdd(),
+    },
     {
       label: i18n.t('shell:contextMenu.newNote'),
       icon: iconNote(),
@@ -179,6 +189,12 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
       label: i18n.t('shell:contextMenu.newJournal'),
       icon: iconNewJournal(),
       onSelect: createInPillar('journal'),
+    },
+    {
+      label: i18n.t('shell:contextMenu.newEvent'),
+      icon: <NEW_GLYPHS.event size={14} />,
+      // An event is made in the quick add, which shows what it can read.
+      onSelect: () => deps.onQuickAdd(),
     },
     {
       label: i18n.t('shell:contextMenu.newContact'),
@@ -249,6 +265,8 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
    * the documentation: a reader of the list sees why the row is absent
    * without hunting for the code that drops it.
    */
+  const scopeIds = (s: Scope): string[] => (s.kind === 'one' ? [s.note.id] : s.ids);
+
   type OneItemOnly = { readonly oneItemOnly: string };
   const oneItemOnly = (reason: string): OneItemOnly => ({ oneItemOnly: reason });
   const isOneItemOnly = (v: RowSpec['many']): v is OneItemOnly =>
@@ -264,12 +282,14 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
    * because they were two lists; there is one list now.
    */
   type RowSpec = {
-    label: (s: Scope) => string;
+    label: (s: Scope) => ReactNode;
     icon: (s: Scope) => ReactNode;
     checked?: (s: Scope) => boolean;
     pro?: boolean;
     destructive?: boolean;
     success?: boolean;
+    /** A gesture or key that does the same, shown on the right of the row. */
+    shortcut?: () => string;
     /** Rows that belong to certain items only, such as the bookmark verbs. */
     when?: (s: Scope) => boolean;
     one: (n: LocalNote) => void;
@@ -298,6 +318,7 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
           ...(r.pro ? { pro: true } : {}),
           ...(r.destructive ? { destructive: true } : {}),
           ...(r.success ? { success: true } : {}),
+          ...(r.shortcut ? { shortcut: r.shortcut() } : {}),
           onSelect: () => {
             if (s.kind === 'one') { r.one(s.note); return; }
             if (isOneItemOnly(r.many)) return;
@@ -377,6 +398,8 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
       {
         label: () => i18n.t('shell:contextMenu.openInTab'),
         icon: () => iconOpenInTab(),
+        // The click that does the same from a row, which no other place names.
+        shortcut: () => i18n.t('shell:contextMenu.openInTabHint', { key: isMac() ? '⌥' : 'Alt' }),
         when: () => deps.onOpenInTab !== undefined,
         one: (n) => deps.onOpenInTab?.([n.id]),
         many: (ids) => deps.onOpenInTab?.(ids),
@@ -444,11 +467,12 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
         many: () => deps.onBulkMoveToFolder(),
       },
       {
-        label: () => deps.spaceMove?.label ?? '',
-        icon: () => deps.spaceMove?.icon,
-        when: () => !!deps.spaceMove,
-        one: (n) => deps.spaceMove?.run([n.id]),
-        many: (ids) => deps.spaceMove?.run(ids),
+        label: (s) => deps.spaceMove?.(scopeIds(s))?.label ?? '',
+        icon: (s) => deps.spaceMove?.(scopeIds(s))?.icon,
+        pro: !deps.isPro,
+        when: (s) => !!deps.spaceMove?.(scopeIds(s)),
+        one: (n) => deps.spaceMove?.([n.id])?.run([n.id]),
+        many: (ids) => deps.spaceMove?.(ids)?.run(ids),
       },
     ],
     [
@@ -544,7 +568,7 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
 /**
  * The letter that picks each "New" entry of the global menu when it opens
  * from the keyboard (Mod+Shift+N in the desktop apps), in the menu's order:
- * Note, Task, Login, File, Journal, Contact, Bookmark. English letters on
+ * Quick add, Note, Task, Login, File, Journal, Event, Contact, Bookmark. English letters on
  * every keyboard, shown on each row.
  */
-export const NEW_MENU_PICKS = ['n', 't', 'l', 'f', 'j', 'c', 'b'] as const;
+export const NEW_MENU_PICKS = ['q', 'n', 't', 'l', 'f', 'j', 'e', 'c', 'b'] as const;

@@ -38,7 +38,8 @@
   "storageBar": {
     "usage": "{{percent}}% gebruikt ({{used}} / {{max}})",
     "refresh": "Opslag vernieuwen",
-    "cleanupInfo": "Verwijderde items tellen meteen niet meer mee. De versleutelde bestanden zelf verdwijnen binnen een paar dagen van de server."
+    "cleanupInfo": "Verwijderde items tellen meteen niet meer mee. De versleutelde bestanden zelf verdwijnen binnen een paar dagen van de server.",
+    "open": "Opslaginstellingen openen"
   },
   "updateToast": {
     "available": "Update beschikbaar",
@@ -93,7 +94,7 @@
   },
   "quickSwitcher": {
     "label": "Naar een item of instelling springen",
-    "jumpTo": "Ga naar",
+    "jumpTo": "Springen",
     "placeholder": "Typ een titel of instelling, of > voor opdrachten",
     "recent": "Recent geopend",
     "empty": "Geen item of instelling met die naam",
@@ -106,7 +107,24 @@
     "openInTab": "openen in een tabblad",
     "openLink": "Openen",
     "edit": "bewerken",
-    "close": "sluiten"
+    "close": "sluiten",
+    "tags": "Tags",
+    "folders": "Mappen",
+    "tagItems_one": "{{count}} item",
+    "tagItems_other": "{{count}} items",
+    "emptyTags": "Geen tag met die naam",
+    "emptyFolders": "Geen map met die naam",
+    "onlyTags": "tags",
+    "onlyFolders": "mappen",
+    "showOnlyTags": "Alleen tags",
+    "showOnlyFolders": "Alleen mappen",
+    "showOnlyCommands": "Alleen opdrachten",
+    "goToTag": "Naar een tag gaan",
+    "goToFolder": "Naar een map gaan",
+    "createTag": "Tag #{{name}} aanmaken",
+    "createFolder": "Map ‘{{name}}’ aanmaken",
+    "newTag": "Nieuwe tag",
+    "newFolder": "Nieuwe map"
   },
   "cardForm": {
     "cardholderName": "Naam kaarthouder",

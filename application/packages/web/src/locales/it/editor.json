@@ -92,7 +92,13 @@
       "goal": "Obiettivo",
       "decision": "Decisione",
       "definition": "Definizione",
-      "seealso": "Vedi anche"
+      "seealso": "Vedi anche",
+      "box": "Cornice",
+      "panel": "Pannello",
+      "update": "Aggiornamento",
+      "time": "Tempo",
+      "steps": "Passaggi",
+      "place": "Luogo"
     }
   },
   "color": {
@@ -123,6 +129,7 @@
     "addColumnRight": "Aggiungi colonna a destra",
     "toggleHeaderRow": "Attiva o disattiva la riga di intestazione",
     "equalColumnWidths": "Uniforma le colonne",
+    "resizeHint": "Tieni premuto {{shift}} per cambiare solo questa colonna, {{alt}} per passi più fini",
     "deleteRow": "Elimina riga",
     "deleteColumn": "Elimina colonna",
     "deleteTable": "Elimina tabella"
@@ -146,6 +153,8 @@
     "caseSensitiveTitle": "Maiuscole/minuscole",
     "closeReplace": "Chiudi trova e sostituisci",
     "closeReplaceTitle": "Chiudi ({{keys}})",
+    "showReplace": "Trova e sostituisci",
+    "hideReplace": "Nascondi sostituzione",
     "replacedCount_one": "{{count}} sostituita",
     "replacedCount_other": "{{count}} sostituite"
   },
@@ -155,7 +164,7 @@
     "title": "Struttura",
     "ariaLabel": "Struttura della nota",
     "hide": "Nascondi struttura",
-    "hideTitle": "Nascondi struttura (Esc)",
+    "hideTitle": "Nascondi struttura ({{keys}})",
     "copyHeadingLink": "Copia il link al titolo",
     "copyNoteLink": "Copia il collegamento fra note",
     "copyHeadingShortcut": "Copia la scorciatoia al titolo",
@@ -168,6 +177,9 @@
   },
   "topRow": {
     "add": "Aggiungi una riga in alto"
+  },
+  "addLine": {
+    "add": "Aggiungi una riga"
   },
   "link": {
     "popoverLabel": "Aggiungi link",
@@ -205,7 +217,9 @@
     "characters_other": "{{formatted}} caratteri",
     "tasksChecked_one": "{{done}} di {{formatted}} spuntato",
     "tasksChecked_other": "{{done}} di {{formatted}} spuntati",
-    "tooLargeToSync": ", potrebbe essere troppo grande per la sincronizzazione, dividila in una nuova nota",
+    "syncLimit": " · {{share}} del limite di sincronizzazione di 1 MB",
+    "overSyncLimit": " · oltre il limite di sincronizzazione di 1 MB, resta su questo dispositivo",
+    "split": "Dividi la nota",
     "veryLong": ", molto lunga, la modifica potrebbe essere lenta e a scatti",
     "gettingLong": ", sta diventando lunga, potrebbe rallentare sui dispositivi più lenti",
     "largeTableWarning": "Una tabella grande ({{rows}} righe) può rendere lenta la modifica di questa nota, valuta di dividerla"
@@ -266,10 +280,13 @@
     "hintTap": "Tocca un pulsante per le sue opzioni.",
     "onBar": "Nella barra",
     "inMenu": "Nel menu +",
+    "inAttachMenu": "Nel menu Allega",
+    "attachMenuEmpty": "Vuoto, quindi il pulsante Allega non viene mostrato.",
     "menuEmpty": "Il menu è vuoto, quindi il pulsante + non viene mostrato.",
     "hidden": "Nascosti",
     "hiddenNote": "Funzionano ancora con la scorciatoia e in Markdown.",
     "hiddenDrop": "Trascina qui un pulsante per nasconderlo.",
+    "markdownViewNote": "La vista Markdown ha un proprio set fisso di pulsanti.",
     "hiddenEmpty": "Niente è nascosto.",
     "alwaysVisible": "Sempre visibili",
     "pinned": "Apre un pannello, quindi resta nella barra o nascosto",
@@ -281,18 +298,23 @@
     "home": {
       "bar": "Nella barra",
       "menu": "Nel menu +",
+      "attachMenu": "Nel menu Allega",
       "hidden": "Nascosto"
     },
     "opensPanel": "apre un pannello",
     "showsRecording": "mostra la registrazione",
     "refuse": {
       "menuNotAllowed": "{{item}} può stare nella barra o essere nascosto, non nel menu +.",
+      "attachNotAllowed": "Solo i pulsanti immagine, file e registrazione possono stare nel menu Allega.",
       "lastOnBar": "Lascia almeno un pulsante nella barra."
     },
     "items": {
       "link": "Link",
       "notelink": "Collegamento fra note",
-      "audio": "Registrazione"
+      "audio": "Registrazione",
+      "attachMenu": "Allega",
+      "separator": "Separatore verticale",
+      "markdownView": "Mostra markdown"
     },
     "positionTitle": "Posizione della barra",
     "positionNote": "Scegli dove si trova la barra di formattazione nell’editor.",

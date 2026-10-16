@@ -66,6 +66,7 @@
     "appearance_contentWidth": "kolumnbredd, bred, full bredd, marginaler",
     "appearance_editor": "markdown, formaterad text, wysiwyg, redigeringsläge",
     "appearance_copyFormat": "kopiera, urklipp, ren text, klistra in, kryssruta",
+    "appearance_pasteFormat": "klistra in, urklipp, ren text, formatering, oformaterad, matcha stil",
     "appearance_favicons": "favicon, webbplatsikoner, logotyper",
     "appearance_invisibles": "stycketecken, blanktecken, mellanslag, dolda tecken, formateringstecken",
     "appearance_startView": "startsida, hem, standardvy, öppna i",
@@ -81,11 +82,19 @@
     "about_openSource": "källkod, github, öppen källkod, open source",
     "about_feedback": "feedback, återkoppling, kontakt, rapportera bugg, förslag",
     "about_dataStorage": "data, server, var lagras, integritet",
-    "about_singleKeys": "tangentbord, kortkommandon, snabbtangenter, enskild tangent, j, k, tillgänglighet, /, >",
+    "about_singleKeys": "tangentbord, kortkommandon, snabbtangenter, enskild tangent, j, k, q, kalender, tillgänglighet, /, >",
     "about_changelog": "versionsinformation, release notes, nyheter, uppdateringar",
     "about_hotkeys": "kortkommandon, snabbkommandon, tangenter, genvägar, hotkeys",
     "about_rating": "recension, betygsätt, betyg, stjärnor, app store",
     "appearance_openInTabs": "flikar, flikfält, webbläsare, öppna",
+    "section_calendar": "kalender, händelse, påminnelse, avisering, notis, vecka, månad, schema, födelsedag",
+    "calendar_alertTimed": "avisering, påminnelse, notis, standard, minuter, före, händelse",
+    "calendar_alertAllDay": "avisering, påminnelse, notis, standard, heldag, hela dagen, morgon",
+    "calendar_alertBirthday": "födelsedag, kontakt, avisering, påminnelse",
+    "calendar_reminderTitles": "integritet, låsskärm, titel, påminnelse, notis",
+    "calendar_where": "avisering, notis, behörighet, tillstånd, webbläsare, telefon, dator, påminnelse",
+    "calendar_weekNumbers": "veckonummer, ISO-vecka, kalender",
+    "calendar_hours": "timmar, arbetstid, dagvy, veckovy, morgon",
     "appearance_formatBar": "verktygsfält, formatfält, knappar, anpassa, ordna, punktlista, genomstruken, kugghjul"
   }
 }

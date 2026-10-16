@@ -11,13 +11,17 @@
     "noContent": "内容なし",
     "notBackedUp": "未バックアップ",
     "archived": "アーカイブ済み",
-    "entryDate": "ジャーナルの日付"
+    "entryDate": "ジャーナルの日付",
+    "date": "日付",
+    "dayOf": "{{n}}/{{total}}日目"
   },
   "header": {
     "new": "新規",
     "newNote": "新規ノート",
     "newNoteHover": "新規ノート({{hotkey}})",
-    "trash": "ゴミ箱"
+    "trash": "ゴミ箱",
+    "newEvent": "新規予定",
+    "newEventHover": "新規予定({{hotkey}})"
   },
   "folderChip": {
     "clear": "フォルダの絞り込みを解除: {{folder}}",
@@ -40,7 +44,9 @@
     "login": "ログイン",
     "file": "ファイル",
     "bookmark": "ブックマーク",
-    "contact": "連絡先"
+    "contact": "連絡先",
+    "event": "予定",
+    "quickAdd": "クイック追加"
   },
   "vaultFilter": {
     "all": "すべて",
@@ -94,7 +100,8 @@
     "vault": "保管庫",
     "pinned": "ピン留め",
     "archive": "アーカイブ",
-    "notes": "ノート"
+    "notes": "ノート",
+    "calendar": "カレンダー"
   },
   "footerStats": {
     "journals": "ジャーナル",
@@ -136,8 +143,17 @@
     "collapse": "ノートリストを折りたたむ",
     "expand": "ノートリストを展開"
   },
+  "split": {
+    "action": "ノートを分割",
+    "done": "「{{title}}」に分割しました",
+    "overLimit": "「{{title}}」は1 MBを超えているため、このデバイスに残ります",
+    "cannot": "このノートはここでは分割できません。新しいノートを始めたい位置にカーソルを置いてください。",
+    "continuedTitle": "{{title}}(続き)",
+    "continuedIn": "{{link}}に続く"
+  },
   "paneResize": {
-    "hintCollapse": "クリックで折りたたみ · ドラッグでサイズ変更"
+    "hintCollapse": "クリックで折りたたみ · ドラッグでサイズ変更",
+    "hintExpand": "クリックで展開 · ドラッグでサイズ変更"
   },
   "emptyEditor": {
     "selectFile": "プレビューするファイルを選択",
@@ -174,6 +190,8 @@
     "findInNote": "ノート内を検索",
     "navPrev": "前へ",
     "navNext": "次へ",
+    "navPrevTab": "前のタブ",
+    "navNextTab": "次のタブ",
     "undo": "元に戻す",
     "redo": "やり直す",
     "hide": "隠す",
@@ -225,6 +243,8 @@
     "words": "単語",
     "zen": "Zenモード",
     "appearance": "デザイン",
+    "goToTop": "先頭へ移動",
+    "goToEnd": "末尾へ移動",
     "signOut": "サインアウト",
     "signingOut": "サインアウト中…",
     "switchToLight": "ライトモードに切り替え",
@@ -250,7 +270,8 @@
     "aboutLabel": "概要",
     "languageLabel": "言語",
     "dateLabel": "日付",
-    "languageDesc": "PrivacyNotesの表示言語を選択。"
+    "languageDesc": "PrivacyNotesの表示言語を選択。",
+    "calendarLabel": "カレンダー"
   },
   "importStore": {
     "title": "読み込みますか、保存しますか?",

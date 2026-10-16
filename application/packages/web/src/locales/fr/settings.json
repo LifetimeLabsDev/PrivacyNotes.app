@@ -168,8 +168,8 @@
     "startViewTitle": "Afficher à l'ouverture",
     "viewTitle": "Afficher les éléments en",
     "viewDesc": "Auto suit la largeur de ton écran.",
-    "openInTabsTitle": "Ouvrir un onglet à chaque clic",
-    "openInTabsDesc": "Si c'est désactivé, clic droit > Ouvrir dans un onglet ouvre quand même un onglet. Les onglets ne s'affichent pas sur les téléphones.",
+    "openInTabsTitle": "Afficher l'élément ouvert dans un onglet",
+    "openInTabsDesc": "L'onglet suit ce que tu ouvres ensuite, comme dans un navigateur. Épingle un onglet pour le garder. Si c'est désactivé, seul \"Ouvrir dans un onglet\" crée un onglet. Les onglets ne s'affichent pas sur les téléphones.",
     "viewList": "Liste",
     "viewGrid": "Grille",
     "viewAuto": "Auto",
@@ -181,6 +181,10 @@
     "copyFormatDesc": "Ce que reçoivent les autres apps quand tu copies depuis une note. Uniquement sur cet appareil.",
     "copyFormatMarkdown": "Markdown",
     "copyFormatPlain": "Texte brut",
+    "pasteFormatTitle": "Texte collé",
+    "pasteFormatDesc": "Ce qui est conservé quand tu colles depuis une autre app. Uniquement sur cet appareil.",
+    "pasteFormatFormatted": "Mise en forme",
+    "pasteFormatPlain": "Texte brut",
     "faviconsTitle": "Icônes des sites",
     "faviconsDesc": "Le logo du site à côté des liens et des identifiants du Coffre.",
     "faviconsExample": "Exemple :",
@@ -241,7 +245,10 @@
       "yours": "Les tiens",
       "noLightCommunity": "Aucun thème clair de la communauté pour l'instant.",
       "noDarkCommunity": "Aucun thème sombre de la communauté pour l'instant.",
-      "none": "Aucun thème ici pour l'instant."
+      "none": "Aucun thème ici pour l'instant.",
+      "sortLabel": "Ordre",
+      "sortVotes": "Plus de votes",
+      "sortNewest": "Plus récents"
     },
     "custom": {
       "newTheme": "Nouveau thème",
@@ -250,7 +257,6 @@
       "logoOriginal": "Original",
       "logoHelp": "Le logo et « Privacy » prennent l’accent du thème ou gardent leurs couleurs d’origine.",
       "pasteCode": "Coller un code de thème",
-      "community": "Parcourir les thèmes",
       "menu": "Options du thème {{name}}",
       "copyCode": "Copier le code",
       "makeCopy": "Dupliquer",
@@ -281,7 +287,9 @@
       "suggestTitle": "Compléter le reste à partir de ton accent",
       "suggestLight": "Clair",
       "suggestDark": "Sombre",
-      "communityNote": "L'app affiche les {{count}} thèmes de la communauté les plus récents pour chaque mode.",
+      "websiteTitle": "Plus de thèmes sur notre site",
+      "websiteDesc": "Tous les thèmes et les derniers votes. L'app reçoit de nouveaux thèmes à chaque mise à jour.",
+      "vote": "Voter sur GitHub",
       "themeLimit": "Tu as {{max}} thèmes. Supprimes-en un pour en enregistrer un autre.",
       "credit": "Crédit",
       "creditPlaceholder": "Nom d'utilisateur GitHub (facultatif)",
@@ -516,5 +524,27 @@
     "yearFirst": "Année en premier (ISO)",
     "hour24": "24 heures",
     "hour12": "12 heures"
+  },
+  "calendar": {
+    "alertTimed": "Alerte par défaut, éléments avec heure",
+    "alertAllDay": "Alerte par défaut, éléments sur toute la journée",
+    "alertBirthday": "Anniversaires",
+    "alertsHelp": "Un nouvel événement démarre avec cette alerte. Ensuite, chaque élément garde ses propres alertes.",
+    "reminderTitles": "Afficher les titres dans les rappels",
+    "reminderTitlesHelp": "Désactivé, un rappel affiche le mot Rappel et l'heure. Un élément protégé par ton PIN le fait toujours.",
+    "whereTitle": "Rappels sur cet appareil",
+    "reminderHint": {
+      "mobile": "Les rappels sonnent sur ce téléphone, même quand PrivacyNotes est fermé.",
+      "desktop": "Les rappels sonnent tant que PrivacyNotes tourne sur cet ordinateur.",
+      "browser": "Les rappels sonnent tant que PrivacyNotes est ouvert dans ce navigateur."
+    },
+    "scheduledThrough": "Rappels programmés jusqu'au {{date}}",
+    "permissionAsk": "Autoriser les notifications",
+    "permissionOpenSettings": "Ouvrir les paramètres",
+    "permissionDenied": "Les notifications sont bloquées pour PrivacyNotes. Autorise-les dans les paramètres de ce navigateur ou de cet appareil.",
+    "weekNumbers": "Afficher les numéros de semaine",
+    "hours": "Heures affichées",
+    "hoursHelp": "Le jour et la semaine s'ouvrent à la première heure.",
+    "to": "à"
   }
 }

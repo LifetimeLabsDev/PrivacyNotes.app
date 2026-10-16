@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 // The published security documents, served from this origin as plain text.
 //
-// The help center answers "what does it do". These four files answer "how
+// The help center answers "what does it do". These files answer "how
 // is it built, and what can the server read". They live in the public
 // repository, and a reader who wants them should go there: the GitHub page
 // is the citable destination, and the "Read the source" rows point at it.
@@ -51,7 +51,7 @@ export type PublishedDoc = {
 
 /**
  * Order is the order a reader needs them: what the server sees, then why
- * that is true, then how to check it, then the protocol underneath.
+ * that is true, then how to check it.
  *
  * `crypto/crypto.ts` is deliberately absent. It is code rather than prose,
  * a model that reads code invents API from it, and VERIFY.md already says
@@ -75,12 +75,6 @@ export const PUBLISHED_DOCS: readonly PublishedDoc[] = [
     published: 'VERIFY.md',
     source: 'ops/docs/VERIFY.md',
     about: 'Three ways to check the encryption claim yourself, from one minute in a network tab to a reproducible build.',
-  },
-  {
-    slug: 'sync-protocol',
-    published: 'docs/sync-protocol.md',
-    source: 'ops/docs/sync-protocol.md',
-    about: 'How rows move between devices, how a conflict resolves, how a delete propagates, and the accepted limits.',
   },
 ];
 
@@ -158,7 +152,7 @@ export function docMd(slug: string): string | null {
 
 /**
  * /docs/index.md - the routing map, and the only URL the copied prompt
- * names. Four documents run to about 21,000 tokens together, so a model
+ * names. The documents run to about 13,000 tokens together, so a model
  * that has to guess which one to open reads all of them or none. The
  * section list is what stops that: it is derived from the real headings,
  * so it cannot describe a document that has moved on.

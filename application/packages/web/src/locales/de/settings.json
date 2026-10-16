@@ -168,8 +168,8 @@
     "startViewTitle": "Beim Öffnen anzeigen",
     "viewTitle": "Elemente anzeigen als",
     "viewDesc": "Auto richtet sich nach deiner Bildschirmbreite.",
-    "openInTabsTitle": "Bei jedem Klick einen Tab öffnen",
-    "openInTabsDesc": "Ist das aus, öffnet Rechtsklick > In Tab öffnen trotzdem einen Tab. Auf Smartphones gibt es keine Tabs.",
+    "openInTabsTitle": "Geöffnetes Element in einem Tab anzeigen",
+    "openInTabsDesc": "Der Tab folgt dem, was du als Nächstes öffnest, wie in einem Browser. Pinne einen Tab an, um ihn zu behalten. Ist das aus, öffnet nur „In Tab öffnen“ einen Tab. Auf Smartphones gibt es keine Tabs.",
     "viewList": "Liste",
     "viewGrid": "Raster",
     "viewAuto": "Auto",
@@ -181,6 +181,10 @@
     "copyFormatDesc": "Was andere Apps erhalten, wenn du aus einer Notiz kopierst. Gilt nur auf diesem Gerät.",
     "copyFormatMarkdown": "Markdown",
     "copyFormatPlain": "Nur Text",
+    "pasteFormatTitle": "Eingefügter Text",
+    "pasteFormatDesc": "Was beim Einfügen aus einer anderen App erhalten bleibt. Gilt nur auf diesem Gerät.",
+    "pasteFormatFormatted": "Formatiert",
+    "pasteFormatPlain": "Nur Text",
     "faviconsTitle": "Website-Symbole",
     "faviconsDesc": "Logos der Websites neben Links und Tresor-Logins.",
     "faviconsExample": "Beispiel:",
@@ -241,7 +245,10 @@
       "yours": "Deine",
       "noLightCommunity": "Noch keine hellen Community-Designs.",
       "noDarkCommunity": "Noch keine dunklen Community-Designs.",
-      "none": "Hier gibt es noch keine Designs."
+      "none": "Hier gibt es noch keine Designs.",
+      "sortLabel": "Reihenfolge",
+      "sortVotes": "Meiste Stimmen",
+      "sortNewest": "Neueste"
     },
     "custom": {
       "newTheme": "Neues Design",
@@ -250,7 +257,6 @@
       "logoOriginal": "Original",
       "logoHelp": "Logo und „Privacy“ übernehmen den Akzent des Designs oder behalten ihre Originalfarben.",
       "pasteCode": "Design-Code einfügen",
-      "community": "Designs ansehen",
       "menu": "Optionen für {{name}}",
       "copyCode": "Code kopieren",
       "makeCopy": "Duplizieren",
@@ -281,7 +287,9 @@
       "suggestTitle": "Den Rest aus deinem Akzent ableiten",
       "suggestLight": "Hell",
       "suggestDark": "Dunkel",
-      "communityNote": "Die App zeigt pro Modus die {{count}} neuesten Community-Designs.",
+      "websiteTitle": "Mehr Designs auf unserer Website",
+      "websiteDesc": "Alle Designs und die neuesten Stimmen. Mit jedem Update kommen neue Designs in die App.",
+      "vote": "Auf GitHub abstimmen",
       "themeLimit": "Du hast {{max}} Designs. Lösche eines, um ein weiteres zu speichern.",
       "credit": "Urheber",
       "creditPlaceholder": "GitHub-Benutzername (optional)",
@@ -516,5 +524,27 @@
     "yearFirst": "Jahr zuerst (ISO)",
     "hour24": "24 Stunden",
     "hour12": "12 Stunden"
+  },
+  "calendar": {
+    "alertTimed": "Standard-Erinnerung, Einträge mit Uhrzeit",
+    "alertAllDay": "Standard-Erinnerung, ganztägige Einträge",
+    "alertBirthday": "Geburtstage",
+    "alertsHelp": "Ein neuer Termin beginnt mit dieser Erinnerung. Danach behält jeder Eintrag seine eigenen Erinnerungen.",
+    "reminderTitles": "Titel in Erinnerungen anzeigen",
+    "reminderTitlesHelp": "Ist das aus, zeigt eine Erinnerung nur das Wort Erinnerung und die Uhrzeit. Bei einem Eintrag hinter deiner PIN ist das immer so.",
+    "whereTitle": "Erinnerungen auf diesem Gerät",
+    "reminderHint": {
+      "mobile": "Erinnerungen melden sich auf diesem Handy, auch wenn PrivacyNotes geschlossen ist.",
+      "desktop": "Erinnerungen melden sich, solange PrivacyNotes auf diesem Computer läuft.",
+      "browser": "Erinnerungen melden sich, solange PrivacyNotes in diesem Browser geöffnet ist."
+    },
+    "scheduledThrough": "Erinnerungen geplant bis {{date}}",
+    "permissionAsk": "Mitteilungen erlauben",
+    "permissionOpenSettings": "Einstellungen öffnen",
+    "permissionDenied": "Mitteilungen sind für PrivacyNotes blockiert. Erlaube sie in den Einstellungen dieses Browsers oder Geräts.",
+    "weekNumbers": "Kalenderwochen anzeigen",
+    "hours": "Angezeigte Stunden",
+    "hoursHelp": "Tag und Woche öffnen bei der ersten Stunde.",
+    "to": "bis"
   }
 }

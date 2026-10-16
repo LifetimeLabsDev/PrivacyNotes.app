@@ -180,7 +180,7 @@ export function MedicationPill({
       icon={TRACKER_ICONS.medication}
       readOnly={readOnly}
     >
-      <div className="flex flex-col gap-2 min-w-[220px] max-w-[280px] overflow-hidden">
+      <div className="flex flex-col gap-2 min-w-[220px] max-w-[280px]">
         <span className="text-xs font-medium text-pn-soft">
           {t('medication.heading')}
         </span>
@@ -240,7 +240,7 @@ export function MedicationPill({
           if (confirmDeleteId === med.id) {
             return (
               <div key={med.id} className="flex items-center justify-between gap-2 py-0.5">
-                <span className="text-[11px] text-pn-soft">
+                <span className="min-w-0 break-words text-[11px] text-pn-soft">
                   <Trans
                     i18nKey="trackers:medication.confirmRemove"
                     values={{ name: med.name }}
@@ -277,11 +277,11 @@ export function MedicationPill({
                       {med.name}
                     </span>
                   ) : (
-                    <HoverLabel label={t('medication.editMedication')} position="above">
+                    <HoverLabel label={t('medication.editMedication')} position="above" className="min-w-0">
                     <button
                       type="button"
                       onClick={() => startEdit(med)}
-                      className="text-xs font-medium text-pn-soft truncate min-w-0 hover:text-accent dark:hover:text-accent transition-colors text-start"
+                      className="block max-w-full text-xs font-medium text-pn-soft truncate hover:text-accent dark:hover:text-accent transition-colors text-start"
                       aria-label={t('medication.editMedication')}
                     >
                       {med.name}
@@ -302,7 +302,7 @@ export function MedicationPill({
                   )}
                 </div>
                 {med.dosage && (
-                  <span className="text-[10px] text-pn-muted">
+                  <span className="block truncate text-[10px] text-pn-muted">
                     {med.dosage}
                   </span>
                 )}

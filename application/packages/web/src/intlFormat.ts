@@ -76,9 +76,9 @@ export function formatRelative(iso: string): string {
   return relativeFormatter('always').format(-Math.floor(h / 24), 'day');
 }
 
-/** "Today" (0) or "Yesterday" (-1) in the app language, from Intl, as a
- *  list group header names a day. Lower case in most languages. */
-export function relativeDayName(offset: 0 | -1): string {
+/** "Today" (0), "Yesterday" (-1) or "Tomorrow" (1) in the app language, from
+ *  Intl, as a list group header names a day. Lower case in most languages. */
+export function relativeDayName(offset: -1 | 0 | 1): string {
   return relativeFormatter('auto').format(offset, 'day');
 }
 
@@ -175,6 +175,8 @@ const DATE_STYLES = {
   date: { day: 'numeric', month: 'short', year: 'numeric' },
   /** A day in a short list or under a chart. */
   dayMonth: { day: 'numeric', month: 'short' },
+  /** A day with its weekday: a calendar agenda header, a schedule row. */
+  weekdayDate: { weekday: 'short', day: 'numeric', month: 'short' },
   /** A time of day. */
   time: { hour: 'numeric', minute: '2-digit' },
   /** A weekday name in a menu. */
@@ -186,7 +188,7 @@ const DATE_STYLES = {
 type DateStyle = keyof typeof DATE_STYLES;
 
 /** A row or a tile names the year only when it is not the current one. */
-const YEAR_WHEN_OLD: ReadonlySet<DateStyle> = new Set(['row', 'tile']);
+const YEAR_WHEN_OLD: ReadonlySet<DateStyle> = new Set(['row', 'tile', 'weekdayDate']);
 
 let resolvedDateLocale: { language: string; tag: string } | undefined;
 
@@ -229,10 +231,15 @@ function regionOf(tag: string): string | undefined {
   }
 }
 
+const cycles = new Map<string, 'h23' | 'h12'>();
 /** The hour cycle a tag writes on its own. */
 function cycleOf(tag: string): 'h23' | 'h12' {
-  const cycle = new Intl.DateTimeFormat(tag, { hour: 'numeric' }).resolvedOptions().hourCycle;
-  return cycle === 'h23' || cycle === 'h24' ? 'h23' : 'h12';
+  let cycle = cycles.get(tag);
+  if (!cycle) {
+    const c = new Intl.DateTimeFormat(tag, { hour: 'numeric' }).resolvedOptions().hourCycle;
+    cycles.set(tag, (cycle = c === 'h23' || c === 'h24' ? 'h23' : 'h12'));
+  }
+  return cycle;
 }
 
 /** The order a tag writes a date in digits, read off the formatter itself:
@@ -330,7 +337,12 @@ export function formatInstantWith(prefs: DatePrefs, value: string | Date, style:
   const d = typeof value === 'string' ? new Date(value) : value;
   if (Number.isNaN(d.getTime())) return '';
   const r = resolve(prefs);
-  const time = () => dateFormatter(r, DATE_STYLES.time, 'time').format(d);
+  // A full hour on a 12-hour clock drops its ":00": "3 PM", not "3:00 PM".
+  // A 24-hour clock always keeps "15:00".
+  const fullHour = d.getMinutes() === 0 && (r.hourCycle ?? cycleOf(r.tag)) === 'h12';
+  const time = () => (fullHour
+    ? dateFormatter(r, { hour: 'numeric' }, 'hour')
+    : dateFormatter(r, DATE_STYLES.time, 'time')).format(d);
   if (r.iso && style !== 'time' && style !== 'weekday') {
     const day = toLocalIso(d);
     switch (style) {
@@ -340,13 +352,17 @@ export function formatInstantWith(prefs: DatePrefs, value: string | Date, style:
         return `${day} ${time()}`;
       case 'dayMonth':
         return day.slice(5);
+      case 'weekdayDate':
+        return `${dateFormatter(r, { weekday: 'short' }, 'weekdayShort').format(d)} ${day}`;
       default:
         return day;
     }
   }
   const withYear = YEAR_WHEN_OLD.has(style) && d.getFullYear() !== new Date().getFullYear();
   const opts: Intl.DateTimeFormatOptions = { ...DATE_STYLES[style], ...(withYear ? { year: 'numeric' } : {}) };
-  const fmt = dateFormatter(r, opts, `${style}:${withYear}`);
+  const short = fullHour && 'minute' in opts;
+  if (short) delete opts.minute;
+  const fmt = dateFormatter(r, opts, `${style}:${withYear}:${short}`);
   return style === 'numeric' && r.reorder ? reordered(fmt, d, r.reorder) : fmt.format(d);
 }
 

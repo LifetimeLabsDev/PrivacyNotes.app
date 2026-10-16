@@ -78,8 +78,22 @@
     "import-from-other-apps": {
       "q": "Wie bringe ich meine Notizen aus einer anderen App hierher?",
       "a": [
-        "Öffne Einstellungen > Import & Export und wähle deine Quelle. Die Liste deckt die Apps ab, aus denen Leute kommen: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes und Apple Journal. Bitwarden und die gespeicherten Passwörter deines Browsers landen im Tresor, deine Browser-Lesezeichen kommen als Lesezeichen an, und ein generischer Markdown-Importer nimmt jeden Ordner mit .md-Dateien.",
+        "Öffne Einstellungen > Import & Export und wähle deine Quelle. Die Liste deckt die Apps ab, aus denen Leute kommen: Apple Notes, Bear, Obsidian, Evernote, Standard Notes, Joplin, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes und Apple Journal. Bitwarden und die gespeicherten Passwörter deines Browsers landen im Tresor, deine Browser-Lesezeichen kommen als Lesezeichen an, und ein generischer Markdown-Importer nimmt jeden Ordner mit .md-Dateien.",
         "Importe laufen komplett auf deinem Gerät: Deine Export-Dateien werden lokal gelesen, verschlüsselt und gespeichert, nichts wird zur Verarbeitung hochgeladen. Jede importierte Notiz bekommt ein Tag mit ihrer Quelle, damit du den Stapel danach durchsehen kannst, und Google-Keep-Checklisten werden sogar zu nativen Aufgabenlisten."
+      ]
+    },
+    "import-bear": {
+      "q": "Wie bringe ich meine Notizen von Bear zu PrivacyNotes?",
+      "a": [
+        "Erstelle ein Bear-Backup und importiere es. Wähle in Bear File > Backup Notes... und speichere die .bear2bk-Datei. Öffne dann Einstellungen > Import & Export, wähle Bear und ziehe die Datei hinein. Das Backup enthält deine ganze Bibliothek, archivierte und gelöschte Notizen kommen also mit, und angepinnte und schreibgeschützte Notizen behalten diesen Zustand.",
+        "Deine Tags kommen als Tags an, und verschachtelte Tags wie #work/projects werden zusätzlich als Ordner nachgebaut. Hervorhebungen behalten ihre Bear-Farben, Verknüpfungen zwischen Notizen werden zu Notiz-Links, und Bilder und angehängte Dateien werden in deinen Speicher importiert. Die [Bear-Importanleitung](/de/help/import/bear/) zeigt jeden Schritt."
+      ]
+    },
+    "import-joplin": {
+      "q": "Wie importiere ich meine Notizen aus Joplin?",
+      "a": [
+        "Exportiere eine JEX-Datei aus Joplin und importiere sie. Wähle in Joplin File > Export all > \"JEX - Joplin Export File\" und speichere die Datei. Öffne dann Einstellungen > Import & Export, wähle Joplin und ziehe die .jex-Datei hinein. Die neueste Datei aus Tools > Create backup funktioniert genauso.",
+        "Notizbücher werden zu Ordnern, so tief verschachtelt wie in Joplin, und jede Notiz behält ihre Tags und ihre Daten. To-dos werden zu Aufgaben, Verknüpfungen zwischen Notizen werden zu Notiz-Links, und Anhänge werden in deinen Speicher importiert. Joplin lässt seinen Papierkorb bei jedem Export weg, stelle also jede Notiz, die du behalten willst, aus dem Papierkorb wieder her, bevor du exportierst. Die [Joplin-Importanleitung](/de/help/import/joplin/) zeigt jeden Schritt."
       ]
     },
     "markdown-support": {
@@ -221,10 +235,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Ich habe meine PIN vergessen. Wie komme ich wieder rein?",
+      "q": "Ich habe meine PIN oder meinen Passcode vergessen. Wie komme ich wieder rein?",
       "a": [
-        "Es geht nichts verloren, und du kannst die PIN mit deiner Wiederherstellungsphrase selbst löschen. Die PIN ist eine Sperre auf dem Bildschirm, kein Schlüssel: Deine Notizen sind mit Schlüsseln aus der Phrase verschlüsselt, also öffnet die Phrase sie. Wäre die Verschlüsselung an vier Ziffern gebunden, würde eine vergessene PIN Daten vernichten. Hier passiert das nie.",
-        "Überall dort, wo die App nach der PIN fragt, wählst du **PIN vergessen?** und gibst deine 12 Wörter ein. Das gibt es auf dem Sperrbildschirm, auf einer geschützten Notiz und unter **Einstellungen > Sicherheit > PIN**. Die PIN wird auf allen Geräten gelöscht, und du kannst sofort eine neue festlegen. Die biometrische Entsperrung bleibt davon unberührt."
+        "Es geht nichts verloren, und du kannst die PIN oder den Passcode mit deiner Wiederherstellungsphrase selbst löschen. Beides ist eine Sperre auf dem Bildschirm, kein Schlüssel: Deine Notizen sind mit Schlüsseln aus der Phrase verschlüsselt, also öffnet die Phrase sie. Wäre die Verschlüsselung an die PIN gebunden, würde eine vergessene PIN Daten vernichten. Hier passiert das nie.",
+        "Überall dort, wo die App danach fragt, wählst du **PIN vergessen?** oder **Passcode vergessen?** und gibst deine 12 Wörter ein. Das gibt es auf dem Sperrbildschirm, auf einer geschützten Notiz und unter **Einstellungen > Sicherheit > PIN**. Beides wird auf allen Geräten gelöscht, und du kannst sofort eine neue festlegen. Die biometrische Entsperrung bleibt davon unberührt. Ein Gerät mit einer älteren Version der App fragt auch nach dem Festlegen eines Passcodes weiter nach 4 Ziffern; **PIN vergessen?** funktioniert dort genauso."
       ]
     },
     "delete-account": {
@@ -238,7 +252,7 @@
       "q": "Was genau wird zwischen meinen Geräten synchronisiert, und was bleibt lokal?",
       "a": [
         "Alles, was du erwarten würdest, und alles davon auf deinem Gerät verschlüsselt: Notizen, Aufgaben, Tagebucheinträge, dein Tresor und die Dateien darin. Auch deine Einstellungen reisen mit - favorisierte Tags, Sortier- und Ansichtsvorlieben, Farbschema, deine PIN (als gesalzener Hash, nie die PIN selbst), App-Sperre, Tracker- und Medikamenten-Setup und das automatische Leeren des Papierkorbs. Einmal einrichten, jedes Gerät übernimmt es.",
-        "Ein paar Dinge bleiben bewusst gerätelokal: heller oder dunkler Modus (jedes Gerät folgt seiner eigenen Systemeinstellung), biometrisches Entsperren (an die Hardware jedes Geräts gebunden) und dein Entsperr-Zustand (die App sperrt sich beim Schließen immer wieder). Der Server speichert immer nur verschlüsselte Blobs und kann nichts davon lesen."
+        "Ein paar Dinge bleiben bewusst gerätelokal: heller oder dunkler Modus (jedes Gerät folgt seiner eigenen Systemeinstellung), biometrisches Entsperren (an die Hardware jedes Geräts gebunden), der Bereich, den die Seitenleiste zeigt, und dein Entsperr-Zustand (die App sperrt sich beim Schließen immer wieder). Der Server speichert immer nur verschlüsselte Blobs und kann nichts davon lesen."
       ]
     },
     "offline": {
@@ -250,7 +264,7 @@
     "sync-conflicts": {
       "q": "Was passiert, wenn ich dieselbe Notiz auf zwei Geräten gleichzeitig bearbeite?",
       "a": [
-        "Deine Geräte führen die Notiz Detail für Detail zusammen, sobald sie sich wieder synchronisieren, sodass eine Änderung, die nur auf einem von ihnen vorgenommen wurde, erhalten bleibt. Haben beide getrennt voneinander den Text bearbeitet (etwa weil eines offline war), zeigt das Gerät, das sich als zweites synchronisiert, einen Konflikt-Dialog: die Version auf diesem Gerät behalten, die andere behalten oder beide als separate Notizen behalten. Bis du dich entscheidest, bleiben beide Versionen erhalten.",
+        "Deine Geräte führen die Notiz Detail für Detail zusammen, sobald sie sich wieder synchronisieren, sodass eine Änderung, die nur auf einem von ihnen vorgenommen wurde, erhalten bleibt. Haben beide getrennt voneinander den Text bearbeitet (etwa weil eines offline war), zeigt das Gerät, das sich als zweites synchronisiert, einen Konflikt-Dialog: die Version auf diesem Gerät behalten, die andere behalten oder beide als separate Notizen behalten. Bis du dich entscheidest, bleiben beide Versionen erhalten. Trifft die Version des anderen Geräts ein, während du in der Notiz tippst, bleibt dein Text als Kopie mit dem Zusatz \"(conflict)\" erhalten und die Notiz zeigt die andere Version.",
         "Haben beide Geräte getrennt voneinander dasselbe Detail geändert, etwa das Anpinnen, den Ordner oder den Titel, behält die App ohne Dialog das Detail von dem Gerät, das die Notiz zuletzt bearbeitet hat. Eine auf einem Gerät endgültig gelöschte Notiz wird überall gelöscht, einschließlich einer Änderung, die ein anderes Gerät an ihr vorgenommen hat, während beide getrennt waren."
       ]
     },
@@ -359,7 +373,7 @@
     "buy-pro-anonymously": {
       "q": "Kann ich Pro kaufen, ohne preiszugeben, wer ich bin?",
       "a": [
-        "Ja, mit zwei Standard-Werkzeugen. Für den Beleg nimm einen E-Mail-Alias: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) oder [addy.io](https://addy.io) leiten alle an dein echtes Postfach weiter, ohne es offenzulegen. Für die Zahlung nimm eine maskierte Karte: [privacy.com](https://privacy.com) erzeugt in den USA virtuelle Karten, die mit jedem eingetippten Namen funktionieren, und viele Banken und Dienste anderswo (zum Beispiel [Revolut](https://www.revolut.com)) bieten virtuelle Einmalkarten, die denselben Job machen.",
+        "Ja, mit zwei Standard-Werkzeugen. Für den Beleg nimm einen E-Mail-Alias: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) oder [addy.io](https://addy.io) leiten alle an dein echtes Postfach weiter, ohne es offenzulegen. Für die Zahlung nimm eine maskierte Karte: [privacy.com](https://privacy.com) erzeugt in den USA virtuelle Karten, die mit jedem eingetippten Namen funktionieren, und anderswo erledigt eine Prepaid-Karte, die online funktioniert und die du bar bezahlst, denselben Job - ganz ohne Namen darauf.",
         "Im Checkout fragt Paddle nach einer E-Mail, einer Zahlungsmethode und einem Land (in manchen Regionen plus Postleitzahl) für die Steuerberechnung. Der Alias empfängt den Beleg, die maskierte Karte trägt den Namen, den du ihr gegeben hast, und der Steuer-Standort grenzt dich höchstens auf eine Region ein. Halte den Alias aber am Leben: Die Beleg-E-Mail ist dein Kaufnachweis und dein Weg zur Rückerstattung.",
         "Kombiniert mit einem Phrasen-Konto hält am Ende keine einzelne Partei das Gesamtbild: Deine Bank sieht eine Kartenaufladung, Paddle sieht einen Alias und eine maskierte Karte, und wir sehen einen öffentlichen Schlüssel, der Pro wurde, neben diesem Alias in unserem Paddle-Konto."
       ]
@@ -402,7 +416,7 @@
     "languages": {
       "q": "Welche Sprachen spricht die App?",
       "a": [
-        "Englisch, Deutsch, Französisch, Italienisch, Spanisch, Niederländisch, Polnisch, Tschechisch, Katalanisch, Türkisch, Schwedisch, Ukrainisch, Russisch, Japanisch, Koreanisch, Traditionelles Chinesisch, Thailändisch, Arabisch und Portugiesisch in europäischer und brasilianischer Variante. Die App folgt standardmäßig deiner Systemsprache, oder du legst unter Einstellungen > Sprache auf jedem Gerät eine fest.",
+        "Englisch, Deutsch, Französisch, Italienisch, Spanisch, Niederländisch, Polnisch, Tschechisch, Slowakisch, Katalanisch, Türkisch, Schwedisch, Ukrainisch, Russisch, Japanisch, Koreanisch, Traditionelles Chinesisch, Thailändisch, Arabisch und Portugiesisch in europäischer und brasilianischer Variante. Die App folgt standardmäßig deiner Systemsprache, oder du legst unter Einstellungen > Sprache auf jedem Gerät eine fest.",
         "Übersetzungen sind für alle kostenlos, kein Pro-Vorteil. Weitere Sprachen sind geplant; fehlt deine, sag uns auf [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) oder [Reddit](https://www.reddit.com/r/PrivacyNotes/) Bescheid."
       ]
     },
@@ -424,7 +438,7 @@
       "q": "Wie funktionieren Aufgaben?",
       "a": [
         "Jede Zeile, die du als - [ ] in einer Notiz schreibst, wird zu einer Aufgabe, und die Aufgaben-Ansicht in der Seitenleiste sammelt sie alle an einem Ort. Hakst du dort eine Aufgabe ab, aktualisiert das die Notiz, in der sie steht, und öffnest du eine Aufgabe, springt die App zu dieser Notiz. Es gibt keine separate Aufgaben-Datenbank zu pflegen: Aufgaben sind einfach Zeilen in deinen Notizen, verschlüsselt wie alles andere.",
-        "Das Schnell-Hinzufügen-Feld oben in den Aufgaben hängt an eine Notiz namens Quick Tasks an (beim ersten Verwenden für dich erstellt), sodass ein spontanes To-do einen Tastendruck kostet statt einer Ablage-Entscheidung. Dieselbe Ansicht bietet drei Layouts (Hybrid, Gesammelt, Liste), einen Schalter für erledigte Aufgaben und eine Aufgaben-Suche, und die Schaltfläche \"Neu\" in der Ansicht \"Alle\" kann direkt eine Aufgaben-Notiz starten."
+        "Das Schnell-Hinzufügen-Feld oben in den Aufgaben hängt an eine Notiz namens Quick Tasks an (beim ersten Verwenden für dich erstellt), sodass ein spontanes To-do einen Tastendruck kostet statt einer Ablage-Entscheidung. Dieselbe Ansicht bietet drei Layouts (Hybrid, Gesammelt, Liste), einen Schalter für erledigte Aufgaben und eine Aufgaben-Suche, und die Schaltfläche + in der Ansicht \"Alle\" kann direkt eine Aufgaben-Notiz starten."
       ]
     },
     "journal": {
@@ -488,8 +502,8 @@
     "biometric-unlock": {
       "q": "Das biometrische Entsperren funktioniert nicht mehr. Was kann ich tun?",
       "a": [
-        "Du wirst nie ausgesperrt. Der Sperrbildschirm bietet immer einen Ausweg: \"Mit PIN entsperren\" oder \"Mit Wiederherstellungsphrase anmelden\". Die Biometrie ist eine lokale Sperre, kein Verschlüsselungsschlüssel, deine Notizen bleiben also so oder so unberührt.",
-        "Dann repariere die Sperre. Die Einrichtung gilt pro Gerät, ein neues Telefon, ein frisches Browser-Profil oder eine Neuinstallation muss also neu eingerichtet werden: Einstellungen > Sicherheit > \"Sperre\", deaktivieren, dann wieder \"Biometrische Entsperrung aktivieren\". Es braucht außerdem \"Diesem Gerät vertrauen\" (nicht vertraute Sitzungen werden beim Schließen des Tabs gelöscht) und Hardware mit einem Plattform-Authentifikator (Touch ID, Face ID, Windows Hello). Taucht ein Passwort-Manager wie Bitwarden oder 1Password statt der System-Abfrage auf, weise ihn ab und versuche es erneut, oder schalte seine Passkey-Erfassung für die Seite aus - die App fordert den eingebauten Authentifikator an, doch manche Manager fangen ihn trotzdem ab."
+        "Du wirst nie ausgesperrt. Der Sperrbildschirm bietet immer einen Ausweg: \"Mit PIN entsperren\" (\"Mit Passcode entsperren\", wenn du einen festgelegt hast) oder \"Mit Wiederherstellungsphrase anmelden\". Die biometrische Entsperrung öffnet nur die auf diesem Gerät gespeicherte Kopie deiner Wiederherstellungsphrase, und deine Notizen sind mit Schlüsseln aus der Phrase selbst verschlüsselt, bleiben also so oder so unberührt.",
+        "Dann richte sie neu ein. Wenn der Sperrbildschirm \"Die biometrische Entsperrung konnte deine Notizen nicht öffnen.\" meldet, entsperre zuerst auf anderem Weg. Die Einrichtung gilt pro Gerät, ein neues Telefon, ein frisches Browser-Profil oder eine Neuinstallation muss also neu eingerichtet werden: Einstellungen > Sicherheit > \"Sperre\", deaktivieren, dann wieder \"Biometrische Entsperrung aktivieren\". Es braucht außerdem \"Diesem Gerät vertrauen\" (nicht vertraute Sitzungen werden beim Schließen des Tabs gelöscht) und Hardware mit einem Plattform-Authentifikator (Touch ID, Face ID, Windows Hello). Taucht ein Passwort-Manager wie Bitwarden oder 1Password statt der System-Abfrage auf, weise ihn ab und versuche es erneut, oder schalte seine Passkey-Erfassung für die Seite aus - die App fordert den eingebauten Authentifikator an, doch manche Manager fangen ihn trotzdem ab."
       ]
     },
     "phrase-compromised": {
@@ -647,7 +661,14 @@
       "q": "Wie hängen Abschnitte, Ordner, Tags und Bereiche zusammen?",
       "a": [
         "Alles, was du aufbewahrst, liegt in einer einzigen Bibliothek. Die Abschnitte in der Seitenleiste, etwa Notizen, Tresor und Tagebücher, sind Ansichten dieser Bibliothek nach Typ. Ein Ordner ist ein Ort, also kann ein Ordner eine Notiz und das passende Login zusammen enthalten, und der Ordnerbaum ist in jedem Abschnitt derselbe. Seine Zahlen zählen nur, was der geöffnete Abschnitt enthält, und ein Ordner ohne solche Einträge erscheint abgeblendet. Ein Tag ist ein Etikett, und die Seitenleiste zeigt nur die Tags, die der geöffnete Abschnitt verwendet.",
-        "Bereiche teilen die Bibliothek in Privat und Arbeit und zeigen jeweils einen davon. Ein Ordner der obersten Ebene gehört mit allem darin zu einem Bereich, und **Nach „Arbeit“ verschieben** in seinem Menü verschiebt ihn hinüber. Ein Eintrag ohne Ordner gehört zu Privat, deshalb landet alles, was du in Arbeit anlegst, in einem Ordner von Arbeit. Tags sind kostenlos, Ordner und Bereiche brauchen Pro."
+        "Bereiche teilen die Bibliothek in Privat und Arbeit, und ein Ordner der obersten Ebene gehört mit allem darin zu einem Bereich. [So funktionieren Bereiche](/de/help/spaces/) erklärt den Umschalter, das Verschieben von Einträgen und das Ausschalten der Bereiche. Tags sind kostenlos, Ordner und Bereiche brauchen Pro."
+      ]
+    },
+    "spaces": {
+      "q": "Wie funktionieren die Bereiche Privat und Arbeit?",
+      "a": [
+        "Bereiche teilen deine Bibliothek in Privat und Arbeit. Der Umschalter neben **Springen** in der Seitenleiste zeigt **Alle**, **Privat** oder **Arbeit**: Alle zeigt jeden Eintrag, die anderen beiden zeigen je einen Bereich. Jedes Gerät merkt sich seine eigene Wahl, dein Handy kann also Privat zeigen, während dein Laptop Arbeit zeigt, und wenn du einen Eintrag aus dem anderen Bereich öffnest, wechselt die Ansicht dorthin. Bereiche ändern nur, was die Listen zeigen: Jeder Eintrag wird weiterhin mit jedem Gerät synchronisiert.",
+        "Ein Ordner der obersten Ebene gehört mit allem darin zu einem Bereich, und **Nach Arbeit verschieben** oder **Nach Privat verschieben** in seinem Menü oder im Menü eines beliebigen Eintrags verschiebt ihn hinüber. Ein Eintrag ohne Ordner ist Privat, ebenso alles, was du anlegst, während Alle geöffnet ist. Um Bereiche nicht mehr zu nutzen, schalte Einstellungen > Listen > Bereiche aus: Jeder Eintrag wird angezeigt, nichts wird verschoben, und jeder Ordner behält seinen Bereich für den Fall, dass du sie wieder einschaltest. Bereiche brauchen Pro."
       ]
     },
     "note-links": {
@@ -717,8 +738,8 @@
     "note-history": {
       "q": "Kann ich eine ältere Version einer Notiz zurückholen?",
       "a": [
-        "Ja, mit Pro. Öffne das \"...\"-Menü der Notiz und wähl \"Verlauf\", um bis zu 20 frühere Versionen durchzusehen und wiederherzustellen. Beim Wiederherstellen geht nichts verloren: Der aktuelle Text wird vorher als Version gesichert, du kannst also hin und her springen. Versionen sind verschlüsselt wie die Notiz selbst, wir können sie also auch nicht lesen.",
-        "Ein Schnappschuss entsteht höchstens einmal pro Minute, zwei Bearbeitungen im Sekundenabstand teilen sich also eine Version. Der Notizverlauf ist die eine Pro-Funktion, die über den Server läuft, deshalb behält die Demo stattdessen ihre eigene lokale Kopie. Jeder Tarif hat außerdem den [Papierkorb](/de/help/trash-auto-delete/), der eine gelöschte Notiz 30 Tage hält."
+        "Ja, mit Pro. Öffne das \"...\"-Menü der Notiz und wähl \"Verlauf\", um bis zu 50 frühere Versionen durchzusehen, eine davon mit der aktuellen Notiz zu vergleichen und sie wiederherzustellen. Beim Wiederherstellen geht nichts verloren: Der aktuelle Text wird vorher als Version gesichert, du kannst also hin und her springen. Versionen sind verschlüsselt wie die Notiz selbst, wir können sie also auch nicht lesen.",
+        "Jede Version ist die Notiz so, wie sie vor einer Bearbeitung war: Eine wird bei deiner ersten Bearbeitung nach fünf Minuten Pause gesichert, eine alle zehn Minuten, solange du weiterschreibst, und eine vor einer Bearbeitung, die mehr als die Hälfte einer Notiz mit 200 oder mehr Zeichen entfernt, außer die letzte Version ist jünger als 30 Sekunden. Der Notizverlauf ist die eine Pro-Funktion, die über den Server läuft, deshalb behält die Demo stattdessen ihre eigene lokale Kopie. Jeder Tarif hat außerdem den [Papierkorb](/de/help/trash-auto-delete/), der eine gelöschte Notiz 30 Tage hält."
       ]
     },
     "vault-totp": {
@@ -849,10 +870,10 @@
       ]
     },
     "quick-switcher": {
-      "q": "Was ist die \"Gehe zu\"-Funktion, und was findet sie?",
+      "q": "Was ist die Schnellnavigation, und was findet sie?",
       "a": [
-        "Mit der \"Gehe zu\"-Funktion springst du über den Titel zu allem. Drück Cmd+K auf dem Mac oder Ctrl+K unter Windows und Linux (Cmd+P oder Ctrl+P geht auch), oder klick auf **Gehe zu** in der Seitenleiste oder im Kopf der Liste. Tipp einen Teil eines Titels, um Notizen, Aufgaben, Tagebucheinträge, Tresor-Einträge, Lesezeichen, Kontakte, angehängte Dateien und Einstellungen zu finden. Enter öffnet den Eintrag, und Option+Enter oder Alt+Enter öffnet ihn in einem Tab.",
-        "Tipp zuerst >, um stattdessen einen Befehl auszuführen, etwa eine neue Notiz anzulegen oder zu einem Bereich zu wechseln. Um Wörter in deinem Text statt in Titeln zu finden, wähl die Zeile **Alles durchsuchen** oder drück in einer beliebigen Zeile Cmd+Enter oder Ctrl+Enter. Der Abgleich läuft auf deinem Gerät, nichts, was du tippst, wird also an uns gesendet. Die \"Gehe zu\"-Funktion ist kostenlos."
+        "Die Schnellnavigation springt über den Titel zu allem. Drück Cmd+K auf dem Mac oder Ctrl+K unter Windows und Linux (Cmd+P oder Ctrl+P geht auch), oder klick auf **Springen** in der Seitenleiste oder im Kopf der Liste. Tipp einen Teil eines Titels, um Notizen, Aufgaben, Tagebucheinträge, Tresor-Einträge, Lesezeichen, Kontakte, angehängte Dateien und Einstellungen zu finden. Enter öffnet den Eintrag, und Option+Enter oder Alt+Enter öffnet ihn in einem Tab.",
+        "Tipp zuerst >, um stattdessen einen Befehl auszuführen, etwa eine neue Notiz anzulegen oder zu einem Bereich zu wechseln. Tipp zuerst #, um nur deine Tags zu sehen, oder /, um nur deine Ordner zu sehen; wenn du einen Eintrag davon wählst, wird die Liste so gefiltert wie bei einem Klick in der Seitenleiste. Um Wörter in deinem Text statt in Titeln zu finden, wähl die Zeile **Alles durchsuchen** oder drück in einer beliebigen Zeile Cmd+Enter oder Ctrl+Enter. Der Abgleich läuft auf deinem Gerät, nichts, was du tippst, wird also an uns gesendet. Die Schnellnavigation ist kostenlos."
       ]
     },
     "find-in-note": {
@@ -876,6 +897,27 @@
         "Eine Anmeldemöglichkeit, die schon zu einem anderen Tresor gehört, lässt sich nicht verbinden, weil Tresore nie zusammengelegt werden. **Trennen** fragt zuerst nach deinen 12 Wörtern. Wenn wir deine Phrase für dich aufbewahren, bleibt das letzte verbundene Konto bestehen, bis du ein weiteres verbindest oder deine Phrase sicherst und zur Selbstverwahrung wechselst. Mit Selbstverwahrung fragt ein neues Gerät weiterhin nach deinen 12 Wörtern. Verbundene Konten sind in der Beta."
       ]
     },
+    "calendar": {
+      "q": "Gibt es einen Kalender, und was zeigt er?",
+      "a": [
+        "Ja. \"Kalender\" in der Seitenleiste zeigt jeden Eintrag mit einem Datum an einem Ort: Termine, Tagebucheinträge, Notizen und Aufgabenlisten mit Datum und die Geburtstage deiner Kontakte. Die Liste daneben ist die Agenda der nächsten Tage, und die große Ansicht wechselt zwischen Tag, Woche und Monat. Klick auf einen leeren Tag, um dort etwas hinzuzufügen, oder zieh einen Eintrag auf einen anderen Tag.",
+        "Ein Termin ist eine eigene Art von Eintrag: eine Notiz mit einem Tag, einem letzten Tag, einer Uhrzeit und einer Wiederholung. Tipp eine ganze Zeile in \"Schnell hinzufügen\", zum Beispiel \"Zahnarzt Fr 15 Uhr 1 Std. vorher\", und es liest den Tag, die Uhrzeit und die Erinnerung für dich heraus. Auch eine Notiz oder eine Aufgabenliste kann einen Tag, eine Uhrzeit und einen letzten Tag tragen, über die Zeile \"Zeitplan\" in ihrem Menü \"...\". Der Kalender ist kostenlos."
+      ]
+    },
+    "reminders": {
+      "q": "Funktionieren Kalender-Erinnerungen, wenn die App geschlossen ist?",
+      "a": [
+        "Auf einem Handy ja: Bis zu 64 Erinnerungen, bis zu 400 Tage im Voraus, werden an das Handy selbst übergeben, sie melden sich also auch, wenn PrivacyNotes geschlossen ist; wenn du die App öffnest und entsperrst, werden weitere übergeben. In der Desktop-App meldet sich eine Erinnerung, solange die App läuft, und im Browser, solange PrivacyNotes in einem Tab geöffnet ist. Jedes Gerät plant seine Erinnerungen aus den Einträgen, die es hat, deshalb erfährt der Server nie einen Titel, eine Uhrzeit oder einen Tag.",
+        "Füge eine Erinnerung über die Zeile \"Erinnerung\" in der Ansicht \"Zeitplan\" eines Eintrags hinzu, bis zu fünf pro Eintrag, und leg die Standardwerte unter Einstellungen > Kalender fest, wo auch \"Titel in Erinnerungen anzeigen\" liegt. Ein Eintrag hinter deiner PIN meldet sich immer nur als \"Erinnerung\" mit der Uhrzeit, und das gilt auch für jede Erinnerung, die geplant wird, während die App-Sperre aktiv ist. Eine Erinnerung, die übergeben wurde, bevor die Sperre aktiv war, kann ihren Titel behalten, bis sie sich meldet. Erinnerungen gehören zu Pro; der Kalender selbst ist kostenlos."
+      ]
+    },
+    "calendar-time-zones": {
+      "q": "Was passiert mit den Uhrzeiten meiner Termine, wenn ich in eine andere Zeitzone reise?",
+      "a": [
+        "Eine Uhrzeit im Kalender bleibt die Uhrzeit, die du eingegeben hast. Ein Termin um 15:00 wird um 15:00 angezeigt und meldet sich um 15:00, egal wo dein Gerät gerade ist, so wie eine Erinnerung in einer To-do-App, denn jede Uhrzeit wird als Ortszeit ohne Zeitzone gespeichert. Ein Handy plant jede Erinnerung für einen exakten Zeitpunkt, also öffne und entsperre PrivacyNotes nach einem Zeitzonenwechsel einmal in der neuen Zone, damit sich seine Erinnerungen verschieben; solange es geöffnet und entsperrt ist, verschiebt es sie von selbst.",
+        "Für einen Anruf mit jemandem in einer anderen Zeitzone gib die Uhrzeit so ein, wie sie bei dir gilt. Wenn eine Zeitumstellung die Stunde einer Erinnerung überspringt, meldet sich die Erinnerung in der ersten Minute nach dem Sprung."
+      ]
+    },
     "session-expired": {
       "q": "Warum zeigt die App \"Sitzung abgelaufen\" an?",
       "a": [
@@ -887,7 +929,7 @@
       "q": "Was macht Archivieren, und was ist der Unterschied zum Papierkorb?",
       "a": [
         "Archivieren nimmt einen Eintrag aus deinen Listen, ohne ihn zu löschen. Wähl **Archivieren** im \"...\"-Menü oder im Rechtsklickmenü des Eintrags, oder in der Auswahlleiste für mehrere Einträge auf einmal. Archivierte Einträge verschwinden aus Alle, ihrem Bereich, Angepinnt und den Zählern der Ordner und Tags und warten in der Ansicht **Archiv** unten in der Seitenleiste, die erscheint, sobald etwas archiviert ist. Damit sie in Alle und in den Zahlen bleiben, hake Archiv in der Spalte **Alle** unter Einstellungen > Listen an. **Archivierung aufheben** an denselben Stellen holt einen Eintrag zurück.",
-        "Der Papierkorb ist für Dinge, die weg sollen: Er [löscht sie nach 30 Tagen endgültig](/de/help/trash-auto-delete/), wenn du das nicht ausschaltest. Das Archiv löscht nie etwas, und archivierte Einträge bleiben erreichbar, denn eine Suche in Alle, die \"Gehe zu\"-Funktion und Notiz-Links finden sie weiterhin. Sie werden synchronisiert und bleiben verschlüsselt wie alles andere, und sie zählen weiter zu deinem Speicher. Archivieren funktioniert mit jeder Art von Eintrag und ist kostenlos."
+        "Der Papierkorb ist für Dinge, die weg sollen: Er [löscht sie nach 30 Tagen endgültig](/de/help/trash-auto-delete/), wenn du das nicht ausschaltest. Das Archiv löscht nie etwas, und archivierte Einträge bleiben erreichbar, denn eine Suche in Alle, die Schnellnavigation und Notiz-Links finden sie weiterhin. Sie werden synchronisiert und bleiben verschlüsselt wie alles andere, und sie zählen weiter zu deinem Speicher. Archivieren funktioniert mit jeder Art von Eintrag und ist kostenlos."
       ]
     },
     "share-into-app": {

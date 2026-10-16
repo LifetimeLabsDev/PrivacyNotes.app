@@ -78,8 +78,22 @@
     "import-from-other-apps": {
       "q": "Como trago as minhas notas de outra app?",
       "a": [
-        "Abre Definições > Import & Export e escolhe a origem. A lista cobre as apps de onde as pessoas vêm: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes e Apple Journal. A Bitwarden e as palavras-passe guardadas no teu navegador vão para o Cofre, os marcadores do navegador chegam como marcadores, e um importador de Markdown genérico aceita qualquer pasta de ficheiros .md.",
+        "Abre Definições > Import & Export e escolhe a origem. A lista cobre as apps de onde as pessoas vêm: Apple Notes, Bear, Obsidian, Evernote, Standard Notes, Joplin, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes e Apple Journal. A Bitwarden e as palavras-passe guardadas no teu navegador vão para o Cofre, os marcadores do navegador chegam como marcadores, e um importador de Markdown genérico aceita qualquer pasta de ficheiros .md.",
         "As importações correm inteiramente no teu dispositivo: os teus ficheiros exportados são lidos, encriptados e guardados localmente, nada é enviado para processamento. Cada nota importada recebe uma etiqueta com a origem, para poderes rever o lote depois, e as listas de verificação do Google Keep passam até a listas de tarefas nativas."
+      ]
+    },
+    "import-bear": {
+      "q": "Como passo as minhas notas do Bear para o PrivacyNotes?",
+      "a": [
+        "Faz um backup do Bear e importa-o. No Bear, escolhe File > Backup Notes... e guarda o ficheiro .bear2bk. Depois abre Definições > Import & Export, escolhe o Bear e larga lá o ficheiro. O backup contém a biblioteca inteira, por isso as notas arquivadas e as que estão no lixo vêm também, e as notas fixadas e as de apenas leitura mantêm esse estado.",
+        "As tuas etiquetas chegam como etiquetas, e as etiquetas aninhadas, como #work/projects, são também reconstruídas como pastas. Os realces mantêm as cores do Bear, as ligações entre notas passam a ligações entre notas do PrivacyNotes, e as imagens e os ficheiros anexados são importados para o teu armazenamento. O [guia de importação do Bear](/pt/help/import/bear/) mostra todos os passos."
+      ]
+    },
+    "import-joplin": {
+      "q": "Como importo as minhas notas do Joplin?",
+      "a": [
+        "Exporta um ficheiro JEX do Joplin e importa-o. No Joplin, escolhe File > Export all > \"JEX - Joplin Export File\" e guarda o ficheiro. Depois abre Definições > Import & Export, escolhe o Joplin e larga lá o ficheiro .jex. O ficheiro mais recente de Tools > Create backup funciona da mesma maneira.",
+        "Os cadernos passam a pastas, aninhadas tão fundo como no Joplin, e cada nota mantém as suas etiquetas e as suas datas. As tarefas por fazer passam a tarefas, as ligações entre notas passam a ligações entre notas do PrivacyNotes, e os anexos são importados para o teu armazenamento. O Joplin deixa o lixo de fora de todas as exportações, por isso restaura do lixo as notas que queres antes de exportares. O [guia de importação do Joplin](/pt/help/import/joplin/) mostra todos os passos."
       ]
     },
     "markdown-support": {
@@ -221,10 +235,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Esqueci-me do PIN. Como volto a entrar?",
+      "q": "Esqueci-me do PIN ou do código de acesso. Como volto a entrar?",
       "a": [
-        "Não se perde nada e podes limpar o PIN sozinho com a tua frase de recuperação. O PIN é um bloqueio de ecrã, não uma chave de encriptação: as tuas notas estão encriptadas com chaves derivadas da frase, por isso é a frase que as abre. Ligar a encriptação a quatro dígitos faria com que um PIN esquecido destruísse dados. Aqui nunca acontece.",
-        "Sempre que a aplicação pedir o PIN, escolhe **Esqueceste-te do PIN?** e escreve as tuas 12 palavras. Está no ecrã de bloqueio, numa nota protegida e em **Definições > Segurança > PIN**. O PIN é limpo em todos os teus dispositivos e podes definir um novo logo de seguida. O desbloqueio biométrico não é afetado."
+        "Não se perde nada e podes limpar o PIN ou o código de acesso sozinho com a tua frase de recuperação. É um bloqueio de ecrã, não uma chave de encriptação: as tuas notas estão encriptadas com chaves derivadas da frase, por isso é a frase que as abre. Ligar a encriptação ao PIN faria com que um PIN esquecido destruísse dados. Aqui nunca acontece.",
+        "Sempre que a aplicação o pedir, escolhe **Esqueceste-te do PIN?** ou **Esqueceste-te do código de acesso?** e escreve as tuas 12 palavras. Está no ecrã de bloqueio, numa nota protegida e em **Definições > Segurança > PIN**. É limpo em todos os teus dispositivos e podes definir um novo logo de seguida. O desbloqueio biométrico não é afetado. Um dispositivo com uma versão mais antiga da aplicação pede 4 dígitos mesmo depois de definires um código de acesso; aí, **Esqueceste-te do PIN?** funciona da mesma forma."
       ]
     },
     "delete-account": {
@@ -238,7 +252,7 @@
       "q": "O que é que sincroniza exatamente entre os meus dispositivos, e o que fica local?",
       "a": [
         "Tudo o que esperarias, e tudo isso encriptado no teu dispositivo: notas, tarefas, entradas de diário, o teu cofre e os ficheiros lá dentro. As tuas definições também te acompanham - etiquetas favoritas, preferências de ordenação e de vista, tema de cor, o teu PIN (como hash com sal, nunca o PIN em si), bloqueio da app, configuração de registos e medicamentos, e a limpeza automática do lixo. Configura uma vez e todos os dispositivos acompanham.",
-        "Algumas coisas ficam de propósito só no dispositivo: o modo claro ou escuro (cada dispositivo segue a preferência do próprio sistema), o desbloqueio biométrico (preso ao hardware de cada dispositivo) e o teu estado de desbloqueio (fechar a app bloqueia sempre de novo). O servidor só armazena blobs encriptados e não consegue ler nada disso."
+        "Algumas coisas ficam de propósito só no dispositivo: o modo claro ou escuro (cada dispositivo segue a preferência do próprio sistema), o desbloqueio biométrico (preso ao hardware de cada dispositivo), o espaço que a barra lateral mostra e o teu estado de desbloqueio (fechar a app bloqueia sempre de novo). O servidor só armazena blobs encriptados e não consegue ler nada disso."
       ]
     },
     "offline": {
@@ -250,7 +264,7 @@
     "sync-conflicts": {
       "q": "O que acontece se editar a mesma nota em dois dispositivos ao mesmo tempo?",
       "a": [
-        "Os teus dispositivos fundem a nota detalhe a detalhe quando voltam a sincronizar, por isso uma alteração feita em apenas um deles é mantida. Se os dois editaram o texto enquanto estavam separados (um estava offline, por exemplo), o dispositivo que sincroniza em segundo lugar mostra uma caixa de conflito: manter a versão deste dispositivo, manter a outra, ou manter as duas como notas separadas. As duas versões são mantidas até escolheres.",
+        "Os teus dispositivos fundem a nota detalhe a detalhe quando voltam a sincronizar, por isso uma alteração feita em apenas um deles é mantida. Se os dois editaram o texto enquanto estavam separados (um estava offline, por exemplo), o dispositivo que sincroniza em segundo lugar mostra uma caixa de conflito: manter a versão deste dispositivo, manter a outra, ou manter as duas como notas separadas. As duas versões são mantidas até escolheres. Se a versão do outro dispositivo chegar enquanto escreves na nota, o teu texto é guardado como uma cópia marcada com \"(conflict)\" e a nota passa a mostrar a outra versão.",
         "Quando os dois dispositivos mudaram o mesmo detalhe enquanto estavam separados, como a fixação, a pasta ou o título, é mantido o detalhe do dispositivo que editou a nota por último, sem caixa de diálogo. Uma nota eliminada permanentemente num dispositivo é eliminada em todo o lado, incluindo uma alteração que outro dispositivo lhe tenha feito enquanto estavam separados."
       ]
     },
@@ -359,7 +373,7 @@
     "buy-pro-anonymously": {
       "q": "Posso comprar o Pro sem revelar quem sou?",
       "a": [
-        "Sim, com duas ferramentas correntes. Para o recibo, usa um alias de e-mail: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) ou [addy.io](https://addy.io) reencaminham todos para a tua caixa real sem a exporem. Para o pagamento, usa um cartão mascarado: o [privacy.com](https://privacy.com), nos EUA, gera cartões virtuais que funcionam com qualquer nome que escrevas, e muitos bancos e serviços noutros sítios (o [Revolut](https://www.revolut.com), por exemplo) oferecem cartões virtuais descartáveis que fazem o mesmo trabalho.",
+        "Sim, com duas ferramentas correntes. Para o recibo, usa um alias de e-mail: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) ou [addy.io](https://addy.io) reencaminham todos para a tua caixa real sem a exporem. Para o pagamento, usa um cartão mascarado: o [privacy.com](https://privacy.com), nos EUA, gera cartões virtuais que funcionam com qualquer nome que escrevas, e noutros sítios um cartão pré-pago que funcione online, comprado em dinheiro, faz o mesmo trabalho, sem nome nenhum.",
         "No checkout, a Paddle pede um e-mail, um método de pagamento e um país (mais um código postal nalgumas regiões) para calcular o imposto. O alias recebe o recibo, o cartão mascarado leva o nome que lhe deste, e a localização fiscal situa-te, quando muito, numa região, e mais nada. Mantém o alias vivo, no entanto: o e-mail do recibo é a tua prova de compra e o teu canal para um reembolso.",
         "Combinado com uma conta de frase, nenhuma das partes fica com o quadro completo: o teu banco vê um carregamento de cartão, a Paddle vê um alias e um cartão mascarado, e nós vemos uma chave pública que passou a Pro, ao lado desse alias na nossa conta Paddle."
       ]
@@ -402,7 +416,7 @@
     "languages": {
       "q": "Que idiomas é que a app fala?",
       "a": [
-        "Inglês, alemão, francês, italiano, espanhol, neerlandês, polaco, checo, catalão, turco, sueco, ucraniano, russo, japonês, coreano, chinês tradicional, tailandês, árabe e português, nas variantes europeia e do Brasil. A app segue o idioma do sistema por predefinição, ou podes fixar um explicitamente em Definições > Idioma em cada dispositivo.",
+        "Inglês, alemão, francês, italiano, espanhol, neerlandês, polaco, checo, eslovaco, catalão, turco, sueco, ucraniano, russo, japonês, coreano, chinês tradicional, tailandês, árabe e português, nas variantes europeia e do Brasil. A app segue o idioma do sistema por predefinição, ou podes fixar um explicitamente em Definições > Idioma em cada dispositivo.",
         "As traduções são grátis para toda a gente, não são uma vantagem Pro. Estão previstos mais idiomas; se o teu está a faltar, diz-nos no [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) ou no [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -424,7 +438,7 @@
       "q": "Como funcionam as tarefas?",
       "a": [
         "Qualquer linha que escrevas como - [ ] em qualquer nota torna-se uma tarefa, e a vista Tarefas na barra lateral reúne-as todas num só sítio. Marcar aí uma tarefa como concluída atualiza a nota onde ela vive, e abrir uma tarefa salta para essa nota. Não há uma base de dados de tarefas à parte para manter: as tarefas são apenas linhas nas tuas notas, encriptadas como tudo o resto.",
-        "A caixa de adição rápida no topo de Tarefas acrescenta a uma nota chamada Quick Tasks (criada para ti no primeiro uso), por isso apanhar um afazer solto é uma tecla, não uma decisão de arquivo. A mesma vista oferece três disposições (Híbrida, Agregada, Lista), um interruptor para as tarefas concluídas, e pesquisa de tarefas, e o botão Nova na vista Todos pode começar diretamente uma nota de tarefas."
+        "A caixa de adição rápida no topo de Tarefas acrescenta a uma nota chamada Quick Tasks (criada para ti no primeiro uso), por isso apanhar um afazer solto é uma tecla, não uma decisão de arquivo. A mesma vista oferece três disposições (Híbrida, Agregada, Lista), um interruptor para as tarefas concluídas, e pesquisa de tarefas, e o botão + na vista Todos pode começar diretamente uma nota de tarefas."
       ]
     },
     "journal": {
@@ -488,8 +502,8 @@
     "biometric-unlock": {
       "q": "O desbloqueio biométrico deixou de funcionar. O que posso fazer?",
       "a": [
-        "Nunca ficas sem acesso. O ecrã de bloqueio oferece sempre uma alternativa: \"Desbloquear com PIN\", ou \"Iniciar sessão com a frase de recuperação\". A biometria é um fecho local, não uma chave de encriptação, por isso as tuas notas ficam intactas de qualquer forma.",
-        "Depois, arranja o fecho. O registo é por dispositivo, por isso um telemóvel novo, um perfil de navegador acabado de criar, ou uma reinstalação precisam de novo registo: Definições > Segurança > \"Bloqueio\", desativa, depois \"Ativar o desbloqueio biométrico\" outra vez. Também exige \"Confiar neste dispositivo\" (as sessões não confiáveis desaparecem quando o separador fecha) e hardware com um autenticador de plataforma (Touch ID, Face ID, Windows Hello). Se um gestor de palavras-passe como o Bitwarden ou o 1Password aparecer em vez da janela do sistema, dispensa-o e tenta de novo, ou desliga a captura de passkeys dele para o site - a app pede o autenticador integrado, mas alguns gestores intercetam à mesma."
+        "Nunca ficas sem acesso. O ecrã de bloqueio oferece sempre uma alternativa: \"Desbloquear com PIN\" (\"Desbloquear com código de acesso\", se definiste um), ou \"Iniciar sessão com a frase de recuperação\". O desbloqueio biométrico só abre a cópia da tua frase de recuperação guardada neste dispositivo, e as tuas notas são encriptadas com chaves da própria frase, por isso ficam intactas de qualquer forma.",
+        "Depois, configura-o de novo. Se o ecrã de bloqueio disser \"O desbloqueio biométrico não conseguiu abrir as tuas notas\", desbloqueia primeiro de outra forma. O registo é por dispositivo, por isso um telemóvel novo, um perfil de navegador acabado de criar, ou uma reinstalação precisam de novo registo: Definições > Segurança > \"Bloqueio\", desativa, depois \"Ativar o desbloqueio biométrico\" outra vez. Também exige \"Confiar neste dispositivo\" (as sessões não confiáveis desaparecem quando o separador fecha) e hardware com um autenticador de plataforma (Touch ID, Face ID, Windows Hello). Se um gestor de palavras-passe como o Bitwarden ou o 1Password aparecer em vez da janela do sistema, dispensa-o e tenta de novo, ou desliga a captura de passkeys dele para o site - a app pede o autenticador integrado, mas alguns gestores intercetam à mesma."
       ]
     },
     "phrase-compromised": {
@@ -647,7 +661,14 @@
       "q": "Como funcionam em conjunto as secções, pastas, etiquetas e espaços?",
       "a": [
         "Tudo o que guardas vive numa única biblioteca. As secções da barra lateral, como Notas, Cofre e Diários, são vistas dessa biblioteca por tipo. Uma pasta é um lugar, por isso uma pasta pode guardar uma nota e o início de sessão que lhe pertence, e a árvore de pastas é a mesma em cada secção. Os números contam o que a secção aberta contém, e uma pasta sem nada dela aparece esbatida. Uma etiqueta é um rótulo, e a barra lateral só lista as etiquetas que a secção aberta usa.",
-        "Os espaços dividem a biblioteca em Pessoal e Trabalho e mostram um de cada vez. Uma pasta de primeiro nível pertence a um espaço, com tudo o que tem dentro, e **Mover para Trabalho** no seu menu passa-a para o outro. Um item sem pasta pertence a Pessoal, por isso tudo o que crias em Trabalho vai para uma pasta de Trabalho. As etiquetas são gratuitas, e as pastas e os espaços precisam de Pro."
+        "Os espaços dividem a biblioteca em Pessoal e Trabalho, e uma pasta de primeiro nível pertence a um espaço, com tudo o que tem dentro. [Como funcionam os espaços](/pt/help/spaces/) explica o seletor, como passar itens de um espaço para o outro e como desativar os espaços. As etiquetas são gratuitas, e as pastas e os espaços precisam de Pro."
+      ]
+    },
+    "spaces": {
+      "q": "Como funcionam os espaços Pessoal e Trabalho?",
+      "a": [
+        "Os espaços dividem a tua biblioteca em Pessoal e Trabalho. O seletor junto a **Ir** na barra lateral mostra **Todos**, **Pessoal** ou **Trabalho**: Todos mostra todos os itens, e os outros dois mostram um espaço cada. Cada dispositivo guarda a sua própria escolha, por isso o telemóvel pode mostrar Pessoal enquanto o portátil mostra Trabalho, e abrir um item do outro espaço muda para esse espaço. Os espaços só mudam o que as listas mostram: todos os itens continuam a sincronizar para todos os dispositivos.",
+        "Uma pasta de primeiro nível pertence a um espaço, com tudo o que tem dentro, e **Mover para Trabalho** ou **Mover para Pessoal** no seu menu, ou no menu de qualquer item, passa-a para o outro. Um item sem pasta é Pessoal, tal como tudo o que crias com Todos aberto. Para deixar de usar espaços, desativa Definições > Listas > Espaços: todos os itens aparecem, nada se move, e cada pasta mantém o seu espaço para quando os voltares a ativar. Os espaços precisam de Pro."
       ]
     },
     "note-links": {
@@ -717,8 +738,8 @@
     "note-history": {
       "q": "Posso recuperar uma versão anterior de uma nota?",
       "a": [
-        "Sim, com Pro. Abre o menu \"...\" da nota e escolhe \"Histórico\" para percorrer e restaurar até 20 versões anteriores. Restaurar não perde nada: o texto atual é guardado antes como versão, por isso podes andar para a frente e para trás. As versões são encriptadas como a própria nota, por isso nós também não as conseguimos ler.",
-        "É tirado um instantâneo no máximo uma vez por minuto, por isso duas edições com segundos de intervalo partilham uma versão. O histórico é a única funcionalidade Pro que passa pelo servidor, e é por isso que a demonstração guarda antes uma cópia local própria. Todos os planos têm ainda o [lixo](/pt/help/trash-auto-delete/), que guarda uma nota apagada durante 30 dias."
+        "Sim, com Pro. Abre o menu \"...\" da nota e escolhe \"Histórico\" para percorrer até 50 versões anteriores, comparar uma delas com a nota atual e restaurá-la. Restaurar não perde nada: o texto atual é guardado antes como versão, por isso podes andar para a frente e para trás. As versões são encriptadas como a própria nota, por isso nós também não as conseguimos ler.",
+        "Cada versão é a nota tal como estava antes de uma edição: é guardada uma na tua primeira edição após uma pausa de cinco minutos, uma a cada dez minutos enquanto continuas a escrever, e uma antes de uma edição que remova mais de metade de uma nota com 200 caracteres ou mais, a não ser que a última versão tenha menos de 30 segundos. O histórico é a única funcionalidade Pro que passa pelo servidor, e é por isso que a demonstração guarda antes uma cópia local própria. Todos os planos têm ainda o [lixo](/pt/help/trash-auto-delete/), que guarda uma nota apagada durante 30 dias."
       ]
     },
     "vault-totp": {
@@ -849,10 +870,10 @@
       ]
     },
     "quick-switcher": {
-      "q": "O que é a função «Ir para» e o que consegue encontrar?",
+      "q": "O que é a navegação rápida e o que consegue encontrar?",
       "a": [
-        "A função «Ir para» salta para qualquer coisa pelo título. Carrega em Cmd+K num Mac ou Ctrl+K no Windows e no Linux (Cmd+P ou Ctrl+P também funciona), ou clica em **Ir para** na barra lateral ou no cabeçalho da lista. Escreve parte de um título para encontrar notas, tarefas, entradas de diário, itens do Cofre, marcadores, contactos, ficheiros anexados e definições. Enter abre o item, e Option+Enter ou Alt+Enter abre-o num separador.",
-        "Escreve > primeiro para executar um comando, como criar uma nota nova ou ir para uma secção. Para encontrar palavras dentro do texto em vez de nos títulos, escolhe a linha **Procurar em tudo**, ou carrega em Cmd+Enter ou Ctrl+Enter a partir de qualquer linha. A correspondência acontece no teu dispositivo, por isso nada do que escreves nos é enviado. A função «Ir para» é gratuita."
+        "A navegação rápida salta para qualquer coisa pelo título. Carrega em Cmd+K num Mac ou Ctrl+K no Windows e no Linux (Cmd+P ou Ctrl+P também funciona), ou clica em **Ir** na barra lateral ou no cabeçalho da lista. Escreve parte de um título para encontrar notas, tarefas, entradas de diário, itens do Cofre, marcadores, contactos, ficheiros anexados e definições. Enter abre o item, e Option+Enter ou Alt+Enter abre-o num separador.",
+        "Escreve > primeiro para executar um comando, como criar uma nota nova ou ir para uma secção. Escreve # primeiro para veres só as tuas etiquetas, ou / para veres só as tuas pastas; escolher uma filtra a lista tal como um clique na barra lateral. Para encontrar palavras dentro do texto em vez de nos títulos, escolhe a linha **Procurar em tudo**, ou carrega em Cmd+Enter ou Ctrl+Enter a partir de qualquer linha. A correspondência acontece no teu dispositivo, por isso nada do que escreves nos é enviado. A navegação rápida é gratuita."
       ]
     },
     "find-in-note": {
@@ -876,6 +897,27 @@
         "Um método de início de sessão que já pertence a outro cofre não pode ser ligado, porque os cofres nunca são fundidos. **Desligar** pede primeiro as tuas 12 palavras. Se formos nós a guardar a tua frase, a última conta ligada fica até ligares outra ou guardares a tua frase e passares para autocustódia. Com autocustódia, um dispositivo novo continua a pedir as tuas 12 palavras. As contas ligadas estão em beta."
       ]
     },
+    "calendar": {
+      "q": "Há um calendário, e o que aparece nele?",
+      "a": [
+        "Sim. O Calendário na barra lateral mostra num só sítio todos os itens com data: eventos, entradas de diário, notas e listas de tarefas com data, e os aniversários dos teus contactos. A lista ao lado é a agenda dos próximos dias, e a vista grande alterna entre Dia, Semana e Mês. Clica num dia vazio para adicionar algo nesse dia, ou arrasta um item para outro dia.",
+        "Um evento é um tipo de item próprio: uma nota com um dia, um dia de fim, uma hora e uma repetição. Escreve uma linha inteira na Adição rápida, por exemplo \"Dentista sexta 15h 1h antes\", e ela lê o dia, a hora e o alerta por ti. Uma nota ou uma lista de tarefas também pode ter um dia, uma hora e um dia de fim, na linha Agendamento do seu menu \"...\". O calendário é gratuito."
+      ]
+    },
+    "reminders": {
+      "q": "Os lembretes do calendário funcionam com a app fechada?",
+      "a": [
+        "Num telemóvel, sim: até 64 alertas, até 400 dias de antecedência, são entregues ao próprio telemóvel, por isso tocam mesmo com o PrivacyNotes fechado; abrir e desbloquear a app entrega mais. Na app de computador, um lembrete toca enquanto a app está a correr, e num navegador enquanto o PrivacyNotes está aberto num separador. Cada dispositivo planeia os seus lembretes a partir dos itens que guarda, por isso o servidor nunca fica a saber um título, uma hora ou um dia.",
+        "Adiciona um alerta na linha Alerta da vista Agendamento de um item, até cinco por item, e define as predefinições em Definições > Calendário, onde também está \"Mostrar títulos nos lembretes\". Um item protegido pelo teu PIN toca sempre como \"Lembrete\" e a hora, tal como todos os alertas agendados enquanto o bloqueio da app está ativo. Um alerta entregue antes de o bloqueio estar ativo pode manter o título até tocar. Os lembretes fazem parte do Pro; o calendário em si é gratuito."
+      ]
+    },
+    "calendar-time-zones": {
+      "q": "O que acontece às horas dos eventos quando viajo para outro fuso horário?",
+      "a": [
+        "Uma hora no calendário fica a hora que escreveste. Um evento às 15:00 aparece e toca às 15:00 onde quer que o teu dispositivo esteja, tal como um lembrete numa app de tarefas, porque cada hora é guardada como hora local, sem fuso horário. Um telemóvel agenda cada alerta para um momento exato, por isso, depois de uma mudança de fuso horário, abre e desbloqueia o PrivacyNotes uma vez no novo fuso para mover os seus alertas; enquanto está aberto e desbloqueado, move-os sozinho.",
+        "Para uma chamada com alguém noutro fuso horário, introduz a hora tal como é onde tu estás. Se uma mudança da hora de verão saltar a hora de um alerta, o alerta toca no primeiro minuto depois do salto."
+      ]
+    },
     "session-expired": {
       "q": "Porque é que a app diz \"Sessão expirada\"?",
       "a": [
@@ -887,7 +929,7 @@
       "q": "O que faz o Arquivo e em que é diferente do Lixo?",
       "a": [
         "Arquivar tira um item das tuas listas sem o apagar. Escolhe **Arquivar** no menu \"...\" do item ou no menu do botão direito, ou na barra de seleção para vários itens de uma vez. Os itens arquivados saem de Todos, da sua secção, de Fixados e das contagens de pastas e etiquetas, e esperam na vista **Arquivo** no fundo da barra lateral, que aparece assim que algo é arquivado. Para os manteres em Todos e nas contagens, marca Arquivo na coluna **Todos** de Definições > Listas. **Desarquivar** nos mesmos sítios traz um item de volta.",
-        "O Lixo é para o que queres ver desaparecer: [apaga-o de vez ao fim de 30 dias](/pt/help/trash-auto-delete/), a não ser que desligues isso. O Arquivo nunca apaga nada, e os itens arquivados continuam ao teu alcance, porque uma procura em Todos, a função «Ir para» e as ligações entre notas continuam a encontrá-los. Sincronizam e ficam encriptados como tudo o resto, e continuam a contar para o teu armazenamento. O Arquivo funciona com todos os tipos de item e é gratuito."
+        "O Lixo é para o que queres ver desaparecer: [apaga-o de vez ao fim de 30 dias](/pt/help/trash-auto-delete/), a não ser que desligues isso. O Arquivo nunca apaga nada, e os itens arquivados continuam ao teu alcance, porque uma procura em Todos, a navegação rápida e as ligações entre notas continuam a encontrá-los. Sincronizam e ficam encriptados como tudo o resto, e continuam a contar para o teu armazenamento. O Arquivo funciona com todos os tipos de item e é gratuito."
       ]
     },
     "share-into-app": {

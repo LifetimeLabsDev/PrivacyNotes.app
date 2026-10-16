@@ -8,7 +8,6 @@
     "title": "Taken",
     "newTaskNote": "Nieuwe takennotitie",
     "newTaskNoteWithHotkey": "Nieuwe takennotitie ({{hotkey}})",
-    "new": "Nieuw",
     "hideCompleted": "Afgeronde taken verbergen",
     "showCompleted": "Afgeronde taken tonen",
     "searchPlaceholder": "Taken zoeken…",
@@ -37,12 +36,9 @@
     "deselectAll": "Selectie opheffen",
     "selectAll": "Alles selecteren",
     "storage": "Opslag",
-    "supportedTypesHint": "Maximale bestandsgrootte: {{max}} MB",
     "perFile": "Per bestand",
     "free": "Gratis",
     "upgradeToPro": "Upgrade naar Pro",
-    "addStorage": "Opslag toevoegen",
-    "upToMax": "tot {{max}}",
     "filterAll": "Alles",
     "filterImages": "Afbeeldingen",
     "filterAudio": "Audio",
@@ -115,6 +111,7 @@
     "video": "Video",
     "image": "Afbeelding",
     "pdf": "PDF",
+    "email": "E-mail",
     "archive": "Archief",
     "document": "Document",
     "spreadsheet": "Spreadsheet",
@@ -188,7 +185,8 @@
     "markdown": "Markdown",
     "markdownTip": "Onversleuteld",
     "bookmarks": "Bladwijzers",
-    "contacts": "Contacten"
+    "contacts": "Contacten",
+    "calendar": "Agenda"
   },
   "browseToggle": {
     "label": "Bladeren op",
@@ -204,6 +202,10 @@
     "deleteConfirmTitle": "Map verwijderen?",
     "deleteConfirmBodyRoot": "\"{{folder}}\" wordt verwijderd. De notities en submappen gaan naar het hoofdniveau. Er worden geen notities verwijderd.",
     "deleteConfirmBodyNested": "\"{{folder}}\" wordt verwijderd. De notities en submappen gaan naar \"{{parent}}\". Er worden geen notities verwijderd.",
+    "deleteConfirmBranchRoot": "\"{{folder}}\" en de submappen worden verwijderd. De notities gaan naar het hoofdniveau. Er worden geen notities verwijderd.",
+    "deleteConfirmBranchNested": "\"{{folder}}\" en de submappen worden verwijderd. De notities gaan naar \"{{parent}}\". Er worden geen notities verwijderd.",
+    "deleteSubfolders_one": "Ook de submap verwijderen",
+    "deleteSubfolders_other": "Ook de {{count}} submappen verwijderen",
     "moveTo": "Naar map verplaatsen",
     "searchPlaceholder": "Mappen zoeken",
     "sortFolders": "Mappen sorteren",
@@ -221,7 +223,8 @@
     "saveName": "Mapnaam opslaan",
     "actionsForFolder": "Acties voor map {{folder}}",
     "seedSecurity": "Beveiliging",
-    "seedTravel": "Reizen"
+    "seedTravel": "Reizen",
+    "seedTeam": "Team"
   },
   "collapsedSidebar": {
     "newNote": "Nieuwe notitie",
@@ -268,7 +271,19 @@
     "sizeHint": "Totale versleutelde grootte van dit item.",
     "tagCount_one": "{{count}} tag",
     "tagCount_other": "{{count}} tags",
-    "entryDate": "Dagboekdatum"
+    "entryDate": "Dagboekdatum",
+    "noDate": "Geen",
+    "schedule": "Planning",
+    "ends": "Eindigt",
+    "sameDay": "Zelfde dag",
+    "allDay": "Hele dag",
+    "starts": "Begint",
+    "endsAt": "Eindigt om",
+    "noEnd": "Geen",
+    "removeFromCalendar": "Uit agenda verwijderen",
+    "makeEvent": "Maak hier een afspraak van om het te herhalen",
+    "typeEvent": "Afspraak",
+    "repeatRemoved": "De herhaling wordt verwijderd"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "Selectie verlaten (Esc)",
@@ -303,6 +318,8 @@
     "showSize": "Bestandsgrootte tonen",
     "showTags": "Map en tags tonen",
     "showCalendar": "Kalender tonen",
+    "showWorkItems": "Items uit <b>Werk</b> tonen",
+    "showPersonalItems": "Items uit <b>Persoonlijk</b> tonen",
     "other": "Overig",
     "showReadOnly": "Alleen-lezen tonen",
     "showProtected": "Beveiligde tonen",
@@ -331,7 +348,8 @@
     "nextMonth": "Volgende maand",
     "dayWithEntry": "{{date}}, met een dagboeknotitie",
     "dayWithEntryIn": "{{date}}, met een dagboeknotitie in {{space}}",
-    "dayWithEntryBoth": "{{date}}, met dagboeknotities in Persoonlijk en Werk",
+    "dayWithItems_one": "{{date}}, {{count}} item",
+    "dayWithItems_other": "{{date}}, {{count}} items",
     "previousWeek": "Vorige week",
     "nextWeek": "Volgende week",
     "showMonth": "{{month}}, hele maand tonen",
@@ -375,11 +393,14 @@
     "copyBookmarkUrl": "URL kopiëren",
     "editBookmark": "Bladwijzer bewerken",
     "openInTab": "Openen in tabblad",
+    "openInTabHint": "{{key}}-klik",
     "closeTab": "Tabblad sluiten",
     "closeOtherTabs": "Andere tabbladen sluiten",
     "closeAllTabs": "Alle tabbladen sluiten",
     "pinTab": "Tabblad vastzetten",
-    "unpinTab": "Tabblad losmaken"
+    "unpinTab": "Tabblad losmaken",
+    "newEvent": "Nieuwe afspraak",
+    "quickAdd": "Snel toevoegen"
   },
   "demoBanner": {
     "title": "Probeer het zonder risico",
@@ -636,6 +657,9 @@
       "mastodon": "Mastodon"
     }
   },
+  "staleEditor": {
+    "copyToast": "Deze notitie is op een ander apparaat gewijzigd. Je wijzigingen staan in een kopie, \"{{title}}\"."
+  },
   "noteLinks": {
     "retargetedToast_one": "{{count}} notitielink bijgewerkt naar de nieuwe titel.",
     "retargetedToast_other": "{{count}} notitielinks bijgewerkt naar de nieuwe titel."
@@ -645,7 +669,8 @@
   },
   "tabStrip": {
     "label": "Open tabbladen",
-    "close": "{{title}} sluiten"
+    "close": "{{title}} sluiten",
+    "moreTabs": "Meer tabbladen"
   },
   "shareInbox": {
     "saved": "Opgeslagen in PrivacyNotes",
@@ -674,10 +699,11 @@
   },
   "spaces": {
     "label": "Ruimte",
+    "all": "Alle",
     "personal": "Persoonlijk",
     "work": "Werk",
-    "moveToWork": "Naar Werk verplaatsen",
-    "moveToPersonal": "Naar Persoonlijk verplaatsen",
+    "moveToWork": "Naar <b>Werk</b> verplaatsen",
+    "moveToPersonal": "Naar <b>Persoonlijk</b> verplaatsen",
     "movedToWork": "{{folder}} verplaatst naar Werk",
     "movedToPersonal": "{{folder}} verplaatst naar Persoonlijk",
     "itemMovedToWork": "Verplaatst naar Werk",
@@ -686,6 +712,218 @@
     "switchedToPersonal": "Overgeschakeld naar Persoonlijk",
     "switchToWork": "Naar Werk wisselen",
     "switchToPersonal": "Naar Persoonlijk wisselen",
+    "switchToAll": "Alle ruimtes tonen",
     "workEmpty": "Werk is leeg. Open in Persoonlijk het menu van een item of een map en kies Naar Werk verplaatsen."
+  },
+  "calendar": {
+    "moveToToday": "Naar vandaag verplaatsen",
+    "moveToTomorrow": "Naar morgen verplaatsen",
+    "moveToNextWeek": "Naar volgende week verplaatsen",
+    "deleteEvent": "Afspraak verwijderen",
+    "openContact": "Contact openen",
+    "newOnDay": "Nieuwe afspraak op deze dag",
+    "showDay": "Deze dag tonen",
+    "open": "De agenda openen",
+    "back": "Agenda",
+    "more_other": "+{{count}} meer",
+    "addOn": "Toevoegen op {{date}}",
+    "nothingFor_other": "Niets gepland voor {{count}} dagen",
+    "nothingToday": "Niets vandaag",
+    "allDay": "Hele dag",
+    "now": "Nu",
+    "viewLabel": "Agendaweergave",
+    "views": {
+      "day": "Dag",
+      "week": "Week",
+      "month": "Maand"
+    },
+    "legendLabel": "Tonen in de agenda",
+    "kinds": {
+      "event": "Afspraken",
+      "note": "Notities",
+      "task": "Takenlijsten",
+      "journal": "Dagboeknotities",
+      "contact": "Verjaardagen"
+    },
+    "dragEnd": "Sleep om de einddag te wijzigen",
+    "previousDay": "Vorige dag",
+    "nextDay": "Volgende dag",
+    "seedWeeklyReview": "Weekoverzicht",
+    "seedWeeklyReviewBody": "Elke vrijdag om vier uur. Wat is af, wat is blijven liggen, en wat komt er volgende week.",
+    "addToCalendar": "Aan agenda toevoegen",
+    "showAgenda": "Agendalijst tonen",
+    "hideAgenda": "Agendalijst verbergen",
+    "seedDemo": {
+      "lunch": "Lunch met Sam",
+      "dentist": "Tandarts",
+      "callAna": "Gesprek met Ana",
+      "groceries": "Boodschappen",
+      "concert": "Concert",
+      "giftIdeas": "Cadeau-ideeën voor Kon",
+      "flight": "Vlucht naar Lissabon",
+      "conference": "Conferentie in Lissabon",
+      "nightTrain": "Nachttrein naar Porto",
+      "yoga": "Yoga",
+      "sprint": "Sprintplanning",
+      "bookClub": "Leesclub",
+      "rent": "Huur betalen"
+    },
+    "nothingFor_one": "Niets gepland voor {{count}} dag",
+    "more_one": "+{{count}} meer"
+  },
+  "repeat": {
+    "changeTitle": "Dit item wijzigen?",
+    "deleteTitle": "Dit item verwijderen?",
+    "thisOccurrence": "Alleen deze keer",
+    "thisAndFollowing": "Deze en volgende",
+    "allOccurrences": "Alle keren",
+    "label": "Herhalen",
+    "never": "Niet herhalen",
+    "daily_other": "Om de {{count}} dagen",
+    "weekdays": "Elke werkdag (maandag tot en met vrijdag)",
+    "weekly_other": "Om de {{count}} weken op {{days}}",
+    "monthlyDay_other": "Om de {{count}} maanden op dag {{day}}",
+    "monthlyNth_other": "Om de {{count}} maanden op de {{nth}} {{weekday}}",
+    "yearly_other": "Om de {{count}} jaar op {{date}}",
+    "withUntil": "{{rule}}, tot {{date}}",
+    "withCount_other": "{{rule}}, {{count}} keer",
+    "nth": {
+      "1": "eerste",
+      "2": "tweede",
+      "3": "derde",
+      "4": "vierde",
+      "last": "laatste"
+    },
+    "custom": "Aangepast",
+    "every": "Elke",
+    "units": {
+      "day_other": "dagen",
+      "week_other": "weken",
+      "month_other": "maanden",
+      "year_other": "jaar",
+      "year_one": "jaar",
+      "month_one": "maand",
+      "week_one": "week",
+      "day_one": "dag"
+    },
+    "onDays": "Op",
+    "onDay": "Dag {{day}}",
+    "onNth": "De {{nth}} {{weekday}}",
+    "ends": "Eindigt",
+    "endsNever": "Nooit",
+    "endsOn": "Op een datum",
+    "endsAfter": "Na een aantal keer",
+    "times_other": "{{count}} keer",
+    "apply": "Toepassen",
+    "times_one": "{{count}} keer",
+    "withCount_one": "{{rule}}, {{count}} keer",
+    "yearly_one": "Elk jaar op {{date}}",
+    "monthlyNth_one": "Elke maand op de {{nth}} {{weekday}}",
+    "monthlyDay_one": "Elke maand op dag {{day}}",
+    "weekly_one": "Elke week op {{days}}",
+    "daily_one": "Elke dag"
+  },
+  "alerts": {
+    "label": "Melding",
+    "none": "Geen",
+    "atTime": "Op het tijdstip",
+    "minutesBefore_other": "{{count}} minuten van tevoren",
+    "hoursBefore_other": "{{count}} uur van tevoren",
+    "daysBefore_other": "{{count}} dagen van tevoren",
+    "weeksBefore_other": "{{count}} weken van tevoren",
+    "onDayAt": "Op de dag zelf om {{time}}",
+    "daysBeforeAt_other": "{{count}} dagen van tevoren om {{time}}",
+    "custom": "Aangepast",
+    "add": "Toevoegen",
+    "max": "Maximaal vijf meldingen.",
+    "units": {
+      "minutes": "minuten",
+      "hours": "uur",
+      "days": "dagen",
+      "weeks": "weken"
+    },
+    "at": "om",
+    "remove": "{{alert}} verwijderen",
+    "reminder": "Herinnering",
+    "open": "Openen",
+    "snooze": "10 min sluimeren",
+    "offOnPhone": "Herinneringen staan uit op deze telefoon",
+    "turnOn": "Inschakelen",
+    "openSettings": "Instellingen openen",
+    "daysBeforeAt_one": "{{count}} dag van tevoren om {{time}}",
+    "weeksBefore_one": "{{count}} week van tevoren",
+    "daysBefore_one": "{{count}} dag van tevoren",
+    "hoursBefore_one": "{{count}} uur van tevoren",
+    "minutesBefore_one": "{{count}} minuut van tevoren"
+  },
+  "quickAdd": {
+    "group": "Aanmaken",
+    "items": "Items",
+    "createNamed": "{{type}}: {{title}}",
+    "types": {
+      "event": "Nieuwe afspraak",
+      "note": "Nieuwe notitie",
+      "task": "Nieuwe takenlijst",
+      "journal": "Nieuwe dagboeknotitie"
+    },
+    "keepAsText": "Als tekst houden",
+    "placeholder": "Titel, dag, tijd, herhaling...",
+    "example": "Probeer: {{example}}",
+    "examples": {
+      "1": "Tandarts vr 15:00 1 uur vooraf",
+      "2": "Weekoverzicht elke vrijdag 16-17",
+      "3": "Bank bellen morgen 11:30 gedurende 30 min",
+      "4": "Huur elke maand op de 1e 1 dag vooraf",
+      "5": "Examen over 3 dagen #school",
+      "6": "taak Paklijst do 18:00"
+    },
+    "examplesGroup": "Voorbeeldzinnen",
+    "syntax": {
+      "group": "Wat je kunt typen",
+      "day": {
+        "label": "Dag",
+        "examples": "morgen · vr · volgende wo · 31 okt · over 3 dagen",
+        "insert": "morgen"
+      },
+      "time": {
+        "label": "Tijd",
+        "examples": "15:00 · 15.00 · 16-17 · om 9 uur",
+        "insert": "15:00"
+      },
+      "length": {
+        "label": "Duur",
+        "examples": "gedurende 30 min · gedurende 3 dagen · vr tot zo",
+        "insert": "gedurende 1 uur"
+      },
+      "repeat": {
+        "label": "Herhalen",
+        "examples": "elke vrijdag · elke werkdag · elke maand op de 1e",
+        "insert": "elke vrijdag"
+      },
+      "alert": {
+        "label": "Melding",
+        "examples": "1 uur vooraf · melding 10 min",
+        "insert": "1 uur vooraf"
+      },
+      "place": {
+        "label": "Map en tag",
+        "examples": "/Reizen · #school",
+        "insert": "#"
+      },
+      "space": {
+        "label": "Ruimte",
+        "examples": "@werk · @persoonlijk",
+        "insert": "@werk"
+      },
+      "type": {
+        "label": "Type",
+        "examples": "taak · notitie · dagboek (een afspraak als je niets typt)",
+        "insert": "taak"
+      }
+    },
+    "label": "Snel toevoegen"
+  },
+  "offline": {
+    "notLoaded": "Je bent offline en dit deel van de app is nog niet geladen. Probeer het opnieuw zodra je weer online bent."
   }
 }

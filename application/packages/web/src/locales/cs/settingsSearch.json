@@ -68,6 +68,7 @@
     "appearance_contentWidth": "šířka sloupce, široké, plná šířka, okraje",
     "appearance_editor": "markdown, formátovaný text, wysiwyg, režim editoru",
     "appearance_copyFormat": "kopírovat, schránka, prostý text, vložit, zaškrtávací políčko",
+    "appearance_pasteFormat": "vložit, schránka, prostý text, formátování, bez formátování, přizpůsobit stylu",
     "appearance_favicons": "favicon, ikony webů, loga",
     "appearance_invisibles": "znak odstavce, mezery, prázdné znaky, skryté znaky, formátovací značky",
     "appearance_startView": "úvodní stránka, domů, výchozí zobrazení, otevřít na",
@@ -83,11 +84,19 @@
     "about_openSource": "zdrojový kód, github, open source, otevřený kód",
     "about_feedback": "zpětná vazba, kontakt, nahlásit chybu, návrh",
     "about_dataStorage": "data, server, kde jsou uložena, soukromí",
-    "about_singleKeys": "klávesnice, zkratky, klávesové zkratky, jedna klávesa, j, k, přístupnost, /, >",
+    "about_singleKeys": "klávesnice, zkratky, klávesové zkratky, jedna klávesa, j, k, q, kalendář, přístupnost, /, >",
     "about_changelog": "poznámky k vydání, co je nového, novinky, aktualizace",
     "about_hotkeys": "klávesové zkratky, zkratky, klávesy, hotkeys",
     "about_rating": "recenze, hodnocení, ohodnotit, hvězdičky, app store",
     "appearance_openInTabs": "karty, panel karet, prohlížeč, otevřít, taby",
+    "section_calendar": "kalendář, událost, připomínka, upozornění, oznámení, týden, měsíc, plán, termín, narozeniny",
+    "calendar_alertTimed": "upozornění, připomínka, oznámení, výchozí, minuty, předem, událost",
+    "calendar_alertAllDay": "upozornění, připomínka, oznámení, výchozí, celý den, celodenní, ráno",
+    "calendar_alertBirthday": "narozeniny, kontakt, upozornění, připomínka",
+    "calendar_reminderTitles": "soukromí, zamykací obrazovka, název, připomínka, oznámení",
+    "calendar_where": "oznámení, povolení, oprávnění, prohlížeč, telefon, počítač, připomínka",
+    "calendar_weekNumbers": "číslo týdne, týden ISO, kalendář",
+    "calendar_hours": "hodiny, pracovní doba, zobrazení dne, zobrazení týdne, ráno",
     "appearance_formatBar": "panel nástrojů, lišta formátování, tlačítka, upravit, uspořádat, odrážkový seznam, přeškrtnutí, ozubené kolo"
   }
 }

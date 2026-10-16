@@ -10,6 +10,43 @@
     "otherGuides": "Weitere Import-Anleitungen"
   },
   "guides": {
+    "google-calendar": {
+      "app": "Google Kalender",
+      "title": "Deinen Google Kalender exportieren",
+      "metaTitle": "Google Kalender exportieren - PrivacyNotes",
+      "lead": "Google Kalender exportiert alle Kalender, die du verwaltest, als eine einzige .zip aus den Einstellungen, auf einem Computer. PrivacyNotes liest diese .zip direkt, ohne Entpacken.",
+      "sections": [
+        {
+          "h": "Alle Kalender auf einmal exportieren",
+          "steps": [
+            "Öffne [Google Kalender](https://calendar.google.com) in einem Browser auf einem Computer. Die App auf dem Handy hat keinen Export.",
+            "Klicke oben rechts auf das Zahnrad und dann auf \"Settings\" (Einstellungen).",
+            "Klicke in der Liste links auf \"Import & export\".",
+            "Klicke unter \"Export\" auf \"Export\". Dein Browser lädt eine .zip herunter, mit einer .ics-Datei für jeden Kalender.",
+            "Lass die .zip genau so, wie sie ist."
+          ],
+          "p": [
+            "Die .zip enthält jeden Kalender, für den du die Berechtigung \"Make changes and manage sharing\" hast, deinen eigenen eingeschlossen. Kalender, die du nur ansehen kannst, etwa Feiertage oder der Kalender eines Kollegen, sind nicht dabei. Bei einem Arbeits- oder Schulkonto kann deine Administration den Export einschränken."
+          ]
+        },
+        {
+          "h": "Oder einen einzelnen Kalender exportieren",
+          "steps": [
+            "Zeige in der Liste links unter \"My calendars\" auf den Namen des Kalenders, klicke auf \"More\" (die drei Punkte) und dann auf \"Settings and sharing\".",
+            "Klicke unter \"Calendar settings\" auf \"Export calendar\". Dein Browser lädt eine .zip herunter, die die .ics-Datei dieses Kalenders enthält. Lass sie, wie sie ist."
+          ]
+        },
+        {
+          "h": "Was mitkommt",
+          "p": [
+            "Jeder Termin kommt mit seinem Tag, seiner Uhrzeit und seiner Dauer an, auch Termine über mehrere Tage. Wiederholte Termine behalten ihre Regel, und ein Termin der Serie, den du in Google verschoben oder gelöscht hast, bleibt verschoben oder gelöscht. Jeder Kalender wird zu einem Ordner.",
+            "Erinnerungen, die du an einem Termin eingestellt hast, kommen ebenfalls mit, E-Mail-Erinnerungen eingeschlossen: Sie werden zu App-Erinnerungen, die PrivacyNotes Pro brauchen, um zu klingeln. Ein Termin, der die Standard-Erinnerungen deines Kalenders nutzte, kommt ohne Erinnerung an, weil Google Standardwerte nicht in die Datei schreibt. Der Ort, der Link zum Videoanruf, die Gäste und die Beschreibung landen im Text des Termins. Uhrzeiten erscheinen so, wie sie beim Import auf diesem Gerät angezeigt wurden.",
+            "Eine einzelne .ics-Datei aus einer beliebigen Kalender-App funktioniert auch, Apple Kalender und Outlook eingeschlossen.",
+            "Importierst du dieselbe Datei später noch einmal, werden Termine, die schon da sind, übersprungen, sodass nur neue hinzukommen."
+          ]
+        }
+      ]
+    },
     "google-keep": {
       "app": "Google Keep",
       "title": "Deine Google-Keep-Notizen exportieren",
@@ -63,6 +100,40 @@
         }
       ]
     },
+    "bear": {
+      "app": "Bear",
+      "title": "Deine Bear-Notizen exportieren",
+      "metaTitle": "Bear-Notizen exportieren - PrivacyNotes",
+      "lead": "Bear exportiert deine ganze Bibliothek als eine einzige Backup-Datei, und genau die bringst du mit: Sie enthält jede Notiz, auch Archiv und Papierkorb.",
+      "sections": [
+        {
+          "h": "Ein Bear-Backup erstellen",
+          "steps": [
+            "Öffne Bear auf deinem Mac.",
+            "Wähle File > Backup Notes...",
+            "Speichere die Datei. Du bekommst eine .bear2bk-Datei, die deine ganze Bibliothek enthält.",
+            "Ziehe diese .bear2bk unverändert in den Importer."
+          ]
+        },
+        {
+          "h": "Das Backup enthält mehr als ein Export",
+          "p": [
+            "File > Export Notes... schreibt nur die Notizen der Ansicht, die du gerade geöffnet hast, archivierte und gelöschte Notizen bleiben also draußen. Das Backup enthält sie alle und merkt sich, welche Notizen angepinnt, archiviert, gelöscht oder schreibgeschützt waren.",
+            "Hast du nur einen Markdown- oder Text-Bundle-Export, zippe ihn und ziehe die Zip hinein. Text, Tags und Anhänge kommen mit, Archiv, Papierkorb und Pins aber nicht, weil diese Exporte sie nie schreiben.",
+            "Exportierst du von Hand aus Bear? Wähle mindestens zwei Notizen aus. Bei einer einzelnen Notiz öffnet sich ein Speichern-Dialog, der der Datei die falsche Endung geben kann."
+          ]
+        },
+        {
+          "h": "Was mitkommt",
+          "p": [
+            "Deine Tags kommen als Tags mit. Verschachtelte Tags wie #work/projects werden zusätzlich als Ordner nachgebaut, und jede Notiz landet im Ordner ihres tiefsten Tags. Verknüpfungen zwischen Notizen werden zu Notiz-Links, und ein Link auf eine Überschrift zeigt auf diese Überschrift.",
+            "Die Formatierung bleibt erhalten: Überschriften, Fett, Kursiv, Unterstrichen, Durchgestrichen, Hervorhebungen in ihren Bear-Farben, Aufgabenlisten, Tabellen, Codeblöcke, Zitate, Hinweisboxen, Formeln und Fußnoten. Bilder öffnen sich in voller Breite, und eingeklappte Überschriften kommen aufgeklappt an.",
+            "Angepinnte Notizen bleiben angepinnt, archivierte Notizen landen im Archiv, gelöschte Notizen im Papierkorb, schreibgeschützte Notizen bleiben schreibgeschützt, und jede Notiz behält ihre Originaldaten.",
+            "Bilder und Dateien, die an deinen Notizen hängen, werden in deinen Speicher importiert. Eine Notiz, die auf eine Datei verweist, die das Backup nicht enthält, wird trotzdem importiert, und die Import-Vorschau sagt dir, wie viele Links das betrifft."
+          ]
+        }
+      ]
+    },
     "obsidian": {
       "app": "Obsidian",
       "title": "Deinen Obsidian-Vault exportieren",
@@ -92,21 +163,21 @@
       "app": "Standard Notes",
       "title": "Deine Standard Notes exportieren",
       "metaTitle": "Ein Standard-Notes-Backup exportieren - PrivacyNotes",
-      "lead": "Standard Notes bietet ein entschlüsseltes Backup als Export an, und genau diese Datei liest PrivacyNotes. Ein wichtiges Detail vorweg: Es muss die entschlüsselte Variante sein, nicht die verschlüsselte.",
+      "lead": "Standard Notes exportiert dein Konto als ein entschlüsseltes Backup. Es bringt Super-Notizen mit ihrer Formatierung mit, dazu Checklisten, Tags und 2FA-Codes.",
       "sections": [
         {
           "h": "Notizen aus Standard Notes exportieren",
           "steps": [
             "Öffne Standard Notes (im Web unter app.standardnotes.com oder in der Desktop-App) und melde dich an.",
-            "Öffne die Einstellungen (Preferences), dann den Bereich Backups.",
-            "Lade ein Daten-Backup herunter und wähle auf Nachfrage das entschlüsselte Format (decrypted).",
+            "Klicke unten links auf das Konto-Symbol, dann auf Account settings > Backups.",
+            "Wähle unter Data backups die Option Decrypted und klicke auf Download backup. Diese eine Datei enthält alle Notizen, auch die Super-Notizen.",
             "Du bekommst eine .zip mit einer Datei namens \"Standard Notes Backup and Import File.txt\". Lass die Zip, wie sie ist."
           ]
         },
         {
           "h": "Super-Notizen, Checklisten und 2FA-Codes behalten ihre Form",
           "p": [
-            "Super-Notizen behalten Überschriften, Listen, Checklisten, Tabellen, Codeblöcke, Farben und einklappbare Abschnitte. Checklisten landen in Aufgaben, Tabellenblätter werden zu Tabellen, und Authenticator-Einträge werden zu Logins im Tresor, samt 2FA-Schlüssel. Verschachtelte Tags werden zu Ordnern, und jede Notiz behält zusätzlich ihre Tags.",
+            "Super-Notizen behalten ihre Formatierung: Überschriften, Listen, Checklisten, Tabellen, Codeblöcke, Hervorhebungen, Farben, Textausrichtung und einklappbare Abschnitte. Ein Link auf eine andere Notiz wird zu einem Notiz-Link, und ein #hashtag im Text wird zu einem Tag der Notiz. Checklisten landen in Aufgaben, Tabellenblätter werden zu Tabellen, und Authenticator-Einträge werden zu Logins im Tresor, samt 2FA-Schlüssel. Verschachtelte Tags werden zu Ordnern, und jede Notiz behält zusätzlich ihre Tags.",
             "Dateien, die du in Standard Notes hochgeladen hast, bleiben auf deren Server, deshalb enthält das Backup nur ihre Namen. Jede importierte Notiz markiert, wo eine Datei war. Lade diese Dateien aus Standard Notes herunter und füge sie der Notiz wieder hinzu."
           ]
         },
@@ -444,6 +515,47 @@
           "h": "Wenn Bilder oder Dateien fehlen",
           "p": [
             "Ein Backup, das entstanden ist, bevor du \"Backup attachments\" aktiviert hast, enthält keine Dateien, und die Import-Vorschau warnt dich, dass Notizen auf Anhänge verweisen, die das Backup nicht enthält. Passiert das, brich ab, aktiviere die Option in UpNote, klicke erneut auf \"Backup now\", zippe den frischen Ordner und importiere den stattdessen."
+          ]
+        }
+      ]
+    },
+    "joplin": {
+      "app": "Joplin",
+      "title": "Deine Joplin-Notizen exportieren",
+      "metaTitle": "Joplin-Notizen als JEX exportieren - PrivacyNotes",
+      "lead": "Joplin exportiert alle Notizbücher auf einmal als eine JEX-Datei. Sie bringt deine Notizen mit ihren Notizbüchern, Tags, To-dos, Notiz-Links und Anhängen mit.",
+      "sections": [
+        {
+          "h": "Alles als JEX exportieren",
+          "steps": [
+            "Öffne Joplin auf deinem Computer.",
+            "Wähle File > Export all > \"JEX - Joplin Export File\".",
+            "Speichere die Datei. Du bekommst eine .jex-Datei, die jedes Notizbuch enthält, du musst also nichts zippen.",
+            "Ziehe diese .jex unverändert in den Importer."
+          ],
+          "p": [
+            "Tools > Create backup schreibt dieselbe Datei, Byte für Byte, als all_notebooks.jex in einen Ordner JoplinBackup in deinem Home-Ordner. Wenn Joplin diese Backups schon für dich anlegt, funktioniert das neueste genauso gut."
+          ]
+        },
+        {
+          "h": "Wähle JEX, nicht Markdown, HTML oder PDF",
+          "p": [
+            "Export all bietet außerdem MD, MD + Front Matter, HTML directory und PDF an. Das sind Kopien zum Lesen in anderen Apps. Die JEX-Datei ist Joplins eigene Aufzeichnung jeder Notiz, jedes Notizbuchs, Tags und Anhangs, und genau sie lesen wir. Ziehst du einen der anderen Exporte hinein, sagen wir es dir, statt ihn nur halb zu importieren.",
+            "Hast du schon \"RAW - Joplin Export Directory\" exportiert, zippe diesen Ordner und ziehe die Zip hinein. Sie enthält dieselben Einträge wie die JEX-Datei."
+          ]
+        },
+        {
+          "h": "Hole Notizen aus dem Papierkorb, bevor du exportierst",
+          "p": [
+            "Joplin lässt den Papierkorb bei jedem Export und jedem Backup weg. Hole jede Notiz, die du behalten willst, aus dem Papierkorb, bevor du exportierst, sonst bleibt sie in Joplin zurück."
+          ]
+        },
+        {
+          "h": "Was mitkommt",
+          "p": [
+            "Deine Notizbücher werden als echte Ordner nachgebaut, so tief verschachtelt wie in Joplin, und jede Notiz behält ihre Tags und die Erstellungs- und Änderungsdaten, die Joplin dir angezeigt hat.",
+            "To-dos werden zu Aufgabennotizen mit einem Kästchen zum Abhaken, bereits abgehakt, wenn das To-do erledigt war, und ein Fälligkeitsdatum steht weiter neben dem Titel. Verknüpfungen zwischen Notizen werden zu Notiz-Links. Bilder und Anhänge werden in deinen Speicher importiert und bleiben an ihrer Stelle in der Notiz. Als HTML gespeicherte Notizen, etwa viele Web-Clips, werden samt Formatierung umgewandelt.",
+            "Notizen aus Joplins Notizbuch Conflicts kommen mit dem Tag \"conflict\" an, damit du sie findest und sortieren kannst. Nutzt du Joplins Verschlüsselung, lass sie das Entschlüsseln beenden, bevor du exportierst: Ein Eintrag, der noch verschlüsselt ist, wird übersprungen, und die Import-Vorschau sagt dir, wie viele."
           ]
         }
       ]

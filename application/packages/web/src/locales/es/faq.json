@@ -78,8 +78,22 @@
     "import-from-other-apps": {
       "q": "¿Cómo traigo mis notas desde otra app?",
       "a": [
-        "Abre Ajustes > Import & Export y elige tu origen. La lista cubre las apps de las que viene la gente: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes y Apple Journal. Bitwarden y las contraseñas guardadas de tu navegador acaban en la Bóveda, tus marcadores del navegador llegan como marcadores, y un importador de Markdown genérico acepta cualquier carpeta de archivos .md.",
+        "Abre Ajustes > Import & Export y elige tu origen. La lista cubre las apps de las que viene la gente: Apple Notes, Bear, Obsidian, Evernote, Standard Notes, Joplin, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes y Apple Journal. Bitwarden y las contraseñas guardadas de tu navegador acaban en la Bóveda, tus marcadores del navegador llegan como marcadores, y un importador de Markdown genérico acepta cualquier carpeta de archivos .md.",
         "Las importaciones se ejecutan por completo en tu dispositivo: tus archivos exportados se leen, cifran y guardan en local, nada se sube para procesarlo. Cada nota importada recibe una etiqueta con su origen para que puedas revisar el lote después, y las listas de Google Keep incluso se convierten en listas de tareas nativas."
+      ]
+    },
+    "import-bear": {
+      "q": "¿Cómo paso mis notas de Bear a PrivacyNotes?",
+      "a": [
+        "Haz una copia de seguridad de Bear e impórtala. En Bear, elige File > Backup Notes... y guarda el archivo .bear2bk. Después abre Ajustes > Import & Export, elige Bear y suelta el archivo. La copia contiene toda tu biblioteca, así que las notas archivadas y las de la papelera también vienen, y las notas fijadas y de solo lectura conservan ese estado.",
+        "Tus etiquetas llegan como etiquetas, y las etiquetas anidadas como #work/projects se reconstruyen además como carpetas. Los resaltados conservan sus colores de Bear, los enlaces entre notas se convierten en enlaces entre notas de PrivacyNotes, y las imágenes y los archivos adjuntos se importan a tu almacenamiento. La [guía de importación de Bear](/es/help/import/bear/) muestra cada paso."
+      ]
+    },
+    "import-joplin": {
+      "q": "¿Cómo importo mis notas de Joplin?",
+      "a": [
+        "Exporta un archivo JEX desde Joplin e impórtalo. En Joplin, elige File > Export all > \"JEX - Joplin Export File\" y guarda el archivo. Después abre Ajustes > Import & Export, elige Joplin y suelta el archivo .jex. El archivo más reciente de Tools > Create backup funciona igual.",
+        "Los cuadernos se convierten en carpetas, anidadas tan hondo como en Joplin, y cada nota conserva sus etiquetas y sus fechas. Las tareas pendientes pasan a ser tareas, los enlaces entre notas se convierten en enlaces entre notas de PrivacyNotes y los adjuntos se importan a tu almacenamiento. Joplin deja su papelera fuera de cualquier exportación, así que restaura de la papelera las notas que quieras antes de exportar. La [guía de importación de Joplin](/es/help/import/joplin/) muestra cada paso."
       ]
     },
     "markdown-support": {
@@ -221,10 +235,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Olvidé mi PIN. ¿Cómo vuelvo a entrar?",
+      "q": "Olvidé mi PIN o mi código de acceso. ¿Cómo vuelvo a entrar?",
       "a": [
-        "No se pierde nada, y puedes borrar el PIN tú mismo con tu frase de recuperación. El PIN es un candado de pantalla, no una clave de cifrado: tus notas están cifradas con claves derivadas de la frase, así que la frase es lo que las abre. Atar el cifrado a cuatro dígitos haría que un PIN olvidado destruyera datos. Aquí nunca ocurre.",
-        "Allí donde la app pida el PIN, elige **¿Olvidaste tu PIN?** y escribe tus 12 palabras. Está en la pantalla de bloqueo, en una nota protegida y en **Ajustes > Seguridad > PIN**. El PIN se borra en todos tus dispositivos y puedes establecer uno nuevo enseguida. El desbloqueo biométrico no se ve afectado."
+        "No se pierde nada, y puedes borrar el PIN o el código de acceso tú mismo con tu frase de recuperación. Es un candado de pantalla, no una clave de cifrado: tus notas están cifradas con claves derivadas de la frase, así que la frase es lo que las abre. Atar el cifrado al PIN haría que un PIN olvidado destruyera datos. Aquí nunca ocurre.",
+        "Allí donde la app lo pida, elige **¿Olvidaste tu PIN?** o **¿Olvidaste tu código de acceso?** y escribe tus 12 palabras. Está en la pantalla de bloqueo, en una nota protegida y en **Ajustes > Seguridad > PIN**. Se borra en todos tus dispositivos y puedes establecer uno nuevo enseguida. El desbloqueo biométrico no se ve afectado. Un dispositivo con una versión anterior de la app pide 4 dígitos incluso después de que establezcas un código de acceso; allí, **¿Olvidaste tu PIN?** funciona igual."
       ]
     },
     "delete-account": {
@@ -238,7 +252,7 @@
       "q": "¿Qué se sincroniza exactamente entre mis dispositivos y qué se queda en local?",
       "a": [
         "Todo lo que esperarías, y todo ello cifrado en tu dispositivo: notas, tareas, entradas de diario, tu bóveda y los archivos que contiene. Tus ajustes también te siguen - etiquetas favoritas, preferencias de orden y vista, tema de color, tu PIN (como hash con sal, nunca el PIN en sí), bloqueo de la app, configuración de registros y medicación, y el vaciado automático de la papelera. Configúralo una vez y cada dispositivo lo adopta.",
-        "Unas pocas cosas se quedan a propósito en cada dispositivo: modo claro u oscuro (cada dispositivo sigue su propio ajuste del sistema), desbloqueo biométrico (ligado al hardware de cada equipo) y tu estado de desbloqueo (cerrar la app siempre vuelve a bloquear). El servidor solo almacena blobs cifrados y no puede leer nada de ello."
+        "Unas pocas cosas se quedan a propósito en cada dispositivo: modo claro u oscuro (cada dispositivo sigue su propio ajuste del sistema), desbloqueo biométrico (ligado al hardware de cada equipo), el espacio que muestra la barra lateral y tu estado de desbloqueo (cerrar la app siempre vuelve a bloquear). El servidor solo almacena blobs cifrados y no puede leer nada de ello."
       ]
     },
     "offline": {
@@ -250,7 +264,7 @@
     "sync-conflicts": {
       "q": "¿Qué pasa si edito la misma nota en dos dispositivos a la vez?",
       "a": [
-        "Tus dispositivos fusionan la nota detalle por detalle cuando vuelven a sincronizarse, así que un cambio hecho en solo uno de ellos se conserva. Si ambos editaron el texto estando separados (por ejemplo, uno sin conexión), el dispositivo que se sincroniza en segundo lugar muestra un diálogo de conflicto: quedarte con la versión de este dispositivo, con la otra o con ambas como notas separadas. Las dos versiones se conservan hasta que elijas.",
+        "Tus dispositivos fusionan la nota detalle por detalle cuando vuelven a sincronizarse, así que un cambio hecho en solo uno de ellos se conserva. Si ambos editaron el texto estando separados (por ejemplo, uno sin conexión), el dispositivo que se sincroniza en segundo lugar muestra un diálogo de conflicto: quedarte con la versión de este dispositivo, con la otra o con ambas como notas separadas. Las dos versiones se conservan hasta que elijas. Si la versión del otro dispositivo llega mientras escribes en la nota, tu texto se conserva como una copia marcada con \"(conflict)\" y la nota muestra la otra versión.",
         "Cuando ambos dispositivos cambiaron el mismo detalle estando separados, como la fijación, la carpeta o el título, se conserva el detalle del dispositivo que editó la nota por última vez, sin diálogo. Una nota eliminada para siempre en un dispositivo se elimina en todas partes, incluido un cambio que otro dispositivo le haya hecho mientras estaban separados."
       ]
     },
@@ -359,7 +373,7 @@
     "buy-pro-anonymously": {
       "q": "¿Puedo comprar Pro sin revelar quién soy?",
       "a": [
-        "Sí, con dos herramientas estándar. Para el recibo, usa un alias de correo: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) o [addy.io](https://addy.io) reenvían todos a tu buzón real sin exponerlo. Para el pago, usa una tarjeta enmascarada: [privacy.com](https://privacy.com) en EE. UU. genera tarjetas virtuales que funcionan con cualquier nombre que teclees, y muchos bancos y servicios en otros países ([Revolut](https://www.revolut.com), por ejemplo) ofrecen tarjetas virtuales desechables que hacen el mismo trabajo.",
+        "Sí, con dos herramientas estándar. Para el recibo, usa un alias de correo: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) o [addy.io](https://addy.io) reenvían todos a tu buzón real sin exponerlo. Para el pago, usa una tarjeta enmascarada: [privacy.com](https://privacy.com) en EE. UU. genera tarjetas virtuales que funcionan con cualquier nombre que teclees, y en cualquier otro lugar una tarjeta de prepago que funcione en línea, comprada en efectivo, cumple la misma función sin ningún nombre.",
         "En el pago, Paddle pide un correo, un método de pago y un país (más un código postal en algunas regiones) para calcular impuestos. El alias recibe el recibo, la tarjeta enmascarada lleva el nombre que tú le pusiste, y la ubicación fiscal te sitúa como mucho en una región, nada más. Eso sí, mantén vivo el alias: el correo del recibo es tu prueba de compra y tu canal para un reembolso.",
         "Combinado con una cuenta de frase, al final ninguna parte tiene la imagen completa: tu banco ve una recarga de tarjeta, Paddle ve un alias y una tarjeta enmascarada, y nosotros vemos una clave pública que pasó a ser Pro, junto a ese alias en nuestra cuenta de Paddle."
       ]
@@ -402,7 +416,7 @@
     "languages": {
       "q": "¿Qué idiomas habla la app?",
       "a": [
-        "Inglés, alemán, francés, italiano, español, neerlandés, polaco, checo, catalán, turco, sueco, ucraniano, ruso, japonés, coreano, chino tradicional, tailandés, árabe y portugués, en sus variantes europea y brasileña. La app sigue por defecto el idioma de tu sistema, o puedes fijar uno explícitamente en Ajustes > Idioma en cada dispositivo.",
+        "Inglés, alemán, francés, italiano, español, neerlandés, polaco, checo, eslovaco, catalán, turco, sueco, ucraniano, ruso, japonés, coreano, chino tradicional, tailandés, árabe y portugués, en sus variantes europea y brasileña. La app sigue por defecto el idioma de tu sistema, o puedes fijar uno explícitamente en Ajustes > Idioma en cada dispositivo.",
         "Las traducciones son gratis para todos, no una ventaja Pro. Hay más idiomas en camino; si falta el tuyo, dínoslo en [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) o [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -424,7 +438,7 @@
       "q": "¿Cómo funcionan las tareas?",
       "a": [
         "Cualquier línea que escribas como - [ ] en cualquier nota se convierte en una tarea, y la vista Tareas de la barra lateral las reúne todas en un solo lugar. Marcar ahí una tarea como hecha actualiza la nota en la que vive, y abrir una tarea salta a esa nota. No hay una base de datos de tareas aparte que mantener: las tareas son solo líneas en tus notas, cifradas como todo lo demás.",
-        "La casilla de añadido rápido en la parte superior de Tareas agrega a una nota llamada Quick Tasks (que se crea sola la primera vez que la usas), así que capturar un pendiente suelto cuesta una sola pulsación, no una decisión de archivado. La misma vista ofrece tres diseños (Híbrida, Agregada, Lista), un interruptor para las tareas completadas y búsqueda de tareas, y el botón New en la vista Todos puede iniciar una nota de tareas directamente."
+        "La casilla de añadido rápido en la parte superior de Tareas agrega a una nota llamada Quick Tasks (que se crea sola la primera vez que la usas), así que capturar un pendiente suelto cuesta una sola pulsación, no una decisión de archivado. La misma vista ofrece tres diseños (Híbrida, Agregada, Lista), un interruptor para las tareas completadas y búsqueda de tareas, y el botón + en la vista Todos puede iniciar una nota de tareas directamente."
       ]
     },
     "journal": {
@@ -488,8 +502,8 @@
     "biometric-unlock": {
       "q": "El desbloqueo biométrico dejó de funcionar. ¿Qué puedo hacer?",
       "a": [
-        "Nunca te quedas fuera. La pantalla de bloqueo siempre ofrece una alternativa: \"Desbloquear con PIN\" o \"Iniciar sesión con la frase de recuperación\". La biometría es una barrera local, no una clave de cifrado, así que tus notas quedan intactas en cualquier caso.",
-        "Luego arregla la barrera. El registro es por dispositivo, así que un teléfono nuevo, un perfil de navegador nuevo o una reinstalación requieren volver a registrarlo: Ajustes > Seguridad > \"Bloqueo\", desactívalo y vuelve a pulsar \"Activar desbloqueo biométrico\". También requiere \"Confiar en este dispositivo\" (las sesiones no confiables se borran al cerrar la pestaña) y hardware con un autenticador de plataforma (Touch ID, Face ID, Windows Hello). Si un gestor de contraseñas como Bitwarden o 1Password aparece en lugar del aviso del sistema, ciérralo y reinténtalo, o desactiva su captura de passkeys para el sitio - la app solicita el autenticador integrado, pero algunos gestores lo interceptan de todas formas."
+        "Nunca te quedas fuera. La pantalla de bloqueo siempre ofrece una alternativa: \"Desbloquear con PIN\" (\"Desbloquear con código de acceso\" si has configurado uno) o \"Iniciar sesión con la frase de recuperación\". El desbloqueo biométrico solo abre la copia de tu frase de recuperación guardada en este dispositivo, y tus notas están cifradas con claves que salen de la propia frase, así que quedan intactas en cualquier caso.",
+        "Luego configúralo de nuevo. Si la pantalla de bloqueo dice \"El desbloqueo biométrico no pudo abrir tus notas\", desbloquea primero de otra forma. El registro es por dispositivo, así que un teléfono nuevo, un perfil de navegador nuevo o una reinstalación requieren volver a registrarlo: Ajustes > Seguridad > \"Bloqueo\", desactívalo y vuelve a pulsar \"Activar desbloqueo biométrico\". También requiere \"Confiar en este dispositivo\" (las sesiones no confiables se borran al cerrar la pestaña) y hardware con un autenticador de plataforma (Touch ID, Face ID, Windows Hello). Si un gestor de contraseñas como Bitwarden o 1Password aparece en lugar del aviso del sistema, ciérralo y reinténtalo, o desactiva su captura de passkeys para el sitio - la app solicita el autenticador integrado, pero algunos gestores lo interceptan de todas formas."
       ]
     },
     "phrase-compromised": {
@@ -647,7 +661,14 @@
       "q": "¿Cómo funcionan juntos las secciones, carpetas, etiquetas y espacios?",
       "a": [
         "Todo lo que guardas vive en una sola biblioteca. Las secciones de la barra lateral, como Notas, Bóveda y Diarios, son vistas de esa biblioteca por tipo. Una carpeta es un lugar, así que una misma carpeta puede guardar una nota y el inicio de sesión que va con ella, y el árbol de carpetas es el mismo en cada sección. Sus números cuentan lo que contiene la sección abierta, y una carpeta sin nada de ella aparece atenuada. Una etiqueta es un rótulo, y la barra lateral solo lista las etiquetas que usa la sección abierta.",
-        "Los espacios dividen la biblioteca en Personal y Trabajo y muestran uno a la vez. Una carpeta de primer nivel pertenece a un espacio, con todo lo que contiene, y **Mover a Trabajo** en su menú la pasa al otro. Un elemento sin carpeta pertenece a Personal, así que todo lo que creas en Trabajo va a una carpeta de Trabajo. Las etiquetas son gratis, y las carpetas y los espacios requieren Pro."
+        "Los espacios dividen la biblioteca en Personal y Trabajo, y una carpeta de primer nivel pertenece a un espacio con todo lo que contiene. [Cómo funcionan los espacios](/es/help/spaces/) explica el interruptor, cómo mover elementos de uno a otro y cómo desactivar los espacios. Las etiquetas son gratis, y las carpetas y los espacios requieren Pro."
+      ]
+    },
+    "spaces": {
+      "q": "¿Cómo funcionan los espacios Personal y Trabajo?",
+      "a": [
+        "Los espacios dividen tu biblioteca en Personal y Trabajo. El interruptor junto a **Ir** en la barra lateral muestra **Todos**, **Personal** o **Trabajo**: Todos muestra cada elemento, y los otros dos muestran un espacio cada uno. Cada dispositivo guarda su propia elección, así que tu móvil puede mostrar Personal mientras tu portátil muestra Trabajo, y al abrir un elemento del otro espacio se cambia a ese espacio. Los espacios solo cambian lo que muestran las listas: todos los elementos siguen sincronizándose con todos los dispositivos.",
+        "Una carpeta de primer nivel pertenece a un espacio, con todo lo que contiene, y **Mover a Trabajo** o **Mover a Personal** en su menú, o en el menú de cualquier elemento, la pasa al otro. Un elemento sin carpeta es Personal, igual que todo lo que creas mientras Todos está abierto. Para dejar de usar espacios, desactiva Ajustes > Listas > Espacios: se muestran todos los elementos, no se mueve nada y cada carpeta conserva su espacio por si lo vuelves a activar. Los espacios requieren Pro."
       ]
     },
     "note-links": {
@@ -717,8 +738,8 @@
     "note-history": {
       "q": "¿Puedo recuperar una versión anterior de una nota?",
       "a": [
-        "Sí, con Pro. Abre el menú \"...\" de la nota y elige \"Historial\" para recorrer y restaurar hasta 20 versiones anteriores. Restaurar no pierde nada: el texto actual se guarda antes como versión, así que puedes ir y volver. Las versiones están cifradas igual que la nota, así que nosotros tampoco podemos leerlas.",
-        "Se toma una instantánea como mucho una vez por minuto, así que dos ediciones separadas por segundos comparten versión. El historial es la única función Pro que pasa por el servidor, y por eso la demo guarda en su lugar su propia copia local. Todos los planes tienen además la [papelera](/es/help/trash-auto-delete/), que guarda una nota eliminada 30 días."
+        "Sí, con Pro. Abre el menú \"...\" de la nota y elige \"Historial\" para recorrer hasta 50 versiones anteriores, comparar una con la nota actual y restaurarla. Restaurar no pierde nada: el texto actual se guarda antes como versión, así que puedes ir y volver. Las versiones están cifradas igual que la nota, así que nosotros tampoco podemos leerlas.",
+        "Cada versión es la nota tal como estaba antes de una edición: se guarda una en tu primera edición tras una pausa de cinco minutos, una cada diez minutos mientras sigues escribiendo, y una antes de una edición que elimine más de la mitad de una nota de 200 caracteres o más, salvo que la última versión tenga menos de 30 segundos. El historial es la única función Pro que pasa por el servidor, y por eso la demo guarda en su lugar su propia copia local. Todos los planes tienen además la [papelera](/es/help/trash-auto-delete/), que guarda una nota eliminada 30 días."
       ]
     },
     "vault-totp": {
@@ -849,10 +870,10 @@
       ]
     },
     "quick-switcher": {
-      "q": "¿Qué es la función «Ir a» y qué puede encontrar?",
+      "q": "¿Qué es el selector rápido y qué puede encontrar?",
       "a": [
-        "La función «Ir a» salta a cualquier cosa por su título. Pulsa Cmd+K en un Mac o Ctrl+K en Windows y Linux (también sirve Cmd+P o Ctrl+P), o haz clic en **Ir a** en la barra lateral o en la cabecera de la lista. Escribe parte de un título para encontrar notas, tareas, entradas del diario, elementos de la Bóveda, marcadores, contactos, archivos adjuntos y ajustes. Intro abre el elemento, y Option+Intro o Alt+Intro lo abre en una pestaña.",
-        "Escribe > primero para ejecutar un comando, como crear una nota nueva o ir a una sección. Para encontrar palabras dentro de tu texto en lugar de en los títulos, elige la fila **Buscar en todo**, o pulsa Cmd+Intro o Ctrl+Intro desde cualquier fila. La búsqueda ocurre en tu dispositivo, así que nada de lo que escribes se nos envía. La función «Ir a» es gratis."
+        "El selector rápido salta a cualquier cosa por su título. Pulsa Cmd+K en un Mac o Ctrl+K en Windows y Linux (también sirve Cmd+P o Ctrl+P), o haz clic en **Ir** en la barra lateral o en la cabecera de la lista. Escribe parte de un título para encontrar notas, tareas, entradas del diario, elementos de la Bóveda, marcadores, contactos, archivos adjuntos y ajustes. Intro abre el elemento, y Option+Intro o Alt+Intro lo abre en una pestaña.",
+        "Escribe > primero para ejecutar un comando, como crear una nota nueva o ir a una sección. Escribe # primero para ver solo tus etiquetas, o / para ver solo tus carpetas; al elegir una, la lista se filtra igual que con un clic en la barra lateral. Para encontrar palabras dentro de tu texto en lugar de en los títulos, elige la fila **Buscar en todo**, o pulsa Cmd+Intro o Ctrl+Intro desde cualquier fila. La búsqueda ocurre en tu dispositivo, así que nada de lo que escribes se nos envía. El selector rápido es gratis."
       ]
     },
     "find-in-note": {
@@ -876,6 +897,27 @@
         "Un método de acceso que ya pertenece a otra bóveda no se puede conectar, porque las bóvedas nunca se fusionan. **Desconectar** te pide primero tus 12 palabras. Si guardamos tu frase por ti, la última cuenta conectada se queda hasta que conectes otra o guardes tu frase y pases a la autocustodia. Con autocustodia, un dispositivo nuevo sigue pidiéndote tus 12 palabras. Las cuentas conectadas están en beta."
       ]
     },
+    "calendar": {
+      "q": "¿Hay un calendario y qué aparece en él?",
+      "a": [
+        "Sí. Calendario, en la barra lateral, muestra en un solo lugar todos los elementos con fecha: eventos, entradas del diario, notas y listas de tareas con fecha, y los cumpleaños de tus contactos. La lista de al lado es la agenda de los próximos días, y la vista grande cambia entre Día, Semana y Mes. Haz clic en un día vacío para añadir algo en él, o arrastra un elemento a otro día.",
+        "Un evento es un tipo de elemento propio: una nota con un día, un día final, una hora y una repetición. Escribe una línea entera en Añadido rápido, por ejemplo \"Dentista vie 15:00 1h antes\", y leerá por ti el día, la hora y la alerta. Una nota o una lista de tareas también puede llevar un día, una hora y un día final, desde la fila Programación de su menú \"...\". El calendario es gratuito."
+      ]
+    },
+    "reminders": {
+      "q": "¿Funcionan los recordatorios del calendario con la app cerrada?",
+      "a": [
+        "En un teléfono, sí: hasta 64 alertas, con hasta 400 días de antelación, se entregan al propio teléfono, así que suenan aunque PrivacyNotes esté cerrado; abrir y desbloquear la app entrega más. En la app de escritorio, un recordatorio suena mientras la app se ejecuta, y en un navegador, mientras PrivacyNotes está abierto en una pestaña. Cada dispositivo programa sus recordatorios a partir de los elementos que guarda, así que el servidor nunca conoce un título, una hora ni un día.",
+        "Añade una alerta desde la fila Alerta de la vista Programación de un elemento, hasta cinco por elemento, y define las predeterminadas en Ajustes > Calendario, donde también está \"Mostrar títulos en los recordatorios\". Un elemento protegido con tu PIN siempre suena como \"Recordatorio\" y la hora, igual que toda alerta programada mientras el bloqueo de la app está activado. Una entregada antes de activar el bloqueo puede conservar su título hasta que suene. Los recordatorios forman parte de Pro; el calendario en sí es gratuito."
+      ]
+    },
+    "calendar-time-zones": {
+      "q": "¿Qué pasa con las horas de los eventos cuando viajo a otra zona horaria?",
+      "a": [
+        "Una hora del calendario sigue siendo la hora que escribiste. Un evento a las 15:00 se muestra y suena a las 15:00 esté donde esté tu dispositivo, como un recordatorio en una app de tareas, porque cada hora se guarda como hora local sin zona horaria. Un teléfono programa cada alerta para un momento exacto, así que tras un cambio de zona horaria, abre y desbloquea PrivacyNotes una vez en la nueva zona para mover sus alertas; mientras está abierto y desbloqueado, las mueve solo.",
+        "Para una llamada con alguien de otra zona horaria, introduce la hora tal como es donde tú estás. Si un cambio de horario de verano se salta la hora de una alerta, la alerta suena en el primer minuto después del salto."
+      ]
+    },
     "session-expired": {
       "q": "¿Por qué la app dice \"Sesión expirada\"?",
       "a": [
@@ -887,7 +929,7 @@
       "q": "¿Qué hace Archivar y en qué se diferencia de la papelera?",
       "a": [
         "Archivar saca un elemento de tus listas sin eliminarlo. Elige **Archivar** en el menú \"...\" del elemento o en su menú contextual, o en la barra de selección para varios elementos a la vez. Los elementos archivados salen de Todos, de su sección, de Fijadas y de los recuentos de carpetas y etiquetas, y esperan en la vista **Archivo** al final de la barra lateral, que aparece en cuanto archivas algo. Para mantenerlos en Todos y en los recuentos, marca Archivo en la columna **Todos** de Ajustes > Listas. **Desarchivar**, en los mismos sitios, recupera un elemento.",
-        "La papelera es para lo que quieres quitar de en medio: [lo elimina para siempre tras 30 días](/es/help/trash-auto-delete/) salvo que lo desactives. Archivar nunca elimina nada, y los elementos archivados siguen a mano, porque una búsqueda en Todos, la función «Ir a» y los enlaces entre notas los siguen encontrando. Se sincronizan y siguen cifrados como todo lo demás, y siguen contando para tu almacenamiento. Archivar funciona con todos los tipos de elementos y es gratis."
+        "La papelera es para lo que quieres quitar de en medio: [lo elimina para siempre tras 30 días](/es/help/trash-auto-delete/) salvo que lo desactives. Archivar nunca elimina nada, y los elementos archivados siguen a mano, porque una búsqueda en Todos, el selector rápido y los enlaces entre notas los siguen encontrando. Se sincronizan y siguen cifrados como todo lo demás, y siguen contando para tu almacenamiento. Archivar funciona con todos los tipos de elementos y es gratis."
       ]
     },
     "share-into-app": {

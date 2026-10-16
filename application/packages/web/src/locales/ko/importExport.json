@@ -36,16 +36,29 @@
     "photosDescNoQuota_other": "사진 {{count}}장, 앱이 줄인 뒤 약 {{size}}.",
     "photosTooBig_other": "사진 {{count}}장({{size}})을 넣을 공간이 부족해서 사진은 빠져요. 나머지는 모두 가져와요. {{shortfall}} 이상을 비우거나 저장 공간을 추가한 뒤 다시 가져오면 사진도 들어와요."
   },
+  "importCalendar": {
+    "location": "장소",
+    "videoCall": "화상 통화",
+    "organizer": "주최자",
+    "guests": "참석자",
+    "file": "파일",
+    "link": "링크",
+    "timeZone": "시간대",
+    "ends": "종료",
+    "repeats": "반복"
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip(Keep 폴더) 또는 단일 .json 노트. 체크리스트는 기본 할 일 목록으로 가져와요.",
+    "googleCalendar": "Google Calendar의 Settings > Import & export에서 받은 .zip, 또는 .ics 파일 하나. 일정은 시간, 반복, 미리 알림을 그대로 유지해요.",
     "appleNotes": "무료 Exporter 앱으로 Markdown 내보내기를 한 뒤 .zip을 여기에 놓으세요.",
     "appleJournal": "Mac이나 iPhone의 일기에서 내보낸 뒤 AppleJournalEntries 폴더를 압축해서 .zip을 여기에 놓으세요. 항목은 사진, 동영상, 음성 메모, 위치 정보와 함께 저널 항목으로 가져와요.",
     "evernote": ".enex 파일 하나만 넣어도 되고, 여러 개를 zip으로 묶어도 돼요. 서식, 태그, 첨부 파일, 노트 링크, 노트북을 유지해요. Evernote는 작업을 .enex에 넣지 않아요.",
     "samsungNotes": "Word(.docx) 또는 텍스트(.txt)로 내보내세요. 여러 파일은 zip으로 묶으면 한 번에 가져올 수 있어요.",
     "simplenote": "Simplenote에서 내보내세요(Settings -> Tools -> Export Notes). .zip을 여기에 놓으세요.",
-    "standardNotes": "Standard Notes의 복호화된 .zip 또는 .txt 백업(File > Export > Decrypted).",
+    "standardNotes": "Standard Notes의 복호화된 .zip 또는 .txt 백업(Account settings > Backups > Data backups > Decrypted).",
     "obsidian": "Obsidian 볼트를 .zip으로. 태그, [[note links]], 폴더 구조, 본문 속 #태그, 삽입한 이미지와 파일을 유지해요.",
     "notesnook": "Notesnook 내보내기를 .zip으로. 내보낼 때 HTML을 선택하면 서식, 노트북, 태그, 첨부 파일이 유지돼요.",
+    "bear": "Bear에서 File > Backup Notes...를 선택하고 .bear2bk 파일을 여기에 놓으세요. 태그와 중첩 태그, 고정, 아카이브, 휴지통, 색상이 있는 형광펜, 노트 링크, 첨부 파일도 함께 와요.",
     "joplin": "File > Export all > \"JEX - Joplin Export File\"로 내보낸 .jex 파일. 노트북은 폴더가 되고, 태그, 할 일, 노트 링크, 첨부 파일도 함께 와요.",
     "upnote": "UpNote에서 Settings > Backup > Backup now를 실행한 다음, 백업 폴더 안의 모든 것을 zip으로 압축하세요. 노트북, 태그, 고정, 노트 링크, 서식, 첨부 파일이 유지돼요. 휴대폰 앱의 노트별 내보내기도 받아요. \"Export to HTML\"을 선택하세요.",
     "markdownFolder": ".md 또는 .txt 파일을 하나씩, 또는 .zip으로. 압축한 폴더는 하위 폴더를 그대로 두고 이미지와 첨부 파일도 함께 가져와요.",
@@ -92,6 +105,10 @@
     "blobsNotInBackup_other": "노트는 복원됐지만, 백업에 적힌 {{items}}이(가) 백업 안에 없어요."
   },
   "preview": {
+    "oversize_other": "노트 {{count}}개가 1MB를 넘어요. 이 기기에만 남고 동기화되지 않아요.",
+    "splitOversize_other": "이 노트 {{count}}개를 제목 위치에서 더 작은 노트로 나눠 동기화되게 하기",
+    "partTitle": "{{title}} ({{index}}/{{total}})",
+    "continuedIn": "{{link}}에서 이어져요",
     "sourceLabel": "출처",
     "uniqueTags": "고유 태그",
     "empty": "비어 있음",
@@ -103,6 +120,7 @@
     "duplicateWarning": "가져오면 이 항목들이 새 노트로 추가돼요. 두 번 실행하면 중복이 생겨요. 자동 중복 제거는 아직 없어요.",
     "duplicateSkipNote": "이미 저장한 북마크는 건너뛰기 때문에 두 번 실행해도 중복되지 않아요.",
     "contactSkipNote": "이미 저장한 사람은 건너뛰고 그대로 두기 때문에 두 번 실행해도 아무도 중복되지 않아요.",
+    "eventSkipNote": "이미 가져온 일정은 건너뛰고 그대로 두기 때문에 두 번 실행해도 중복되지 않아요.",
     "restoreMergeNote": "직접 만든 백업의 노트는 ID로 대조돼요. 이미 있는 노트는 백업의 사본이 더 새로울 때만 업데이트하고, 휴지통에 있는 노트는 다시 꺼내요.",
     "quotaExceeded": "<strong>저장 공간이 부족해서 가져올 수 없어요.</strong> 약 {{needed}} 필요, {{available}} 사용 가능. 공간을 확보하거나 업그레이드한 뒤 가져오세요.",
     "quotaWarning": "참고: 이번 가져오기는 남은 저장 공간 {{available}} 중 약 {{needed}}를 사용해요.",
@@ -143,7 +161,11 @@
     "bookmarksExportDesc": "어느 브라우저에서나 읽는 표준 북마크 파일이에요. 폴더를 그대로 유지한 채 Chrome, Firefox, Safari, Edge로 가져갈 수 있어요.",
     "contactsOnlyHeading": "연락처만",
     "contactsExportTitle": "연락처 파일(.vcf)",
-    "contactsExportDesc": "모든 전화와 주소록이 읽는 vCard 파일이에요. iPhone, Android, Google 주소록, Mac의 연락처에 라벨과 그룹 그대로 가져올 수 있어요."
+    "contactsExportDesc": "모든 전화와 주소록이 읽는 vCard 파일이에요. iPhone, Android, Google 주소록, Mac의 연락처에 라벨과 그룹 그대로 가져올 수 있어요.",
+    "calendarOnlyHeading": "캘린더만",
+    "calendarExportTitle": "캘린더 파일(.ics)",
+    "calendarExportDesc": "Google Calendar, Apple 캘린더, Outlook용 일정과 날짜가 지정된 노트 및 할 일 목록이에요.",
+    "calendarPrivate": "비공개"
   },
   "exportProgress": {
     "failedTitle": "내보내기 실패",
@@ -202,5 +224,11 @@
     "title_other": "항목 {{count}}개가 PrivacyNotes로 공유되었어요",
     "line": "선택하기 전에는 아무것도 저장되지 않아요.",
     "saveAll": "모두 저장"
+  },
+  "destination": {
+    "label": "추가할 위치",
+    "none": "폴더 없음",
+    "newFolder": "새 폴더 \"{{name}}\"",
+    "help": "원본 앱의 폴더는 고른 폴더 안으로 들어가고, 폴더가 없는 항목도 그 폴더에 들어가요."
   }
 }

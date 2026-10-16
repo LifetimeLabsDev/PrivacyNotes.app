@@ -1,6 +1,9 @@
-import { lazy, Suspense, useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react';
+import { Suspense, useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react';
+import { lazyPart } from './chunkLoad';
+import { usePopoverPosition } from './usePopoverPosition';
 import { Trans, useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
+import { HelpChip } from './HelpChip';
 import type { FormatBarBoardProps } from './FormatBarBoard';
 import {
   useTheme,
@@ -47,10 +50,10 @@ import { siteHref } from './siteLinks';
 // The team and custom theme cards and the paste field: a lazy chunk with
 // the theme code module, so none of it is on the boot path.
 import type { MadeBy } from './customThemeUI';
-import { COMMUNITY_SHOWN_PER_MODE } from './communityShown';
-const ExtraThemeCards = lazy(() => import('./customThemeUI').then((m) => ({ default: m.ExtraThemeCards })));
-const ThemePasteField = lazy(() => import('./customThemeUI').then((m) => ({ default: m.ThemePasteField })));
-const FormatBarBoard = lazy(() => import('./FormatBarBoard').then((m) => ({ default: m.FormatBarBoard })));
+import type { CommunitySort } from './communityShown';
+const ExtraThemeCards = lazyPart(() => import('./customThemeUI').then((m) => m.ExtraThemeCards));
+const ThemePasteField = lazyPart(() => import('./customThemeUI').then((m) => m.ThemePasteField));
+const FormatBarBoard = lazyPart(() => import('./FormatBarBoard').then((m) => m.FormatBarBoard));
 import { exemptOpts } from './i18nExempt';
 import { AccentBar, HeadlineRule, ROW_TITLE, RowTitle, SETTINGS_EYEBROW, SETTINGS_HELP } from './settingsUI';
 import { Switch } from './Switch';
@@ -267,7 +270,19 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   };
   const startBtnRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const { theme, themeMode, setThemeMode, colorTheme, lightTheme, darkTheme, setColorTheme, setCustomTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, favicons, setFavicons, invisibles, setInvisibles, copyFormat, setCopyFormat } = useTheme();
+  // The popover opens above the Design button that opened it. Both footers
+  // carry one and CSS hides the other, so the one with a box is the one on
+  // screen. At the end of the desktop footer it lines up with the button's
+  // end edge; at the start of the phone bar it centres on the screen, which
+  // on a phone is nearly the full width anyway. A popover opened without a
+  // button (a shortcut) falls back to the footer's end corner.
+  const [trigger] = useState(() => (embedded ? null
+    : [...document.querySelectorAll<HTMLElement>('[data-appearance-trigger]')].find((el) => el.getClientRects().length > 0) ?? null));
+  const triggerRef = useRef(trigger);
+  const triggerRect = trigger?.getBoundingClientRect();
+  const centred = !!triggerRect && triggerRect.left + triggerRect.width / 2 < window.innerWidth / 2;
+  const popPos = usePopoverPosition(!!trigger, triggerRef, panelRef, { gap: 8, align: 'end', shrink: true });
+  const { theme, themeMode, setThemeMode, colorTheme, lightTheme, darkTheme, setColorTheme, setCustomTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, favicons, setFavicons, invisibles, setInvisibles, copyFormat, setCopyFormat, pasteFormat, setPasteFormat } = useTheme();
   // Its own store rather than an axis of useTheme(): a level is handed to the
   // webview under the page, not to a CSS variable on <html>, and keeping it
   // out of theme.ts keeps that module free of a native import on the boot
@@ -369,6 +384,9 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   const [pasteOpen, setPasteOpen] = useState(false);
   // The gallery's Made by filter, the same one /themes has. Per visit.
   const [madeBy, setMadeBy] = useState<MadeBy>('all');
+  // The order of the community themes under Community. Per visit.
+  // Newest first: an installed app's saved vote counts can be months old.
+  const [communitySort, setCommunitySort] = useState<CommunitySort>('newest');
   const [copiedName, setCopiedName] = useState<string | null>(null);
   // The built-in palettes' codes, for their card menus: off the boot path like
   // the rest of the theme code, and here long before a menu can open. Loaded
@@ -553,6 +571,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     onStartViewChange(d.startView);
     onViewModeChange(d.viewMode);
     onSinkCheckedTasksChange(d.sinkCheckedTasks);
+    setOpenItemsInTabs(true);
     for (const v of hiddenViews) onToggleHidden('hiddenViews', v);
     for (const v of hiddenInAll) onToggleHidden('hiddenInAll', v);
     if (archivedInAll) onToggleHidden('hiddenInAll', 'archive');
@@ -718,67 +737,53 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
         {/* The pair: one palette per mode, both always shown, so a choice for
             the other mode is made without switching to it. */}
         <div data-setting="appearance.theme" className="py-3 space-y-4">
-          {/* Your own themes: make one, paste one, or find one. Above both
-              sections, because a theme made or pasted here can land in
-              either mode. */}
-          {onOpenThemeBuilder && (
-            <div data-setting="appearance.customThemes">
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px]">
-                <button
-                  type="button"
-                  onClick={() => onOpenThemeBuilder({})}
-                  className="inline-flex items-center gap-1.5 rounded-md border border-divider px-3 py-1.5 font-medium text-pn-soft hover:text-pn hover:border-pn-muted transition"
-                >
-                  <Plus size={14} aria-hidden="true" /> {t('appearance.custom.newTheme')}
-                  {!isPro && <IconUpgrade size={12} />}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPasteOpen((open) => !open)}
-                  aria-expanded={pasteOpen}
-                  className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 font-medium transition ${
-                    pasteOpen ? 'border-accent text-pn' : 'border-divider text-pn-soft hover:text-pn hover:border-pn-muted'
-                  }`}
-                >
-                  <ClipboardText size={14} aria-hidden="true" /> {t('appearance.custom.pasteCode')}
-                  {!isPro && <IconUpgrade size={12} />}
-                </button>
-              </div>
-              {copiedName && (
-                <p className={`${SETTINGS_HELP} mt-2`} role="status">
-                  {t('appearance.custom.copied', { name: copiedName })}
-                </p>
+          {/* The heading carries make and paste: above both sections, because a
+              theme made or pasted here can land in either mode. */}
+          <div data-setting="appearance.customThemes">
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+              <RowTitle icon={Palette}>{t('appearance.tabThemes')}</RowTitle>
+              {onOpenThemeBuilder && (
+                <div className="flex flex-wrap items-center gap-2 text-[13px]">
+                  <button
+                    type="button"
+                    onClick={() => onOpenThemeBuilder({})}
+                    className="inline-flex items-center gap-1.5 rounded-md border border-divider px-3 py-1.5 font-medium text-pn-soft hover:text-pn hover:border-pn-muted transition"
+                  >
+                    <Plus size={14} aria-hidden="true" /> {t('appearance.custom.newTheme')}
+                    {!isPro && <IconUpgrade size={12} />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPasteOpen((open) => !open)}
+                    aria-expanded={pasteOpen}
+                    className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 font-medium transition ${
+                      pasteOpen ? 'border-accent text-pn' : 'border-divider text-pn-soft hover:text-pn hover:border-pn-muted'
+                    }`}
+                  >
+                    <ClipboardText size={14} aria-hidden="true" /> {t('appearance.custom.pasteCode')}
+                    {!isPro && <IconUpgrade size={12} />}
+                  </button>
+                </div>
               )}
-              {pasteOpen && (
-                <Suspense fallback={null}>
-                  <ThemePasteField ctx={galleryCtx} onClose={() => setPasteOpen(false)} />
-                </Suspense>
-              )}
-              <ContextMenu state={themeMenu.state} onClose={themeMenu.close} />
             </div>
-          )}
-          {/* What a star does, and the star a fourth one pushed out. */}
-          <div>
-            <p className={`${SETTINGS_HELP} flex items-center gap-1.5`}>
-              <Star size={13} weight="fill" className="shrink-0 text-pro" aria-hidden="true" />
-              {t('appearance.favoritesHint')}
-            </p>
-            {droppedFav && (
-              <p className={`${SETTINGS_HELP} mt-1 flex flex-wrap items-center gap-x-2`} role="status">
-                {t('appearance.favoriteDropped', { name: droppedFav.name })}
-                <button
-                  type="button"
-                  onClick={() => { restoreQuickThemes(droppedFav.mode, droppedFav.before); setDroppedFav(null); }}
-                  className="font-medium text-accent hover:underline"
-                >
-                  {t('notes:editor.undo')}
-                </button>
-              </p>
+            {onOpenThemeBuilder && (
+              <>
+                {copiedName && (
+                  <p className={`${SETTINGS_HELP} mt-2`} role="status">
+                    {t('appearance.custom.copied', { name: copiedName })}
+                  </p>
+                )}
+                {pasteOpen && (
+                  <Suspense fallback={null}>
+                    <ThemePasteField ctx={galleryCtx} onClose={() => setPasteOpen(false)} />
+                  </Suspense>
+                )}
+                <ContextMenu state={themeMenu.state} onClose={themeMenu.close} />
+              </>
             )}
           </div>
           {/* Made by, as on /themes: the built-in palettes count as the team's. */}
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-            <span className="text-xs text-pn-muted">{t('appearance.madeBy.label')}</span>
             {/* Wraps, so a long word in any language never clips the last chip. */}
             <div role="group" aria-label={t('appearance.madeBy.label')} className="flex flex-wrap max-w-full gap-1 rounded-md p-1 bg-track">
               {(['all', 'community', 'team', 'yours'] as const).map((m) => (
@@ -793,6 +798,21 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
                 </button>
               ))}
             </div>
+            {madeBy === 'community' && (
+              <div role="group" aria-label={t('appearance.madeBy.sortLabel')} className="ms-auto flex flex-wrap max-w-full gap-1 rounded-md p-1 bg-track">
+                {(['newest', 'votes'] as const).map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setCommunitySort(s)}
+                    aria-pressed={communitySort === s}
+                    className={`inline-flex items-center justify-center px-3 py-1 rounded text-xs transition ${communitySort === s ? SEG_ACTIVE : SEG_IDLE}`}
+                  >
+                    {t(s === 'votes' ? 'appearance.madeBy.sortVotes' : 'appearance.madeBy.sortNewest')}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           {(['light', 'dark'] as const).map((mode) => (
             <div key={mode}>
@@ -808,7 +828,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
                     themeCard(mode, ct, (mode === 'dark' ? darkTheme : lightTheme) === ct, false),
                   )}
                 <Suspense fallback={null}>
-                  <ExtraThemeCards mode={mode} compact={false} ctx={galleryCtx} madeBy={madeBy} />
+                  <ExtraThemeCards mode={mode} compact={false} ctx={galleryCtx} madeBy={madeBy} sort={communitySort} />
                 </Suspense>
               </div>
               {/* Shown by CSS while the grid above has no card (index.css). */}
@@ -819,20 +839,44 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
               </p>
             </div>
           ))}
-          {/* The app lists the newest community themes; /themes has them all,
-              including any newer than this version. */}
-          <p className={`${SETTINGS_HELP} flex flex-wrap items-center gap-x-2 gap-y-1`}>
-            <span>{t('appearance.custom.communityNote', { count: COMMUNITY_SHOWN_PER_MODE })}</span>
-            <a
-              href={siteHref('/themes')}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 font-medium text-accent hover:underline"
-            >
-              <Globe size={14} aria-hidden="true" /> {t('appearance.custom.community')}
-              <ArrowSquareOut size={12} aria-hidden="true" />
-            </a>
-          </p>
+          {/* Reference text after the galleries, so the filters lead straight
+              to the themes. */}
+          <div className="space-y-1.5 border-t border-divider pt-3">
+            {/* What a star does, and the star a fourth one pushed out. */}
+            <div>
+              <p className={`${SETTINGS_HELP} flex items-center gap-1.5`}>
+                <Star size={13} weight="fill" className="shrink-0 text-pro" aria-hidden="true" />
+                {t('appearance.favoritesHint')}
+              </p>
+              {droppedFav && (
+                <p className={`${SETTINGS_HELP} mt-1 flex flex-wrap items-center gap-x-2`} role="status">
+                  {t('appearance.favoriteDropped', { name: droppedFav.name })}
+                  <button
+                    type="button"
+                    onClick={() => { restoreQuickThemes(droppedFav.mode, droppedFav.before); setDroppedFav(null); }}
+                    className="font-medium text-accent hover:underline"
+                  >
+                    {t('notes:editor.undo')}
+                  </button>
+                </p>
+              )}
+            </div>
+            {/* The app ships the themes of its build; /themes gets new ones and
+                the votes every day, so it is where to send people. */}
+            <p className={`${SETTINGS_HELP} flex flex-wrap items-center gap-x-2 gap-y-0.5`}>
+              <a
+                href={siteHref('/themes')}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 font-medium text-accent hover:underline"
+              >
+                <Globe size={14} aria-hidden="true" />
+                {t('appearance.custom.websiteTitle')}
+                <ArrowSquareOut size={12} aria-hidden="true" />
+              </a>
+              <span>{t('appearance.custom.websiteDesc')}</span>
+            </p>
+          </div>
           {unlockNudge}
         </div>
 
@@ -1017,6 +1061,31 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           </div>
         </div>
 
+        {/* Pasted text - the other half of the clipboard. Plain text pastes
+            from other apps as lines of text, the way Shift+paste does, for
+            phones that have no such key. Device-local.
+            Spec: ops/issues/0508.md (Spec) */}
+        <div data-setting="appearance.pasteFormat" className={row}>
+          <div className="min-w-0">
+            <RowTitle icon={ClipboardText}>{t('appearance.pasteFormatTitle')}</RowTitle>
+            <p className={helpExplain}>{t('appearance.pasteFormatDesc')}</p>
+          </div>
+          <div className={track}>
+            {(['formatted', 'plain'] as const).map((format) => (
+              <button
+                key={format}
+                onClick={() => setPasteFormat(format)}
+                aria-pressed={pasteFormat === format}
+                className={`${SEG_FILL} text-xs py-1.5 rounded transition ${
+                  pasteFormat === format ? SEG_ACTIVE : SEG_IDLE
+                }`}
+              >
+                {format === 'formatted' ? t('appearance.pasteFormatFormatted') : t('appearance.pasteFormatPlain')}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Invisible characters - the pilcrow, the space dots and the line
             breaks the editor can draw. This is a taste somebody sets once
             and leaves, which is what makes a settings row the right home for
@@ -1101,6 +1170,9 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
         {/* Spaces - Pro. A free account sees the row switched off, and the
             switch opens the upgrade window, as every Pro row here does.
             Spec: ops/docs/plans/spaces.md */}
+        {/* One element for the switch and its help chip: the list draws a
+            divider between children, and the chip belongs to this row. */}
+        <div>
         <Switch
           setting="appearance.spaces"
           icon={<UserSwitch size={14} className="text-accent" />}
@@ -1114,6 +1186,11 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           }}
           className="gap-x-5 py-3"
         />
+        {/* The row is the whole topic of its help entry, so the chip sits
+            under it rather than at the top of the pane.
+            Spec: ops/docs/help-center.md (section 9) */}
+        <HelpChip surface="spaces" className="-mt-1 mb-2" />
+        </div>
 
         {/* Open items in tabs - a row click opens a tab, so it changes what a
             click in a list does. Device-local, like the tabs themselves.
@@ -1314,12 +1391,17 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
                     // only the arranging. Keyed on the plan, not on the
                     // unlock, so the demo still labels it.
                     heading={
-                      <div className="flex items-center gap-2.5 pt-3">
-                        <AccentBar />
-                        <h3 className="text-base font-semibold">{t('notes:settings.formatBarLabel')}</h3>
-                        {!isPro && <ProMark />}
-                        <HeadlineRule />
-                      </div>
+                      <>
+                        <div className="flex items-center gap-2.5 pt-3">
+                          <AccentBar />
+                          <h3 className="text-base font-semibold">{t('notes:settings.formatBarLabel')}</h3>
+                          {!isPro && <ProMark />}
+                          <HeadlineRule />
+                        </div>
+                        {/* The Markdown view draws a fixed bar this board
+                            does not arrange (GitHub #493). */}
+                        <p className={`${SETTINGS_HELP} mt-1`}>{t('editor:formatBar.markdownViewNote')}</p>
+                      </>
                     }
                   />
                 </Suspense>
@@ -1401,7 +1483,8 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   return (
     <div
       ref={panelRef}
-      className="fixed bottom-12 end-4 z-50 w-80 max-h-[calc(100dvh-4rem)] flex flex-col bg-surface-2 border border-divider rounded-lg shadow-xl text-pn"
+      className={`fixed z-50 w-80 max-w-[calc(100vw-1rem)] max-h-[calc(100dvh-4rem)] flex flex-col bg-surface-2 border border-divider rounded-lg shadow-xl text-pn ${!trigger ? 'bottom-12 end-4' : centred ? 'left-1/2 -translate-x-1/2' : ''}`}
+      style={trigger ? { top: popPos?.top ?? 0, left: centred ? undefined : popPos?.left ?? 0, maxHeight: popPos?.maxHeight, visibility: popPos ? 'visible' : 'hidden' } : undefined}
     >
       <div className="shrink-0 flex items-center gap-2.5 px-4 pt-3 pb-1">
         <AccentBar />

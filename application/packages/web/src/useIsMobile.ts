@@ -51,6 +51,12 @@ export function useIsMobile(): boolean {
  * gone and a vertical wheel does not move a horizontal scroller.
  * Spec: ops/docs/ui-patterns.md section 85 (hidden sideways scroll).
  */
+/** The phone bar is on screen: below the md breakpoint, where an open item
+ *  fills the screen, and taller than the 320px at which the bar hides. */
+export function useHasPhoneBar(): boolean {
+  return useMediaQuery('(max-width: 767px) and (min-height: 321px)');
+}
+
 export function useIsTouchDevice(): boolean {
   return useMediaQuery(TOUCH_MQ);
 }

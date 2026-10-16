@@ -4,6 +4,7 @@ import { nextStamp } from '../notesRepo';
 import { oneLineTitle } from '../oneLineTitle';
 import { linkDedupeKey, parseLinkBody } from '../linkBody';
 import { addToContactMatchIndex, contactMatches, emptyContactMatchIndex } from '../contactBody';
+import { SOURCE_IDENTITY_KEY } from '../schedule';
 import type { ApplyResult, ImportedNote, ParsedImport } from './types';
 
 /**
@@ -100,6 +101,38 @@ export async function applyImport(
       }
       // The first card wins inside one file too.
       addToContactMatchIndex(index, n.title, n.body);
+      return true;
+    });
+  }
+
+  // EVENTS from a calendar file carry the UID of the event they came from.
+  // A series whose UID the vault holds is skipped whole, its changed
+  // occurrences with it, so a second import never adds a moved occurrence
+  // while the old day stays live in the series. An event the .ics writer
+  // named after one of this vault's items (`<id>@privacynotes.app`) is that
+  // item. Skipped, never merged, like the two rules above.
+  // Spec: ops/docs/plans/google-calendar-import.md (section 4.10)
+  if (incoming.some((n) => n.type === 'event' && !ownsId(n) && icsUidOf(n.trackers))) {
+    const held = new Set(
+      (await db.notes.filter((n) => n.type === 'event' && n.deleted !== 1 && n.trashed !== 1).toArray())
+        .map((n) => icsUidOf(n.trackers))
+        .filter((u): u is string => !!u),
+    );
+    const ownIdsNamed = [...new Set(incoming.map((n) => OWN_UID.exec(icsUidOf(n.trackers) ?? '')?.[1]).filter((id): id is string => !!id))];
+    const liveOwn = new Set(
+      (await db.notes.bulkGet(ownIdsNamed))
+        .filter((r): r is LocalNote => !!r && r.deleted !== 1 && r.trashed !== 1)
+        .map((r) => r.id),
+    );
+    incoming = incoming.filter((n) => {
+      if (n.type !== 'event' || ownsId(n)) return true;
+      const uid = icsUidOf(n.trackers);
+      if (!uid) return true;
+      const own = OWN_UID.exec(uid)?.[1];
+      if (held.has(uid) || (own && liveOwn.has(own))) {
+        skippedDuplicates++;
+        return false;
+      }
       return true;
     });
   }
@@ -260,3 +293,14 @@ export async function applyImport(
     ...(unchanged > 0 ? { unchanged } : {}),
   };
 }
+
+/** The UID an imported event carries in its source identity, or null. */
+function icsUidOf(trackers: Record<string, unknown> | undefined): string | null {
+  const v = trackers?.[SOURCE_IDENTITY_KEY];
+  if (!v || typeof v !== 'object') return null;
+  const uid = (v as { uid?: unknown }).uid;
+  return typeof uid === 'string' && uid ? uid : null;
+}
+
+/** The UID the .ics writer gives an item of this vault. */
+const OWN_UID = /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})@privacynotes\.app$/i;

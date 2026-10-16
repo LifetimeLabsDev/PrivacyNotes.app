@@ -8,7 +8,6 @@
     "title": "Tasques",
     "newTaskNote": "Nota de tasques nova",
     "newTaskNoteWithHotkey": "Nota de tasques nova ({{hotkey}})",
-    "new": "Nova",
     "hideCompleted": "Amaga les tasques completades",
     "showCompleted": "Mostra les tasques completades",
     "searchPlaceholder": "Cerca tasques…",
@@ -37,12 +36,9 @@
     "deselectAll": "Desselecciona-ho tot",
     "selectAll": "Selecciona-ho tot",
     "storage": "Emmagatzematge",
-    "supportedTypesHint": "Mida màxima de fitxer: {{max}} MB",
     "perFile": "Per fitxer",
     "free": "Gratuït",
     "upgradeToPro": "Millora a Pro",
-    "addStorage": "Afegeix emmagatzematge",
-    "upToMax": "fins a {{max}}",
     "filterAll": "Tot",
     "filterImages": "Imatges",
     "filterAudio": "Àudio",
@@ -115,6 +111,7 @@
     "video": "Vídeo",
     "image": "Imatge",
     "pdf": "PDF",
+    "email": "Correu electrònic",
     "archive": "Arxiu comprimit",
     "document": "Document",
     "spreadsheet": "Full de càlcul",
@@ -188,7 +185,8 @@
     "markdown": "Markdown",
     "markdownTip": "Sense xifrar",
     "bookmarks": "Marcadors",
-    "contacts": "Contactes"
+    "contacts": "Contactes",
+    "calendar": "Calendari"
   },
   "browseToggle": {
     "label": "Navega per",
@@ -204,6 +202,10 @@
     "deleteConfirmTitle": "Vols suprimir la carpeta?",
     "deleteConfirmBodyRoot": "Se suprimirà \"{{folder}}\". Les seves notes i subcarpetes passen al nivell superior. No se suprimeix cap nota.",
     "deleteConfirmBodyNested": "Se suprimirà \"{{folder}}\". Les seves notes i subcarpetes passen a \"{{parent}}\". No se suprimeix cap nota.",
+    "deleteConfirmBranchRoot": "Se suprimiran \"{{folder}}\" i les seves subcarpetes. Les seves notes passen al nivell superior. No se suprimeix cap nota.",
+    "deleteConfirmBranchNested": "Se suprimiran \"{{folder}}\" i les seves subcarpetes. Les seves notes passen a \"{{parent}}\". No se suprimeix cap nota.",
+    "deleteSubfolders_other": "Suprimeix també les seves {{count}} subcarpetes",
+    "deleteSubfolders_one": "Suprimeix també la seva subcarpeta",
     "moveTo": "Mou a una carpeta",
     "searchPlaceholder": "Cerca carpetes",
     "sortFolders": "Ordena les carpetes",
@@ -221,7 +223,8 @@
     "saveName": "Desa el nom de la carpeta",
     "actionsForFolder": "Accions per a la carpeta {{folder}}",
     "seedSecurity": "Seguretat",
-    "seedTravel": "Viatges"
+    "seedTravel": "Viatges",
+    "seedTeam": "Equip"
   },
   "collapsedSidebar": {
     "newNote": "Nota nova",
@@ -269,6 +272,18 @@
     "tagCount_one": "{{count}} etiqueta",
     "tagCount_other": "{{count}} etiquetes",
     "entryDate": "Data de l'entrada",
+    "noDate": "Cap",
+    "schedule": "Programació",
+    "ends": "Acaba",
+    "sameDay": "El mateix dia",
+    "allDay": "Tot el dia",
+    "starts": "Comença",
+    "endsAt": "Acaba a",
+    "noEnd": "Cap",
+    "removeFromCalendar": "Treu del calendari",
+    "makeEvent": "Converteix-ho en un esdeveniment per repetir-ho",
+    "typeEvent": "Esdeveniment",
+    "repeatRemoved": "La repetició s'elimina",
     "tagCount_many": "{{count}} etiquetes"
   },
   "selectionToolbar": {
@@ -304,6 +319,8 @@
     "showSize": "Mostra la mida del fitxer",
     "showTags": "Mostra la carpeta i les etiquetes",
     "showCalendar": "Mostra el calendari",
+    "showWorkItems": "Mostra els elements de <b>Feina</b>",
+    "showPersonalItems": "Mostra els elements de <b>Personal</b>",
     "other": "Altres",
     "showReadOnly": "Mostra només de lectura",
     "showProtected": "Mostra protegides",
@@ -332,7 +349,8 @@
     "nextMonth": "Mes següent",
     "dayWithEntry": "{{date}}, amb una entrada",
     "dayWithEntryIn": "{{date}}, amb una entrada a {{space}}",
-    "dayWithEntryBoth": "{{date}}, amb entrades a Personal i Feina",
+    "dayWithItems_one": "{{date}}, {{count}} element",
+    "dayWithItems_other": "{{date}}, {{count}} elements",
     "previousWeek": "Setmana anterior",
     "nextWeek": "Setmana següent",
     "showMonth": "{{month}}, mostra el mes sencer",
@@ -377,11 +395,14 @@
     "copyBookmarkUrl": "Copia l'URL",
     "editBookmark": "Edita el marcador",
     "openInTab": "Obre en una pestanya",
+    "openInTabHint": "{{key}}+clic",
     "closeTab": "Tanca la pestanya",
     "closeOtherTabs": "Tanca les altres pestanyes",
     "closeAllTabs": "Tanca totes les pestanyes",
     "pinTab": "Fixa la pestanya",
-    "unpinTab": "Desfixa la pestanya"
+    "unpinTab": "Desfixa la pestanya",
+    "newEvent": "Esdeveniment nou",
+    "quickAdd": "Afegit ràpid"
   },
   "demoBanner": {
     "title": "Prova-ho sense cap risc",
@@ -640,6 +661,9 @@
       "mastodon": "Mastodon"
     }
   },
+  "staleEditor": {
+    "copyToast": "Aquesta nota ha canviat en un altre dispositiu. Les teves edicions són en una còpia, «{{title}}»."
+  },
   "noteLinks": {
     "retargetedToast_one": "{{count}} enllaç entre notes actualitzat al títol nou.",
     "retargetedToast_other": "{{count}} enllaços entre notes actualitzats al títol nou."
@@ -649,7 +673,8 @@
   },
   "tabStrip": {
     "label": "Pestanyes obertes",
-    "close": "Tanca {{title}}"
+    "close": "Tanca {{title}}",
+    "moreTabs": "Més pestanyes"
   },
   "shareInbox": {
     "saved": "Desat a PrivacyNotes",
@@ -678,10 +703,11 @@
   },
   "spaces": {
     "label": "Espai",
+    "all": "Tot",
     "personal": "Personal",
     "work": "Feina",
-    "moveToWork": "Mou a Feina",
-    "moveToPersonal": "Mou a Personal",
+    "moveToWork": "Mou a <b>Feina</b>",
+    "moveToPersonal": "Mou a <b>Personal</b>",
     "movedToWork": "{{folder}} s'ha mogut a Feina",
     "movedToPersonal": "{{folder}} s'ha mogut a Personal",
     "itemMovedToWork": "S'ha mogut a Feina",
@@ -690,6 +716,218 @@
     "switchedToPersonal": "Has canviat a Personal",
     "switchToWork": "Canvia a Feina",
     "switchToPersonal": "Canvia a Personal",
+    "switchToAll": "Mostra tots els espais",
     "workEmpty": "Feina és buit. A Personal, obre el menú d'un element o d'una carpeta i tria Mou a Feina."
+  },
+  "calendar": {
+    "moveToToday": "Mou a avui",
+    "moveToTomorrow": "Mou a demà",
+    "moveToNextWeek": "Mou a la setmana que ve",
+    "deleteEvent": "Suprimeix l'esdeveniment",
+    "openContact": "Obre el contacte",
+    "newOnDay": "Esdeveniment nou en aquest dia",
+    "showDay": "Mostra aquest dia",
+    "open": "Obre el calendari",
+    "back": "Calendari",
+    "more_other": "+{{count}} més",
+    "addOn": "Afegeix el {{date}}",
+    "nothingFor_other": "Res durant {{count}} dies",
+    "nothingToday": "Res per avui",
+    "allDay": "Tot el dia",
+    "now": "Ara",
+    "viewLabel": "Vista del calendari",
+    "views": {
+      "day": "Dia",
+      "week": "Setmana",
+      "month": "Mes"
+    },
+    "legendLabel": "Mostra al calendari",
+    "kinds": {
+      "event": "Esdeveniments",
+      "note": "Notes",
+      "task": "Llistes de tasques",
+      "journal": "Entrades de diari",
+      "contact": "Aniversaris"
+    },
+    "dragEnd": "Arrossega per canviar el dia final",
+    "previousDay": "Dia anterior",
+    "nextDay": "Dia següent",
+    "seedWeeklyReview": "Revisió setmanal",
+    "seedWeeklyReviewBody": "Cada divendres a les quatre. Què ha sortit, què s'ha endarrerit i què toca la setmana que ve.",
+    "addToCalendar": "Afegeix al calendari",
+    "showAgenda": "Mostra l'agenda",
+    "hideAgenda": "Amaga l'agenda",
+    "seedDemo": {
+      "lunch": "Dinar amb el Sam",
+      "dentist": "Dentista",
+      "callAna": "Trucada amb l'Ana",
+      "groceries": "Compra",
+      "concert": "Concert",
+      "giftIdeas": "Idees de regal per al Kon",
+      "flight": "Vol a Lisboa",
+      "conference": "Conferència a Lisboa",
+      "nightTrain": "Tren nocturn a Porto",
+      "yoga": "Ioga",
+      "sprint": "Planificació de l'sprint",
+      "bookClub": "Club de lectura",
+      "rent": "Paga el lloguer"
+    },
+    "nothingFor_one": "Res durant {{count}} dia",
+    "more_one": "+{{count}} més"
+  },
+  "repeat": {
+    "changeTitle": "Vols canviar aquest element?",
+    "deleteTitle": "Vols suprimir aquest element?",
+    "thisOccurrence": "Només aquesta vegada",
+    "thisAndFollowing": "Aquesta i les següents",
+    "allOccurrences": "Totes les vegades",
+    "label": "Repeteix",
+    "never": "No es repeteix",
+    "daily_other": "Cada {{count}} dies",
+    "weekdays": "Cada dia feiner (de dilluns a divendres)",
+    "weekly_other": "Cada {{count}} setmanes: {{days}}",
+    "monthlyDay_other": "Cada {{count}} mesos el dia {{day}}",
+    "monthlyNth_other": "Cada {{count}} mesos el {{nth}} {{weekday}}",
+    "yearly_other": "Cada {{count}} anys el {{date}}",
+    "withUntil": "{{rule}}, fins al {{date}}",
+    "withCount_other": "{{rule}}, {{count}} vegades",
+    "nth": {
+      "1": "primer",
+      "2": "segon",
+      "3": "tercer",
+      "4": "quart",
+      "last": "últim"
+    },
+    "custom": "Personalitzada",
+    "every": "Cada",
+    "units": {
+      "day_other": "dies",
+      "week_other": "setmanes",
+      "month_other": "mesos",
+      "year_other": "anys",
+      "year_one": "any",
+      "month_one": "mes",
+      "week_one": "setmana",
+      "day_one": "dia"
+    },
+    "onDays": "Els dies",
+    "onDay": "Dia {{day}}",
+    "onNth": "El {{nth}} {{weekday}}",
+    "ends": "Acaba",
+    "endsNever": "Mai",
+    "endsOn": "En una data",
+    "endsAfter": "Després d'un nombre de vegades",
+    "times_other": "{{count}} vegades",
+    "apply": "Aplica",
+    "times_one": "{{count}} vegada",
+    "withCount_one": "{{rule}}, {{count}} vegada",
+    "yearly_one": "Cada any el {{date}}",
+    "monthlyNth_one": "Cada mes el {{nth}} {{weekday}}",
+    "monthlyDay_one": "Cada mes el dia {{day}}",
+    "weekly_one": "Cada setmana: {{days}}",
+    "daily_one": "Cada dia"
+  },
+  "alerts": {
+    "label": "Avís",
+    "none": "Cap",
+    "atTime": "A l'hora",
+    "minutesBefore_other": "{{count}} minuts abans",
+    "hoursBefore_other": "{{count}} hores abans",
+    "daysBefore_other": "{{count}} dies abans",
+    "weeksBefore_other": "{{count}} setmanes abans",
+    "onDayAt": "El mateix dia a les {{time}}",
+    "daysBeforeAt_other": "{{count}} dies abans a les {{time}}",
+    "custom": "Personalitzat",
+    "add": "Afegeix",
+    "max": "Fins a cinc avisos.",
+    "units": {
+      "minutes": "minuts",
+      "hours": "hores",
+      "days": "dies",
+      "weeks": "setmanes"
+    },
+    "at": "a les",
+    "remove": "Elimina {{alert}}",
+    "reminder": "Recordatori",
+    "open": "Obre",
+    "snooze": "Posposa 10 min",
+    "offOnPhone": "Els recordatoris estan desactivats en aquest mòbil",
+    "turnOn": "Activa",
+    "openSettings": "Obre la configuració",
+    "daysBeforeAt_one": "{{count}} dia abans a les {{time}}",
+    "weeksBefore_one": "{{count}} setmana abans",
+    "daysBefore_one": "{{count}} dia abans",
+    "hoursBefore_one": "{{count}} hora abans",
+    "minutesBefore_one": "{{count}} minut abans"
+  },
+  "quickAdd": {
+    "group": "Crea",
+    "items": "Elements",
+    "createNamed": "{{type}}: {{title}}",
+    "types": {
+      "event": "Esdeveniment nou",
+      "note": "Nota nova",
+      "task": "Llista de tasques nova",
+      "journal": "Entrada de diari nova"
+    },
+    "keepAsText": "Deixa-ho com a text",
+    "placeholder": "Títol, dia, hora, repetició...",
+    "example": "Prova: {{example}}",
+    "examples": {
+      "1": "Dentista dv. 15:00 1 h abans",
+      "2": "Revisió setmanal cada divendres 16:00-17:00",
+      "3": "Truca al banc demà 11:30 per 30 min",
+      "4": "Lloguer cada mes el dia 1 1 dia abans",
+      "5": "Examen la setmana que ve #escola",
+      "6": "tasca Llista per a la maleta dj. 18:00"
+    },
+    "examplesGroup": "Frases d'exemple",
+    "syntax": {
+      "group": "Què pots escriure",
+      "day": {
+        "label": "Dia",
+        "examples": "demà · dv. · el proper dc. · 31 oct. · la setmana que ve",
+        "insert": "demà"
+      },
+      "time": {
+        "label": "Hora",
+        "examples": "15:00 · 15 h · 16:00-17:00 · 9.30",
+        "insert": "15:00"
+      },
+      "length": {
+        "label": "Durada",
+        "examples": "per 30 min · per 3 dies · dv. a dg.",
+        "insert": "per 1 h"
+      },
+      "repeat": {
+        "label": "Repetició",
+        "examples": "cada divendres · cada feiner · cada mes el dia 1",
+        "insert": "cada divendres"
+      },
+      "alert": {
+        "label": "Avís",
+        "examples": "1 h abans · avís 10 min",
+        "insert": "1 h abans"
+      },
+      "place": {
+        "label": "Carpeta i etiqueta",
+        "examples": "/Viatges · #escola",
+        "insert": "#"
+      },
+      "space": {
+        "label": "Espai",
+        "examples": "@feina · @personal",
+        "insert": "@feina"
+      },
+      "type": {
+        "label": "Tipus",
+        "examples": "tasca · nota · diari (un esdeveniment si no n'escrius cap)",
+        "insert": "tasca"
+      }
+    },
+    "label": "Afegit ràpid"
+  },
+  "offline": {
+    "notLoaded": "Estàs fora de línia i aquesta part de l'aplicació encara no s'ha carregat. Torna-ho a provar quan tornis a estar en línia."
   }
 }

@@ -8,7 +8,6 @@
     "title": "Tasks",
     "newTaskNote": "New task note",
     "newTaskNoteWithHotkey": "New task note ({{hotkey}})",
-    "new": "New",
     "hideCompleted": "Hide completed tasks",
     "showCompleted": "Show completed tasks",
     "searchPlaceholder": "Search tasks…",
@@ -37,12 +36,9 @@
     "deselectAll": "Deselect all",
     "selectAll": "Select all",
     "storage": "Storage",
-    "supportedTypesHint": "Maximum file size: {{max}} MB",
     "perFile": "Per file",
     "free": "Free",
     "upgradeToPro": "Upgrade to Pro",
-    "addStorage": "Add storage",
-    "upToMax": "up to {{max}}",
     "filterAll": "All",
     "filterImages": "Images",
     "filterAudio": "Audio",
@@ -115,6 +111,7 @@
     "video": "Video",
     "image": "Image",
     "pdf": "PDF",
+    "email": "Email",
     "archive": "Archive",
     "document": "Document",
     "spreadsheet": "Spreadsheet",
@@ -188,7 +185,8 @@
     "markdown": "Markdown",
     "markdownTip": "Unencrypted",
     "bookmarks": "Bookmarks",
-    "contacts": "Contacts"
+    "contacts": "Contacts",
+    "calendar": "Calendar"
   },
   "browseToggle": {
     "label": "Browse by",
@@ -204,6 +202,10 @@
     "deleteConfirmTitle": "Delete folder?",
     "deleteConfirmBodyRoot": "\"{{folder}}\" will be deleted. Its notes and subfolders move to the top level. No notes are deleted.",
     "deleteConfirmBodyNested": "\"{{folder}}\" will be deleted. Its notes and subfolders move to \"{{parent}}\". No notes are deleted.",
+    "deleteConfirmBranchRoot": "\"{{folder}}\" and its subfolders will be deleted. Their notes move to the top level. No notes are deleted.",
+    "deleteConfirmBranchNested": "\"{{folder}}\" and its subfolders will be deleted. Their notes move to \"{{parent}}\". No notes are deleted.",
+    "deleteSubfolders_one": "Also delete its subfolder",
+    "deleteSubfolders_other": "Also delete its {{count}} subfolders",
     "moveTo": "Move to folder",
     "searchPlaceholder": "Search folders",
     "sortFolders": "Sort folders",
@@ -221,7 +223,8 @@
     "saveName": "Save folder name",
     "actionsForFolder": "Actions for folder {{folder}}",
     "seedSecurity": "Security",
-    "seedTravel": "Travel"
+    "seedTravel": "Travel",
+    "seedTeam": "Team"
   },
   "collapsedSidebar": {
     "newNote": "New note",
@@ -268,7 +271,19 @@
     "sizeHint": "Total encrypted size of this item.",
     "tagCount_one": "{{count}} tag",
     "tagCount_other": "{{count}} tags",
-    "entryDate": "Entry date"
+    "entryDate": "Entry date",
+    "noDate": "None",
+    "schedule": "Schedule",
+    "ends": "Ends",
+    "sameDay": "Same day",
+    "allDay": "All day",
+    "starts": "Starts",
+    "endsAt": "Ends at",
+    "noEnd": "None",
+    "removeFromCalendar": "Remove from calendar",
+    "makeEvent": "Make this an event to repeat it",
+    "typeEvent": "Event",
+    "repeatRemoved": "The repeat is removed"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "Exit selection (Esc)",
@@ -303,6 +318,8 @@
     "showSize": "Show file size",
     "showTags": "Show folder & tags",
     "showCalendar": "Show calendar",
+    "showWorkItems": "Show <b>Work</b> items",
+    "showPersonalItems": "Show <b>Personal</b> items",
     "other": "Other",
     "showReadOnly": "Show read-only",
     "showProtected": "Show protected",
@@ -335,7 +352,8 @@
     "showWeek": "{{month}}, show one week",
     "dayWithEntry": "{{date}}, has an entry",
     "dayWithEntryIn": "{{date}}, has an entry in {{space}}",
-    "dayWithEntryBoth": "{{date}}, has entries in Personal and Work"
+    "dayWithItems_one": "{{date}}, {{count}} item",
+    "dayWithItems_other": "{{date}}, {{count}} items"
   },
   "contextMenu": {
     "newNote": "New Note",
@@ -363,7 +381,7 @@
     "archive": "Archive",
     "unarchive": "Unarchive",
     "duplicate": "Duplicate",
-    "moveToFolder": "Move to Folder",
+    "moveToFolder": "Move to folder",
     "exportAsMarkdown": "Export as Markdown",
     "shareBurnAfterReading": "Share & Burn After Reading",
     "exportAsHtml": "Export as HTML",
@@ -375,11 +393,14 @@
     "copyBookmarkUrl": "Copy URL",
     "editBookmark": "Edit bookmark",
     "openInTab": "Open in tab",
+    "openInTabHint": "{{key}}-click",
     "closeTab": "Close tab",
     "closeOtherTabs": "Close other tabs",
     "closeAllTabs": "Close all tabs",
     "pinTab": "Pin tab",
-    "unpinTab": "Unpin tab"
+    "unpinTab": "Unpin tab",
+    "newEvent": "New Event",
+    "quickAdd": "Quick add"
   },
   "demoBanner": {
     "title": "Try it with zero risk",
@@ -636,6 +657,9 @@
       "mastodon": "Mastodon"
     }
   },
+  "staleEditor": {
+    "copyToast": "This note changed on another device. Your edits are in a copy, \"{{title}}\"."
+  },
   "noteLinks": {
     "retargetedToast_one": "Updated {{count}} note-link to the new title.",
     "retargetedToast_other": "Updated {{count}} note-links to the new title."
@@ -645,7 +669,8 @@
   },
   "tabStrip": {
     "label": "Open tabs",
-    "close": "Close {{title}}"
+    "close": "Close {{title}}",
+    "moreTabs": "More tabs"
   },
   "shareInbox": {
     "saved": "Saved to PrivacyNotes",
@@ -674,10 +699,11 @@
   },
   "spaces": {
     "label": "Space",
+    "all": "All",
     "personal": "Personal",
     "work": "Work",
-    "moveToWork": "Move to Work",
-    "moveToPersonal": "Move to Personal",
+    "moveToWork": "Move to <b>Work</b>",
+    "moveToPersonal": "Move to <b>Personal</b>",
     "movedToWork": "{{folder}} moved to Work",
     "movedToPersonal": "{{folder}} moved to Personal",
     "itemMovedToWork": "Moved to Work",
@@ -686,6 +712,186 @@
     "switchedToPersonal": "Switched to Personal",
     "switchToWork": "Switch to Work",
     "switchToPersonal": "Switch to Personal",
+    "switchToAll": "Show all spaces",
     "workEmpty": "Work is empty. In Personal, open the menu of an item or a folder and choose Move to Work."
+  },
+  "calendar": {
+    "moveToToday": "Move to today",
+    "moveToTomorrow": "Move to tomorrow",
+    "moveToNextWeek": "Move to next week",
+    "deleteEvent": "Delete event",
+    "openContact": "Open contact",
+    "newOnDay": "New event on this day",
+    "showDay": "Show this day",
+    "open": "Open the calendar",
+    "back": "Calendar",
+    "more_one": "+{{count}} more",
+    "more_other": "+{{count}} more",
+    "addOn": "Add on {{date}}",
+    "nothingFor_one": "Nothing for {{count}} day",
+    "nothingFor_other": "Nothing for {{count}} days",
+    "nothingToday": "Nothing today",
+    "allDay": "All day",
+    "now": "Now",
+    "viewLabel": "Calendar view",
+    "views": {
+      "day": "Day",
+      "week": "Week",
+      "month": "Month"
+    },
+    "legendLabel": "Show on the calendar",
+    "kinds": {
+      "event": "Events",
+      "note": "Notes",
+      "task": "Task lists",
+      "journal": "Journal entries",
+      "contact": "Birthdays"
+    },
+    "dragEnd": "Drag to change the end day",
+    "previousDay": "Previous day",
+    "nextDay": "Next day",
+    "seedWeeklyReview": "Weekly review",
+    "seedWeeklyReviewBody": "Every Friday at four. What shipped, what slipped, and what comes next week.",
+    "addToCalendar": "Add to calendar",
+    "showAgenda": "Show agenda",
+    "hideAgenda": "Hide agenda",
+    "seedDemo": {
+      "lunch": "Lunch with Sam",
+      "dentist": "Dentist",
+      "callAna": "Call with Ana",
+      "groceries": "Groceries",
+      "concert": "Concert",
+      "giftIdeas": "Gift ideas for Kon",
+      "flight": "Flight to Lisbon",
+      "conference": "Lisbon conference",
+      "nightTrain": "Night train to Porto",
+      "yoga": "Yoga",
+      "sprint": "Sprint planning",
+      "bookClub": "Book club",
+      "rent": "Pay rent"
+    }
+  },
+  "repeat": {
+    "changeTitle": "Change this item?",
+    "deleteTitle": "Delete this item?",
+    "thisOccurrence": "This occurrence",
+    "thisAndFollowing": "This and following",
+    "allOccurrences": "All occurrences",
+    "label": "Repeat",
+    "never": "Does not repeat",
+    "daily_one": "Every day",
+    "daily_other": "Every {{count}} days",
+    "weekdays": "Every weekday (Monday to Friday)",
+    "weekly_one": "Every week on {{days}}",
+    "weekly_other": "Every {{count}} weeks on {{days}}",
+    "monthlyDay_one": "Every month on day {{day}}",
+    "monthlyDay_other": "Every {{count}} months on day {{day}}",
+    "monthlyNth_one": "Every month on the {{nth}} {{weekday}}",
+    "monthlyNth_other": "Every {{count}} months on the {{nth}} {{weekday}}",
+    "yearly_one": "Every year on {{date}}",
+    "yearly_other": "Every {{count}} years on {{date}}",
+    "withUntil": "{{rule}}, until {{date}}",
+    "withCount_one": "{{rule}}, {{count}} time",
+    "withCount_other": "{{rule}}, {{count}} times",
+    "nth": {
+      "1": "first",
+      "2": "second",
+      "3": "third",
+      "4": "fourth",
+      "last": "last"
+    },
+    "custom": "Custom",
+    "every": "Every",
+    "units": {
+      "day_one": "day",
+      "day_other": "days",
+      "week_one": "week",
+      "week_other": "weeks",
+      "month_one": "month",
+      "month_other": "months",
+      "year_one": "year",
+      "year_other": "years"
+    },
+    "onDays": "On",
+    "onDay": "Day {{day}}",
+    "onNth": "The {{nth}} {{weekday}}",
+    "ends": "Ends",
+    "endsNever": "Never",
+    "endsOn": "On a date",
+    "endsAfter": "After a number of times",
+    "times_one": "{{count}} time",
+    "times_other": "{{count}} times",
+    "apply": "Apply"
+  },
+  "alerts": {
+    "label": "Alert",
+    "none": "None",
+    "atTime": "At the time",
+    "minutesBefore_one": "{{count}} minute before",
+    "minutesBefore_other": "{{count}} minutes before",
+    "hoursBefore_one": "{{count}} hour before",
+    "hoursBefore_other": "{{count}} hours before",
+    "daysBefore_one": "{{count}} day before",
+    "daysBefore_other": "{{count}} days before",
+    "weeksBefore_one": "{{count}} week before",
+    "weeksBefore_other": "{{count}} weeks before",
+    "onDayAt": "On the day at {{time}}",
+    "daysBeforeAt_one": "{{count}} day before at {{time}}",
+    "daysBeforeAt_other": "{{count}} days before at {{time}}",
+    "custom": "Custom",
+    "add": "Add",
+    "max": "Up to five alerts.",
+    "units": {
+      "minutes": "minutes",
+      "hours": "hours",
+      "days": "days",
+      "weeks": "weeks"
+    },
+    "at": "at",
+    "remove": "Remove {{alert}}",
+    "reminder": "Reminder",
+    "open": "Open",
+    "snooze": "Snooze 10 min",
+    "offOnPhone": "Reminders are off on this phone",
+    "turnOn": "Turn on",
+    "openSettings": "Open settings"
+  },
+  "quickAdd": {
+    "group": "Create",
+    "items": "Items",
+    "createNamed": "{{type}}: {{title}}",
+    "types": {
+      "event": "New event",
+      "note": "New note",
+      "task": "New task list",
+      "journal": "New journal entry"
+    },
+    "keepAsText": "Keep this as text",
+    "placeholder": "Title, day, time, repeat...",
+    "example": "Try: {{example}}",
+    "examples": {
+      "1": "Dentist fri 3pm 1h before",
+      "2": "Weekly review every friday 4-5pm",
+      "3": "Call the bank tomorrow 11:30 for 30m",
+      "4": "Rent every month on the 1st 1 day before",
+      "5": "Exam in 3 days #school",
+      "6": "task Packing list thu 6pm"
+    },
+    "examplesGroup": "Example sentences",
+    "syntax": {
+      "group": "What you can type",
+      "day": { "label": "Day", "examples": "tomorrow · fri · next wed · Oct 31 · in 3 days", "insert": "tomorrow" },
+      "time": { "label": "Time", "examples": "3pm · 15:00 · 4-5pm · at 9", "insert": "3pm" },
+      "length": { "label": "Length", "examples": "for 30m · for 3 days · fri to sun", "insert": "for 1h" },
+      "repeat": { "label": "Repeat", "examples": "every friday · every weekday · every month on the 1st", "insert": "every friday" },
+      "alert": { "label": "Alert", "examples": "1h before · alert 10m", "insert": "1h before" },
+      "place": { "label": "Folder and tag", "examples": "/Travel · #school", "insert": "#" },
+      "space": { "label": "Space", "examples": "@work · @personal", "insert": "@work" },
+      "type": { "label": "Type", "examples": "task · note · journal (an event when none is typed)", "insert": "task" }
+    },
+    "label": "Quick add"
+  },
+  "offline": {
+    "notLoaded": "You're offline, and this part of the app has not loaded yet. Try again when you're back online."
   }
 }

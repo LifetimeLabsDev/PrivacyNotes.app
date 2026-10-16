@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LogoIcon } from './LogoIcon';
 import { HoverLabel } from './HoverLabel';
-import { IconUpgrade } from './UpgradeModal';
+import { ProGlyph } from './UpgradeModal';
 import { Lightning, Plus, PushPin, File, CheckSquare, Shield, Folder, Book, Hash, Trash, Question, CaretRight, Devices, FileMd, BookmarkSimple, NotePencil, CheckFat, Notebook, Bookmarks, Key } from './icons';
 import { isViewShown, type View } from './views';
 import { hiddenAtZero, viewRows } from './viewRows';
@@ -15,7 +15,7 @@ import { helpPath } from './localeRoutes';
 import { activeLocale } from './languages';
 import { keyText } from './shortcutMatch';
 import { SpaceSwitch } from './SpaceSwitch';
-import type { Space } from './spaces';
+import type { SpaceView } from './spaces';
 
 interface CollapsedSidebarProps {
   view: View;
@@ -27,7 +27,7 @@ interface CollapsedSidebarProps {
   /** Opens the quick switcher. */
   onJump: () => void;
   /** The Personal and Work switch, while spaces are on. */
-  spaces?: { active: Space; onChange: (space: Space) => void; locked?: boolean };
+  spaces?: { active: SpaceView; onChange: (view: SpaceView) => void; locked?: boolean; noAll?: boolean };
   onExpand: () => void;
   onExpandToTags: () => void;
   /** Expand the sidebar in Folders mode - or open the upsell when free. */
@@ -164,7 +164,7 @@ export function CollapsedSidebar({
         </button>
       </HoverLabel>
 
-      {spaces && <SpaceSwitch active={spaces.active} onChange={spaces.onChange} locked={spaces.locked} vertical />}
+      {spaces && <SpaceSwitch active={spaces.active} onChange={spaces.onChange} locked={spaces.locked} noAll={spaces.noAll} vertical />}
 
       {/* New note */}
       <HoverLabel label={t('collapsedSidebar.newNote')}>
@@ -213,15 +213,10 @@ export function CollapsedSidebar({
         <button
           type="button"
           onClick={onExpandToFolders}
-          className={`relative ${iconBtn(selectedFolder !== null)}`}
+          className={iconBtn(selectedFolder !== null)}
           aria-label={t('browseToggle.folders')}
         >
-          <Folder size={18} />
-          {!isPro && (
-            <span className="absolute -top-0.5 -end-0.5" aria-hidden="true">
-              <IconUpgrade size={11} />
-            </span>
-          )}
+          <ProGlyph pro={!isPro}><Folder size={18} /></ProGlyph>
         </button>
       </HoverLabel>
 

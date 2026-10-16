@@ -65,6 +65,7 @@
     "appearance_contentWidth": "본문 너비, 넓게, 전체 너비, 여백",
     "appearance_editor": "Markdown, 마크다운, 서식 있는 텍스트, WYSIWYG, 편집기 모드",
     "appearance_copyFormat": "복사, 클립보드, 일반 텍스트, 붙여넣기, 체크박스",
+    "appearance_pasteFormat": "붙여넣기, 클립보드, 일반 텍스트, 서식, 서식 없음, 스타일 맞추기",
     "appearance_favicons": "파비콘, 사이트 아이콘, 로고",
     "appearance_invisibles": "단락 기호, 공백, 스페이스, 숨은 문자, 서식 기호",
     "appearance_startView": "시작 페이지, 홈, 기본 보기, 처음 화면",
@@ -80,11 +81,19 @@
     "about_openSource": "소스 코드, GitHub, 깃허브, 오픈 소스",
     "about_feedback": "피드백, 문의, 연락, 버그 신고, 오류, 제안",
     "about_dataStorage": "데이터, 서버, 저장 위치, 개인정보",
-    "about_singleKeys": "키보드, 단축키, 핫키, 단일 키, 한 키, 접근성, j, k, /, >",
+    "about_singleKeys": "키보드, 단축키, 핫키, 단일 키, 한 키, 접근성, j, k, q, 캘린더, 달력, /, >",
     "about_changelog": "릴리스 노트, 새로운 기능, 업데이트, 변경 사항",
     "about_hotkeys": "키보드 단축키, 단축키, 키, 핫키",
     "about_rating": "리뷰, 평가, 별점, 앱 스토어, App Store",
     "appearance_openInTabs": "탭, 탭 표시줄, 브라우저, 열기",
+    "section_calendar": "캘린더, 달력, 일정, 이벤트, 미리 알림, 알림, 주, 월, 스케줄, 생일",
+    "calendar_alertTimed": "알림, 미리 알림, 기본, 분, 전, 일정",
+    "calendar_alertAllDay": "알림, 미리 알림, 기본, 종일, 하루 종일, 아침",
+    "calendar_alertBirthday": "생일, 연락처, 알림, 미리 알림",
+    "calendar_reminderTitles": "개인정보, 잠금 화면, 제목, 미리 알림, 알림",
+    "calendar_where": "알림, 권한, 브라우저, 휴대폰, 데스크톱, 미리 알림",
+    "calendar_weekNumbers": "주 번호, ISO 주, 캘린더, 달력",
+    "calendar_hours": "시간, 근무 시간, 일 보기, 주 보기, 아침",
     "appearance_formatBar": "도구 막대, 서식 막대, 버튼, 사용자화, 정리, 글머리 기호 목록, 취소선, 톱니바퀴"
   }
 }

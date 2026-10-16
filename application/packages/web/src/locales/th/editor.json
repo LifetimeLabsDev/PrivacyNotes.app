@@ -92,7 +92,13 @@
       "goal": "เป้าหมาย",
       "decision": "การตัดสินใจ",
       "definition": "คำนิยาม",
-      "seealso": "ดูเพิ่มเติม"
+      "seealso": "ดูเพิ่มเติม",
+      "box": "กล่อง",
+      "panel": "แผง",
+      "update": "อัปเดต",
+      "time": "เวลา",
+      "steps": "ขั้นตอน",
+      "place": "สถานที่"
     }
   },
   "color": {
@@ -123,6 +129,7 @@
     "addColumnRight": "เพิ่มคอลัมน์ด้านขวา",
     "toggleHeaderRow": "เปิด / ปิดแถวหัวตาราง",
     "equalColumnWidths": "ปรับคอลัมน์ให้กว้างเท่ากัน",
+    "resizeHint": "กด {{shift}} ค้างไว้เพื่อปรับเฉพาะคอลัมน์นี้ หรือกด {{alt}} ค้างไว้เพื่อปรับทีละน้อย",
     "deleteRow": "ลบแถว",
     "deleteColumn": "ลบคอลัมน์",
     "deleteTable": "ลบตาราง"
@@ -146,6 +153,8 @@
     "caseSensitiveTitle": "ตรงตามตัวพิมพ์",
     "closeReplace": "ปิดการค้นหาและแทนที่",
     "closeReplaceTitle": "ปิด ({{keys}})",
+    "showReplace": "ค้นหาและแทนที่",
+    "hideReplace": "ซ่อนการแทนที่",
     "replacedCount_other": "แทนที่แล้ว {{count}} รายการ"
   },
   "outline": {
@@ -154,7 +163,7 @@
     "title": "เค้าโครง",
     "ariaLabel": "เค้าโครงของโน้ต",
     "hide": "ซ่อนเค้าโครง",
-    "hideTitle": "ซ่อนเค้าโครง (Esc)",
+    "hideTitle": "ซ่อนเค้าโครง ({{keys}})",
     "copyHeadingLink": "คัดลอกลิงก์ไปยังหัวเรื่อง",
     "copyNoteLink": "คัดลอกลิงก์ระหว่างโน้ต",
     "copyHeadingShortcut": "คัดลอกทางลัดไปยังหัวเรื่อง",
@@ -167,6 +176,9 @@
   },
   "topRow": {
     "add": "เพิ่มบรรทัดที่ด้านบน"
+  },
+  "addLine": {
+    "add": "เพิ่มบรรทัด"
   },
   "link": {
     "popoverLabel": "เพิ่มลิงก์",
@@ -201,7 +213,9 @@
     "words_other": "{{formatted}} คำ",
     "characters_other": "{{formatted}} ตัวอักษร",
     "tasksChecked_other": "ทำเครื่องหมายแล้ว {{done}} จาก {{formatted}}",
-    "tooLargeToSync": " อาจใหญ่เกินกว่าจะซิงค์ได้ ให้แยกเป็นโน้ตใหม่",
+    "syncLimit": " · ใช้ {{share}} ของขีดจำกัดการซิงค์ 1 MB",
+    "overSyncLimit": " · เกินขีดจำกัดการซิงค์ 1 MB จึงอยู่บนอุปกรณ์นี้เท่านั้น",
+    "split": "แยกโน้ต",
     "veryLong": " ยาวมาก การแก้ไขอาจช้าและกระตุก",
     "gettingLong": " เริ่มยาวแล้ว อาจหน่วงบนอุปกรณ์ที่ช้า",
     "largeTableWarning": "ตารางขนาดใหญ่ ({{rows}} แถว) อาจทำให้แก้ไขโน้ตนี้ได้ช้า ลองแยกตาราง"
@@ -260,10 +274,13 @@
     "hintTap": "แตะปุ่มเพื่อดูตัวเลือก",
     "onBar": "บนแถบ",
     "inMenu": "ในเมนู +",
+    "inAttachMenu": "ในเมนูแนบ",
+    "attachMenuEmpty": "ว่าง จึงไม่แสดงปุ่มแนบ",
     "menuEmpty": "เมนูว่าง จึงไม่แสดงปุ่ม +",
     "hidden": "ซ่อนอยู่",
     "hiddenNote": "ยังใช้ได้ด้วยแป้นลัดและ Markdown",
     "hiddenDrop": "วางปุ่มที่นี่เพื่อซ่อน",
+    "markdownViewNote": "มุมมอง Markdown มีชุดปุ่มของตัวเองที่คงที่",
     "hiddenEmpty": "ไม่มีอะไรถูกซ่อน",
     "alwaysVisible": "แสดงเสมอ",
     "pinned": "เปิดแผง จึงอยู่บนแถบหรือซ่อนเท่านั้น",
@@ -275,18 +292,23 @@
     "home": {
       "bar": "บนแถบ",
       "menu": "ในเมนู +",
+      "attachMenu": "ในเมนูแนบ",
       "hidden": "ซ่อนอยู่"
     },
     "opensPanel": "เปิดแผง",
     "showsRecording": "แสดงการบันทึกเสียง",
     "refuse": {
       "menuNotAllowed": "{{item}} อยู่บนแถบหรือซ่อนได้ แต่ใส่ในเมนู + ไม่ได้",
+      "attachNotAllowed": "ใส่ได้เฉพาะปุ่มรูปภาพ ไฟล์ และการบันทึกเสียงในเมนูแนบ",
       "lastOnBar": "เหลือปุ่มบนแถบไว้อย่างน้อยหนึ่งปุ่ม"
     },
     "items": {
       "link": "ลิงก์",
       "notelink": "ลิงก์ระหว่างโน้ต",
-      "audio": "การบันทึกเสียง"
+      "audio": "การบันทึกเสียง",
+      "attachMenu": "แนบ",
+      "separator": "เส้นคั่นแนวตั้ง",
+      "markdownView": "แสดง Markdown"
     },
     "positionTitle": "ตำแหน่งแถบ",
     "positionNote": "เลือกตำแหน่งของแถบเครื่องมือในตัวแก้ไข",

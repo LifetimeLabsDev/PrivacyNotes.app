@@ -92,7 +92,13 @@
       "goal": "هدف",
       "decision": "قرار",
       "definition": "تعريف",
-      "seealso": "انظر أيضًا"
+      "seealso": "انظر أيضًا",
+      "box": "صندوق",
+      "panel": "لوحة",
+      "update": "تحديث",
+      "time": "وقت",
+      "steps": "خطوات",
+      "place": "مكان"
     }
   },
   "color": {
@@ -123,6 +129,7 @@
     "addColumnRight": "إضافة عمود إلى اليمين",
     "toggleHeaderRow": "تفعيل صف الرأس أو إلغاؤه",
     "equalColumnWidths": "توحيد عرض الأعمدة",
+    "resizeHint": "اضغط مع الاستمرار على {{shift}} لتغيير هذا العمود وحده، أو على {{alt}} لخطوات أدق",
     "deleteRow": "حذف الصف",
     "deleteColumn": "حذف العمود",
     "deleteTable": "حذف الجدول"
@@ -146,6 +153,8 @@
     "caseSensitiveTitle": "مطابقة حالة الأحرف",
     "closeReplace": "إغلاق البحث والاستبدال",
     "closeReplaceTitle": "إغلاق ({{keys}})",
+    "showReplace": "البحث والاستبدال",
+    "hideReplace": "إخفاء الاستبدال",
     "replacedCount_zero": "تم استبدال {{count}}",
     "replacedCount_one": "تم استبدال {{count}}",
     "replacedCount_two": "تم استبدال {{count}}",
@@ -159,7 +168,7 @@
     "title": "المخطط التفصيلي",
     "ariaLabel": "مخطط الملاحظة",
     "hide": "إخفاء المخطط التفصيلي",
-    "hideTitle": "إخفاء المخطط التفصيلي (Esc)",
+    "hideTitle": "إخفاء المخطط التفصيلي ({{keys}})",
     "copyHeadingLink": "نسخ رابط العنوان",
     "copyNoteLink": "نسخ رابط بين الملاحظات",
     "copyHeadingShortcut": "نسخ اختصار العنوان",
@@ -172,6 +181,9 @@
   },
   "topRow": {
     "add": "إضافة سطر في الأعلى"
+  },
+  "addLine": {
+    "add": "إضافة سطر"
   },
   "link": {
     "popoverLabel": "إضافة رابط",
@@ -221,7 +233,9 @@
     "tasksChecked_few": "{{done}} من {{formatted}} محددة",
     "tasksChecked_many": "{{done}} من {{formatted}} محددة",
     "tasksChecked_other": "{{done}} من {{formatted}} محددة",
-    "tooLargeToSync": "، قد تكون كبيرة جدًا للمزامنة، قسّمها إلى ملاحظة جديدة",
+    "syncLimit": " · {{share}} من حد المزامنة البالغ 1 ميغابايت",
+    "overSyncLimit": " · تتجاوز حد المزامنة البالغ 1 ميغابايت، وتبقى على هذا الجهاز",
+    "split": "تقسيم الملاحظة",
     "veryLong": "، طويلة جدًا، قد تكون بطيئة في التعديل وتتقطع",
     "gettingLong": "، أصبحت طويلة، قد تتأخر على الأجهزة الأبطأ",
     "largeTableWarning": "جدول كبير ({{rows}} صفًا) قد يجعل تعديل هذه الملاحظة بطيئًا، ففكر في تقسيمه"
@@ -285,10 +299,13 @@
     "hintTap": "المس زرًا لعرض خياراته.",
     "onBar": "على الشريط",
     "inMenu": "في القائمة +",
+    "inAttachMenu": "في قائمة الإرفاق",
+    "attachMenuEmpty": "فارغة، لذلك لا يظهر زر الإرفاق.",
     "menuEmpty": "القائمة فارغة، لذلك لا يظهر زر +.",
     "hidden": "المخفية",
     "hiddenNote": "تبقى تعمل باختصار لوحة المفاتيح وبصيغة Markdown.",
     "hiddenDrop": "أفلت زرًا هنا لإخفائه.",
+    "markdownViewNote": "يحتفظ عرض Markdown بمجموعة أزرار ثابتة خاصة به.",
     "hiddenEmpty": "لا شيء مخفي.",
     "alwaysVisible": "ظاهرة دائمًا",
     "pinned": "يفتح لوحة، لذلك يبقى على الشريط أو مخفيًا",
@@ -300,18 +317,23 @@
     "home": {
       "bar": "على الشريط",
       "menu": "في القائمة +",
+      "attachMenu": "في قائمة الإرفاق",
       "hidden": "مخفي"
     },
     "opensPanel": "يفتح لوحة",
     "showsRecording": "يعرض التسجيل",
     "refuse": {
       "menuNotAllowed": "يمكن أن يكون {{item}} على الشريط أو مخفيًا، لا في القائمة +.",
+      "attachNotAllowed": "لا يتسع في قائمة الإرفاق إلا زر الصورة وزر الملف وزر التسجيل.",
       "lastOnBar": "أبقِ زرًا واحدًا على الأقل على الشريط."
     },
     "items": {
       "link": "رابط",
       "notelink": "رابط بين الملاحظات",
-      "audio": "تسجيل"
+      "audio": "تسجيل",
+      "attachMenu": "إرفاق",
+      "separator": "فاصل عمودي",
+      "markdownView": "عرض Markdown"
     },
     "positionTitle": "موضع الشريط",
     "positionNote": "اختر موضع شريط الأدوات في المحرر.",

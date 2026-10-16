@@ -424,7 +424,7 @@ export function readSideField(table: string, row: object): unknown {
   try {
     return decryptJsonAad(base64ToBytes(env.ct), base64ToBytes(env.n), key, sideAad(cfg, r[cfg.pk]));
   } catch {
-    logAuthEvent('seal:side-open-failed', { message: `${table}/${String(r[cfg.pk])}` });
+    logAuthEvent('seal:side-open-failed', { ref: String(r[cfg.pk]).slice(0, 8), message: table });
     return undefined;
   } finally {
     key.fill(0);
@@ -474,8 +474,11 @@ function unsealList(
       }
       failures++;
       if (keyed) out.push(undefined);
+      // The table rides in `message`: a console read shows it, the public
+      // support report does not, because one local name matches a server one.
       logAuthEvent('seal:row-open-failed', {
-        message: `${table}/${String(row[SEALED_TABLES[table]!.pk])}`,
+        ref: String(row[SEALED_TABLES[table]!.pk]).slice(0, 8),
+        message: table,
       });
     }
   }

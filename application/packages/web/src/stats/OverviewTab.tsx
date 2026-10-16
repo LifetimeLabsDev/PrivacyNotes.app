@@ -251,8 +251,9 @@ export function OverviewTab({ notes, stats, isNoteLocked, trackerSettings, medic
         </div>
         <div dir="ltr">
           <svg viewBox={`0 0 ${RHYTHM_WEEKS * 15 + 16} 112`} width="100%" role="img" aria-label={t('overview.rhythmLegend')} style={{ display: 'block' }}>
-            {['M', 'W', 'F'].map((d, i) => (
-              <text key={d} x={2} y={i * 30 + 12} fontSize={9} fill="currentColor" opacity={0.6}>{d}</text>
+            {/* Rows run Monday first, so rows 0, 2 and 4 are Monday, Wednesday and Friday (0 = Sunday). */}
+            {[1, 3, 5].map((wd, i) => (
+              <text key={wd} x={2} y={i * 30 + 12} fontSize={9} fill="currentColor" opacity={0.6}>{weekdayLabel(weekdayDate(wd), 'narrow')}</text>
             ))}
             {rhythm.cells.map((c, i) => {
               const x = 16 + Math.floor(i / 7) * 15;

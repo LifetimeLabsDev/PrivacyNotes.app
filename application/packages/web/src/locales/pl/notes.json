@@ -11,13 +11,17 @@
     "noContent": "Brak treści",
     "notBackedUp": "Bez kopii zapasowej",
     "archived": "Zarchiwizowane",
-    "entryDate": "Data wpisu"
+    "entryDate": "Data wpisu",
+    "date": "Data",
+    "dayOf": "dzień {{n}} z {{total}}"
   },
   "header": {
     "new": "Nowa",
     "newNote": "Nowa notatka",
     "newNoteHover": "Nowa notatka ({{hotkey}})",
-    "trash": "Kosz"
+    "trash": "Kosz",
+    "newEvent": "Nowe wydarzenie",
+    "newEventHover": "Nowe wydarzenie ({{hotkey}})"
   },
   "folderChip": {
     "clear": "Usuń filtr folderu: {{folder}}",
@@ -40,7 +44,9 @@
     "login": "Login",
     "file": "Plik",
     "bookmark": "Zakładka",
-    "contact": "Kontakt"
+    "contact": "Kontakt",
+    "event": "Wydarzenie",
+    "quickAdd": "Szybkie dodawanie"
   },
   "vaultFilter": {
     "all": "Wszystko",
@@ -94,7 +100,8 @@
     "vault": "Sejf",
     "pinned": "Przypięte",
     "archive": "Archiwum",
-    "notes": "Notatki"
+    "notes": "Notatki",
+    "calendar": "Kalendarz"
   },
   "footerStats": {
     "journals": "Dzienniki",
@@ -142,8 +149,17 @@
     "collapse": "Zwiń listę notatek",
     "expand": "Rozwiń listę notatek"
   },
+  "split": {
+    "action": "Podziel notatkę",
+    "done": "Podzielono, nowa notatka: „{{title}}”",
+    "overLimit": "„{{title}}” ma ponad 1 MB i zostaje na tym urządzeniu",
+    "cannot": "Tej notatki nie można tu podzielić. Umieść kursor tam, gdzie ma się zaczynać nowa notatka.",
+    "continuedTitle": "{{title}} (ciąg dalszy)",
+    "continuedIn": "Ciąg dalszy w {{link}}"
+  },
   "paneResize": {
-    "hintCollapse": "Kliknij, aby zwinąć · Przeciągnij, aby zmienić rozmiar"
+    "hintCollapse": "Kliknij, aby zwinąć · Przeciągnij, aby zmienić rozmiar",
+    "hintExpand": "Kliknij, aby rozwinąć · Przeciągnij, aby zmienić rozmiar"
   },
   "emptyEditor": {
     "selectFile": "Wybierz plik, aby zobaczyć podgląd",
@@ -180,6 +196,8 @@
     "findInNote": "Znajdź w notatce",
     "navPrev": "Poprzedni",
     "navNext": "Następny",
+    "navPrevTab": "Poprzednia karta",
+    "navNextTab": "Następna karta",
     "undo": "Cofnij",
     "redo": "Ponów",
     "hide": "Ukryj",
@@ -231,6 +249,8 @@
     "words": "Słowa",
     "zen": "Tryb Zen",
     "appearance": "Wygląd",
+    "goToTop": "Przejdź na górę",
+    "goToEnd": "Przejdź na koniec",
     "signOut": "Wyloguj się",
     "signingOut": "Wylogowywanie…",
     "switchToLight": "Przełącz na tryb jasny",
@@ -256,7 +276,8 @@
     "aboutLabel": "O aplikacji",
     "languageLabel": "Język",
     "dateLabel": "Data",
-    "languageDesc": "Wybierz język, w którym wyświetla się PrivacyNotes."
+    "languageDesc": "Wybierz język, w którym wyświetla się PrivacyNotes.",
+    "calendarLabel": "Kalendarz"
   },
   "importStore": {
     "title": "Zaimportować czy zapisać?",

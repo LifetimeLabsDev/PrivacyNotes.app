@@ -22,7 +22,8 @@
       "totp": "Los códigos 2FA son una función Pro. Guarda una clave de autenticación en cualquier inicio de sesión y tendrás el código rotativo junto a la contraseña. La clave se guarda y se sincroniza en todos los planes.",
       "replace": "Buscar y reemplazar es una función Pro. Mejora tu plan para reemplazar una coincidencia o todas las de una nota de una vez.",
       "passphrase": "Las frases de contraseña son una función Pro. Genera una frase de palabras al azar, fácil de escribir y de decir.",
-      "default": "Una sola mejora desbloquea todo lo de abajo. Pago único."
+      "default": "Una sola mejora desbloquea todo lo de abajo. Pago único.",
+      "alerts": "Los recordatorios son una función Pro. Tus dispositivos suenan a la hora que elijas, y nada del elemento sale de ellos."
     },
     "features": {
       "devices": "Sincroniza dispositivos ilimitados, en todas las plataformas",
@@ -73,7 +74,7 @@
     "openingBody": "Debería aparecer una ventana de pago de Paddle. Si no aparece, puede que tu navegador haya bloqueado la ventana emergente - recarga esta página para reintentar."
   },
   "history": {
-    "subtitle": "Hasta 20 versiones por elemento. Las más antiguas se eliminan automáticamente.",
+    "subtitle": "Hasta 50 versiones por elemento. Las más antiguas se eliminan automáticamente.",
     "empty": "Aún no hay historial. Las versiones empiezan a acumularse tras la próxima edición. Vuelve más tarde.",
     "loadFailed": "No se pudo cargar el historial. Comprueba tu conexión e inténtalo de nuevo.",
     "selectPrompt": "Selecciona una versión para previsualizarla.",
@@ -82,7 +83,20 @@
     "restoring": "Restaurando…",
     "restoreSnapshotFailed": "No se pudo guardar primero la versión actual, así que no se restauró nada. Comprueba tu conexión e inténtalo de nuevo.",
     "restoreFailed": "No se pudo restaurar esta versión. Inténtalo de nuevo.",
-    "loginExtrasNotRecorded": "Esta versión no guardó campos personalizados ni sitios web adicionales. Al restaurarla se conservan los actuales."
+    "loginExtrasNotRecorded": "Esta versión no guardó campos personalizados ni sitios web adicionales. Al restaurarla se conservan los actuales.",
+    "compare": "Comparar con la nota actual",
+    "thisVersion": "Antes",
+    "currentNote": "Ahora",
+    "onlyInVersion": "Eliminado desde entonces",
+    "onlyInCurrent": "Añadido desde entonces",
+    "changeCount_other": "{{count}} cambios",
+    "noChanges": "Sin cambios en el texto",
+    "titleChanged": "Título cambiado",
+    "tagsChanged": "Etiquetas cambiadas",
+    "formatChanged": "Formato cambiado",
+    "tooLong": "Esta nota es demasiado larga para compararla.",
+    "trackersNotRecorded": "Esta versión no guardó los valores de los registros. Al restaurarla se conservan los actuales.",
+    "changeCount_one": "{{count}} cambio"
   },
   "donation": {
     "eyebrow": "Has desbloqueado",

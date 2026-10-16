@@ -11,13 +11,17 @@
     "noContent": "Sem conteúdo",
     "notBackedUp": "Sem cópia de segurança",
     "archived": "Arquivado",
-    "entryDate": "Data da entrada"
+    "entryDate": "Data da entrada",
+    "date": "Data",
+    "dayOf": "dia {{n}} de {{total}}"
   },
   "header": {
     "new": "Nova",
     "newNote": "Nova nota",
     "newNoteHover": "Nova nota ({{hotkey}})",
-    "trash": "Lixo"
+    "trash": "Lixo",
+    "newEvent": "Novo evento",
+    "newEventHover": "Novo evento ({{hotkey}})"
   },
   "folderChip": {
     "clear": "Remover o filtro de pasta: {{folder}}",
@@ -40,7 +44,9 @@
     "login": "Login",
     "file": "Ficheiro",
     "bookmark": "Marcador",
-    "contact": "Contacto"
+    "contact": "Contacto",
+    "event": "Evento",
+    "quickAdd": "Adição rápida"
   },
   "vaultFilter": {
     "all": "Todos",
@@ -94,7 +100,8 @@
     "vault": "Cofre",
     "pinned": "Fixados",
     "archive": "Arquivo",
-    "notes": "Notas"
+    "notes": "Notas",
+    "calendar": "Calendário"
   },
   "footerStats": {
     "journals": "Diários",
@@ -138,8 +145,17 @@
     "collapse": "Recolher a lista de notas",
     "expand": "Expandir a lista de notas"
   },
+  "split": {
+    "action": "Dividir nota",
+    "done": "Dividida em “{{title}}”",
+    "overLimit": "“{{title}}” tem mais de 1 MB e fica neste dispositivo",
+    "cannot": "Não é possível dividir esta nota aqui. Coloca o cursor onde a nova nota deve começar.",
+    "continuedTitle": "{{title}} (continuação)",
+    "continuedIn": "Continua em {{link}}"
+  },
   "paneResize": {
-    "hintCollapse": "Clica para recolher · Arrasta para redimensionar"
+    "hintCollapse": "Clica para recolher · Arrasta para redimensionar",
+    "hintExpand": "Clica para expandir · Arrasta para redimensionar"
   },
   "emptyEditor": {
     "selectFile": "Seleciona um ficheiro para pré-visualizar",
@@ -176,6 +192,8 @@
     "findInNote": "Procurar na nota",
     "navPrev": "Anterior",
     "navNext": "Seguinte",
+    "navPrevTab": "Separador anterior",
+    "navNextTab": "Separador seguinte",
     "undo": "Anular",
     "redo": "Refazer",
     "hide": "Ocultar",
@@ -227,6 +245,8 @@
     "words": "Palavras",
     "zen": "Modo Zen",
     "appearance": "Aspeto",
+    "goToTop": "Ir para o início",
+    "goToEnd": "Ir para o fim",
     "signOut": "Terminar sessão",
     "signingOut": "A terminar sessão…",
     "switchToLight": "Mudar para o modo claro",
@@ -252,7 +272,8 @@
     "aboutLabel": "Sobre",
     "languageLabel": "Idioma",
     "dateLabel": "Data",
-    "languageDesc": "Escolhe o idioma em que o PrivacyNotes é apresentado."
+    "languageDesc": "Escolhe o idioma em que o PrivacyNotes é apresentado.",
+    "calendarLabel": "Calendário"
   },
   "importStore": {
     "title": "Importar ou guardar?",

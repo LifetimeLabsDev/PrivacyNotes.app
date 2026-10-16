@@ -12,6 +12,10 @@ import { HelpChip } from './HelpChip';
 import { ensureLevel2, MfaCancelledError, mfaSessionIdentity } from './mfaStep';
 import { jwtPayloadPubkey } from './authStorage';
 import { announceSignOut, endLiveSignIn } from './liveSignIn';
+import { cancelDeviceReminders, remindersTeardownSettled, REMINDER_TO_CANCEL_KEY } from './notesView/useReminders';
+
+/** How long the reload after a wipe waits for the reminders' teardown. */
+const RELOAD_WAIT_MS = 10_000;
 
 // ------------------------------------------------------------------
 // Danger zone - account & data deletion
@@ -46,7 +50,10 @@ function clearAllStorageKeys(): void {
       const owned = demo
         ? isDemoOwnedKey(k) || k === demoSettings
         : k.startsWith('privacynotes.') || k.startsWith('sb-');
-      if (owned) keys.push(k);
+      // One key stays: the reminder ids the teardown has not seen cancelled
+      // yet, ids only, which exists only until that cancel went out, and
+      // which the next start cancels when the reload came first.
+      if (owned && k !== REMINDER_TO_CANCEL_KEY) keys.push(k);
     }
     for (const k of keys) {
       try { store.removeItem(k); } catch { /* ignore */ }
@@ -205,6 +212,10 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
         // browser (liveSignIn.ts).
         endLiveSignIn();
         announceSignOut();
+        // A phone's scheduled reminders, while the map that names them
+        // exists: the sweep below removes it, and the OS would ring them with
+        // this account's titles after it is gone.
+        await cancelDeviceReminders();
         // Zero key material.
         authed.encryptionKey.fill(0);
         authed.signingPrivateKey.fill(0);
@@ -226,6 +237,9 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
         // The sweep took the sign-out notice too, and a stamp taken before
         // any notice existed would read as current again without one.
         announceSignOut();
+        // The reload below drops the page, and with it the reminders'
+        // second cancel if the OS was slow to answer; it goes first.
+        await remindersTeardownSettled(RELOAD_WAIT_MS);
       }
 
       onDeleteStarted();

@@ -11,13 +11,17 @@
     "noContent": "沒有內容",
     "notBackedUp": "未備份",
     "archived": "已封存",
-    "entryDate": "日誌日期"
+    "entryDate": "日誌日期",
+    "date": "日期",
+    "dayOf": "第 {{n}} 天，共 {{total}} 天"
   },
   "header": {
     "new": "新增",
     "newNote": "新增筆記",
     "newNoteHover": "新增筆記（{{hotkey}}）",
-    "trash": "垃圾桶"
+    "trash": "垃圾桶",
+    "newEvent": "新增活動",
+    "newEventHover": "新增活動（{{hotkey}}）"
   },
   "folderChip": {
     "clear": "清除資料夾篩選：{{folder}}",
@@ -40,7 +44,9 @@
     "login": "登入資訊",
     "file": "檔案",
     "bookmark": "書籤",
-    "contact": "聯絡人"
+    "contact": "聯絡人",
+    "event": "活動",
+    "quickAdd": "快速新增"
   },
   "vaultFilter": {
     "all": "全部",
@@ -94,7 +100,8 @@
     "vault": "保險庫",
     "pinned": "已釘選",
     "archive": "封存",
-    "notes": "筆記"
+    "notes": "筆記",
+    "calendar": "日曆"
   },
   "footerStats": {
     "journals": "日誌",
@@ -136,8 +143,17 @@
     "collapse": "收合筆記清單",
     "expand": "展開筆記清單"
   },
+  "split": {
+    "action": "拆分筆記",
+    "done": "已拆分出「{{title}}」",
+    "overLimit": "「{{title}}」超過 1 MB，只保留在這台裝置上",
+    "cannot": "無法在這裡拆分這則筆記。請把游標放在新筆記應該開始的位置。",
+    "continuedTitle": "{{title}}（續）",
+    "continuedIn": "接續於 {{link}}"
+  },
   "paneResize": {
-    "hintCollapse": "點一下收合 · 拖曳調整大小"
+    "hintCollapse": "點一下收合 · 拖曳調整大小",
+    "hintExpand": "點一下展開 · 拖曳調整大小"
   },
   "emptyEditor": {
     "selectFile": "選擇要預覽的檔案",
@@ -174,6 +190,8 @@
     "findInNote": "在筆記中尋找",
     "navPrev": "上一個",
     "navNext": "下一個",
+    "navPrevTab": "上一個分頁",
+    "navNextTab": "下一個分頁",
     "undo": "復原",
     "redo": "重做",
     "hide": "隱藏",
@@ -225,6 +243,8 @@
     "words": "字數",
     "zen": "Zen 模式",
     "appearance": "外觀",
+    "goToTop": "移至頂端",
+    "goToEnd": "移至結尾",
     "signOut": "登出",
     "signingOut": "登出中…",
     "switchToLight": "切換至淺色模式",
@@ -250,7 +270,8 @@
     "aboutLabel": "關於",
     "languageLabel": "語言",
     "dateLabel": "日期",
-    "languageDesc": "選擇 PrivacyNotes 的顯示語言。"
+    "languageDesc": "選擇 PrivacyNotes 的顯示語言。",
+    "calendarLabel": "日曆"
   },
   "importStore": {
     "title": "匯入還是儲存？",

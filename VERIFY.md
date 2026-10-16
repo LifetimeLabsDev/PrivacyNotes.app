@@ -76,7 +76,7 @@ That is the complete list. The full accounting of what our server can observe, i
 
 The rows in that store are not your notes. Each one carries `sv: 1` and a `sealed` field holding a nonce and a ciphertext, and the title, body, tags and tracker data live inside that ciphertext. That is why the search came back empty. The rows are sealed with XChaCha20-Poly1305 under a key derived from your phrase (the `privacynotes-local-at-rest-v1` branch in the same key table below), and the ciphertext is bound to its own row and table, so a blob moved onto another row fails to open instead of decrypting.
 
-One panel over, in **Local Storage**, sits the root secret: the key `privacynotes.phrase`. Its value starts with `pnwrap1:` - an AES-GCM envelope, not your twelve words. The key that opens it lives in IndexedDB as a non-extractable WebCrypto key, which the browser will use but never hand to script, so a copied localStorage file or a storage backup does not carry your phrase in readable form. With the PIN app lock enabled, that envelope is removed entirely and the phrase exists only wrapped under your PIN.
+One panel over, in **Local Storage**, sits the root secret: the key `privacynotes.phrase`. Its value starts with `pnwrap1:` - an AES-GCM envelope, not your twelve words. The key that opens it lives in IndexedDB as a non-extractable WebCrypto key, which the browser will use but never hand to script, so a copied localStorage file or a storage backup does not carry your phrase in readable form. With the app lock enabled, that envelope is removed entirely and the phrase is stored only under the app lock's own wraps: one under your PIN or passcode, one under biometric unlock, or both. Biometric unlock that is not tied to a passkey keeps its key in the same storage, so while it is on, a copy of that storage opens the phrase without the biometric check, the PIN or the passcode.
 
 Be clear about what all of this does not buy, because the honest limits have not moved: code running in the app's origin on your machine can use the keys; someone with your live browser profile boots the app signed in; and while the app runs, your notes are plaintext in memory - that is what an app that shows you your notes is. Two timing caveats worth knowing: existing rows seal on the first unlock after the update that introduced sealing, and browser storage engines keep old values in free disk pages for a while after rewriting, so "everything on disk is ciphertext" becomes fully true a little after it becomes mostly true. What protects an unlocked machine is still OS disk encryption and your screen lock. The full accounting, including every field that stays readable for the indexes, is "Local storage at rest" in [THREAT_MODEL.md](THREAT_MODEL.md).
 
@@ -137,9 +137,8 @@ No secrets, no signing keys, no cooperation from us. Run what you built, point y
 | Encryption layer (`crypto/`) | Published |
 | Threat model | Published |
 | Full client source (web, desktop, mobile) | Published, in [`application/`](application/) |
-| Sync protocol specification | Published, in [`docs/`](docs/) |
 | Third-party security audit report | Planned, published in full or in summary when it is done |
-| Sync backend, including the database schema | Closed. See the note under this table |
+| Sync backend, including the database schema and the protocol | Closed. See the note under this table |
 
 The sync backend is closed because the hosted service is what funds the product, and the database schema is part of it. Nothing in the three tiers depends on either. The client you can read encrypts your notes on your device, and tier 1 shows you from the outside exactly what reaches the server: ciphertext, nonces, a public key and timestamps, and nothing else. That is a stronger check than reading our table definitions, because it measures what actually leaves your machine rather than what we say we store. If self-hosting ever ships, the schema ships with it.
 

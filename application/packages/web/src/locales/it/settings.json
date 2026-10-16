@@ -168,8 +168,8 @@
     "startViewTitle": "Mostra all'apertura",
     "viewTitle": "Mostra gli elementi come",
     "viewDesc": "Auto segue la larghezza del tuo schermo.",
-    "openInTabsTitle": "Apri una scheda a ogni clic",
-    "openInTabsDesc": "Se è disattivato, clic destro > Apri in una scheda apre comunque una scheda. Le schede non compaiono sui telefoni.",
+    "openInTabsTitle": "Mostra l'elemento aperto in una scheda",
+    "openInTabsDesc": "La scheda segue ciò che apri dopo, come in un browser. Blocca una scheda per tenerla. Se è disattivato, solo \"Apri in una scheda\" crea una scheda. Le schede non compaiono sui telefoni.",
     "viewList": "Elenco",
     "viewGrid": "Griglia",
     "viewAuto": "Auto",
@@ -181,6 +181,10 @@
     "copyFormatDesc": "Ciò che ricevono le altre app quando copi da una nota. Solo su questo dispositivo.",
     "copyFormatMarkdown": "Markdown",
     "copyFormatPlain": "Testo semplice",
+    "pasteFormatTitle": "Testo incollato",
+    "pasteFormatDesc": "Ciò che resta quando incolli da un'altra app. Solo su questo dispositivo.",
+    "pasteFormatFormatted": "Formattato",
+    "pasteFormatPlain": "Testo semplice",
     "faviconsTitle": "Icone dei siti",
     "faviconsDesc": "Il logo del sito accanto ai link e alle credenziali della Cassaforte.",
     "faviconsExample": "Esempio:",
@@ -241,7 +245,10 @@
       "yours": "Tuoi",
       "noLightCommunity": "Ancora nessun tema chiaro della community.",
       "noDarkCommunity": "Ancora nessun tema scuro della community.",
-      "none": "Ancora nessun tema qui."
+      "none": "Ancora nessun tema qui.",
+      "sortLabel": "Ordine",
+      "sortVotes": "Più votati",
+      "sortNewest": "Più recenti"
     },
     "custom": {
       "newTheme": "Nuovo tema",
@@ -250,7 +257,6 @@
       "logoOriginal": "Originale",
       "logoHelp": "Il logo e «Privacy» prendono l’accento del tema o mantengono i colori originali.",
       "pasteCode": "Incolla codice tema",
-      "community": "Sfoglia i temi",
       "menu": "Opzioni di {{name}}",
       "copyCode": "Copia codice",
       "makeCopy": "Duplica",
@@ -281,7 +287,9 @@
       "suggestTitle": "Completa il resto dal tuo accento",
       "suggestLight": "Chiaro",
       "suggestDark": "Scuro",
-      "communityNote": "L'app mostra i {{count}} temi della community più recenti per ogni modalità.",
+      "websiteTitle": "Altri temi sul nostro sito",
+      "websiteDesc": "Tutti i temi e i voti più recenti. L'app riceve nuovi temi a ogni aggiornamento.",
+      "vote": "Vota su GitHub",
       "themeLimit": "Hai {{max}} temi. Eliminane uno per salvarne un altro.",
       "credit": "Crediti",
       "creditPlaceholder": "Nome utente GitHub (facoltativo)",
@@ -516,5 +524,27 @@
     "yearFirst": "Prima l'anno (ISO)",
     "hour24": "24 ore",
     "hour12": "12 ore"
+  },
+  "calendar": {
+    "alertTimed": "Avviso predefinito, elementi con orario",
+    "alertAllDay": "Avviso predefinito, elementi di tutto il giorno",
+    "alertBirthday": "Compleanni",
+    "alertsHelp": "Un nuovo evento parte con questo avviso. Dopo, ogni elemento tiene i propri avvisi.",
+    "reminderTitles": "Mostra i titoli nei promemoria",
+    "reminderTitlesHelp": "Se è disattivato, un promemoria mostra solo la parola Promemoria e l'ora. Un elemento protetto dal PIN lo fa sempre.",
+    "whereTitle": "Promemoria su questo dispositivo",
+    "reminderHint": {
+      "mobile": "I promemoria suonano su questo telefono, anche quando PrivacyNotes è chiuso.",
+      "desktop": "I promemoria suonano mentre PrivacyNotes è aperto su questo computer.",
+      "browser": "I promemoria suonano mentre PrivacyNotes è aperto in questo browser."
+    },
+    "scheduledThrough": "Promemoria programmati fino al {{date}}",
+    "permissionAsk": "Consenti le notifiche",
+    "permissionOpenSettings": "Apri impostazioni",
+    "permissionDenied": "Le notifiche sono bloccate per PrivacyNotes. Consentile nelle impostazioni di questo browser o dispositivo.",
+    "weekNumbers": "Mostra i numeri delle settimane",
+    "hours": "Ore mostrate",
+    "hoursHelp": "Il giorno e la settimana si aprono alla prima ora.",
+    "to": "a"
   }
 }

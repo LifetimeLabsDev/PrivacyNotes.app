@@ -125,6 +125,9 @@ importers:
       '@tauri-apps/plugin-fs':
         specifier: ^2.6.0
         version: 2.6.0
+      '@tauri-apps/plugin-notification':
+        specifier: ~2.5.1
+        version: 2.5.1
       '@tauri-apps/plugin-opener':
         specifier: ^2.7.0
         version: 2.7.0
@@ -221,6 +224,9 @@ importers:
       dexie:
         specifier: ^4.4.6
         version: 4.4.6
+      diff:
+        specifier: ^9.0.0
+        version: 9.0.0
       heic-to:
         specifier: ^1.6.5
         version: 1.6.5
@@ -1211,6 +1217,9 @@ packages:
   '@tauri-apps/plugin-fs@2.6.0':
     resolution: {integrity: sha512-MhBAZ4rryd+h9fijd/GWDfArqiAeGI0ZNduV4wuRyUVI6wDZ+oDBY7atqtoXKDwlTUVSvpvmWJAY0ehQd/v6Uw==}
 
+  '@tauri-apps/plugin-notification@2.5.1':
+    resolution: {integrity: sha512-i0nD48YsLov18siENevC3X7SmJpQE1cImq+JUsjrUPdu73J8cTIOyNIS8H0qxftFAc1k2w6s1E74DoFE02Jirw==}
+
   '@tauri-apps/plugin-opener@2.7.0':
     resolution: {integrity: sha512-mBorYfVKh9Lt7s4ZFtKbMUTxBw+Y/sVmSlKCtkkoBgMTC/DIbt/kaPm67L/2djAUqDI1wbixy5OHHVmipjuGMw==}
 
@@ -1742,6 +1751,10 @@ packages:
 
   dexie@4.4.6:
     resolution: {integrity: sha512-hJP/BO6mjB+tX6hToIO1kmxYLNmun90wYbfcoAoLpKEyDYal/k33dg0TAfoUe2TDsbbLoVIzljJ3BN2UbR5EOg==}
+
+  diff@9.0.0:
+    resolution: {integrity: sha512-svtcdpS8CgJyqAjEQIXdb3OjhFVVYjzGAPO8WGCmRbrml64SPw/jJD4GoE98aR7r25A0XcgrK3F02yw9R/vhQw==}
+    engines: {node: '>=0.3.1'}
 
   enhanced-resolve@5.24.3:
     resolution: {integrity: sha512-PwKooW9JUzh5chmYfHM3IQl5OkK2u2Nm011MgeZrss3JmFraUx/fqrf78kk8GUMYoibx/14MdwTl/1WKkG7TpQ==}
@@ -3044,6 +3057,10 @@ snapshots:
     dependencies:
       '@tauri-apps/api': 2.12.1
 
+  '@tauri-apps/plugin-notification@2.5.1':
+    dependencies:
+      '@tauri-apps/api': 2.12.1
+
   '@tauri-apps/plugin-opener@2.7.0':
     dependencies:
       '@tauri-apps/api': 2.12.1
@@ -3514,6 +3531,8 @@ snapshots:
       dequal: 2.0.3
 
   dexie@4.4.6: {}
+
+  diff@9.0.0: {}
 
   enhanced-resolve@5.24.3:
     dependencies:

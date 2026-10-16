@@ -20,11 +20,11 @@ import { estimateBlobBytes } from './notesViewUtils';
 import { useTranslation } from 'react-i18next';
 import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer, NodeViewWrapper } from '@tiptap/react';
-import { Plugin, PluginKey, type Transaction } from '@tiptap/pm/state';
+import { NodeSelection, Plugin, PluginKey, type Selection, type Transaction } from '@tiptap/pm/state';
 import type { EditorView } from '@tiptap/pm/view';
 import type { Node as ProseMirrorNode, Slice } from '@tiptap/pm/model';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
-import { ArrowsOutSimple, Download, Trash } from './icons';
+import { ArrowsOutSimple, Check, Copy, Download, Trash } from './icons';
 import { currentImageOptions, processImage, type ImageOptions } from './imageProcessing';
 import { attachmentIdForUrl, cachedAttachmentUrl, loadAttachmentData, loadAttachmentUrl } from './EncryptedAttachment';
 import { FILE_REF_PREFIX, openMediaViewerInDoc, type MediaRef } from './mediaRefs';
@@ -140,17 +140,21 @@ type ImageNodeViewProps = {
 
 /**
  * Floating toolbar shown above a selected image.
- * Provides size presets (25/50/75/100%), view, download, and delete.
+ * Provides size presets (25/50/75/100%), copy, view, download, and delete.
  */
 function ImageToolbar({
   width,
   onResize,
+  onCopy,
+  copied,
   onView,
   onDownload,
   onDelete,
 }: {
   width: ImageWidth;
   onResize: (w: ImageWidth) => void;
+  onCopy: () => void;
+  copied: boolean;
   onView: () => void;
   onDownload: () => void;
   onDelete: () => void;
@@ -176,6 +180,16 @@ function ImageToolbar({
           </button>
         ))}
       </div>
+      <div className="pn-image-toolbar-divider" />
+      <button
+        type="button"
+        className="pn-image-toolbar-btn"
+        aria-label={t('image.copyAria')}
+        onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); onCopy(); }}
+      >
+        {copied ? <Check size={16} /> : <Copy size={16} />}
+      </button>
       <div className="pn-image-toolbar-divider" />
       <button
         type="button"
@@ -236,6 +250,8 @@ const EncryptedImageView = memo(function EncryptedImageView({
   // A failed native save can leave an empty or partial file, so the message
   // stays until a save succeeds; a dismissed dialog changes nothing.
   const [saveFailed, setSaveFailed] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
   const [loading, setLoading] = useState(!cachedUrl);
   // True once a person taps this image, and what the size/download/delete bar
   // hangs on. It separates an image someone chose from the one ProseMirror
@@ -362,6 +378,17 @@ const EncryptedImageView = memo(function EncryptedImageView({
     else if (saved?.reason === 'failed') setSaveFailed(true);
   }, [src, alt]);
 
+  // The clipboard write starts inside the click, which WebKit requires.
+  const handleCopy = useCallback(() => {
+    if (!objectUrl) return;
+    void copyPictureToClipboard(src, objectUrl, alt).then((ok) => {
+      setCopyFailed(!ok);
+      if (!ok) return;
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  }, [src, objectUrl, alt]);
+
   const handleView = useCallback(() => {
     const pos = getPos();
     if (typeof pos === 'number') openMediaViewerInDoc(editor.state.doc, pos);
@@ -476,7 +503,7 @@ const EncryptedImageView = memo(function EncryptedImageView({
   // width preset, so auto margins are all it takes. At 100% there is no
   // slack to move into, which is why alignment reads as a no-op on L.
   // rtl-ok: textAlign is the persisted physical value from ALIGNMENT_VALUES
-  // (editorExtensions.ts) - swapping these to logical margins is exactly the
+  // (editorAlignment.ts) - swapping these to logical margins is exactly the
   // open decision rtl-handoff.md section 3d flags as unresolved (does
   // textAlign:'left' mean "left" or "start"?), not a mechanical rename.
   const alignStyle =
@@ -531,6 +558,8 @@ const EncryptedImageView = memo(function EncryptedImageView({
           <ImageToolbar
             width={widthPercent as ImageWidth}
             onResize={handleResize}
+            onCopy={handleCopy}
+            copied={copied}
             onView={handleView}
             onDownload={handleDownload}
             onDelete={handleDelete}
@@ -538,6 +567,9 @@ const EncryptedImageView = memo(function EncryptedImageView({
         )}
         {(selected || tapped) && saveFailed && (
           <p className="mt-1 text-xs text-danger">{t('image.saveFailed')}</p>
+        )}
+        {(selected || tapped) && copyFailed && (
+          <p className="mt-1 text-xs text-danger">{t('image.copyFailed')}</p>
         )}
       </div>
     </NodeViewWrapper>
@@ -778,6 +810,10 @@ async function handleImageUpload(
  * current block.
  */
 function placeImage(view: EditorView, src: string, alt: string, targetPos: number): void {
+  // An upload ends after an await, by which time the note may have turned
+  // read-only or closed. Nothing is placed then; a picture stored for it is
+  // named by no note, and the orphan reconcile (imageGC.ts) reclaims it.
+  if (!view.editable || view.isDestroyed) return;
   const { schema, doc } = view.state;
   const imageNode = schema.nodes['image'];
   if (!imageNode) return;
@@ -915,6 +951,60 @@ export function refForObjectUrl(url: string): string | null {
   for (const [uuid, cached] of blobUrlCache) if (cached === url) return `${IMAGE_URI_PREFIX}${uuid}`;
   const file = attachmentIdForUrl(url);
   return file ? `${FILE_REF_PREFIX}${file}` : null;
+}
+
+/**
+ * Whether a right click inside this selection keeps the browser's own menu:
+ * a selected picture does, so "Copy image" and "Save image" stay where the
+ * platform puts them. One click selects a picture whole, so without this the
+ * next right click lands inside a selection and gets the text menu (#488).
+ */
+export function isPictureSelection(sel: Selection): boolean {
+  return sel instanceof NodeSelection && sel.node.type.name === 'image';
+}
+
+/** The `<img>` our Copy image writes beside the PNG. Its object URL is what a
+ *  paste in this tab recognises (`htmlBeatsFiles`), and `data-pn-src` is what
+ *  the sanitizer keeps, so the paste reuses the stored picture. */
+export function pictureClipboardHtml(ref: string, url: string, alt: string): string {
+  const img = document.createElement('img');
+  img.setAttribute('src', url);
+  img.setAttribute(IMAGE_REF_ATTR, ref);
+  if (alt) img.setAttribute('alt', alt);
+  return img.outerHTML;
+}
+
+/** The picture as PNG, the one picture type every clipboard accepts. */
+async function pictureAsPng(url: string): Promise<Blob> {
+  const img = new Image();
+  img.src = url;
+  await img.decode();
+  const canvas = document.createElement('canvas');
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  canvas.getContext('2d')!.drawImage(img, 0, 0);
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('png encode failed'))), 'image/png');
+  });
+}
+
+/**
+ * Puts a shown picture on the clipboard: a PNG for other apps and the HTML of
+ * `pictureClipboardHtml` for this one. The PNG goes in as a promise, so the
+ * write starts inside the click while the picture is still being encoded.
+ * Resolves false when the platform has no picture clipboard or refuses it.
+ */
+export async function copyPictureToClipboard(ref: string, url: string, alt: string): Promise<boolean> {
+  if (typeof ClipboardItem === 'undefined' || !navigator.clipboard?.write) return false;
+  try {
+    await navigator.clipboard.write([new ClipboardItem({
+      'image/png': pictureAsPng(url),
+      'text/html': new Blob([pictureClipboardHtml(ref, url, alt)], { type: 'text/html' }),
+    })]);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -1229,6 +1319,8 @@ async function resolvePending(view: EditorView, items: PendingItem[]): Promise<v
  * those rules.
  */
 function placeAtPlaceholder(view: EditorView, src: string, alt: string, pos: number): void {
+  // Read-only since the paste: see placeImage.
+  if (!view.editable) return;
   const { schema, doc } = view.state;
   const imageNode = schema.nodes['image'];
   if (!imageNode) return;

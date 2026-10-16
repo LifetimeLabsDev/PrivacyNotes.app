@@ -8,7 +8,6 @@
     "title": "งาน",
     "newTaskNote": "โน้ตงานใหม่",
     "newTaskNoteWithHotkey": "โน้ตงานใหม่ ({{hotkey}})",
-    "new": "สร้าง",
     "hideCompleted": "ซ่อนงานที่เสร็จแล้ว",
     "showCompleted": "แสดงงานที่เสร็จแล้ว",
     "searchPlaceholder": "ค้นหางาน…",
@@ -37,12 +36,9 @@
     "deselectAll": "ยกเลิกการเลือกทั้งหมด",
     "selectAll": "เลือกทั้งหมด",
     "storage": "พื้นที่จัดเก็บ",
-    "supportedTypesHint": "ขนาดไฟล์สูงสุด: {{max}} MB",
     "perFile": "ต่อไฟล์",
     "free": "ฟรี",
     "upgradeToPro": "อัปเกรดเป็น Pro",
-    "addStorage": "เพิ่มพื้นที่จัดเก็บ",
-    "upToMax": "สูงสุด {{max}}",
     "filterAll": "ทั้งหมด",
     "filterImages": "รูปภาพ",
     "filterAudio": "เสียง",
@@ -115,6 +111,7 @@
     "video": "วิดีโอ",
     "image": "รูปภาพ",
     "pdf": "PDF",
+    "email": "อีเมล",
     "archive": "ไฟล์บีบอัด",
     "document": "เอกสาร",
     "spreadsheet": "สเปรดชีต",
@@ -187,7 +184,8 @@
     "markdown": "Markdown",
     "markdownTip": "ไม่เข้ารหัส",
     "bookmarks": "บุ๊กมาร์ก",
-    "contacts": "รายชื่อติดต่อ"
+    "contacts": "รายชื่อติดต่อ",
+    "calendar": "ปฏิทิน"
   },
   "browseToggle": {
     "label": "เรียกดูตาม",
@@ -203,6 +201,9 @@
     "deleteConfirmTitle": "ลบโฟลเดอร์หรือไม่?",
     "deleteConfirmBodyRoot": "“{{folder}}” จะถูกลบ โน้ตและโฟลเดอร์ย่อยจะย้ายไปที่ระดับบนสุด ไม่มีโน้ตใดถูกลบ",
     "deleteConfirmBodyNested": "“{{folder}}” จะถูกลบ โน้ตและโฟลเดอร์ย่อยจะย้ายไปที่ “{{parent}}” ไม่มีโน้ตใดถูกลบ",
+    "deleteConfirmBranchRoot": "“{{folder}}” และโฟลเดอร์ย่อยจะถูกลบ โน้ตในโฟลเดอร์เหล่านั้นจะย้ายไปที่ระดับบนสุด ไม่มีโน้ตใดถูกลบ",
+    "deleteConfirmBranchNested": "“{{folder}}” และโฟลเดอร์ย่อยจะถูกลบ โน้ตในโฟลเดอร์เหล่านั้นจะย้ายไปที่ “{{parent}}” ไม่มีโน้ตใดถูกลบ",
+    "deleteSubfolders_other": "ลบโฟลเดอร์ย่อย {{count}} โฟลเดอร์ของโฟลเดอร์นี้ด้วย",
     "moveTo": "ย้ายไปที่โฟลเดอร์",
     "searchPlaceholder": "ค้นหาโฟลเดอร์",
     "sortFolders": "เรียงโฟลเดอร์",
@@ -220,7 +221,8 @@
     "saveName": "บันทึกชื่อโฟลเดอร์",
     "actionsForFolder": "การดำเนินการสำหรับโฟลเดอร์ {{folder}}",
     "seedSecurity": "ความปลอดภัย",
-    "seedTravel": "ท่องเที่ยว"
+    "seedTravel": "ท่องเที่ยว",
+    "seedTeam": "ทีม"
   },
   "collapsedSidebar": {
     "newNote": "โน้ตใหม่",
@@ -266,7 +268,19 @@
     "size": "พื้นที่ที่ใช้: {{size}}",
     "sizeHint": "ขนาดที่เข้ารหัสทั้งหมดของรายการนี้",
     "tagCount_other": "{{count}} แท็ก",
-    "entryDate": "วันที่ของรายการ"
+    "entryDate": "วันที่ของรายการ",
+    "noDate": "ไม่มี",
+    "schedule": "กำหนดการ",
+    "ends": "สิ้นสุด",
+    "sameDay": "วันเดียวกัน",
+    "allDay": "ทั้งวัน",
+    "starts": "เริ่ม",
+    "endsAt": "สิ้นสุดเวลา",
+    "noEnd": "ไม่มี",
+    "removeFromCalendar": "นำออกจากปฏิทิน",
+    "makeEvent": "เปลี่ยนเป็นกิจกรรมเพื่อให้ทำซ้ำได้",
+    "typeEvent": "กิจกรรม",
+    "repeatRemoved": "นำการทำซ้ำออกแล้ว"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "ออกจากการเลือก (Esc)",
@@ -301,6 +315,8 @@
     "showSize": "แสดงขนาดไฟล์",
     "showTags": "แสดงโฟลเดอร์และแท็ก",
     "showCalendar": "แสดงปฏิทิน",
+    "showWorkItems": "แสดงรายการใน<b>ที่ทำงาน</b>",
+    "showPersonalItems": "แสดงรายการใน<b>ส่วนตัว</b>",
     "other": "อื่น ๆ",
     "showReadOnly": "แสดงรายการอ่านอย่างเดียว",
     "showProtected": "แสดงรายการที่ป้องกันไว้",
@@ -329,7 +345,7 @@
     "nextMonth": "เดือนถัดไป",
     "dayWithEntry": "{{date}} มีบันทึก",
     "dayWithEntryIn": "{{date}} มีบันทึกใน{{space}}",
-    "dayWithEntryBoth": "{{date}} มีบันทึกในส่วนตัวและที่ทำงาน",
+    "dayWithItems_other": "{{date}} มี {{count}} รายการ",
     "previousWeek": "สัปดาห์ก่อนหน้า",
     "nextWeek": "สัปดาห์ถัดไป",
     "showMonth": "{{month}} แสดงทั้งเดือน",
@@ -372,11 +388,14 @@
     "copyBookmarkUrl": "คัดลอก URL",
     "editBookmark": "แก้ไขบุ๊กมาร์ก",
     "openInTab": "เปิดในแท็บ",
+    "openInTabHint": "{{key}}+คลิก",
     "closeTab": "ปิดแท็บ",
     "closeOtherTabs": "ปิดแท็บอื่น",
     "closeAllTabs": "ปิดแท็บทั้งหมด",
     "pinTab": "ปักหมุดแท็บ",
-    "unpinTab": "เลิกปักหมุดแท็บ"
+    "unpinTab": "เลิกปักหมุดแท็บ",
+    "newEvent": "กิจกรรมใหม่",
+    "quickAdd": "เพิ่มด่วน"
   },
   "demoBanner": {
     "title": "ลองใช้ได้โดยไม่มีความเสี่ยง",
@@ -628,6 +647,9 @@
       "mastodon": "Mastodon"
     }
   },
+  "staleEditor": {
+    "copyToast": "โน้ตนี้มีการเปลี่ยนแปลงบนอุปกรณ์อื่น การแก้ไขของคุณอยู่ในสำเนา \"{{title}}\""
+  },
   "noteLinks": {
     "retargetedToast_other": "อัปเดตลิงก์ระหว่างโน้ต {{count}} ลิงก์ให้ตรงกับชื่อใหม่แล้ว"
   },
@@ -636,7 +658,8 @@
   },
   "tabStrip": {
     "label": "แท็บที่เปิดอยู่",
-    "close": "ปิด {{title}}"
+    "close": "ปิด {{title}}",
+    "moreTabs": "แท็บเพิ่มเติม"
   },
   "shareInbox": {
     "saved": "บันทึกใน PrivacyNotes แล้ว",
@@ -665,10 +688,11 @@
   },
   "spaces": {
     "label": "พื้นที่",
+    "all": "ทั้งหมด",
     "personal": "ส่วนตัว",
     "work": "ที่ทำงาน",
-    "moveToWork": "ย้ายไปที่ทำงาน",
-    "moveToPersonal": "ย้ายไปส่วนตัว",
+    "moveToWork": "ย้ายไป<b>ที่ทำงาน</b>",
+    "moveToPersonal": "ย้ายไป<b>ส่วนตัว</b>",
     "movedToWork": "ย้าย {{folder}} ไปที่ทำงานแล้ว",
     "movedToPersonal": "ย้าย {{folder}} ไปส่วนตัวแล้ว",
     "itemMovedToWork": "ย้ายไปที่ทำงานแล้ว",
@@ -677,6 +701,200 @@
     "switchedToPersonal": "สลับไปส่วนตัวแล้ว",
     "switchToWork": "สลับไปที่ทำงาน",
     "switchToPersonal": "สลับไปส่วนตัว",
+    "switchToAll": "แสดงทุกพื้นที่",
     "workEmpty": "พื้นที่ที่ทำงานยังว่างอยู่ ในพื้นที่ส่วนตัว ให้เปิดเมนูของรายการหรือโฟลเดอร์แล้วเลือก “ย้ายไปที่ทำงาน”"
+  },
+  "calendar": {
+    "moveToToday": "ย้ายไปวันนี้",
+    "moveToTomorrow": "ย้ายไปพรุ่งนี้",
+    "moveToNextWeek": "ย้ายไปสัปดาห์หน้า",
+    "deleteEvent": "ลบกิจกรรม",
+    "openContact": "เปิดผู้ติดต่อ",
+    "newOnDay": "กิจกรรมใหม่ในวันนี้",
+    "showDay": "แสดงวันนี้",
+    "open": "เปิดปฏิทิน",
+    "back": "ปฏิทิน",
+    "more_other": "+อีก {{count}} รายการ",
+    "addOn": "เพิ่มในวันที่ {{date}}",
+    "nothingFor_other": "ไม่มีรายการใน {{count}} วัน",
+    "nothingToday": "วันนี้ไม่มีรายการ",
+    "allDay": "ทั้งวัน",
+    "now": "ตอนนี้",
+    "viewLabel": "มุมมองปฏิทิน",
+    "views": {
+      "day": "วัน",
+      "week": "สัปดาห์",
+      "month": "เดือน"
+    },
+    "legendLabel": "แสดงบนปฏิทิน",
+    "kinds": {
+      "event": "กิจกรรม",
+      "note": "โน้ต",
+      "task": "รายการงาน",
+      "journal": "บันทึกประจำวัน",
+      "contact": "วันเกิด"
+    },
+    "dragEnd": "ลากเพื่อเปลี่ยนวันสิ้นสุด",
+    "previousDay": "วันก่อนหน้า",
+    "nextDay": "วันถัดไป",
+    "seedWeeklyReview": "ทบทวนประจำสัปดาห์",
+    "seedWeeklyReviewBody": "ทุกวันศุกร์ 16:00 อะไรเสร็จแล้ว อะไรเลื่อนออกไป และสัปดาห์หน้ามีอะไรต่อ",
+    "addToCalendar": "เพิ่มลงในปฏิทิน",
+    "showAgenda": "แสดงรายการปฏิทิน",
+    "hideAgenda": "ซ่อนรายการปฏิทิน",
+    "seedDemo": {
+      "lunch": "ทานข้าวกลางวันกับแซม",
+      "dentist": "หาหมอฟัน",
+      "callAna": "โทรคุยกับอานา",
+      "groceries": "ซื้อของเข้าบ้าน",
+      "concert": "คอนเสิร์ต",
+      "giftIdeas": "ไอเดียของขวัญให้คอน",
+      "flight": "บินไปลิสบอน",
+      "conference": "งานประชุมที่ลิสบอน",
+      "nightTrain": "รถไฟกลางคืนไปปอร์โต",
+      "yoga": "โยคะ",
+      "sprint": "วางแผนสปรินต์",
+      "bookClub": "ชมรมหนังสือ",
+      "rent": "จ่ายค่าเช่า"
+    }
+  },
+  "repeat": {
+    "changeTitle": "เปลี่ยนรายการนี้?",
+    "deleteTitle": "ลบรายการนี้?",
+    "thisOccurrence": "ครั้งนี้",
+    "thisAndFollowing": "ครั้งนี้และครั้งถัดไป",
+    "allOccurrences": "ทุกครั้ง",
+    "label": "ทำซ้ำ",
+    "never": "ไม่ทำซ้ำ",
+    "daily_other": "ทุก {{count}} วัน",
+    "weekdays": "ทุกวันธรรมดา (จันทร์ถึงศุกร์)",
+    "weekly_other": "ทุก {{count}} สัปดาห์ ในวัน {{days}}",
+    "monthlyDay_other": "ทุก {{count}} เดือน ในวันที่ {{day}}",
+    "monthlyNth_other": "ทุก {{count}} เดือน ใน{{weekday}}{{nth}}ของเดือน",
+    "yearly_other": "ทุก {{count}} ปี ในวันที่ {{date}}",
+    "withUntil": "{{rule}} จนถึง {{date}}",
+    "withCount_other": "{{rule}} {{count}} ครั้ง",
+    "nth": {
+      "1": "แรก",
+      "2": "ที่สอง",
+      "3": "ที่สาม",
+      "4": "ที่สี่",
+      "last": "สุดท้าย"
+    },
+    "custom": "กำหนดเอง",
+    "every": "ทุก",
+    "units": {
+      "day_other": "วัน",
+      "week_other": "สัปดาห์",
+      "month_other": "เดือน",
+      "year_other": "ปี"
+    },
+    "onDays": "ในวัน",
+    "onDay": "วันที่ {{day}}",
+    "onNth": "{{weekday}}{{nth}}",
+    "ends": "สิ้นสุด",
+    "endsNever": "ไม่สิ้นสุด",
+    "endsOn": "ในวันที่กำหนด",
+    "endsAfter": "หลังจากครบจำนวนครั้ง",
+    "times_other": "{{count}} ครั้ง",
+    "apply": "ใช้"
+  },
+  "alerts": {
+    "label": "การแจ้งเตือน",
+    "none": "ไม่มี",
+    "atTime": "ตรงเวลา",
+    "minutesBefore_other": "ก่อน {{count}} นาที",
+    "hoursBefore_other": "ก่อน {{count}} ชั่วโมง",
+    "daysBefore_other": "ก่อน {{count}} วัน",
+    "weeksBefore_other": "ก่อน {{count}} สัปดาห์",
+    "onDayAt": "ในวันนั้น เวลา {{time}}",
+    "daysBeforeAt_other": "ก่อน {{count}} วัน เวลา {{time}}",
+    "custom": "กำหนดเอง",
+    "add": "เพิ่ม",
+    "max": "การแจ้งเตือนได้สูงสุดห้ารายการ",
+    "units": {
+      "minutes": "นาที",
+      "hours": "ชั่วโมง",
+      "days": "วัน",
+      "weeks": "สัปดาห์"
+    },
+    "at": "เวลา",
+    "remove": "นำ {{alert}} ออก",
+    "reminder": "การเตือน",
+    "open": "เปิด",
+    "snooze": "เลื่อนเตือน 10 นาที",
+    "offOnPhone": "การเตือนปิดอยู่บนโทรศัพท์เครื่องนี้",
+    "turnOn": "เปิดใช้",
+    "openSettings": "เปิดการตั้งค่า"
+  },
+  "quickAdd": {
+    "group": "สร้าง",
+    "items": "รายการ",
+    "createNamed": "{{type}}: {{title}}",
+    "types": {
+      "event": "กิจกรรมใหม่",
+      "note": "โน้ตใหม่",
+      "task": "รายการงานใหม่",
+      "journal": "บันทึกประจำวันใหม่"
+    },
+    "keepAsText": "เก็บไว้เป็นข้อความ",
+    "placeholder": "ชื่อ วัน เวลา การทำซ้ำ...",
+    "example": "ลองพิมพ์: {{example}}",
+    "examples": {
+      "1": "หาหมอฟัน ศุกร์ 15:00 เตือนก่อน 1 ชั่วโมง",
+      "2": "ทบทวนประจำสัปดาห์ ทุก วันศุกร์ 16:00-17:00",
+      "3": "โทรหาธนาคาร พรุ่งนี้ 11:30 นาน 30 นาที",
+      "4": "ค่าเช่า ทุก เดือน วันที่ 1 เตือนก่อน 1 วัน",
+      "5": "สอบ ในอีก 3 วัน #โรงเรียน",
+      "6": "งาน รายการของที่ต้องแพ็ก พฤหัส 18:00"
+    },
+    "examplesGroup": "ประโยคตัวอย่าง",
+    "syntax": {
+      "group": "สิ่งที่พิมพ์ได้",
+      "day": {
+        "label": "วัน",
+        "examples": "พรุ่งนี้ · ศุกร์ · 31 ต.ค. · 31/10 · ในอีก 3 วัน",
+        "insert": "พรุ่งนี้"
+      },
+      "time": {
+        "label": "เวลา",
+        "examples": "15:00 · 15.00 · 16:00-17:00 · เวลา 9 · 15 นาฬิกา",
+        "insert": "15:00"
+      },
+      "length": {
+        "label": "ระยะเวลา",
+        "examples": "นาน 30 นาที · นาน 3 วัน · ศุกร์ ถึง อาทิตย์",
+        "insert": "นาน 1 ชั่วโมง"
+      },
+      "repeat": {
+        "label": "ทำซ้ำ",
+        "examples": "ทุก วันศุกร์ · ทุก วันธรรมดา · ทุก เดือน วันที่ 1",
+        "insert": "ทุก วันศุกร์"
+      },
+      "alert": {
+        "label": "การแจ้งเตือน",
+        "examples": "เตือนก่อน 1 ชั่วโมง · เตือน 10 นาที · 1 ชั่วโมง ก่อน",
+        "insert": "เตือนก่อน 1 ชั่วโมง"
+      },
+      "place": {
+        "label": "โฟลเดอร์และแท็ก",
+        "examples": "/ท่องเที่ยว · #โรงเรียน",
+        "insert": "#"
+      },
+      "space": {
+        "label": "พื้นที่",
+        "examples": "@ที่ทำงาน · @ส่วนตัว",
+        "insert": "@ที่ทำงาน"
+      },
+      "type": {
+        "label": "ประเภท",
+        "examples": "งาน · โน้ต · บันทึกประจำวัน (เป็นกิจกรรมเมื่อไม่ได้พิมพ์ประเภท)",
+        "insert": "งาน"
+      }
+    },
+    "label": "เพิ่มด่วน"
+  },
+  "offline": {
+    "notLoaded": "คุณออฟไลน์อยู่ และส่วนนี้ของแอปยังไม่ได้โหลด ลองอีกครั้งเมื่อกลับมาออนไลน์"
   }
 }

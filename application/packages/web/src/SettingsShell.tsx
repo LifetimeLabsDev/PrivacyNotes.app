@@ -1,4 +1,4 @@
-import { lazy, Suspense, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 export type SettingsCategory = {
   id: string;
@@ -65,19 +65,3 @@ export type SettingsShellProps = {
   solo?: boolean;
   onClose: () => void;
 };
-
-const SettingsWindow = lazy(() => import('./SettingsWindow').then((m) => ({ default: m.SettingsWindow })));
-
-/**
- * The settings window, loaded when it first opens. It appears a frame later
- * on a cold cache, as the other modals do (`lazyModal` in
- * notesView/settingsCategories.tsx), and none of it, the search field
- * included, sits in the boot path. The window itself is SettingsWindow.tsx.
- */
-export function SettingsShell(props: SettingsShellProps) {
-  return (
-    <Suspense fallback={null}>
-      <SettingsWindow {...props} />
-    </Suspense>
-  );
-}

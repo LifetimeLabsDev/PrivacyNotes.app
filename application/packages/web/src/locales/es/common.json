@@ -38,7 +38,8 @@
   "storageBar": {
     "usage": "{{percent}} % usado ({{used}} / {{max}})",
     "refresh": "Actualizar almacenamiento",
-    "cleanupInfo": "Los elementos eliminados dejan de contar al instante. Los archivos cifrados en sí salen del servidor en unos días."
+    "cleanupInfo": "Los elementos eliminados dejan de contar al instante. Los archivos cifrados en sí salen del servidor en unos días.",
+    "open": "Abrir los ajustes de almacenamiento"
   },
   "updateToast": {
     "available": "Actualización disponible",
@@ -93,7 +94,7 @@
   },
   "quickSwitcher": {
     "label": "Ir a un elemento o a un ajuste",
-    "jumpTo": "Ir a",
+    "jumpTo": "Ir",
     "placeholder": "Escribe un título o un ajuste, o > para los comandos",
     "recent": "Recientes",
     "empty": "Ningún elemento ni ajuste con ese nombre",
@@ -106,7 +107,24 @@
     "openInTab": "abrir en una pestaña",
     "openLink": "Abrir",
     "edit": "editar",
-    "close": "cerrar"
+    "close": "cerrar",
+    "tags": "Etiquetas",
+    "folders": "Carpetas",
+    "tagItems_one": "{{count}} elemento",
+    "tagItems_other": "{{count}} elementos",
+    "emptyTags": "Ninguna etiqueta con ese nombre",
+    "emptyFolders": "Ninguna carpeta con ese nombre",
+    "onlyTags": "etiquetas",
+    "onlyFolders": "carpetas",
+    "showOnlyTags": "Solo etiquetas",
+    "showOnlyFolders": "Solo carpetas",
+    "showOnlyCommands": "Solo comandos",
+    "goToTag": "Ir a una etiqueta",
+    "goToFolder": "Ir a una carpeta",
+    "createTag": "Crear la etiqueta #{{name}}",
+    "createFolder": "Crear la carpeta «{{name}}»",
+    "newTag": "Nueva etiqueta",
+    "newFolder": "Nueva carpeta"
   },
   "cardForm": {
     "cardholderName": "Nombre del titular",

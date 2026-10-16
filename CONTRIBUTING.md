@@ -56,7 +56,7 @@ The scripts block holds only what works: it is recomputed when this tree is buil
 
 Comments carry `// Spec:` pointers into our internal design documents, and `backlog #N` into our tracker. Neither is published here, and neither is a broken link: the comment states the constraint, and the pointer only records which document owns it.
 
-Four of those documents ARE here, under the names they are published as, and code that cites them uses the name you can open: [SECURITY.md](SECURITY.md), [THREAT_MODEL.md](THREAT_MODEL.md), [VERIFY.md](VERIFY.md), and the protocol spec in [docs/](docs/).
+Three of those documents ARE here, under the names they are published as, and code that cites them uses the name you can open: [SECURITY.md](SECURITY.md), [THREAT_MODEL.md](THREAT_MODEL.md) and [VERIFY.md](VERIFY.md).
 
 ## License
 

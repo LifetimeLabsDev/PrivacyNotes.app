@@ -143,22 +143,48 @@ declare global {
  * physically touching the app's own chrome shows a seam that a browser
  * address bar never does.
  *
- * Inert on every other platform (no bridge, no call).
+ * The Windows app paints its title bar from the same value, below. Inert
+ * on every other platform (no bridge, no call).
  */
 function paintNativeBars(): void {
   const bars = window.__pnBars;
-  if (!bars) return;
+  const windows = __PN_BUILD_PLATFORM__ === 'windows';
+  if (!bars && !windows) return;
   const root = document.documentElement;
-  // Palette values are stored as space-separated RGB channels so Tailwind
-  // can wrap them in rgb() with an alpha; Android wants #RRGGBB.
-  const channels = getComputedStyle(root)
-    .getPropertyValue('--pn-surface-0')
-    .trim()
-    .split(/\s+/)
-    .map(Number);
-  if (channels.length !== 3 || channels.some((n) => !Number.isFinite(n))) return;
-  const hex = channels.map((n) => n.toString(16).padStart(2, '0')).join('');
-  bars.set(`#${hex}`, root.classList.contains('dark'));
+  const surface = cssChannels(root, '--pn-surface-0');
+  if (!surface) return;
+  const dark = root.classList.contains('dark');
+  if (bars) {
+    // Android wants #RRGGBB.
+    bars.set(`#${surface.map((n) => n.toString(16).padStart(2, '0')).join('')}`, dark);
+    return;
+  }
+  // The Windows title bar (#525): the shell color and the text color on
+  // Windows 11, and dark or light everywhere. Under Auto the window theme is
+  // handed back to the system, because pinning it also pins the web view's
+  // `prefers-color-scheme`, and Auto would then never see the system again.
+  const text = cssChannels(root, '--pn-text');
+  if (!text) return;
+  void (async () => {
+    try {
+      const { invoke } = await import('@tauri-apps/api/core');
+      await invoke('set_title_bar_colors', {
+        caption: surface,
+        text,
+        dark: getStoredThemeMode() === 'auto' ? null : dark,
+      });
+    } catch {
+      /* An older build with no such command keeps the system title bar. */
+    }
+  })();
+}
+
+/** A palette value as its three RGB channels. Palette values are stored as
+ *  space-separated channels so Tailwind can wrap them in rgb() with an alpha. */
+function cssChannels(root: HTMLElement, name: string): [number, number, number] | null {
+  const channels = getComputedStyle(root).getPropertyValue(name).trim().split(/\s+/).map(Number);
+  if (channels.length !== 3 || channels.some((n) => !Number.isInteger(n) || n < 0 || n > 255)) return null;
+  return channels as [number, number, number];
 }
 
 /** Paint a resolved theme on <html>. Does NOT persist anything.
@@ -169,9 +195,13 @@ function paintNativeBars(): void {
  * on the very first call (initial bootstrap) so the initial paint
  * doesn't flash. */
 let hasAppliedOnce = false;
+/** The Linux app draws through WebKitGTK on its software path, where a
+ *  transition on every element repaints the whole window on each frame and
+ *  a switch takes seconds, so it snaps there instead. */
+const CROSSFADE = __PN_BUILD_PLATFORM__ !== 'linux';
 function paintTheme(theme: Theme): void {
   const root = document.documentElement;
-  const wantsCrossfade = hasAppliedOnce && typeof window !== 'undefined';
+  const wantsCrossfade = CROSSFADE && hasAppliedOnce && typeof window !== 'undefined';
   if (wantsCrossfade) {
     root.classList.add('theme-animating');
   }
@@ -487,6 +517,41 @@ export function readCopyFormat(): CopyFormat {
 }
 
 // ------------------------------------------------------------------
+// Pasted text axis
+// ------------------------------------------------------------------
+
+const PASTE_FORMAT_KEY = 'privacynotes.pasteFormat';
+
+/** What a paste from another app keeps. */
+export type PasteFormat = 'formatted' | 'plain';
+
+/**
+ * Default Formatted. Plain text makes every paste from another app take the
+ * same path as a paste with Shift held, which phones have no key for.
+ * Device-local, like the copied text.
+ * Spec: ops/issues/0508.md (Spec)
+ */
+function getStoredPasteFormat(): PasteFormat {
+  try {
+    return localStorage.getItem(PASTE_FORMAT_KEY) === 'plain' ? 'plain' : 'formatted';
+  } catch {
+    return 'formatted';
+  }
+}
+
+let activePasteFormat: PasteFormat = getStoredPasteFormat();
+
+function applyPasteFormat(format: PasteFormat): void {
+  activePasteFormat = format;
+  localStorage.setItem(PASTE_FORMAT_KEY, format);
+}
+
+/** For the editor's paste handler, which runs outside React. */
+export function readPasteFormat(): PasteFormat {
+  return activePasteFormat;
+}
+
+// ------------------------------------------------------------------
 // Website icons axis
 // ------------------------------------------------------------------
 
@@ -791,7 +856,7 @@ function paintCustomRules(): void {
  *  repaints on every keystroke. */
 function paintColorThemes(instant = false): void {
   const root = document.documentElement;
-  const wantsCrossfade = !instant && hasAppliedOnce && typeof window !== 'undefined';
+  const wantsCrossfade = CROSSFADE && !instant && hasAppliedOnce && typeof window !== 'undefined';
   if (wantsCrossfade) root.classList.add('theme-animating');
   // Snapshot first: removing while iterating a live classList skips entries.
   const toRemove = [...root.classList].filter((c) => (c.startsWith('theme-') && c !== 'theme-animating') || c.startsWith('logo-'));
@@ -946,6 +1011,7 @@ export function resetAppearance(): void {
     applyStyleDefaults();
     applySpellcheck(true);
     applyCopyFormat('markdown');
+    applyPasteFormat('formatted');
     setCodeWrap(true);
   } catch { /* ignore */ }
   emitThemeChange();
@@ -1016,6 +1082,7 @@ function getSpellcheckSnapshot(): boolean { return activeSpellcheck; }
 function getInvisiblesSnapshot(): boolean { return activeInvisibles; }
 function getFaviconsSnapshot(): boolean { return activeFavicons; }
 function getCopyFormatSnapshot(): CopyFormat { return activeCopyFormat; }
+function getPasteFormatSnapshot(): PasteFormat { return activePasteFormat; }
 
 /**
  * React hook that exposes both axes and controls for each.
@@ -1037,6 +1104,7 @@ export function useTheme() {
   const invisibles = useSyncExternalStore(subscribeTheme, getInvisiblesSnapshot);
   const favicons = useSyncExternalStore(subscribeTheme, getFaviconsSnapshot);
   const copyFormat = useSyncExternalStore(subscribeTheme, getCopyFormatSnapshot);
+  const pasteFormat = useSyncExternalStore(subscribeTheme, getPasteFormatSnapshot);
 
   /** Pin an explicit light/dark choice, replacing 'auto' if it was set. */
   const setTheme = useCallback((next: Theme) => {
@@ -1099,6 +1167,11 @@ export function useTheme() {
     emitThemeChange();
   }, []);
 
+  const setPasteFormat = useCallback((next: PasteFormat) => {
+    applyPasteFormat(next);
+    emitThemeChange();
+  }, []);
+
   /** Show a palette in one slot without persisting. Reverts on reload. */
   const previewColor = useCallback((mode: Theme, next: ThemeChoice) => {
     previewColorTheme(mode, next);
@@ -1113,5 +1186,5 @@ export function useTheme() {
     emitThemeChange();
   }, []);
 
-  return { theme, themeMode, toggle, setTheme, setThemeMode, colorTheme, lightTheme, darkTheme, setColorTheme, setCustomTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, cycleContentWidth, spellcheck, setSpellcheck, invisibles, setInvisibles, favicons, setFavicons, copyFormat, setCopyFormat };
+  return { theme, themeMode, toggle, setTheme, setThemeMode, colorTheme, lightTheme, darkTheme, setColorTheme, setCustomTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, cycleContentWidth, spellcheck, setSpellcheck, invisibles, setInvisibles, favicons, setFavicons, copyFormat, setCopyFormat, pasteFormat, setPasteFormat };
 }

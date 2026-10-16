@@ -8,7 +8,6 @@
     "title": "Задачи",
     "newTaskNote": "Новая заметка с задачами",
     "newTaskNoteWithHotkey": "Новая заметка с задачами ({{hotkey}})",
-    "new": "Создать",
     "hideCompleted": "Скрыть выполненные задачи",
     "showCompleted": "Показать выполненные задачи",
     "searchPlaceholder": "Поиск задач…",
@@ -37,12 +36,9 @@
     "deselectAll": "Снять выделение",
     "selectAll": "Выбрать все",
     "storage": "Хранилище",
-    "supportedTypesHint": "Максимальный размер файла: {{max}} МБ",
     "perFile": "На файл",
     "free": "Бесплатно",
     "upgradeToPro": "Перейти на Pro",
-    "addStorage": "Добавить хранилище",
-    "upToMax": "до {{max}}",
     "filterAll": "Все",
     "filterImages": "Изображения",
     "filterAudio": "Аудио",
@@ -115,6 +111,7 @@
     "video": "Видео",
     "image": "Изображение",
     "pdf": "PDF",
+    "email": "Письмо",
     "archive": "Архив",
     "document": "Документ",
     "spreadsheet": "Таблица",
@@ -190,7 +187,8 @@
     "markdown": "Markdown",
     "markdownTip": "Без шифрования",
     "bookmarks": "Закладки",
-    "contacts": "Контакты"
+    "contacts": "Контакты",
+    "calendar": "Календарь"
   },
   "browseToggle": {
     "label": "Просматривать по",
@@ -206,6 +204,11 @@
     "deleteConfirmTitle": "Удалить папку?",
     "deleteConfirmBodyRoot": "Папка «{{folder}}» будет удалена. Её заметки и подпапки переместятся на верхний уровень. Ни одна заметка не будет удалена.",
     "deleteConfirmBodyNested": "Папка «{{folder}}» будет удалена. Её заметки и подпапки переместятся в «{{parent}}». Ни одна заметка не будет удалена.",
+    "deleteConfirmBranchRoot": "Папка «{{folder}}» и её подпапки будут удалены. Их заметки переместятся на верхний уровень. Ни одна заметка не будет удалена.",
+    "deleteConfirmBranchNested": "Папка «{{folder}}» и её подпапки будут удалены. Их заметки переместятся в «{{parent}}». Ни одна заметка не будет удалена.",
+    "deleteSubfolders_one": "Также удалить {{count}} подпапку",
+    "deleteSubfolders_few": "Также удалить {{count}} подпапки",
+    "deleteSubfolders_many": "Также удалить {{count}} подпапок",
     "moveTo": "Переместить в папку",
     "searchPlaceholder": "Поиск папок",
     "sortFolders": "Сортировать папки",
@@ -223,7 +226,8 @@
     "saveName": "Сохранить название папки",
     "actionsForFolder": "Действия с папкой {{folder}}",
     "seedSecurity": "Безопасность",
-    "seedTravel": "Путешествия"
+    "seedTravel": "Путешествия",
+    "seedTeam": "Команда"
   },
   "collapsedSidebar": {
     "newNote": "Новая заметка",
@@ -272,7 +276,19 @@
     "tagCount_few": "{{count}} тега",
     "tagCount_many": "{{count}} тегов",
     "tagCount_other": "{{count}} тега",
-    "entryDate": "Дата записи"
+    "entryDate": "Дата записи",
+    "noDate": "Не указана",
+    "schedule": "Расписание",
+    "ends": "Конец",
+    "sameDay": "Тот же день",
+    "allDay": "Весь день",
+    "starts": "Начало",
+    "endsAt": "Окончание в",
+    "noEnd": "Нет",
+    "removeFromCalendar": "Убрать из календаря",
+    "makeEvent": "Сделайте это событием, чтобы повторять",
+    "typeEvent": "Событие",
+    "repeatRemoved": "Повтор убран"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "Выйти из выделения (Esc)",
@@ -307,6 +323,8 @@
     "showSize": "Показывать размер файла",
     "showTags": "Показывать папку и теги",
     "showCalendar": "Показывать календарь",
+    "showWorkItems": "Показывать элементы пространства «<b>Работа</b>»",
+    "showPersonalItems": "Показывать элементы пространства «<b>Личное</b>»",
     "other": "Другое",
     "showReadOnly": "Показывать доступные только для чтения",
     "showProtected": "Показывать защищённые",
@@ -335,7 +353,9 @@
     "nextMonth": "Следующий месяц",
     "dayWithEntry": "{{date}}, есть запись",
     "dayWithEntryIn": "{{date}}, есть запись в пространстве «{{space}}»",
-    "dayWithEntryBoth": "{{date}}, есть записи в пространствах «Личное» и «Работа»",
+    "dayWithItems_one": "{{date}}, {{count}} элемент",
+    "dayWithItems_few": "{{date}}, {{count}} элемента",
+    "dayWithItems_many": "{{date}}, {{count}} элементов",
     "previousWeek": "Предыдущая неделя",
     "nextWeek": "Следующая неделя",
     "showMonth": "{{month}}, показать весь месяц",
@@ -381,11 +401,14 @@
     "copyBookmarkUrl": "Копировать URL",
     "editBookmark": "Изменить закладку",
     "openInTab": "Открыть во вкладке",
+    "openInTabHint": "{{key}}+щелчок",
     "closeTab": "Закрыть вкладку",
     "closeOtherTabs": "Закрыть другие вкладки",
     "closeAllTabs": "Закрыть все вкладки",
     "pinTab": "Закрепить вкладку",
-    "unpinTab": "Открепить вкладку"
+    "unpinTab": "Открепить вкладку",
+    "newEvent": "Новое событие",
+    "quickAdd": "Быстрое добавление"
   },
   "demoBanner": {
     "title": "Попробуйте без всякого риска",
@@ -652,6 +675,9 @@
       "mastodon": "Mastodon"
     }
   },
+  "staleEditor": {
+    "copyToast": "Эта заметка изменилась на другом устройстве. Ваши правки сохранены в копии «{{title}}»."
+  },
   "noteLinks": {
     "retargetedToast_one": "Обновлена {{count}} ссылка на заметку по новому названию.",
     "retargetedToast_few": "Обновлены {{count}} ссылки на заметки по новому названию.",
@@ -663,7 +689,8 @@
   },
   "tabStrip": {
     "label": "Открытые вкладки",
-    "close": "Закрыть {{title}}"
+    "close": "Закрыть {{title}}",
+    "moreTabs": "Ещё вкладки"
   },
   "shareInbox": {
     "saved": "Сохранено в PrivacyNotes",
@@ -692,10 +719,11 @@
   },
   "spaces": {
     "label": "Пространство",
+    "all": "Все",
     "personal": "Личное",
     "work": "Работа",
-    "moveToWork": "Переместить в пространство «Работа»",
-    "moveToPersonal": "Переместить в пространство «Личное»",
+    "moveToWork": "Переместить в пространство «<b>Работа</b>»",
+    "moveToPersonal": "Переместить в пространство «<b>Личное</b>»",
     "movedToWork": "Папка {{folder}} перемещена в пространство «Работа»",
     "movedToPersonal": "Папка {{folder}} перемещена в пространство «Личное»",
     "itemMovedToWork": "Перемещено в пространство «Работа»",
@@ -704,6 +732,236 @@
     "switchedToPersonal": "Переключено на пространство «Личное»",
     "switchToWork": "Перейти в пространство «Работа»",
     "switchToPersonal": "Перейти в пространство «Личное»",
+    "switchToAll": "Показать все пространства",
     "workEmpty": "Пространство «Работа» пусто. В пространстве «Личное» откройте меню элемента или папки и выберите «Переместить в пространство „Работа“»."
+  },
+  "calendar": {
+    "moveToToday": "Перенести на сегодня",
+    "moveToTomorrow": "Перенести на завтра",
+    "moveToNextWeek": "Перенести на следующую неделю",
+    "deleteEvent": "Удалить событие",
+    "openContact": "Открыть контакт",
+    "newOnDay": "Новое событие в этот день",
+    "showDay": "Показать этот день",
+    "open": "Открыть календарь",
+    "back": "Календарь",
+    "more_one": "Ещё {{count}}",
+    "addOn": "Добавить на {{date}}",
+    "nothingFor_one": "Ничего в течение {{count}} дня",
+    "nothingToday": "Сегодня ничего",
+    "allDay": "Весь день",
+    "now": "Сейчас",
+    "viewLabel": "Вид календаря",
+    "views": {
+      "day": "День",
+      "week": "Неделя",
+      "month": "Месяц"
+    },
+    "legendLabel": "Показывать в календаре",
+    "kinds": {
+      "event": "События",
+      "note": "Заметки",
+      "task": "Списки задач",
+      "journal": "Записи в дневнике",
+      "contact": "Дни рождения"
+    },
+    "dragEnd": "Перетащите, чтобы изменить день окончания",
+    "previousDay": "Предыдущий день",
+    "nextDay": "Следующий день",
+    "seedWeeklyReview": "Еженедельный обзор",
+    "seedWeeklyReviewBody": "Каждую пятницу в четыре. Что сделано, что сдвинулось и что ждёт на следующей неделе.",
+    "addToCalendar": "Добавить в календарь",
+    "showAgenda": "Показать повестку",
+    "hideAgenda": "Скрыть повестку",
+    "seedDemo": {
+      "lunch": "Обед с Сэмом",
+      "dentist": "Стоматолог",
+      "callAna": "Созвон с Аной",
+      "groceries": "Продукты",
+      "concert": "Концерт",
+      "giftIdeas": "Идеи подарков для Кона",
+      "flight": "Рейс в Лиссабон",
+      "conference": "Конференция в Лиссабоне",
+      "nightTrain": "Ночной поезд в Порту",
+      "yoga": "Йога",
+      "sprint": "Планирование спринта",
+      "bookClub": "Книжный клуб",
+      "rent": "Оплатить аренду"
+    },
+    "nothingFor_few": "Ничего в течение {{count}} дней",
+    "nothingFor_many": "Ничего в течение {{count}} дней",
+    "more_few": "Ещё {{count}}",
+    "more_many": "Ещё {{count}}"
+  },
+  "repeat": {
+    "changeTitle": "Изменить этот элемент?",
+    "deleteTitle": "Удалить этот элемент?",
+    "thisOccurrence": "Только это повторение",
+    "thisAndFollowing": "Это и последующие",
+    "allOccurrences": "Все повторения",
+    "label": "Повтор",
+    "never": "Не повторяется",
+    "daily_one": "Раз в {{count}} день",
+    "weekdays": "Каждый будний день (с понедельника по пятницу)",
+    "weekly_one": "Раз в {{count}} неделю: {{days}}",
+    "monthlyDay_one": "Раз в {{count}} месяц, {{day}}-го числа",
+    "monthlyNth_one": "Раз в {{count}} месяц, в {{nth}} неделю: {{weekday}}",
+    "yearly_one": "Раз в {{count}} год, {{date}}",
+    "withUntil": "{{rule}}, до {{date}}",
+    "withCount_one": "{{rule}}, {{count}} раз",
+    "nth": {
+      "1": "первую",
+      "2": "вторую",
+      "3": "третью",
+      "4": "четвёртую",
+      "last": "последнюю"
+    },
+    "custom": "Настроить",
+    "every": "Раз в",
+    "units": {
+      "day_one": "день",
+      "week_one": "неделю",
+      "month_one": "месяц",
+      "year_one": "год",
+      "year_few": "года",
+      "year_many": "лет",
+      "month_few": "месяца",
+      "month_many": "месяцев",
+      "week_few": "недели",
+      "week_many": "недель",
+      "day_few": "дня",
+      "day_many": "дней"
+    },
+    "onDays": "По дням",
+    "onDay": "{{day}}-го числа",
+    "onNth": "В {{nth}} неделю месяца: {{weekday}}",
+    "ends": "Окончание",
+    "endsNever": "Никогда",
+    "endsOn": "В дату",
+    "endsAfter": "После нескольких повторений",
+    "times_one": "{{count}} раз",
+    "apply": "Применить",
+    "times_few": "{{count}} раза",
+    "times_many": "{{count}} раз",
+    "withCount_few": "{{rule}}, {{count}} раза",
+    "withCount_many": "{{rule}}, {{count}} раз",
+    "yearly_few": "Раз в {{count}} года, {{date}}",
+    "yearly_many": "Раз в {{count}} лет, {{date}}",
+    "monthlyNth_few": "Раз в {{count}} месяца, в {{nth}} неделю: {{weekday}}",
+    "monthlyNth_many": "Раз в {{count}} месяцев, в {{nth}} неделю: {{weekday}}",
+    "monthlyDay_few": "Раз в {{count}} месяца, {{day}}-го числа",
+    "monthlyDay_many": "Раз в {{count}} месяцев, {{day}}-го числа",
+    "weekly_few": "Раз в {{count}} недели: {{days}}",
+    "weekly_many": "Раз в {{count}} недель: {{days}}",
+    "daily_few": "Раз в {{count}} дня",
+    "daily_many": "Раз в {{count}} дней"
+  },
+  "alerts": {
+    "label": "Напоминание",
+    "none": "Нет",
+    "atTime": "В момент начала",
+    "minutesBefore_one": "За {{count}} минуту",
+    "hoursBefore_one": "За {{count}} час",
+    "daysBefore_one": "За {{count}} день",
+    "weeksBefore_one": "За {{count}} неделю",
+    "onDayAt": "В тот же день в {{time}}",
+    "daysBeforeAt_one": "За {{count}} день в {{time}}",
+    "custom": "Настроить",
+    "add": "Добавить",
+    "max": "Не больше пяти напоминаний.",
+    "units": {
+      "minutes": "минут",
+      "hours": "часов",
+      "days": "дней",
+      "weeks": "недель"
+    },
+    "at": "в",
+    "remove": "Убрать {{alert}}",
+    "reminder": "Напоминание",
+    "open": "Открыть",
+    "snooze": "Отложить на 10 мин",
+    "offOnPhone": "Напоминания на этом телефоне выключены",
+    "turnOn": "Включить",
+    "openSettings": "Открыть настройки",
+    "daysBeforeAt_few": "За {{count}} дня в {{time}}",
+    "daysBeforeAt_many": "За {{count}} дней в {{time}}",
+    "weeksBefore_few": "За {{count}} недели",
+    "weeksBefore_many": "За {{count}} недель",
+    "daysBefore_few": "За {{count}} дня",
+    "daysBefore_many": "За {{count}} дней",
+    "hoursBefore_few": "За {{count}} часа",
+    "hoursBefore_many": "За {{count}} часов",
+    "minutesBefore_few": "За {{count}} минуты",
+    "minutesBefore_many": "За {{count}} минут"
+  },
+  "quickAdd": {
+    "group": "Создать",
+    "items": "Элементы",
+    "createNamed": "{{type}}: {{title}}",
+    "types": {
+      "event": "Новое событие",
+      "note": "Новая заметка",
+      "task": "Новый список задач",
+      "journal": "Новая запись в дневнике"
+    },
+    "keepAsText": "Оставить как текст",
+    "placeholder": "Название, день, время, повтор...",
+    "example": "Попробуйте: {{example}}",
+    "examples": {
+      "1": "Стоматолог пт 15:00 за 1 ч",
+      "2": "Еженедельный обзор каждую пт 16:00-17:00",
+      "3": "Позвонить в банк завтра 11:30 на 30 мин",
+      "4": "Аренда каждый месяц 1-го за 1 день",
+      "5": "Экзамен через 5 дней #учёба",
+      "6": "задача Список вещей чт 18:00"
+    },
+    "examplesGroup": "Примеры",
+    "syntax": {
+      "group": "Что можно ввести",
+      "day": {
+        "label": "День",
+        "examples": "завтра · пт · в следующую ср · 31 окт · через 5 дней",
+        "insert": "завтра"
+      },
+      "time": {
+        "label": "Время",
+        "examples": "15:00 · 15 ч · 16:00-17:00 · в 9",
+        "insert": "15:00"
+      },
+      "length": {
+        "label": "Длительность",
+        "examples": "на 30 мин · на 3 дня · с пт до вс",
+        "insert": "на 1 ч"
+      },
+      "repeat": {
+        "label": "Повтор",
+        "examples": "каждую пт · по будням · каждый месяц 1-го",
+        "insert": "каждую пт"
+      },
+      "alert": {
+        "label": "Напоминание",
+        "examples": "за 1 ч · напоминание 10 мин",
+        "insert": "за 1 ч"
+      },
+      "place": {
+        "label": "Папка и тег",
+        "examples": "/Путешествия · #учёба",
+        "insert": "#"
+      },
+      "space": {
+        "label": "Пространство",
+        "examples": "@работа · @личное",
+        "insert": "@работа"
+      },
+      "type": {
+        "label": "Тип",
+        "examples": "задача · заметка · дневник (событие, если тип не указан)",
+        "insert": "задача"
+      }
+    },
+    "label": "Быстрое добавление"
+  },
+  "offline": {
+    "notLoaded": "Вы офлайн, а эта часть приложения ещё не загрузилась. Попробуйте снова, когда вернётесь в сеть."
   }
 }

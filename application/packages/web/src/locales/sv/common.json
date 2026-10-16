@@ -38,7 +38,8 @@
   "storageBar": {
     "usage": "{{percent}} % använt ({{used}} / {{max}})",
     "refresh": "Uppdatera lagring",
-    "cleanupInfo": "Raderade objekt slutar räknas direkt. De krypterade filerna försvinner från servern inom några dagar."
+    "cleanupInfo": "Raderade objekt slutar räknas direkt. De krypterade filerna försvinner från servern inom några dagar.",
+    "open": "Öppna lagringsinställningar"
   },
   "updateToast": {
     "available": "Uppdatering tillgänglig",
@@ -106,7 +107,24 @@
     "openInTab": "öppna i en flik",
     "openLink": "Öppna",
     "edit": "redigera",
-    "close": "stäng"
+    "close": "stäng",
+    "tags": "Taggar",
+    "folders": "Mappar",
+    "tagItems_one": "{{count}} objekt",
+    "tagItems_other": "{{count}} objekt",
+    "emptyTags": "Ingen tagg med det namnet",
+    "emptyFolders": "Ingen mapp med det namnet",
+    "onlyTags": "taggar",
+    "onlyFolders": "mappar",
+    "showOnlyTags": "Bara taggar",
+    "showOnlyFolders": "Bara mappar",
+    "showOnlyCommands": "Bara kommandon",
+    "goToTag": "Gå till en tagg",
+    "goToFolder": "Gå till en mapp",
+    "createTag": "Skapa taggen #{{name}}",
+    "createFolder": "Skapa mappen ”{{name}}”",
+    "newTag": "Ny tagg",
+    "newFolder": "Ny mapp"
   },
   "cardForm": {
     "cardholderName": "Kortinnehavarens namn",

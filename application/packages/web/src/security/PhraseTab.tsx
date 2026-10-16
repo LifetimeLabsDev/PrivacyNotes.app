@@ -3,7 +3,8 @@ import { PhraseView } from './PhraseView';
 import { PhraseOdds } from './PhraseOdds';
 import { PhrasePinGate, type PinGateRecovery } from './PhrasePinGate';
 import { HelpChip } from '../HelpChip';
-import { RedditLogo, Vault } from '../icons';
+import { RedditLogo, Vault, Warning } from '../icons';
+import { isDemoMode } from '../demo';
 
 // The thread's own title, shown untranslated: the thread is written in English.
 const PHRASE_MEGATHREAD = {
@@ -28,6 +29,10 @@ export function PhraseTab({
   return <PhrasePinGate pubkey={pubkey} pinTimeoutMinutes={pinTimeoutMinutes} hasPin={hasPin}
     pinCredential={pinCredential} onCancel={onCancel} recovery={recovery}>
     <div className="space-y-4">
+      {isDemoMode() && <div className="rounded-md border border-amber-400/40 bg-amber-50 dark:border-amber-600/30 dark:bg-amber-950/20 px-3 py-2.5 text-[13px] leading-relaxed text-warning flex items-start gap-2.5">
+        <Warning size={16} aria-hidden="true" className="shrink-0 mt-0.5" />
+        <span>{t('phraseView.demoPhrase')}</span>
+      </div>}
       <PhraseView phrase={phrase} onCancel={onCancel} hideDismiss gated hasPin={hasPin} />
       {onOpenCustody && <button type="button" className="inline-flex items-center gap-2 text-sm text-accent hover:underline" onClick={onOpenCustody}>
         <Vault size={16} className="shrink-0" aria-hidden="true" />

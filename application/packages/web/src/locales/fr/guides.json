@@ -10,6 +10,43 @@
     "otherGuides": "Autres guides d'import"
   },
   "guides": {
+    "google-calendar": {
+      "app": "Google Calendar",
+      "title": "Exporter ton Google Calendar",
+      "metaTitle": "Comment exporter ton Google Calendar - PrivacyNotes",
+      "lead": "Google Calendar exporte tous les calendriers que tu gères dans un seul .zip, depuis ses paramètres, sur un ordinateur. PrivacyNotes lit ce .zip tel quel, sans qu'il soit nécessaire de le décompresser.",
+      "sections": [
+        {
+          "h": "Exporter tous tes calendriers d'un coup",
+          "steps": [
+            "Ouvre [Google Calendar](https://calendar.google.com) dans un navigateur sur un ordinateur. L'appli mobile n'a pas d'export.",
+            "Clique sur la roue dentée en haut à droite, puis sur \"Settings\".",
+            "Dans la liste à gauche, clique sur \"Import & export\".",
+            "Sous \"Export\", clique sur \"Export\". Ton navigateur télécharge un .zip avec un fichier .ics pour chaque calendrier.",
+            "Garde le .zip tel quel."
+          ],
+          "p": [
+            "Le .zip contient chaque calendrier pour lequel tu as l'autorisation \"Make changes and manage sharing\", y compris le tien. Les calendriers que tu peux seulement consulter, comme les jours fériés ou le calendrier d'un collègue, n'y figurent pas. Avec un compte professionnel ou scolaire, ton administrateur peut restreindre l'export."
+          ]
+        },
+        {
+          "h": "Ou exporter un seul calendrier",
+          "steps": [
+            "Dans la liste à gauche, sous \"My calendars\", pointe le nom du calendrier, clique sur \"More\" (les trois points), puis sur \"Settings and sharing\".",
+            "Sous \"Calendar settings\", clique sur \"Export calendar\". Ton navigateur télécharge un .zip qui contient le fichier .ics de ce calendrier. Garde-le tel quel."
+          ]
+        },
+        {
+          "h": "Ce qui fait le voyage",
+          "p": [
+            "Chaque événement arrive avec son jour, son heure et sa durée, y compris les événements qui s'étendent sur plusieurs jours. Les événements récurrents gardent leur règle, et une occurrence que tu as déplacée ou supprimée dans Google reste déplacée ou supprimée. Chaque calendrier devient un dossier.",
+            "Les rappels que tu as réglés sur un événement arrivent aussi, rappels par e-mail compris : ils deviennent des rappels de l'app, qui ont besoin de PrivacyNotes Pro pour sonner. Un événement qui utilisait les rappels par défaut de ton calendrier arrive sans rappel, car Google n'écrit pas les valeurs par défaut dans le fichier. Le lieu, le lien de visioconférence, les invités et la description vont dans le texte de l'événement. Les heures s'affichent comme elles s'affichaient sur cet appareil au moment de l'import.",
+            "Un seul fichier .ics issu de n'importe quelle appli de calendrier fonctionne aussi, Apple Calendar et Outlook compris.",
+            "Si tu importes plus tard le même fichier, les événements déjà présents sont ignorés, donc seuls les nouveaux sont ajoutés."
+          ]
+        }
+      ]
+    },
     "google-keep": {
       "app": "Google Keep",
       "title": "Exporter tes notes Google Keep",
@@ -63,6 +100,40 @@
         }
       ]
     },
+    "bear": {
+      "app": "Bear",
+      "title": "Exporter tes notes Bear",
+      "metaTitle": "Exporter tes notes Bear - PrivacyNotes",
+      "lead": "Bear exporte toute ta bibliothèque dans un seul fichier de sauvegarde, et c'est ce fichier qu'il faut apporter : il contient chaque note, archives et corbeille compris.",
+      "sections": [
+        {
+          "h": "Faire une sauvegarde Bear",
+          "steps": [
+            "Ouvre Bear sur ton Mac.",
+            "Choisis File > Backup Notes...",
+            "Enregistre le fichier. Tu obtiens un seul fichier .bear2bk qui contient toute ta bibliothèque.",
+            "Dépose ce .bear2bk tel quel."
+          ]
+        },
+        {
+          "h": "La sauvegarde contient plus qu'un export",
+          "p": [
+            "File > Export Notes... n'écrit que les notes de la vue ouverte : les notes archivées et celles de la corbeille sont laissées de côté. La sauvegarde les contient toutes, et elle sait quelles notes étaient épinglées, archivées, à la corbeille ou en lecture seule.",
+            "Si tu n'as qu'un export Markdown ou Text Bundle, compresse-le en zip et dépose le zip. Ton texte, tes étiquettes et tes pièces jointes arrivent, mais pas les archives, la corbeille ni les épingles, car ces exports ne les écrivent jamais.",
+            "Tu exportes depuis Bear à la main ? Sélectionne au moins deux notes. Une seule note ouvre une fenêtre d'enregistrement qui peut donner la mauvaise extension au fichier."
+          ]
+        },
+        {
+          "h": "Ce qui fait le voyage",
+          "p": [
+            "Tes étiquettes arrivent comme étiquettes. Les étiquettes imbriquées comme #work/projects sont aussi reconstruites en dossiers, et chaque note se range dans le dossier de son étiquette la plus profonde. Les liens entre notes deviennent des liens de note, et un lien vers un titre pointe vers ce titre.",
+            "La mise en forme survit : titres, gras, italique, souligné, barré, surlignages dans leurs couleurs Bear, listes de tâches, tableaux, blocs de code, citations, encadrés, formules et notes de bas de page. Les images s'ouvrent en pleine largeur, et les titres repliés arrivent dépliés.",
+            "Les notes épinglées restent épinglées, les notes archivées vont dans les archives, celles de la corbeille vont dans la corbeille, les notes en lecture seule restent en lecture seule, et chaque note garde ses dates d'origine.",
+            "Les images et les fichiers joints à tes notes sont importés dans ton stockage. Une note qui pointe vers un fichier absent de la sauvegarde s'importe quand même, et l'aperçu de l'import t'indique combien de liens sont concernés."
+          ]
+        }
+      ]
+    },
     "obsidian": {
       "app": "Obsidian",
       "title": "Exporter ton coffre Obsidian",
@@ -92,21 +163,21 @@
       "app": "Standard Notes",
       "title": "Exporter tes notes Standard Notes",
       "metaTitle": "Exporter une sauvegarde Standard Notes - PrivacyNotes",
-      "lead": "Standard Notes propose un export de sauvegarde déchiffrée, et c'est ce fichier que PrivacyNotes lit. Un détail important d'emblée : il faut la variante déchiffrée, pas la chiffrée.",
+      "lead": "Standard Notes exporte ton compte dans une seule sauvegarde déchiffrée. Elle fait passer les notes Super avec leur mise en forme, ainsi que les listes de contrôle, les étiquettes et les codes 2FA.",
       "sections": [
         {
           "h": "Exporter tes notes depuis Standard Notes",
           "steps": [
             "Ouvre Standard Notes (sur le web à app.standardnotes.com, ou l'appli de bureau) et connecte-toi.",
-            "Ouvre Preferences, puis la section Backups.",
-            "Télécharge une sauvegarde de données et choisis le format déchiffré (decrypted) quand on te le demande.",
+            "Clique sur l'icône du compte en bas à gauche, puis sur Account settings > Backups.",
+            "Sous Data backups, choisis Decrypted, puis clique sur Download backup. Ce seul fichier contient toutes les notes, y compris les notes Super.",
             "Tu obtiens un .zip contenant un fichier nommé \"Standard Notes Backup and Import File.txt\". Garde le zip tel quel."
           ]
         },
         {
           "h": "Les notes Super, les listes de contrôle et les codes 2FA gardent leur forme",
           "p": [
-            "Les notes Super gardent leurs titres, listes, listes de contrôle, tableaux, blocs de code, couleurs et sections repliables. Les listes de contrôle arrivent dans Tâches, les feuilles de calcul deviennent des tableaux, et les entrées de l'authentificateur deviennent des identifiants dans le Coffre, avec leur clé 2FA. Les étiquettes imbriquées deviennent des dossiers, et chaque note garde aussi ses étiquettes.",
+            "Les notes Super gardent leur mise en forme : titres, listes, listes de contrôle, tableaux, blocs de code, surlignages, couleurs, alignement du texte et sections repliables. Un lien vers une autre note devient un lien de note, et un #hashtag dans le texte devient une étiquette de la note. Les listes de contrôle arrivent dans Tâches, les feuilles de calcul deviennent des tableaux, et les entrées de l'authentificateur deviennent des identifiants dans le Coffre, avec leur clé 2FA. Les étiquettes imbriquées deviennent des dossiers, et chaque note garde aussi ses étiquettes.",
             "Les fichiers que tu as envoyés sur Standard Notes restent sur leur serveur : la sauvegarde ne contient que leurs noms. Chaque note importée indique où se trouvait un fichier. Télécharge ces fichiers depuis Standard Notes et ajoute-les de nouveau à la note."
           ]
         },
@@ -444,6 +515,47 @@
           "h": "Si des images ou des fichiers manquent",
           "p": [
             "Une sauvegarde faite avant d'avoir activé \"Backup attachments\" ne contient aucun fichier, et l'aperçu d'import te préviendra que des notes référencent des pièces jointes que la sauvegarde ne transporte pas. Si c'est le cas, annule, active le réglage dans UpNote, clique à nouveau sur \"Backup now\", zippe le dossier tout frais et importe celui-là à la place."
+          ]
+        }
+      ]
+    },
+    "joplin": {
+      "app": "Joplin",
+      "title": "Exporter tes notes Joplin",
+      "metaTitle": "Exporter tes notes Joplin au format JEX - PrivacyNotes",
+      "lead": "Joplin exporte tous tes carnets d'un coup dans un seul fichier JEX. Il fait passer tes notes avec leurs carnets, étiquettes, to-dos, liens entre notes et pièces jointes.",
+      "sections": [
+        {
+          "h": "Tout exporter en JEX",
+          "steps": [
+            "Ouvre Joplin sur ton ordinateur.",
+            "Choisis File > Export all > \"JEX - Joplin Export File\".",
+            "Enregistre le fichier. Tu obtiens un seul fichier .jex qui contient chaque carnet, il n'y a donc rien à compresser.",
+            "Dépose ce .jex tel quel."
+          ],
+          "p": [
+            "Tools > Create backup écrit le même fichier, octet pour octet, sous le nom all_notebooks.jex dans un dossier JoplinBackup de ton dossier personnel. Si Joplin fait déjà ces sauvegardes pour toi, la plus récente convient tout aussi bien."
+          ]
+        },
+        {
+          "h": "Choisis JEX, pas Markdown, HTML ou PDF",
+          "p": [
+            "Export all propose aussi MD, MD + Front Matter, HTML directory et PDF. Ce sont des copies faites pour être lues dans d'autres applis. Le fichier JEX est le relevé propre à Joplin de chaque note, carnet, étiquette et pièce jointe, et c'est lui que nous lisons. Dépose l'un des autres exports et on te le dira plutôt que d'en importer la moitié.",
+            "Si tu as déjà exporté \"RAW - Joplin Export Directory\", compresse ce dossier en zip et dépose le zip. Il contient les mêmes éléments que le fichier JEX."
+          ]
+        },
+        {
+          "h": "Sors les notes de la corbeille avant d'exporter",
+          "p": [
+            "Joplin laisse la corbeille hors de chaque export et de chaque sauvegarde. Sors de la corbeille toute note que tu veux garder avant d'exporter, sinon elle reste dans Joplin."
+          ]
+        },
+        {
+          "h": "Ce qui fait le voyage",
+          "p": [
+            "Tes carnets sont reconstruits en vrais dossiers, imbriqués aussi profondément que dans Joplin, et chaque note garde ses étiquettes ainsi que les dates de création et de modification que Joplin t'affichait.",
+            "Les to-dos deviennent des notes de tâche avec une case à cocher, déjà cochée quand le to-do était terminé, et une échéance reste écrite à côté du titre. Les liens entre notes deviennent des liens de note. Les images et les pièces jointes sont importées dans ton stockage et restent en place dans la note. Les notes enregistrées en HTML, comme beaucoup de captures web, sont converties avec leur mise en forme.",
+            "Les notes du carnet Conflicts de Joplin arrivent avec l'étiquette \"conflict\", pour que tu puisses les retrouver et les trier. Si tu utilises le chiffrement de Joplin, laisse-le finir de déchiffrer avant d'exporter : un élément encore chiffré est ignoré, et l'aperçu de l'import t'indique combien."
           ]
         }
       ]

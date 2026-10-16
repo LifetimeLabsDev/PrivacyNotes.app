@@ -22,7 +22,8 @@
       "totp": "Les codes 2FA sont une fonctionnalité Pro. Enregistre une clé d'authentification avec n'importe quel identifiant et le code rotatif s'affiche à côté du mot de passe. La clé elle-même est enregistrée et synchronisée dans toutes les formules.",
       "replace": "Rechercher et remplacer est une fonctionnalité Pro. Passe à Pro pour remplacer une occurrence ou toutes les occurrences d'une note d'un coup.",
       "passphrase": "Les phrases secrètes sont une fonctionnalité Pro. Génère une phrase de mots aléatoires, facile à taper et à dire.",
-      "default": "Une seule mise à niveau débloque tout ce qui suit. Paiement unique."
+      "default": "Une seule mise à niveau débloque tout ce qui suit. Paiement unique.",
+      "alerts": "Les rappels sont une fonctionnalité Pro. Tes appareils sonnent à l'heure que tu choisis, et rien de l'élément ne les quitte."
     },
     "features": {
       "devices": "Synchronise un nombre illimité d'appareils, sur toutes les plateformes",
@@ -73,7 +74,7 @@
     "openingBody": "Une fenêtre de paiement Paddle devrait apparaître. Si ce n'est pas le cas, ton navigateur a peut-être bloqué la popup - recharge cette page pour réessayer."
   },
   "history": {
-    "subtitle": "Jusqu'à 20 versions par élément. Les plus anciennes sont automatiquement élaguées.",
+    "subtitle": "Jusqu'à 50 versions par élément. Les plus anciennes sont automatiquement élaguées.",
     "empty": "Pas encore d'historique. Les versions commencent à s'accumuler après la prochaine modification. Reviens plus tard.",
     "loadFailed": "Impossible de charger l'historique. Vérifie ta connexion et réessaie.",
     "selectPrompt": "Sélectionne une version pour l'aperçu.",
@@ -82,7 +83,20 @@
     "restoring": "Restauration…",
     "restoreSnapshotFailed": "Impossible d'enregistrer d'abord la version actuelle, donc rien n'a été restauré. Vérifie ta connexion et réessaie.",
     "restoreFailed": "Impossible de restaurer cette version. Réessaie.",
-    "loginExtrasNotRecorded": "Cette version n'a pas enregistré de champs personnalisés ni de sites web supplémentaires. La restaurer conserve ceux d'aujourd'hui."
+    "loginExtrasNotRecorded": "Cette version n'a pas enregistré de champs personnalisés ni de sites web supplémentaires. La restaurer conserve ceux d'aujourd'hui.",
+    "compare": "Comparer avec la note actuelle",
+    "thisVersion": "Avant",
+    "currentNote": "Maintenant",
+    "onlyInVersion": "Retiré depuis",
+    "onlyInCurrent": "Ajouté depuis",
+    "changeCount_one": "{{count}} modification",
+    "changeCount_other": "{{count}} modifications",
+    "noChanges": "Aucune modification dans le texte",
+    "titleChanged": "Titre modifié",
+    "tagsChanged": "Étiquettes modifiées",
+    "formatChanged": "Mise en forme modifiée",
+    "tooLong": "Cette note est trop longue pour être comparée.",
+    "trackersNotRecorded": "Cette version n'a pas enregistré les valeurs des suivis. La restaurer conserve celles d'aujourd'hui."
   },
   "donation": {
     "eyebrow": "Tu as débloqué",

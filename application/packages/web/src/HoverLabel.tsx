@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { PointerEvent, ReactNode } from 'react';
 
 // Spec: ops/docs/ui-patterns.md (section 18 - instant CSS hover labels)
 
@@ -7,27 +7,19 @@ import type { ReactNode } from 'react';
  * `below` below it, `start` before it and `end` after it (both mirror under
  * RTL, which is the desired behavior for a side tip).
  *
- * They did not always. Until v0.400.0 these were named for the CSS class they
- * set rather than the result - `bottom` meant `bottom-full`, which renders the
- * tip ABOVE - so every name meant its opposite. That was documented here at
- * length and still caught people repeatedly, including one tip "fixed" in the
- * wrong direction more than once (GitHub #206). A warning that has to be read
- * and remembered is the weakest tool available; the names now carry the meaning
- * themselves, and the `Position` union makes a wrong one a build error.
+ * The `Position` union makes a wrong name a build error.
  *
- * STILL TRUE, AND THE MORE COMMON PROBLEM: A CLIPPED TIP IS USUALLY NOT THIS
- * FILE'S PROBLEM. A tip is cut by any ancestor that clips on the axis it
- * overhangs, and the default centered tip overhangs BOTH sides. If the element
- * sits at the end of a row that clips (the editor's `.pn-format-row`, the rail,
- * a scroller), the fix is a CSS rule on the ROW that edge-aligns its
- * `:first-child` / `:last-child` tips, NOT a new position on one button. Which
- * child is at the end moves with the window, so a per-button prop cannot
- * express it and will look right at one width and wrong at another. Those rules
- * live in `index.css` next to the row they belong to.
+ * Where a tip lands is decided twice. The class from this map gives its
+ * place beside the element; then, as the tip gets a box, `fitTip` measures
+ * the tip against every box that would cut it (each ancestor that clips an
+ * axis, and the window) and moves it back inside: sideways when it would
+ * hang past an edge, to the other side when there is no room above or below.
+ * So a button at the end of a clipping row, or one a person moved there on
+ * the format bar, needs no rule of its own. A tip that is not showing has no
+ * box (`.pn-tip-host` in index.css), so a tip hanging past an edge cannot
+ * make a clipping scroller scroll sideways either.
  *
- * Adding a new entry here is for a genuinely new geometry only. Confirm the tip
- * is clipped by the VIEWPORT rather than by a clipping ancestor: only the
- * former is this map's job.
+ * Adding a new entry here is for a genuinely new geometry only.
  *
  * Full decision order: ops/docs/ui-patterns.md section 18.
  */
@@ -52,20 +44,14 @@ export const positionClasses = {
 type Position = keyof typeof positionClasses;
 
 /**
- * The look every tip pill wears: its box, its colour, its type size. Split
- * out from `TIP_PILL` for the tip whose visibility is decided in code rather
- * than by `:hover` - the link address in the editor's corner, which has no
- * one element to hang a hover group on - so the two pills cannot drift apart
- * in appearance while differing in how they appear. Placement is the
- * caller's, because a corner pill and a tip beside a button share nothing
- * there.
+ * The look every tip pill wears: its box, its colour, its type size.
  *
  * A tip only ever shows on hover, so on touch it is display:none rather
  * than merely transparent: a transparent tip still has a box, and a box
  * hanging past the screen edge widened the phone shell, after which typing
  * in a field scrolled the whole app sideways.
  */
-export const TIP_PILL_LOOK =
+const TIP_PILL_LOOK =
   // theme-ok: a tooltip is a dark pill in every theme
   'pn-tip pointer-events-none px-2.5 py-1.5 rounded-md bg-neutral-900 dark:bg-neutral-800 border border-neutral-700 dark:border-neutral-700 text-[12px] text-neutral-100 z-50 [@media(hover:none)]:hidden';
 
@@ -76,6 +62,101 @@ export const TIP_PILL_LOOK =
  */
 export const TIP_PILL =
   `${TIP_PILL_LOOK} absolute opacity-0 [@media(hover:hover)]:group-hover/tip:opacity-100 transition-opacity duration-75`;
+
+/** The visible part of the window around `el`: the window cut down by every
+ *  ancestor that clips an axis. A fixed ancestor ends the walk, because what
+ *  sits above it in the tree cannot clip it. */
+export function visibleBox(el: HTMLElement) {
+  let left = 0, top = 0, right = window.innerWidth, bottom = window.innerHeight;
+  for (let a = el.parentElement; a; a = a.parentElement) {
+    const cs = getComputedStyle(a);
+    const clipX = cs.overflowX !== 'visible';
+    const clipY = cs.overflowY !== 'visible';
+    if (clipX || clipY) {
+      const r = a.getBoundingClientRect();
+      const l = r.left + a.clientLeft;
+      const tp = r.top + a.clientTop;
+      if (clipX) { left = Math.max(left, l); right = Math.min(right, l + a.clientWidth); }
+      if (clipY) { top = Math.max(top, tp); bottom = Math.min(bottom, tp + a.clientHeight); }
+    }
+    if (cs.position === 'fixed') break;
+  }
+  return { left, top, right, bottom };
+}
+
+const EDGE = 4;
+const PLACED = ['left', 'right', 'top', 'bottom', 'translate', 'transform', 'margin-top', 'margin-bottom'];
+
+/**
+ * Moves a showing tip that sits above or below `host` back inside the
+ * visible box: sideways first, then to the other side of the host when it
+ * does not fit vertically and the other side does.
+ */
+function fitTip(tip: HTMLElement, host: HTMLElement) {
+  const s = tip.style;
+  for (const p of PLACED) s.removeProperty(p);
+  const t = tip.getBoundingClientRect();
+  if (t.width === 0) return;
+  const h = host.getBoundingClientRect();
+  // A side tip (start, end) keeps its place.
+  if (t.right <= h.left + 1 || t.left >= h.right - 1) return;
+  const box = visibleBox(host);
+  // A tip that hangs past an edge lines up with its own button's edge on that
+  // side first, the way an end-aligned tip ("Note options") reads; only a tip
+  // too wide for that is pushed to the edge of the visible box.
+  let left = t.left;
+  if (t.right > box.right - EDGE) left = h.right - t.width;
+  else if (t.left < box.left + EDGE) left = h.left;
+  if (left + t.width > box.right) left = box.right - EDGE - t.width;
+  if (left < box.left) left = box.left + EDGE;
+  if (Math.abs(left - t.left) > 0.5) {
+    s.left = `${left - h.left}px`;
+    s.right = 'auto';
+    s.translate = 'none';
+    s.transform = 'none';
+  }
+  const below = t.top >= h.bottom - 1;
+  const gap = below ? t.top - h.bottom : h.top - t.bottom;
+  if (below && t.bottom > box.bottom - EDGE && h.top - gap - t.height >= box.top + EDGE) {
+    s.top = 'auto';
+    s.bottom = `calc(100% + ${gap}px)`;
+    s.marginTop = '0';
+  } else if (!below && t.top < box.top + EDGE && h.bottom + gap + t.height <= box.bottom - EDGE) {
+    s.bottom = 'auto';
+    s.top = `calc(100% + ${gap}px)`;
+    s.marginBottom = '0';
+  }
+}
+
+/**
+ * Fits a tip the moment it gets a box, whatever showed it. A tip shows on
+ * `:hover`, and `:hover` is not an event: a button that appears under a
+ * pointer that does not move (the view switch at the end of the format bar
+ * swaps itself for its twin) matches `:hover` with no `pointerenter` in some
+ * browsers, and a browser can fire `pointerenter` before the tip has a box.
+ * A size change is what every one of those has in common: the tip goes from
+ * `display: none` to its own width. One observer serves every tip. Moving a
+ * tip does not resize it, so the fit never triggers itself.
+ */
+const tipObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver((entries) => {
+  for (const entry of entries) {
+    const tip = entry.target as HTMLElement;
+    if (entry.contentRect.width > 0 && tip.parentElement) fitTip(tip, tip.parentElement);
+  }
+});
+
+function observeTip(tip: HTMLElement | null) {
+  if (!tip || !tipObserver) return;
+  tipObserver.observe(tip);
+  return () => tipObserver.unobserve(tip);
+}
+
+/** A host that moved while its tip was hidden: fit again on entry. */
+function placeTip(e: PointerEvent<HTMLElement>) {
+  if (e.pointerType === 'touch') return;
+  const tip = e.currentTarget.querySelector<HTMLElement>(':scope > .pn-tip');
+  if (tip) fitTip(tip, e.currentTarget);
+}
 
 /** CSS-only instant hover label. Replaces native title="" attributes. */
 export function HoverLabel({
@@ -125,9 +206,13 @@ export function HoverLabel({
 }) {
   const Wrapper = inline ? 'span' : 'div';
   return (
-    <Wrapper className={`relative group/tip${inline ? ' inline' : ''}${className ? ` ${className}` : ''}`}>
+    <Wrapper
+      className={`pn-tip-host relative group/tip${inline ? ' inline' : ''}${className ? ` ${className}` : ''}`}
+      onPointerEnter={disabled ? undefined : placeTip}
+    >
       {children}
       {!disabled && <Wrapper
+        ref={observeTip}
         className={`${TIP_PILL}${hiddenAtXl ? ' xl:hidden' : ''}${hiddenAtSm ? ' sm:hidden' : ''} ${positionClasses[position]} ${multiline ? 'block w-[260px] whitespace-normal leading-snug text-center' : 'flex items-center gap-2 whitespace-nowrap'}`}
       >
         <span>{label}</span>

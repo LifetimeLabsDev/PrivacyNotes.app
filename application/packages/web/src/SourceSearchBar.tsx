@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { MagnifyingGlass, ArrowsLeftRight, TextAa, X } from './icons';
 import { HoverLabel } from './HoverLabel';
 import { isImeComposing } from './imeComposing';
-import { BAR_BTN, BAR_INPUT, MatchNav, TEXT_BTN } from './MatchNav';
+import { BAR_BTN, BAR_INPUT, MatchNav, ReplaceToggle, TEXT_BTN } from './MatchNav';
 import { keyText } from './shortcutMatch';
 import { findTextMatches, type TextMatch } from './markdownSourceSearch';
 
@@ -19,6 +19,11 @@ type Props = {
   onHits: (matches: TextMatch[], active: number) => void;
   onReplaceOne: (match: TextMatch, replacement: string) => void;
   onReplaceAll: (matches: TextMatch[], replacement: string) => void;
+  /** Swaps find for replace and back; the bar keeps its term because it
+   *  stays mounted. Absent where replace is refused. */
+  onSwap?: () => void;
+  /** Free account: the swap button carries the Pro rocket. */
+  swapPro?: boolean;
   onClose: () => void;
 };
 
@@ -29,7 +34,7 @@ type Props = {
  * adds the match-case toggle and the replacement row. The parent gates
  * replace on Pro and on an editable note before this mounts.
  */
-export function SourceSearchBar({ mode, text, focusTick, initialQuery, onHits, onReplaceOne, onReplaceAll, onClose }: Props) {
+export function SourceSearchBar({ mode, text, focusTick, initialQuery, onHits, onReplaceOne, onReplaceAll, onSwap, swapPro = false, onClose }: Props) {
   const { t } = useTranslation('editor');
   const searchRef = useRef<HTMLInputElement>(null);
   const replaceRef = useRef<HTMLInputElement>(null);
@@ -159,6 +164,7 @@ export function SourceSearchBar({ mode, text, focusTick, initialQuery, onHits, o
           </HoverLabel>
         )}
         <MatchNav count={count} noHits={noHits} canStep={total > 0} onStep={go} />
+        {onSwap && <ReplaceToggle open={mode === 'replace'} pro={swapPro} onClick={onSwap} />}
         <div className="w-px h-5 bg-divider mx-0.5 shrink-0" aria-hidden="true" />
         <HoverLabel label={closeLabel} position="below-end">
           <button

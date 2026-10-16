@@ -27,7 +27,7 @@ export function Switch({
   setting,
   hint,
 }: {
-  label: string;
+  label: ReactNode;
   checked: boolean;
   onChange: (checked: boolean) => void;
   disabled?: boolean;

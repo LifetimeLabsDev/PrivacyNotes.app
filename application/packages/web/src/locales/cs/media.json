@@ -15,6 +15,8 @@
     "notFound": "Obrázek nenalezen",
     "saveFailed": "Uložení se nezdařilo, takže soubor může být prázdný nebo neúplný.",
     "viewAria": "Zobrazit obrázek",
+    "copyAria": "Kopírovat obrázek",
+    "copyFailed": "Obrázek se nepodařilo zkopírovat.",
     "picturesLeftOut": "Některé obrázky se nepřidaly. Obrázek zkopíruj samostatně a pak ho vlož."
   },
   "attachment": {
@@ -58,6 +60,17 @@
     "pageCount_many": "{{count}} stránky",
     "pageCount_other": "{{count}} stránek",
     "pageLabel": "{{name}}, stránka {{page}} z {{count}}"
+  },
+  "mail": {
+    "loading": "Otevírám e-mail...",
+    "failed": "Tenhle e-mail nejde přečíst. Stáhni si ho a otevři v jiné aplikaci.",
+    "from": "Od",
+    "to": "Komu",
+    "cc": "Kopie",
+    "date": "Datum",
+    "noSubject": "(Bez předmětu)",
+    "empty": "Tenhle e-mail nemá žádný text.",
+    "attachments": "Přílohy"
   },
   "picker": {
     "title": "Obrázky v Souborech",

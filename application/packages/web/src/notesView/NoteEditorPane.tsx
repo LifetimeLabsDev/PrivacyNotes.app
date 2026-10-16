@@ -1,11 +1,12 @@
 import type { Space } from '../spaces';
 import type { SpaceMove } from '../NoteOptionsMenu';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { UpgradeTrigger } from '../UpgradeModal';
 import type { Dispatch, ReactNode, RefObject, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowUUpLeft as Undo2Icon, ArrowUUpRight as Redo2Icon, X, ArrowLeft, ArrowCounterClockwise, Trash, DotsThreeOutlineVertical, CaretLeft, CaretRight, PencilSimpleSlash, MarkdownLogo, TextAa, FileMd, Paragraph, MagnifyingGlass, FrameCorners } from '../icons';
+import { ArrowUUpLeft as Undo2Icon, ArrowUUpRight as Redo2Icon, X, ArrowLeft, ArrowCounterClockwise, Trash, DotsThreeOutlineVertical, CaretLeft, CaretRight, PencilSimpleSlash, MarkdownLogo, TextAa, ArticleMedium, Paragraph, MagnifyingGlass, FrameCorners, ArrowCircleUp, ArrowCircleDown, CalendarDots, CalendarPlus } from '../icons';
 import type { AuthState } from '../auth';
+import { captureAnchor, restoreAnchor, type ViewAnchor } from '../viewSwitchAnchor';
 import type { LocalNote } from '../db';
 import { updateNote } from '../notesRepo';
 import { Editor, type EditorHandle } from '../Editor';
@@ -21,15 +22,21 @@ import { parseLinkBody, linkDomain } from '../linkBody';
 import { BookmarkItem } from '../BookmarkItem';
 import { ContactItem } from '../ContactItem';
 import { HoverLabel } from '../HoverLabel';
+import type { NoteJump } from './AppFooter';
 import { EditorSlotPill } from '../EditorSlotPill';
 import { useTheme, type ContentWidth } from '../theme';
-import { TITLE_MAX_LENGTH } from '../useNoteEditing';
+import { TITLE_MAX_LENGTH, newEditorKey } from '../useNoteEditing';
 import { proUnlocked } from '../demo';
 import { usePushFailure } from '../pushFailures';
 import { VaultItem } from '../VaultItem';
-import { hasStructuredBody, isKnownNoteType, isWeekJournal, shareSurface, toLocalIso } from '../notesViewUtils';
+import { entryDayOf, hasStructuredBody, isKnownNoteType, isWeekJournal, shareSurface, toLocalIso } from '../notesViewUtils';
+import { scheduleOf } from '../schedule';
+import { formatDay } from '../intlFormat';
+import { timeLabel } from '../JournalCalendar';
+import { typeGlyph } from '../NoteRow';
 import type { View } from '../views';
 import { WordCount } from '../WordCount';
+import { storedNoteBytes } from '../sync';
 import { TrackerPills } from '../TrackerPills';
 import { APP_KEYS, matchesKey } from '../shortcutMatch';
 import { editorCommands, registerEditorCommand } from '../editorCommands';
@@ -40,6 +47,7 @@ import type { NoteActionGuardDeps } from '../noteActionGuards';
 import { WeekInReview } from './WeekInReview';
 import { isImeComposing } from '../imeComposing';
 import type { JournalDays } from '../notesViewUtils';
+import type { ScheduleEdit } from '../schedule';
 
 type Authed = Extract<AuthState, { status: 'authenticated' }>;
 
@@ -124,13 +132,123 @@ function ContentWidthButton({
   );
 }
 
-export interface NoteEditorPaneProps {
-  selected: LocalNote;
+/** Where the pane sits: phone or desktop, grid, footer. */
+interface NoteEditorLayout {
+  gridMode: boolean;
+  isMobile: boolean;
+  mobileTabIndex: number | undefined;
+  mobileEditing: boolean;
+  footerVisible: boolean;
+  /** The on-screen keyboard is up on a phone. */
+  keyboardUp: boolean;
+  /** The jump a long note offers (see NoteJump); drawn here on screens with
+   *  the desktop footer, in the phone bar elsewhere. */
+  noteJump?: NoteJump;
+}
+
+/** Zen mode and the formatting toolbar it shows on demand. */
+interface NoteEditorZen {
+  zenMode: boolean;
+  setZenMode: Dispatch<SetStateAction<boolean>>;
+  zenToolbar: boolean;
+  setZenToolbar: Dispatch<SetStateAction<boolean>>;
+}
+
+/** How much of the header row fits, and the previous/next arrows. */
+interface NoteEditorHeaderNav {
+  /** How many quick-action groups the header row fits. Measured in NotesView. */
+  quickActionsTier: QuickActionsTier;
+  /** The header row is phone-narrow: previous/next and share leave it, and
+   *  share moves into the "..." menu. Measured in NotesView. */
+  headerCompact: boolean;
+  /** Previous/next note in the list (GitHub #246). Hidden on a compact header. */
+  /** The arrows step through the open tabs rather than the list. */
+  navTabs: boolean;
+  canGoPrev: boolean;
+  canGoNext: boolean;
+  onNavigateList: (direction: 'prev' | 'next') => void;
+}
+
+/** The elements NotesView measures and focuses. */
+interface NoteEditorPaneRefs {
+  titleInputRef: RefObject<HTMLTextAreaElement | null>;
+  tagInputRef: RefObject<TagInputHandle | null>;
+  editorRef: RefObject<EditorHandle | null>;
+  /** Callback ref for the header row. NotesView measures it to pick which
+   *  icon groups fit; a callback cannot go stale across a remount. */
+  setHeaderRow: (node: HTMLDivElement | null) => void;
+  noteOptionsButtonRef: RefObject<HTMLButtonElement | null>;
+  setStickyTagRow: (node: HTMLDivElement | null) => void;
+  /** Callback ref for the editor's scroll container, so NotesView can watch
+   *  the note grow past it. Same shape as setStickyTagRow above. */
+  setNoteScroller: (node: HTMLDivElement | null) => void;
+}
+
+/** What an edit to the open item writes (useNoteEditing). */
+interface NoteEditorEditing {
+  handleTitleChange: (id: string, title: string) => Promise<void>;
+  /** Focus/blur on the title field bracket a rename, so note-links into
+   *  this note can follow it. See useNoteEditing.handleTitleBlur (#238). */
+  handleTitleFocus: (id: string) => void;
+  handleTitleBlur: (id: string) => void;
+  handleBodyChange: (id: string, body: string, editorKey?: string) => Promise<void>;
+  /** See useNoteEditing.registerEditorBody (#497). */
+  registerEditorBody: (editorKey: string, body: string) => void;
+  handleTagsChange: (id: string, tags: string[]) => Promise<void>;
+  handleTrackersChange: (id: string, trackers: JournalTrackerData) => Promise<void>;
+  handleVaultSave: (id: string, body: string, trackers?: Record<string, unknown>) => Promise<boolean>;
+}
+
+/** The actions of the "..." menu and the header that change the item itself. The
+ *  exports, history and the lock predicate stay top-level props: the lock gate
+ *  wiring test reads them off the JSX. */
+interface NoteEditorMenuActions {
   /** The note menu's color row: the note's own pick and the color it takes
    *  without one. */
   noteColor: NoteColorInfo | null;
   /** Set or clear the note's own color; null takes its tag's or folder's. */
   onSetNoteColor: (noteId: string, color: NoteOwnColor | null) => void;
+  handleToggleStar: (id: string, starred: boolean) => Promise<void>;
+  handleToggleArchive: (id: string, archived: boolean) => Promise<void>;
+  /** Move a journal entry to another day (`YYYY-MM-DD`). */
+  setJournalDate: (id: string, day: string) => Promise<void>;
+  /** Attach a note or a task list to a day (`YYYY-MM-DD`), or take it away (null). */
+  setNoteDate: (id: string, day: string | null) => Promise<void>;
+  /** The days that hold a journal entry, for the Entry date calendar. */
+  journalDays: JournalDays;
+  /** Trash the open note through the shared confirm modal. */
+  requestTrash: (ids: string[]) => void;
+  handleRestore: (id: string) => Promise<void>;
+  handleDuplicate: (id: string) => Promise<void>;
+  /** "Split note" beside the sync-limit line; null where a note cannot split. */
+  splitNote: ((n: LocalNote) => void) | null;
+  /** The editor's measure found the open note over the 1 MB sync limit. */
+  onOverSyncLimit: (id: string) => void;
+  /** True when the note has more than one task and at least one is checked. */
+  canUncheckAllTasks: (n: LocalNote) => boolean;
+  handleUncheckAllTasks: (n: LocalNote) => Promise<void>;
+  canDeleteCheckedTasks: (n: LocalNote) => boolean;
+  handleDeleteCheckedTasks: (n: LocalNote) => void;
+  canSortTasksByStatus: (n: LocalNote) => boolean;
+  handleSortTasksByStatus: (n: LocalNote) => Promise<void>;
+  handleSetLocked: (id: string, locked: boolean) => Promise<void>;
+  handleSetPinProtected: (id: string, pinProtected: boolean) => Promise<void>;
+  onCopyShortcut: (n: LocalNote) => void;
+  onCopyNoteLink: ((n: LocalNote) => void) | null;
+  /** "Move to Work" or "Move to Personal" in the "..." menu, while spaces are on. */
+  spaceMove?: SpaceMove;
+  /** The Schedule view: the open occurrence, and the edit, which asks on a
+   *  repeating event. */
+  schedule: {
+    occurrence: string | null;
+    edit: (id: string, occurrence: string | null, edit: ScheduleEdit) => void;
+    /** A calendar menu's "Schedule": opens the Schedule view on this item. */
+    ask?: { id: string; n: number } | null;
+  };
+}
+
+export interface NoteEditorPaneProps {
+  selected: LocalNote;
   view: View;
   notes: LocalNote[];
   /** Every saved bookmark URL in the account (buildLinkKeyMap), for the
@@ -138,26 +256,6 @@ export interface NoteEditorPaneProps {
    *  the quick-add bar can never guard against different sets. */
   bookmarkKeys: Map<string, string>;
   auth: Authed;
-  gridMode: boolean;
-
-  zenMode: boolean;
-  setZenMode: Dispatch<SetStateAction<boolean>>;
-  zenToolbar: boolean;
-  setZenToolbar: Dispatch<SetStateAction<boolean>>;
-
-  /** How many quick-action groups the header row fits. Measured in NotesView. */
-  quickActionsTier: QuickActionsTier;
-  /** The header row is phone-narrow: previous/next and share leave it, and
-   *  share moves into the "..." menu. Measured in NotesView. */
-  headerCompact: boolean;
-  /** Previous/next note in the list (GitHub #246). Hidden on a compact header. */
-  canGoPrev: boolean;
-  canGoNext: boolean;
-  onNavigateList: (direction: 'prev' | 'next') => void;
-  isMobile: boolean;
-  mobileTabIndex: number | undefined;
-  mobileEditing: boolean;
-  footerVisible: boolean;
 
   spellcheck: boolean;
   invisibles: boolean;
@@ -179,17 +277,6 @@ export interface NoteEditorPaneProps {
     cancel: () => void;
   };
 
-  titleInputRef: RefObject<HTMLTextAreaElement | null>;
-  tagInputRef: RefObject<TagInputHandle | null>;
-  editorRef: RefObject<EditorHandle | null>;
-  /** Callback ref for the header row. NotesView measures it to pick which
-   *  icon groups fit; a callback cannot go stale across a remount. */
-  setHeaderRow: (node: HTMLDivElement | null) => void;
-  noteOptionsButtonRef: RefObject<HTMLButtonElement | null>;
-  setStickyTagRow: (node: HTMLDivElement | null) => void;
-  /** Callback ref for the editor's scroll container, so NotesView can watch
-   *  the note grow past it. Same shape as setStickyTagRow above. */
-  setNoteScroller: (node: HTMLDivElement | null) => void;
   /** True once the open note runs past its scroller. Drives the find pill,
    *  and nothing else. */
   bodyOverflows: boolean;
@@ -208,41 +295,11 @@ export interface NoteEditorPaneProps {
   /** Open a note in the pillar that lists it, clearing a filter that hides it. */
   onRevealNote: (note: LocalNote) => void;
 
-  handleTitleChange: (id: string, title: string) => Promise<void>;
-  /** Focus/blur on the title field bracket a rename, so note-links into
-   *  this note can follow it. See useNoteEditing.handleTitleBlur (#238). */
-  handleTitleFocus: (id: string) => void;
-  handleTitleBlur: (id: string) => void;
-  handleBodyChange: (id: string, body: string) => Promise<void>;
-  handleTagsChange: (id: string, tags: string[]) => Promise<void>;
   handleSelectTag: (tag: string | null) => Promise<void>;
-  handleTrackersChange: (id: string, trackers: JournalTrackerData) => Promise<void>;
-  handleVaultSave: (id: string, body: string, trackers?: Record<string, unknown>) => Promise<boolean>;
 
   handleCloseEditor: () => Promise<void>;
   handleHistory: (action: 'undo' | 'redo') => void;
-  handleToggleStar: (id: string, starred: boolean) => Promise<void>;
-  handleToggleArchive: (id: string, archived: boolean) => Promise<void>;
-  /** Move a journal entry to another day (`YYYY-MM-DD`). */
-  setJournalDate: (id: string, day: string) => Promise<void>;
-  /** The days that hold a journal entry, for the Entry date calendar. */
-  journalDays: JournalDays;
-  /** Trash the open note through the shared confirm modal. */
-  requestTrash: (ids: string[]) => void;
-  handleRestore: (id: string) => Promise<void>;
-  handleDuplicate: (id: string) => Promise<void>;
-  /** True when the note has more than one task and at least one is checked. */
-  canUncheckAllTasks: (n: LocalNote) => boolean;
-  handleUncheckAllTasks: (n: LocalNote) => Promise<void>;
-  canDeleteCheckedTasks: (n: LocalNote) => boolean;
-  handleDeleteCheckedTasks: (n: LocalNote) => void;
-  canSortTasksByStatus: (n: LocalNote) => boolean;
-  handleSortTasksByStatus: (n: LocalNote) => Promise<void>;
-  handleSetLocked: (id: string, locked: boolean) => Promise<void>;
-  handleSetPinProtected: (id: string, pinProtected: boolean) => Promise<void>;
   handleBurnShare: (n: LocalNote) => Promise<void>;
-  onCopyShortcut: (n: LocalNote) => void;
-  onCopyNoteLink: ((n: LocalNote) => void) | null;
 
   showShareMenu: boolean;
   setShowShareMenu: Dispatch<SetStateAction<boolean>>;
@@ -273,8 +330,13 @@ export interface NoteEditorPaneProps {
     | { mode: 'folder'; folderId: string }
     | null
   >>;
-  /** "Move to Work" or "Move to Personal" in the "..." menu, while spaces are on. */
-  spaceMove?: SpaceMove;
+
+  layout: NoteEditorLayout;
+  zen: NoteEditorZen;
+  headerNav: NoteEditorHeaderNav;
+  paneRefs: NoteEditorPaneRefs;
+  editing: NoteEditorEditing;
+  noteMenu: NoteEditorMenuActions;
 }
 
 export function NoteEditorPane(props: NoteEditorPaneProps) {
@@ -291,27 +353,11 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
   const pushFailure = usePushFailure(props.selected.id);
   const { contentWidth, cycleContentWidth } = useTheme();
   const {
-    noteColor,
-    onSetNoteColor,
     selected,
     view,
     notes,
     bookmarkKeys,
     auth,
-    gridMode,
-    zenMode,
-    setZenMode,
-    zenToolbar,
-    setZenToolbar,
-    quickActionsTier,
-    headerCompact,
-    canGoPrev,
-    canGoNext,
-    onNavigateList,
-    isMobile,
-    mobileTabIndex,
-    mobileEditing,
-    footerVisible,
     spellcheck,
     invisibles,
     setInvisibles,
@@ -324,13 +370,6 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     setTitleFocused,
     setEditorFocused,
     titleLongPress,
-    titleInputRef,
-    tagInputRef,
-    editorRef,
-    setHeaderRow,
-    noteOptionsButtonRef,
-    setStickyTagRow,
-    setNoteScroller,
     bodyOverflows,
     editorRevision,
     wcBody,
@@ -342,34 +381,10 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     folderChipFor,
     refresh,
     onRevealNote,
-    handleTitleChange,
-    handleTitleFocus,
-    handleTitleBlur,
-    handleBodyChange,
-    handleTagsChange,
     handleSelectTag,
-    handleTrackersChange,
-    handleVaultSave,
     handleCloseEditor,
     handleHistory,
-    handleToggleStar,
-    handleToggleArchive,
-    setJournalDate,
-    journalDays,
-    requestTrash,
-    handleRestore,
-    handleDuplicate,
-    canUncheckAllTasks,
-    handleUncheckAllTasks,
-    canDeleteCheckedTasks,
-    handleDeleteCheckedTasks,
-    canSortTasksByStatus,
-    handleSortTasksByStatus,
-    handleSetLocked,
-    handleSetPinProtected,
     handleBurnShare,
-    onCopyShortcut,
-    onCopyNoteLink,
     showShareMenu,
     setShowShareMenu,
     exportSingleMarkdown,
@@ -387,7 +402,24 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     setShowSecurity,
     onPinUnlocked,
     setFolderPicker,
-    spaceMove,
+    layout: { gridMode, isMobile, mobileTabIndex, mobileEditing, footerVisible, keyboardUp, noteJump },
+    zen: { zenMode, setZenMode, zenToolbar, setZenToolbar },
+    headerNav: { quickActionsTier, headerCompact, navTabs, canGoPrev, canGoNext, onNavigateList },
+    paneRefs: {
+      titleInputRef, tagInputRef, editorRef, setHeaderRow, noteOptionsButtonRef,
+      setStickyTagRow, setNoteScroller,
+    },
+    editing: {
+      handleTitleChange, handleTitleFocus, handleTitleBlur, handleBodyChange, registerEditorBody,
+      handleTagsChange, handleTrackersChange, handleVaultSave,
+    },
+    noteMenu: {
+      noteColor, onSetNoteColor, handleToggleStar, handleToggleArchive, setJournalDate, setNoteDate,
+      journalDays, requestTrash, handleRestore, handleDuplicate, splitNote, onOverSyncLimit, canUncheckAllTasks,
+      handleUncheckAllTasks, canDeleteCheckedTasks, handleDeleteCheckedTasks,
+      canSortTasksByStatus, handleSortTasksByStatus, handleSetLocked, handleSetPinProtected,
+      onCopyShortcut, onCopyNoteLink, spaceMove, schedule,
+    },
   } = props;
   // True while a menu has asked to take this note's protection off. The gate
   // does the asking, so an open note gets the same two checks as a locked one.
@@ -407,6 +439,24 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
    */
   const markdownBody = !structuredBody && !isNoteLocked(selected);
   /**
+   * Each markdown editor mount saves under a key of its own, and records the
+   * body it mounted with, so a save from an editor whose row was rewritten
+   * under it is refused (#497). A new key comes with every new mount: another
+   * note, a remount, the other editor mode, or the editor coming back from
+   * behind the PIN gate, the one that takes the protection off included. The
+   * body is read at the mount only: later bodies reach the record through the
+   * editor's own saves.
+   */
+  const editorShown = markdownBody && knownType && !removingProtection;
+  const mountOf = `${selected.id}|${editorRevision}|${selectedEditorMode}|${editorShown}`;
+  const editorMountRef = useRef<{ of: string; key: string } | null>(null);
+  if (editorMountRef.current?.of !== mountOf) editorMountRef.current = { of: mountOf, key: newEditorKey(selected.id) };
+  const editorKey = editorMountRef.current.key;
+  useLayoutEffect(() => {
+    if (editorShown) registerEditorBody(editorKey, selected.body);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editorKey]);
+  /**
    * Flip THIS note between the rich editor and the markdown source.
    *
    * Both editors are uncontrolled and mount from selected.body, but body
@@ -424,6 +474,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
   const toggleEditorMode = () => {
     editorRef.current?.flushPendingSave();
     flushEditingBody();
+    viewAnchorRef.current = scrollerRef.current ? captureAnchor(scrollerRef.current) : null;
     setEditorModeOverrides((prev) => ({
       ...prev,
       [selected.id]: selectedEditorMode === 'markdown' ? 'formatted' : 'markdown',
@@ -435,6 +486,35 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
    * the trash. Two entry points, one condition.
    */
   const canSwitchEditorMode = markdownBody && view !== 'trash' && selected.locked !== 1;
+  // The reading position across a switch: read before the swap, put back
+  // once the other view has drawn its text, and again a frame later, when
+  // its height has settled. Spec: ops/issues/0493.md (Reading position)
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const viewAnchorRef = useRef<ViewAnchor | null>(null);
+  const setScroller = useCallback((node: HTMLDivElement | null) => {
+    scrollerRef.current = node;
+    setNoteScroller(node);
+  }, [setNoteScroller]);
+  useEffect(() => {
+    const anchor = viewAnchorRef.current;
+    const pane = scrollerRef.current;
+    viewAnchorRef.current = null;
+    if (!anchor || !pane) return;
+    let frame = 0;
+    let tries = 0;
+    let placed = false;
+    const step = () => {
+      if (restoreAnchor(pane, anchor)) {
+        if (placed) return;
+        placed = true;
+      } else if (++tries > 30) {
+        return;
+      }
+      frame = requestAnimationFrame(step);
+    };
+    frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
+  }, [selectedEditorMode]);
   // Mod+Shift+M flips the open note between the two views, wherever the focus
   // is, on the notes that offer the switch (GitHub #260).
   const markdownKeyRef = useRef<(() => void) | null>(null);
@@ -452,11 +532,27 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     () => (canSwitchEditorMode ? registerEditorCommand('markdownView', () => markdownKeyRef.current?.()) : undefined),
     [canSwitchEditorMode],
   );
+  // Typed text waits in the keystroke buffer, and its "last edited" stamp
+  // with it, so the "..." menu would read both as they were. Opening the menu
+  // writes the pending save and empties the buffer: Details shows the stamp
+  // the row holds, and the write that lands after it brings the new one.
+  useEffect(() => {
+    if (!showNoteOptions) return;
+    editorRef.current?.flushPendingSave();
+    flushEditingBody();
+  }, [showNoteOptions]); // eslint-disable-line react-hooks/exhaustive-deps
   /** Where Share sits for this note: nowhere while it is gated (shareSurface). */
   const share = shareSurface(isNoteLocked(selected), zenMode || headerCompact);
   // The view the "..." menu opens on: the header's convert button opens it
   // straight on the type list, the "..." button on the main view.
   const [optionsStartView, setOptionsStartView] = useState<NoteOptionsView>('main');
+  // A calendar menu asked for the Schedule view of this item.
+  useEffect(() => {
+    if (!schedule.ask || schedule.ask.id !== selected?.id) return;
+    setOptionsStartView('schedule');
+    setShowNoteOptions(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [schedule.ask?.n, selected?.id]);
   /**
    * Give this item another of the note-like types, then follow it to the
    * pillar that lists it. Only `type` changes, and no field is removed: a
@@ -541,7 +637,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
   };
 
   const barBelow = barPosition === 'bottom' && (zenMode ? zenToolbar : toolbarVisible)
-    && view !== 'trash' && selected.locked !== 1 && selectedEditorMode !== 'markdown';
+    && view !== 'trash' && selected.locked !== 1;
 
   return (
     <>
@@ -584,7 +680,8 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           </HoverLabel>
         )}
         {/* Previous and next note in the list, in the browser's own place
-            and order (GitHub #246). A compact header drops the pair and the
+            and order (GitHub #246); while tabs are open, the previous and
+            next tab, as a browser's arrows move within its pages. A compact header drops the pair and the
             divider after it: on a phone they cost the title more than they
             save, and the back arrow is the way to the list there. Chevrons,
             never the curved arrows the tag row uses for undo - two
@@ -594,25 +691,25 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
         {!headerCompact && (
           <>
             <div className="shrink-0 flex items-center">
-              <HoverLabel label={t('editor.navPrev')} position="below-start">
+              <HoverLabel label={t(navTabs ? 'editor.navPrevTab' : 'editor.navPrev')} position="below-start">
                 <button
                   type="button"
                   tabIndex={mobileTabIndex}
                   onClick={() => onNavigateList('prev')}
                   disabled={!canGoPrev}
-                  aria-label={t('editor.navPrev')}
+                  aria-label={t(navTabs ? 'editor.navPrevTab' : 'editor.navPrev')}
                   className={HEADER_BTN_NARROW}
                 >
                   <CaretLeft size={HEADER_ICON} />
                 </button>
               </HoverLabel>
-              <HoverLabel label={t('editor.navNext')} position="below-start">
+              <HoverLabel label={t(navTabs ? 'editor.navNextTab' : 'editor.navNext')} position="below-start">
                 <button
                   type="button"
                   tabIndex={mobileTabIndex}
                   onClick={() => onNavigateList('next')}
                   disabled={!canGoNext}
-                  aria-label={t('editor.navNext')}
+                  aria-label={t(navTabs ? 'editor.navNextTab' : 'editor.navNext')}
                   className={HEADER_BTN_NARROW}
                 >
                   <CaretRight size={HEADER_ICON} />
@@ -756,26 +853,38 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           />
           </>
         )}
-        {/* One slot, one control per editor mode, exactly as the tag row
-            does it outside zen. The formatting bar drives TipTap, which the
-            source view unmounts, so in markdown mode this box carries the
-            way back to formatted text instead of a toggle that reads as
-            live and does nothing. Icon only, because Exit Zen is the one
-            label zen affords and a second one would compete with it.
-            Spec: ops/specs/editor-mode-toggle.md */}
-        {zenMode && canSwitchEditorMode && selectedEditorMode === 'markdown' && (
-          <HoverLabel label={t('editor.showFormatted')} position="below">
-            <button
-              type="button"
-              onClick={toggleEditorMode}
-              aria-label={t('editor.showFormatted')}
-              className={ZEN_BTN_REST}
-            >
-              <TextAa size={HEADER_ICON} aria-hidden="true" />
-            </button>
-          </HoverLabel>
-        )}
-        {zenMode && markdownBody && selectedEditorMode !== 'markdown' && (
+        {/* The calendar's door on every dated type: "Add to calendar" while
+            the item has no day, its day and time once it has one. It opens
+            the Schedule view of the "..." menu, the one place a schedule is
+            edited. Spec: ops/docs/plans/calendar-pillar-spec.md (step 8) */}
+        {view !== 'trash' && !zenMode && (selected.type === 'note' || selected.type === 'task' || selected.type === 'event' || selected.type === 'journal') && (() => {
+          const s = scheduleOf(selected.trackers as Record<string, unknown> | undefined, selected.type, selected.type === 'journal' ? entryDayOf(selected) : undefined);
+          const day = s ? (schedule.occurrence && s.repeat ? schedule.occurrence : s.day) : null;
+          const label = day
+            ? [formatDay(day, 'weekdayDate'), s?.time ? timeLabel(day, s.time) : ''].filter(Boolean).join(' · ')
+            : t('shell:calendar.addToCalendar');
+          const openSchedule = () => { setOptionsStartView('schedule'); setShowNoteOptions(true); };
+          // One name per type wherever the view opens: a journal entry's date is the entry's own.
+          const scheduleName = t(selected.type === 'journal' ? 'shell:noteOptionsMenu.entryDate' : 'shell:noteOptionsMenu.schedule');
+          return day && !headerCompact ? (
+            <HoverLabel label={scheduleName} position="below">
+              <button type="button" onClick={openSchedule} aria-label={`${scheduleName}: ${label}`} className={`${HEADER_BTN_BASE} gap-1.5 px-2 ${HEADER_BTN_REST} text-[13px] tabular-nums whitespace-nowrap`}>
+                <CalendarDots size={16} aria-hidden="true" className={typeGlyph('event').color} />
+                {label}
+              </button>
+            </HoverLabel>
+          ) : (
+            <HoverLabel label={label} position="below">
+              <button type="button" onClick={openSchedule} aria-label={label} className={HEADER_BTN}>
+                {day ? <CalendarDots size={HEADER_ICON} aria-hidden="true" /> : <CalendarPlus size={HEADER_ICON} aria-hidden="true" />}
+              </button>
+            </HoverLabel>
+          );
+        })()}
+        {/* The toolbar toggle holds this place in both views: the Markdown
+            view has a bar of its own, which ends with the way back to
+            formatted text. Spec: ops/specs/editor-mode-toggle.md */}
+        {zenMode && markdownBody && (
           // Zen's only formatting affordance, and testers kept missing
           // it: borderless with a 16px glyph it read as a label beside
           // the bordered Exit Zen button. MarkdownLogo's viewBox is
@@ -784,7 +893,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           // 20 against Exit Zen's X at 16. Box matches Exit Zen exactly
           // (h-8 w-8, same border and surface) so the two read as one
           // pair of controls.
-          <HoverLabel label={zenToolbar ? t('editor.hideToolbar') : t('editor.showToolbar')} position="below">
+          <HoverLabel label={zenToolbar ? t('editor.hideToolbar') : t('editor.showToolbar')} position="below-end">
             <button
               type="button"
               onClick={() => setZenToolbar((v) => !v)}
@@ -857,6 +966,13 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               {...(selected.type === 'journal' && view !== 'trash'
                 ? { onSetJournalDate: (day: string) => void setJournalDate(selected.id, day), journalDays }
                 : {})}
+              {...((selected.type === 'note' || selected.type === 'task' || selected.type === 'event') && view !== 'trash'
+                ? { onSetNoteDate: (day: string | null) => void setNoteDate(selected.id, day) }
+                : {})}
+              schedule={{
+                occurrence: schedule.occurrence,
+                onEdit: (edit) => schedule.edit(selected.id, schedule.occurrence, edit),
+              }}
               {...(noteColor
                 ? {
                     color: noteColor,
@@ -1025,7 +1141,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
         </div>
       ) : (
         <>
-        <div ref={setNoteScroller} className={`flex-1 overflow-y-auto overflow-x-hidden pt-0 ${footerVisible ? 'pb-2' : 'pb-[max(0.5rem,env(safe-area-inset-bottom))]'}`}>
+        <div ref={setScroller} className={`flex-1 overflow-y-auto overflow-x-hidden pt-0 ${footerVisible ? 'pb-2' : 'pb-[max(0.5rem,env(safe-area-inset-bottom))]'}`}>
           {/* Tags + tracker pills + week-in-review scroll with the
               editor so they don't permanently eat vertical space
               on mobile. The toolbar inside Editor is sticky.
@@ -1106,34 +1222,12 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                     <HeaderDivider />
                   </div>
                   <div className="flex items-center gap-0.5">
-                    {/* The way back out of the source view, in the slot the
-                        formatting-bar toggle holds the rest of the time.
-                        Both controls act on the shape of the editor rather
-                        than on the note body, so one place carries both and
-                        neither is ever drawn twice. The glyph names the
-                        DESTINATION, matching the "..." menu's row for the
-                        same flip; the label spells it out where the row has
-                        room, and under `sm` the glyph stands alone in the
-                        row's own 32px square, which is where the tag row is
-                        tightest. The label is a second copy of the
-                        accessible name, so there is no hover tip on top of
-                        it.
+                    {/* The formatting-bar toggle, in both views: the Markdown
+                        view has a bar of its own, and the way between the two
+                        views sits at the end of each bar. The slot never
+                        changes its control (GitHub #493).
                         Spec: ops/specs/editor-mode-toggle.md */}
-                    {selectedEditorMode === 'markdown' && canSwitchEditorMode && (
-                      <button
-                        type="button"
-                        tabIndex={isMobile ? -1 : undefined}
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={toggleEditorMode}
-                        aria-label={t('editor.showFormatted')}
-                        className={`${HEADER_BTN_BASE} ${HEADER_BTN_REST} w-8 sm:w-auto sm:gap-1.5 sm:px-2 text-xs font-medium`}
-                      >
-                        <TextAa size={HEADER_ICON} aria-hidden="true" />
-                        <span className="hidden sm:inline">{t('editor.showFormatted')}</span>
-                      </button>
-                    )}
-                    {selectedEditorMode !== 'markdown' && (
-                    <HoverLabel label={toolbarVisible ? t('editor.hideToolbar') : t('editor.showToolbar')} position="below">
+                    <HoverLabel label={toolbarVisible ? t('editor.hideToolbar') : t('editor.showToolbar')} position="below-end">
                       <button
                         type="button"
                         tabIndex={isMobile ? -1 : undefined}
@@ -1150,7 +1244,6 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                         <MarkdownLogo size={20} aria-hidden="true" />
                       </button>
                     </HoverLabel>
-                    )}
                     {/* The reading width is not here. It only ever appeared
                         past a 56rem pane, it is a taste somebody sets once,
                         and Settings > Editor carries the same axis at
@@ -1197,15 +1290,21 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               /* No corner pills here. Find and replace come from the keys
                  and the "..." menu and open in the view's own bar; the
                  outline has no headings to read off a plain textarea. The
-                 way back to formatted text is the tag row's button, the
-                 first row of the "..." menu, and the link under the word
-                 count. */
+                 way back to formatted text is the end of the view's own
+                 toolbar, the first row of the "..." menu, and the link under
+                 the word count. */
               <MarkdownSourceEditor
                 key={`${selected.id}-${editorRevision}`}
                 value={selected.body}
-                onChange={(body) => { handleBodyChange(selected.id, body); setWcBody(body); }}
+                onChange={(body) => { handleBodyChange(selected.id, body, editorKey); setWcBody(body); }}
                 readOnly={view === 'trash' || selected.locked === 1}
                 search={sourceSearch}
+                toolbar={(zenMode ? zenToolbar : toolbarVisible) ? {
+                  onShowFormatted: toggleEditorMode,
+                  atBottom: barPosition === 'bottom',
+                  slot: barSlot,
+                  mobileTabIndex: isMobile ? -1 : undefined,
+                } : undefined}
               />
             ) : (
               <Editor
@@ -1213,7 +1312,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                 ref={editorRef}
                 noteId={selected.id}
                 value={selected.body}
-                onChange={(body) => { handleBodyChange(selected.id, body); setWcBody(body); }}
+                onChange={(body) => { handleBodyChange(selected.id, body, editorKey); setWcBody(body); }}
                 readOnly={view === 'trash' || selected.locked === 1}
                 onFocusChange={setEditorFocused}
                 toolbarVisible={zenMode ? zenToolbar : toolbarVisible}
@@ -1231,6 +1330,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                 fileNote={selected.type === 'file'}
                 bodyControls={bodyControls}
                 toolbarSlot={barSlot}
+                onShowMarkdown={canSwitchEditorMode ? toggleEditorMode : undefined}
                 sinkCheckedTasks={userSettings.sinkCheckedTasks}
               />
             )}
@@ -1244,6 +1344,31 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                 word count), the tag row and the header actions. Exit zen
                 to reach the mode toggle again.
                 Spec: ops/specs/editor-mode-toggle.md */}
+            {/* The jump a long note offers, on screens with the desktop footer:
+                the pill of find and the outline, on the same right edge as they
+                are (the text's), in a zero-height sticky strip at the column's
+                foot. It rides above the pane's bottom edge while the note
+                scrolls and rests above the word count at the end. It shows only
+                while the note moves and fades two seconds after, so it takes no
+                width from the text and covers its edge only for a moment; the
+                pointer on it holds it. Hidden, it is inert, so it never catches
+                a click meant for the text. Phones carry the arrow in the bottom
+                bar instead. */}
+            {noteJump && (
+              <div
+                inert={!noteJump.scrolling}
+                onMouseEnter={() => noteJump.keepShown(true)}
+                onMouseLeave={() => noteJump.keepShown(false)}
+                className={`sticky bottom-3 z-[5] mt-auto hidden [@media(min-width:768px)_and_(min-height:501px)]:flex h-0 items-end justify-end overflow-visible pointer-events-none transition-opacity duration-200 motion-reduce:transition-none ${noteJump.scrolling ? 'opacity-100' : 'opacity-0'}`}
+              >
+                <EditorSlotPill
+                  label={t(noteJump.toTop ? 'footer.goToTop' : 'footer.goToEnd')}
+                  onClick={() => noteJump.go(noteJump.toTop ? 'top' : 'end')}
+                >
+                  {noteJump.toTop ? <ArrowCircleUp size={18} /> : <ArrowCircleDown size={18} />}
+                </EditorSlotPill>
+              </div>
+            )}
             {!zenMode && (
               <div className="mt-auto pt-4 shrink-0 flex items-start justify-between gap-3">
                 <div className="min-w-0 flex items-start gap-1.5">
@@ -1287,7 +1412,12 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                       </button>
                     </HoverLabel>
                   )}
-                  <WordCount body={wcBody || selected.body} />
+                  <WordCount
+                    body={wcBody || selected.body}
+                    sizeOf={(body) => storedNoteBytes({ ...selected, body })}
+                    onSplit={splitNote && view !== 'trash' ? () => splitNote(selected) : undefined}
+                    onOverLimit={() => onOverSyncLimit(selected.id)}
+                  />
                 </div>
                 {view !== 'trash' && selected.locked !== 1 && (
                   <button
@@ -1308,7 +1438,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                     </span>
                     {selectedEditorMode === 'markdown'
                       ? <TextAa size={14} className="text-accent shrink-0" aria-hidden="true" />
-                      : <FileMd size={14} className="text-accent shrink-0" aria-hidden="true" />}
+                      : <ArticleMedium size={14} className="text-accent shrink-0" aria-hidden="true" />}
                   </button>
                 )}
               </div>
@@ -1318,9 +1448,11 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
         </div>
         {/* The format bar's row when it sits at the bottom: outside the
             scrolling column, so the note scrolls and bounces under it and
-            the bar never moves. */}
+            the bar never moves. It keeps clear of the home indicator only
+            when it is the last thing on the screen: over the keyboard there
+            is none, and iOS still reports the inset there (GitHub #533). */}
         {barBelow && (
-          <div className={`shrink-0 border-t border-divider bg-surface-2 ${footerVisible ? '' : 'pb-[env(safe-area-inset-bottom)]'}`}>
+          <div className={`shrink-0 border-t border-divider bg-surface-2 ${footerVisible || keyboardUp ? '' : 'pb-[env(safe-area-inset-bottom)]'}`}>
             <div ref={setBarSlot} className="pn-content-col" />
           </div>
         )}

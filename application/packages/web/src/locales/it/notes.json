@@ -11,13 +11,17 @@
     "noContent": "Nessun contenuto",
     "notBackedUp": "Senza backup",
     "archived": "Archiviato",
-    "entryDate": "Data della pagina"
+    "entryDate": "Data della pagina",
+    "date": "Data",
+    "dayOf": "giorno {{n}} di {{total}}"
   },
   "header": {
     "new": "Nuova",
     "newNote": "Nuova nota",
     "newNoteHover": "Nuova nota ({{hotkey}})",
-    "trash": "Cestino"
+    "trash": "Cestino",
+    "newEvent": "Nuovo evento",
+    "newEventHover": "Nuovo evento ({{hotkey}})"
   },
   "folderChip": {
     "clear": "Rimuovi il filtro cartella: {{folder}}",
@@ -40,7 +44,9 @@
     "login": "Accesso",
     "file": "File",
     "bookmark": "Segnalibro",
-    "contact": "Contatto"
+    "contact": "Contatto",
+    "event": "Evento",
+    "quickAdd": "Aggiunta rapida"
   },
   "vaultFilter": {
     "all": "Tutti",
@@ -94,7 +100,8 @@
     "vault": "Cassaforte",
     "pinned": "Fissati",
     "archive": "Archivio",
-    "notes": "Note"
+    "notes": "Note",
+    "calendar": "Calendario"
   },
   "footerStats": {
     "journals": "Pagine di diario",
@@ -138,8 +145,17 @@
     "collapse": "Comprimi elenco note",
     "expand": "Espandi elenco note"
   },
+  "split": {
+    "action": "Dividi la nota",
+    "done": "Divisa in “{{title}}”",
+    "overLimit": "“{{title}}” supera 1 MB e resta su questo dispositivo",
+    "cannot": "Questa nota non può essere divisa qui. Metti il cursore dove deve iniziare la nuova nota.",
+    "continuedTitle": "{{title}} (continua)",
+    "continuedIn": "Continua in {{link}}"
+  },
   "paneResize": {
-    "hintCollapse": "Clicca per comprimere · Trascina per ridimensionare"
+    "hintCollapse": "Clicca per comprimere · Trascina per ridimensionare",
+    "hintExpand": "Clicca per espandere · Trascina per ridimensionare"
   },
   "emptyEditor": {
     "selectFile": "Seleziona un file per l'anteprima",
@@ -176,6 +192,8 @@
     "findInNote": "Trova nella nota",
     "navPrev": "Precedente",
     "navNext": "Successivo",
+    "navPrevTab": "Scheda precedente",
+    "navNextTab": "Scheda successiva",
     "undo": "Annulla",
     "redo": "Ripeti",
     "hide": "Nascondi",
@@ -227,6 +245,8 @@
     "words": "Parole",
     "zen": "Modalità Zen",
     "appearance": "Aspetto",
+    "goToTop": "Vai all'inizio",
+    "goToEnd": "Vai alla fine",
     "signOut": "Esci",
     "signingOut": "Disconnessione…",
     "switchToLight": "Passa alla modalità chiara",
@@ -252,7 +272,8 @@
     "aboutLabel": "Info",
     "languageLabel": "Lingua",
     "dateLabel": "Data",
-    "languageDesc": "Scegli la lingua in cui viene mostrato PrivacyNotes."
+    "languageDesc": "Scegli la lingua in cui viene mostrato PrivacyNotes.",
+    "calendarLabel": "Calendario"
   },
   "importStore": {
     "title": "Importare o archiviare?",

@@ -1,6 +1,6 @@
 [package]
 name = "privacynotes"
-version = "0.621.0"
+version = "0.653.1"
 description = "PrivacyNotes - private notes, encrypted on your device"
 authors = ["Lifetime Labs LLC <hi@lifetimelabs.dev>"]
 homepage = "https://privacynotes.app"
@@ -40,6 +40,11 @@ tauri-plugin-deep-link = "2"
 tauri-plugin-opener = "2"
 tauri-plugin-dialog = "2"
 tauri-plugin-fs = "2"
+# Calendar reminders: a local notification each device schedules from its own
+# items (phones), or shows from a timer while the app runs (desktop). The
+# server never sees a title, a time or a day.
+# Spec: ops/docs/plans/calendar-pillar-spec.md (section 8)
+tauri-plugin-notification = "~2.5"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
@@ -87,6 +92,8 @@ objc2-foundation = { version = "0.3", features = [
 windows = { version = "0.62", features = [
   "Security_Credentials_UI",
   "Win32_Foundation",
+  # src/title_bar.rs: DwmSetWindowAttribute paints the title bar in the theme.
+  "Win32_Graphics_Dwm",
   "Win32_System_Com",
   "Win32_System_WinRT",
   # src/file_assoc.rs: AssocQueryStringW reads which app owns .md, and
@@ -140,6 +147,13 @@ tauri-plugin-auth-session = { path = "plugins/auth-session" }
 # section once a release carries the fix. Only the iOS targets compile it.
 [patch.crates-io]
 swift-rs = { path = "patches/swift-rs" }
+# patches/tauri-plugin-notification is 2.5.1 with two iOS fixes (2.6.0
+# carries neither): a scheduled time is read as UTC, not in the device zone,
+# and a notification a previous launch scheduled no longer crashes the app
+# when it is delivered or tapped. It also adds `open_settings`, which opens
+# the OS page for this app's notifications on Android and iOS; a release that
+# carries both fixes still needs that command before the patch can go.
+tauri-plugin-notification = { path = "patches/tauri-plugin-notification" }
 
 [features]
 default = []

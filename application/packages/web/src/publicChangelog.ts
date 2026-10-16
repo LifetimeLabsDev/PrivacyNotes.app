@@ -13,6 +13,9 @@ type ChangelogItem = {
   /** Key of a screenshot on the /changelog page only, or several in order;
    *  the app never loads them. Spec: ops/docs/plans/changelog-screenshots.md */
   shot?: string | string[];
+  /** Numbers of the public GitHub issues this item answers, linked on the
+   *  /changelog page to credit the people who asked. */
+  issues?: number[];
 };
 
 export type ChangelogRelease = {
@@ -23,6 +26,143 @@ export type ChangelogRelease = {
 };
 
 export const PUBLIC_CHANGELOG: ChangelogRelease[] = [
+  {
+    version: '0.653',
+    date: '2026-10-16',
+    title: 'Calendar: events, repeats and reminders',
+    items: [
+      { type: 'new', text: 'Calendar is a new section in the sidebar. It shows your events, dated notes, task lists, journal entries and birthdays in a Day, Week or Month view, with the coming days listed beside it.', issues: [390, 515], shot: 'calendar' },
+      { type: 'new', text: 'Events are a new item type with a day, a time, an end, and a repeat: daily, on weekdays, weekly, every two weeks, monthly on a day or on the 2nd Tuesday, yearly, or your own rule.' },
+      { type: 'new', text: 'Drag an event to another day, drag its end to make it longer, or drag over empty hours to make a new one. A repeating event asks if a change is for this one, this and the following ones, or all.' },
+      { type: 'new', text: 'Reminders: give any dated item up to five alerts, and set a default alert in Settings > Calendar. Each device rings them, and a phone asks for notifications only when you set the first alert. Reminders ring with Pro.', issues: [390], shot: 'schedule' },
+      { type: 'new', text: 'A note or a task list can carry a date too, from Schedule in its "..." menu. Search finds it by that day, as "Oct 21" or "2026-10-21".', issues: [515] },
+      { type: 'new', text: 'Journals, Notes, Tasks and All show a small month calendar with a colored dot for each type of item on a day, birthdays from your contacts included. Click a day to see its items, or an empty day to make one.', issues: [515], shot: 'mini-calendar' },
+      { type: 'new', text: 'Import your Google Calendar, or any .ics file, with times, repeats and reminders, one folder per calendar. Import it twice and nothing is doubled.', shot: 'google-calendar' },
+      { type: 'new', text: 'Export your calendar as an .ics file for Google Calendar, Apple Calendar or Outlook. Every backup zip now carries one too.' },
+    ],
+  },
+  {
+    version: '0.652',
+    date: '2026-10-16',
+    title: 'Quick add: type one line, get an event',
+    items: [
+      { type: 'new', text: 'Quick add turns one line into an item. "Dentist fri 3pm 1h before" becomes an event on Friday at 3 PM with an alert an hour before.', issues: [390], shot: 'qa-event' },
+      { type: 'new', text: 'It reads days (tomorrow, fri, next wed, Oct 31, in 3 days), times (3pm, 15:00, 4-5pm), lengths (for 30m, fri to sun) and alerts (1h before), and the rest is the title.', shot: 'qa-syntax' },
+      { type: 'new', text: 'Repeats in plain words: every friday, every weekday, every month on the 1st, or the 2nd Tuesday and the last Friday of every month.', shot: ['qa-repeat', 'qa-month'] },
+      { type: 'new', text: 'Start with task, note or journal to make that instead of an event. Add /Folder or #tag to file it, and @work or @personal to pick the space.', shot: ['qa-task', 'qa-tag'] },
+      { type: 'new', text: 'Every part it reads shows as a chip under the line, so you see the day, time and alert before you press Enter.' },
+      { type: 'new', text: 'It knows the day and month names of your language, and shows example sentences in it.', shot: 'qa-german' },
+      { type: 'new', text: 'Open it with New event in the Calendar, the + on a phone, a click on an empty day, a drag over empty hours, or "Quick add" in Jump.' },
+    ],
+  },
+  {
+    version: '0.651',
+    date: '2026-10-16',
+    title: 'Note history compares versions and keeps 50 of them',
+    items: [
+      { type: 'new', text: 'Compare a version with the current note side by side: removed text struck through, added text underlined, with "Title changed" and "Tags changed" when they did. On a wide window it opens compared.', issues: [476], shot: ['history-text', 'history-code', 'history-tasks'] },
+      { type: 'new', text: 'Note history keeps 50 versions per note instead of 20.', issues: [476] },
+      { type: 'new', text: 'A version is the note as it was before you started to edit: one per editing session, one every 10 minutes of a long one, and one before an edit that removes most of the text. Changing only tags takes none.', issues: [476] },
+      { type: 'new', text: 'A journal entry\'s history keeps its tracker values, and Restore brings them back.', issues: [476] },
+      { type: 'new', text: 'Contacts and bookmarks can be compared too.', issues: [476] },
+      { type: 'fixed', text: 'A contact\'s history shows its fields, an unnamed bookmark shows its domain, and a version that could not save offline is saved on a later edit.', issues: [476] },
+    ],
+  },
+  {
+    version: '0.650',
+    date: '2026-10-16',
+    title: 'A new phone bar, with New under your thumb',
+    items: [
+      { type: 'new', text: 'One bar at the bottom of the phone app: Settings and Design at the start, the sync status in the middle, and New as a plus at the end. In an open note it slides away as you read and comes back when you scroll up.', issues: [342, 496], shot: 'phone-bar' },
+      { type: 'new', text: 'A long note offers one arrow to jump to its end, or back to the top once you are near the end. On a computer it shows in the corner while you scroll.', issues: [510] },
+      { type: 'improved', text: 'New is a plus button in every list, on every screen size.', issues: [342] },
+      { type: 'improved', text: 'On an iPhone about one more note fits on screen, and the bar above the keyboard is gone.', issues: [533] },
+      { type: 'improved', text: 'Pinch zoom in the picture viewer is smooth on iPhone.' },
+    ],
+  },
+  {
+    version: '0.649',
+    date: '2026-10-16',
+    title: 'A longer passcode for the app lock',
+    items: [
+      { type: 'new', text: 'The app lock can be a passcode of 8 or more characters instead of a 4-digit PIN. Settings > Security > PIN compares the two side by side.', issues: [475, 254], shot: 'passcode' },
+      { type: 'new', text: 'Before you switch to a passcode, update PrivacyNotes on every device you use: an older version asks for 4 digits and cannot unlock. The iPhone and iPad update comes a few days later, after App Store review, so wait for it before you turn the passcode on.' },
+      { type: 'new', text: 'In a browser whose passkeys support it, biometric unlock uses a key that your passkey makes each time you unlock, and that key is never stored.', issues: [475] },
+      { type: 'improved', text: 'The app refuses a recovery phrase that is published online as an example, because anybody could open it.' },
+      { type: 'fixed', text: 'With two-factor sign-in on, a device no longer asks for the code again every day.' },
+      { type: 'fixed', text: 'Turning the app lock off and on again keeps your phrase locked away, and its PIN prompt counts wrong tries.' },
+    ],
+  },
+  {
+    version: '0.648',
+    date: '2026-10-16',
+    title: 'Editor: Markdown toolbar, plain-text paste and new folds',
+    items: [
+      { type: 'new', text: 'The Markdown view has its own toolbar, and a switch between the two views keeps your place in the note.', issues: [493], shot: 'markdown-toolbar' },
+      { type: 'new', text: 'Paste as plain text: Settings > Editor > Pasted text drops the formatting of everything you paste, handy on an iPhone or iPad with no Ctrl+Shift+V.', issues: [508] },
+      { type: 'new', text: 'Replace opens from a button in the find bar and takes your search term with it.', issues: [524] },
+      { type: 'new', text: 'Two new fold styles, Box and Panel, and four more callout types.', issues: [530] },
+      { type: 'new', text: '"Add a line" shows in every gap between two blocks, so you can start a line above or below a callout, a table, a code block or a divider. A divider is easy to click now.', issues: [518, 529] },
+      { type: 'new', text: 'A picture has "Copy image" again, on the right-click and on its bar.', issues: [488] },
+      { type: 'new', text: 'The word count line warns as a note nears the 1 MB limit for one note, with Split note to make two of it.' },
+      { type: 'improved', text: 'Picture, file and recording sit behind one paperclip in the format bar, and the bar can take separator lines.', issues: [534] },
+      { type: 'improved', text: 'Text color and highlight change the whole word under the cursor, as in a word processor.', issues: [528] },
+      { type: 'improved', text: 'A callout or a quote ends on the third Enter, so a blank line inside it is one Enter away.', issues: [517] },
+      { type: 'improved', text: 'Hold Alt (Option on a Mac) while you drag a table column for fine steps, or Shift to change only that column.', issues: [500] },
+      { type: 'improved', text: 'A printed table continues on the next page, with its header row repeated, instead of jumping to a new page.', issues: [529] },
+    ],
+  },
+  {
+    version: '0.647',
+    date: '2026-10-16',
+    title: 'Jump finds tags and folders, and tabs work like a browser',
+    items: [
+      { type: 'new', text: 'Jump finds your tags and folders, and makes a new one when nothing matches. Type "#" for tags or "/" for folders.', issues: [535], shot: 'jump-tags' },
+      { type: 'new', text: 'Tabs work like a browser and are on by default: the open item shows in a tab, and pinned tabs stay at the start.', issues: [430] },
+      { type: 'new', text: 'Each space keeps its own tabs, and the space switch has an All view that shows every item on this device.', issues: [539, 504] },
+      { type: 'new', text: 'Right-click a tag chip on a note or in the list filter for the same tag menu as in the sidebar.', issues: [537] },
+      { type: 'new', text: '"Delete folder?" can delete its subfolders too.', issues: [514] },
+      { type: 'new', text: 'Saved emails (.eml) open as readable text with their sender, date and attachment names.', issues: [522] },
+      { type: 'improved', text: 'The address of a link shows at the bottom corner of the window, the way a browser shows it.', issues: [540] },
+    ],
+  },
+  {
+    version: '0.646',
+    date: '2026-10-16',
+    title: 'Import from Bear, and choose where an import goes',
+    items: [
+      { type: 'new', text: 'Bear import: bring in a Bear backup or export with tags, nested tags as folders, pins, archived notes, highlights, note-links and attachments.', shot: 'bear-import' },
+      { type: 'new', text: 'Choose the folder an import goes into, or let it make a new folder named after the app you came from.', issues: [471] },
+      { type: 'improved', text: 'Standard Notes import keeps a plain-text note exactly as you wrote it, links included, character for character.' },
+      { type: 'improved', text: 'Joplin import keeps more of your notes: images inside links, links to a heading in another note, and underlined text.' },
+      { type: 'improved', text: 'Firefox bookmark keywords stay through an import and an export.', issues: [523] },
+    ],
+  },
+  {
+    version: '0.645',
+    date: '2026-10-16',
+    title: 'Slovak, a faster app, and fixes',
+    items: [
+      { type: 'new', text: 'Slovak joins the app, the help center and the starter notes.', issues: [526] },
+      { type: 'improved', text: 'Faster on large libraries: Tasks opens in a fraction of a second with thousands of items, long checklists open faster, and Settings and exports load only when you use them, so the app starts faster.' },
+      { type: 'improved', text: 'On Windows the title bar takes the color of your theme, and heading shortcuts on Windows and Linux are Ctrl+Shift+1 to 6, which work on every keyboard layout.', issues: [525, 461] },
+      { type: 'improved', text: 'The support report in Settings > ID & Sync names what went wrong and leaves out your account id, so it is safe to post.' },
+      { type: 'improved', text: 'The help search on an answer page finds words inside the answers.' },
+      { type: 'fixed', text: 'An open note no longer saves its older text over an edit made on another device, and the last keystrokes of a very large note are kept when you switch notes.', issues: [497] },
+      { type: 'fixed', text: 'On Android, copied lines paste with the same blank lines, a heading picked while typing no longer types the last word twice, the Markdown view keeps your place, and the + menu opens reliably. On iPhone the Markdown view no longer shakes when the keyboard opens.', issues: [345, 527, 469, 490, 509] },
+      { type: 'fixed', text: 'The note list preview shows characters exactly as typed, and Enter in the title of a folded callout opens a new line below it.', issues: [512, 532] },
+      { type: 'fixed', text: 'A new task list left empty is discarded like an empty note, toolbar menus in Settings react to a tap on iOS, theme switches no longer fade slowly in the Linux app, and the medication tips are never cut off.', issues: [495, 513] },
+    ],
+  },
+  {
+    version: '0.623',
+    date: '2026-10-11',
+    title: 'More community themes, and votes on GitHub',
+    items: [
+      { type: 'new', text: 'The Themes page of our website now has 20 community themes, 18 of them new. Copy a code and paste it in Settings > Design to use it in the app you have now.' },
+      { type: 'new', text: 'Vote for the themes you like with the upvote on their GitHub thread. The Themes page shows the votes, updates them every day, and sorts by most votes or newest.' },
+    ],
+  },
   {
     version: '0.621',
     date: '2026-10-10',

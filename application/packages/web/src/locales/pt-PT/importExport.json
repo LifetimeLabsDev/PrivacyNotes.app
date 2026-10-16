@@ -39,16 +39,29 @@
     "photosTooBig_one": "Não há espaço suficiente para a foto ({{size}}), por isso fica de fora. Tudo o resto é importado. Liberta {{shortfall}}, ou adiciona armazenamento, e importa de novo para a trazer.",
     "photosTooBig_other": "Não há espaço suficiente para as {{count}} fotos ({{size}}), por isso ficam de fora. Tudo o resto é importado. Liberta {{shortfall}}, ou adiciona armazenamento, e importa de novo para as trazer."
   },
+  "importCalendar": {
+    "location": "Local",
+    "videoCall": "Videochamada",
+    "organizer": "Organizador",
+    "guests": "Convidados",
+    "file": "Ficheiro",
+    "link": "Ligação",
+    "timeZone": "Fuso horário",
+    "ends": "Termina",
+    "repeats": "Repetição"
+  },
   "sourceDesc": {
     "googleKeep": ".zip do Google Takeout (pasta Keep) ou uma única nota .json. As listas de verificação são importadas como listas de tarefas nativas.",
+    "googleCalendar": "O .zip de Settings > Import & export do Google Calendar, ou um único ficheiro .ics. Os eventos mantêm as horas, as repetições e os lembretes.",
     "appleNotes": "Exporta pela app gratuita Exporter como Markdown e larga o .zip aqui.",
     "appleJournal": "Exporta do Diário no Mac ou no iPhone, comprime a pasta AppleJournalEntries e larga o .zip. As entradas importam-se como entradas de diário com as suas fotos, vídeos, memorandos de voz e localizações.",
     "evernote": "Um .enex sozinho ou vários dentro de um zip. Mantém a formatação, as etiquetas, os anexos, as ligações entre notas e os blocos de notas. O Evernote deixa as tarefas fora do .enex.",
     "samsungNotes": "Exporta como Word (.docx) ou Texto (.txt). Comprime vários ficheiros para importação em massa.",
     "simplenote": "Exporta do Simplenote (Definições -> Ferramentas -> Exportar notas). Larga o .zip.",
-    "standardNotes": "Backup .zip ou .txt desencriptado do Standard Notes (Ficheiro > Exportar > Desencriptado).",
+    "standardNotes": "Backup .zip ou .txt desencriptado do Standard Notes (Account settings > Backups > Data backups > Decrypted).",
     "obsidian": "Vault do Obsidian em .zip. Mantém etiquetas, [[note links]], estrutura de pastas, #tags em linha, e imagens e ficheiros embebidos.",
     "notesnook": "Exportação do Notesnook como .zip. Escolhe HTML ao exportar para manteres a formatação, os cadernos, as etiquetas e os anexos.",
+    "bear": "No Bear, escolhe File > Backup Notes... e larga aqui o ficheiro .bear2bk. As etiquetas e as etiquetas aninhadas, as notas fixadas, o arquivo, o lixo, os realces com as suas cores, as ligações entre notas e os anexos vêm com elas.",
     "joplin": "O ficheiro .jex de File > Export all > \"JEX - Joplin Export File\". Os cadernos passam a pastas, e as etiquetas, as tarefas, as ligações entre notas e os anexos vêm com eles.",
     "upnote": "No UpNote: Settings > Backup > Backup now, e depois comprime tudo o que está na pasta de backup para .zip. Mantém os cadernos, as etiquetas, as notas fixadas, os note-links, a formatação e os anexos. As exportações nota a nota das apps de telemóvel também funcionam - escolhe \"Export to HTML\".",
     "markdownFolder": "Ficheiros .md ou .txt soltos ou dentro de um .zip. Uma pasta comprimida mantém as subpastas e traz as imagens e os anexos.",
@@ -96,6 +109,12 @@
     "blobsNotInBackup_other": "As tuas notas foram restauradas, mas {{items}} listados na cópia de segurança não estão nela."
   },
   "preview": {
+    "oversize_other": "{{count}} notas têm mais de 1 MB. Ficam neste dispositivo e não sincronizam.",
+    "splitOversize_other": "Dividir estas {{count}} notas em notas mais pequenas pelos títulos, para que sincronizem",
+    "partTitle": "{{title}} ({{index}}/{{total}})",
+    "continuedIn": "Continua em {{link}}",
+    "splitOversize_one": "Dividir esta nota em notas mais pequenas pelos títulos, para que sincronize",
+    "oversize_one": "{{count}} nota tem mais de 1 MB. Fica neste dispositivo e não sincroniza.",
     "sourceLabel": "Origem",
     "uniqueTags": "Etiquetas únicas",
     "empty": "Vazia",
@@ -107,6 +126,7 @@
     "duplicateWarning": "a importação adiciona estas como notas novas. Se a correres duas vezes, ficas com duplicados. Ainda não há remoção automática de duplicados.",
     "duplicateSkipNote": "os marcadores que já guardaste são ignorados, por isso repetir esta importação não duplica nada.",
     "contactSkipNote": "as pessoas que já guardaste são ignoradas e ficam como estão, por isso correr isto duas vezes não duplica ninguém.",
+    "eventSkipNote": "os eventos que já importaste são ignorados e ficam como estão, por isso correr isto duas vezes não os duplica.",
     "restoreMergeNote": "as notas do teu próprio backup são associadas pelo identificador. Uma nota que já tens só é atualizada se a cópia do backup for mais recente, e uma nota no lixo sai de lá.",
     "quotaExceeded": "<strong>Armazenamento demasiado baixo para importar.</strong> Estimados {{needed}} necessários, {{available}} disponíveis. Liberta espaço ou passa para Pro antes de importares.",
     "quotaWarning": "Atenção: esta importação vai usar cerca de {{needed}} dos teus {{available}} de armazenamento restante.",
@@ -154,7 +174,11 @@
     "bookmarksExportDesc": "O ficheiro de marcadores padrão que qualquer navegador lê. Importa-o para o Chrome, Firefox, Safari ou Edge com as tuas pastas intactas.",
     "contactsOnlyHeading": "Só contactos",
     "contactsExportTitle": "Ficheiro de contactos (.vcf)",
-    "contactsExportDesc": "O ficheiro vCard que qualquer telemóvel e agenda lê. Importa-o no iPhone, Android, Contactos Google ou Contactos no Mac, com etiquetas e grupos intactos."
+    "contactsExportDesc": "O ficheiro vCard que qualquer telemóvel e agenda lê. Importa-o no iPhone, Android, Contactos Google ou Contactos no Mac, com etiquetas e grupos intactos.",
+    "calendarOnlyHeading": "Só calendário",
+    "calendarExportTitle": "Ficheiro de calendário (.ics)",
+    "calendarExportDesc": "Eventos e notas e listas de tarefas com data, para o Google Calendar, o Apple Calendar ou o Outlook.",
+    "calendarPrivate": "Privado"
   },
   "exportProgress": {
     "failedTitle": "A exportação falhou",
@@ -221,5 +245,11 @@
     "title_other": "{{count}} itens foram partilhados com o PrivacyNotes",
     "line": "Nada é guardado até escolheres.",
     "saveAll": "Guardar tudo"
+  },
+  "destination": {
+    "label": "Adicionar a",
+    "none": "Sem pasta",
+    "newFolder": "Nova pasta \"{{name}}\"",
+    "help": "As pastas da origem ficam dentro da pasta que escolheres, e os itens sem pasta vão para ela."
   }
 }

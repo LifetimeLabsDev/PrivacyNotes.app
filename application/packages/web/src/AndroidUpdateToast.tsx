@@ -4,6 +4,7 @@ import { UpdateToast } from './UpdateToast';
 import { compareSemver } from './versionCheck';
 import { VERSION } from './version';
 import { detectPlatform } from './devices';
+import { RELEASES_ORIGIN } from './hosts';
 import { isUpdateSnoozed, snoozeUpdate } from './updateSnooze';
 import { setUpdateAvailable } from './updateAvailable';
 import { reportVersionFloor } from './versionFloor';
@@ -39,7 +40,7 @@ import { installedByStore } from './androidInstaller';
 const IS_DIRECT_APK =
   detectPlatform() === 'android' && import.meta.env.VITE_ANDROID_DIST === 'direct';
 
-const MANIFEST_URL = 'https://releases.privacynotes.app/android/latest.json';
+const MANIFEST_URL = `${RELEASES_ORIGIN}/android/latest.json`;
 const POLL_INTERVAL_MS = 6 * 60 * 60 * 1000; // 6h; direct APK releases are infrequent
 const INITIAL_DELAY_MS = 20 * 1000;
 
@@ -74,7 +75,7 @@ export function AndroidUpdateToast() {
         setUpdateAvailable('999.0.0');
         setUpdate({
           version: '999.0.0',
-          url: 'https://releases.privacynotes.app/latest/PrivacyNotes.apk',
+          url: `${RELEASES_ORIGIN}/latest/PrivacyNotes.apk`,
           minVersion: opts?.required ? '999.0.0' : undefined,
           sizeBytes: 24_100_000,
         });

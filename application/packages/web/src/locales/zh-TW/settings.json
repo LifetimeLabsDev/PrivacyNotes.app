@@ -158,8 +158,8 @@
     "startViewTitle": "開啟時顯示",
     "viewTitle": "項目顯示方式",
     "viewDesc": "「Auto」會依照螢幕寬度調整。",
-    "openInTabsTitle": "每次點一下都開啟分頁",
-    "openInTabsDesc": "關閉時，按右鍵 >「在分頁中開啟」仍會開啟分頁。手機上不會顯示分頁。",
+    "openInTabsTitle": "在分頁中顯示開啟的項目",
+    "openInTabsDesc": "分頁會跟著你接下來開啟的項目切換，就像在瀏覽器中一樣。釘選分頁即可保留它。關閉時，只有「在分頁中開啟」會建立分頁。手機上不會顯示分頁。",
     "viewList": "清單",
     "viewGrid": "格狀",
     "viewAuto": "自動",
@@ -171,6 +171,10 @@
     "copyFormatDesc": "從筆記複製時，其他 App 會收到的內容。僅套用於這台裝置。",
     "copyFormatMarkdown": "Markdown",
     "copyFormatPlain": "純文字",
+    "pasteFormatTitle": "貼上的文字",
+    "pasteFormatDesc": "從其他 App 貼上時保留的內容。僅套用於這台裝置。",
+    "pasteFormatFormatted": "保留格式",
+    "pasteFormatPlain": "純文字",
     "faviconsTitle": "網站圖示",
     "faviconsDesc": "連結和保險庫登入資訊旁的網站標誌。",
     "faviconsExample": "範例：",
@@ -231,7 +235,10 @@
       "yours": "你的",
       "noLightCommunity": "尚無淺色社群佈景主題。",
       "noDarkCommunity": "尚無深色社群佈景主題。",
-      "none": "這裡還沒有佈景主題。"
+      "none": "這裡還沒有佈景主題。",
+      "sortLabel": "排序",
+      "sortVotes": "最多票",
+      "sortNewest": "最新"
     },
     "custom": {
       "newTheme": "新增佈景主題",
@@ -240,7 +247,6 @@
       "logoOriginal": "原色",
       "logoHelp": "標誌和「Privacy」會使用佈景主題的強調色，或保留原本的顏色。",
       "pasteCode": "貼上佈景主題代碼",
-      "community": "瀏覽佈景主題",
       "menu": "{{name}} 的選項",
       "copyCode": "複製代碼",
       "makeCopy": "建立副本",
@@ -271,7 +277,9 @@
       "suggestTitle": "以強調色填入其餘顏色",
       "suggestLight": "淺色",
       "suggestDark": "深色",
-      "communityNote": "App 在每種模式中會顯示最新的 {{count}} 個社群佈景主題。",
+      "websiteTitle": "到我們的網站看更多佈景主題",
+      "websiteDesc": "所有佈景主題和最新票數。應用程式每次更新都會加入新的佈景主題。",
+      "vote": "到 GitHub 投票",
       "themeLimit": "你已有 {{max}} 個佈景主題。刪除一個才能再儲存。",
       "credit": "署名",
       "creditPlaceholder": "GitHub 使用者名稱（選填）",
@@ -488,5 +496,27 @@
     "yearFirst": "年在前（ISO）",
     "hour24": "24 小時制",
     "hour12": "12 小時制"
+  },
+  "calendar": {
+    "alertTimed": "預設提醒，有時間的項目",
+    "alertAllDay": "預設提醒，全天項目",
+    "alertBirthday": "生日",
+    "alertsHelp": "新活動會從這個提醒開始。之後每個項目各自保留自己的提醒。",
+    "reminderTitles": "在提醒中顯示標題",
+    "reminderTitlesHelp": "關閉時，提醒只會顯示「提醒」兩個字和時間。受 PIN 碼保護的項目一律如此。",
+    "whereTitle": "這台裝置上的提醒",
+    "reminderHint": {
+      "mobile": "提醒會在這支手機上響起，PrivacyNotes 關閉時也一樣。",
+      "desktop": "PrivacyNotes 在這台電腦上執行時，提醒會響起。",
+      "browser": "PrivacyNotes 在這個瀏覽器中開著時，提醒會響起。"
+    },
+    "scheduledThrough": "已排定到 {{date}} 的提醒",
+    "permissionAsk": "允許通知",
+    "permissionOpenSettings": "開啟設定",
+    "permissionDenied": "PrivacyNotes 的通知已被封鎖。請在這個瀏覽器或裝置的設定中允許通知。",
+    "weekNumbers": "顯示週數",
+    "hours": "顯示的時段",
+    "hoursHelp": "日檢視和週檢視會從第一個小時開始顯示。",
+    "to": "到"
   }
 }
