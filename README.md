@@ -15,8 +15,8 @@ Signed apps for [**macOS**](https://privacynotes.app/en#downloads), [**Windows**
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL--3.0-1E40AF.svg)](LICENSE)
 [![Encryption](https://img.shields.io/badge/Encryption-XChaCha20--Poly1305-10B981.svg)](crypto/crypto.ts)
-[![Identity](https://img.shields.io/badge/Identity-Ed25519-4F6BD5.svg)](crypto/crypto.ts)
-[![Audit](https://img.shields.io/badge/Third--party%20audit-not%20yet-lightgrey.svg)](#security-contact)
+[![Release](https://img.shields.io/github/v/release/LifetimeLabsDev/PrivacyNotes.app)](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases)
+[![Stars](https://img.shields.io/github/stars/LifetimeLabsDev/PrivacyNotes.app)](https://github.com/LifetimeLabsDev/PrivacyNotes.app/stargazers)
 [![GitGem](https://gitgem.org/api/badge/github/LifetimeLabsDev/PrivacyNotes.app.svg)](https://gitgem.org/github/LifetimeLabsDev/PrivacyNotes.app)
 
 </div>
@@ -52,9 +52,35 @@ No title, no body, no tags. Just bytes that only your phrase opens.</em>
 
 **Do not take our word for it.** [**Check it yourself in about a minute**](VERIFY.md), with nothing but your browser's network tab.
 
-</div>
-
 <br>
+
+<!-- Performance - Last 28 days -->
+
+<a href="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats?repo_id=1227817920" target="_blank" style="display: block" align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats/thumbnail.png?repo_id=1227817920&image_size=auto&color_scheme=dark" width="655" height="auto">
+    <img alt="Performance Stats of LifetimeLabsDev/PrivacyNotes.app - Last 28 days" src="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats/thumbnail.png?repo_id=1227817920&image_size=auto&color_scheme=light" width="655" height="auto">
+  </picture>
+</a>
+
+<!-- Star History -->
+<a href="https://next.ossinsight.io/widgets/official/analyze-repo-stars-history?repo_id=1227817920" target="_blank" style="display: block" align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://next.ossinsight.io/widgets/official/analyze-repo-stars-history/thumbnail.png?repo_id=1227817920&image_size=auto&color_scheme=dark" width="721" height="auto">
+    <img alt="Star History of LifetimeLabsDev/PrivacyNotes.app" src="https://next.ossinsight.io/widgets/official/analyze-repo-stars-history/thumbnail.png?repo_id=1227817920&image_size=auto&color_scheme=light" width="721" height="auto">
+  </picture>
+</a>
+
+<!-- Activity Trends - Last 28 days -->
+<a href="https://next.ossinsight.io/widgets/official/compose-activity-trends?repo_id=1227817920" target="_blank" style="display: block" align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://next.ossinsight.io/widgets/official/compose-activity-trends/thumbnail.png?repo_id=1227817920&image_size=auto&color_scheme=dark" width="815" height="auto">
+    <img alt="Activity Trends of LifetimeLabsDev/PrivacyNotes.app - Last 28 days" src="https://next.ossinsight.io/widgets/official/compose-activity-trends/thumbnail.png?repo_id=1227817920&image_size=auto&color_scheme=light" width="815" height="auto">
+  </picture>
+</a>
+
+
+</div>
 
 ---
 
