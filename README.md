@@ -54,33 +54,14 @@ No title, no body, no tags. Just bytes that only your phrase opens.</em>
 
 <br>
 
-<!-- Performance - Last 28 days -->
-
-<a href="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats?repo_id=1227817920" target="_blank" style="display: block" align="center">
+<p align="center">
+<a href="https://privacytools.io/app/privacynotes">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats/thumbnail.png?repo_id=1227817920&image_size=auto&color_scheme=dark" width="655" height="auto">
-    <img alt="Performance Stats of LifetimeLabsDev/PrivacyNotes.app - Last 28 days" src="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats/thumbnail.png?repo_id=1227817920&image_size=auto&color_scheme=light" width="655" height="auto">
+    <source media="(prefers-color-scheme: dark)" srcset="https://privacytools.io/stats/privacynotes.dark.svg">
+    <img src="https://privacytools.io/stats/privacynotes.light.svg" alt="PrivacyNotes GitHub stats on PrivacyTools.io" width="100%">
   </picture>
 </a>
-
-<!-- Star History -->
-<a href="https://next.ossinsight.io/widgets/official/analyze-repo-stars-history?repo_id=1227817920" target="_blank" style="display: block" align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://next.ossinsight.io/widgets/official/analyze-repo-stars-history/thumbnail.png?repo_id=1227817920&image_size=auto&color_scheme=dark" width="721" height="auto">
-    <img alt="Star History of LifetimeLabsDev/PrivacyNotes.app" src="https://next.ossinsight.io/widgets/official/analyze-repo-stars-history/thumbnail.png?repo_id=1227817920&image_size=auto&color_scheme=light" width="721" height="auto">
-  </picture>
-</a>
-
-<!-- Activity Trends - Last 28 days -->
-<a href="https://next.ossinsight.io/widgets/official/compose-activity-trends?repo_id=1227817920" target="_blank" style="display: block" align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://next.ossinsight.io/widgets/official/compose-activity-trends/thumbnail.png?repo_id=1227817920&image_size=auto&color_scheme=dark" width="815" height="auto">
-    <img alt="Activity Trends of LifetimeLabsDev/PrivacyNotes.app - Last 28 days" src="https://next.ossinsight.io/widgets/official/compose-activity-trends/thumbnail.png?repo_id=1227817920&image_size=auto&color_scheme=light" width="815" height="auto">
-  </picture>
-</a>
-
-
-</div>
+</p>
 
 ---
 
