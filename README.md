@@ -19,11 +19,7 @@ Signed apps for [**macOS**](https://privacynotes.app/en#downloads), [**Windows**
 [![Stars](https://img.shields.io/github/stars/LifetimeLabsDev/PrivacyNotes.app)](https://github.com/LifetimeLabsDev/PrivacyNotes.app/stargazers)
 [![GitGem](https://gitgem.org/api/badge/github/LifetimeLabsDev/PrivacyNotes.app.svg)](https://gitgem.org/github/LifetimeLabsDev/PrivacyNotes.app)
 
-</div>
-
 <br>
-
-<div align="center">
 
 <a href="https://try.privacynotes.app">
 <picture>
@@ -35,11 +31,7 @@ Signed apps for [**macOS**](https://privacynotes.app/en#downloads), [**Windows**
 <em>This screenshot is a link. It opens the <a href="https://try.privacynotes.app">live demo</a> in your browser:<br>
 no account, nothing saved, the real app with the real encryption.</em>
 
-</div>
-
 <br>
-
-<div align="center">
 
 ### What your data looks like on our server
 
@@ -54,14 +46,14 @@ No title, no body, no tags. Just bytes that only your phrase opens.</em>
 
 <br>
 
-<p align="center">
 <a href="https://privacytools.io/app/privacynotes">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://privacytools.io/stats/privacynotes.dark.svg">
     <img src="https://privacytools.io/stats/privacynotes.light.svg" alt="PrivacyNotes GitHub stats on PrivacyTools.io" width="100%">
   </picture>
 </a>
-</p>
+
+</div>
 
 ---
 
