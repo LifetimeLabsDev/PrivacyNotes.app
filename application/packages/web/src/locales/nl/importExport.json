@@ -9,7 +9,8 @@
     "tabExport": "Exporteren",
     "tabRestore": "Herstellen",
     "tabVault": "Wachtwoorden",
-    "working": "Bezig…"
+    "working": "Bezig…",
+    "tabWellness": "Trackers"
   },
   "footer": {
     "exportNote": "Exporteren gebeurt lokaal. Er wordt niets geüpload.",
@@ -20,7 +21,9 @@
     "autoTagLabel": "Geïmporteerde notities taggen per bron",
     "autoTagDesc": "Notities uit Google Keep krijgen <keep>#google</keep>, Obsidian krijgt <obsidian>#obsidian</obsidian>, enzovoort.",
     "guideAria": "Importgids voor {{app}}",
-    "guideLabel": "Gids"
+    "guideLabel": "Gids",
+    "groupGeneral": "Algemeen",
+    "groupNotes": "Notities"
   },
   "folderImport": {
     "tagLabel": "Notities ook taggen per map",
@@ -49,6 +52,24 @@
     "timeZone": "Tijdzone",
     "ends": "Eindigt",
     "repeats": "Herhaling"
+  },
+  "webcal": {
+    "title": "Webcal",
+    "desc": "Een agenda-adres, zoals een webcal://-link van Proton, iCloud, Outlook of een openbare agenda. Het wordt één keer gedownload; plak het later opnieuw om alleen de nieuwe afspraken toe te voegen.",
+    "fieldLabel": "Agenda-adres",
+    "import": "Importeren",
+    "downloading": "Downloaden…",
+    "errors": {
+      "invalid": "Plak een adres dat begint met webcal://, webcals:// of https://.",
+      "refused": "Dit adres kan niet worden geopend.",
+      "wrongType": "Dit adres leidt niet naar een agendabestand.",
+      "tooLarge": "Deze agenda is groter dan 10 MB.",
+      "timeout": "De agendaserver reageerde niet op tijd. Probeer het later opnieuw.",
+      "blocked": "De agendaserver weigerde de download. Controleer of de agenda gedeeld of openbaar is.",
+      "offline": "Je bent offline. Maak verbinding en probeer het opnieuw.",
+      "limit": "Te veel downloads in korte tijd. Wacht een minuut en probeer het opnieuw.",
+      "failed": "De agenda kon niet worden gedownload. Controleer het adres en probeer het opnieuw."
+    }
   },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip (map Keep) of één losse .json-notitie. Checklists worden geïmporteerd als echte takenlijsten.",
@@ -82,7 +103,7 @@
     "intro": "Importeer logins, creditcards en SSH-sleutels uit een andere wachtwoordmanager."
   },
   "restorePick": {
-    "intro": "Herstel een PrivacyNotes-back-up die je eerder hebt geëxporteerd. Je bestand wordt lokaal gelezen en ontsleuteld.",
+    "intro": "Herstel een PrivacyNotes-back-up die je eerder hebt geëxporteerd.",
     "fullBackupTitle": "Volledige back-up (.zip)",
     "fullBackupDesc": "Herstel notities, dagboeken, kluisitems, taken, afbeeldingen, audio en bestanden. Een notitie die je al hebt blijft staan, of wordt bijgewerkt als de back-up er een nieuwere versie van bevat.",
     "encryptedBackupTitle": "Versleutelde back-up (.pnbackup, .pnbackupz)",

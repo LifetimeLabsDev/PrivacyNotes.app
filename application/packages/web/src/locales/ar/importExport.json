@@ -9,7 +9,8 @@
     "tabExport": "تصدير",
     "tabRestore": "استعادة",
     "tabVault": "كلمات المرور",
-    "working": "جارٍ العمل…"
+    "working": "جارٍ العمل…",
+    "tabWellness": "المتتبعات"
   },
   "footer": {
     "exportNote": "تعمل عمليات التصدير محليًا. لا يُرفَع أي شيء.",
@@ -20,7 +21,9 @@
     "autoTagLabel": "وسم الملاحظات المستوردة حسب المصدر",
     "autoTagDesc": "تحصل ملاحظات Google Keep على الوسم <keep>#google</keep>، وObsidian على <obsidian>#obsidian</obsidian>، وهكذا.",
     "guideAria": "دليل الاستيراد لـ {{app}}",
-    "guideLabel": "دليل"
+    "guideLabel": "دليل",
+    "groupGeneral": "عام",
+    "groupNotes": "الملاحظات"
   },
   "folderImport": {
     "tagLabel": "وسم الملاحظات أيضًا حسب المجلد",
@@ -32,15 +35,15 @@
   },
   "contactImport": {
     "photosLabel": "استيراد الصور",
-    "photosDesc_one": "{{count}} صورة، نحو {{size}} بعد أن يصغّرها التطبيق. أي {{pct}}% من {{free}} المتاحة لك.",
+    "photosDesc_one": "صورة واحدة، نحو {{size}} بعد أن يصغّرها التطبيق. أي {{pct}}% من {{free}} المتاحة لك.",
     "photosDesc_zero": "{{count}} صور، نحو {{size}} بعد أن يصغّرها التطبيق. أي {{pct}}% من {{free}} المتاحة لك.",
-    "photosDesc_two": "{{count}} صورتان، نحو {{size}} بعد أن يصغّرهما التطبيق. أي {{pct}}% من {{free}} المتاحة لك.",
+    "photosDesc_two": "صورتان، نحو {{size}} بعد أن يصغّرهما التطبيق. أي {{pct}}% من {{free}} المتاحة لك.",
     "photosDesc_few": "{{count}} صور، نحو {{size}} بعد أن يصغّرها التطبيق. أي {{pct}}% من {{free}} المتاحة لك.",
     "photosDesc_many": "{{count}} صورة، نحو {{size}} بعد أن يصغّرها التطبيق. أي {{pct}}% من {{free}} المتاحة لك.",
     "photosDesc_other": "{{count}} صورة، نحو {{size}} بعد أن يصغّرها التطبيق. أي {{pct}}% من {{free}} المتاحة لك.",
-    "photosDescNoQuota_one": "{{count}} صورة، نحو {{size}} بعد أن يصغّرها التطبيق.",
+    "photosDescNoQuota_one": "صورة واحدة، نحو {{size}} بعد أن يصغّرها التطبيق.",
     "photosDescNoQuota_zero": "{{count}} صور، نحو {{size}} بعد أن يصغّرها التطبيق.",
-    "photosDescNoQuota_two": "{{count}} صورتان، نحو {{size}} بعد أن يصغّرهما التطبيق.",
+    "photosDescNoQuota_two": "صورتان، نحو {{size}} بعد أن يصغّرهما التطبيق.",
     "photosDescNoQuota_few": "{{count}} صور، نحو {{size}} بعد أن يصغّرها التطبيق.",
     "photosDescNoQuota_many": "{{count}} صورة، نحو {{size}} بعد أن يصغّرها التطبيق.",
     "photosDescNoQuota_other": "{{count}} صورة، نحو {{size}} بعد أن يصغّرها التطبيق.",
@@ -61,6 +64,24 @@
     "timeZone": "المنطقة الزمنية",
     "ends": "ينتهي",
     "repeats": "يتكرر"
+  },
+  "webcal": {
+    "title": "Webcal",
+    "desc": "عنوان تقويم، مثل رابط webcal:// من Proton أو iCloud أو Outlook أو من تقويم عام. يُنزَّل مرة واحدة؛ الصقه مرة أخرى لاحقًا لإضافة الأحداث الجديدة فقط.",
+    "fieldLabel": "عنوان التقويم",
+    "import": "استيراد",
+    "downloading": "جارٍ التنزيل…",
+    "errors": {
+      "invalid": "الصق عنوانًا يبدأ بـ webcal:// أو webcals:// أو https://.",
+      "refused": "لا يمكن فتح هذا العنوان.",
+      "wrongType": "لا يؤدي هذا العنوان إلى ملف تقويم.",
+      "tooLarge": "هذا التقويم أكبر من 10 ميغابايت.",
+      "timeout": "لم يستجب خادم التقويم في الوقت المحدد. حاول مرة أخرى لاحقًا.",
+      "blocked": "رفض خادم التقويم التنزيل. تحقق من أن التقويم مُشارَك أو عام.",
+      "offline": "أنت دون اتصال. اتصل بالإنترنت وحاول مرة أخرى.",
+      "limit": "عدد كبير جدًا من التنزيلات في وقت قصير. انتظر دقيقة وحاول مرة أخرى.",
+      "failed": "تعذّر تنزيل التقويم. تحقق من العنوان وحاول مرة أخرى."
+    }
   },
   "sourceDesc": {
     "googleKeep": "ملف .zip من Google Takeout (مجلد Keep) أو ملاحظة .json واحدة. تُستورد قوائم التحقق كقوائم مهام أصلية.",
@@ -94,7 +115,7 @@
     "intro": "استورد تسجيلات الدخول وبطاقات الائتمان ومفاتيح SSH من مدير كلمات مرور آخر."
   },
   "restorePick": {
-    "intro": "استعد نسخة احتياطية من PrivacyNotes صدّرتها سابقًا. تتم قراءة ملفك وفك تشفيره محليًا.",
+    "intro": "استعد نسخة احتياطية من PrivacyNotes صدّرتها سابقًا.",
     "fullBackupTitle": "نسخة احتياطية كاملة (.zip)",
     "fullBackupDesc": "استعد الملاحظات واليوميات وعناصر الخزنة والمهام والصور والملفات الصوتية والملفات. تُحفَظ الملاحظة الموجودة لديك، أو تُحدَّث إذا كانت النسخة الاحتياطية تحوي إصداراً أحدث منها.",
     "encryptedBackupTitle": "نسخة احتياطية مشفّرة (.pnbackup و.pnbackupz)",
@@ -126,8 +147,8 @@
   },
   "preview": {
     "oversize_zero": "{{count}} ملاحظة تتجاوز 1 ميغابايت. تبقى على هذا الجهاز ولا تتم مزامنتها.",
-    "oversize_one": "{{count}} ملاحظة تتجاوز 1 ميغابايت. تبقى على هذا الجهاز ولا تتم مزامنتها.",
-    "oversize_two": "{{count}} ملاحظتان تتجاوزان 1 ميغابايت. تبقيان على هذا الجهاز ولا تتم مزامنتهما.",
+    "oversize_one": "ملاحظة واحدة تتجاوز 1 ميغابايت. تبقى على هذا الجهاز ولا تتم مزامنتها.",
+    "oversize_two": "ملاحظتان تتجاوزان 1 ميغابايت. تبقيان على هذا الجهاز ولا تتم مزامنتهما.",
     "oversize_few": "{{count}} ملاحظات تتجاوز 1 ميغابايت. تبقى على هذا الجهاز ولا تتم مزامنتها.",
     "oversize_many": "{{count}} ملاحظة تتجاوز 1 ميغابايت. تبقى على هذا الجهاز ولا تتم مزامنتها.",
     "oversize_other": "{{count}} ملاحظة تتجاوز 1 ميغابايت. تبقى على هذا الجهاز ولا تتم مزامنتها.",
@@ -157,7 +178,7 @@
     "oversizeAttachments_one": "ملف واحد أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. يُستورد إلى هذا الجهاز، لكنه لن يُزامَن مع أجهزتك الأخرى حتى الترقية إلى Pro.",
     "oversizeAttachments_other": "{{count}} ملف أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. تُستورد إلى هذا الجهاز، لكنها لن تُزامَن مع أجهزتك الأخرى حتى الترقية إلى Pro.",
     "oversizeAttachments_zero": "{{count}} ملفات أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. تُستورد إلى هذا الجهاز، لكنها لن تُزامَن مع أجهزتك الأخرى حتى الترقية إلى Pro.",
-    "oversizeAttachments_two": "{{count}} ملفان أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. يُستوردان إلى هذا الجهاز، لكنهما لن يُزامَنا مع أجهزتك الأخرى حتى الترقية إلى Pro.",
+    "oversizeAttachments_two": "ملفان أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. يُستوردان إلى هذا الجهاز، لكنهما لن يُزامَنا مع أجهزتك الأخرى حتى الترقية إلى Pro.",
     "oversizeAttachments_few": "{{count}} ملفات أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. تُستورد إلى هذا الجهاز، لكنها لن تُزامَن مع أجهزتك الأخرى حتى الترقية إلى Pro.",
     "oversizeAttachments_many": "{{count}} ملفًا أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. تُستورد إلى هذا الجهاز، لكنها لن تُزامَن مع أجهزتك الأخرى حتى الترقية إلى Pro."
   },
@@ -258,14 +279,14 @@
   },
   "missing": {
     "pictures_zero": "{{count}} صور",
-    "pictures_one": "{{count}} صورة",
-    "pictures_two": "{{count}} صورتان",
+    "pictures_one": "صورة واحدة",
+    "pictures_two": "صورتان",
     "pictures_few": "{{count}} صور",
     "pictures_many": "{{count}} صورة",
     "pictures_other": "{{count}} صورة",
     "files_zero": "{{count}} ملفات",
-    "files_one": "{{count}} ملف",
-    "files_two": "{{count}} ملفان",
+    "files_one": "ملف واحد",
+    "files_two": "ملفان",
     "files_few": "{{count}} ملفات",
     "files_many": "{{count}} ملفًا",
     "files_other": "{{count}} ملف",
@@ -276,7 +297,7 @@
     "completeTitle": "اكتمل الرفع",
     "failedTitle": "فشل الرفع",
     "partialTitle": "تم رفع {{done}}، وفشل {{failed}}",
-    "uploadingTitle_one": "جارٍ رفع {{count}} ملف",
+    "uploadingTitle_one": "جارٍ رفع ملف واحد",
     "uploadingTitle_other": "جارٍ رفع {{count}} ملف",
     "statusDone": "تم",
     "statusFailed": "فشل",
@@ -285,8 +306,8 @@
     "errorTooLarge": "الملف كبير جدًا ({{size}}). الحد الأقصى {{limit}} ميغابايت.",
     "errorTooLargeFree": "الملف كبير جدًا ({{size}}). الحد الأقصى {{limit}} ميغابايت في الخطة المجانية.",
     "batchTitle_zero": "{{count}} ملفات",
-    "batchTitle_one": "{{count}} ملف",
-    "batchTitle_two": "{{count}} ملفان",
+    "batchTitle_one": "ملف واحد",
+    "batchTitle_two": "ملفان",
     "batchTitle_few": "{{count}} ملفات",
     "batchTitle_many": "{{count}} ملفًا",
     "batchTitle_other": "{{count}} ملف",
@@ -301,7 +322,7 @@
     "storagePitch": "خطة تخزين ترفعه إلى 100 ميغابايت لكل ملف.",
     "storagePitchCta": "إضافة مساحة تخزين",
     "uploadingTitle_zero": "جارٍ رفع {{count}} ملفات",
-    "uploadingTitle_two": "جارٍ رفع {{count}} ملفين",
+    "uploadingTitle_two": "جارٍ رفع ملفين",
     "uploadingTitle_few": "جارٍ رفع {{count}} ملفات",
     "uploadingTitle_many": "جارٍ رفع {{count}} ملفًا"
   },
@@ -317,8 +338,8 @@
   },
   "shareSheet": {
     "title_zero": "تمت مشاركة {{count}} عنصر مع PrivacyNotes",
-    "title_one": "تمت مشاركة {{count}} عنصر مع PrivacyNotes",
-    "title_two": "تمت مشاركة {{count}} عنصرين مع PrivacyNotes",
+    "title_one": "تمت مشاركة عنصر واحد مع PrivacyNotes",
+    "title_two": "تمت مشاركة عنصرين مع PrivacyNotes",
     "title_few": "تمت مشاركة {{count}} عناصر مع PrivacyNotes",
     "title_many": "تمت مشاركة {{count}} عنصرًا مع PrivacyNotes",
     "title_other": "تمت مشاركة {{count}} عنصر مع PrivacyNotes",

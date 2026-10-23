@@ -2,23 +2,29 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { PatternInsight, TrackerStats } from '../trackerStats';
 import { insightText } from '../trackerStats';
-import { SectionEyebrow, SETTINGS_EYEBROW } from '../settingsUI';
-import { compareAll, qualifiesForInsight } from '../trackerCompare';
-import { EffectRow } from './EffectRow';
-import { compareSentence, type WellnessModel } from './wellnessModel';
+import { EYEBROW_ICON_ROW, EyebrowGlyph, SectionEyebrow, SETTINGS_EYEBROW, SettingsSegmented } from '../settingsUI';
+import { ProMark } from '../UpgradeModal';
+import { CalendarBlank, ChartLineUp, Fire, Sparkle, TrendUp, type Icon } from '../icons';
+import { compareAll } from '../trackerCompare';
+import { EffectBarRow, SureDots } from './statsParts';
+import { standoutLabel, type WellnessModel } from './wellnessModel';
 
-const PATTERN_ICONS: Record<string, string> = { day_of_week: '#', streak: '*', trend: '^', correlation: '~', medication: '+' };
+/** The glyph of each kind of finding beside the comparisons. */
+const PATTERN_ICONS: Record<PatternInsight['type'], Icon> = { day_of_week: CalendarBlank, streak: Fire, trend: TrendUp };
 
-function PatternCard({ text, icon }: { text: string; icon: string }) {
+/** One finding that is not a comparison: its glyph on an accent tile, then the sentence. */
+function PatternCard({ text, icon: Glyph }: { text: string; icon: Icon }) {
   return (
-    <div className="flex items-start gap-2 rounded-md bg-track border border-divider px-3 py-2">
-      <span className="text-xs font-mono text-accent mt-0.5">{icon}</span>
-      <span className="text-xs text-pn-soft leading-relaxed">{text}</span>
+    <div className="flex items-center gap-3 py-2.5">
+      <span aria-hidden="true" className="inline-flex w-[26px] h-[26px] shrink-0 items-center justify-center rounded-md bg-accent/10 text-accent">
+        <Glyph size={14} />
+      </span>
+      <span className="text-sm text-pn">{text}</span>
     </div>
   );
 }
 
-/** Spec: ops/docs/plans/wellness-statistics.md (section 11) */
+/** Spec: ops/docs/archive/wellness-statistics.md (section 11) */
 export function PatternsSubTab({ model, stats, unlocked, isPro, onOpenUpgrade }: {
   model: WellnessModel;
   stats: TrackerStats;
@@ -30,37 +36,52 @@ export function PatternsSubTab({ model, stats, unlocked, isPro, onOpenUpgrade }:
   const [lag, setLag] = useState<0 | 1>(0);
   const mood = model.byId('mood');
   const rows = useMemo(() => (mood ? compareAll(model.entries, model.registry, mood, model.range, lag) : []), [model, mood, lag]);
-  const sentences = useMemo(() => {
-    if (!mood) return [] as string[];
-    return rows.filter(qualifiesForInsight).map((r) => compareSentence(r, model.byId(r.trackerId)!, mood, t));
-  }, [rows, mood, model, t]);
+  // Every comparison with a difference, biggest first; the ones still short of days are counted, not listed.
+  const shown = useMemo(() => rows.filter((r) => r.delta !== null).sort((a, b) => Math.abs(b.delta ?? 0) - Math.abs(a.delta ?? 0)), [rows]);
+  const waiting = rows.length - shown.length;
+  const scale = Math.max(1, ...shown.map((r) => Math.abs(r.delta ?? 0)));
   const others: PatternInsight[] = stats.patterns;
-  const insightCount = sentences.length + others.length;
+  const insightCount = others.length;
 
   return (
     <>
-      {mood && rows.length > 0 && (
+      {mood && shown.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-1 gap-2">
             <div className="flex items-center gap-2">
-              <span className={SETTINGS_EYEBROW}>{t('wellness.effects.heading')}</span>
-              {!isPro && <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">{t('wellness.patterns.proBadge')}</span>}
+              <span className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW}`}><EyebrowGlyph icon={ChartLineUp} />{t('wellness.effects.heading')}</span>
+              {!isPro && <ProMark />}
             </div>
-            <div className="inline-flex rounded-md border border-divider overflow-hidden text-[10px]">
-              {([0, 1] as const).map((l) => (
-                <button key={l} type="button" onClick={() => setLag(l)} className={`px-2 py-0.5 ${lag === l ? 'bg-pn text-surface-2' : 'text-pn-soft'}`}>
-                  {t(l === 0 ? 'wellness.effects.sameDay' : 'wellness.effects.nextDay')}
-                </button>
-              ))}
-            </div>
+            <SettingsSegmented
+              label={`${t('wellness.effects.sameDay')} / ${t('wellness.effects.nextDay')}`}
+              value={lag === 0 ? 'same' : 'next'}
+              onChange={(v) => setLag(v === 'same' ? 0 : 1)}
+              options={[
+                { value: 'same', label: t('wellness.effects.sameDay') },
+                { value: 'next', label: t('wellness.effects.nextDay') },
+              ]}
+            />
           </div>
           {unlocked ? (
             <>
-              {rows.map((r) => {
-                const d = model.byId(r.trackerId);
-                return d ? <EffectRow key={r.trackerId + (r.tag ?? '')} r={r} tracker={d} /> : null;
-              })}
-              <p className="text-[10px] text-pn-muted mt-2">{t('wellness.effects.footnote')}</p>
+              <div className="@container rounded-lg border border-divider bg-surface-2 px-3 divide-y divide-divider mt-2">
+                {shown.map((r) => {
+                  const d = model.byId(r.trackerId);
+                  return d ? (
+                    <EffectBarRow
+                      key={r.trackerId + (r.tag ?? '')}
+                      d={d}
+                      label={standoutLabel(r, d, t)}
+                      sub={t('home.daysSplit', { a: r.a.n, b: r.b.n })}
+                      delta={r.delta ?? 0}
+                      sure={<SureDots r={r} />}
+                      share={Math.abs(r.delta ?? 0) / scale}
+                    />
+                  ) : null;
+                })}
+              </div>
+              {waiting > 0 && <p className="text-[11px] text-pn-muted mt-2">{t('wellness.patterns.waiting', { count: waiting })}</p>}
+              <p className="text-[11px] text-pn-muted mt-1">{t('home.footnoteShort')}</p>
             </>
           ) : (
             <button type="button" onClick={onOpenUpgrade} className="w-full rounded-lg border border-dashed border-divider p-3 text-xs text-pn-muted hover:text-pn hover:border-pn-muted transition-colors text-center">
@@ -73,13 +94,12 @@ export function PatternsSubTab({ model, stats, unlocked, isPro, onOpenUpgrade }:
       {insightCount > 0 && (
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <SectionEyebrow>{t('wellness.patterns.insights')}</SectionEyebrow>
-            {!isPro && <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">{t('wellness.patterns.proBadge')}</span>}
+            <SectionEyebrow icon={Sparkle}>{t('wellness.patterns.insights')}</SectionEyebrow>
+            {!isPro && <ProMark />}
           </div>
           {unlocked ? (
-            <div className="space-y-2">
-              {sentences.map((s, i) => <PatternCard key={`c${i}`} text={s} icon="~" />)}
-              {others.map((p, i) => <PatternCard key={`p${i}`} text={insightText(p, t)} icon={PATTERN_ICONS[p.type] ?? '?'} />)}
+            <div className="rounded-lg border border-divider bg-surface-2 px-3 divide-y divide-divider">
+              {others.map((p, i) => <PatternCard key={`p${i}`} text={insightText(p, t)} icon={PATTERN_ICONS[p.type] ?? Sparkle} />)}
             </div>
           ) : (
             <button type="button" onClick={onOpenUpgrade} className="w-full rounded-lg border border-dashed border-divider p-3 text-xs text-pn-muted hover:text-pn hover:border-pn-muted transition-colors text-center">

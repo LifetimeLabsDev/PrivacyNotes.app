@@ -71,7 +71,7 @@ export interface ImportedNote {
   /** Transient: a folder and tag color key the source gave the note (Google
    *  Keep's note colors). The import turns it into a tag named after the
    *  color, in the reader's language, and gives that tag the color. Not
-   *  persisted on the note. Spec: ops/docs/plans/folder-tag-icons.md (section 4.7) */
+   *  persisted on the note. Spec: ops/docs/archive/folder-tag-icons.md (section 4.7) */
   colorKey?: string;
 }
 
@@ -136,7 +136,7 @@ export interface ParsedImport {
    * Our own full backup only: the looks of folders, tags and notes and the
    * custom themes, as the manifest holds them. Validated at apply time.
    */
-  settings?: { itemStyles?: unknown; customThemes?: unknown };
+  settings?: { itemStyles?: unknown; customThemes?: unknown; factors?: unknown; customHabits?: unknown };
 }
 
 /** Importer identifiers - add new ones here as adapters land. */

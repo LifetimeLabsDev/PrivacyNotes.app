@@ -1,6 +1,6 @@
 [package]
 name = "privacynotes"
-version = "0.654.2"
+version = "0.696.1"
 description = "PrivacyNotes - private notes, encrypted on your device"
 authors = ["Lifetime Labs LLC <hi@lifetimelabs.dev>"]
 homepage = "https://privacynotes.app"
@@ -34,7 +34,7 @@ serde_json = "1"
 # protocol-asset backs the `assetProtocol` block in tauri.conf.json, which is
 # how the Markdown pillar will render an image a note references by relative
 # path. Enabling the config without this feature is a build error, by design.
-# Spec: ops/docs/plans/markdown-folder.md (section 8, media)
+# Spec: ops/docs/archive/markdown-folder.md (section 8, media)
 tauri = { version = "~2.12", features = ["protocol-asset"] }
 tauri-plugin-deep-link = "2"
 tauri-plugin-opener = "2"
@@ -43,10 +43,24 @@ tauri-plugin-fs = "2"
 # Calendar reminders: a local notification each device schedules from its own
 # items (phones), or shows from a timer while the app runs (desktop). The
 # server never sees a title, a time or a day.
-# Spec: ops/docs/plans/calendar-pillar-spec.md (section 8)
+# Spec: ops/docs/archive/calendar-pillar-spec.md (section 8)
 tauri-plugin-notification = "~2.5"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+# The web clipper's native download (src/clip_fetch.rs). reqwest, rustls,
+# url and tokio are already in the tree through tauri and its updater; this
+# names them directly with only the features the command needs: no proxy,
+# no cookies, no HTTP/2, the ring provider, and the connection pinned to an
+# address the command checked.
+# Spec: ops/docs/archive/web-clipper-stage1.md (section 3.1)
+reqwest = { version = "0.13", default-features = false, features = ["rustls-no-provider"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+url = "2"
+tokio = { version = "1", features = ["net", "time"] }
+# Certificates are checked offline against the Mozilla root list on every
+# platform: a platform verifier may download a missing issuer certificate
+# from an address the site names, which no address check covers.
+webpki-roots = "1"
 
 # Self-updater is desktop-only (macOS/Windows/Linux). iOS/Android update
 # through their app stores, and the plugin won't compile for those targets.
@@ -65,6 +79,9 @@ tauri-plugin-window-state = "2"
 # Every crate involved is already in the tree via tauri/tao/wry, so these add
 # dependency edges and features, never packages.
 # Spec: ops/docs/biometric-unlock.md, backlog #101
+[dev-dependencies]
+tokio = { version = "1", features = ["rt", "macros", "io-util"] }
+
 [target.'cfg(target_os = "macos")'.dependencies]
 # geteuid, for the single-instance rendezvous owner check in lib.rs.
 # Already in the tree through tao and wry; this names it directly.
@@ -90,7 +107,12 @@ objc2-foundation = { version = "0.3", features = [
 # returns; the `windows` crate re-exports nothing for it.
 [target.'cfg(target_os = "windows")'.dependencies]
 windows = { version = "0.62", features = [
+  # src/biometric.rs, the bound key: KeyCredentialManager, and the buffers its
+  # challenge and signature travel in.
+  "Security_Credentials",
   "Security_Credentials_UI",
+  "Security_Cryptography",
+  "Storage_Streams",
   "Win32_Foundation",
   # src/title_bar.rs: DwmSetWindowAttribute paints the title bar in the theme.
   "Win32_Graphics_Dwm",
@@ -99,7 +121,7 @@ windows = { version = "0.62", features = [
   # src/file_assoc.rs: AssocQueryStringW reads which app owns .md, and
   # ShellExecuteW opens the Default apps page in Settings. Windows forbids an app
   # setting its own default, so reading and signposting is the whole surface.
-  # Spec: ops/docs/plans/markdown-folder.md (section 11)
+  # Spec: ops/docs/archive/markdown-folder.md (section 11)
   "Win32_UI_Shell",
   "Win32_UI_WindowsAndMessaging",
 ] }
@@ -107,7 +129,7 @@ windows-future = "0.3"
 # src/lib.rs disable_browser_accelerator_keys: the WebView2 settings interface
 # that turns off the webview's own browser keys (F5, Ctrl+R, Ctrl+P). The same
 # version Tauri's runtime already builds against.
-# Spec: ops/docs/plans/keyboard-shortcuts.md (decision D8)
+# Spec: ops/docs/archive/keyboard-shortcuts.md (decision D8)
 webview2-com = "0.39"
 
 # The third biometric backend. Android has no OS-level API this crate can call
@@ -120,6 +142,11 @@ webview2-com = "0.39"
 # Spec: ops/docs/biometric-unlock.md (section 3.2 native path)
 [target.'cfg(target_os = "android")'.dependencies]
 tauri-plugin-biometric = "2"
+# The bound key: an Android Keystore key a strong biometric
+# releases through a CryptoObject, which the plugin above cannot do. Our own
+# Kotlin, reached from src/biometric.rs only.
+# Spec: ops/docs/plans/biometric-key-binding.md (section 8.2)
+tauri-plugin-biometric-key = { path = "plugins/biometric-key" }
 
 # Native in-app purchase: StoreKit (iOS) + Google Play Billing (Android) via one
 # plugin. The notarized DMG / Windows / Linux never compile it. The macOS App

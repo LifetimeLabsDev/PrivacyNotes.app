@@ -25,7 +25,7 @@ export type SeriesQuestion = { kind: 'change' | 'delete'; title: string; day: st
  * side effect, so a repeating event asks "This occurrence, this and
  * following, or all?" wherever the change came from, and a journal entry's
  * day goes through `journalDatePatch`, which also moves its generated title.
- * Spec: ops/docs/plans/calendar-pillar-spec.md (steps 4 and 6)
+ * Spec: ops/docs/archive/calendar-pillar-spec.md (steps 4 and 6)
  */
 export function useCalendarActions(deps: {
   notes: readonly LocalNote[];

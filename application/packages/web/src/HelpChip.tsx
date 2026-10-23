@@ -7,8 +7,8 @@ import SURFACES from './helpChips.json';
 
 /**
  * A link out of a modal to the /help entry that answers the question this
- * screen raises. Sits under the intro line and above the first section,
- * never in the footer and never between rows.
+ * screen raises. In a settings pane it sits at the foot, after the last
+ * section; in a standalone modal, under the intro line. Never between rows.
  *
  * It shows the REAL FAQ question, because that is the payload: the question
  * is written the way a reader types it into a search box. A short category

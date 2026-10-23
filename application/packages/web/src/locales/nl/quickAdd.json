@@ -1,5 +1,6 @@
 {
   "words": {
+    "add": "toevoegen",
     "every": "elke, elk, iedere, ieder",
     "weekday": "werkdag, werkdagen, weekdag, weekdagen",
     "daily": "dagelijks",
@@ -13,7 +14,7 @@
     "to": "tot, totdat, t/m",
     "next": "volgende, volgend, komende",
     "this": "deze, dit",
-    "last": "vorige, vorig, afgelopen",
+    "last": "vorige, vorig, afgelopen, laatste",
     "other": "andere, ander, tweede",
     "before": "vooraf, ervoor, eerder, tevoren, voor",
     "alert": "melding, herinnering, herinner",
@@ -37,6 +38,7 @@
     "times": "keer, maal, x",
     "ordinal": "e, ste, de, .",
     "work": "werk",
-    "personal": "persoonlijk, privé, prive, thuis"
+    "personal": "persoonlijk, privé, prive, thuis",
+    "in": "over"
   }
 }

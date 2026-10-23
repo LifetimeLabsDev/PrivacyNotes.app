@@ -1,7 +1,9 @@
 {
   "shell": {
     "title": "Impostazioni",
-    "allSettings": "Tutte le impostazioni"
+    "allSettings": "Tutte le impostazioni",
+    "fillWindow": "Usa tutta la finestra",
+    "restoreWindow": "Torna alla dimensione normale"
   },
   "account": {
     "title": "Account",
@@ -106,6 +108,11 @@
     "sharedSlot_other": "{{count}} installazioni condividono uno slot dispositivo",
     "added": "aggiunto {{time}}",
     "lastActive": "ultima attività {{time}}",
+    "versionUnknown": "versione sconosciuta",
+    "idLabel": "ID",
+    "browser": "Browser",
+    "update": "Aggiorna",
+    "updateHint": "Questa versione non può più sincronizzarsi. Aggiorna l'app su questo dispositivo.",
     "removeAll": "Rimuovi tutte",
     "recentlyRemoved": "Rimossi di recente",
     "removedAt": "Rimosso {{time}}"
@@ -191,6 +198,8 @@
     "faviconsProxy": "Le icone passano dal nostro proxy. Solo su questo dispositivo.",
     "invisiblesTitle": "Caratteri invisibili",
     "invisiblesDesc": "Mostra gli spazi, le interruzioni di riga e i segni di paragrafo mentre scrivi.",
+    "listsTabGeneral": "Generale",
+    "listsTabSidebar": "Barra laterale e Tutti",
     "sidebarTitle": "<sb>Barra laterale</sb> e <all>Tutti</all>",
     "sidebarDesc": "Quali viste compaiono nella barra laterale e quali elementi contiene l’elenco «Tutti».",
     "colInSidebar": "Barra laterale",
@@ -211,14 +220,30 @@
     "contentWidthFull": "Piena",
     "lineSpacingTitle": "Interlinea",
     "noteColorsTitle": "Colori di cartelle e tag",
+    "noteColorsPickerTitle": "Per tutte le cartelle e i tag",
     "noteColorsDesc": "Come una nota mostra il colore della sua cartella o del suo tag: tutta la nota, solo la sua icona o per niente.",
     "noteColorsBackground": "Sfondo",
     "noteColorsExampleTitle": "Weekend a Lisbona",
     "noteColorsExampleFolder": "Viaggi, una cartella verde",
-    "noteColorsAccent": "Icona",
+    "noteColorsAccent": "Solo icona",
     "noteColorsOff": "Disattivo",
+    "checkboxesTitle": "Caselle di controllo",
+    "taskConfettiTitle": "Coriandoli alla spunta",
+    "taskConfettiDesc": "Un po' di coriandoli volano da una casella quando la spunti.",
     "sinkCheckedTitle": "Sposta in basso gli elementi spuntati",
     "sinkCheckedDesc": "Un elemento spuntato scende sotto quelli non spuntati della sua lista.",
+    "defaultAppsTitle": "Apri con PrivacyNotes",
+    "defaultAppsMarkdown": "File Markdown",
+    "defaultAppsText": "File di testo",
+    "defaultAppsMarkdownHint": "I file .md su cui fai doppio clic si aprono qui.",
+    "defaultAppsTextHint": "I file .txt e README su cui fai doppio clic si aprono qui.",
+    "defaultAppsTextHintWindows": "I file .txt su cui fai doppio clic si aprono qui.",
+    "defaultAppsTextFinderSteps": "Per cambiarlo, scegli \"Ottieni informazioni\" su un file .txt nel Finder, seleziona PrivacyNotes in \"Apri con\" e fai clic su \"Modifica tutto\".",
+    "defaultAppsMakeDefault": "Rendi predefinita",
+    "defaultAppsIsDefault": "Predefinita",
+    "defaultAppsOwnerOther": "Al momento si aprono con {{app}}.",
+    "defaultAppsOwnerOtherUnnamed": "Al momento si aprono con un'altra app.",
+    "defaultAppsOwnerNone": "Non hanno ancora un'app predefinita.",
     "spacesTitle": "Spazi",
     "spacesDesc": "Dividi la tua libreria fra Personale e Lavoro e mostrane uno alla volta.",
     "lineSpacingDesc": "Lo spazio tra le righe e i paragrafi mentre scrivi.",
@@ -248,7 +273,8 @@
       "none": "Ancora nessun tema qui.",
       "sortLabel": "Ordine",
       "sortVotes": "Più votati",
-      "sortNewest": "Più recenti"
+      "sortNewest": "Più recenti",
+      "more": "Altri temi"
     },
     "custom": {
       "newTheme": "Nuovo tema",
@@ -449,6 +475,8 @@
     "wifiHoldTooltip": "I file partono appena torna il wifi. Le note continuano a sincronizzarsi.",
     "notBackedUp": "Senza backup",
     "notSynced": "Non sincronizzato",
+    "firstSyncPending": "Questo dispositivo non ha ancora finito la prima sincronizzazione con il server, quindi alcune note potrebbero ancora mancare qui.",
+    "pullFailed": "L'ultima sincronizzazione non è riuscita a scaricare dal server. Riprova in automatico.",
     "notBackedUpTooltip_one": "{{count}} nota non ha un backup. Clicca per vedere perché.",
     "notBackedUpTooltip_other": "{{count}} note non hanno un backup. Clicca per vedere perché.",
     "notBackedUpAria_one": "{{count}} nota non ha un backup",
@@ -531,7 +559,7 @@
     "alertBirthday": "Compleanni",
     "alertsHelp": "I nuovi elementi partono con questi avvisi. Dopo, ogni elemento tiene i propri avvisi.",
     "reminderTitles": "Mostra i titoli nei promemoria",
-    "reminderTitlesHelp": "Se è disattivato, un promemoria mostra solo la parola Promemoria e l'ora. Un elemento protetto dal PIN lo fa sempre.",
+    "reminderTitlesHelp": "Se è attivato, un promemoria mostra il titolo dell'elemento. Se è disattivato, mostra solo «Promemoria» e l'ora. Un elemento protetto dal PIN non mostra mai il suo titolo.",
     "whereTitle": "Promemoria su questo dispositivo",
     "reminderHint": {
       "mobile": "I promemoria suonano su questo telefono, anche quando PrivacyNotes è chiuso.",
@@ -545,11 +573,14 @@
     "permissionDenied": "Le notifiche sono bloccate per PrivacyNotes. Consentile nelle impostazioni di questo browser o dispositivo.",
     "weekNumbers": "Mostra i numeri delle settimane",
     "weekNumbersHelp": "Nella vista mensile e nei calendari piccoli.",
-    "hours": "Giorno e Settimana si aprono alle",
+    "hours": "Prima ora in Giorno e Settimana",
+    "checkInReminder": "Promemoria del check-in giornaliero",
+    "checkInReminderHelp": "«Come stai oggi?» una volta al giorno, su questo dispositivo. Non nei giorni in cui hai già registrato l'umore o hai saltato.",
+    "checkInReminderAt": "Suona alle",
     "groupView": "Vista",
     "groupReminders": "Promemoria",
     "groupDefaults": "Avvisi predefiniti",
-    "hoursHelp": "Scorri verso l'alto per le ore precedenti.",
+    "hoursHelp": "Le viste Giorno e Settimana si aprono scorrendo fino a quest'ora. Le ore precedenti sono più in alto.",
     "to": "a"
   }
 }

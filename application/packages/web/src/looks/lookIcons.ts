@@ -13,7 +13,7 @@
  * wears it still draws it. A name is `looks:icons.<id>`; the numbers share
  * `looks:number`. After any change to the ids here, run
  * `node tools/gen-look-icons.mjs`.
- * Spec: ops/docs/plans/folder-tag-icons.md (section 3)
+ * Spec: ops/docs/archive/folder-tag-icons.md (section 3)
  */
 import { LOOK_ICON_PATHS } from './lookIconPaths.gen';
 

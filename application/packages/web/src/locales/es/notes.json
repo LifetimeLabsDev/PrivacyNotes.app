@@ -18,10 +18,8 @@
   "header": {
     "new": "Nueva",
     "newNote": "Nota nueva",
-    "newNoteHover": "Nota nueva ({{hotkey}})",
     "trash": "Papelera",
-    "newEvent": "Evento nuevo",
-    "newEventHover": "Evento nuevo ({{hotkey}})"
+    "newEvent": "Evento nuevo"
   },
   "folderChip": {
     "clear": "Quitar el filtro de carpeta: {{folder}}",
@@ -35,15 +33,18 @@
     "ariaLabel": "Nuevo elemento de la bóveda",
     "login": "Inicio de sesión",
     "card": "Tarjeta de crédito",
-    "sshKey": "Clave SSH"
+    "sshKey": "Clave SSH",
+    "generator": "Contraseña"
   },
   "newMenu": {
     "note": "Nota",
     "task": "Tarea",
+    "kanban": "Tablero Kanban",
     "journal": "Diario",
     "login": "Inicio de sesión",
     "file": "Archivo",
     "bookmark": "Marcador",
+    "clipPage": "Recortar página",
     "contact": "Contacto",
     "event": "Evento",
     "quickAdd": "Añadido rápido"
@@ -55,8 +56,7 @@
     "keys": "Claves"
   },
   "journal": {
-    "newEntry": "Nueva entrada del diario",
-    "newEntryHover": "Nueva entrada del diario ({{hotkey}})"
+    "newEntry": "Nueva entrada del diario"
   },
   "tasks": {
     "newTitle": "Tareas del {{date}}"
@@ -70,7 +70,8 @@
   "search": {
     "sortOptions": "Opciones de orden y vista",
     "placeholderVault": "Buscar en la bóveda…",
-    "placeholderNotes": "Buscar notas…"
+    "placeholderNotes": "Buscar notas…",
+    "placeholderEvents": "Buscar eventos…"
   },
   "selection": {
     "countOf": "{{selected}} de {{total}} seleccionados",
@@ -82,9 +83,14 @@
     "vault": "La bóveda está vacía.",
     "notes": "Aún no hay notas.",
     "archive": "No hay nada archivado.",
+    "trash": "La papelera está vacía.",
     "filtered": "Ningún elemento coincide con tus filtros.",
     "clearFilters": "Quitar los filtros",
-    "filteredAfter": "para mostrarlos."
+    "filteredAfter": "para mostrarlos.",
+    "hiddenInAll_other": "El filtro Mostrar en «Todos» oculta {{count}} elementos. Abre el filtro junto a Todos para mostrarlos.",
+    "inOtherSpace_other": "{{count}} elementos están en tu espacio {{space}}. Cambia a {{space}} en la barra lateral para verlos.",
+    "inOtherSpace_one": "{{count}} elemento está en tu espacio {{space}}. Cambia a {{space}} en la barra lateral para verlo.",
+    "hiddenInAll_one": "El filtro Mostrar en «Todos» oculta {{count}} elemento. Abre el filtro junto a Todos para mostrarlo."
   },
   "listGroups": {
     "previous7Days": "Últimos 7 días",
@@ -104,12 +110,25 @@
     "calendar": "Calendario"
   },
   "footerStats": {
-    "journals": "Diarios",
-    "items": "Elementos",
-    "trashed": "En papelera",
-    "notes": "Notas",
-    "bookmarks": "Marcadores",
-    "contacts": "Contactos"
+    "journals_other": "Diarios",
+    "journals_one": "Diario",
+    "items_other": "Elementos",
+    "items_one": "Elemento",
+    "trashed_other": "En papelera",
+    "trashed_one": "En papelera",
+    "notes_other": "Notas",
+    "notes_one": "Nota",
+    "bookmarks_other": "Marcadores",
+    "bookmarks_one": "Marcador",
+    "contacts_other": "Contactos",
+    "files_other": "Archivos",
+    "lists_other": "Listas",
+    "tasks_other": "Tareas",
+    "today": "Hoy",
+    "tasks_one": "Tarea",
+    "lists_one": "Lista",
+    "files_one": "Archivo",
+    "contacts_one": "Contacto"
   },
   "toast": {
     "imageUploadFailed": "Error al subir la imagen: {{error}}",
@@ -165,7 +184,7 @@
   },
   "zen": {
     "exit": "Salir de Zen",
-    "exitHover": "Salir del modo Zen (Esc)",
+    "exitHover": "Salir del modo Zen",
     "enterHover": "Entrar en modo Zen",
     "proHover": "Modo Zen (Pro)",
     "enterAriaShortcut": "Entrar en modo Zen ({{keys}})"
@@ -242,9 +261,12 @@
     "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Abrir estadísticas",
     "journalCalendar": "Calendario del diario",
-    "words": "Palabras",
+    "words_other": "Palabras",
+    "words_one": "Palabra",
     "zen": "Modo Zen",
     "appearance": "Apariencia",
+    "lockApp": "Bloquear la app",
+    "lockAppSetUp": "Primero establece un PIN en Seguridad",
     "goToTop": "Ir al principio",
     "goToEnd": "Ir al final",
     "signOut": "Cerrar sesión",
@@ -268,6 +290,7 @@
     "editorLabel": "Editor",
     "formatBarLabel": "Barra de formato",
     "listsLabel": "Listas",
+    "trackersLabel": "Registros",
     "helpLabel": "Ayuda",
     "aboutLabel": "Acerca de",
     "languageLabel": "Idioma",
@@ -285,7 +308,7 @@
   },
   "bulkTrash": {
     "title": "Mover a la papelera",
-    "body_one": "¿Mover <highlight>{{count}} elemento</highlight> a la papelera? Puedes restaurarlo más tarde.",
+    "body_one": "¿Mover <highlight>{{count}} elemento</highlight> a la papelera? Podrás restaurarlo más tarde.",
     "body_other": "¿Mover <highlight>{{count}} elementos</highlight> a la papelera? Puedes restaurarlos más tarde.",
     "readOnlyTitle": "Solo lectura",
     "readOnlyAcknowledge": "Entendido",
@@ -331,5 +354,14 @@
   "ambiguousLink": {
     "title": "Dos notas tienen ese título",
     "body": "Hay más de una nota titulada <highlight>“{{title}}”</highlight>, así que este enlace no dice a cuál se refiere. Renombra una de ellas y el enlace apuntará a la otra."
+  },
+  "connections": {
+    "title": "Conexiones",
+    "hide": "Ocultar conexiones",
+    "linkedFrom": "Enlazada desde",
+    "linksTo": "Enlaza a",
+    "missing": "Aún no creada",
+    "protectedHidden_one": "{{count}} elemento protegido con PIN no se muestra",
+    "protectedHidden_other": "{{count}} elementos protegidos con PIN no se muestran"
   }
 }

@@ -4,7 +4,7 @@ import { MagnifyingGlass, ArrowsLeftRight, TextAa, X } from './icons';
 import { HoverLabel } from './HoverLabel';
 import { isImeComposing } from './imeComposing';
 import { BAR_BTN, BAR_INPUT, MatchNav, ReplaceToggle, TEXT_BTN } from './MatchNav';
-import { keyText } from './shortcutMatch';
+import { bindingKeyText, keyText } from './shortcutMatch';
 import { findTextMatches, type TextMatch } from './markdownSourceSearch';
 
 type Props = {
@@ -128,8 +128,8 @@ export function SourceSearchBar({ mode, text, focusTick, initialQuery, onHits, o
           : '';
   const iconCls = 'text-pn-muted shrink-0 ms-0.5 me-0.5';
   const closeLabel = mode === 'replace'
-    ? t('find.closeReplaceTitle', { keys: keyText('findReplace') })
-    : t('find.closeTitle', { keys: keyText('find') });
+    ? t('find.closeReplaceTitle')
+    : t('find.closeTitle');
 
   return (
     <div className={`pointer-events-auto mt-1 me-2 flex flex-col gap-1 rounded-lg border border-divider bg-surface-1 shadow-lg px-1.5 py-1 ${
@@ -166,7 +166,7 @@ export function SourceSearchBar({ mode, text, focusTick, initialQuery, onHits, o
         <MatchNav count={count} noHits={noHits} canStep={total > 0} onStep={go} />
         {onSwap && <ReplaceToggle open={mode === 'replace'} pro={swapPro} onClick={onSwap} />}
         <div className="w-px h-5 bg-divider mx-0.5 shrink-0" aria-hidden="true" />
-        <HoverLabel label={closeLabel} position="below-end">
+        <HoverLabel label={closeLabel} keys={keyText(mode === 'replace' ? 'findReplace' : 'find')} position="below-end">
           <button
             type="button"
             onMouseDown={(e) => e.preventDefault()}
@@ -193,7 +193,7 @@ export function SourceSearchBar({ mode, text, focusTick, initialQuery, onHits, o
             autoComplete="off"
             className={BAR_INPUT}
           />
-          <HoverLabel label={t('find.replaceTitle')} position="below">
+          <HoverLabel label={t('find.replaceTitle')} keys={bindingKeyText({ key: 'Enter' })} position="below">
             <button
               type="button"
               onMouseDown={(e) => e.preventDefault()}

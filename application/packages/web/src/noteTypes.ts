@@ -37,7 +37,7 @@ export function isKnownNoteType(type: string | undefined): boolean {
  * The types an item can be converted to from the "..." menu. A file is a
  * source and never a target: its body holds one attachment that the editor
  * draws as a file card, and a note with none or several has no such card.
- * Spec: ops/docs/plans/convert-type.md
+ * Spec: ops/docs/archive/convert-type.md
  */
 export const CONVERT_TARGETS = ['note', 'task', 'journal', 'event'] as const;
 export type ConvertTarget = (typeof CONVERT_TARGETS)[number];
@@ -56,7 +56,7 @@ export function isConvertSource(type: string | undefined): boolean {
  * tracker values under the day the item was made, and an event lives on the
  * calendar. An event that becomes anything else loses its repeat, because a
  * series is an event; the Convert to view says so.
- * Spec: ops/docs/plans/convert-type.md, ops/docs/plans/calendar-pillar-spec.md (decision 10)
+ * Spec: ops/docs/archive/convert-type.md, ops/docs/archive/calendar-pillar-spec.md (decision 10)
  */
 export function convertPatch(
   trackers: Record<string, unknown> | undefined,

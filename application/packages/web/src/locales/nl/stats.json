@@ -3,7 +3,7 @@
   "tabs": {
     "overview": "Overzicht",
     "writing": "Schrijven",
-    "wellness": "Welzijn"
+    "wellness": "Trackers"
   },
   "writing": {
     "notes": "Notities",
@@ -22,6 +22,44 @@
     "tooltipEdits_other": "{{date}}: {{count}} bewerkingen",
     "longestNote": "Langste notitie: <name>{{title}}</name> ({{count}} woorden)"
   },
+  "home": {
+    "inARow_other": "{{count}} dagen op rij",
+    "firstInsight_other": "Het eerste inzicht heeft {{count}} vastgelegde dagen nodig",
+    "standsOut": "Wat opvalt",
+    "lifts": "Verbetert je stemming",
+    "onAverage": "Gemiddeld {{word}}",
+    "daysOf": "{{logged}} van {{days}} dagen",
+    "medsTaken": "{{pct}}% medicijnen ingenomen",
+    "moodByDay": "Stemming, dag voor dag",
+    "moodLegend": "Balken: elke dag. Lijn: het gemiddelde over 7 dagen.",
+    "yourWeek": "Jouw week",
+    "yourWeekHint": "Gemiddelde stemming per weekdag",
+    "weekLine": "Je beste dag is {{best}} ({{bestAvg}}), de zwaarste {{worst}} ({{worstAvg}}).",
+    "daysSplit": "{{a}} dagen tegenover {{b}}",
+    "yourDays": "Jouw dagen",
+    "yesOf": "ja op {{yes}} van {{total}}",
+    "goesWith": "Waar {{name}} mee samengaat",
+    "goesWithHint": "{{side}}, vergeleken met de andere dagen",
+    "byWeekday": "Per weekdag",
+    "last30": "Laatste 30 dagen",
+    "openEntry": "Notitie openen",
+    "nothingThatDay": "Niets vastgelegd op die dag.",
+    "drags": "Drukt je stemming",
+    "nextDay": "dag erna",
+    "label": {
+      "above": "{{name}} boven {{threshold}}",
+      "levels": "{{name}}: {{levels}}",
+      "taken": "{{name}} ingenomen"
+    },
+    "footnoteShort": "Stemmingspunten ten opzichte van je andere vastgelegde dagen. Meer stippen, meer dagen achter het getal. Een verband, geen bewijs van een oorzaak.",
+    "trackers": "Je trackers",
+    "tapHint": "Tik erop om te openen",
+    "delta": "{{delta}} t.o.v. de dagen ervoor",
+    "firstInsight_one": "Het eerste inzicht heeft {{count}} vastgelegde dag nodig",
+    "inARow_one": "{{count}} dag op rij",
+    "sureEarly": "Nog vroeg: {{a}} dagen met, {{b}} zonder. Blijf vastleggen.",
+    "sureDays": "{{a}} dagen met, {{b}} zonder"
+  },
   "range": {
     "7d": "7 dagen",
     "14d": "14 dagen",
@@ -39,12 +77,14 @@
       "patterns": "Patronen"
     },
     "empty": {
-      "title": "Nog geen welzijnsgegevens.",
+      "title": "Nog geen trackergegevens.",
       "hint": "Open een dagboeknotitie en leg je stemming vast om te beginnen."
     },
     "export": {
       "heading": "Exporteren",
       "downloadJSON": "JSON downloaden",
+      "downloadCSV": "CSV downloaden",
+      "csvDate": "Datum",
       "doctorPDF": "PDF voor je arts",
       "copyAIPrompt": "AI-prompt tonen & kopiëren",
       "copied": "Gekopieerd!",
@@ -52,7 +92,13 @@
       "proBadge": "PRO",
       "usesRange": "Gebruikt de periode hierboven",
       "promptShown": "De prompt die je hebt gekopieerd. Plak hem in de chatbot van je keuze.",
-      "hidePrompt": "Verbergen"
+      "hidePrompt": "Verbergen",
+      "intro": "De waarden van je trackers uit dagboeknotities, in de periode die je kiest.",
+      "aiPromptDesc": "Een samenvatting van je trackers om in een chatbot te plakken. Ze verschijnt hier en gaat naar het klembord.",
+      "doctorDesc": "Een afdrukbaar rapport over stemming, slaap, medicatie en trends, om mee te nemen naar een afspraak.",
+      "jsonDesc": "Elke trackerwaarde met datum en definitie, voor een andere app of je eigen analyse.",
+      "csvDesc": "Eén rij per dag en één kolom per tracker, voor een spreadsheet.",
+      "openExport": "Je trackergegevens exporteren"
     },
     "medication": {
       "adherence": "Medicatietrouw",
@@ -62,6 +108,7 @@
       },
       "dosageTimeline": "Doseringsverloop",
       "started": "Gestart met {{dosage}}",
+      "startedPlain": "Gestart",
       "changedTo": "Gewijzigd naar {{dosage}}"
     },
     "patterns": {
@@ -70,7 +117,9 @@
       "proBadge": "PRO",
       "insightsLocked_one": "{{count}} inzicht gevonden. Upgrade naar Pro om te bekijken",
       "insightsLocked_other": "{{count}} inzichten gevonden. Upgrade naar Pro om te bekijken",
-      "tableLocked": "Upgrade naar Pro om te zien welke trackers je stemming beïnvloeden"
+      "tableLocked": "Upgrade naar Pro om te zien welke trackers je stemming beïnvloeden",
+      "waiting_other": "Nog {{count}} trackers hebben meer vastgelegde dagen nodig om te vergelijken.",
+      "waiting_one": "Nog {{count}} tracker heeft meer vastgelegde dagen nodig om te vergelijken."
     },
     "week": {
       "range": "{{start}} tot {{end}}",
@@ -85,7 +134,7 @@
       "reflectionPlaceholder": "Hoe voelde deze week in het algemeen? Gedachten om vast te leggen...",
       "heading": "Week in beeld",
       "proBadge": "PRO",
-      "locked": "Upgrade naar Pro om je wekelijkse welzijnsoverzicht te zien"
+      "locked": "Upgrade naar Pro om je wekelijkse trackeroverzicht te zien"
     },
     "units": {
       "days_one": "{{count}} dag",
@@ -111,27 +160,30 @@
       "doseChange": "Rond de wijziging van {{name}} naar {{dosage}} op {{date}} zat je stemming gemiddeld op {{before}} in de {{nBefore}} dagen ervoor en op {{after}} in de {{nAfter}} dagen erna."
     },
     "aiPrompt": {
-      "intro": "Ik houd mijn stemming en welzijn bij. Analyseer de gegevens hieronder op patronen, trends en concrete inzichten.",
+      "intro": "Ik houd een dagelijks dagboek bij met trackers. Hieronder staan mijn gegevens. Stemming is mijn eigen score van 1 (vreselijk) tot 10 (geweldig). Een dag zonder waarde betekent dat ik niets heb vastgelegd, geen nul.",
       "overview": "Overzicht",
       "daysTracked": "Dagen bijgehouden: {{days}}",
       "avgMood": "Gemiddelde stemming: {{mood}}/10",
       "avgSleep": "Gemiddelde slaap: {{hours}} u",
       "adherence": "Medicatietrouw: {{pct}}%",
       "topEmotions": "Meest voorkomende emoties: {{list}}",
-      "moodTrend": "Stemmingstrend (laatste 30 dagen)",
+      "moodTrend": "Stemming per dag",
       "columnDate": "Datum",
       "columnMood": "Stemming",
+      "columnAverage": "Gemiddelde over 7 dagen",
       "sleepDistribution": "Verdeling van de slaapkwaliteit",
       "activityDistribution": "Verdeling van het activiteitsniveau",
       "adherenceHeading": "Medicatietrouw",
-      "adherenceLine": "{{name}}: ingenomen op {{taken}} van {{total}} bijgehouden dagen ({{pct}}%)",
+      "adherenceLine": "{{name}}: {{taken}} van {{total}} geplande doses ingenomen ({{pct}}%)",
       "dosageTimeline": "Doseringsverloop",
       "patterns": "Gevonden patronen",
-      "questions": "Wat ik graag wil weten",
-      "question1": "Zitten er patronen in mijn stemming in de loop van de tijd?",
-      "question2": "Hangen slaapkwaliteit en activiteitsniveau samen met mijn stemming?",
-      "question3": "Zijn er zorgelijke trends die ik met een zorgverlener moet bespreken?",
-      "question4": "Concrete suggesties op basis van deze gegevens.",
+      "questions": "Hoe je moet antwoorden",
+      "question1": "Begin met de drie bevindingen die het belangrijkst zijn, elk met de cijfers erachter.",
+      "question2": "Houd gescheiden wat de gegevens laten zien en wat je vermoedt. Twee trackers die samen bewegen, bewijzen niet dat de een de ander veroorzaakt.",
+      "question3": "Zeg het als een patroon op te weinig dagen rust om erop te vertrouwen.",
+      "question4": "Stel twee of drie kleine veranderingen voor die ik twee weken kan proberen, en wat ik moet bijhouden om te zien of ze werken.",
+      "question5": "Wijs op alles wat het waard is om met een arts te bespreken. Stel geen diagnose.",
+      "question6": "Als de gegevens je twijfel laten, stel me dan eerst maximaal drie vragen.",
       "footer": "Gemaakt met PrivacyNotes (privacynotes.app)",
       "period": "Periode: {{from}} tot {{to}}",
       "daysLogged": "Dagen vastgelegd: {{logged}} van {{days}}",
@@ -140,7 +192,7 @@
       "trackerYesLine": "{{name}}: ja op {{yes}} van {{count}} dagen",
       "effects": "Stemming op dagen met en zonder",
       "effectLine": "{{name}} ({{rule}}): {{a}} met, {{b}} zonder, verschil {{delta}}, {{na}} / {{nb}} dagen",
-      "customQuestion": "Hangt {{name}} samen met mijn stemming, dezelfde dag of de dag erna?"
+      "customQuestion": "Kijk ook of {{name}} samenhangt met mijn stemming, dezelfde dag of de dag erna."
     },
     "report": {
       "documentTitle": "Welzijnsrapport",
@@ -161,9 +213,9 @@
       "activityDistribution": "Verdeling van het activiteitsniveau",
       "columnLevel": "Niveau",
       "adherenceHeading": "Medicatietrouw",
-      "adherenceNote": "Ingenomen doses als aandeel van de vastgelegde dagen waarop elk medicijn werd bijgehouden. Een dag zonder markering telt als niet ingenomen. Dagen zonder dagboeknotitie tellen naar geen van beide kanten mee.",
+      "adherenceNote": "Ingenomen geplande doses als aandeel van de doses die gepland stonden op de vastgelegde dagen sinds elk medicijn voor het eerst werd bijgehouden. Een geplande dosis zonder markering telt als niet ingenomen. Dagen zonder dagboeknotitie en medicijnen die je indien nodig neemt, tellen niet mee.",
       "columnMedication": "Medicijn",
-      "columnTaken": "Ingenomen/Dagen",
+      "columnTaken": "Ingenomen/Doses",
       "columnRate": "Percentage",
       "dosageTimeline": "Doseringsverloop",
       "started": "Gestart met {{dosage}} op {{date}}",
@@ -209,6 +261,15 @@
       "legend": "Lijn: 7-daags gemiddelde. Driehoek: een doseringswijziging.",
       "dose": "{{name}} {{dosage}}"
     },
+    "pixels": {
+      "heading": "Jaar in pixels",
+      "aria": "Stemming van elke dag in {{year}}, één vakje per dag",
+      "hint": "Eén vakje per dag, in de kleuren van je stemming.",
+      "hintTap": "Eén vakje per dag, in de kleuren van je stemming. Een tik opent de dag.",
+      "saveImage": "Opslaan als afbeelding",
+      "prevYear": "Vorig jaar",
+      "nextYear": "Volgend jaar"
+    },
     "trackers": {
       "heading": "Trackers",
       "tapHint": "Een tik opent Verkennen",
@@ -218,13 +279,22 @@
       "unknown": "Onbekende tracker {{id}}",
       "sleepHours": "Slaapuren",
       "sleepQuality": "Slaapkwaliteit",
-      "avgDays": "gem., {{count}} dagen",
-      "sumDays": "totaal, {{count}} dagen",
+      "avgDays_one": "gem., {{count}} dag",
+      "avgDays_other": "gem., {{count}} dagen",
+      "sumDays_one": "totaal, {{count}} dag",
+      "sumDays_other": "totaal, {{count}} dagen",
+      "daysLogged_one": "{{count}} dag vastgelegd",
+      "daysLogged_other": "{{count}} dagen vastgelegd",
       "yesNo": "ja op {{yes}}, nee op {{no}}",
       "notLogged": "{{count}} niet vastgelegd",
       "latestLowHigh": "laatste {{latest}}, laagste {{low}}, hoogste {{high}}",
-      "topLevel": "{{level}} op {{count}} dagen",
+      "topLevel_other": "{{level}} op {{count}} dagen",
+      "topLevel_one": "{{level}} op {{count}} dag",
       "taken": "ingenomen op {{taken}} van {{total}}",
+      "takenDoses_other": "{{taken}} van {{count}} doses ingenomen",
+      "asNeededDoses_other": "{{count}} doses indien nodig",
+      "asNeededDoses_one": "{{count}} dosis indien nodig",
+      "takenDoses_one": "{{taken}} van {{count}} dosis ingenomen",
       "empty": "Niets vastgelegd in deze periode",
       "unanswered": "{{count}} vastgelegde dagen zonder antwoord"
     },
@@ -245,6 +315,14 @@
       "footnote": "Een waarneming over vastgelegde dagen, geen oorzaak.",
       "higher": "{{outcome}} ligt op deze dagen {{delta}} punten hoger.",
       "lower": "{{outcome}} ligt op deze dagen {{delta}} punten lager.",
+      "side": {
+        "with": "Dagen met {{name}}",
+        "without": "Dagen zonder",
+        "above": "Boven {{threshold}}",
+        "atOrBelow": "{{threshold}} of lager",
+        "taken": "Ingenomen",
+        "missed": "Gemist"
+      },
       "rule": {
         "yesno": "dagen met vs. zonder",
         "halves": "boven {{threshold}} vs. {{threshold}} en lager",
@@ -347,7 +425,7 @@
     "milestones": "Mijlpalen",
     "longestStreak": "Langste reeks: {{count}} dagen",
     "openWriting": "Schrijven openen",
-    "openWellness": "Welzijn openen",
+    "openWellness": "Trackers openen",
     "computed": "berekend op dit apparaat",
     "pillars": {
       "notes": "Notities",
@@ -358,6 +436,68 @@
       "contacts": "Contacten",
       "logins": "Logins"
     },
-    "ledgerEstimated": "Geschat op basis van je notities tot het tellen begint."
+    "ledgerEstimated": "Geschat op basis van je notities tot het tellen begint.",
+    "today": "Vandaag, {{date}}",
+    "lastEdit": "Laatst bewerkt om {{time}}",
+    "wordsToday_other": "{{formatted}} woorden vandaag",
+    "edited_other": "{{count}} items bewerkt",
+    "created_other": "{{count}} nieuw",
+    "scheduled_other": "{{count}} in je agenda",
+    "next": "{{title}}, {{time}}",
+    "checkedIn": "{{word}}, ingecheckt",
+    "thisWeek": "Deze week",
+    "thisWeekHint": "De laatste 7 dagen tegenover de 7 daarvoor",
+    "vsLastWeek": "{{delta}} t.o.v. vorige week",
+    "activeDays": "Actieve dagen",
+    "notesCreated": "Items aangemaakt",
+    "checkIns": "Check-ins",
+    "streaks": "Reeksen",
+    "checkInStreak": "Check-in-reeks",
+    "keep": "Alles wat je bewaart",
+    "keepSub": "nieuw in de laatste 7 dagen",
+    "growingTags": "Groeiende tags",
+    "moodMonth": "Gemiddeld {{word}}, laatste 30 dagen",
+    "scheduled_one": "{{count}} in je agenda",
+    "created_one": "{{count}} nieuw",
+    "edited_one": "{{count}} item bewerkt",
+    "wordsToday_one": "{{formatted}} woord vandaag"
+  },
+  "recap": {
+    "thisWeek": "Deze week",
+    "previous": "Vorige week",
+    "next": "Volgende week",
+    "bestWorst": "{{best}} was je beste dag ({{bestMood}}), {{worst}} de zwaarste ({{worstMood}}).",
+    "noMood": "Deze week geen stemming vastgelegd.",
+    "also": "{{logged}} van 7 dagen met een stemming, {{created}} items aangemaakt.",
+    "againstWeekBefore": "Veranderingen zijn ten opzichte van de week ervoor.",
+    "prompt": "Wat maakte {{day}} goed?"
+  },
+  "writingTab": {
+    "inOneLook": "Deze periode in één oogopslag",
+    "wordsWritten": "Geschreven woorden",
+    "daysWrote": "Dagen dat je schreef",
+    "perDay": "{{words}} woorden per dag",
+    "notesStarted": "Begonnen notities",
+    "vsBefore": "{{delta}} t.o.v. de dagen ervoor",
+    "readTime_other": "Ongeveer {{count}} minuten leestijd geschreven",
+    "novels_other": "Goed voor {{count}} romans, aller tijden",
+    "tagsUsed": "{{count}} tags, {{used}} gebruikt in deze periode",
+    "wordsPerDay": "Woorden per dag",
+    "wordsPerWeek": "Woorden per week",
+    "biggest": "Je grootste dag was {{day}} ({{words}} woorden). Je beste weekdag is {{weekday}}.",
+    "year": "Jouw schrijfjaar",
+    "yearHint": "Donkerder: meer bewerkingen die dag",
+    "hoursHint": "Bewerkingen per weekdag en uur",
+    "topTags": "Meest gebruikte tags",
+    "lengths": "Lengte van notities",
+    "short": "Kort",
+    "median": "De helft van je notities heeft minder dan {{words}} woorden.",
+    "longest": "Je langste notities",
+    "words_other": "{{formatted}} woorden",
+    "readHours_other": "Ongeveer {{count}} uur leestijd geschreven",
+    "readHours_one": "Ongeveer {{count}} uur leestijd geschreven",
+    "words_one": "{{formatted}} woord",
+    "novels_one": "Goed voor {{count}} roman, aller tijden",
+    "readTime_one": "Ongeveer {{count}} minuut leestijd geschreven"
   }
 }

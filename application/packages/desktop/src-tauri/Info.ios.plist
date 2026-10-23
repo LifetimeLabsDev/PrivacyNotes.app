@@ -43,7 +43,7 @@
 
 	     If iOS ever DOES learn to open files, delete `tauri.ios.conf.json` and the
 	     key below, and let the shared fileAssociations flow through.
-	     Spec: ops/docs/plans/markdown-folder-handoff.md (platform matrix) -->
+	     Spec: ops/docs/archive/markdown-folder-handoff.md (platform matrix) -->
 	<!-- ITSAppUsesNonExemptEncryption IS DELIBERATELY ABSENT. Do not add it back
 	     without reading this: setting it to true BREAKS the upload, and that was
 	     proven the hard way on 2026-08-16 with Transporter error 409, "Invalid
@@ -83,7 +83,7 @@
 
 	     Consequence to know about: on iPad this also permits more than one window
 	     of the app. Nothing here has been exercised with two windows open.
-	     Spec: ops/docs/plans/app-switcher-privacy-screen.md (section 13) -->
+	     Spec: ops/docs/archive/app-switcher-privacy-screen.md (section 13) -->
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

@@ -1,6 +1,8 @@
 {
   "captionFolder": "مجلد",
   "captionTag": "وسم",
+  "captionNote": "ملاحظة",
+  "captionTracker": "متتبع",
   "useDefault": "استخدام الافتراضي",
   "color": "اللون",
   "noColor": "بلا لون",

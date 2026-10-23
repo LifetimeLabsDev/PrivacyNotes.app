@@ -9,7 +9,8 @@
     "tabExport": "Export",
     "tabRestore": "Obnova",
     "tabVault": "Heslá",
-    "working": "Pracujem…"
+    "working": "Pracujem…",
+    "tabWellness": "Sledované hodnoty"
   },
   "footer": {
     "exportNote": "Exporty bežia lokálne. Nič sa nenahráva.",
@@ -20,7 +21,9 @@
     "autoTagLabel": "Označiť importované poznámky podľa zdroja",
     "autoTagDesc": "Poznámky z Google Keep dostanú <keep>#google</keep>, poznámky z Obsidianu <obsidian>#obsidian</obsidian> a tak ďalej.",
     "guideAria": "Návod na import pre {{app}}",
-    "guideLabel": "Návod"
+    "guideLabel": "Návod",
+    "groupGeneral": "Všeobecné",
+    "groupNotes": "Poznámky"
   },
   "folderImport": {
     "tagLabel": "Označiť poznámky aj podľa priečinka",
@@ -56,6 +59,24 @@
     "ends": "Koniec",
     "repeats": "Opakuje sa"
   },
+  "webcal": {
+    "title": "Webcal",
+    "desc": "Adresa kalendára, napríklad odkaz webcal:// z Protonu, iCloudu, Outlooku alebo z verejného kalendára. Stiahne sa raz; keď ju neskôr vložíš znova, pridajú sa iba nové udalosti.",
+    "fieldLabel": "Adresa kalendára",
+    "import": "Importovať",
+    "downloading": "Sťahuje sa…",
+    "errors": {
+      "invalid": "Vlož adresu, ktorá začína na webcal://, webcals:// alebo https://.",
+      "refused": "Túto adresu nie je možné otvoriť.",
+      "wrongType": "Táto adresa nevedie k súboru kalendára.",
+      "tooLarge": "Tento kalendár je väčší ako 10 MB.",
+      "timeout": "Server kalendára neodpovedal včas. Skús to znova neskôr.",
+      "blocked": "Server kalendára odmietol sťahovanie. Skontroluj, či je kalendár zdieľaný alebo verejný.",
+      "offline": "Si offline. Pripoj sa a skús to znova.",
+      "limit": "Príliš veľa sťahovaní v krátkom čase. Počkaj minútu a skús to znova.",
+      "failed": "Kalendár sa nepodarilo stiahnuť. Skontroluj adresu a skús to znova."
+    }
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip (priečinok Keep) alebo jedna poznámka .json. Kontrolné zoznamy sa importujú ako natívne zoznamy úloh.",
     "googleCalendar": "Súbor .zip z Google Calendar cez Settings > Import & export, alebo jeden súbor .ics. Udalosti si zachovajú časy, opakovania aj pripomienky.",
@@ -88,7 +109,7 @@
     "intro": "Importuj prihlasovacie údaje, kreditné karty a SSH kľúče z iného správcu hesiel."
   },
   "restorePick": {
-    "intro": "Obnov zálohu PrivacyNotes z predchádzajúceho exportu. Tvoj súbor sa načíta a dešifruje lokálne.",
+    "intro": "Obnov zálohu PrivacyNotes z predchádzajúceho exportu.",
     "fullBackupTitle": "Úplná záloha (.zip)",
     "fullBackupDesc": "Obnoví poznámky, denníky, položky trezora, úlohy, obrázky, zvuk a súbory. Poznámka, ktorú už máš, sa zachová, alebo sa aktualizuje, ak záloha obsahuje jej novšiu kópiu.",
     "encryptedBackupTitle": "Šifrovaná záloha (.pnbackup, .pnbackupz)",

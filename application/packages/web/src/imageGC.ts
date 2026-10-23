@@ -578,7 +578,22 @@ export async function reconcileOrphanBlobs(
   // every way out of this pass other than completion counts as an attempt -
   // a gate that returns, a read that throws, a listing that fails.
   markReconcileTried(pubkey);
+  // The pass reads under whatever session the client holds at each request,
+  // and deletes under the prefix of `pubkey`. A session that moves to another
+  // account and back between those reads would hand it another account's
+  // empty version set, and the delete would then run on this account again.
+  // So a session that does not carry `pubkey`, seen at any point after the
+  // start, ends the pass before it deletes. A refresh or a tab-focus event of
+  // this account's own session is not a move.
+  let sessionMoved = false;
+  const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    if (session?.user?.app_metadata?.pubkey !== pubkey) sessionMoved = true;
+  });
   try {
+    // The session must belong to the account whose prefix this pass deletes.
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (sessionData.session?.user?.app_metadata?.pubkey !== pubkey) return;
+
     // Pending deletions this device never queued. The device that queued
     // one may have signed out, which clears its queue, or lost its cancel;
     // the server purge then removes the object with no reference check. A
@@ -672,7 +687,7 @@ export async function reconcileOrphanBlobs(
     }
 
     // Gate 4: history snapshots. Only paid for once something looks orphaned.
-    const versionRefs = await collectVersionBlobRefs(supabase, encryptionKey);
+    const versionRefs = await collectVersionBlobRefs(supabase, pubkey, encryptionKey);
     if (!versionRefs) return; // unreadable - never delete on a partial set
     candidates = candidates.filter((uuid) => !versionRefs.has(uuid));
     if (candidates.length === 0) {
@@ -685,6 +700,7 @@ export async function reconcileOrphanBlobs(
     if (versionActivity !== activity) return;
     candidates = candidates.filter((uuid) => !heldForVersion(uuid));
     if (candidates.length === 0) return;
+    if (sessionMoved) return;
 
     // Images and attachments share one bucket and one path shape, and the
     // object name does not say which is which - removeRemoteOnly is the same
@@ -699,6 +715,7 @@ export async function reconcileOrphanBlobs(
   } catch (err) {
     console.warn('[imageGC] reconcile failed:', err);
   } finally {
+    subscription.unsubscribe();
     reconcileInFlight = false;
   }
 }
@@ -707,8 +724,10 @@ export async function reconcileOrphanBlobs(
  * Every blob uuid referenced by any note_version snapshot on the account.
  * Returns null when the set cannot be established - unreadable, oversized, or
  * short-read version data must abort the reconcile rather than let it delete
- * against an incomplete picture. RLS ('note_versions_owner_select', migration
- * 0014) scopes an unfiltered select to the caller's own rows.
+ * against an incomplete picture. RLS ('note_versions_owner_select') scopes the
+ * read to the caller; the explicit owner gives the planner an index condition
+ * on `note_versions(user_pubkey)` instead of a table scan.
+ * Spec: ops/docs/archive/supabase-performance-2026-09.md (Capacity check, 2026-10-19)
  *
  * The row count is established first and every page is then read explicitly,
  * because a single big `.limit()` cannot tell "that is all of them" apart from
@@ -719,11 +738,13 @@ export async function reconcileOrphanBlobs(
  */
 async function collectVersionBlobRefs(
   supabase: SupabaseClient,
+  pubkey: string,
   encryptionKey: Uint8Array,
 ): Promise<Set<string> | null> {
   const { count, error: countErr } = await supabase
     .from('note_versions')
-    .select('id', { count: 'exact', head: true });
+    .select('id', { count: 'exact', head: true })
+    .eq('user_pubkey', pubkey);
   if (countErr || count == null) {
     console.warn('[imageGC] reconcile version count failed:', countErr?.message);
     return null;
@@ -740,6 +761,7 @@ async function collectVersionBlobRefs(
     const { data, error } = await supabase
       .from('note_versions')
       .select('ciphertext, nonce')
+      .eq('user_pubkey', pubkey)
       .order('created_at', { ascending: true })
       .order('id', { ascending: true })
       .range(from, from + LIST_PAGE - 1);

@@ -47,7 +47,7 @@ class MainActivity : TauriActivity() {
   private var printWebView: WebView? = null
   // Whether the app lock is on, pushed by the web layer through the
   // __pnPrivacy bridge below. Decides whether the recents card shows the
-  // notes. Spec: ops/docs/plans/app-switcher-privacy-screen.md
+  // notes. Spec: ops/docs/archive/app-switcher-privacy-screen.md
   private var privacyScreenArmed = false
   // Whether the user turned on the capture block, pushed through the same
   // bridge. While true, FLAG_SECURE stays up even with the app in focus, so a
@@ -155,7 +155,7 @@ class MainActivity : TauriActivity() {
    * is copied with a byte cap under a .tmp- name, and the items of one share
    * are renamed into place together once every copy is done: the app is in
    * front while this runs, and a drain must see the whole share or none of it.
-   * Spec: ops/docs/plans/share-into-app.md
+   * Spec: ops/docs/archive/share-into-app.md
    */
   private fun takeShare(intent: Intent?) {
     val action = intent?.action

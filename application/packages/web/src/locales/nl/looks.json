@@ -1,6 +1,8 @@
 {
   "captionFolder": "Map",
   "captionTag": "Tag",
+  "captionNote": "Notitie",
+  "captionTracker": "Tracker",
   "useDefault": "Standaard gebruiken",
   "color": "Kleur",
   "noColor": "Geen kleur",

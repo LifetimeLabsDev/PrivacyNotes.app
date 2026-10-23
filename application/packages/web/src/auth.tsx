@@ -44,7 +44,7 @@ import { MfaPromptLayer } from './MfaPrompt';
 import { ensureLevel2, useMfaPrompt, dismissMfaPrompt, mfaSessionChanged, isMfaRefusal, MfaRequiredError, MfaCancelledError, mfaSessionIdentity, withMfaAwareTimeout } from './mfaStep';
 import { buildDemoAuthState } from './demoAuth';
 import { ConfirmModal } from './ConfirmModal';
-import { seedOnboardingNotes, SEED_MEDICATION } from './welcomeNote';
+import { seedOnboardingNotes, SEED_MEDICATION, withSeedFactors } from './welcomeNote';
 import {
   trustAwareStorage,
   setTrustedDevice,
@@ -693,7 +693,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const encryptionKey = deriveEncryptionKey(seed);
     // Registered at derivation time, not at setAuth: the fresh-vault
     // seed writes notes before the auth state exists, and those writes
-    // must already be sealable. Spec: ops/docs/plans/local-at-rest.md (section 3.1)
+    // must already be sealable. Spec: ops/docs/archive/local-at-rest.md (section 3.1)
     registerLocalDataKey(deriveLocalDataKey(seed));
     // Spec: ops/docs/device-fingerprint-hash.md (derived client-side from the seed, never sent to the server)
     const fpPepper = deriveFpPepper(seed);
@@ -726,7 +726,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // WITH the data it vouches for, so a localStorage eviction that
       // took the marker but left the notes no longer reads as an
       // account switch. That false positive destroyed the user's own
-      // wrapped phrase and unsynced rows (session audit 2026-08-25).
+      // wrapped phrase and unsynced rows.
       const mirror = await readOwnerMirror();
       if (mirror === pubkey) {
         logAuthEvent('auth:owner-marker-restored');
@@ -842,7 +842,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // local-data wipe is sufficient for OAuth; the signOut is only
       // needed by the phrase path before it calls signInAnonymously below.
       // The method check matters as much as the param check (same class
-      // as failHandshake below, 2026-08-25 session audit): an
+      // as failHandshake below): an
       // OAuth-method BACKGROUND revalidation carries no oauthSession
       // param, and an owner-unknown false positive (evicted
       // PUBKEY_OWNER_KEY with the user's own IndexedDB intact) would
@@ -865,7 +865,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // anonymous mint). failHandshake keys off it: a half-linked fresh
     // mint may be dropped for a clean retry, a cached session that was
     // healthy before this pass must never die to a transient handshake
-    // failure (2026-08-25 session audit).
+    // failure.
     let mintedThisPass = false;
     let authUid: string | undefined;
     let accessToken: string | undefined;
@@ -960,7 +960,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // The ONLY branch that may destroy a session: an explicit
           // server "no" (user purged via dashboard, session revoked,
           // banned). Allowlisted on purpose - the wipe used to be the
-          // catch-all else, and the 2026-08-25 session audit confirmed
+          // catch-all else, and a review confirmed
           // that a 429 (AuthApiError, not retryable in auth-js 2.112)
           // and an unparseable proxy page (AuthUnknownError) landed
           // here and destroyed healthy sessions.
@@ -1141,7 +1141,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // before this handshake began must survive a transient link or
       // register failure (the claim gate makes a claimless session
       // harmless, and the next revalidation repairs the link on the
-      // same session). Session audit 2026-08-25. It goes by its own token,
+      // same session). It goes by its own token,
       // never as whatever session is stored now, which on a trusted device
       // can be one another tab signed in meanwhile.
       if (!oauthSession && method !== 'oauth' && mintedThisPass) {
@@ -1177,7 +1177,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       //
       // 1. STALE TOKEN. When getUser was unreachable above we adopted the
       //    cached session's access token WITHOUT a server check (a
-      //    transient error is not a verdict - session audit 2026-08-25).
+      //    transient error is not a verdict).
       //    That token can be dead server-side - its session revoked by a
       //    rotation-reuse, a sign-out in another tab, or an admin - while
       //    still unexpired locally, so getSession hands it over and only
@@ -1202,7 +1202,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       //    anonymous cap; retry the SAME token once after a short pause.
       //
       // One extra attempt total, then the failure is real and surfaces.
-      // Spec: ops/docs/auth-session-audit-2026-08.md (stale cached token at link-pubkey)
       let linkError: FnError | null = null;
       let linkBody: unknown = null;
       for (let attempt = 0; attempt < 2; attempt++) {
@@ -1518,7 +1517,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const withMed = s.medications?.some((m) => m.id === SEED_MEDICATION.id)
           ? s
           : { ...s, medications: [...(s.medications ?? []), SEED_MEDICATION] };
-        saveLocalSettings({ ...withMed, welcomeNoteSeeded: true }, since);
+        saveLocalSettings({ ...withMed, factors: withSeedFactors(withMed.factors), welcomeNoteSeeded: true }, since);
       } catch (err) {
         console.warn('[auth] fresh-vault seed failed (sync gate will retry):', err);
       }

@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next';
-import { BUILTIN_TRACKER_COLORS } from '../trackerTypes';
 import { PillShell } from './PillShell';
+import { useLastLogged } from '../trackerLastLogged';
 import { TRACKER_ICONS } from './icons';
+import { NumberStepper, PanelQuestion } from './panelUI';
 
-/**
- * Sleep Score pill - 0-100 slider for smartwatch/wearable sleep scores.
- */
+/** The scores the quick picks offer. */
+const QUICK_SCORES = [60, 70, 80, 90] as const;
+
+/** Sleep Score pill - a watch's 0 to 100 score, as a stepper. */
 export function SleepScorePill({
   value,
   expanded,
@@ -20,10 +22,10 @@ export function SleepScorePill({
   readOnly?: boolean;
 }) {
   const { t } = useTranslation('trackers');
+  const last = useLastLogged((d) => d.sleepScore);
   return (
     <PillShell
       label={t('labels.sleepScore')}
-      color={BUILTIN_TRACKER_COLORS.sleepScore}
       filled={value != null}
       expanded={expanded}
       onToggle={onToggle}
@@ -31,25 +33,9 @@ export function SleepScorePill({
       icon={TRACKER_ICONS.sleepScore}
       readOnly={readOnly}
     >
-      <div className="flex flex-col gap-3">
-        <span className="text-xs font-medium text-pn-soft">
-          {t('sleepScore.prompt')}
-        </span>
-        <div className="flex items-center gap-3">
-          <input
-            type="range"
-            min={0}
-            max={100}
-            step={1}
-            value={value ?? 75}
-            onChange={(e) => onChange(parseInt(e.target.value, 10))}
-            className="flex-1 h-1.5 cursor-pointer"
-            style={{ accentColor: BUILTIN_TRACKER_COLORS.sleepScore }}
-          />
-          <span className="text-sm font-medium text-pn-soft w-8 text-end tabular-nums">
-            {value ?? 75}
-          </span>
-        </div>
+      <div className="max-w-[420px]">
+        <PanelQuestion>{t('sleepScore.prompt')}</PanelQuestion>
+        <NumberStepper value={value} onChange={onChange} min={0} max={100} step={1} quick={QUICK_SCORES} start={last} placeholder="75" expanded={expanded} />
       </div>
     </PillShell>
   );

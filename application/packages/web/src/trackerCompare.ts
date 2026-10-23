@@ -1,13 +1,13 @@
 import { toLocalIso } from './intlFormat';
 import type { JournalEntry } from './trackerStats';
-import type { CompareResult, CompareRuleKind, RangeBounds, TrackerDescriptor, TrackerKind } from './wellnessTypes';
+import type { CompareResult, CompareRuleKind, DaySeries, RangeBounds, TrackerDescriptor, TrackerKind } from './wellnessTypes';
 
 /**
  * One tracker against one numeric outcome: the days split into two groups by
  * a rule fixed per kind, the outcome averaged on each side. A rule never
  * depends on the tracker's name, and a threshold is never picked for the size
  * of the difference it produces.
- * Spec: ops/docs/plans/wellness-statistics.md (section 7)
+ * Spec: ops/docs/archive/wellness-statistics.md (section 7)
  */
 
 /** Days needed on each side before a difference is shown. */
@@ -220,4 +220,35 @@ export function moodStreak(entries: JournalEntry[], today: string): number {
     day.setDate(day.getDate() - 1);
   }
   return streak;
+}
+
+/** How closely a tracker may follow the outcome day by day before it counts as a second scale of the same thing. */
+const ECHO_MIN_R = 0.6;
+
+/**
+ * True when a numeric tracker moves almost in step with the outcome on the
+ * same days. A "day rating" or a "stress" scale restates the mood, so a
+ * sentence about it tells the reader nothing new. A yes or no, a level or a
+ * tag never counts: only numbers on both sides are compared.
+ */
+export function echoesOutcome(tracker: DaySeries, outcome: DaySeries): boolean {
+  const byDate = new Map(outcome.points.map((p) => [p.date, p.value]));
+  const xs: number[] = [];
+  const ys: number[] = [];
+  for (const p of tracker.points) {
+    const o = byDate.get(p.date);
+    if (typeof p.value === 'number' && typeof o === 'number') { xs.push(p.value); ys.push(o); }
+  }
+  if (xs.length < MIN_PER_SIDE * 2) return false;
+  const mean = (a: number[]) => a.reduce((s, v) => s + v, 0) / a.length;
+  const mx = mean(xs);
+  const my = mean(ys);
+  let sxy = 0, sxx = 0, syy = 0;
+  for (let i = 0; i < xs.length; i++) {
+    const dx = xs[i]! - mx;
+    const dy = ys[i]! - my;
+    sxy += dx * dy; sxx += dx * dx; syy += dy * dy;
+  }
+  if (sxx === 0 || syy === 0) return false;
+  return Math.abs(sxy / Math.sqrt(sxx * syy)) >= ECHO_MIN_R;
 }

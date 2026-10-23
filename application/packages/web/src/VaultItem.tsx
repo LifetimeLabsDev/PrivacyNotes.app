@@ -13,7 +13,7 @@ import { Copy, Check, Download, Eye, EyeSlash, ArrowSquareOut, X, Key, CreditCar
 import { openExternal } from './openExternal';
 import { DETAIL_COLUMN, DetailAction, DetailCopyAction, DetailHero, DetailLink, DetailNotes, DetailRow, DetailTile } from './detailPane';
 import { useCopyToClipboard } from './clipboard';
-import { useTheme } from './theme';
+import { useFavicons } from './theme';
 import { parseTotpInput, generateTotpCode, totpSecondsRemaining } from '@notes/shared';
 import { proUnlocked } from './demo';
 import { PasswordText } from './PasswordText';
@@ -38,7 +38,7 @@ function Favicon({ domain, size = 20, onMissing }: { domain: string; size?: numb
   const [src, setSrc] = useState('');
   const [failed, setFailed] = useState(false);
   const containerRef = useRef<HTMLSpanElement>(null);
-  const { favicons } = useTheme();
+  const favicons = useFavicons();
   const url = domain && favicons ? faviconUrl(domain) : '';
 
   useEffect(() => {

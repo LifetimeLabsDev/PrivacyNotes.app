@@ -10,6 +10,8 @@
     "back": "Terug",
     "next": "Volgende",
     "remove": "Verwijderen",
+    "deleteConfirm": "Verwijderen?",
+    "removeConfirm": "Verwijderen?",
     "copy": "Kopiëren",
     "rename": "Naam wijzigen",
     "create": "Aanmaken",
@@ -59,15 +61,17 @@
   },
   "palette": {
     "label": "Opdrachten",
-    "open": "Opdrachten (>)",
+    "open": "Opdrachten",
     "empty": "Geen overeenkomende opdracht",
     "groups": {
+      "features": "Functies",
       "commands": "Opdrachten",
       "new": "Nieuw",
-      "goTo": "Ga naar"
+      "goTo": "Ga naar",
+      "themes": "Thema's"
     },
     "commands": {
-      "quickSwitcher": "Naar een item of instelling springen",
+      "quickSwitcher": "Ninja openen: een item vinden, iets toevoegen, een opdracht uitvoeren",
       "historyBack": "Terug",
       "historyForward": "Vooruit",
       "toggleSidebar": "Zijbalk tonen of verbergen",
@@ -93,9 +97,9 @@
     }
   },
   "quickSwitcher": {
-    "label": "Naar een item of instelling springen",
-    "jumpTo": "Springen",
-    "placeholder": "Typ een titel of instelling, of > voor opdrachten",
+    "label": "Ninja: een item of instelling vinden, iets toevoegen, een opdracht uitvoeren",
+    "jumpTo": "Ninja",
+    "placeholder": "Ninja tot je dienst: een titel, + om toe te voegen, > voor opdrachten",
     "recent": "Recent geopend",
     "empty": "Geen item of instelling met die naam",
     "searchAll": "Alles doorzoeken: ‘{{query}}’",
@@ -114,6 +118,7 @@
     "tagItems_other": "{{count}} items",
     "emptyTags": "Geen tag met die naam",
     "emptyFolders": "Geen map met die naam",
+    "emptyVault": "Hier staat nog niets. Typ + om je eerste item toe te voegen.",
     "onlyTags": "tags",
     "onlyFolders": "mappen",
     "showOnlyTags": "Alleen tags",
@@ -124,7 +129,13 @@
     "createTag": "Tag #{{name}} aanmaken",
     "createFolder": "Map ‘{{name}}’ aanmaken",
     "newTag": "Nieuwe tag",
-    "newFolder": "Nieuwe map"
+    "newFolder": "Nieuwe map",
+    "goToDay": "Naar dag gaan",
+    "inText": "In de tekst",
+    "actions": "acties",
+    "back": "terug",
+    "actionsPlaceholder": "Acties filteren",
+    "onlyCreate": "toevoegen"
   },
   "cardForm": {
     "cardholderName": "Naam kaarthouder",
@@ -182,46 +193,48 @@
     "removeTag": "{{tag}} verwijderen"
   },
   "loading": {
+    "pause": "De regels pauzeren",
+    "play": "De regels afspelen",
     "lines": [
-      "je versleutelde gepieker wordt geladen…",
-      "momentje, we stellen adverteerders even teleur.",
-      "te versleuteld om zich druk te maken.",
-      "zwitserse kluisenergie voor je notities.",
-      "we beschermen je douchegedachten.",
-      "je geheimen overleefden weer een herstart.",
-      "niets verlaat het apparaat ongekleed.",
-      "de kluis gaat stilletjes open…",
-      "koude opslag voor warme gedachten.",
-      "deze notitie respecteert zichzelf én je privacy.",
-      "lezen onmogelijk. synchroniseren mogelijk.",
-      "lokaal ontsleuteld. wereldwijd genegeerd.",
-      "je notities houden sociale afstand.",
-      "cijfertekst erin, cijfertekst eruit.",
-      "weer een prachtige dag om te versleutelen.",
-      "we houden geheimen saai sinds dag één.",
-      "jij schrijft het. niemand leest het.",
-      "privacy zonder de ted talk.",
-      "we ontsleutelen alsof het niemand wat aangaat.",
-      "we houden de cloud in het ongewisse.",
-      "de server weet niets. en dat bevalt de server prima.",
-      "minder surveillance. meer notities.",
-      "versleutelde onzin, zoals verwacht.",
-      "wiskundig onbereikbaar.",
-      "zero knowledge. maximale brutaliteit.",
-      "tracking uitgeschakeld, emotioneel én technisch.",
-      "jouw apparaat houdt de roddels voor zich.",
-      "lokaal geproduceerde leesbare tekst.",
-      "gedachten worden onleesbare soep.",
-      "alleen jij en de sleutels.",
-      "privégedachten gaan in privémodus.",
-      "we houden je toekomstige lekken fictief.",
-      "weer een notitie verborgen voor het kapitalisme.",
-      "privacy kost hier niets extra.",
-      "veiligheid door daadwerkelijke veiligheid.",
-      "we dwarsbomen databrokers in stilte.",
-      "geen trainingsmateriaal voor ai gevonden.",
-      "harder versleuteld dan nodig.",
-      "privacy: wordt geladen.",
+      "zwitserse bankenergie voor je notities",
+      "we beschermen je douchegedachten",
+      "je notities zijn versleuteld op je apparaat",
+      "koude opslag voor warme gedachten",
+      "weer een prachtige dag om te versleutelen",
+      "we houden geheimen saai sinds dag één",
+      "privacy zonder de ted talk",
+      "we houden de cloud in het ongewisse",
+      "de server bewaart cijfertekst. hij vindt het saai",
+      "minder surveillance. meer notities",
+      "versleutelde onzin, zoals verwacht",
+      "tracking uitgeschakeld, emotioneel én technisch",
+      "jouw apparaat houdt de roddels voor zich",
+      "privégedachten gaan in privémodus",
+      "weer een notitie verborgen voor het kapitalisme",
+      "privacy kost hier niets extra",
+      "veiligheid door daadwerkelijke veiligheid",
+      "we dwarsbomen databrokers in stilte",
+      "geen trainingsmateriaal voor ai gevonden",
+      "harder versleuteld dan nodig",
+      "alleen signaal. geen surveillance",
+      "vertrouwensproblemen omgezet in software",
+      "je gedachten blijven van de markt",
+      "dataminers vonden alleen verdriet",
+      "je kluis blijft agressief versleuteld",
+      "zwitserse neutraliteit, maar dan voor notities",
+      "geen advertenties. geen trackers. geen plotwending",
+      "open source, zodat je de wiskunde kunt nakijken",
+      "cijfertekst is onze liefdestaal",
+      "we maken je notities saai voor vreemden",
+      "je dagboek belde. het wil privacy",
+      "je stemmingstracker heeft je gemist",
+      "je ideeën, zonder publiek",
+      "je dagboek heeft je geheimen vannacht bewaard",
+      "één privéplek voor alles wat je nooit zou posten",
+      "geen algoritme bepaalt wat je hier ziet",
+      "je hersenspinsels zijn veilig en wel",
+      "schrijven is denken. denken is privé",
+      "er zijn geen influencers geraadpleegd",
       "geheimen worden verantwoord geladen.",
       "alleen signaal. geen surveillance.",
       "weer een versleuteld meesterwerk onderweg.",
@@ -236,6 +249,27 @@
       "existentiële gedachten worden lokaal ontsleuteld…",
       "je kluis blijft agressief onleesbaar.",
       "zwitserse neutraliteit, maar dan voor notities."
+    ],
+    "loadingOnly": [
+      "je versleutelde gepieker wordt geladen",
+      "momentje, we stellen adverteerders even teleur",
+      "je geheimen overleefden weer een herstart",
+      "de kluis gaat stilletjes open",
+      "lokaal ontsleuteld. wereldwijd genegeerd",
+      "we ontsleutelen alsof het niemand wat aangaat",
+      "lokaal geproduceerde leesbare tekst",
+      "gedachten worden onleesbare soep",
+      "weer een versleuteld meesterwerk op komst",
+      "orde scheppen in versleutelde chaos",
+      "existentiële gedachten worden lokaal ontsleuteld",
+      "de sleutels worden opgewarmd",
+      "we zoeken je gedachtegang terug",
+      "we tellen je open taken. zonder oordeel",
+      "tijdens dit laden zijn geen advertenties getoond",
+      "we leggen je notities terug waar je ze liet",
+      "we ontwarren de gedachten van gisteren",
+      "bits worden netjes op volgorde gezet",
+      "we onthouden wat je vergat te onthouden"
     ]
   },
   "neverBackedUp": {
@@ -245,5 +279,57 @@
     "changesOne": "De laatste wijzigingen zijn niet geback-upt en zouden verloren gaan.",
     "changesSome_one": "{{count}} van deze notities heeft niet-geback-upte wijzigingen die verloren zouden gaan.",
     "changesSome_other": "{{count}} van deze notities hebben niet-geback-upte wijzigingen die verloren zouden gaan."
+  },
+  "ninja": {
+    "recent": "Recent geopend",
+    "topHit": "Beste overeenkomst",
+    "trashEmpty": "De prullenbak is leeg",
+    "allThemes": "Alle thema's",
+    "features": {
+      "stats": {
+        "label": "Statistieken",
+        "detail": "Je schrijven, reeksen en trackers door de tijd"
+      },
+      "trackers": {
+        "label": "Trackers",
+        "detail": "Stemming, gewoonten, factoren en medicatie"
+      },
+      "medication": {
+        "label": "Medicatie",
+        "detail": "Doses, tijden en herinneringen"
+      },
+      "yearInPixels": {
+        "label": "Jaar in pixels",
+        "detail": "Elke dag van het jaar als één gekleurd vakje"
+      },
+      "importExport": {
+        "label": "Import & Export",
+        "detail": "Notities binnenhalen, een back-up meenemen"
+      },
+      "generator": {
+        "label": "Wachtwoordgenerator",
+        "detail": "Een sterk wachtwoord of een wachtwoordzin, klaar om te kopiëren"
+      },
+      "themes": {
+        "label": "Thema's",
+        "detail": "Kleurthema's voor licht en donker"
+      }
+    },
+    "new": {
+      "medication": "Nieuwe medicatie",
+      "customTracker": "Nieuwe eigen tracker"
+    },
+    "commands": {
+      "syncResume": "Synchronisatie hervatten",
+      "changelog": "Wat is er nieuw",
+      "help": "Help",
+      "themesPage": "Communitythema's",
+      "website": "Website van PrivacyNotes"
+    },
+    "themes": {
+      "word": "Thema",
+      "light": "Licht thema",
+      "dark": "Donker thema"
+    }
   }
 }

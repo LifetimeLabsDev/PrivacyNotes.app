@@ -27,7 +27,7 @@
  * Lines end in CRLF and fold at 75 octets on character boundaries, so a
  * multi-byte character is never cut.
  *
- * Spec: ops/docs/plans/contacts-pillar.md (section 8)
+ * Spec: ops/docs/archive/contacts-pillar.md (section 8)
  */
 
 import { bytesToBase64 } from '@notes/shared';

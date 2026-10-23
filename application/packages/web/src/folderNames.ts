@@ -8,7 +8,7 @@
  * `NotesView` owns the folder list and provides the map once, so a rename
  * re-labels every visible chip.
  *
- * Spec: ops/docs/ui-patterns.md (section 41, per-item folder chip)
+ * Spec: ops/docs/archive/ui-patterns.md (section 41, per-item folder chip)
  */
 import { createContext, useContext } from 'react';
 

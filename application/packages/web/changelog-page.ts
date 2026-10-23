@@ -2,11 +2,11 @@ import { transformWithOxc, type Plugin } from 'vite';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss } from './static-page-theme.ts';
+import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss, WASHI_DARK, WASHI_LIGHT } from './static-page-theme.ts';
 import { SEARCH_CORE_SCRIPT_TAG } from './search-core-script.ts';
 import { foldText } from './src/textFold.ts';
 import { loadShots, type Shot } from './changelog-shots.ts';
-import { LIGHTBOX_CSS, brandMark, BUG_ICON, CHROME_CSS, LINK_ICON, OG_IMAGE_TAGS, ogLocaleTag, RSS_ICON, SITE_FOOTER, siteNav, TEXT_ICON } from './static-page-chrome.ts';
+import { LIGHTBOX_CSS, brandMark, BUG_ICON, CHROME_CSS, GITHUB_ICON, LINK_ICON, OG_IMAGE_TAGS, ogLocaleTag, RSS_ICON, SITE_FOOTER, siteNav, TEXT_ICON } from './static-page-chrome.ts';
 
 // Pre-renders a static /changelog page from the single source of
 // truth: src/publicChangelog.ts. Emitted as changelog/index.html so
@@ -50,7 +50,7 @@ const FEED_PATH = '/changelog/feed.xml';
 const MD_PATH = '/changelog.md';
 
 /** How many releases are visible before the reader asks for more. */
-// Spec: ops/docs/ui-patterns.md section 58 (changelog rail + reveal)
+// Spec: ops/docs/archive/ui-patterns.md section 58 (changelog rail + reveal)
 const PAGE_SIZE = 25;
 
 type ChangelogItem = { type: 'new' | 'improved' | 'fixed'; text: string; shot?: string | string[] };
@@ -195,8 +195,14 @@ function renderGallery(shots: Shot[]): string {
           .join('')}</div>`
       : '';
   const data = shots.map((s) => ({ src: s.src, dark: s.dark?.src ?? null, alt: s.alt }));
+  // The hero keeps the height of its tallest picture at the width it is
+  // drawn, so the arrows and the thumbnails stay put while a reader steps
+  // through shots of different sizes. 42px is the hero's padding and border.
+  const fits = shots
+    .flatMap((s) => (s.dark ? [s, s.dark] : [s]))
+    .map((s) => `min(${css(s.h)}px,560px,(100cqw - 42px)*${(s.h / s.w).toFixed(4)})`);
   return `<div class="cl-gal" data-shots="${esc(JSON.stringify(data))}">
-<div class="cl-stage"><a class="cl-hero" href="${first.src}" data-i="0">${shotImgs(first, first.alt)}</a></div>${thumbs}
+<div class="cl-stage" style="--hero-h:max(${fits.join(',')})"><a class="cl-hero" href="${first.src}" data-i="0">${shotImgs(first, first.alt)}</a></div>${thumbs}
 </div>`;
 }
 
@@ -312,6 +318,11 @@ ${y.months
 ${typeRows}
 </nav>
 ${months}
+<div class="rail rail-next">
+<p class="eyebrow">// Coming next</p>
+<p class="rail-note">Want a preview of the next version? Closed issues on GitHub show work that is done but may not be released yet. Follow development there as it happens.</p>
+<a class="ritem" href="${ISSUES_URL}?q=is%3Aissue+state%3Aclosed" target="_blank" rel="noopener noreferrer">${GITHUB_ICON}<span class="rlbl">Closed issues</span></a>
+</div>
 <div class="rail rail-extra">
 <a class="ritem r-bug" href="https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues" target="_blank" rel="noopener noreferrer">${BUG_ICON}<span class="rlbl">Report a bug</span></a>
 <a class="ritem r-rss" href="${FEED_PATH}">${RSS_ICON}<span class="rlbl">RSS feed</span></a>
@@ -331,7 +342,8 @@ const PAGE_CSS = `.cl-month{margin:30px 0 4px;scroll-margin-top:16px}
 .release:hover .perma,.perma:focus-visible{opacity:1}
 .perma:hover{color:var(--accent)}
 .perma.done{opacity:1;color:var(--new-fg)}
-.rail-extra{margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+.rail-next,.rail-extra{margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+.rail-note{margin:0 4px 8px;font-size:12.5px;line-height:1.5;color:var(--muted)}
 /* The only red control on the site's static pages: it is the only one that
    files something against us, and it should not read as a section link. */
 .r-bug{color:var(--bad)}
@@ -359,7 +371,8 @@ const PAGE_CSS = `.cl-month{margin:30px 0 4px;scroll-margin-top:16px}
 .cl-hero{display:flex;justify-content:center;align-items:center;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--rail);cursor:zoom-in}
 .cl-hero img{box-shadow:0 1px 2px rgba(0,0,0,.06),0 6px 20px rgba(0,0,0,.08)}
 .cl-thumbs{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-top:12px}
-.cl-stage{position:relative}
+.cl-stage{position:relative;container-type:inline-size}
+.cl-stage .cl-hero{min-height:calc(var(--hero-h,0px) + 42px)}
 .cl-step{position:absolute;top:50%;margin-top:-20px;display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--fg);cursor:pointer;opacity:.9;box-shadow:0 1px 4px rgba(0,0,0,.12)}
 .cl-step:hover{opacity:1;color:var(--accent);border-color:var(--accent)}
 .cl-step[hidden]{display:none}
@@ -377,7 +390,8 @@ const PAGE_CSS = `.cl-month{margin:30px 0 4px;scroll-margin-top:16px}
 .issuechip:hover{color:var(--accent);text-decoration:underline}
 ${LIGHTBOX_CSS}
 @media(max-width:860px){
-.rail-extra{margin-top:14px;padding-top:0;border-top:0}
+.rail-next,.rail-extra{margin-top:14px;padding-top:0;border-top:0}
+.rail-note{flex:1 1 100%;margin:0 2px 4px}
 }
 @media(max-width:600px){
 .cl-origin{padding:20px}
@@ -407,8 +421,8 @@ ${SEARCH_CORE_SCRIPT_TAG}
 <script src="/static-pages.js" defer></script>
 <style>
 ${themeVarsCss(
-  '--bg:#fff;--fg:#15171a;--muted:#5b6168;--faint:#8a9099;--line:#e7e9ec;--card:#fff;--accent:#1E40AF;--chip:#eceef1;--rail:#f2f3f5;--on-accent:#fff;--new-bg:#eaf3de;--new-fg:#3b6d11;--imp-bg:#eff6ff;--mark-fg:#1E40AF;--imp-fg:#0c447c;--fix-bg:#faeeda;--fix-fg:#854f0b;--bad:#b3261e;--bad-bg:#fcebeb',
-  '--bg:#0e1014;--fg:#e7e9ec;--muted:#9aa1aa;--faint:#6b7178;--line:#23262c;--card:#14171c;--accent:#4A90D9;--chip:#3a4149;--rail:#191d23;--on-accent:#03203E;--new-bg:#1c2a14;--new-fg:#a7cf6f;--imp-bg:#11233a;--mark-fg:#7FB0E4;--imp-fg:#85b7eb;--fix-bg:#2e2410;--fix-fg:#e3a84e;--bad:#e0655e;--bad-bg:#2b1614'
+  `${WASHI_LIGHT};--accent:#1E40AF;--on-accent:#fff;--new-bg:#eaf3de;--new-fg:#3b6d11;--mark-fg:#1E40AF;--imp-fg:#0c447c;--fix-bg:#faeeda;--fix-fg:#854f0b;--bad:#b3261e;--bad-bg:#fcebeb`,
+  `${WASHI_DARK};--accent:#4A90D9;--on-accent:#03203E;--new-bg:#1c2a14;--new-fg:#a7cf6f;--mark-fg:#7FB0E4;--imp-fg:#85b7eb;--fix-bg:#2e2410;--fix-fg:#e3a84e;--bad:#e0655e;--bad-bg:#2b1614`
 )}
 ${THEME_TOGGLE_CSS}
 ${CHROME_CSS}

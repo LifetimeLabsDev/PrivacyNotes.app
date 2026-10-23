@@ -14,7 +14,7 @@ import { shiftDay, timeFromMinutes } from './schedule';
  * overnight item draws in two parts; the red line is now. A drag on empty
  * hours, or a click, asks the host to create at that time. Layout only: the
  * data, the chips and the cards come from the host.
- * Spec: ops/docs/plans/calendar-pillar-spec.md (step 5)
+ * Spec: ops/docs/archive/calendar-pillar-spec.md (step 5)
  */
 
 /** One hour, in pixels. */
@@ -105,6 +105,7 @@ export function CalendarGrid({ days, index, hidden, firstHour, scrollRef, render
             key={day}
             type="button"
             onClick={() => onPickDay(day)}
+            data-day={day}
             aria-label={formatInstant(dayAtNoon(day), 'date')}
             aria-current={day === today ? 'date' : undefined}
             className="flex flex-col items-center py-1 text-pn-muted hover:bg-pn/5 transition"

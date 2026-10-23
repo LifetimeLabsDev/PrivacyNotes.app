@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useImperativeHandle, useRef, useState, type ReactNode, type Ref } from 'react';
 import { createPortal } from 'react-dom';
 import { useTheme } from './theme';
 import { registerEditorCommand } from './editorCommands';
@@ -23,7 +23,11 @@ type Props = {
   /** The Markdown toolbar. `slot` is the pane's row under the note when the
    *  bar sits at the bottom; nothing is drawn there until it exists. */
   toolbar?: { onShowFormatted: () => void; atBottom: boolean; slot: HTMLElement | null; mobileTabIndex?: number };
+  /** Focuses the text, so Tab from the tag field lands in the body here too. */
+  ref?: Ref<MarkdownSourceHandle>;
 };
+
+export type MarkdownSourceHandle = { focus: () => boolean };
 
 /**
  * Plain markdown source editor: a textarea bound to the note body.
@@ -45,40 +49,21 @@ type Props = {
  *
  * Spec: ops/specs/editor-mode-toggle.md (no custom Tab-key handling in v1, deliberately)
  */
-export function MarkdownSourceEditor({ value, onChange, readOnly = false, search, toolbar }: Props) {
+export function MarkdownSourceEditor({ value, onChange, readOnly = false, search, toolbar, ref: handleRef }: Props) {
   const ref = useRef<HTMLTextAreaElement>(null);
+  useImperativeHandle(handleRef, () => ({
+    focus: () => {
+      ref.current?.focus();
+      return !!ref.current;
+    },
+  }), []);
   const rootRef = useRef<HTMLDivElement>(null);
   const { spellcheck } = useTheme();
   const [text, setText] = useState(value);
 
-  // Grow to fit the content so the note scrolls in the editor pane
-  // rather than in a nested textarea scrollbar. Measuring collapses the field
-  // to its minimum height for a moment, the pane's content gets shorter, and
-  // the browser clamps the pane's scroll position; it never gives it back
-  // when the height returns, so it is put back here, before the next paint.
-  // Without that, every keystroke on Android threw a long note to its top
-  // (GitHub #469).
-  function fit() {
-    const el = ref.current;
-    if (!el) return;
-    // An element that only scrolls sideways computes overflow-y as auto too,
-    // so the pane is the first ancestor that has something to scroll.
-    let pane = el.parentElement;
-    while (pane && !(pane.scrollHeight > pane.clientHeight && /(auto|scroll)/.test(getComputedStyle(pane).overflowY))) pane = pane.parentElement;
-    const top = pane?.scrollTop ?? 0;
-    el.style.height = 'auto';
-    el.style.height = `${el.scrollHeight}px`;
-    if (pane && pane.scrollTop !== top) pane.scrollTop = top;
-  }
-
-  useEffect(() => {
-    fit();
-  }, []);
-
   function change(markdown: string) {
     onChange(markdown);
     setText(markdown);
-    fit();
   }
 
   /** Writes `insert` over [from, to) through the same change as typing, so the
@@ -263,6 +248,13 @@ export function MarkdownSourceEditor({ value, onChange, readOnly = false, search
       readOnly={readOnly}
       spellCheck={spellcheck}
       onChange={(e) => change(e.target.value)}
+      // The copy below gives the height, so the field never needs to scroll.
+      // A caret moved into view in the frame before the copy catches up can
+      // still scroll a field with overflow hidden; that would slide the text
+      // off its marks.
+      onScroll={(e) => {
+        e.currentTarget.scrollTop = 0;
+      }}
       onKeyDown={(e) => {
         if (readOnly) return;
         const key = e.nativeEvent;
@@ -275,7 +267,7 @@ export function MarkdownSourceEditor({ value, onChange, readOnly = false, search
       // same --pn-text-scale knob. Its own 14px base is kept (monospace
       // runs visually larger than the prose face at the same size).
       style={{ fontSize: 'calc(14px * var(--pn-text-scale))' }}
-      className="relative w-full min-h-[60vh] resize-none border-0 bg-transparent p-0 font-mono leading-relaxed text-pn outline-none"
+      className="relative w-full resize-none overflow-hidden border-0 bg-transparent p-0 font-mono leading-relaxed text-pn outline-none [grid-area:1/1]"
     />
   );
 
@@ -288,10 +280,16 @@ export function MarkdownSourceEditor({ value, onChange, readOnly = false, search
     />
   ) : null;
 
-  // The matches are painted on a copy of the text under the transparent
-  // textarea: same font, size, width and wrapping, so each mark sits exactly
-  // under its characters. A textarea has no highlight of its own.
-  let marks: ReactNode = null;
+  // A copy of the text sits under the transparent textarea in the same grid
+  // cell, with the same font, size, width and wrapping. It gives the cell its
+  // height, so the field grows to its text and the note scrolls in the editor
+  // pane, at every width, text size and font, with nothing to measure. Nothing
+  // collapses the field, so the pane never loses its scroll position while
+  // typing (GitHub #469). The find matches are painted as marks in this copy,
+  // so each one sits exactly under its characters: a textarea has no
+  // highlight of its own. The zero-width space gives a final newline the
+  // empty line the textarea shows for it.
+  let copy: ReactNode = text;
   if (search && bar !== 'none' && hits.matches.length > 0) {
     const parts: ReactNode[] = [];
     let at = 0;
@@ -309,20 +307,23 @@ export function MarkdownSourceEditor({ value, onChange, readOnly = false, search
       at = m.to;
     });
     parts.push(text.slice(at));
-    marks = (
-      <div
-        aria-hidden="true"
-        style={{ fontSize: 'calc(14px * var(--pn-text-scale))' }}
-        className="pn-source-marks pointer-events-none absolute inset-0 whitespace-pre-wrap break-words font-mono leading-relaxed text-transparent"
-      >
-        {parts}
-      </div>
-    );
+    copy = parts;
   }
+  const marks = (
+    <div
+      aria-hidden="true"
+      inert
+      style={{ fontSize: 'calc(14px * var(--pn-text-scale))' }}
+      className="pn-source-marks pointer-events-none whitespace-pre-wrap break-words font-mono leading-relaxed text-transparent [grid-area:1/1]"
+    >
+      {copy}
+      {'​'}
+    </div>
+  );
 
   // The text keeps a gap under whatever sits above it, the toolbar or, with
   // the bar hidden or at the bottom, the sticky tag row.
-  // min-h-[60vh] on the textarea matches `.ProseMirror` in index.css so
+  // min-h-[60vh] on the text's grid matches `.ProseMirror` in index.css so
   // toggling modes does not jump the page height.
   // The find bar takes the rich editor's slot: a zero-height sticky row
   // pinned under the toolbar, floating over the text.
@@ -354,7 +355,7 @@ export function MarkdownSourceEditor({ value, onChange, readOnly = false, search
           />
         </div>
       )}
-      <div className="relative mt-4">
+      <div className="relative mt-4 grid min-h-[60vh]">
         {marks}
         {textarea}
       </div>

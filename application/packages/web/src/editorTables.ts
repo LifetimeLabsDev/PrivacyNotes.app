@@ -1,5 +1,5 @@
 import type { Editor as TipTapEditor } from '@tiptap/react';
-import { Table } from '@tiptap/extension-table';
+import { Table, type TableOptions } from '@tiptap/extension-table';
 import { getHTMLFromFragment } from '@tiptap/core';
 import { Fragment } from '@tiptap/pm/model';
 import { Selection } from '@tiptap/pm/state';
@@ -8,6 +8,39 @@ import { TABLE_MIN_WIDTH, delimiterRow } from './tableColumnWidths';
 import { tableWidthMarker } from './tableDelimiterRow';
 import { ColumnWidthTableView, columnResizePlugin, registerTableWidthsMarkdown, renderTableHTML, tableWidthOf, tableWidths } from './tableColumnResize';
 import { isStoredAlignment } from './editorAlignment';
+import { tableFormulaPlugin } from './editorTableFormula';
+import { formulaSuggestion } from './FormulaSuggestion';
+import { isFormulaText } from './tableFormula';
+
+/**
+ * A cell holding nothing but a formula, as one unmarked run of text.
+ *
+ * Such a cell is written to the file VERBATIM rather than through the inline
+ * serializer, because the escaper cannot know it is looking at a formula and
+ * escapes the `*` of `=B2*C2` so it cannot be read as emphasis. That escape
+ * is correct markdown and round-trips cleanly, but "Show markdown" is a raw
+ * view, and `=B2\*C2` reads as broken to the person who wrote `=B2*C2`.
+ *
+ * Writing it raw is safe because a formula's alphabet is closed: letters,
+ * digits, and `. , : ( ) + - * / =`. None of them starts a block inside a
+ * pipe cell, and `|` cannot appear at all, so `escapeCellPipes` has nothing
+ * to do afterwards either.
+ */
+function plainFormulaCell(cell: any): string | null {
+  if (cell.type.name !== 'paragraph' || cell.childCount !== 1) return null;
+  const text = cell.firstChild;
+  if (!text?.isText || text.marks.length) return null;
+  return isFormulaText(text.text ?? '') ? (text.text as string) : null;
+}
+
+/**
+ * Added to the table's options so Editor.tsx can hand over the Pro state.
+ *
+ * It gates the insert MENU and nothing else. Formulas are computed for every
+ * account, because the formula lives in the person's own file and the export
+ * renderer has no account to ask. See the note on `tableFormulaPlugin`.
+ */
+type TableFormulaOptions = { formulasUnlocked: () => boolean };
 
 /**
  * Override the table markdown serializer so the contents of a table cell
@@ -147,6 +180,8 @@ function serializeTableToMarkdown(this: any, state: any, node: any, _parent: any
         const widthSuffix =
           cell.attrs.width && cell.attrs.width !== 100 ? `{width=${cell.attrs.width}}` : '';
         state.write(`![${alt}](${cell.attrs.src || ''})${widthSuffix}`);
+      } else if (cell && plainFormulaCell(cell)) {
+        state.text(plainFormulaCell(cell)!, false);
       } else if (cell && cellHasContent(cell)) {
         state.renderInline(cell);
       }
@@ -186,11 +221,14 @@ function serializeTableToMarkdown(this: any, state: any, node: any, _parent: any
  * Column widths: `colwidth` holds a relative weight, so the node view and
  * `renderHTML` are replaced (TipTap's read it as pixels), and a plugin drags
  * a border. `resizable` stays false, which keeps prosemirror-tables' own
- * pixel resizer out. Spec: ops/docs/plans/table-column-widths.md
+ * pixel resizer out. Spec: ops/docs/archive/table-column-widths.md
  */
-export const TableWithMarkdown = Table.extend({
+export const TableWithMarkdown = Table.extend<TableOptions & TableFormulaOptions>({
   addOptions() {
-    return { ...this.parent!(), View: ColumnWidthTableView };
+    // `formulasUnlocked` is a callback, not a flag: Editor.tsx reads the Pro
+    // state through a ref, so an upgrade mid-session opens the menu without
+    // rebuilding the extension set.
+    return { ...this.parent!(), View: ColumnWidthTableView, formulasUnlocked: () => false };
   },
   addAttributes() {
     return {
@@ -212,7 +250,12 @@ export const TableWithMarkdown = Table.extend({
     return renderTableHTML(node, { ...this.options.HTMLAttributes, ...HTMLAttributes });
   },
   addProseMirrorPlugins() {
-    return [...(this.parent?.() ?? []), columnResizePlugin()];
+    return [
+      ...(this.parent?.() ?? []),
+      columnResizePlugin(),
+      tableFormulaPlugin(),
+      formulaSuggestion(this.editor, this.options.formulasUnlocked),
+    ];
   },
   addStorage() {
     return {

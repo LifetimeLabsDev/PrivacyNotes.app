@@ -1,7 +1,8 @@
 {
   "words": {
+    "add": "dodaj",
     "every": "co, każdy, każdego, każda, każdą, każde",
-    "weekday": "pon-pt, pn-pt, roboczy, robocze, powszedni, powszednie",
+    "weekday": "pon-pt, pn-pt, roboczy, robocze, powszedni, powszednie, dzień roboczy, dni robocze",
     "daily": "codziennie, dziennie",
     "weekly": "cotygodniowo, tygodniowo",
     "monthly": "comiesięcznie, miesięcznie",
@@ -37,6 +38,7 @@
     "times": "razy, raz, x",
     "ordinal": "., -go, -ego",
     "work": "praca, pracy, służbowe",
-    "personal": "osobiste, osobisty, prywatne, dom"
+    "personal": "osobiste, osobisty, prywatne, dom",
+    "in": "za"
   }
 }

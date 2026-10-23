@@ -12,7 +12,7 @@
  * next save. Its tail rule and its HTML are replaced, because the tail drops
  * every definition no marker uses, and a dropped definition is a dropped node.
  *
- * Spec: ops/docs/plans/footnotes.md
+ * Spec: ops/docs/archive/footnotes.md
  */
 import i18n from './i18n';
 import footnotePlugin from 'markdown-it-footnote';
@@ -562,13 +562,14 @@ function sameContent(stored: ProseMirrorNode, carried: ProseMirrorNode): boolean
 }
 
 /**
- * Adopts the definitions that pasted markers carry, then repairs a label used
- * by two definitions. A carried definition can hold markers that carry their
- * own, so adoption runs until no marker carries anything: ProseMirror never
- * shows a plugin its own appended transaction, so a second round would not
- * come by itself. Each repair runs once, so a later change finds nothing to do.
+ * Adopts the definitions that pasted markers carry, repairs a label used by
+ * two definitions, and drops the empty definition of a deleted marker. A
+ * carried definition can hold markers that carry their own, so adoption runs
+ * until no marker carries anything: ProseMirror never shows a plugin its own
+ * appended transaction, so a second round would not come by itself. Each
+ * repair runs once, so a later change finds nothing to do.
  */
-function repairFootnotes(state: EditorState): Transaction | null {
+function repairFootnotes(state: EditorState, trs: readonly Transaction[], old: EditorState): Transaction | null {
   const { schema } = state;
   // In the history: the history merges an appended change into the event of
   // the change that caused it, so one undo takes a paste and its footnotes.
@@ -616,7 +617,38 @@ function repairFootnotes(state: EditorState): Transaction | null {
     if (node.type.name === REF && node.attrs['carry']) tr.setNodeMarkup(pos, undefined, { ...node.attrs, carry: null });
     return true;
   });
+  dropEmptyOrphans(tr, trs, old);
   return tr.docChanged ? tr : null;
+}
+
+/**
+ * A marker that an edit deleted takes its definition along while that
+ * definition is still empty: there is no text to lose, and an empty unused
+ * definition shows no remove button (#595). A definition the edit itself
+ * replaced, as when another note loads, is left alone.
+ */
+function dropEmptyOrphans(tr: Transaction, trs: readonly Transaction[], old: EditorState): void {
+  const before = indexFootnotes(old.doc);
+  const after = indexFootnotes(tr.doc);
+  const gone: number[] = [];
+  for (const [label, def] of after.defs) {
+    const was = before.defs.get(label);
+    if (!was || !before.firstRef.has(label) || after.firstRef.has(label) || !isEmptyDefinition(def.node)) continue;
+    let pos = was.pos;
+    const kept = trs.every((t) => {
+      const r = t.mapping.mapResult(pos, 1);
+      pos = r.pos;
+      return !r.deleted;
+    });
+    if (kept) gone.push(def.pos);
+  }
+  if (!gone.length) return;
+  const section = sectionOf(tr.doc)!;
+  if (gone.length === section.node.childCount) {
+    tr.delete(section.pos, section.pos + section.node.nodeSize);
+    return;
+  }
+  for (const pos of gone.sort((a, b) => b - a)) tr.delete(pos, pos + tr.doc.nodeAt(pos)!.nodeSize);
 }
 
 /* ------------------------------------------------------------------ */
@@ -731,6 +763,12 @@ function removeDefinition(view: EditorView, defPos: number): boolean {
   tr.setSelection(Selection.near(tr.doc.resolve(target), -1));
   view.dispatch(tr.scrollIntoView());
   return true;
+}
+
+function removeEmptyDefinition(editor: TipTapEditor): boolean {
+  const def = definitionAround(editor.state);
+  if (!def || !editor.state.selection.empty || !isEmptyDefinition(def.node)) return false;
+  return removeDefinition(editor.view, def.pos);
 }
 
 /* ------------------------------------------------------------------ */
@@ -1109,12 +1147,9 @@ export const Footnotes = Extension.create({
         view.dispatch(tr.scrollIntoView());
         return true;
       },
-      // Backspace in an empty definition removes it.
-      Backspace: ({ editor }) => {
-        const def = definitionAround(editor.state);
-        if (!def || !editor.state.selection.empty || !isEmptyDefinition(def.node)) return false;
-        return removeDefinition(editor.view, def.pos);
-      },
+      // Backspace or Delete in an empty definition removes it.
+      Backspace: ({ editor }) => removeEmptyDefinition(editor),
+      Delete: ({ editor }) => removeEmptyDefinition(editor),
     };
   },
 
@@ -1191,9 +1226,9 @@ export const Footnotes = Extension.create({
           transformPasted: (slice) => liftPastedSection(slice),
           transformPastedHTML: (html) => normalizePastedFootnotes(html),
         },
-        appendTransaction(trs, _old, state) {
+        appendTransaction(trs, old, state) {
           if (!editor.isEditable || !trs.some((t) => t.docChanged)) return null;
-          return repairFootnotes(state);
+          return repairFootnotes(state, trs, old);
         },
       }),
     ];

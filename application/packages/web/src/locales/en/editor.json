@@ -1,13 +1,15 @@
 {
   "placeholder": "Start writing…",
+  "eventPlaceholder": "Add an agenda, an address or notes…",
   "toolbar": {
     "bold": "Bold",
+    "hideKeyboard": "Hide keyboard",
     "italic": "Italic",
     "underline": "Underline",
     "heading": "Heading",
     "taskList": "Task list",
     "bulletList": "Bullet list",
-    "addLink": "Add link ({{keys}})",
+    "addLink": "Add link",
     "noteLink": "Link to another note (or type [[)",
     "numberedList": "Numbered list",
     "textColor": "Text color",
@@ -40,7 +42,6 @@
     "footnote": "Footnote",
     "spoiler": "Spoiler",
     "copyBox": "Copy box",
-    "withHint": "{{label}} ({{hint}})",
     "customize": "Customize toolbar"
   },
   "align": {
@@ -98,7 +99,9 @@
       "update": "Update",
       "time": "Time",
       "steps": "Steps",
-      "place": "Place"
+      "place": "Place",
+      "kanban": "Kanban board",
+      "column": "Column"
     }
   },
   "color": {
@@ -132,27 +135,51 @@
     "resizeHint": "Hold {{shift}} to change only this column, {{alt}} for finer steps",
     "deleteRow": "Delete row",
     "deleteColumn": "Delete column",
-    "deleteTable": "Delete table"
+    "deleteTable": "Delete table",
+    "insertFormula": "Insert formula",
+    "formulaNoMatch": "No formula matches",
+    "formula": {
+      "SUM": "Add up values",
+      "PRODUCT": "Multiply values",
+      "AVG": "Average of values",
+      "AVERAGE": "Average of values",
+      "MEDIAN": "Middle value",
+      "MIN": "Smallest value",
+      "MAX": "Largest value",
+      "COUNT": "How many numbers",
+      "ABS": "Value without its sign",
+      "SQRT": "Square root",
+      "SIGN": "Whether a value is positive or negative",
+      "CEIL": "Round up to a whole number",
+      "FLOOR": "Round down to a whole number",
+      "ROUND": "Round to a whole number",
+      "LOG": "Logarithm",
+      "RAND": "A random number",
+      "PI": "The constant pi",
+      "E": "Euler's number",
+      "TAU": "The constant tau",
+      "PHI": "The golden ratio"
+    }
   },
   "find": {
     "placeholder": "Find in note",
     "label": "Find in note",
-    "previous": "Previous match (Shift+Enter)",
-    "previousTitle": "Previous (Shift+Enter)",
-    "next": "Next match (Enter)",
-    "nextTitle": "Next (Enter)",
+    "previous": "Previous match",
+    "previousTitle": "Previous",
+    "next": "Next match",
+    "nextTitle": "Next",
     "close": "Close find",
-    "closeTitle": "Close ({{keys}})",
+    "closeTitle": "Close",
     "replacePlaceholder": "Replace with",
     "replaceLabel": "Replace with",
     "replace": "Replace",
-    "replaceTitle": "Replace this match (Enter)",
+    "replaceTitle": "Replace this match",
     "replaceAll": "All",
     "replaceAllTitle": "Replace every match",
     "caseSensitive": "Match case",
     "caseSensitiveTitle": "Match case",
     "closeReplace": "Close find and replace",
-    "closeReplaceTitle": "Close ({{keys}})",
+    "closeReplaceTitle": "Close",
     "showReplace": "Find and replace",
     "hideReplace": "Hide replace",
     "replacedCount_one": "{{count}} replaced",
@@ -164,7 +191,6 @@
     "title": "Outline",
     "ariaLabel": "Note outline",
     "hide": "Hide outline",
-    "hideTitle": "Hide outline ({{keys}})",
     "copyHeadingLink": "Copy link to heading",
     "copyNoteLink": "Copy note-link",
     "copyHeadingShortcut": "Copy shortcut to heading",
@@ -172,6 +198,8 @@
   },
   "bodyMenu": {
     "cut": "Cut",
+    "copyAsPlain": "Copy as plain text",
+    "copyAsMarkdown": "Copy as Markdown",
     "sortAsc": "Sort lines A to Z",
     "sortDesc": "Sort lines Z to A"
   },
@@ -285,6 +313,7 @@
     "hidden": "Hidden",
     "hiddenNote": "They still work by shortcut and Markdown.",
     "hiddenDrop": "Drop a button here to hide it.",
+    "arrangeTitle": "Buttons",
     "markdownViewNote": "The Markdown view keeps its own fixed set of buttons.",
     "hiddenEmpty": "Nothing is hidden.",
     "alwaysVisible": "Always visible",
@@ -319,5 +348,20 @@
     "positionNote": "Choose where the toolbar sits in the editor.",
     "positionTop": "Top",
     "positionBottom": "Bottom"
+  },
+  "kanban": {
+    "todo": "To do",
+    "inProgress": "In progress",
+    "review": "Review",
+    "done": "Done",
+    "color": "Color",
+    "columns": "Columns",
+    "columnCount_one": "{{count}} column",
+    "columnCount_other": "{{count}} columns",
+    "cardCount_one": "{{count}} card",
+    "cardCount_other": "{{count}} cards",
+    "addColumn": "Add column",
+    "removeBoard": "Remove board",
+    "moveTo": "Move to"
   }
 }

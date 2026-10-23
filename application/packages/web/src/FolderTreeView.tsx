@@ -21,7 +21,7 @@ import { SIDEBAR_DROP_INSIDE } from './sidebarUI';
  * them in here would mean a prop per difference, which is harder to
  * maintain, not easier.
  *
- * Spec: ops/docs/ui-patterns.md (section 86)
+ * Spec: ops/docs/archive/ui-patterns.md (section 86)
  */
 
 /** How far from a scroll edge a drag starts pulling the list, and how fast. */

@@ -166,7 +166,7 @@
      the pane and again on every opaque surface inside it: each such surface
      covers the layer below before it adds its own, and the color comes out
      the same everywhere. The sticky tag row and toolbar are nearly opaque, so
-     they take the layer too. Spec: ops/docs/plans/folder-tag-icons.md (section 4.5) */
+     they take the layer too. Spec: ops/docs/archive/folder-tag-icons.md (section 4.5) */
   /* The editor pane paints the paper. The color utilities read `--color-*`,
      which <html> computes once from the `--pn-*` channels, so the pane
      computes the surface ones again from its own.
@@ -184,18 +184,19 @@
     background-image: linear-gradient(var(--pn-note-tint, transparent), var(--pn-note-tint, transparent));
   }
 
-  /* An accent note color sits on the item's icon and nowhere else: the boxed
-     icon takes the tint and the ink, and an icon drawn from a picture (a
-     favicon, a contact photo) keeps its own tile and takes a ring in the ink.
-     noteLookStyle sets the two variables. Spec: ops/docs/plans/note-color-style.md (section 3.1) */
-  [data-color-style='accent'] [data-slot='icon'] > :not(:has(img)) {
+  /* A note color sits on the item's icon at both strengths (an accent puts it
+     there and nowhere else, a background also tints the row): the boxed icon
+     takes the tint and the ink, and an icon drawn from a picture (a favicon,
+     a contact photo) keeps its own tile and takes a ring in the ink.
+     noteLookStyle sets the two variables. Spec: ops/docs/archive/note-color-style.md (section 3.1) */
+  [data-color-style] [data-slot='icon'] > :not(:has(img)) {
     background-color: var(--pn-accent-tint);
     color: var(--pn-accent-ink);
   }
-  [data-color-style='accent'] [data-slot='icon'] > :has(img) {
+  [data-color-style] [data-slot='icon'] > :has(img) {
     box-shadow: 0 0 0 1.5px var(--pn-accent-ink);
   }
-  [data-color-style='accent'] .pn-card-glyph {
+  [data-color-style] .pn-card-glyph {
     color: var(--pn-accent-ink);
   }
 
@@ -366,7 +367,7 @@
          lets one long sentence swallow the table. A dragged width is a
          percentage on the table's <col>, written by the node view in
          tableColumnResize.ts, so the table always fills the note.
-         Spec: ops/docs/plans/table-column-widths.md */
+         Spec: ops/docs/archive/table-column-widths.md */
       table-layout: fixed;
       overflow: hidden;
       /* Prose gives <table> its own 2em top/bottom margin, and the table sits
@@ -442,6 +443,20 @@
       font-weight: 600;
       background: rgb(var(--pn-text) / 0.05);
     }
+    /* Table formulas (editorTableFormula.ts). The formula text is hidden and
+       a widget paints the number, so the cell shows `1,575` while the note on
+       disk still holds `=SUM(B2:B7)`. Neither rule may change the cell's
+       layout: the caret has to land in the same place it would without them,
+       because clicking is how the source comes back. The dotted underline is
+       the only mark that a number is computed rather than typed. */
+    & .pn-formula-src {
+      display: none;
+    }
+    & .pn-formula-value {
+      border-bottom: 1px dotted rgb(var(--pn-text) / 0.35);
+      cursor: default;
+    }
+
     /* Selected cell highlight */
     & table.pn-table td.selectedCell {
       background: rgb(var(--pn-accent) / 0.1);
@@ -1066,8 +1081,11 @@
       /* A task off screen skips layout until it nears the viewport, so a
          note with thousands of tasks opens without laying out all of them.
          The size is a scrollbar estimate; `auto` keeps a task's real height
-         once it has been drawn. The browser still draws a task that holds
-         the caret, a selection or a find match. */
+         once it has been drawn. The browser decides that a task is on
+         screen only at its next frame, so a task the caret is in carries
+         `pn-task-caret` (editorTasks.ts) and is drawn at once; without it, a
+         key typed right after Enter went into the next block.
+         Spec: ops/docs/design-decisions.md (Opening a long checklist) */
       content-visibility: auto;
       contain-intrinsic-block-size: auto 1.75em;
     }
@@ -1076,7 +1094,8 @@
        item under the pointer or holding focus is on screen anyway, so it
        drops the containment; its ancestors are hovered too. */
     & ul[data-type='taskList'] li:hover,
-    & ul[data-type='taskList'] li:focus-within {
+    & ul[data-type='taskList'] li:focus-within,
+    & ul[data-type='taskList'] li.pn-task-caret {
       content-visibility: visible;
     }
     /* The drag grip (dragTask in editorExtensions.ts), last in the row. The
@@ -1130,73 +1149,8 @@
       display: inline-flex;
       align-items: center;
       user-select: none;
-      /* Anchor for the .pn-check draw-in overlay below. */
+      /* Anchor for the .pn-check overlay below. */
       position: relative;
-    }
-    /* Checkbox variant B: bigger rounded square (1.45em = ~22px at the
-       15px task body - friendlier tap target on phone/tablet), accent
-       fill, and a check that DRAWS itself in as an SVG stroke. The SVG
-       lives in the .pn-check span the node view appends after the input
-       (TaskItemMobileSafe in Editor.tsx); a ::before clip-path cannot
-       animate a stroke. Box centers on the first text line via the label
-       height above. CSS-only states - no schema or markdown impact. */
-    & ul[data-type='taskList'] li > label > input[type='checkbox'] {
-      appearance: none;
-      -webkit-appearance: none;
-      cursor: pointer;
-      width: 1.45em;
-      height: 1.45em;
-      margin: 0;
-      border-radius: 0.33em;
-      border: 1.5px solid rgb(var(--pn-text-muted));
-      background: transparent;
-      transition:
-        background-color 0.18s ease,
-        border-color 0.18s ease;
-    }
-    & ul[data-type='taskList'] li > label > input[type='checkbox']:hover {
-      border-color: rgb(var(--pn-accent));
-      background: rgb(var(--pn-accent) / 0.08);
-    }
-    & ul[data-type='taskList'] li > label > input[type='checkbox']:focus-visible {
-      outline: 2px solid rgb(var(--pn-accent) / 0.45);
-      outline-offset: 2px;
-    }
-    & ul[data-type='taskList'] li > label > input[type='checkbox']:disabled {
-      cursor: default;
-    }
-    & ul[data-type='taskList'] li > label > input[type='checkbox']:checked {
-      background: rgb(var(--pn-accent-fill));
-      border-color: rgb(var(--pn-accent-fill));
-    }
-    /* The draw-in check. Sits exactly over the input; clicks fall through. */
-    & ul[data-type='taskList'] li > label > .pn-check {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-content: center;
-      pointer-events: none;
-    }
-    & ul[data-type='taskList'] li > label > .pn-check svg {
-      display: block;
-      width: 0.82em;
-      height: 0.82em;
-    }
-    & ul[data-type='taskList'] li > label > .pn-check path {
-      fill: none;
-      stroke: #fff;
-      stroke-width: 2.4;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dasharray: 14;
-      stroke-dashoffset: 14;
-    }
-    /* Draw only on check, slightly after the fill lands so the white
-       stroke never crosses an unfilled (white/light) box. Unchecking
-       hides it instantly for the same reason - no transition, no flash. */
-    & ul[data-type='taskList'] li[data-checked='true'] > label > .pn-check path {
-      stroke-dashoffset: 0;
-      transition: stroke-dashoffset 0.22s ease 0.06s;
     }
     & ul[data-type='taskList'] li > div {
       flex: 1 1 auto;
@@ -1357,7 +1311,7 @@
 /* Spoiler text (editorSpoiler.ts): blurred until the caret touches it, a
    click in a read-only note shows it, or the find bar's current match sits
    inside it. Rendered notes (burn shares) show it on focus. Print shows it.
-   Spec: ops/docs/plans/spoiler-and-copy.md */
+   Spec: ops/docs/archive/spoiler-and-copy.md */
 @layer editor {
   /* Hidden: a sharp box with a fine hatch, and the text blurred inside it.
      Shown: the box fades to a faint tint, so the reader still sees which
@@ -1572,7 +1526,7 @@
   /* ---------------------------------------------------------------
    * Footnotes (footnotes.ts). The shown numbers come from decoration
    * attributes, never from the stored label.
-   * Spec: ops/docs/plans/footnotes.md (section 6)
+   * Spec: ops/docs/archive/footnotes.md (section 6)
    * --------------------------------------------------------------- */
   .ProseMirror sup.pn-fn-ref {
     cursor: pointer;
@@ -1692,6 +1646,11 @@
 }
 
 @layer editor {
+  /* "Go to day" in the quick switcher: the day's cells pulse once, with the
+     jump-to-file flash (useCalendarPillar.ts, markDay). */
+  .pn-day-flash {
+    animation: pn-file-flash 1.6s ease-out;
+  }
   .pn-file-flash {
     /* Jump-to-file flash (EditorHandle.scrollToFile): pulses the attachment
        chip / image after opening its parent note from the Files pillar so
@@ -1924,6 +1883,185 @@
     }
     .ProseMirror & {
       padding-bottom: 0.5em;
+    }
+  }
+}
+
+@layer editor {
+  /* The drop line of a task or card drag (editorTasks.ts, kanbanDrag.ts):
+     fixed to the viewport, placed by the drag, hidden until it has a place. */
+  .pn-task-drop {
+    position: fixed;
+    display: none;
+    height: 2px;
+    border-radius: 1px;
+    background: rgb(var(--pn-accent));
+    pointer-events: none;
+    z-index: 60;
+  }
+  :root.pn-task-drag-active,
+  :root.pn-task-drag-active * {
+    cursor: grabbing;
+  }
+}
+
+@layer editor {
+  /* Kanban board (KanbanBoard.tsx, kanban.ts): a framed board whose columns
+     sit side by side and wrap on a narrow pane; one column per row on a
+     phone. A column is never narrower than 8.5rem and a row never holds more
+     columns than the board has. Cards are the top-level tasks of a column,
+     each on its own card. Spec: ops/issues/0270.md (Spec) */
+  .pn-callout-kanban {
+    .ProseMirror &.pn-callout,
+    :root.dark .ProseMirror &.pn-callout {
+      padding: 0.45em 0.6em 0.65em;
+      border: 1px solid rgb(var(--pn-text) / 0.14);
+      border-radius: 10px;
+      background: rgb(var(--pn-text) / 0.025);
+      container: pn-kanban / inline-size;
+    }
+    .ProseMirror &.pn-kanban-has-columns > .pn-callout-content > div {
+      display: grid;
+      grid-template-columns: repeat(
+        auto-fit,
+        minmax(max(8.5rem, calc((100% - (var(--kanban-cols) - 1) * 0.6rem) / var(--kanban-cols))), 1fr)
+      );
+      gap: 0.6rem;
+      align-items: start;
+    }
+    /* A phone, or a pane as narrow: one column per row. */
+    @container pn-kanban (max-width: 30rem) {
+      .ProseMirror &.pn-kanban-has-columns > .pn-callout-content > div {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+    .ProseMirror & > .pn-callout-content > div > [data-callout-title] {
+      grid-column: 1 / -1;
+      margin: 0;
+      padding-inline: 1.75rem 2.4rem;
+      color: rgb(var(--pn-text));
+    }
+    .ProseMirror & > .pn-callout-content > div > [data-callout-title] ~ * {
+      margin: 0;
+    }
+    .ProseMirror & > .pn-kanban-placeholder {
+      inset-inline-start: calc(0.6em + 1.75rem);
+      top: 0.45em;
+      color: rgb(var(--pn-text-muted));
+    }
+  }
+  .pn-kanban-icon {
+    .ProseMirror & {
+      position: absolute;
+      inset-inline-start: 0.65em;
+      top: 0.45em;
+      height: 1.6em;
+      display: inline-flex;
+      align-items: center;
+      color: rgb(var(--pn-text-muted));
+    }
+  }
+  .pn-kanban-tools {
+    .ProseMirror & {
+      position: absolute;
+      inset-inline-end: 0.3em;
+      top: 0.25em;
+      display: inline-flex;
+      align-items: center;
+      z-index: 1;
+    }
+  }
+  /* The count and the menu float at the end of the column's title line, so
+     a long title wraps around them at a word and never inside one. */
+  .pn-column-tools {
+    .ProseMirror & {
+      float: inline-end;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.1em;
+      margin-block: -0.2em 0;
+      margin-inline: 0.3em -0.3em;
+      position: relative;
+      z-index: 1;
+    }
+  }
+  .pn-callout-column {
+    .ProseMirror &.pn-callout,
+    :root.dark .ProseMirror &.pn-callout {
+      min-width: 0;
+      padding: 0.4em 0.45em 0.5em;
+      border: 1px solid color-mix(in srgb, var(--cs) 30%, transparent);
+      border-top: 3px solid var(--cs);
+      border-radius: 8px;
+      background: var(--ct);
+    }
+    .ProseMirror & > .pn-callout-content > div > [data-callout-title] {
+      margin: 0;
+      overflow-wrap: break-word;
+    }
+    /* The body starts under the floating tools, never beside them. */
+    .ProseMirror & > .pn-callout-content > div > [data-callout-title] ~ * {
+      clear: both;
+    }
+    .ProseMirror & > .pn-column-placeholder {
+      inset-inline-start: 0.45em;
+      top: 0.4em;
+      color: color-mix(in srgb, var(--cs) 65%, transparent);
+    }
+    /* Cards: the top-level tasks of the column. */
+    .ProseMirror & > .pn-callout-content > div > ul[data-type='taskList'] > li {
+      gap: 0.35em;
+      margin: 0.4em 0 0;
+      padding-block: 0.3em;
+      padding-inline: 0.4em 0.15em;
+      border: 1px solid rgb(var(--pn-text) / 0.1);
+      border-radius: 6px;
+      background: var(--color-surface-1);
+      overflow-wrap: break-word;
+    }
+    .ProseMirror & > .pn-callout-content > div > ul[data-type='taskList'] > li > .pn-task-grip {
+      width: 0.85em;
+    }
+  }
+  /* The column a dragged card would land in: the drop-inside look of a
+     folder or tag in the sidebar (SIDEBAR_DROP_INSIDE). */
+  .pn-kanban-drop-target {
+    .ProseMirror &.pn-callout,
+    :root.dark .ProseMirror &.pn-callout {
+      box-shadow: 0 0 0 1px rgb(var(--pn-accent));
+      background-image: linear-gradient(rgb(var(--pn-accent) / 0.1), rgb(var(--pn-accent) / 0.1));
+    }
+  }
+  /* Above phone width a column reads at the compact card size, 14 of the
+     body's 15 at the default Text size, and the board title at 16; both
+     follow Text size, and the checkbox scales with the text. At phone width
+     the app pins editor text at 16px against the iOS focus zoom, and the
+     board keeps that. */
+  @media (min-width: 641px) {
+    .pn-callout-column {
+      .ProseMirror &.pn-callout,
+      .ProseMirror &.pn-callout p,
+      .ProseMirror &.pn-callout li {
+        font-size: calc(var(--pn-editor-body) * 14 / 15);
+      }
+    }
+    .pn-callout-kanban {
+      .ProseMirror & > .pn-callout-content > div > [data-callout-title],
+      .ProseMirror & > .pn-kanban-placeholder {
+        font-size: calc(var(--pn-editor-body) * 16 / 15);
+      }
+    }
+  }
+  .pn-column-count {
+    .ProseMirror & {
+      min-width: 1.5em;
+      padding: 0 0.45em;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--cs) 16%, transparent);
+      color: rgb(var(--pn-text-muted));
+      font-size: 11px;
+      line-height: 1.7;
+      text-align: center;
     }
   }
 }
@@ -2338,7 +2476,7 @@
        on the cream sidebar the worst at 4.43); `tint` is an open note's background, light
        enough that body and secondary text keep 4.5:1 and dates 3:1 on every
        theme. tests/labelContrast.test.ts holds both floors.
-       Spec: ops/docs/plans/folder-tag-icons.md (section 4.2) */
+       Spec: ops/docs/archive/folder-tag-icons.md (section 4.2) */
     --pn-label-gray-ink: #5a6168;
     --pn-label-red-ink: #ba1c1c;
     --pn-label-orange-ink: #a43f08;
@@ -2630,15 +2768,13 @@
     }
   }
 
-  /* The quick switcher's "Jump to" buttons (TagsRail, CollapsedSidebar):
-     on hover an amber charge sweeps across the button from its start edge
-     and the bolt turns amber. The amber is the Pro token, tuned for a small
-     glyph on every theme's sidebar. The label keeps its accent: amber text
-     on the charged tint measured 3.2:1 on the light sidebar, under the
-     4.5:1 that 14px text needs, while the 16px bolt needs 3:1. The
-     sweep is a child span under the content, so the button keeps its own
-     tint underneath. Pointer devices only; reduced motion shows the charge
-     without the sweep. */
+  /* The Ninja buttons (TagsRail, CollapsedSidebar, ListNav): on hover a
+     katana cuts the tile. One steel line with an amber edge crosses it
+     corner to corner, slowly (1.1 s), then the mark gives a small nod as it
+     shows its real colors. The line is the child span .pn-jump-charge, over
+     the content, clipped by the button. Pointer devices only; under reduced
+     motion the colors change and nothing moves.
+     Spec: ops/design/patterns/145-150.md section 147 */
   .pn-jump {
     position: relative;
     overflow: hidden;
@@ -2646,16 +2782,24 @@
   }
   .pn-jump-charge {
     position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: rgb(var(--pn-label) / 0.16);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    left: -60%;
+    top: 50%;
+    width: 220%;
+    height: 2px;
+    z-index: 2;
+    /* theme-ok: the blade's steel and the bandana's amber */
+    background: linear-gradient(90deg, transparent, #fff 40%, #f59e0b 58%, transparent);
+    transform: rotate(-35deg) translateX(-120%);
+    opacity: 0;
     pointer-events: none;
   }
-  [dir='rtl'] .pn-jump-charge {
-    transform-origin: right;
+  @keyframes pn-ninja-slash {
+    0% { transform: rotate(-35deg) translateX(-120%); opacity: 1; }
+    75% { opacity: 1; }
+    100% { transform: rotate(-35deg) translateX(120%); opacity: 0; }
+  }
+  @keyframes pn-ninja-nod {
+    40% { transform: translate(1px, 1px) scale(0.94); }
   }
   /* The logo and the "Privacy" half of the wordmark take the accent in every
      palette but Default, and show the real colors while the brand button is
@@ -2703,19 +2847,100 @@
       color: #4f6bd5; /* theme-ok: Fold Blue, the wordmark's real color */
     }
   }
-  .pn-jump svg {
-    transition: color 0.2s;
+  /* The Ninja mark (NinjaIcon.tsx) follows the theme like the logo above:
+     one accent ink with the eye slit cut out in the surface color, and the
+     real colors (ink face, cream slit, amber bandana) while a pointer is on
+     its button, on the homepage (.pn-ninja-real), and in a custom theme whose
+     code keeps the original logo. Spec: ops/design/patterns/145-150.md
+     section 145 */
+  .pn-ninja .nj-face,
+  .pn-ninja .nj-eye {
+    fill: currentColor;
+    stroke: transparent;
+  }
+  .pn-ninja .nj-band {
+    fill: currentColor;
+    opacity: 0.55;
+  }
+  .pn-ninja .nj-slit {
+    fill: rgb(var(--pn-surface-2));
+  }
+  .pn-ninja .nj-glint {
+    fill: transparent;
+  }
+  .pn-ninja * {
+    transition: fill 0.2s, opacity 0.2s;
+  }
+  .pn-ninja-real .nj-face,
+  :root:not(.dark).logo-light-original .pn-ninja .nj-face,
+  :root.dark.logo-dark-original .pn-ninja .nj-face {
+    fill: #1c1917; /* theme-ok: the mark's real ink */
+  }
+  .pn-ninja-real .nj-eye,
+  :root:not(.dark).logo-light-original .pn-ninja .nj-eye,
+  :root.dark.logo-dark-original .pn-ninja .nj-eye {
+    fill: #1c1917; /* theme-ok: the mark's real ink */
+  }
+  .pn-ninja-real .nj-band,
+  :root:not(.dark).logo-light-original .pn-ninja .nj-band,
+  :root.dark.logo-dark-original .pn-ninja .nj-band {
+    fill: #f59e0b; /* theme-ok: the site's amber, the bandana's real color */
+    opacity: 1;
+  }
+  .pn-ninja-real .nj-slit,
+  :root:not(.dark).logo-light-original .pn-ninja .nj-slit,
+  :root.dark.logo-dark-original .pn-ninja .nj-slit {
+    fill: #fbefc4; /* theme-ok: the mark's real cream */
+  }
+  .pn-ninja-real .nj-glint {
+    fill: #fff; /* theme-ok: catchlight */
+  }
+  .dark .pn-ninja-real .nj-face {
+    stroke: rgba(237, 231, 219, 0.55); /* theme-ok: rim on a dark surface */
   }
   @media (hover: hover) {
-    .pn-jump:hover svg {
-      color: rgb(var(--pn-label));
+    .pn-jump:hover .pn-ninja .nj-face,
+    .pn-jump:hover .pn-ninja .nj-eye {
+      fill: #1c1917; /* theme-ok: the mark's real ink */
     }
-    .pn-jump:hover .pn-jump-charge {
-      transform: scaleX(1);
+    .pn-jump:hover .pn-ninja .nj-band {
+      fill: #f59e0b; /* theme-ok: the bandana's real amber */
+      opacity: 1;
+    }
+    .pn-jump:hover .pn-ninja .nj-slit {
+      fill: #fbefc4; /* theme-ok: the mark's real cream */
+    }
+    .dark .pn-jump:hover .pn-ninja .nj-face {
+      stroke: rgba(237, 231, 219, 0.55); /* theme-ok: rim on a dark surface */
     }
   }
+  @media (hover: hover) {
+    .pn-jump:hover .pn-jump-charge {
+      animation: pn-ninja-slash 1.1s cubic-bezier(0.75, 0, 0.2, 1) forwards;
+    }
+    .pn-jump:hover .pn-ninja {
+      animation: pn-ninja-nod 0.6s 0.75s ease;
+    }
+  }
+  /* The same cut on the mark in the Ninja box, once per opening. */
+  .pn-ninja-open .pn-jump-charge {
+    /* theme-ok: amber edges carry the cut over the light input row, the white
+       core over the dark face */
+    background: linear-gradient(90deg, transparent, #f59e0b 35%, #fff 50%, #f59e0b 65%, transparent);
+    height: 2.5px;
+    animation: pn-ninja-slash 1.1s 0.15s cubic-bezier(0.75, 0, 0.2, 1) forwards;
+  }
+  .pn-ninja-open .pn-ninja {
+    animation: pn-ninja-nod 0.6s 0.9s ease;
+  }
   @media (prefers-reduced-motion: reduce) {
-    .pn-jump-charge {
+    .pn-jump:hover .pn-jump-charge,
+    .pn-jump:hover .pn-ninja,
+    .pn-ninja-open .pn-jump-charge,
+    .pn-ninja-open .pn-ninja {
+      animation: none;
+    }
+    .pn-ninja * {
       transition: none;
     }
   }
@@ -2728,6 +2953,12 @@
     background-color: rgb(var(--pn-surface-0));
     color: rgb(var(--pn-text));
   }
+  /* No rubber-band on the page itself: the app is a fixed shell, and the
+     elastic overscroll of WebView2 on a precision touchpad slid the whole
+     window content (issue #593). Inner scrollers still scroll. */
+  html, body {
+    overscroll-behavior: none;
+  }
 }
 
 /* Line-wrapping: balance headings and prevent orphans in body copy so text
@@ -2738,25 +2969,6 @@
   h1, h2, h3, h4 { text-wrap: balance; }
   p { text-wrap: pretty; }
   .ProseMirror :is(h1, h2, h3, h4, h5, h6, p) { text-wrap: wrap; }
-}
-
-@layer utilities {
-  /* Theme-flip cross-fade: an instant light and dark flip feels harsh.
- * `theme.ts` adds `theme-animating` only around a theme change
- * (paintTheme, paintColorThemes) and removes it after 320 ms, so hover
- * states stay instant. It restyles every element, so it stays off for
- * reduced motion, and theme.ts skips it in the Linux app. */
-  @media (prefers-reduced-motion: no-preference) {
-    :root.theme-animating,
-    :root.theme-animating *,
-    :root.theme-animating *::before,
-    :root.theme-animating *::after {
-      transition-property:
-        background-color, border-color, color, fill, stroke !important;
-      transition-duration: 280ms !important;
-      transition-timing-function: ease-out !important;
-    }
-  }
 }
 
 @layer editor {
@@ -2812,6 +3024,11 @@
   .ProseMirror pre.pn-copybox {
     font-size: 16px;
   }
+  /* The Markdown view's marks copy sizes the text field and must wrap
+     exactly like it, so it takes the field's pinned size too. */
+  .pn-source-marks {
+    font-size: 16px !important;
+  }
 }
 
 /* Notes / files grid columns. Column COUNT tracks the list panel's own width via
@@ -2840,6 +3057,13 @@
   content-visibility: auto;
   contain-intrinsic-block-size: auto 72px;
 }
+/* A palette change is not a hover: keep off-screen rows from animating colors. */
+.pn-theme-switching,
+.pn-theme-switching *,
+.pn-theme-switching *::before,
+.pn-theme-switching *::after {
+  transition: none !important;
+}
 /* A TILE gets the same treatment only where a grid track reads a skipped
    item's intrinsic block size. The Linux app's web engine does not: it sizes
    the row from an item with no contents, so every tile shrinks to its own
@@ -2853,6 +3077,11 @@
 [data-lazy-tiles='on'] .pn-lazy-card {
   content-visibility: auto;
   contain-intrinsic-block-size: auto 180px;
+}
+/* Windowed items must measure their contents, not an intrinsic-size estimate. */
+.pn-lazy-row[data-window-item],
+.pn-lazy-card[data-window-item] {
+  content-visibility: visible;
 }
 /* Settings tab strips: SettingsTabStrip in settingsUI.tsx sets data-row when
    every label fits on one line beside its icon. The gap and padding here are
@@ -2874,6 +3103,38 @@
 @container pn-list (min-width: 1040px) { .pn-notes-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 @container pn-list (min-width: 1380px) { .pn-notes-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 @container pn-list (min-width: 1720px) { .pn-notes-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+
+/* The calendar card in the grid is one tile, like every other: its days
+   shrink with the tile (MonthGrid caps each at 32px), so seven of them and
+   the short month title fit down to about 170px. Only the two-column grid of
+   a narrow phone list makes tiles smaller than that, and there the card takes
+   the whole row. The sideways clip is the guard for a width no rule foresaw;
+   it is `overflow-x: clip`, never `hidden`, because a hidden overflow makes
+   the card a scroll container and a grid row then shrinks it to its padding.
+   Spec: ops/docs/archive/ui-patterns.md section 141 */
+.pn-notes-grid .pn-grid-cal {
+  min-width: 0;
+  overflow-x: clip;
+}
+@container pn-list (max-width: 399px) { .pn-notes-grid .pn-grid-cal { grid-column: 1 / -1; } }
+
+/* The check-in card in the grid is a tile two columns wide, not a band: the
+   calendar and the first notes fill the rest of its row. In the two-column
+   grid it takes the whole row. */
+.pn-notes-grid .pn-grid-checkin { grid-column: 1 / -1; }
+@container pn-list (min-width: 700px) { .pn-notes-grid .pn-grid-checkin { grid-column: span 2; } }
+
+/* A pick on the mood scale, and the check-in's "logged" mark: one short pop,
+   none for people who asked for less motion.
+   Spec: ops/docs/archive/ui-patterns.md section 141 */
+@keyframes pn-pop {
+  0% { transform: scale(0.6); }
+  60% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pn-pop { animation: pn-pop 280ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+}
 
 /* Pane resize strips (sidebar + notes-list dividers, GitHub #211).
    The 24px collapse strips double as drag handles. Affordance ladder:
@@ -3021,7 +3282,7 @@
    (~590px content), the max-w-md standalone/mobile modal (~400px), and on
    phones; a viewport query can't tell those apart. Engines without container
    queries keep the rows at every width (graceful fallback, same as the grid).
-   See ops/docs/ui-patterns.md section 48. */
+   See ops/docs/archive/ui-patterns.md section 48. */
 .pn-storage-picker {
   container-type: inline-size;
   container-name: pn-storage;
@@ -3090,6 +3351,9 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  /* A URL has no break point: it would run past the side, cut mid-letter,
+     instead of wrapping into the clamped lines and their ellipsis. */
+  overflow-wrap: anywhere;
 }
 /* "Longer preview text" (listPrefs.longPreview). The excerpt keeps the note's
    line breaks, and the clamp decides how many lines show: 4 on a list row, 6 on
@@ -3196,7 +3460,7 @@
    same thing twice, and a login already falls back to a padlock chip when it
    has no favicon. The clip-path is the landing page's `.pn-fx-ribbon` polygon
    at row scale, so the two surfaces cut the same notch.
-   Spec: ops/docs/ui-patterns.md section 78 (bookmark ribbon) */
+   Spec: ops/docs/archive/ui-patterns.md section 78 (bookmark ribbon) */
 .pn-ribbon {
   position: absolute;
   top: 0;
@@ -3226,7 +3490,7 @@
    as a rendering slip rather than as a corner mark. It stays in the row's own
    16px gutter, the position it holds under a mouse and the one the row's text
    is measured from, and only the rows that carry a ribbon pay for the lane.
-   Spec: ops/docs/ui-patterns.md section 78 (bookmark ribbon) */
+   Spec: ops/docs/archive/ui-patterns.md section 78 (bookmark ribbon) */
 @media (hover: none) {
   /* A tile keeps its ribbon at the resting 12px, clear of the 12px corner
      radius: at the tile's very edge the notch sat on the rounded border and
@@ -3659,7 +3923,7 @@
    mangled sliver of each. The icons keep their aria-labels. The
    scrollbar is hidden: it would eat a third of the column and uncenter
    the icons; wheel, trackpad and drag still scroll.
-   Spec: ops/docs/ui-patterns.md section 40 (rail fit tiers) */
+   Spec: ops/docs/archive/ui-patterns.md section 40 (rail fit tiers) */
 .pn-rail:is([data-fit='shed'], [data-fit='compact'], [data-fit='scroll']) .pn-rail-optional {
   display: none;
 }
@@ -3688,9 +3952,41 @@
    sideways, cutting off everything at its start edge. HoverLabel moves a
    showing tip inside the visible box (`fitTip`), so a shown tip cannot do
    this either. Unlayered, so it wins over the tip's own display utility.
-   Spec: ops/docs/ui-patterns.md section 18 */
+   Spec: ops/docs/archive/ui-patterns.md section 18 */
 .pn-tip-host:not(:hover) > .pn-tip {
   display: none;
+}
+
+/* The caret PinInput draws in its focused empty box, because the field's own
+   is transparent with its text (the shoulder-surfing fix of issue #254), and
+   the lock screen typewriter's idle caret (`pn-caret-blink`). Both blink like
+   a native caret; with reduced motion they stay solid. */
+.pn-pin-caret > span,
+.pn-caret-blink {
+  animation: pn-pin-caret-blink 1.1s steps(1, end) infinite;
+}
+@keyframes pn-pin-caret-blink {
+  50% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pn-pin-caret > span,
+  .pn-caret-blink { animation: none; }
+}
+
+/* "Add a line" between two blocks (editorAddLine.ts) fades in after a short
+   wait, so the hint does not flash on every gap the pointer crosses while a
+   note scrolls under it. The top zone in Editor.tsx waits the same 150ms
+   through a transition delay. Spec: ops/docs/archive/ui-patterns.md
+   ("Add a line" between two blocks) */
+.pn-add-line-hint {
+  animation: pn-add-line-in 120ms ease-out 150ms both;
+}
+@keyframes pn-add-line-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pn-add-line-hint { animation: none; }
 }
 
 /* The sidebar narrows down to SIDEBAR_WIDTH_MIN. Below 230px the extras that
@@ -3721,7 +4017,8 @@
     flex-grow: 1 !important;
   }
   .pn-sb-tip-roomy > .pn-tip {
-    display: block;
+    /* flex, as a one-line tip is: block drops the gap after the label. */
+    display: flex;
   }
 }
 /* The Tags and Folders switch (TagsRail). The open segment takes two shares
@@ -3812,7 +4109,8 @@
   }
   /* The footer actions name themselves in a tip here, not in the pill. */
   .pn-sb-tip > .pn-tip {
-    display: block;
+    /* flex, as a one-line tip is: block drops the gap after the label. */
+    display: flex;
   }
 }
 
@@ -3826,7 +4124,7 @@
    never clipped on touch. One dash period is 8px along the 45deg axis,
    11.31px across, so the loop is seamless. Only the resting bar marches: a
    drag swaps in its own edge.
-   Spec: ops/docs/ui-patterns.md section 132 */
+   Spec: ops/docs/archive/ui-patterns.md section 132 */
 .pn-bar-ants {
   position: relative;
 }
@@ -3875,7 +4173,7 @@
    scrollbar, and a fade on each edge that has more to show (`data-fade`, set
    by the toolbar from the scroll position). The ramps are logical, so the
    fade follows the reading direction.
-   Spec: ops/docs/plans/format-bar.md (section 7) */
+   Spec: ops/docs/archive/format-bar.md (section 7) */
 .pn-format-strip {
   overflow-x: auto;
   overflow-y: hidden;
@@ -3934,4 +4232,110 @@
   details.pn-callout:not([open]) > summary .pn-caret-down { display: none; }
   details.pn-callout:not([open]) > summary .pn-caret-right { display: inline !important; }
   details.pn-callout:dir(rtl) > summary .pn-caret-right { transform: scaleX(-1); }
+}
+
+/* Every scale tile - the mood, a 0 to 10 scale, a custom scale - from one
+   rule, so their heights never drift apart. Spec: ops/docs/archive/ui-patterns.md section 141 */
+.pn-scale-tile {
+  display: flex;
+  min-width: 0;
+  /* Square while the row is narrow, capped at 36 px on a wide one: a fixed
+     height turned a 21 px column into a tall bar. */
+  width: 100%;
+  aspect-ratio: 1;
+  height: auto;
+  min-height: 1.75rem;
+  max-height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  outline: none;
+  transition: background-color 150ms, color 150ms, filter 150ms;
+}
+.pn-scale-tile:focus-visible { box-shadow: 0 0 0 2px rgb(var(--pn-accent)); }
+/* A timed card on the calendar's hour grid: a short event (30 minutes is
+   about 24 px) has room for the title line only, so the time line goes rather
+   than show cut in half. The button's label still names the time. */
+.pn-timed-card { container-type: size; }
+@container (max-height: 29.98px) { .pn-timed-time { display: none; } }
+@media (hover: none) { .pn-scale-tile { max-height: 2.5rem; } }
+/* A row under 240 px (a check-in card in the narrowest list pane): a 13 px
+   "10" is wider than its tile there. */
+@container scale (max-width: 239.98px) { .pn-scale-tile { font-size: 11px; } }
+/* An unpicked mood tile: its band at 26%, or one neutral color while a parent
+   sets --pn-tile-shown (the check-in card at rest). An accent scale lights in
+   the accent. */
+.pn-scale-mood { background: var(--pn-tile-shown, var(--pn-tile)); }
+.pn-scale-accent { --pn-tile-lit: rgb(var(--pn-accent) / 0.15); }
+/* The meter, under a mouse only: the tile under the pointer and every tile
+   before it take their lit color, the chosen tile excepted. DOM order, so a
+   right-to-left row lights from its right end. */
+@media (hover: hover) {
+  .pn-scale-row:has(> .pn-scale-tile:hover) > .pn-scale-tile:not(:hover ~ *):not([aria-checked="true"]) {
+    background: var(--pn-tile-lit);
+  }
+  .pn-scale-row:has(> .pn-scale-tile:hover) > .pn-scale-accent:not(:hover ~ *) { color: rgb(var(--pn-accent)); }
+}
+
+@layer editor {
+    /* The fill leads the drawn check. The 1.45em target scales with the text. */
+    .pn-task-checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      width: 1.45em;
+      height: 1.45em;
+      margin: 0;
+      border-radius: 0.33em;
+      border: 1.5px solid rgb(var(--pn-text-muted));
+      background: transparent;
+      transition: background-color 0.18s ease, border-color 0.18s ease;
+    }
+    .pn-task-checkbox:hover {
+      border-color: rgb(var(--pn-accent));
+      background: rgb(var(--pn-accent) / 0.08);
+    }
+    .pn-task-checkbox:focus-visible {
+      outline: 2px solid rgb(var(--pn-accent) / 0.45);
+      outline-offset: 2px;
+    }
+    .pn-task-checkbox:disabled {
+      cursor: default;
+    }
+    .pn-task-checkbox:checked {
+      background: rgb(var(--pn-accent-fill));
+      border-color: rgb(var(--pn-accent-fill));
+    }
+    /* The check sits exactly over the input; clicks fall through. */
+    .pn-task-checkbox + .pn-check {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-content: center;
+      pointer-events: none;
+    }
+    .pn-task-checkbox + .pn-check svg {
+      display: block;
+      width: 0.82em;
+      height: 0.82em;
+    }
+    .pn-task-checkbox + .pn-check path {
+      fill: none;
+      stroke: #fff;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 14;
+      stroke-dashoffset: 14;
+    }
+    /* Draw after the fill begins; hide immediately when unchecked. */
+    .pn-task-checkbox:checked + .pn-check path {
+      stroke-dashoffset: 0;
+      /* Spec: ops/docs/design-decisions.md (Checkbox feedback) */
+      transition: stroke-dashoffset 0.75s ease-out 0.06s;
+    }
 }

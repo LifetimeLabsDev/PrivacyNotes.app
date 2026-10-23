@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@choochmeque/tauri-plugin-iap-api": "^0.9.0",
+    "@notes/clipper": "workspace:*",
     "@notes/shared": "workspace:*",
     "@phosphor-icons/react": "^2.1.7",
     "@tauri-apps/api": "^2.12.1",

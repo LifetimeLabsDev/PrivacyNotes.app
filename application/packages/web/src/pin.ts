@@ -21,7 +21,7 @@ const KEY_BITS = 256;
 
 // localStorage cache mirrors settings so `hasPin()` can be synchronous.
 // Demo-bucketed (credentialKey in demo.ts) so a demo session's PIN
-// never touches a real account's cache. Session audit 2026-08-25.
+// never touches a real account's cache.
 const CACHE_SALT = credentialKey('privacynotes.pinSalt');
 const CACHE_HASH = credentialKey('privacynotes.pinHash');
 const CACHE_ITERATIONS = credentialKey('privacynotes.pinIterations');
@@ -229,7 +229,6 @@ export function hasPinWrap(
  * under the new PIN. A PIN-only account, with no lock and no wrap, never
  * gains one: a wrap is a durable copy of the phrase under four digits, and
  * only a lock to open justifies it. Pinned by tests/pinChange.test.ts.
- * Spec: ops/docs/archive/sec-65-pin-change-follows.md
  */
 export function pinChangeNeedsWrap(
   settings: Pick<UserSettings, 'appLockEnabled' | 'pinWrapSalt' | 'pinWrapIV' | 'pinWrapCiphertext'>,
@@ -346,23 +345,60 @@ export function getPinLockoutState(): { locked: boolean; secondsLeft: number; at
 // ─────────────────────────────────────────────────────────────────
 
 // sessionStorage-backed: closed tab always re-locks, never synced.
+//
+// Two stamps, because the app lock and the PIN gate guard different things.
+// The app lock keeps a stranger out of the device; the PIN gate keeps a
+// protected note shut while somebody else can see the screen. An app unlock
+// therefore opens the app and nothing behind the PIN gate (issue #538). A PIN
+// entered at the gate proves the person is at the device, so it refreshes
+// both.
 const UNLOCKED_KEY = credentialKey('privacynotes.pinUnlockedAt');
+const APP_UNLOCKED_KEY = credentialKey('privacynotes.appUnlockedAt');
 
-export function markPinUnlocked(): void {
+function stamp(keys: string[]): void {
   try {
-    sessionStorage.setItem(UNLOCKED_KEY, String(Date.now()));
+    const now = String(Date.now());
+    for (const key of keys) sessionStorage.setItem(key, now);
   } catch {
     /* private mode / storage off - user will be re-prompted, which is
        the safe default */
   }
 }
 
-function clearPinUnlock(): void {
+/** The PIN gate opened: protected notes, the phrase view and the app lock. */
+export function markPinUnlocked(): void {
+  stamp([UNLOCKED_KEY, APP_UNLOCKED_KEY]);
+}
+
+/** The app lock screen opened. Protected notes stay shut. */
+export function markAppUnlocked(): void {
+  stamp([APP_UNLOCKED_KEY]);
+}
+
+/** End both windows: the app locked, or the PIN changed hands. */
+export function clearPinUnlock(): void {
   try {
     sessionStorage.removeItem(UNLOCKED_KEY);
+    sessionStorage.removeItem(APP_UNLOCKED_KEY);
   } catch {
     /* ignore */
   }
+}
+
+function windowExpired(key: string, timeoutMinutes: number): boolean {
+  if (timeoutMinutes === 0) return true;
+  let raw: string | null;
+  try {
+    raw = sessionStorage.getItem(key);
+  } catch {
+    return true;
+  }
+  if (!raw) return true;
+  if (timeoutMinutes < 0) return false;
+  const last = Number(raw);
+  if (!Number.isFinite(last)) return true;
+  const elapsedMs = Date.now() - last;
+  return elapsedMs > timeoutMinutes * 60_000;
 }
 
 /**
@@ -374,17 +410,10 @@ function clearPinUnlock(): void {
  * the window an idle one rather than a countdown (see `pinKeepAlive.ts`).
  */
 export function shouldPromptForPin(timeoutMinutes: number): boolean {
-  if (timeoutMinutes === 0) return true;
-  let raw: string | null;
-  try {
-    raw = sessionStorage.getItem(UNLOCKED_KEY);
-  } catch {
-    return true;
-  }
-  if (!raw) return true;
-  if (timeoutMinutes < 0) return false;
-  const last = Number(raw);
-  if (!Number.isFinite(last)) return true;
-  const elapsedMs = Date.now() - last;
-  return elapsedMs > timeoutMinutes * 60_000;
+  return windowExpired(UNLOCKED_KEY, timeoutMinutes);
+}
+
+/** The same rule for the app lock screen, over its own stamp. */
+export function shouldPromptForAppLock(timeoutMinutes: number): boolean {
+  return windowExpired(APP_UNLOCKED_KEY, timeoutMinutes);
 }

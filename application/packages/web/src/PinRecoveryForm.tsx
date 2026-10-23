@@ -17,7 +17,7 @@ import { saveCredential, type UserSettings } from './userSettings';
  * The lock screen does NOT use this. There the phrase is the sign-in, so
  * recovery rides the phrase screen it already has.
  *
- * Spec: ops/docs/plans/pin-recovery.md
+ * Spec: ops/docs/archive/pin-recovery.md
  */
 export function PinRecoveryForm({
   kind = 'pin',

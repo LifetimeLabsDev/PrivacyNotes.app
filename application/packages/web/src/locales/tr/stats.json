@@ -3,7 +3,7 @@
   "tabs": {
     "overview": "Genel bakış",
     "writing": "Yazma",
-    "wellness": "Sağlık"
+    "wellness": "Takipler"
   },
   "writing": {
     "notes": "Notlar",
@@ -22,6 +22,44 @@
     "tooltipEdits_other": "{{date}}: {{count}} düzenleme",
     "longestNote": "En uzun not: <name>{{title}}</name> ({{count}} kelime)"
   },
+  "home": {
+    "inARow_other": "Art arda {{count}} gün",
+    "firstInsight_other": "İlk içgörü için {{count}} kayıtlı gün gerekiyor",
+    "standsOut": "Öne çıkanlar",
+    "lifts": "Ruh halinizi yükseltir",
+    "onAverage": "Ortalama {{word}}",
+    "daysOf": "{{days}} günün {{logged}} günü",
+    "medsTaken": "İlaçların %{{pct}} kadarı alındı",
+    "moodByDay": "Gün gün ruh hali",
+    "moodLegend": "Çubuklar: her gün. Çizgi: 7 günlük ortalama.",
+    "yourWeek": "Haftanız",
+    "yourWeekHint": "Haftanın günlerine göre ortalama ruh hali",
+    "weekLine": "En iyi gününüz {{best}} ({{bestAvg}}), en zoru {{worst}} ({{worstAvg}}).",
+    "daysSplit": "{{a}} güne karşı {{b}} gün",
+    "yourDays": "Günleriniz",
+    "yesOf": "{{total}} günün {{yes}} gününde evet",
+    "goesWith": "{{name}} neyle birlikte görülüyor",
+    "goesWithHint": "{{side}}, diğer günlere karşı",
+    "byWeekday": "Haftanın gününe göre",
+    "last30": "Son 30 gün",
+    "openEntry": "Kaydı aç",
+    "nothingThatDay": "O gün hiçbir şey kaydedilmedi.",
+    "drags": "Ruh halinizi düşürür",
+    "nextDay": "ertesi gün",
+    "label": {
+      "above": "{{name}} {{threshold}} üzerinde",
+      "levels": "{{name}}: {{levels}}",
+      "taken": "{{name}} alındı"
+    },
+    "footnoteShort": "Diğer kayıtlı günlerinize göre ruh hali puanı farkı. Daha çok nokta, sayının ardında daha çok gün demektir. Bir bağlantıdır, bir nedenin kanıtı değil.",
+    "trackers": "Takipleriniz",
+    "tapHint": "Açmak için birine dokunun",
+    "delta": "Önceki günlere göre {{delta}}",
+    "sureEarly": "Henüz erken: {{a}} gün var, {{b}} gün yok. Kaydetmeye devam edin.",
+    "sureDays": "{{a}} gün var, {{b}} gün yok",
+    "firstInsight_one": "İlk içgörü için {{count}} kayıtlı gün gerekiyor",
+    "inARow_one": "Art arda {{count}} gün"
+  },
   "range": {
     "7d": "7 gün",
     "14d": "14 gün",
@@ -39,12 +77,14 @@
       "patterns": "Örüntüler"
     },
     "empty": {
-      "title": "Henüz sağlık verisi yok.",
+      "title": "Henüz takip verisi yok.",
       "hint": "Bir günlük kaydı açıp ruh halinizi kaydederek başlayın."
     },
     "export": {
       "heading": "Dışa aktar",
       "downloadJSON": "JSON indir",
+      "downloadCSV": "CSV indir",
+      "csvDate": "Tarih",
       "doctorPDF": "Doktor PDF'i",
       "copyAIPrompt": "Yapay zekâ istemini göster ve kopyala",
       "copied": "Kopyalandı!",
@@ -52,7 +92,13 @@
       "proBadge": "PRO",
       "usesRange": "Yukarıdaki aralığı kullanır",
       "promptShown": "Kopyaladığınız istem. Seçtiğiniz sohbet botuna yapıştırın.",
-      "hidePrompt": "Gizle"
+      "hidePrompt": "Gizle",
+      "intro": "Günlük kayıtlarınızdaki takip değerleri, seçtiğiniz aralıkta.",
+      "aiPromptDesc": "Bir sohbet botuna yapıştırmak için takiplerinizin özeti. Burada gösterilir ve panoya kopyalanır.",
+      "doctorDesc": "Bir randevuya götürmek için ruh hali, uyku, ilaç ve eğilimleri içeren yazdırılabilir bir rapor.",
+      "jsonDesc": "Başka bir uygulama ya da kendi analiziniz için, tarihi ve tanımıyla birlikte her takip değeri.",
+      "csvDesc": "Bir elektronik tablo için gün başına bir satır ve takip başına bir sütun.",
+      "openExport": "Takip verilerinizi dışa aktarın"
     },
     "medication": {
       "adherence": "Uyum",
@@ -62,6 +108,7 @@
       },
       "dosageTimeline": "Doz zaman çizelgesi",
       "started": "{{dosage}} ile başlandı",
+      "startedPlain": "Başlandı",
       "changedTo": "{{dosage}} olarak değiştirildi"
     },
     "patterns": {
@@ -70,7 +117,9 @@
       "proBadge": "PRO",
       "insightsLocked_one": "{{count}} içgörü bulundu. Görmek için Pro'ya yükseltin",
       "insightsLocked_other": "{{count}} içgörü bulundu. Görmek için Pro'ya yükseltin",
-      "tableLocked": "Hangi takiplerin ruh halinizi etkilediğini görmek için Pro'ya yükseltin"
+      "tableLocked": "Hangi takiplerin ruh halinizi etkilediğini görmek için Pro'ya yükseltin",
+      "waiting_other": "{{count}} takip daha, karşılaştırma için daha fazla kayıtlı gün bekliyor.",
+      "waiting_one": "{{count}} takip daha, karşılaştırma için daha fazla kayıtlı gün bekliyor."
     },
     "week": {
       "range": "{{start}} - {{end}}",
@@ -85,7 +134,7 @@
       "reflectionPlaceholder": "Bu hafta genel olarak nasıl geçti? Aklınızda kalanları yazın...",
       "heading": "Haftanın özeti",
       "proBadge": "PRO",
-      "locked": "Haftalık sağlık özetinizi görmek için Pro'ya yükseltin"
+      "locked": "Haftalık takip özetinizi görmek için Pro'ya yükseltin"
     },
     "units": {
       "days_one": "{{count}} gün",
@@ -111,27 +160,30 @@
       "doseChange": "{{date}} tarihinde {{name}} dozunun {{dosage}} olarak değişmesi çevresinde ruh haliniz önceki {{nBefore}} günde ortalama {{before}}, sonraki {{nAfter}} günde ortalama {{after}} oldu."
     },
     "aiPrompt": {
-      "intro": "Ruh halimi ve genel iyilik halimi kaydediyorum. Lütfen aşağıdaki verilerde örüntüleri, eğilimleri ve uygulanabilir çıkarımları incele.",
+      "intro": "Takiplerle birlikte günlük bir günlük tutuyorum. Verilerim aşağıda. Ruh hali, 1 (berbat) ile 10 (harika) arasında kendi verdiğim puandır. Değeri olmayan bir gün, o günü kaydetmediğim anlamına gelir, sıfır değildir.",
       "overview": "Genel bakış",
       "daysTracked": "Takip edilen gün: {{days}}",
       "avgMood": "Ortalama ruh hali: {{mood}}/10",
       "avgSleep": "Ortalama uyku: {{hours}} sa.",
       "adherence": "İlaç uyumu: %{{pct}}",
       "topEmotions": "Öne çıkan duygular: {{list}}",
-      "moodTrend": "Ruh hali eğilimi (son 30 gün)",
+      "moodTrend": "Gün gün ruh hali",
       "columnDate": "Tarih",
       "columnMood": "Ruh hali",
+      "columnAverage": "7 günlük ortalama",
       "sleepDistribution": "Uyku kalitesi dağılımı",
       "activityDistribution": "Aktivite düzeyi dağılımı",
       "adherenceHeading": "İlaç uyumu",
-      "adherenceLine": "{{name}}: takip edilen {{total}} günün {{taken}} gününde alındı (%{{pct}})",
+      "adherenceLine": "{{name}}: planlanan {{total}} dozun {{taken}} tanesi alındı (%{{pct}})",
       "dosageTimeline": "Doz zaman çizelgesi",
       "patterns": "Saptanan örüntüler",
-      "questions": "Öğrenmek istediklerim",
-      "question1": "Ruh halimde zaman içinde bir örüntü var mı?",
-      "question2": "Uyku kalitesi ve aktivite düzeyi ruh haliyle ilişkili mi?",
-      "question3": "Bir sağlık uzmanıyla konuşmam gereken endişe verici eğilimler var mı?",
-      "question4": "Bu verilere dayanan uygulanabilir öneriler.",
+      "questions": "Nasıl yanıt vermelisin",
+      "question1": "En önemli üç bulguyla başla, her birinin ardındaki sayılarla birlikte.",
+      "question2": "Verinin gösterdiğini tahmin ettiğinden ayrı tut. Birlikte hareket eden iki takip, birinin diğerine neden olduğunu kanıtlamaz.",
+      "question3": "Bir örüntü güvenilemeyecek kadar az güne dayanıyorsa bunu söyle.",
+      "question4": "İki hafta boyunca deneyebileceğim iki üç küçük değişiklik öner ve işe yarayıp yaramadığını görmek için neyi takip etmem gerektiğini söyle.",
+      "question5": "Bir doktora götürmeye değer her şeyi belirt. Teşhis koyma.",
+      "question6": "Veriler seni kararsız bırakıyorsa, önce bana en fazla üç soru sor.",
       "footer": "PrivacyNotes ile oluşturuldu (privacynotes.app)",
       "period": "Dönem: {{from}} - {{to}}",
       "daysLogged": "Kaydedilen gün: {{days}} günün {{logged}} günü",
@@ -140,7 +192,7 @@
       "trackerYesLine": "{{name}}: {{count}} günün {{yes}} gününde evet",
       "effects": "Olan ve olmayan günlerde ruh hali",
       "effectLine": "{{name}} ({{rule}}): olan günlerde {{a}}, olmayan günlerde {{b}}, fark {{delta}}, {{na}} / {{nb}} gün",
-      "customQuestion": "{{name}} ruh halimle aynı gün ya da ertesi gün ilişkili mi?"
+      "customQuestion": "{{name}} ögesinin ruh halimle aynı gün ya da ertesi gün ilişkili olup olmadığını da kontrol et."
     },
     "report": {
       "documentTitle": "İyilik hali raporu",
@@ -161,9 +213,9 @@
       "activityDistribution": "Aktivite düzeyi dağılımı",
       "columnLevel": "Düzey",
       "adherenceHeading": "İlaç uyumu",
-      "adherenceNote": "Alınan dozların, her ilacın takip edildiği kayıtlı günlere oranı. İşaretlenmeyen bir gün alınmamış sayılır. Günlük kaydı olmayan günler iki yönde de sayılmaz.",
+      "adherenceNote": "Alınan planlı dozların, her ilacın ilk kaydedildiği günden bu yana günlük kaydı olan günlerde zamanı gelen dozlara oranı. Zamanı gelip işaretlenmeyen bir doz alınmamış sayılır. Günlük kaydı olmayan günler ve gerektiğinde alınan ilaçlar sayılmaz.",
       "columnMedication": "İlaç",
-      "columnTaken": "Alınan/Gün",
+      "columnTaken": "Alınan/Doz",
       "columnRate": "Oran",
       "dosageTimeline": "Doz zaman çizelgesi",
       "started": "{{date}} tarihinde {{dosage}} ile başlandı",
@@ -209,6 +261,15 @@
       "legend": "Çizgi: 7 günlük ortalama. Üçgen: doz değişikliği.",
       "dose": "{{name}} {{dosage}}"
     },
+    "pixels": {
+      "heading": "Piksellerle yıl",
+      "aria": "{{year}} yılındaki her günün ruh hali, gün başına bir kare",
+      "hint": "Ruh hali renklerinde, gün başına bir kare.",
+      "hintTap": "Ruh hali renklerinde, gün başına bir kare. Dokunmak o günü açar.",
+      "saveImage": "Görsel olarak kaydet",
+      "prevYear": "Önceki yıl",
+      "nextYear": "Sonraki yıl"
+    },
     "trackers": {
       "heading": "Takipler",
       "tapHint": "Dokununca Keşfet açılır",
@@ -218,13 +279,22 @@
       "unknown": "Bilinmeyen takip {{id}}",
       "sleepHours": "Uyku saati",
       "sleepQuality": "Uyku kalitesi",
-      "avgDays": "ortalama, {{count}} gün",
-      "sumDays": "toplam, {{count}} gün",
+      "avgDays_one": "ortalama, {{count}} gün",
+      "avgDays_other": "ortalama, {{count}} gün",
+      "sumDays_one": "toplam, {{count}} gün",
+      "sumDays_other": "toplam, {{count}} gün",
+      "daysLogged_one": "{{count}} gün kaydedildi",
+      "daysLogged_other": "{{count}} gün kaydedildi",
       "yesNo": "{{yes}} günde evet, {{no}} günde hayır",
       "notLogged": "{{count}} kaydedilmedi",
       "latestLowHigh": "son {{latest}}, en düşük {{low}}, en yüksek {{high}}",
-      "topLevel": "{{count}} günde {{level}}",
+      "topLevel_other": "{{count}} günde {{level}}",
+      "topLevel_one": "{{count}} günde {{level}}",
       "taken": "{{total}} günün {{taken}} gününde alındı",
+      "takenDoses_other": "{{count}} dozun {{taken}} tanesi alındı",
+      "asNeededDoses_other": "Gerektiğinde {{count}} doz",
+      "asNeededDoses_one": "Gerektiğinde {{count}} doz",
+      "takenDoses_one": "{{count}} dozun {{taken}} tanesi alındı",
       "empty": "Bu aralıkta kayıt yok",
       "unanswered": "{{count}} kayıtlı gün yanıtsız"
     },
@@ -245,6 +315,14 @@
       "footnote": "Kaydedilen günler arasında bir gözlem, neden değil.",
       "higher": "{{outcome}} bu günlerde {{delta}} puan daha yüksek.",
       "lower": "{{outcome}} bu günlerde {{delta}} puan daha düşük.",
+      "side": {
+        "with": "{{name}} olan günler",
+        "without": "Olmayan günler",
+        "above": "{{threshold}} üzerinde",
+        "atOrBelow": "{{threshold}} veya altında",
+        "taken": "Alındı",
+        "missed": "Atlandı"
+      },
       "rule": {
         "yesno": "olan günler ve olmayan günler",
         "halves": "{{threshold}} üzeri ve {{threshold}} ile altı",
@@ -347,7 +425,7 @@
     "milestones": "Kilometre taşları",
     "longestStreak": "En uzun seri: {{count}} gün",
     "openWriting": "Yazma'yı aç",
-    "openWellness": "Sağlık'ı aç",
+    "openWellness": "Takipler'i aç",
     "computed": "bu cihazda hesaplandı",
     "pillars": {
       "notes": "Notlar",
@@ -358,6 +436,68 @@
       "contacts": "Kişiler",
       "logins": "Giriş bilgileri"
     },
-    "ledgerEstimated": "Sayım başlayana kadar notlarınızdan tahmin edildi."
+    "ledgerEstimated": "Sayım başlayana kadar notlarınızdan tahmin edildi.",
+    "today": "Bugün, {{date}}",
+    "lastEdit": "Son düzenleme: {{time}}",
+    "wordsToday_other": "Bugün {{formatted}} kelime",
+    "edited_other": "{{count}} öge düzenlendi",
+    "created_other": "{{count}} yeni",
+    "scheduled_other": "Takviminizde {{count}} öge",
+    "next": "{{title}}, {{time}}",
+    "checkedIn": "{{word}}, durum kaydedildi",
+    "thisWeek": "Bu hafta",
+    "thisWeekHint": "Son 7 gün, önceki 7 güne karşı",
+    "vsLastWeek": "Geçen haftaya göre {{delta}}",
+    "activeDays": "Aktif günler",
+    "notesCreated": "Oluşturulan ögeler",
+    "checkIns": "Durum kayıtları",
+    "streaks": "Seriler",
+    "checkInStreak": "Durum kaydı serisi",
+    "keep": "Sakladığınız her şey",
+    "keepSub": "son 7 günde yeni",
+    "growingTags": "Büyüyen etiketler",
+    "moodMonth": "Ortalama {{word}}, son 30 gün",
+    "scheduled_one": "Takviminizde {{count}} öge",
+    "created_one": "{{count}} yeni",
+    "edited_one": "{{count}} öge düzenlendi",
+    "wordsToday_one": "Bugün {{formatted}} kelime"
+  },
+  "recap": {
+    "thisWeek": "Bu hafta",
+    "previous": "Önceki hafta",
+    "next": "Sonraki hafta",
+    "bestWorst": "En iyi gününüz {{best}} ({{bestMood}}), en zoru {{worst}} ({{worstMood}}) oldu.",
+    "noMood": "Bu hafta ruh hali kaydedilmedi.",
+    "also": "7 günün {{logged}} gününde ruh hali, {{created}} öge oluşturuldu.",
+    "againstWeekBefore": "Değişiklikler bir önceki haftaya göredir.",
+    "prompt": "{{day}} gününü güzel yapan neydi?"
+  },
+  "writingTab": {
+    "inOneLook": "Bu aralık bir bakışta",
+    "wordsWritten": "Yazılan kelimeler",
+    "daysWrote": "Yazdığınız günler",
+    "perDay": "Günde {{words}} kelime",
+    "notesStarted": "Başlatılan notlar",
+    "vsBefore": "Önceki günlere göre {{delta}}",
+    "readTime_other": "Yaklaşık {{count}} dakikalık okuma yazıldı",
+    "novels_other": "{{count}} roman değerinde, tüm zamanlar",
+    "tagsUsed": "{{count}} etiket, bu aralıkta {{used}} tanesi kullanıldı",
+    "wordsPerDay": "Günlük kelime",
+    "wordsPerWeek": "Haftalık kelime",
+    "biggest": "En yoğun gününüz {{day}} oldu ({{words}} kelime). En iyi gününüz {{weekday}}.",
+    "year": "Yazma yılınız",
+    "yearHint": "Daha koyu: o gün daha çok düzenleme",
+    "hoursHint": "Haftanın günü ve saate göre düzenlemeler",
+    "topTags": "En çok kullanılan etiketler",
+    "lengths": "Not uzunlukları",
+    "short": "Kısa",
+    "median": "Notlarınızın yarısı {{words}} kelimenin altında.",
+    "longest": "En uzun notlarınız",
+    "words_other": "{{formatted}} kelime",
+    "readHours_other": "Yaklaşık {{count}} saatlik okuma yazıldı",
+    "readHours_one": "Yaklaşık {{count}} saatlik okuma yazıldı",
+    "words_one": "{{formatted}} kelime",
+    "novels_one": "{{count}} roman değerinde, tüm zamanlar",
+    "readTime_one": "Yaklaşık {{count}} dakikalık okuma yazıldı"
   }
 }

@@ -16,7 +16,7 @@
  *   the screen. No text or link layer: a PDF is read here, not clicked
  *   through, so nothing inside one can navigate the app.
  *
- * Spec: ops/docs/ui-patterns.md (section 98, the picture viewer)
+ * Spec: ops/docs/archive/ui-patterns.md (section 98, the picture viewer)
  */
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -11,6 +11,10 @@
  * type icon is the fold control. We always write `+`/`-`. This is
  * Obsidian-native, so notes import and export 1:1 (see ops/docs/callouts.md).
  *
+ * Obsidian's metadata after a bar (`[!note|wide]`) is kept as written in
+ * `meta`. A Kanban column reads its color from it (`[!column|green]`); see
+ * kanban.ts for the board.
+ *
  * The keyword is kept as the file wrote it (`keyword`), so `[!NOTE]`, an
  * alias such as `[!caution]` or a type this build does not know saves back
  * unchanged; `type` only drives the look.
@@ -28,14 +32,16 @@
  */
 
 import { Node, mergeAttributes, InputRule } from '@tiptap/core';
-import { ReactNodeViewRenderer, NodeViewWrapper, NodeViewContent } from '@tiptap/react';
+import { ReactNodeViewRenderer, NodeViewWrapper, NodeViewContent, type NodeViewProps } from '@tiptap/react';
 import { Fragment, Slice, type Node as ProseMirrorNode } from '@tiptap/pm/model';
-import { Plugin, PluginKey, TextSelection, type EditorState } from '@tiptap/pm/state';
+import { Plugin, PluginKey, Selection, TextSelection, type EditorState } from '@tiptap/pm/state';
 import type { EditorView } from '@tiptap/pm/view';
 import { GapCursor } from '@tiptap/pm/gapcursor';
 import { useTranslation } from 'react-i18next';
 import { CaretDown, CaretRight } from './icons';
 import { CALLOUT_BY_TYPE, canonicalCalloutType, type CalloutType } from './calloutTypes';
+import { KanbanBoardView, KanbanColumnView, type KanbanOptions } from './KanbanBoard';
+import { isBoard, isColumn, kanbanNormalizePlugin } from './kanban';
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -130,6 +136,8 @@ function enterAtEndOfBox(state: EditorState, view: EditorView): boolean {
   if (!paragraph) return false;
   const lineStart = $from.before();
   const prev = index > firstBody ? box.child(index - 1) : null;
+  // A column ends into the text after its board, never between columns.
+  const exitDepth = isColumn(box) && boxDepth > 0 && isBoard($from.node(boxDepth - 1)) ? boxDepth - 1 : boxDepth;
   const tr = state.tr;
   if (!prev || !isBlankParagraph(prev)) {
     tr.insert($from.after(), paragraph.create());
@@ -137,7 +145,7 @@ function enterAtEndOfBox(state: EditorState, view: EditorView): boolean {
   } else {
     const removeFrom = index - 1 > firstBody ? lineStart - prev.nodeSize : lineStart;
     tr.delete(removeFrom, $from.end(boxDepth));
-    const after = tr.mapping.map($from.after(boxDepth));
+    const after = tr.mapping.map($from.after(exitDepth));
     tr.insert(after, paragraph.create());
     tr.setSelection(TextSelection.create(tr.doc, after + 1));
   }
@@ -149,20 +157,13 @@ function enterAtEndOfBox(state: EditorState, view: EditorView): boolean {
 /* Node view                                                          */
 /* ------------------------------------------------------------------ */
 
-function CalloutView({
-  node,
-  updateAttributes,
-}: {
-  node: {
-    attrs: { type: CalloutType; folded: boolean; keyword: string | null };
-    childCount: number;
-    firstChild: { type: { name: string }; content: { size: number } } | null;
-  };
-  updateAttributes: (attrs: Record<string, unknown>) => void;
-}) {
+function CalloutView(props: NodeViewProps) {
+  const { node, updateAttributes } = props;
   const { t } = useTranslation('editor');
-  const type = node.attrs.type;
-  const folded = node.attrs.folded;
+  const type = node.attrs.type as CalloutType;
+  if (type === 'kanban') return <KanbanBoardView {...props} />;
+  if (type === 'column') return <KanbanColumnView {...props} />;
+  const folded = node.attrs.folded as boolean;
   const def = CALLOUT_BY_TYPE[type] ?? CALLOUT_BY_TYPE.info;
   const Icon = def.icon;
   // A plain type (Fold, Box, Panel) has no accent: its title and caret take
@@ -256,7 +257,7 @@ function calloutBlockRule(state: MdBlockState, startLine: number, endLine: numbe
   if (state.src.charCodeAt(start) !== 0x3e /* > */) return false;
 
   const firstLine = state.src.slice(start, max);
-  const m = firstLine.match(/^>\s?\[!([\w-]+)\]([+-]?)\s?(.*)$/);
+  const m = firstLine.match(/^>\s?\[!([\w-]+)(?:\|([\w-]+))?\]([+-]?)\s?(.*)$/);
   if (!m) return false;
   if (silent) return true;
 
@@ -272,8 +273,9 @@ function calloutBlockRule(state: MdBlockState, startLine: number, endLine: numbe
   }
 
   const type = canonicalCalloutType(m[1]!);
-  const folded = m[2] === '-';
-  const title = m[3] ?? '';
+  const meta = m[2] ?? null;
+  const folded = m[3] === '-';
+  const title = m[4] ?? '';
 
   const open = state.push('callout_open', 'div', 1);
   open.block = true;
@@ -283,6 +285,7 @@ function calloutBlockRule(state: MdBlockState, startLine: number, endLine: numbe
     ['data-type', type],
     // Only a keyword that differs from the type name is worth keeping.
     ...(m[1] === type ? [] : [['data-keyword', m[1]!] as [string, string]]),
+    ...(meta ? [['data-meta', meta] as [string, string]] : []),
     ['data-folded', String(folded)],
     ['class', 'pn-callout'],
   ];
@@ -321,7 +324,10 @@ function registerCalloutMarkdown(md: MdInstance) {
     // The keyword matched [\w-]+ in the block rule, so it is safe in an attribute.
     const keyword = tokens[idx]!.attrGet('data-keyword');
     const kw = keyword ? ` data-keyword="${keyword}"` : '';
-    return `<div data-callout data-type="${type}"${kw} data-folded="${folded}" class="pn-callout">`;
+    // The metadata matched [\w-]+ in the block rule too.
+    const meta = tokens[idx]!.attrGet('data-meta');
+    const mt = meta ? ` data-meta="${meta}"` : '';
+    return `<div data-callout data-type="${type}"${kw}${mt} data-folded="${folded}" class="pn-callout">`;
   };
   md.renderer.rules.callout_close = () => '</div>';
   md.renderer.rules.callout_title_open = () => '<div data-callout-title>';
@@ -364,11 +370,18 @@ export const CalloutTitle = Node.create({
 /* Callout node                                                       */
 /* ------------------------------------------------------------------ */
 
-export const Callout = Node.create({
+export const Callout = Node.create<KanbanOptions>({
   name: 'callout',
   group: 'block',
   content: 'calloutTitle block+',
   defining: true,
+
+  addOptions() {
+    return {
+      kanbanUnlocked: () => false,
+      onUpgrade: () => {},
+    };
+  },
 
   addAttributes() {
     return {
@@ -389,6 +402,11 @@ export const Callout = Node.create({
           return keyword === canonicalCalloutType(el.getAttribute('data-type') || 'info') ? null : keyword;
         },
         renderHTML: (attrs) => (attrs.keyword ? { 'data-keyword': attrs.keyword } : {}),
+      },
+      meta: {
+        default: null,
+        parseHTML: (el) => validKeyword(el.getAttribute('data-meta')),
+        renderHTML: (attrs) => (attrs.meta ? { 'data-meta': attrs.meta } : {}),
       },
     };
   },
@@ -539,7 +557,10 @@ export const Callout = Node.create({
   },
 
   addProseMirrorPlugins() {
-    return [new Plugin({ key: new PluginKey('calloutCopy'), props: { transformCopied: unwrapUntitledCallout } })];
+    return [
+      new Plugin({ key: new PluginKey('calloutCopy'), props: { transformCopied: unwrapUntitledCallout } }),
+      kanbanNormalizePlugin(),
+    ];
   },
 
   addInputRules() {
@@ -583,9 +604,12 @@ export const Callout = Node.create({
           return true;
         }
         // Move to the start of the first body block (the title's next sibling).
+        // A board's next sibling is a column, so the caret goes to the
+        // nearest text place: that column's title.
         const after = $from.after($from.depth);
-        const $after = state.doc.resolve(after);
-        return editor.chain().setTextSelection($after.pos + 1).run();
+        const near = Selection.near(state.doc.resolve(Math.min(after + 1, state.doc.content.size)));
+        editor.view.dispatch(state.tr.setSelection(near).scrollIntoView());
+        return true;
       },
       // Backspace at the very start of the title removes the callout, unwrapping
       // its content back to plain blocks - the natural "get rid of it" gesture
@@ -595,6 +619,10 @@ export const Callout = Node.create({
         if (!empty) return false;
         if ($from.parent.type.name !== 'calloutTitle') return false;
         if ($from.parentOffset !== 0) return false;
+        // A board and its columns change only through their menus, so a
+        // Backspace never merges one column into the next by accident.
+        const box = $from.node($from.depth - 1);
+        if (isBoard(box) || isColumn(box)) return true;
         return editor.commands.removeCallout();
       },
       // Escape above a leading callout: ArrowUp from the title's top line, or
@@ -617,7 +645,7 @@ export const Callout = Node.create({
             render: (n: unknown, parent: unknown, i: number) => void;
           },
           node: {
-            attrs: { type: CalloutType; folded: boolean; keyword: string | null };
+            attrs: { type: CalloutType; folded: boolean; keyword: string | null; meta: string | null };
             firstChild: { type: { name: string }; content: { size: number } } | null;
             forEach: (f: (child: { type: { name: string } }, offset: number, index: number) => void) => void;
           },
@@ -627,7 +655,7 @@ export const Callout = Node.create({
           const word = keyword && canonicalCalloutType(keyword) === type ? keyword : type;
           const marker = node.attrs.folded ? '-' : '+';
           state.wrapBlock('> ', null, node, () => {
-            state.write(`[!${word}]${marker}`);
+            state.write(`[!${word}${node.attrs.meta ? `|${node.attrs.meta}` : ''}]${marker}`);
             const title = node.firstChild;
             if (title && title.type.name === 'calloutTitle' && title.content.size > 0) {
               state.write(' ');

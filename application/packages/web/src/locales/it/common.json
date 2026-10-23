@@ -10,6 +10,8 @@
     "back": "Indietro",
     "next": "Avanti",
     "remove": "Rimuovi",
+    "deleteConfirm": "Eliminare?",
+    "removeConfirm": "Rimuovere?",
     "copy": "Copia",
     "rename": "Rinomina",
     "create": "Crea",
@@ -59,15 +61,17 @@
   },
   "palette": {
     "label": "Comandi",
-    "open": "Comandi (>)",
+    "open": "Comandi",
     "empty": "Nessun comando corrispondente",
     "groups": {
+      "features": "Funzioni",
       "commands": "Comandi",
       "new": "Nuovo",
-      "goTo": "Vai a"
+      "goTo": "Vai a",
+      "themes": "Temi"
     },
     "commands": {
-      "quickSwitcher": "Vai a un elemento o a un'impostazione",
+      "quickSwitcher": "Apri Ninja: trova un elemento, aggiungi qualsiasi cosa, esegui un comando",
       "historyBack": "Vai indietro",
       "historyForward": "Vai avanti",
       "toggleSidebar": "Mostra/nascondi barra laterale",
@@ -93,9 +97,9 @@
     }
   },
   "quickSwitcher": {
-    "label": "Vai a un elemento o a un'impostazione",
-    "jumpTo": "Vai",
-    "placeholder": "Digita un titolo o un'impostazione, oppure > per i comandi",
+    "label": "Ninja: trova un elemento o un'impostazione, aggiungi qualsiasi cosa, esegui un comando",
+    "jumpTo": "Ninja",
+    "placeholder": "Ninja ai tuoi ordini: un titolo, + per aggiungere, > per i comandi",
     "recent": "Recenti",
     "empty": "Nessun elemento o impostazione con questo nome",
     "searchAll": "Cerca ovunque: “{{query}}”",
@@ -114,6 +118,7 @@
     "tagItems_other": "{{count}} elementi",
     "emptyTags": "Nessun tag con questo nome",
     "emptyFolders": "Nessuna cartella con questo nome",
+    "emptyVault": "Ancora niente qui. Digita + per aggiungere il tuo primo elemento.",
     "onlyTags": "tag",
     "onlyFolders": "cartelle",
     "showOnlyTags": "Solo tag",
@@ -124,7 +129,13 @@
     "createTag": "Crea il tag #{{name}}",
     "createFolder": "Crea la cartella “{{name}}”",
     "newTag": "Nuovo tag",
-    "newFolder": "Nuova cartella"
+    "newFolder": "Nuova cartella",
+    "goToDay": "Vai al giorno",
+    "inText": "Nel testo",
+    "actions": "azioni",
+    "back": "indietro",
+    "actionsPlaceholder": "Filtra le azioni",
+    "onlyCreate": "aggiungi"
   },
   "cardForm": {
     "cardholderName": "Nome del titolare",
@@ -182,46 +193,48 @@
     "removeTag": "Rimuovi {{tag}}"
   },
   "loading": {
+    "pause": "Metti in pausa le frasi",
+    "play": "Riproduci le frasi",
     "lines": [
-      "carico i tuoi pensieri ossessivi cifrati…",
-      "un attimo, stiamo deludendo gli inserzionisti.",
-      "troppo cifrato per importarcene.",
-      "energia da banca svizzera applicata agli appunti.",
-      "proteggo i tuoi pensieri sotto la doccia.",
-      "i tuoi segreti sono sopravvissuti a un altro riavvio.",
-      "niente lascia il dispositivo senza vestiti.",
-      "apro la cassaforte in silenzio…",
-      "deposito a freddo per pensieri caldi.",
-      "questa nota rispetta la propria privacy.",
-      "leggere impossibile. sincronizzare possibile.",
-      "decifrata in locale. ignorata nel mondo.",
-      "le tue note mantengono il distanziamento sociale.",
-      "testo cifrato dentro, testo cifrato fuori.",
-      "un'altra bella giornata per la crittografia.",
-      "manteniamo noiosi i segreti dal primo giorno.",
-      "lo scrivi tu. non lo legge nessuno.",
-      "privacy senza il discorso motivazionale.",
-      "decifro come se non fossero affari di nessuno.",
-      "teniamo il cloud confuso.",
-      "il server non sa niente. e gli va benissimo così.",
-      "meno sorveglianza. più note.",
-      "sciocchezze cifrate, come previsto.",
-      "matematicamente irraggiungibile.",
-      "zero conoscenza. massima sfacciataggine.",
-      "tracciamento disabilitato emotivamente e tecnicamente.",
-      "il tuo dispositivo custodisce i pettegolezzi.",
-      "testo in chiaro a chilometro zero.",
-      "trasformo i pensieri in zuppa illeggibile.",
-      "solo tu e le chiavi.",
-      "i pensieri privati entrano in modalità privata.",
-      "mantengo immaginarie le tue future fughe di dati.",
-      "un'altra nota nascosta al capitalismo.",
-      "qui la privacy non è un extra a pagamento.",
-      "sicurezza tramite vera sicurezza.",
-      "resisto in silenzio ai mercanti di dati.",
-      "nessun materiale per addestrare l'ia rilevato.",
-      "cifrato più del necessario.",
-      "privacy: caricamento in corso.",
+      "energia da banca svizzera applicata agli appunti",
+      "proteggo i tuoi pensieri sotto la doccia",
+      "le tue note sono cifrate sul tuo dispositivo",
+      "deposito a freddo per pensieri caldi",
+      "un'altra bella giornata per la crittografia",
+      "manteniamo noiosi i segreti dal primo giorno",
+      "privacy senza il discorso motivazionale",
+      "teniamo il cloud confuso",
+      "il server conserva testo cifrato. e lo trova noioso",
+      "meno sorveglianza. più note",
+      "sciocchezze cifrate, come previsto",
+      "tracciamento disabilitato emotivamente e tecnicamente",
+      "il tuo dispositivo custodisce i pettegolezzi",
+      "i pensieri privati entrano in modalità privata",
+      "un'altra nota nascosta al capitalismo",
+      "qui la privacy non è un extra a pagamento",
+      "sicurezza tramite vera sicurezza",
+      "resisto in silenzio ai mercanti di dati",
+      "nessun materiale per addestrare l'ia rilevato",
+      "cifrato più del necessario",
+      "tutto segnale. zero sorveglianza",
+      "trasformo i problemi di fiducia in software",
+      "i tuoi pensieri restano fuori dal mercato",
+      "i minatori di dati hanno trovato solo tristezza",
+      "la tua cassaforte resta cifrata con accanimento",
+      "neutralità svizzera, ma per le note",
+      "niente pubblicità. niente tracker. niente colpi di scena",
+      "open source, così puoi controllare i calcoli",
+      "il testo cifrato è il nostro linguaggio dell'amore",
+      "rendo le tue note noiose per gli estranei",
+      "ha chiamato il tuo diario. vuole privacy",
+      "il tuo tracker dell'umore sentiva la tua mancanza",
+      "le tue idee, senza il pubblico",
+      "il tuo diario ha custodito i tuoi segreti per tutta la notte",
+      "un posto privato per tutto ciò che non pubblicheresti mai",
+      "qui nessun algoritmo decide cosa vedi",
+      "i tuoi pensieri sparsi sono sani e salvi",
+      "scrivere è pensare. pensare è privato",
+      "nessun influencer è stato consultato",
       "carico i segreti responsabilmente.",
       "solo segnale. nessuna sorveglianza.",
       "in arrivo un altro capolavoro cifrato.",
@@ -236,6 +249,27 @@
       "decifro in locale pensieri esistenziali…",
       "la tua cassaforte resta ostinatamente illeggibile.",
       "neutralità svizzera, ma per le note."
+    ],
+    "loadingOnly": [
+      "carico i tuoi pensieri ossessivi cifrati",
+      "un attimo, stiamo deludendo gli inserzionisti",
+      "i tuoi segreti sono sopravvissuti a un altro riavvio",
+      "apro la cassaforte in silenzio",
+      "decifrata in locale. ignorata nel mondo",
+      "decifro come se non fossero affari di nessuno",
+      "testo in chiaro a chilometro zero",
+      "trasformo i pensieri in zuppa illeggibile",
+      "un altro capolavoro cifrato in arrivo",
+      "rimetto ordine nel caos cifrato",
+      "decifro in locale pensieri esistenziali",
+      "scaldo le chiavi",
+      "ritrovo il filo dei tuoi pensieri",
+      "conto le attività non spuntate. senza giudicare",
+      "nessuna pubblicità è stata mostrata durante questo caricamento",
+      "rimetto le tue note dove le avevi lasciate",
+      "districo i pensieri di ieri",
+      "metto i bit in bell'ordine",
+      "ricordo quello che hai dimenticato di ricordare"
     ]
   },
   "neverBackedUp": {
@@ -245,5 +279,57 @@
     "changesOne": "Le ultime modifiche non hanno un backup e andrebbero perse.",
     "changesSome_one": "{{count}} di queste note ha modifiche senza backup che andrebbero perse.",
     "changesSome_other": "{{count}} di queste note hanno modifiche senza backup che andrebbero perse."
+  },
+  "ninja": {
+    "recent": "Recenti",
+    "topHit": "Risultato migliore",
+    "trashEmpty": "Il cestino è vuoto",
+    "allThemes": "Tutti i temi",
+    "features": {
+      "stats": {
+        "label": "Statistiche",
+        "detail": "La tua scrittura, le serie e i tracker nel tempo"
+      },
+      "trackers": {
+        "label": "Tracker",
+        "detail": "Umore, abitudini, fattori e farmaci"
+      },
+      "medication": {
+        "label": "Farmaci",
+        "detail": "Dosi, orari e promemoria"
+      },
+      "yearInPixels": {
+        "label": "L'anno in pixel",
+        "detail": "Ogni giorno dell'anno come un quadratino colorato"
+      },
+      "importExport": {
+        "label": "Import & Export",
+        "detail": "Porta dentro le note, porta fuori un backup"
+      },
+      "generator": {
+        "label": "Generatore di password",
+        "detail": "Una password o una passphrase robusta, pronta da copiare"
+      },
+      "themes": {
+        "label": "Temi",
+        "detail": "Temi di colore per la modalità chiara e scura"
+      }
+    },
+    "new": {
+      "medication": "Nuovo farmaco",
+      "customTracker": "Nuovo tracker personalizzato"
+    },
+    "commands": {
+      "syncResume": "Riprendi la sincronizzazione",
+      "changelog": "Novità",
+      "help": "Aiuto",
+      "themesPage": "Temi della community",
+      "website": "Sito di PrivacyNotes"
+    },
+    "themes": {
+      "word": "Tema",
+      "light": "Tema chiaro",
+      "dark": "Tema scuro"
+    }
   }
 }

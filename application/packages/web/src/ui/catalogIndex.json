@@ -1,0 +1,4450 @@
+{
+  "flows": [
+    {
+      "id": "flow-0",
+      "name": "Daily check-in",
+      "path": "Settings > Trackers > General > Daily check-in card; enable tracker questions under Choose trackers/Habit questions. Open Journals, or All with Journals included under Settings > Lists > Sidebar and All.",
+      "source": "CheckInCard.tsx, TrackerPills.tsx, individual trackers/*Pill.tsx; NotesView.tsx saves through the existing queue",
+      "scope": "Browser list/grid completion recorded. Android received browser values and reopened the guided flow in list/grid. macOS mood selection, guided Done and Grid options now observed; detailed tracker values and visual comparison remain."
+    },
+    {
+      "id": "flow-1",
+      "name": "Check-in options",
+      "path": "Card gear / Check-in options",
+      "source": "CheckInCard.tsx, ContextMenu.tsx",
+      "scope": "Skip today, Log another day, Choose trackers, Hide this card, Check-in settings; completed card also exposes Start over. Menu contents depend on state."
+    },
+    {
+      "id": "flow-2",
+      "name": "Another check-in date",
+      "path": "Check-in options > Log another day",
+      "source": "CheckInCard.tsx embeds MonthGrid",
+      "scope": "Inline calendar, not a dialog. Android Back backgrounded the app and left the inline calendar state intact. Selecting a date folds it. Do not apply modal-close assumptions here."
+    },
+    {
+      "id": "flow-3",
+      "name": "List/grid",
+      "path": "List header > Sort and view options > List / Grid / Auto",
+      "source": "ListPrefsPopover.tsx, ViewModeToggle.tsx, viewMode.ts",
+      "scope": "Device-local choice. The check-in is a band in list and a full-width tile in grid. Android widths recorded without overflow."
+    },
+    {
+      "id": "flow-4",
+      "name": "Quick switcher",
+      "path": "Jump or Cmd+K",
+      "source": "QuickSwitcher.tsx, settings search registry",
+      "scope": "Item results, settings results and command results are distinct. Type > for commands. Do not mistake an empty item result for an unavailable command."
+    },
+    {
+      "id": "flow-5",
+      "name": "Quick add",
+      "path": "Q outside text inputs, or All > New > Quick add",
+      "source": "QuickSwitcher.tsx, quick-add parser and creation actions",
+      "scope": "Browser synthetic journal/event creation recorded. Inspect parsed date/time/type chips before committing. Q while typing must remain text."
+    },
+    {
+      "id": "flow-6",
+      "name": "Journal schedule",
+      "path": "Create/open a journal > Note options > Entry date",
+      "source": "NoteOptionsMenu.tsx, ScheduleView.tsx, MonthGrid.tsx, TimeInput.tsx",
+      "scope": "All-day/timed controls and alerts observed. Journal creation and check-in may create different same-day entries."
+    },
+    {
+      "id": "flow-7",
+      "name": "Event schedule",
+      "path": "All > New > Event, or Jump > >New Event; open its date/schedule",
+      "source": "EventCard.tsx, ScheduleView.tsx",
+      "scope": "Synthetic event, custom repeat units and end choices observed. Editing a calendar occurrence and its scope confirmation remains distinct from editing the series through search."
+    },
+    {
+      "id": "flow-8",
+      "name": "Recurring edit scope",
+      "path": "Calendar > Month > a recurring occurrence > All day shortcut > Schedule > All day",
+      "source": "ConfirmModal.tsx, CalendarPane.tsx, scheduling owner",
+      "scope": "Demo “Change this item?” has This occurrence, This and following, All occurrences, Cancel and X. Escape closed only that confirmation and left Schedule open. No scope was committed."
+    },
+    {
+      "id": "flow-9",
+      "name": "Android time picker",
+      "path": "Synthetic event > Note options > Schedule > Starts or Ends at",
+      "source": "TimeInput.tsx, Android native time input",
+      "scope": "Native clock and text-entry modes, Set, Cancel and Clear observed. Cancel returned to Schedule. Browser time input uses text parsing."
+    },
+    {
+      "id": "flow-10",
+      "name": "Alert submenu",
+      "path": "Dated item > Note options > schedule/date > Alert",
+      "source": "ScheduleView.tsx, OptionsMenu.tsx",
+      "scope": "Timed offsets differ from all-day day/week plus time. Custom two-week all-day alert rendered as 14 days before at 8 AM. Duplicate Add disabled. None and multiple choices are separate states."
+    },
+    {
+      "id": "flow-11",
+      "name": "Android alert submenu",
+      "path": "Synthetic timed event > Note options > Schedule > Alert",
+      "source": "ScheduleView.tsx, OptionsMenu.tsx",
+      "scope": "None, At the time, 5/10/15/30 minutes, 1/2 hours, 1/2 days, 1 week, Custom and minute/hour/day/week units observed. Android Back returned to Schedule. Delivery remains separate from configuration."
+    },
+    {
+      "id": "flow-12",
+      "name": "Contact editor",
+      "path": "All > New > Contact",
+      "source": "ContactItem.tsx, ContactForm.tsx, formFields.tsx, detailPane.tsx",
+      "scope": "Inline detail pane, not modal. Name, phone/email, Add field, PIN hint and Done observed. Birthday/address/profile branches opened; synthetic name saved. Empty optional fields disappear from detail."
+    },
+    {
+      "id": "flow-13",
+      "name": "Contact optional fields",
+      "path": "Contact edit > Add field",
+      "source": "ContactForm.tsx, ContextMenu.tsx",
+      "scope": "Address, Website, Profile, Company, Job title, Birthday, Date, Related name, Nickname, Middle/prefix/suffix, Phonetic name, Note. Menus and expanded rows recorded; not every value or export round trip tested."
+    },
+    {
+      "id": "flow-14",
+      "name": "Bookmark quick add",
+      "path": "All > New > Bookmark, or Bookmarks > New",
+      "source": "BookmarksList.tsx, BookmarkItem.tsx",
+      "scope": "Inline URL field; Add appears with a draft. Invalid URL feedback and valid synthetic bookmark creation recorded. This is not the Clip page modal."
+    },
+    {
+      "id": "flow-15",
+      "name": "Bookmark clipping",
+      "path": "Open bookmark > Save as note",
+      "source": "BookmarkItem.tsx, clip pipeline",
+      "scope": "Observed failure says the page could not be saved and the bookmark is saved. Retained bookmark and inline alert recorded. Success/picture branches still need a suitable page fixture."
+    },
+    {
+      "id": "flow-16",
+      "name": "Clip page",
+      "path": "All > New > Clip page",
+      "source": "ClipPageModal.tsx, ui/Modal.tsx, ui/fields.tsx",
+      "scope": "Empty Save disabled; invalid address on Enter produces actual field error; Cancel closes. Save pictures toggle and preview/progress branches are distinct."
+    },
+    {
+      "id": "flow-17",
+      "name": "Login",
+      "path": "All > New > Login",
+      "source": "VaultItem.tsx, LoginForm.tsx, formFields.tsx",
+      "scope": "Inline form. Website list, custom fields, password visibility, generator and PIN hint are separate branches. Use synthetic values only."
+    },
+    {
+      "id": "flow-18",
+      "name": "Password generator",
+      "path": "Login edit > Generate password",
+      "source": "PasswordGenerator.tsx, passwordGen.ts",
+      "scope": "Browser demo verified 2026-10-21: Password length preset, Copy success, Passphrase mode with words/separator/symbol options, Apply into draft, Escape closes. Actions use Button. Generated previews excluded from screenshots. Free-account upgrade gate and native behavior remain separate checks. Custom shell still lacks a dialog role."
+    },
+    {
+      "id": "flow-19",
+      "name": "History",
+      "path": "Open item > History",
+      "source": "NoteHistoryModal.tsx",
+      "scope": "Wider workspace; compare mode expands further. Catalog's generic history-style fixture does not exercise real history, restore or quota."
+    },
+    {
+      "id": "flow-20",
+      "name": "Empty History",
+      "path": "Demo event > History",
+      "source": "NoteHistoryModal.tsx",
+      "scope": "Real empty workspace observed at 1152px width with version limit text, X and no footer. Escape closed it. Initial focus remained outside. Preview/compare/restore require versions."
+    },
+    {
+      "id": "flow-21",
+      "name": "Native About",
+      "path": "macOS menu > PrivacyNotes UI Review > About PrivacyNotes",
+      "source": "AboutWindow.tsx; desktop open_about_window",
+      "scope": "Fixed 280 × 485 native window; native close, Escape and settled Cmd+W verified. Resize/minimize disabled. Early Cmd+W before web content settled did not close it; record timing separately."
+    },
+    {
+      "id": "flow-22",
+      "name": "Share/export",
+      "path": "Open item > Share or export; narrow header may expose it through Note options",
+      "source": "notesView/ShareMenu.tsx, notesView/useExports.ts",
+      "scope": "Export paths differ by item type. Do not trigger external sharing, purchases or destructive actions merely to obtain a screenshot."
+    },
+    {
+      "id": "flow-23",
+      "name": "Settings search",
+      "path": "Settings > Search; also Jump settings results",
+      "source": "SettingsWindow.tsx, settingsSearch/*",
+      "scope": "Query clearing and Back-to-results are separate from closing. Registry route list includes platform predicates and source anchors."
+    },
+    {
+      "id": "flow-24",
+      "name": "Tag appearance",
+      "path": "Sidebar > Actions for tag > Icon and color",
+      "source": "TagsRail.tsx, looks/LookPicker.tsx",
+      "scope": "Demo icon search empty state, Color tab, Cancel rollback and X persistence verified. First Escape clears search; second closes. Picks save immediately, so X is intentionally different from Cancel."
+    },
+    {
+      "id": "flow-25",
+      "name": "Android custom repeat",
+      "path": "Synthetic event > Note options > Schedule > Repeat > Custom",
+      "source": "ScheduleView.tsx",
+      "scope": "Day/week/month/year and Never/date/count endings opened. Zero interval remains visible with Apply enabled; source normalizes the draft interval to at least one. Back twice discarded the draft and retained Does not repeat. A later Apply/reopen pass verifies zero normalizes to one; see android-recurrence-boundary.json."
+    },
+    {
+      "id": "flow-26",
+      "name": "Inline delete",
+      "path": "Catalog > Actions > DeleteButton; editor attachment > trash; Settings > Trackers > custom habit/factor/medication row",
+      "source": "ui/DeleteButton.tsx, EncryptedAttachment.tsx, TrackerConfig.tsx",
+      "scope": "Catalog pointer confirmation, keyboard focus/Enter, Escape and timeout verified. Real demo attachment arm/Escape verified. Three-second confirmation; no explicit blur/outside-click cancellation. Actual deletion and native parity remain unverified. See inline-delete-runtime.json."
+    },
+    {
+      "id": "flow-27",
+      "name": "File upload decision",
+      "path": "Files > Upload files > choose a .txt file",
+      "source": "notesView/useFilesUpload.ts, NotesView.tsx, UploadProgressModal.tsx",
+      "scope": "Demo shows Import or store? with Store as files / Import as notes. Store as files creates an attachment; Upload complete shows Done and per-file status. See media-runtime.json; OS picker and async failures remain platform-specific."
+    },
+    {
+      "id": "flow-28",
+      "name": "Attachment rename",
+      "path": "Open stored attachment > Rename",
+      "source": "EncryptedAttachment.tsx",
+      "scope": "Inline File name edits the base name with fixed extension. Save name/Cancel replace attachment actions. Escape cancels. Empty Save closes and retains the original name, without an inline error. Demo synthetic fixture only."
+    },
+    {
+      "id": "flow-29",
+      "name": "Standalone import",
+      "path": "Sidebar > Import; compare Settings > Import & Export embedded pane",
+      "source": "import/ImportModal.tsx, import/registry.ts",
+      "scope": "Demo Markdown preview/destination/new-folder import, oversized-note split switch, bookmark folder/browser tags, contact-photo switch, malformed Keep warning, ZIP error, Webcal validation, Back and Escape observed. Android embedded pane and unrestricted file filter measured; see android-import-runtime.json. The standalone shell has Close, tabs, scrolling body and phase-dependent footer. See import-runtime.json."
+    },
+    {
+      "id": "flow-30",
+      "name": "Editor menus",
+      "path": "Open synthetic note > toolbar Heading / Font / Alignment / color chooser / highlight chooser / Callout / Insert / Attach",
+      "source": "EditorToolbar.tsx, Editor.tsx",
+      "scope": "Demo choice inventories and Escape captured in editor-menus-runtime.json. Text color and highlight are separate split buttons. Insert has grouped blocks and notation. Attach offers Image/File/Recording. Opening menus does not establish save/reload fidelity for every mark or block."
+    },
+    {
+      "id": "flow-31",
+      "name": "Editor links",
+      "path": "Toolbar > Add link, or Link to another note",
+      "source": "LinkSheet.tsx, editor note-link plugin",
+      "scope": "Add link is a dialog with URL focus and selection-dependent Link text. Note-link command inserts [[ at the current selection and opens inline suggestions. A selected image is replaced; start with an appropriate caret for repeatable tests."
+    },
+    {
+      "id": "flow-32",
+      "name": "Find / replace",
+      "path": "Note options > Find and replace; compact Find via Hide replace",
+      "source": "ReplaceBar.tsx, FindBar.tsx, MatchNav.tsx",
+      "scope": "Unmatched query gives 0/0 and disabled actions. Match case changes results; Hide replace swaps to compact Find. Escape does not close compact Find; X or Cmd+F is its close route. This is an inline bar, not a modal."
+    },
+    {
+      "id": "flow-33",
+      "name": "Connections",
+      "path": "Add a note link > editor slot > Connections",
+      "source": "ConnectionsPill.tsx, ConnectionsPanel.tsx",
+      "scope": "Inline navigation region with Links to count, item buttons and Hide connections. Demo synthetic linked note observed. Backlinks, protected targets and unlinked mentions remain separate branches."
+    },
+    {
+      "id": "flow-34",
+      "name": "Media viewer",
+      "path": "Editor > select image > View image",
+      "source": "EncryptedImage.tsx, MediaViewer.tsx",
+      "scope": "Named dialog receives initial focus. Zoom in enables Zoom out; Previous/Next navigate images and reset zoom; end controls disabled; Escape closes. Image toolbar has XS/S/M/L and Copy/View/Download/Delete. Pinch, pan and native viewer variants remain."
+    },
+    {
+      "id": "flow-35",
+      "name": "Read-only note",
+      "path": "Note options > Read-only",
+      "source": "NoteEditorPane.tsx, NoteOptionsMenu.tsx, attachment editor",
+      "scope": "Title disabled, editing toolbar/tags/folder inputs and attachment Rename/Delete disappear; Download/Copy remain. Menu stays open with toggle pressed and can restore editability."
+    },
+    {
+      "id": "flow-36",
+      "name": "Toolbar customization",
+      "path": "Editor > Customize toolbar",
+      "source": "Focused Settings > Toolbar",
+      "scope": "Top/Bottom placement, On bar/Hidden/In + menu regions, per-action movement and location menus. Moved Bold to Hidden and back; bottom position verified."
+    },
+    {
+      "id": "flow-37",
+      "name": "Markdown view",
+      "path": "Editor > Show markdown > Show formatted",
+      "source": "Editor source toolbar",
+      "scope": "Source mode has a separate fixed set of formatting actions; switching back retains toolbar placement. Source text was not edited."
+    },
+    {
+      "id": "flow-38",
+      "name": "Zen mode",
+      "path": "Footer > Enter Zen mode",
+      "source": "Editor presentation",
+      "scope": "Sidebar/list/footer hidden; tabs remain. Width cycles Default width, Wider, Full width. Show/Hide formatting toolbar works with bottom placement; Exit Zen restores surrounding panes."
+    },
+    {
+      "id": "flow-39",
+      "name": "Statistics drill-down",
+      "path": "Footer > Open stats > Trackers > Sleep hours > tracker title",
+      "source": "StatsModal.tsx, stats/StatsPage.tsx",
+      "scope": "Numeric and categorical details; Same day/Next day; Compare with Energy; title opens a nested listbox dialog. Escape closes child while Statistics stays open. Writing > 7 days updates range; parent Escape closes. See statistics-runtime.json."
+    },
+    {
+      "id": "flow-40",
+      "name": "Archive and collapsed panes",
+      "path": "Note options > Archive; sidebar Archive > note > Unarchive; pane separators",
+      "source": "TagsRail.tsx, note options and shell",
+      "scope": "Synthetic archive reveals sidebar destination and removes its attachments from Files; unarchive restores them. Empty Archive view remains reachable while selected. Collapsed icon rail has labelled Tags/Folders/Trash; Tags expands sidebar. List separator collapses list and exposes Expand notes list. See shell-runtime.json."
+    }
+  ],
+  "reuse": [
+    {
+      "id": "R001",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/FolderTree.tsx",
+          "line": 418,
+          "component": "button",
+          "classes": "w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2",
+          "conditions": [
+            {
+              "line": 399,
+              "expression": "menu && menuFolder",
+              "branch": "&&"
+            },
+            {
+              "line": 415,
+              "expression": "!locked",
+              "branch": "&&"
+            },
+            {
+              "line": 417,
+              "expression": "menuCanNest",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/FolderTree.tsx",
+          "line": 431,
+          "component": "button",
+          "classes": "w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2",
+          "conditions": [
+            {
+              "line": 399,
+              "expression": "menu && menuFolder",
+              "branch": "&&"
+            },
+            {
+              "line": 415,
+              "expression": "!locked",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/FolderTree.tsx",
+          "line": 444,
+          "component": "button",
+          "classes": "w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2",
+          "conditions": [
+            {
+              "line": 399,
+              "expression": "menu && menuFolder",
+              "branch": "&&"
+            },
+            {
+              "line": 415,
+              "expression": "!locked",
+              "branch": "&&"
+            },
+            {
+              "line": 441,
+              "expression": "spaceMove && menuFolder.parentId === null",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/FolderTree.tsx",
+          "line": 456,
+          "component": "button",
+          "classes": "w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2",
+          "conditions": [
+            {
+              "line": 399,
+              "expression": "menu && menuFolder",
+              "branch": "&&"
+            },
+            {
+              "line": 415,
+              "expression": "!locked",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/FolderTree.tsx",
+          "line": 468,
+          "component": "button",
+          "classes": "w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2",
+          "conditions": [
+            {
+              "line": 399,
+              "expression": "menu && menuFolder",
+              "branch": "&&"
+            },
+            {
+              "line": 415,
+              "expression": "!locked",
+              "branch": "&&"
+            },
+            {
+              "line": 467,
+              "expression": "onEditLook",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/FolderTree.tsx",
+          "line": 481,
+          "component": "button",
+          "classes": "w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2",
+          "conditions": [
+            {
+              "line": 399,
+              "expression": "menu && menuFolder",
+              "branch": "&&"
+            },
+            {
+              "line": 415,
+              "expression": "!locked",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/FolderTree.tsx",
+          "line": 491,
+          "component": "button",
+          "classes": "w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2",
+          "conditions": [
+            {
+              "line": 399,
+              "expression": "menu && menuFolder",
+              "branch": "&&"
+            },
+            {
+              "line": 415,
+              "expression": "!locked",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/TagsRail.tsx",
+          "line": 576,
+          "component": "button",
+          "classes": "w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/TagsRail.tsx",
+          "line": 586,
+          "component": "button",
+          "classes": "w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/TagsRail.tsx",
+          "line": 601,
+          "component": "button",
+          "classes": "w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/TagsRail.tsx",
+          "line": 612,
+          "component": "button",
+          "classes": "w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2",
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "R002",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/BookmarkItem.tsx",
+          "line": 265,
+          "component": "button",
+          "classes": "text-accent/60 hover:text-accent transition p-1 -m-1",
+          "conditions": [
+            {
+              "line": 250,
+              "expression": "!isTrash",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/CardForm.tsx",
+          "line": 366,
+          "component": "button",
+          "classes": "text-accent/60 hover:text-accent transition p-1 -m-1",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/ContactForm.tsx",
+          "line": 540,
+          "component": "button",
+          "classes": "text-accent/60 hover:text-accent transition p-1 -m-1",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/LoginForm.tsx",
+          "line": 512,
+          "component": "button",
+          "classes": "text-accent/60 hover:text-accent transition p-1 -m-1",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/SshKeyForm.tsx",
+          "line": 384,
+          "component": "button",
+          "classes": "text-accent/60 hover:text-accent transition p-1 -m-1",
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "R003",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/DangerZone.tsx",
+          "line": 366,
+          "component": "button",
+          "classes": "flex-1 rounded-md border border-divider hover:bg-surface-1 px-3 py-2 text-sm transition",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/PinRecoveryForm.tsx",
+          "line": 98,
+          "component": "button",
+          "classes": "flex-1 rounded-md border border-divider hover:bg-surface-1 px-3 py-2 text-sm transition",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/SyncOptionsModal.tsx",
+          "line": 1520,
+          "component": "button",
+          "classes": "flex-1 rounded-md border border-divider hover:bg-surface-1 px-3 py-2 text-sm transition",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/security/PhrasePinGate.tsx",
+          "line": 175,
+          "component": "button",
+          "classes": "flex-1 rounded-md border border-divider hover:bg-surface-1 px-3 py-2 text-sm transition",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/security/PinTab.tsx",
+          "line": 712,
+          "component": "button",
+          "classes": "flex-1 rounded-md border border-divider hover:bg-surface-1 px-3 py-2 text-sm transition",
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "R004",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/LockScreen.tsx",
+          "line": 424,
+          "component": "button",
+          "classes": "flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/LockScreen.tsx",
+          "line": 527,
+          "component": "button",
+          "classes": "flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/PinRecoveryForm.tsx",
+          "line": 105,
+          "component": "button",
+          "classes": "flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/ProtectedNoteGate.tsx",
+          "line": 605,
+          "component": "button",
+          "classes": "flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/security/PhrasePinGate.tsx",
+          "line": 181,
+          "component": "button",
+          "classes": "flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed",
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "R005",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/CardForm.tsx",
+          "line": 390,
+          "component": "button",
+          "classes": "flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium border border-divider text-pn-muted hover:bg-pn/5 transition",
+          "conditions": [
+            {
+              "line": 387,
+              "expression": "!locked",
+              "branch": "&&"
+            },
+            {
+              "line": 389,
+              "expression": "!isNew",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/LoginForm.tsx",
+          "line": 536,
+          "component": "button",
+          "classes": "flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium border border-divider text-pn-muted hover:bg-pn/5 transition",
+          "conditions": [
+            {
+              "line": 533,
+              "expression": "!locked",
+              "branch": "&&"
+            },
+            {
+              "line": 535,
+              "expression": "!isNew",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/SshKeyForm.tsx",
+          "line": 408,
+          "component": "button",
+          "classes": "flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium border border-divider text-pn-muted hover:bg-pn/5 transition",
+          "conditions": [
+            {
+              "line": 405,
+              "expression": "!locked",
+              "branch": "&&"
+            },
+            {
+              "line": 407,
+              "expression": "!isNew",
+              "branch": "&&"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R006",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/CardForm.tsx",
+          "line": 398,
+          "component": "button",
+          "classes": "flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-accent-fill text-white hover:bg-accent-fill-hover transition",
+          "conditions": [
+            {
+              "line": 387,
+              "expression": "!locked",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/LoginForm.tsx",
+          "line": 544,
+          "component": "button",
+          "classes": "flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-accent-fill text-white hover:bg-accent-fill-hover transition",
+          "conditions": [
+            {
+              "line": 533,
+              "expression": "!locked",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/SshKeyForm.tsx",
+          "line": 416,
+          "component": "button",
+          "classes": "flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-accent-fill text-white hover:bg-accent-fill-hover transition",
+          "conditions": [
+            {
+              "line": 405,
+              "expression": "!locked",
+              "branch": "&&"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R007",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/ConfirmModal.tsx",
+          "line": 125,
+          "component": "button",
+          "classes": "flex-1 rounded-md border border-divider hover:bg-pn/5 px-4 py-2 text-sm transition",
+          "conditions": [
+            {
+              "line": 105,
+              "expression": "choices",
+              "branch": "alternate"
+            },
+            {
+              "line": 124,
+              "expression": "resolvedCancelLabel !== null",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/ConflictModal.tsx",
+          "line": 74,
+          "component": "button",
+          "classes": "flex-1 rounded-md border border-divider hover:bg-pn/5 px-4 py-2 text-sm transition",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/DonationModal.tsx",
+          "line": 27,
+          "component": "button",
+          "classes": "flex-1 rounded-md border border-divider hover:bg-pn/5 px-4 py-2 text-sm transition",
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "R008",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/stats/ExploreSubTab.tsx",
+          "line": 211,
+          "component": "button",
+          "classes": "w-full rounded-lg border border-dashed border-divider p-3 text-xs text-pn-muted hover:text-pn hover:border-pn-muted transition-colors text-center",
+          "conditions": [
+            {
+              "line": 155,
+              "expression": "outcome",
+              "branch": "&&"
+            },
+            {
+              "line": 179,
+              "expression": "unlocked",
+              "branch": "alternate"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/stats/PatternsSubTab.tsx",
+          "line": 87,
+          "component": "button",
+          "classes": "w-full rounded-lg border border-dashed border-divider p-3 text-xs text-pn-muted hover:text-pn hover:border-pn-muted transition-colors text-center",
+          "conditions": [
+            {
+              "line": 48,
+              "expression": "mood && shown.length > 0",
+              "branch": "&&"
+            },
+            {
+              "line": 65,
+              "expression": "unlocked",
+              "branch": "alternate"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/stats/PatternsSubTab.tsx",
+          "line": 105,
+          "component": "button",
+          "classes": "w-full rounded-lg border border-dashed border-divider p-3 text-xs text-pn-muted hover:text-pn hover:border-pn-muted transition-colors text-center",
+          "conditions": [
+            {
+              "line": 94,
+              "expression": "insightCount > 0",
+              "branch": "&&"
+            },
+            {
+              "line": 100,
+              "expression": "unlocked",
+              "branch": "alternate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R009",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/AnnouncementBanner.tsx",
+          "line": 62,
+          "component": "button",
+          "classes": "shrink-0 rounded-md p-1 text-success hover:bg-emerald-100 dark:hover:bg-emerald-900 transition",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/DemoBanner.tsx",
+          "line": 51,
+          "component": "button",
+          "classes": "shrink-0 rounded-md p-1 text-success hover:bg-emerald-100 dark:hover:bg-emerald-900 transition",
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "R010",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/BookmarksList.tsx",
+          "line": 455,
+          "component": "input",
+          "classes": "flex-1 min-w-0 bg-transparent text-[15px] focus:outline-none placeholder:text-pn-muted",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/TasksList.tsx",
+          "line": 622,
+          "component": "input",
+          "classes": "flex-1 min-w-0 bg-transparent text-[15px] focus:outline-none placeholder:text-pn-muted",
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "R011",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/BookmarksList.tsx",
+          "line": 518,
+          "component": "button",
+          "classes": "inline-flex items-center gap-1.5 whitespace-nowrap rounded-md bg-accent-fill px-3.5 py-2 text-[13px] font-medium text-white transition hover:bg-accent-fill/90",
+          "conditions": [
+            {
+              "line": 505,
+              "expression": "empty && !filteredAway",
+              "branch": "consequent"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/ContactsList.tsx",
+          "line": 261,
+          "component": "button",
+          "classes": "inline-flex items-center gap-1.5 whitespace-nowrap rounded-md bg-accent-fill px-3.5 py-2 text-[13px] font-medium text-white transition hover:bg-accent-fill/90",
+          "conditions": [
+            {
+              "line": 255,
+              "expression": "empty && !filteredAway",
+              "branch": "consequent"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R012",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/BookmarksList.tsx",
+          "line": 522,
+          "component": "button",
+          "classes": "inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-divider bg-surface-1 px-3.5 py-2 text-[13px] transition hover:bg-pn/10",
+          "conditions": [
+            {
+              "line": 505,
+              "expression": "empty && !filteredAway",
+              "branch": "consequent"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/ContactsList.tsx",
+          "line": 265,
+          "component": "button",
+          "classes": "inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-divider bg-surface-1 px-3.5 py-2 text-[13px] transition hover:bg-pn/10",
+          "conditions": [
+            {
+              "line": 255,
+              "expression": "empty && !filteredAway",
+              "branch": "consequent"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R013",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/ContactForm.tsx",
+          "line": 506,
+          "component": "button",
+          "classes": "w-full flex items-center gap-2 px-3 py-2 text-[13px] text-pn-soft",
+          "conditions": [
+            {
+              "line": 504,
+              "expression": "draft.extras.length > 0",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/ContactItem.tsx",
+          "line": 359,
+          "component": "button",
+          "classes": "w-full flex items-center gap-2 px-3 py-2 text-[13px] text-pn-soft",
+          "conditions": [
+            {
+              "line": 357,
+              "expression": "contact.extras.length > 0",
+              "branch": "&&"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R014",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/FilesList.tsx",
+          "line": 997,
+          "component": "button",
+          "classes": "text-xs font-medium text-white bg-accent-fill hover:bg-accent-fill-hover px-4 py-1.5 rounded-md transition",
+          "conditions": [
+            {
+              "line": 967,
+              "expression": "filtered.length === 0 && !search.trim() && (activeFolderName !== null || activeTag !== null)",
+              "branch": "alternate"
+            },
+            {
+              "line": 977,
+              "expression": "filtered.length === 0",
+              "branch": "consequent"
+            },
+            {
+              "line": 989,
+              "expression": "!search.trim()",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/ListFilterChips.tsx",
+          "line": 167,
+          "component": "button",
+          "classes": "text-xs font-medium text-white bg-accent-fill hover:bg-accent-fill-hover px-4 py-1.5 rounded-md transition",
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "R015",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/FolderPicker.tsx",
+          "line": 384,
+          "component": "input",
+          "classes": "flex-1 min-w-0 h-9 bg-transparent text-[14px] focus:outline-none placeholder:text-pn-muted",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/TagPicker.tsx",
+          "line": 79,
+          "component": "input",
+          "classes": "flex-1 min-w-0 h-9 bg-transparent text-[14px] focus:outline-none placeholder:text-pn-muted",
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "R016",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/FolderTree.tsx",
+          "line": 374,
+          "component": "button",
+          "classes": "w-full mt-2 rounded-md border border-dashed border-divider hover:border-accent/50 text-[15px] font-medium transition flex items-center justify-start gap-2 ps-[7px] pe-2 py-2 text-pn-muted hover:text-accent",
+          "conditions": [
+            {
+              "line": 357,
+              "expression": "creatingUnder === null",
+              "branch": "alternate"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/TagsRail.tsx",
+          "line": 1377,
+          "component": "button",
+          "classes": "w-full mt-2 rounded-md border border-dashed border-divider hover:border-accent/50 text-[15px] font-medium transition flex items-center justify-start gap-2 ps-[7px] pe-2 py-2 text-pn-muted hover:text-accent",
+          "conditions": [
+            {
+              "line": 1071,
+              "expression": "markdownRail",
+              "branch": "??"
+            },
+            {
+              "line": 1274,
+              "expression": "!split.folded",
+              "branch": "&&"
+            },
+            {
+              "line": 1278,
+              "expression": "browseMode === 'folders'",
+              "branch": "alternate"
+            },
+            {
+              "line": 1339,
+              "expression": "creatingTag",
+              "branch": "alternate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R017",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/FolderTree.tsx",
+          "line": 504,
+          "component": "button",
+          "classes": "w-full text-start px-3 py-1.5 text-[13px] text-danger hover:bg-red-50 dark:hover:bg-red-950/30 flex items-center gap-2",
+          "conditions": [
+            {
+              "line": 399,
+              "expression": "menu && menuFolder",
+              "branch": "&&"
+            }
+          ]
+        },
+        {
+          "file": "packages/web/src/TagsRail.tsx",
+          "line": 624,
+          "component": "button",
+          "classes": "w-full text-start px-3 py-1.5 text-[13px] text-danger hover:bg-red-50 dark:hover:bg-red-950/30 flex items-center gap-2",
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "R018",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/LockScreen.tsx",
+          "line": 433,
+          "component": "button",
+          "classes": "w-full text-sm text-accent hover:underline py-1 transition",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/PinRecoveryForm.tsx",
+          "line": 122,
+          "component": "button",
+          "classes": "w-full text-sm text-accent hover:underline py-1 transition",
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "R019",
+      "status": "review-candidate",
+      "reason": "Identical literal class-token set on native controls in more than one file. This does not prove duplicated behavior or authorize a migration.",
+      "occurrences": [
+        {
+          "file": "packages/web/src/MilestoneToast.tsx",
+          "line": 33,
+          "component": "button",
+          "classes": "shrink-0 text-pn-muted hover:text-pn px-1 text-lg leading-none -me-0.5",
+          "conditions": []
+        },
+        {
+          "file": "packages/web/src/UpdateToast.tsx",
+          "line": 124,
+          "component": "button",
+          "classes": "shrink-0 text-pn-muted hover:text-pn px-1 text-lg leading-none -me-0.5",
+          "conditions": [
+            {
+              "line": 123,
+              "expression": "onDismiss",
+              "branch": "&&"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sites": [
+    {
+      "id": "site-1",
+      "name": "Homepage",
+      "path": "/en",
+      "source": "src/LandingPage.tsx; src/footerData.ts",
+      "status": "Observed: Linux and Android download expansion, package-manager panel.",
+      "gap": "Open language menu, announcement dismissal, auth entry, narrow layout and copy feedback remain."
+    },
+    {
+      "id": "site-2",
+      "name": "Help hub",
+      "path": "/help",
+      "source": "help-page.ts; public/static-pages.js::initFaq",
+      "status": "Observed: default, matching and empty search; Escape clears; 390px layout.",
+      "gap": "Question expansion, copy feedback, all locales and keyboard paths remain."
+    },
+    {
+      "id": "site-3",
+      "name": "Help answer",
+      "path": "/help/try-before-signup",
+      "source": "help-page.ts; public/static-pages.js::initLeafSearch",
+      "status": "Observed: answer, related questions, sync suggestions and Search all answers link.",
+      "gap": "Suggestion keyboard selection, no-results and fetch-failure recovery remain."
+    },
+    {
+      "id": "site-4",
+      "name": "Import guides",
+      "path": "/help/import/apple-notes",
+      "source": "help-page.ts; src/guides.ts",
+      "status": "Observed: Apple Notes guide layout and navigation.",
+      "gap": "Other guide content, internal steps and localized layouts remain."
+    },
+    {
+      "id": "site-5",
+      "name": "Keyboard shortcut sheet",
+      "path": "/help/keyboard-shortcuts/cheat-sheet",
+      "source": "help-page.ts; public/static-pages.js::initCheatSheet",
+      "status": "Observed: Mac/browser and Windows-Linux/desktop selectors. At 390px the Print button extends to x=414px; screenshot confirms clipping.",
+      "gap": "Print preview, remaining selector combinations and reviewed overflow fix remain."
+    },
+    {
+      "id": "site-6",
+      "name": "Brand kit",
+      "path": "/brand",
+      "source": "brand-page.ts; public/static-pages.js::initBrand; static-page-chrome.ts",
+      "status": "Observed: asset cards, on-page rail, color/description copy controls and dark mode. Immediate Copied feedback captured; clipboard contents not read.",
+      "gap": "Copy failure, narrow layout and asset download outcomes remain."
+    },
+    {
+      "id": "site-7",
+      "name": "Changelog",
+      "path": "/changelog",
+      "source": "changelog-page.ts; public/static-pages.js::initChangelog / initShots",
+      "status": "Observed: unmatched search, Escape clear, screenshot-only filter, screenshot viewer, next image and Escape return to a link.",
+      "gap": "Other filters, pagination, hash restoration, touch swipe and copy feedback remain."
+    },
+    {
+      "id": "site-8",
+      "name": "Themes",
+      "path": "/themes",
+      "source": "themes-page.ts; public/static-pages.js::initThemeShots / initThemeMore / initBrand",
+      "status": "Observed: team + light filters; filtered viewer has eight images and opens Default Light.",
+      "gap": "Other filter/order combinations, show-more, code expansion, copy and empty states remain."
+    },
+    {
+      "id": "site-9",
+      "name": "Roadmap",
+      "path": "/roadmap",
+      "source": "roadmap-page.ts; static-page-chrome.ts",
+      "status": "Observed: milestone groups, status badges and progress image.",
+      "gap": "Narrow layout and light/dark parity remain."
+    },
+    {
+      "id": "site-10",
+      "name": "Feature landing page",
+      "path": "/markdown-editor",
+      "source": "landing-pages.ts; src/landingData/pages/markdown-editor.ts",
+      "status": "Observed: feature page, navigation, FAQ disclosure and existing-file answer.",
+      "gap": "Remaining FAQ interactions, CTA transitions and narrow layout remain. Forced-light static marketing layout is intentional in source."
+    },
+    {
+      "id": "site-11",
+      "name": "Comparison landing page",
+      "path": "/vs/standard-notes",
+      "source": "landing-pages.ts; src/landingData/pages/vs-standard-notes.ts",
+      "status": "Observed: comparison page, table scroll container and FAQ controls at desktop width.",
+      "gap": "Narrow layout remains: a requested override did not apply; actual width stayed 1280. FAQ and CTA interactions remain."
+    },
+    {
+      "id": "site-12",
+      "name": "Audience landing page",
+      "path": "/for/lawyers",
+      "source": "landing-pages.ts; src/landingData/pages/for-lawyers.ts",
+      "status": "Observed: audience page, workflow sections, FAQ controls and CTA links.",
+      "gap": "FAQ interactions, CTA transitions and narrow layout remain."
+    }
+  ],
+  "scope": "Dated source index, 2026-10-20 with public-site extension 2026-10-21. Paths derived from registry/source unless runtime evidence says otherwise. This is not a completion score.",
+  "settings": [
+    {
+      "id": "section.stats",
+      "name": "Statistics",
+      "path": "Settings > Statistics",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "section.import",
+      "name": "Import & Export",
+      "path": "Settings > Import & Export",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "section.plan",
+      "name": "Account",
+      "path": "Settings > Account",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "section.storage",
+      "name": "Storage",
+      "path": "Settings > Storage",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "section.images",
+      "name": "Images",
+      "path": "Settings > Storage > Images",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "section.security",
+      "name": "Security",
+      "path": "Settings > Security",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "section.me",
+      "name": "ID & Sync",
+      "path": "Settings > ID & Sync",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "section.design",
+      "name": "Design",
+      "path": "Settings > Design",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "section.editor",
+      "name": "Editor",
+      "path": "Settings > Editor",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "section.formatBar",
+      "name": "Toolbar",
+      "path": "Settings > Toolbar",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "section.lists",
+      "name": "Lists",
+      "path": "Settings > Lists",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "section.trackers",
+      "name": "Trackers",
+      "path": "Settings > Trackers",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "section.language",
+      "name": "Language",
+      "path": "Settings > Language",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "section.date",
+      "name": "Date & Time",
+      "path": "Settings > Date & Time",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "section.about",
+      "name": "About",
+      "path": "Settings > About",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "section.help",
+      "name": "Help",
+      "path": "Settings > Help",
+      "source": [],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "stats.writing",
+      "name": "Writing",
+      "path": "Settings > Statistics > Writing",
+      "source": [
+        "StatsModal.tsx:66",
+        "stats/WritingTab.tsx:181"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "stats.streak",
+      "name": "Current streak",
+      "path": "Settings > Statistics > Current streak",
+      "source": [
+        "stats/OverviewTab.tsx:266",
+        "stats/WritingTab.tsx:187"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "stats.milestones",
+      "name": "Milestones",
+      "path": "Settings > Statistics > Milestones",
+      "source": [
+        "stats/OverviewTab.tsx:379",
+        "stats/WritingTab.tsx:309"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "stats.wellness",
+      "name": "Your trackers",
+      "path": "Settings > Statistics > Trackers > Your trackers",
+      "source": [
+        "stats/StatsPage.tsx:498"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "stats.overview",
+      "name": "Overview",
+      "path": "Settings > Statistics > Overview",
+      "source": [
+        "stats/OverviewTab.tsx:218"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "stats.medication",
+      "name": "Medication",
+      "path": "Settings > Statistics > Medication",
+      "source": [
+        "stats/StatsPage.tsx:116"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "stats.patterns",
+      "name": "What stands out",
+      "path": "Settings > Statistics > Trackers > What stands out",
+      "source": [
+        "stats/StatsPage.tsx:425"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "stats.moodTrend",
+      "name": "Mood",
+      "path": "Settings > Statistics > Trackers > Mood",
+      "source": [
+        "stats/StatsPage.tsx:301"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "stats.yearInPixels",
+      "name": "Year in pixels",
+      "path": "Settings > Statistics > Mood > Year in pixels",
+      "source": [
+        "stats/YearInPixels.tsx:100"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "journals.titles",
+      "name": "Journal titles",
+      "path": "Settings > Date & Time > Format > Journal titles",
+      "source": [
+        "JournalsSheet.tsx:92"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "journals.suffix",
+      "name": "After the date",
+      "path": "Settings > Date & Time > Format > After the date",
+      "source": [
+        "JournalsSheet.tsx:113"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.import",
+      "name": "Import",
+      "path": "Settings > Import & Export > Import",
+      "source": [
+        "import/ImportModal.tsx:641"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.autoTag",
+      "name": "Tag imported notes by source",
+      "path": "Settings > Import & Export > Import > Tag imported notes by source",
+      "source": [
+        "import/ImportModal.tsx:1157"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.browser-bookmarks",
+      "name": "Browser bookmarks",
+      "path": "Settings > Import & Export > Import > Browser bookmarks",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.vcard",
+      "name": "Contacts (vCard)",
+      "path": "Settings > Import & Export > Import > Contacts (vCard)",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.apple-journal",
+      "name": "Apple Journal",
+      "path": "Settings > Import & Export > Import > Apple Journal",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.apple-notes",
+      "name": "Apple Notes",
+      "path": "Settings > Import & Export > Import > Apple Notes",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.bear",
+      "name": "Bear",
+      "path": "Settings > Import & Export > Import > Bear",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.evernote",
+      "name": "Evernote",
+      "path": "Settings > Import & Export > Import > Evernote",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.google-calendar",
+      "name": "Google Calendar",
+      "path": "Settings > Import & Export > Import > Google Calendar",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.webcal",
+      "name": "Webcal",
+      "path": "Settings > Import & Export > Import > Webcal",
+      "source": [
+        "import/ImportModal.tsx:1107"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.google-keep",
+      "name": "Google Keep",
+      "path": "Settings > Import & Export > Import > Google Keep",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.ia-writer",
+      "name": "iA Writer",
+      "path": "Settings > Import & Export > Import > iA Writer",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.joplin",
+      "name": "Joplin",
+      "path": "Settings > Import & Export > Import > Joplin",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.markdown-folder",
+      "name": "Markdown files",
+      "path": "Settings > Import & Export > Import > Markdown files",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.nextcloud-notes",
+      "name": "Nextcloud Notes",
+      "path": "Settings > Import & Export > Import > Nextcloud Notes",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.notesnook",
+      "name": "Notesnook",
+      "path": "Settings > Import & Export > Import > Notesnook",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.obsidian",
+      "name": "Obsidian",
+      "path": "Settings > Import & Export > Import > Obsidian",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.samsung-notes",
+      "name": "Samsung Notes",
+      "path": "Settings > Import & Export > Import > Samsung Notes",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.simplenote",
+      "name": "Simplenote",
+      "path": "Settings > Import & Export > Import > Simplenote",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.standard-notes",
+      "name": "Standard Notes",
+      "path": "Settings > Import & Export > Import > Standard Notes",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.typora",
+      "name": "Typora",
+      "path": "Settings > Import & Export > Import > Typora",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.upnote",
+      "name": "UpNote",
+      "path": "Settings > Import & Export > Import > UpNote",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.zettlr",
+      "name": "Zettlr",
+      "path": "Settings > Import & Export > Import > Zettlr",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.export",
+      "name": "Export",
+      "path": "Settings > Import & Export > Export",
+      "source": [
+        "import/ImportModal.tsx:642"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "export.zipBackup",
+      "name": "PrivacyNotes backup (.zip)",
+      "path": "Settings > Import & Export > Export > PrivacyNotes backup (.zip)",
+      "source": [
+        "import/ImportModal.tsx:1757"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "export.encryptedZip",
+      "name": "Encrypted full backup (.pnbackupz)",
+      "path": "Settings > Import & Export > Export > Encrypted full backup (.pnbackupz)",
+      "source": [
+        "import/ImportModal.tsx:1764"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "export.encryptedBackup",
+      "name": "Encrypted backup (.pnbackup)",
+      "path": "Settings > Import & Export > Export > Encrypted backup (.pnbackup)",
+      "source": [
+        "import/ImportModal.tsx:1772"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "export.htmlArchive",
+      "name": "HTML archive (.zip)",
+      "path": "Settings > Import & Export > Export > HTML archive (.zip)",
+      "source": [
+        "import/ImportModal.tsx:1788"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "export.textBackup",
+      "name": "Text backup (.json)",
+      "path": "Settings > Import & Export > Export > Text backup (.json)",
+      "source": [
+        "import/ImportModal.tsx:1795"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "export.bookmarks",
+      "name": "Bookmarks file (.html)",
+      "path": "Settings > Import & Export > Export > Bookmarks file (.html)",
+      "source": [
+        "import/ImportModal.tsx:1811"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "export.contacts",
+      "name": "Contacts file (.vcf)",
+      "path": "Settings > Import & Export > Export > Contacts file (.vcf)",
+      "source": [
+        "import/ImportModal.tsx:1828"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "export.calendar",
+      "name": "Calendar file (.ics)",
+      "path": "Settings > Import & Export > Export > Calendar file (.ics)",
+      "source": [
+        "import/ImportModal.tsx:1845"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "export.vault",
+      "name": "Vault export (.json)",
+      "path": "Settings > Import & Export > Export > Vault export (.json)",
+      "source": [
+        "import/ImportModal.tsx:1862"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.restore",
+      "name": "Restore",
+      "path": "Settings > Import & Export > Restore",
+      "source": [
+        "import/ImportModal.tsx:643"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "restore.fullBackup",
+      "name": "Full backup (.zip)",
+      "path": "Settings > Import & Export > Restore > Full backup (.zip)",
+      "source": [
+        "import/ImportModal.tsx:1234"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "restore.encryptedBackup",
+      "name": "Encrypted backup (.pnbackup, .pnbackupz)",
+      "path": "Settings > Import & Export > Restore > Encrypted backup (.pnbackup, .pnbackupz)",
+      "source": [
+        "import/ImportModal.tsx:1245"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.vault",
+      "name": "Passwords",
+      "path": "Settings > Import & Export > Passwords",
+      "source": [
+        "import/ImportModal.tsx:646"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.wellness",
+      "name": "Export your tracker data",
+      "path": "Settings > Import & Export > Trackers > Export your tracker data",
+      "source": [
+        "import/ImportModal.tsx:648"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "wellness.aiPrompt",
+      "name": "Show & copy AI prompt",
+      "path": "Settings > Import & Export > Trackers > Show & copy AI prompt",
+      "source": [
+        "stats/WellnessExport.tsx:131"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "wellness.doctorReport",
+      "name": "Doctor PDF",
+      "path": "Settings > Import & Export > Trackers > Doctor PDF",
+      "source": [
+        "stats/WellnessExport.tsx:128"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "wellness.json",
+      "name": "Download JSON",
+      "path": "Settings > Import & Export > Trackers > Download JSON",
+      "source": [
+        "stats/WellnessExport.tsx:129"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "wellness.csv",
+      "name": "Download CSV",
+      "path": "Settings > Import & Export > Trackers > Download CSV",
+      "source": [
+        "stats/WellnessExport.tsx:130"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.bitwarden",
+      "name": "Bitwarden",
+      "path": "Settings > Import & Export > Passwords > Bitwarden",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "import.source.browser-passwords",
+      "name": "Browser passwords",
+      "path": "Settings > Import & Export > Passwords > Browser passwords",
+      "source": [
+        "import/ImportModal.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "plan.devices",
+      "name": "Registered devices",
+      "path": "Settings > Account > Registered devices",
+      "source": [
+        "SyncOptionsModal.tsx:1178"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "plan.upgrade",
+      "name": "Upgrade to Pro",
+      "path": "Settings > Account > Upgrade to Pro",
+      "source": [
+        "SyncOptionsModal.tsx:1281"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "demo"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "plan.restorePurchases",
+      "name": "Restore purchases",
+      "path": "Settings > Account > Restore purchases",
+      "source": [
+        "SyncOptionsModal.tsx:594"
+      ],
+      "gate": "storeBuild",
+      "observed": [
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "plan.signOut",
+      "name": "Sign out",
+      "path": "Settings > Account > Sign out",
+      "source": [
+        "SyncOptionsModal.tsx:1295"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "plan.dangerZone",
+      "name": "Danger zone",
+      "path": "Settings > Account > Danger zone",
+      "source": [
+        "DangerZone.tsx:283"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "storage.quota",
+      "name": "All your encrypted data",
+      "path": "Settings > Storage > All your encrypted data",
+      "source": [
+        "SyncOptionsModal.tsx:640"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "storage.addon",
+      "name": "Storage add-on",
+      "path": "Settings > Storage > Storage add-on",
+      "source": [
+        "SyncOptionsModal.tsx:663"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "images.spaceSaver",
+      "name": "Space saver",
+      "path": "Settings > Storage > Images > Space saver",
+      "source": [
+        "ImagesSheet.tsx:38"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "images.contactPhotos",
+      "name": "Small contact photos",
+      "path": "Settings > Storage > Images > Small contact photos",
+      "source": [
+        "ImagesSheet.tsx:46"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "images.removeLocation",
+      "name": "Remove location data",
+      "path": "Settings > Storage > Images > Remove location data",
+      "source": [
+        "ImagesSheet.tsx:54"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "account.connectedAccounts",
+      "name": "Connected accounts",
+      "path": "Settings > Account > Accounts > Connected accounts",
+      "source": [
+        "AccountLoginsPanel.tsx:110",
+        "ConnectedAccounts.tsx:147"
+      ],
+      "gate": "realAccount",
+      "observed": [
+        "browser",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "security.pin",
+      "name": "PIN",
+      "path": "Settings > Security > PIN",
+      "source": [
+        "SecurityModal.tsx:93"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "security.setPin",
+      "name": "Set PIN",
+      "path": "Settings > Security > PIN > Set PIN",
+      "source": [
+        "security/PinTab.tsx:534"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "demo"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "security.removePin",
+      "name": "Remove PIN",
+      "path": "Settings > Security > PIN > Remove PIN",
+      "source": [
+        "security/PinTab.tsx:549"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "security.reaskAfter",
+      "name": "Re-ask for PIN after",
+      "path": "Settings > Security > PIN > Re-ask for PIN after",
+      "source": [
+        "security/PinTab.tsx:565"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "security.biometric",
+      "name": "Biometric Lock",
+      "path": "Settings > Security > Biometric Lock",
+      "source": [
+        "SecurityModal.tsx:97"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "security.enableBiometric",
+      "name": "Enable biometric unlock",
+      "path": "Settings > Security > Biometric Lock > Enable biometric unlock",
+      "source": [
+        "security/BiometricTab.tsx:414"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "security.biometricSetUpAgain",
+      "name": "Set up again for a stronger lock",
+      "path": "Settings > Security > Biometric Lock > Set up again for a stronger lock",
+      "source": [
+        "security/BiometricTab.tsx:367"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "security.appLock",
+      "name": "Lock app on open",
+      "path": "Settings > Security > Biometric Lock > Lock app on open",
+      "source": [
+        "security/BiometricTab.tsx:439"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "security.relockAfter",
+      "name": "Re-lock after",
+      "path": "Settings > Security > Biometric Lock > Re-lock after",
+      "source": [
+        "security/BiometricTab.tsx:534"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "security.blockCapture",
+      "name": "Hide from screen capture",
+      "path": "Settings > Security > Biometric Lock > Hide from screen capture",
+      "source": [
+        "security/BiometricTab.tsx:564"
+      ],
+      "gate": "captureBlock",
+      "observed": [
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "security.phrase",
+      "name": "Your Phrase",
+      "path": "Settings > Security > Your Phrase",
+      "source": [
+        "SecurityModal.tsx:101"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "security.twoFactor",
+      "name": "2FA",
+      "path": "Settings > Security > 2FA",
+      "source": [
+        "SecurityModal.tsx:105"
+      ],
+      "gate": "realAccount",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "security.qrCode",
+      "name": "Show QR code",
+      "path": "Settings > Security > Your Phrase > Show QR code",
+      "source": [
+        "security/PhraseView.tsx:230"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "security.copyPhrase",
+      "name": "Copy phrase",
+      "path": "Settings > Security > Your Phrase > Copy phrase",
+      "source": [
+        "security/PhraseView.tsx:280"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "security.custody",
+      "name": "Key custody",
+      "path": "Settings > Account > Key custody",
+      "source": [
+        "security/CustodyPanel.tsx:344"
+      ],
+      "gate": "realAccount",
+      "observed": [],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "me.thisDevice",
+      "name": "This device",
+      "path": "Settings > ID & Sync > This device",
+      "source": [
+        "SyncPanel.tsx:416"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "me.pauseSync",
+      "name": "Pause sync",
+      "path": "Settings > ID & Sync > Pause sync",
+      "source": [
+        "SyncPanel.tsx:437"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "me.filesWifiOnly",
+      "name": "Files on wifi only",
+      "path": "Settings > ID & Sync > Files on wifi only",
+      "source": [
+        "SyncPanel.tsx:446"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "me.where",
+      "name": "Where your notes go",
+      "path": "Settings > ID & Sync > Where your notes go",
+      "source": [
+        "SyncPanel.tsx:456"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "me.accountId",
+      "name": "Account ID",
+      "path": "Settings > ID & Sync > Account ID",
+      "source": [
+        "SyncPanel.tsx:588"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "me.activity",
+      "name": "Recent activity",
+      "path": "Settings > ID & Sync > Recent activity",
+      "source": [
+        "SyncPanel.tsx:642"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.openInTabs",
+      "name": "Show the open item in a tab",
+      "path": "Settings > Lists > Show the open item in a tab",
+      "source": [
+        "AppearanceSheet.tsx:1200"
+      ],
+      "gate": "paneLayout",
+      "observed": [
+        "browser",
+        "demo"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.mode",
+      "name": "Mode",
+      "path": "Settings > Design > Mode",
+      "source": [
+        "AppearanceSheet.tsx:692"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.theme",
+      "name": "Light themes",
+      "path": "Settings > Design > Light themes",
+      "source": [
+        "AppearanceSheet.tsx:722"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.customThemes",
+      "name": "New theme",
+      "path": "Settings > Design > New theme",
+      "source": [
+        "AppearanceSheet.tsx:725"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.appZoom",
+      "name": "App size",
+      "path": "Settings > Design > App size",
+      "source": [
+        "AppearanceSheet.tsx:711"
+      ],
+      "gate": "desktopApp",
+      "observed": [],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.tintNotes",
+      "name": "Folder and tag colors",
+      "path": "Settings > Design > Folder and tag colors",
+      "source": [
+        "AppearanceSheet.tsx:886"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.textSize",
+      "name": "Text size",
+      "path": "Settings > Editor > Text size",
+      "source": [
+        "AppearanceSheet.tsx:944"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.lineSpacing",
+      "name": "Line spacing",
+      "path": "Settings > Editor > Line spacing",
+      "source": [
+        "AppearanceSheet.tsx:951"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.contentWidth",
+      "name": "Editor width",
+      "path": "Settings > Editor > Editor width",
+      "source": [
+        "AppearanceSheet.tsx:982"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.editor",
+      "name": "Editor",
+      "path": "Settings > Editor > Editor",
+      "source": [
+        "AppearanceSheet.tsx:994"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.copyFormat",
+      "name": "Copied text",
+      "path": "Settings > Editor > Copied text",
+      "source": [
+        "AppearanceSheet.tsx:1020"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.pasteFormat",
+      "name": "Pasted text",
+      "path": "Settings > Editor > Pasted text",
+      "source": [
+        "AppearanceSheet.tsx:1045"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.invisibles",
+      "name": "Invisible characters",
+      "path": "Settings > Editor > Invisible characters",
+      "source": [
+        "AppearanceSheet.tsx:1073"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.favicons",
+      "name": "Website icons",
+      "path": "Settings > Lists > Website icons",
+      "source": [
+        "AppearanceSheet.tsx:1218"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.formatBar",
+      "name": "Toolbar",
+      "path": "Settings > Toolbar > Toolbar",
+      "source": [
+        "AppearanceSheet.tsx:1377"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.startView",
+      "name": "Show when app opens",
+      "path": "Settings > Lists > Show when app opens",
+      "source": [
+        "AppearanceSheet.tsx:1119"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.view",
+      "name": "Show items as",
+      "path": "Settings > Lists > Show items as",
+      "source": [
+        "AppearanceSheet.tsx:1149"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.sinkChecked",
+      "name": "Move checked items down",
+      "path": "Settings > Editor > Move checked items down",
+      "source": [
+        "AppearanceSheet.tsx:1086"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.defaultApps",
+      "name": "Open with PrivacyNotes",
+      "path": "Settings > Editor > Open with PrivacyNotes",
+      "source": [
+        "AppearanceSheet.tsx:1102"
+      ],
+      "gate": "desktopApp",
+      "observed": [],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "trackers.setup",
+      "name": "Choose trackers",
+      "path": "Settings > Trackers > General > Choose trackers",
+      "source": [
+        "TrackerConfig.tsx:193"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "trackers.habitQuestions",
+      "name": "Habit questions",
+      "path": "Settings > Trackers > General > Habit questions",
+      "source": [
+        "TrackerConfig.tsx:216"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "demo"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "trackers.ownHabits",
+      "name": "Add habit",
+      "path": "Settings > Trackers > General > Add habit",
+      "source": [
+        "TrackerConfig.tsx:293"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "demo"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "trackers.custom",
+      "name": "Custom trackers",
+      "path": "Settings > Trackers > Custom > Custom trackers",
+      "source": [
+        "TrackerConfig.tsx:396"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "trackers.factors",
+      "name": "Your factors",
+      "path": "Settings > Trackers > Factors & medication > Your factors",
+      "source": [
+        "TrackerConfig.tsx:469"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "trackers.medications",
+      "name": "Your medications",
+      "path": "Settings > Trackers > Factors & medication > Your medications",
+      "source": [
+        "TrackerConfig.tsx:566"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.spaces",
+      "name": "Spaces",
+      "path": "Settings > Lists > Spaces",
+      "source": [
+        "AppearanceSheet.tsx:1177"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "appearance.sidebar",
+      "name": "Sidebar and All",
+      "path": "Settings > Lists > Sidebar and All",
+      "source": [
+        "AppearanceSheet.tsx:1270"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "language.spellCheck",
+      "name": "Device spell check",
+      "path": "Settings > Language > Device spell check",
+      "source": [
+        "LanguageSheet.tsx:81"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "language.language",
+      "name": "Language",
+      "path": "Settings > Language > Language",
+      "source": [
+        "LanguageSheet.tsx:93"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "language.dateFormat",
+      "name": "Date format",
+      "path": "Settings > Date & Time > Format > Date format",
+      "source": [
+        "LanguageSheet.tsx:210"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "language.clock",
+      "name": "Clock",
+      "path": "Settings > Date & Time > Format > Clock",
+      "source": [
+        "LanguageSheet.tsx:223"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "language.reportMistake",
+      "name": "Report a translation mistake",
+      "path": "Settings > Language > Report a translation mistake",
+      "source": [
+        "LanguageSheet.tsx:138"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "calendar.alertTimed",
+      "name": "Timed items",
+      "path": "Settings > Date & Time > Calendar > Timed items",
+      "source": [
+        "CalendarSettings.tsx:119"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "calendar.alertAllDay",
+      "name": "All-day items",
+      "path": "Settings > Date & Time > Calendar > All-day items",
+      "source": [
+        "CalendarSettings.tsx:133"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "calendar.alertBirthday",
+      "name": "Birthdays",
+      "path": "Settings > Date & Time > Calendar > Birthdays",
+      "source": [
+        "CalendarSettings.tsx:134"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "calendar.reminderTitles",
+      "name": "Show titles in reminders",
+      "path": "Settings > Date & Time > Calendar > Show titles in reminders",
+      "source": [
+        "CalendarSettings.tsx:105"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "calendar.where",
+      "name": "Reminders on this device",
+      "path": "Settings > Date & Time > Calendar > Reminders on this device",
+      "source": [
+        "CalendarSettings.tsx:95"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "calendar.checkInReminder",
+      "name": "Daily check-in reminder",
+      "path": "Settings > Trackers > General > Daily check-in reminder",
+      "source": [
+        "TrackerConfig.tsx:622"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "calendar.weekNumbers",
+      "name": "Show week numbers",
+      "path": "Settings > Date & Time > Calendar > Show week numbers",
+      "source": [
+        "CalendarSettings.tsx:75"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "calendar.hours",
+      "name": "First hour in Day and Week",
+      "path": "Settings > Date & Time > Calendar > First hour in Day and Week",
+      "source": [
+        "CalendarSettings.tsx:85"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "about.about",
+      "name": "About",
+      "path": "Settings > About",
+      "source": [
+        "AboutModal.tsx:33"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "about.version",
+      "name": "Version",
+      "path": "Settings > About > Version",
+      "source": [
+        "AboutModal.tsx:95"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "about.roadmap",
+      "name": "Roadmap",
+      "path": "Settings > About > Roadmap",
+      "source": [
+        "AboutModal.tsx:105"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "about.openSource",
+      "name": "Open Source",
+      "path": "Settings > About > Open Source",
+      "source": [
+        "AboutModal.tsx:122"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "about.feedback",
+      "name": "Feedback",
+      "path": "Settings > About > Feedback",
+      "source": [
+        "AboutModal.tsx:143"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "about.dataStorage",
+      "name": "Data Storage",
+      "path": "Settings > About > Data Storage",
+      "source": [
+        "AboutModal.tsx:173"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "about.singleKeys",
+      "name": "Single-key shortcuts",
+      "path": "Settings > About > Hotkeys > Single-key shortcuts",
+      "source": [
+        "AboutModal.tsx:279"
+      ],
+      "gate": "keyboard",
+      "observed": [
+        "browser",
+        "demo"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "about.favicons",
+      "name": "Website icons",
+      "path": "Settings > About > Website icons",
+      "source": [
+        "AboutModal.tsx:184"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "about.legal",
+      "name": "Legal",
+      "path": "Settings > About > Legal",
+      "source": [
+        "AboutModal.tsx:196"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "about.changelog",
+      "name": "Changelog",
+      "path": "Settings > About > Changelog",
+      "source": [
+        "AboutModal.tsx:73"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "about.hotkeys",
+      "name": "Hotkeys",
+      "path": "Settings > About > Hotkeys",
+      "source": [
+        "AboutModal.tsx:34"
+      ],
+      "gate": "keyboard",
+      "observed": [
+        "browser",
+        "demo"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    },
+    {
+      "id": "about.rating",
+      "name": "Rating",
+      "path": "Settings > About > Rating",
+      "source": [
+        "AboutModal.tsx:35"
+      ],
+      "gate": "All supported targets; account/data conditions may still apply",
+      "observed": [
+        "browser",
+        "demo",
+        "android"
+      ],
+      "status": "Registry route; observation means pane/anchor only, not every state."
+    }
+  ],
+  "windows": [
+    {
+      "file": "AboutModal.tsx",
+      "line": 350,
+      "kind": "shared-modal",
+      "title": "{t('about.modalTitle')}",
+      "size": "max-w-lg max-h-[90vh] overflow-hidden flex flex-col",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": "{embedded}",
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Settings > About"
+    },
+    {
+      "file": "CalendarPane.tsx",
+      "line": 242,
+      "kind": "custom-dialog",
+      "title": "{formatInstant(dayAtNoon(day), 'date')}",
+      "size": "fixed z-50 w-[260px] max-w-[calc(100vw-16px)] rounded-md border border-divider bg-surface-2 shadow-lg p-2",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Calendar > event or day popover"
+    },
+    {
+      "file": "ClipPageModal.tsx",
+      "line": 206,
+      "kind": "shared-modal",
+      "title": "{t('clipper.windowTitle')}",
+      "size": "max-w-md p-6 space-y-4",
+      "close": "{saving ? undefined : onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "All > New > Clip page"
+    },
+    {
+      "file": "ConfirmModal.tsx",
+      "line": 98,
+      "kind": "shared-modal",
+      "title": "{title}",
+      "size": "max-w-sm p-6 space-y-4",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Shared confirmation wrapper; follow each caller, including recurring-event changes"
+    },
+    {
+      "file": "ConflictModal.tsx",
+      "line": 31,
+      "kind": "shared-modal",
+      "title": "{t('conflict.title')}",
+      "size": "max-w-md p-6 space-y-4",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Sync conflict response; requires controlled fixture"
+    },
+    {
+      "file": "DeviceLimitModal.tsx",
+      "line": 90,
+      "kind": "shared-modal",
+      "title": "{t('deviceLimit.title')}",
+      "size": "max-w-lg p-6 space-y-5 max-h-[90vh] overflow-y-auto",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Sign-in device-limit response; requires controlled fixture"
+    },
+    {
+      "file": "DonationModal.tsx",
+      "line": 13,
+      "kind": "shared-modal",
+      "title": "{reason}",
+      "size": "max-w-md p-6 space-y-4",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Donation entry; inspect caller before invoking"
+    },
+    {
+      "file": "ExportProgressModal.tsx",
+      "line": 35,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 z-[100] flex items-center justify-center bg-black/50 dark:bg-black/70",
+      "close": "{(e) => { if (done && e.target === overlayRef.current) onClose(); }}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Settings > Import & Export > Export > start an export"
+    },
+    {
+      "file": "FolderPicker.tsx",
+      "line": 361,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 bg-black/40 dark:bg-black/40 flex items-center justify-center p-4 sm:p-6 z-50",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Open an item > Move to folder"
+    },
+    {
+      "file": "FolderPicker.tsx",
+      "line": 365,
+      "kind": "custom-dialog",
+      "title": "{t('folders.moveTo')}",
+      "size": "bg-surface-2/95 backdrop-blur-xl border border-divider/80 text-pn rounded-lg max-w-sm w-full max-h-[70vh] flex flex-col overflow-hidden",
+      "close": "{(e) => e.stopPropagation()}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Open an item > Move to folder"
+    },
+    {
+      "file": "JournalCalendar.tsx",
+      "line": 559,
+      "kind": "custom-dialog",
+      "title": "{t('backfillPopover.calendarLabel')}",
+      "size": "fixed z-50 max-w-[calc(100vw-16px)] max-h-[calc(100dvh-16px)] overflow-y-auto overscroll-contain rounded-md border border-divider bg-surface-2 shadow-lg p-2",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Footer > Journal calendar; Journals/Notes/Tasks/All > calendar card"
+    },
+    {
+      "file": "LandingPage.tsx",
+      "line": 1192,
+      "kind": "custom-dialog",
+      "title": "{t('header.menuLabel')}",
+      "size": "fixed inset-0 z-[70] overflow-y-auto bg-[var(--wl-bg)] lg:hidden",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "/en > account/auth entry; source-derived overlay candidate"
+    },
+    {
+      "file": "LinkSheet.tsx",
+      "line": 274,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 bg-black/30 dark:bg-black/50 z-50",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Open a note > activate a link"
+    },
+    {
+      "file": "LinkSheet.tsx",
+      "line": 279,
+      "kind": "custom-dialog",
+      "title": "{isEditing ? t('link.editTitle') : t('link.addTitle')}",
+      "size": "fixed bottom-0 inset-x-0 z-50 bg-surface-2 border-t border-divider rounded-t-xl px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Open a note > activate a link"
+    },
+    {
+      "file": "LinkSheet.tsx",
+      "line": 299,
+      "kind": "custom-dialog",
+      "title": "{isEditing ? t('link.editTitle') : t('link.addTitle')}",
+      "size": "fixed z-50 w-80 bg-surface-1 border border-divider rounded-lg p-4 shadow-lg",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Open a note > activate a link"
+    },
+    {
+      "file": "LinksModal.tsx",
+      "line": 31,
+      "kind": "shared-modal",
+      "title": "{title}",
+      "size": "{`${grid ? 'max-w-2xl' : 'max-w-sm'} max-h-full overflow-y-auto`}",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Caller-specific related-link list"
+    },
+    {
+      "file": "ListPrefsPopover.tsx",
+      "line": 222,
+      "kind": "custom-dialog",
+      "title": "{t('listPrefs.listPreferences')}",
+      "size": "{`z-50 w-72 rounded-lg border border-divider bg-surface-2 shadow-lg overflow-y-auto overscroll-contain ${beside ? '' : className}`}",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "List header > Sort and view options"
+    },
+    {
+      "file": "MediaViewer.tsx",
+      "line": 170,
+      "kind": "custom-dialog",
+      "title": "{title}",
+      "size": "fixed inset-0 z-50 flex flex-col bg-black/95 text-white outline-none",
+      "close": "{(e) => {\n        const press = backdropPress.current;\n        backdropPress.current = null;\n        if (!press || !isBackdrop(e.target)) return;\n        if (Math.hypot(e.clientX - press.x, e.clientY - press.y) > TAP_SLOP_PX) return;\n        close();\n      }}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Open an image or attachment preview"
+    },
+    {
+      "file": "MfaPrompt.tsx",
+      "line": 79,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-[80]",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Protected account operation requiring 2FA; prepared account needed"
+    },
+    {
+      "file": "MfaPrompt.tsx",
+      "line": 80,
+      "kind": "custom-dialog",
+      "title": null,
+      "size": "bg-surface-2 border border-divider text-pn rounded-lg max-w-sm w-full p-6 space-y-4 max-h-[90dvh] overflow-y-auto",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Protected account operation requiring 2FA; prepared account needed"
+    },
+    {
+      "file": "NoteHistoryModal.tsx",
+      "line": 179,
+      "kind": "shared-modal",
+      "title": "{t('shell:noteOptionsMenu.noteHistory')}",
+      "size": "{`max-w-3xl h-[90vh] sm:h-[80vh] flex flex-col overflow-hidden${compare && canCompare ? ' lg:max-w-6xl' : ''}`}",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Open an item > History"
+    },
+    {
+      "file": "OptionsMenu.tsx",
+      "line": 82,
+      "kind": "custom-dialog",
+      "title": "{label}",
+      "size": "{`fixed z-50 ${className} max-w-[calc(100vw-16px)] max-h-[calc(100dvh-16px)] overflow-y-auto overscroll-contain rounded-xl border border-divider bg-surface-2 shadow-lg outline-none divide-y divide-divider`}",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Open an item > Note options; nested Schedule/Alert"
+    },
+    {
+      "file": "PasswordGenerator.tsx",
+      "line": 427,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 bg-black/30 dark:bg-black/50 flex items-center justify-center p-4 z-50",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Login editor > password generator"
+    },
+    {
+      "file": "PicturePicker.tsx",
+      "line": 48,
+      "kind": "custom-dialog",
+      "title": "{t('picker.title')}",
+      "size": "fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-50",
+      "close": "{(e) => { if (downOnBackdrop.current && e.target === e.currentTarget) onClose(); }}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Insert/select a picture; caller-specific"
+    },
+    {
+      "file": "PinInfoModal.tsx",
+      "line": 10,
+      "kind": "shared-modal",
+      "title": "{t('pinInfo.title')}",
+      "size": "max-w-sm p-6 space-y-3",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Contact/login form > Require PIN to view > What does this do?"
+    },
+    {
+      "file": "ProtectedNoteGate.tsx",
+      "line": 647,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70",
+      "close": "{(e) => { if (e.target === e.currentTarget) onCancel(); }}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Open a PIN-protected item while its gate is locked"
+    },
+    {
+      "file": "QrScannerModal.tsx",
+      "line": 192,
+      "kind": "shared-modal",
+      "title": "{t('qrScanner.title')}",
+      "size": "max-w-md overflow-hidden",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "QR sign-in/scanning entry; native camera permission required"
+    },
+    {
+      "file": "QrSignInPrompt.tsx",
+      "line": 86,
+      "kind": "shared-modal",
+      "title": "{t('qrSignInPrompt.title')}",
+      "size": "max-w-md p-6 space-y-4",
+      "close": "{onCancel}",
+      "escape": "{!busy}",
+      "backdrop": "{!busy}",
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Sign-in QR flow; isolated auth fixture required"
+    },
+    {
+      "file": "QuickSwitcher.tsx",
+      "line": 844,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 z-50 bg-black/50 dark:bg-black/70 flex justify-center items-start pt-[12vh] [@media(hover:hover)]:pt-[max(1rem,calc(25dvh-44px))] px-4",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Jump or Cmd+K; Q for Quick add"
+    },
+    {
+      "file": "QuickSwitcher.tsx",
+      "line": 848,
+      "kind": "custom-dialog",
+      "title": "{t('quickSwitcher.label')}",
+      "size": "w-full max-w-xl bg-surface-2 border border-divider rounded-lg shadow-xl overflow-hidden",
+      "close": "{(e) => e.stopPropagation()}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Jump or Cmd+K; Q for Quick add"
+    },
+    {
+      "file": "SecurityModal.tsx",
+      "line": 164,
+      "kind": "shared-modal",
+      "title": "{t('modal.title')}",
+      "size": "max-w-md p-6 space-y-5 max-h-[90vh] overflow-y-auto",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": "{mountReady}",
+      "embedded": "{embedded}",
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Settings > Security"
+    },
+    {
+      "file": "SettingsWindow.tsx",
+      "line": 312,
+      "kind": "custom-dialog",
+      "title": "{t('shell.title')}",
+      "size": "{`fixed inset-0 z-50 flex justify-center bg-black/20 dark:bg-black/20 ${isMobile ? 'items-stretch sm:items-center sm:p-4' : 'items-center p-4 sm:p-6'}`}",
+      "close": "{(e) => {\n          if (mountReady && e.target === e.currentTarget) onClose();\n        }}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Footer > Settings"
+    },
+    {
+      "file": "ShortcutOffer.tsx",
+      "line": 50,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "PWA shortcut offer; eligibility fixture required"
+    },
+    {
+      "file": "ShortcutOffer.tsx",
+      "line": 51,
+      "kind": "custom-dialog",
+      "title": null,
+      "size": "w-full max-w-sm rounded-2xl border border-divider bg-surface-2 p-6 text-center shadow-xl",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "PWA shortcut offer; eligibility fixture required"
+    },
+    {
+      "file": "SidebarOptionsPopover.tsx",
+      "line": 67,
+      "kind": "custom-dialog",
+      "title": "{title}",
+      "size": "fixed z-[9999] w-56 rounded-lg border border-divider bg-surface-2 shadow-lg py-2",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Sidebar > Sidebar options / All options"
+    },
+    {
+      "file": "StatsModal.tsx",
+      "line": 70,
+      "kind": "shared-modal",
+      "title": "{t('title')}",
+      "size": "max-w-2xl max-h-[90vh] overflow-hidden flex flex-col",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": "{embedded}",
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Footer > Open stats; Settings > Statistics"
+    },
+    {
+      "file": "SyncOptionsModal.tsx",
+      "line": 456,
+      "kind": "shared-modal",
+      "title": "{t('account.title')}",
+      "size": "max-w-md p-6 space-y-5 max-h-[90vh] overflow-y-auto",
+      "close": "{onClose}",
+      "escape": "{!confirm}",
+      "backdrop": null,
+      "embedded": "{embedded}",
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Settings > ID & Sync"
+    },
+    {
+      "file": "SyncOptionsModal.tsx",
+      "line": 925,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4",
+      "close": "{() => { if (!storageActionBusy) setConfirmingUpgrade(null); }}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Settings > ID & Sync"
+    },
+    {
+      "file": "SyncOptionsModal.tsx",
+      "line": 1498,
+      "kind": "shared-modal",
+      "title": "{wholeSlot ? t('revoke.title', { name }) : t('revoke.titleInstall')}",
+      "size": "max-w-sm p-6 space-y-4",
+      "close": "{onCancel}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": "z-[60]",
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Settings > ID & Sync"
+    },
+    {
+      "file": "TagPicker.tsx",
+      "line": 59,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 bg-black/40 dark:bg-black/40 flex items-center justify-center p-4 sm:p-6 z-50",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Bulk selection > tag action; caller-specific"
+    },
+    {
+      "file": "TagPicker.tsx",
+      "line": 63,
+      "kind": "custom-dialog",
+      "title": "{t('selectionToolbar.tag')}",
+      "size": "bg-surface-2/95 backdrop-blur-xl border border-divider/80 text-pn rounded-lg max-w-sm w-full max-h-[70vh] flex flex-col overflow-hidden",
+      "close": "{(e) => e.stopPropagation()}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Bulk selection > tag action; caller-specific"
+    },
+    {
+      "file": "TagsRail.tsx",
+      "line": 1131,
+      "kind": "custom-dialog",
+      "title": "{sortLabel}",
+      "size": "absolute start-0 top-full mt-1 z-50 w-52 rounded-lg border border-divider bg-surface-2 shadow-lg",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Sidebar > tags/folders controls"
+    },
+    {
+      "file": "ThemeBuilder.tsx",
+      "line": 289,
+      "kind": "custom-dialog",
+      "title": "{title}",
+      "size": "fixed z-50 inset-x-2 bottom-2 max-h-[60dvh] sm:inset-x-auto sm:bottom-4 sm:end-4 sm:w-[340px] sm:max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-xl border border-divider bg-surface-2 text-pn shadow-xl",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Settings > Design > custom theme builder"
+    },
+    {
+      "file": "UpgradeModal.tsx",
+      "line": 189,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 bg-black/40 dark:bg-black/40 flex items-center justify-center p-4 sm:p-6 z-[55]",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Free account > enabled Pro action; demo unlocks local Pro actions"
+    },
+    {
+      "file": "UploadProgressModal.tsx",
+      "line": 68,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 z-[100] flex items-center justify-center bg-black/50 dark:bg-black/70",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Files > New or file drop > upload progress"
+    },
+    {
+      "file": "import/ImportModal.tsx",
+      "line": 627,
+      "kind": "shared-modal",
+      "title": "{tab === 'import' ? t('shell.importTitle') : tab === 'export' || tab === 'wellness' ? t('shell.exportTitle') : tab === 'restore' ? t('shell.restoreTitle') : t('shell.vaultTitle')}",
+      "size": "max-w-lg max-h-[85vh] flex flex-col",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": "{embedded}",
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Settings > Import & Export > Import > choose importer"
+    },
+    {
+      "file": "looks/LookPicker.tsx",
+      "line": 496,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 z-[60] bg-black/30 dark:bg-black/50",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Tag/folder actions > appearance picker"
+    },
+    {
+      "file": "looks/LookPicker.tsx",
+      "line": 497,
+      "kind": "custom-dialog",
+      "title": "{dialogLabel}",
+      "size": "{`fixed inset-x-0 z-[60] flex flex-col bg-surface-1 border-divider ${\n            keyboard\n              ? 'border-b rounded-b-xl pb-2'\n              : 'bottom-0 h-[calc(100dvh-env(safe-area-inset-top)-1rem)] border-t rounded-t-xl pb-[max(0.75rem,env(safe-area-inset-bottom))]'\n          }`}",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Tag/folder actions > appearance picker"
+    },
+    {
+      "file": "looks/LookPicker.tsx",
+      "line": 524,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/30 dark:bg-black/50",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Tag/folder actions > appearance picker"
+    },
+    {
+      "file": "looks/LookPicker.tsx",
+      "line": 528,
+      "kind": "custom-dialog",
+      "title": "{dialogLabel}",
+      "size": "w-[380px] [@media(hover:none)]:w-[420px] max-w-full h-[min(640px,calc(100dvh-32px))] flex flex-col bg-surface-1 border border-divider rounded-xl shadow-xl pb-3",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Tag/folder actions > appearance picker"
+    },
+    {
+      "file": "markdownFolder/MarkdownDefaultApp.tsx",
+      "line": 338,
+      "kind": "custom-dialog",
+      "title": "{t('markdown.assocTitle')}",
+      "size": "{`z-50 w-[19rem] max-w-full rounded-lg border border-divider bg-surface-2 shadow-lg p-3.5 text-start ${className}`}",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Markdown > default-app control (desktop capability required)"
+    },
+    {
+      "file": "markdownFolder/MarkdownExplainer.tsx",
+      "line": 151,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 z-50 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 sm:p-6",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Sidebar > Markdown"
+    },
+    {
+      "file": "markdownFolder/MarkdownExplainer.tsx",
+      "line": 155,
+      "kind": "custom-dialog",
+      "title": null,
+      "size": "w-full max-w-md rounded-lg border border-divider bg-surface-2 p-5",
+      "close": "{(e) => e.stopPropagation()}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Sidebar > Markdown"
+    },
+    {
+      "file": "notesView/BurnShareModal.tsx",
+      "line": 104,
+      "kind": "shared-modal",
+      "title": "{t('burnShareModal.title')}",
+      "size": "max-w-md p-6 space-y-4",
+      "close": "{onClose}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Open a note > Share or export > self-destructing share"
+    },
+    {
+      "file": "notesView/SessionExpiredModal.tsx",
+      "line": 27,
+      "kind": "shared-modal",
+      "title": "{t('sessionExpired.title')}",
+      "size": "max-w-sm p-6 space-y-4",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": "z-[70]",
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Session expiry response; requires controlled fixture"
+    },
+    {
+      "file": "notesView/ShareMenu.tsx",
+      "line": 104,
+      "kind": "custom-dialog",
+      "title": "{t('share.ariaLabel')}",
+      "size": "fixed z-50 w-72 max-h-[calc(100vh-16px)] overflow-y-auto rounded-lg border border-divider bg-surface-2 shadow-lg text-sm py-1",
+      "close": null,
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Open an item > Share or export"
+    },
+    {
+      "file": "notesView/SignOutConfirmModal.tsx",
+      "line": 71,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 p-4",
+      "close": "{dismiss}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": true,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Settings > Sign out (do not confirm during mapping)"
+    },
+    {
+      "file": "security/PinTab.tsx",
+      "line": 681,
+      "kind": "custom-backdrop",
+      "title": null,
+      "size": "fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70",
+      "close": "{(e) => { if (e.target === e.currentTarget) onClose(); }}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": true,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Settings > Security > PIN > PIN management confirmation"
+    },
+    {
+      "file": "stats/StatsPage.tsx",
+      "line": 550,
+      "kind": "shared-popover",
+      "title": null,
+      "size": "w-80",
+      "close": "{() => setOpen(false)}",
+      "escape": null,
+      "backdrop": null,
+      "embedded": null,
+      "layer": null,
+      "hasEscapeHook": false,
+      "hasCloseButton": false,
+      "status": "source-discovered",
+      "note": "Call-site evidence only. Caller guards, inherited behavior and runtime reachability require review.",
+      "path": "Statistics > tracker chart options"
+    }
+  ]
+}

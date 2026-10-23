@@ -17,7 +17,7 @@ import { headingCodes } from './noteShortcut';
  * follows. Neither is a heading inside a quote, because the markdown reader
  * skips quoted lines, where a callout's own lines live too.
  *
- * Spec: ops/docs/plans/note-link-headings.md
+ * Spec: ops/docs/archive/note-link-headings.md
  */
 
 export type HeadingEntry = { level: number; text: string };
@@ -101,7 +101,7 @@ export function findHeadingPos(doc: PMNode, heading: string): number {
 }
 
 /** The shortcut code of the heading at `pos`, or null when it is not a
- *  target. Spec: ops/docs/plans/note-shortcuts.md (3.3) */
+ *  target. Spec: ops/docs/archive/note-shortcuts.md (3.3) */
 export function headingCodeAt(doc: PMNode, itemId: string, pos: number): string | null {
   const list = headingsFromDoc(doc);
   const i = list.findIndex((h) => h.pos === pos);

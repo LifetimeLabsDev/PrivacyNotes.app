@@ -18,10 +18,8 @@
   "header": {
     "new": "新規",
     "newNote": "新規ノート",
-    "newNoteHover": "新規ノート({{hotkey}})",
     "trash": "ゴミ箱",
-    "newEvent": "新規予定",
-    "newEventHover": "新規予定({{hotkey}})"
+    "newEvent": "新規予定"
   },
   "folderChip": {
     "clear": "フォルダの絞り込みを解除: {{folder}}",
@@ -35,15 +33,18 @@
     "ariaLabel": "新規保管庫アイテム",
     "login": "ログイン",
     "card": "クレジットカード",
-    "sshKey": "SSH鍵"
+    "sshKey": "SSH鍵",
+    "generator": "パスワード"
   },
   "newMenu": {
     "note": "ノート",
     "task": "タスク",
+    "kanban": "カンバンボード",
     "journal": "ジャーナル",
     "login": "ログイン",
     "file": "ファイル",
     "bookmark": "ブックマーク",
+    "clipPage": "ページをクリップ",
     "contact": "連絡先",
     "event": "予定",
     "quickAdd": "クイック追加"
@@ -55,8 +56,7 @@
     "keys": "鍵"
   },
   "journal": {
-    "newEntry": "新規ジャーナル",
-    "newEntryHover": "新規ジャーナル({{hotkey}})"
+    "newEntry": "新規ジャーナル"
   },
   "tasks": {
     "newTitle": "{{date}} のタスク"
@@ -70,7 +70,8 @@
   "search": {
     "sortOptions": "並び替えと表示オプション",
     "placeholderVault": "保管庫を検索…",
-    "placeholderNotes": "ノートを検索…"
+    "placeholderNotes": "ノートを検索…",
+    "placeholderEvents": "予定を検索…"
   },
   "selection": {
     "countOf": "{{total}}件中{{selected}}件を選択",
@@ -82,9 +83,12 @@
     "vault": "保管庫は空です。",
     "notes": "まだノートがありません。",
     "archive": "アーカイブした項目はありません。",
+    "trash": "ゴミ箱は空です。",
     "filtered": "フィルターに一致する項目はありません。",
     "clearFilters": "フィルターを解除",
-    "filteredAfter": "すると表示されます。"
+    "filteredAfter": "すると表示されます。",
+    "hiddenInAll_other": "{{count}}件の項目が「すべて」に表示フィルターで非表示になっています。表示するには、「すべて」の横にあるフィルターを開いてください。",
+    "inOtherSpace_other": "{{count}}件の項目が「{{space}}」スペースにあります。表示するには、サイドバーで「{{space}}」に切り替えてください。"
   },
   "listGroups": {
     "previous7Days": "過去7日間",
@@ -104,12 +108,16 @@
     "calendar": "カレンダー"
   },
   "footerStats": {
-    "journals": "ジャーナル",
-    "items": "アイテム",
-    "trashed": "ゴミ箱",
-    "notes": "ノート",
-    "bookmarks": "ブックマーク",
-    "contacts": "連絡先"
+    "journals_other": "ジャーナル",
+    "items_other": "アイテム",
+    "trashed_other": "ゴミ箱",
+    "notes_other": "ノート",
+    "bookmarks_other": "ブックマーク",
+    "contacts_other": "連絡先",
+    "files_other": "ファイル",
+    "lists_other": "リスト",
+    "tasks_other": "タスク",
+    "today": "今日"
   },
   "toast": {
     "imageUploadFailed": "画像のアップロードに失敗しました: {{error}}",
@@ -163,7 +171,7 @@
   },
   "zen": {
     "exit": "Zenを終了",
-    "exitHover": "Zenモードを終了(Esc)",
+    "exitHover": "Zenモードを終了",
     "enterHover": "Zenモードを開始",
     "proHover": "Zenモード(Pro)",
     "enterAriaShortcut": "Zenモードを開始({{keys}})"
@@ -240,9 +248,11 @@
     "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "統計を開く",
     "journalCalendar": "ジャーナルカレンダー",
-    "words": "単語",
+    "words_other": "単語",
     "zen": "Zenモード",
     "appearance": "デザイン",
+    "lockApp": "アプリをロック",
+    "lockAppSetUp": "先に「セキュリティ」でPINを設定してください",
     "goToTop": "先頭へ移動",
     "goToEnd": "末尾へ移動",
     "signOut": "サインアウト",
@@ -266,6 +276,7 @@
     "editorLabel": "エディタ",
     "formatBarLabel": "ツールバー",
     "listsLabel": "リスト",
+    "trackersLabel": "トラッカー",
     "helpLabel": "ヘルプ",
     "aboutLabel": "概要",
     "languageLabel": "言語",
@@ -321,5 +332,13 @@
   "ambiguousLink": {
     "title": "同じタイトルのノートが2つあります",
     "body": "<highlight>「{{title}}」</highlight>というタイトルのノートが複数あるため、このリンクはどちらを指すのかを示せません。どちらかの名前を変えると、リンクはもう一方を指します。"
+  },
+  "connections": {
+    "title": "つながり",
+    "hide": "つながりを隠す",
+    "linkedFrom": "このノートへのリンク",
+    "linksTo": "このノートからのリンク",
+    "missing": "未作成",
+    "protectedHidden_other": "PIN保護された{{count}}件の項目は表示されていません"
   }
 }

@@ -1,0 +1,19 @@
+{
+  "name": "@notes/clipper",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@mozilla/readability": "0.6.0",
+    "markdown-it": "14.3.2",
+    "turndown": "7.2.4",
+    "turndown-plugin-gfm": "1.0.2"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "14.1.2",
+    "@types/turndown": "5.0.6"
+  }
+}

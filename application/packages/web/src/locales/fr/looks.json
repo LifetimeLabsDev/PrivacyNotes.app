@@ -1,6 +1,8 @@
 {
   "captionFolder": "Dossier",
   "captionTag": "Étiquette",
+  "captionNote": "Note",
+  "captionTracker": "Suivi",
   "useDefault": "Par défaut",
   "color": "Couleur",
   "noColor": "Aucune couleur",

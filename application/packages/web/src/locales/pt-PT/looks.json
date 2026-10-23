@@ -1,6 +1,8 @@
 {
   "captionFolder": "Pasta",
   "captionTag": "Etiqueta",
+  "captionNote": "Nota",
+  "captionTracker": "Registo",
   "useDefault": "Usar o padrão",
   "color": "Cor",
   "noColor": "Sem cor",

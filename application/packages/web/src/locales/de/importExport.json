@@ -9,7 +9,8 @@
     "tabExport": "Export",
     "tabRestore": "Wiederherstellung",
     "tabVault": "Passwörter",
-    "working": "Wird verarbeitet…"
+    "working": "Wird verarbeitet…",
+    "tabWellness": "Tracker"
   },
   "footer": {
     "exportNote": "Exporte laufen lokal. Es wird nichts hochgeladen.",
@@ -20,7 +21,9 @@
     "autoTagLabel": "Importierte Notizen nach Quelle taggen",
     "autoTagDesc": "Google-Keep-Notizen erhalten <keep>#google</keep>, Obsidian erhält <obsidian>#obsidian</obsidian> und so weiter.",
     "guideAria": "Import-Anleitung für {{app}}",
-    "guideLabel": "Anleitung"
+    "guideLabel": "Anleitung",
+    "groupGeneral": "Allgemein",
+    "groupNotes": "Notizen"
   },
   "folderImport": {
     "tagLabel": "Notizen zusätzlich nach Ordner taggen",
@@ -49,6 +52,24 @@
     "timeZone": "Zeitzone",
     "ends": "Endet",
     "repeats": "Wiederholung"
+  },
+  "webcal": {
+    "title": "Webcal",
+    "desc": "Eine Kalenderadresse, etwa ein webcal://-Link von Proton, iCloud, Outlook oder einem öffentlichen Kalender. Sie wird einmal heruntergeladen; füge sie später erneut ein, um nur die neuen Termine hinzuzufügen.",
+    "fieldLabel": "Kalenderadresse",
+    "import": "Importieren",
+    "downloading": "Wird heruntergeladen…",
+    "errors": {
+      "invalid": "Füge eine Adresse ein, die mit webcal://, webcals:// oder https:// beginnt.",
+      "refused": "Diese Adresse kann nicht geöffnet werden.",
+      "wrongType": "Diese Adresse führt nicht zu einer Kalenderdatei.",
+      "tooLarge": "Dieser Kalender ist größer als 10 MB.",
+      "timeout": "Der Kalenderserver hat nicht rechtzeitig geantwortet. Versuch es später noch einmal.",
+      "blocked": "Der Kalenderserver hat den Download abgelehnt. Prüfe, ob der Kalender geteilt oder öffentlich ist.",
+      "offline": "Du bist offline. Stell eine Verbindung her und versuch es noch einmal.",
+      "limit": "Zu viele Downloads in kurzer Zeit. Warte eine Minute und versuch es noch einmal.",
+      "failed": "Der Kalender konnte nicht heruntergeladen werden. Prüfe die Adresse und versuch es noch einmal."
+    }
   },
   "sourceDesc": {
     "googleKeep": "Google-Takeout-.zip (Keep-Ordner) oder eine einzelne .json-Notiz. Checklisten werden als native Aufgabenlisten importiert.",
@@ -82,7 +103,7 @@
     "intro": "Importiere Logins, Kreditkarten und SSH-Schlüssel aus einem anderen Passwortmanager."
   },
   "restorePick": {
-    "intro": "Stelle ein PrivacyNotes-Backup wieder her, das du zuvor exportiert hast. Deine Datei wird lokal gelesen und entschlüsselt.",
+    "intro": "Stelle ein PrivacyNotes-Backup wieder her, das du zuvor exportiert hast.",
     "fullBackupTitle": "Vollständiges Backup (.zip)",
     "fullBackupDesc": "Stelle Notizen, Tagebücher, Tresor-Einträge, Aufgaben, Bilder, Audio und Dateien wieder her. Eine Notiz, die du schon hast, bleibt erhalten oder wird aktualisiert, wenn das Backup eine neuere Fassung davon enthält.",
     "encryptedBackupTitle": "Verschlüsseltes Backup (.pnbackup, .pnbackupz)",

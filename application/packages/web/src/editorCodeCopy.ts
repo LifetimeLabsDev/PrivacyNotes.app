@@ -7,7 +7,7 @@
  * The whole run is copied, not the word under the pointer: a path or a
  * command is the unit a reader wants out of the note.
  *
- * Spec: ops/docs/plans/spoiler-and-copy.md
+ * Spec: ops/docs/archive/spoiler-and-copy.md
  */
 
 import { Extension, getMarkRange } from '@tiptap/core';

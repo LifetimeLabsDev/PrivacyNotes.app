@@ -6,12 +6,13 @@ import { CUSTOM_THEME_MAX, newCustomThemeId } from './customThemes';
 import { snapshotOf } from './customThemeUI';
 import type { ThemeBuilderTarget } from './notesView/useThemeBuilder';
 import * as tc from './themeCode';
-import { SettingsCallout } from './settingsUI';
+import { SETTINGS_BTN, SETTINGS_BTN_PRIMARY, SettingsCallout } from './settingsUI';
 import type { CheckId, CustomTheme, MoreKey, SeedKey, ThemeCheck } from './themeCode';
 import { useEscapeToClose } from './useEscapeToClose';
 import { IconUpgrade } from './UpgradeModal';
 import { HoverLabel } from './HoverLabel';
-import { ArrowCounterClockwise, CaretDown, CaretRight, Check, Copy, Eye, FloppyDisk, MagicWand, Warning, X } from './icons';
+import { ArrowCounterClockwise, CaretDown, CaretRight, Check, Copy, Eye, FloppyDisk, MagicWand, Warning } from './icons';
+import { CloseButton } from './ui';
 
 /**
  * The theme builder: a small panel that floats over the app while the app
@@ -68,7 +69,7 @@ export function ThemeBuilder({
   onOpenUpgrade: (code: string) => void;
 }) {
   const { t } = useTranslation('settings');
-  const { theme: paintedMode, themeMode, setThemeMode, setCustomTheme } = useTheme();
+  const { theme: paintedMode, pickTheme } = useTheme();
   const idRef = useRef(target.id ?? newCustomThemeId());
   const [pinned] = useState<CSSProperties>(() => {
     const cs = getComputedStyle(document.documentElement);
@@ -176,10 +177,8 @@ export function ThemeBuilder({
       setFull(true);
       return;
     }
-    // A pinned mode moves to the theme's mode, as a click on a theme card
-    // does; under Auto the theme shows whenever the system is in its mode.
-    if (themeMode !== 'auto' && themeMode !== snapshot.mode) setThemeMode(snapshot.mode);
-    setCustomTheme(snapshot);
+    // The screen moves to the theme's mode, as a click on a theme card does.
+    pickTheme(snapshot.mode, snapshot);
     shownMode.current = null;
     onSave(idRef.current, snapshot.code);
     setSavedCode(snapshot.code);
@@ -310,9 +309,7 @@ export function ThemeBuilder({
               <Copy size={16} aria-hidden="true" />
             </button>
           </HoverLabel>
-          <button type="button" onClick={onClose} aria-label={t('common:actions.close')} className="rounded p-1 text-pn-muted hover:text-pn">
-            <X size={16} />
-          </button>
+          <CloseButton onClick={onClose} />
         </div>
         <p className="mt-1 flex items-center gap-1 text-[11px] text-pn-muted">
           <Eye size={12} aria-hidden="true" className="shrink-0" /> {t('appearance.custom.previewHint')}
@@ -432,56 +429,27 @@ export function ThemeBuilder({
       </div>
 
       {/* The footer stays in view while the tiles and the Details list scroll
-          on a phone sheet, so Save and Cancel never leave the screen. One grid
-          keeps the two fields the same width, and Save is an icon, so the row
-          keeps its shape in every language. */}
+          on a phone sheet, so Save and Cancel never leave the screen. The two
+          fields share one label column; the actions sit on their own row at
+          the end, Cancel before Save, as in every dialog. */}
       <div className="sticky bottom-0 mt-3 border-t border-divider bg-surface-2 px-3 py-2.5">
-        <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-2">
-          <button type="button" onClick={onClose} className="rounded-md px-2 py-1.5 text-start text-xs font-medium text-pn-muted hover:text-pn">
-            {code === savedCode ? t('common:actions.close') : t('common:actions.cancel')}
-          </button>
+        <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2 gap-y-2">
+          <label htmlFor="pn-theme-name" className="px-1 text-xs font-medium text-pn-muted">
+            {t('appearance.custom.name')}
+          </label>
           <input
+            id="pn-theme-name"
             value={nameText}
             onChange={(e) => setNameText(e.target.value)}
             maxLength={tc.THEME_NAME_INPUT_MAX}
             dir="auto"
-            aria-label={t('appearance.custom.name')}
             placeholder={t('appearance.custom.namePlaceholder')}
             className="min-w-0 rounded-md border border-divider bg-track px-2 py-1.5 text-sm text-pn"
           />
-          {canSave ? (
-            <HoverLabel label={t('common:actions.save')} position="above-end">
-              <button
-                type="button"
-                onClick={save}
-                disabled={!ready}
-                aria-label={t('common:actions.save')}
-                className="flex h-8 w-9 items-center justify-center rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover disabled:opacity-50"
-              >
-                {justSaved ? (
-                  <Check key={justSaved} size={16} weight="bold" aria-hidden="true" className="pn-pop" />
-                ) : (
-                  <FloppyDisk size={16} aria-hidden="true" />
-                )}
-              </button>
-            </HoverLabel>
-          ) : (
-            <HoverLabel label={t('appearance.custom.saveWithPro')} position="above-end">
-              <button
-                type="button"
-                onClick={() => onOpenUpgrade(code)}
-                aria-label={t('appearance.custom.saveWithPro')}
-                className="flex h-8 w-9 items-center justify-center gap-0.5 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover"
-              >
-                <IconUpgrade size={12} onFill />
-                <FloppyDisk size={14} aria-hidden="true" />
-              </button>
-            </HoverLabel>
-          )}
           {/* Optional credit, written into the code as `by=`, so a code shared
               with friends names its maker and tells us how to credit it on
               /themes. A GitHub username, because that page links to it. */}
-          <label htmlFor="pn-theme-credit" className="px-2 text-xs font-medium text-pn-muted">
+          <label htmlFor="pn-theme-credit" className="px-1 text-xs font-medium text-pn-muted">
             {t('appearance.custom.credit')}
           </label>
           <div className="flex min-w-0 items-center rounded-md border border-divider bg-track ps-2 text-sm text-pn" dir="ltr">
@@ -498,6 +466,26 @@ export function ThemeBuilder({
               className="min-w-0 flex-1 bg-transparent px-1 py-1.5 outline-none"
             />
           </div>
+        </div>
+        <div className="mt-2.5 flex items-center justify-end gap-2">
+          <button type="button" onClick={onClose} className={SETTINGS_BTN}>
+            {code === savedCode ? t('common:actions.close') : t('common:actions.cancel')}
+          </button>
+          {canSave ? (
+            <button type="button" onClick={save} disabled={!ready} className={SETTINGS_BTN_PRIMARY}>
+              {justSaved ? (
+                <Check key={justSaved} size={16} weight="bold" aria-hidden="true" className="pn-pop" />
+              ) : (
+                <FloppyDisk size={16} aria-hidden="true" />
+              )}
+              {t('common:actions.save')}
+            </button>
+          ) : (
+            <button type="button" onClick={() => onOpenUpgrade(code)} className={SETTINGS_BTN_PRIMARY}>
+              <IconUpgrade size={12} onFill />
+              {t('appearance.custom.saveWithPro')}
+            </button>
+          )}
         </div>
         {!authorOk && <p className="mt-1 text-[11px] text-danger">{t('appearance.custom.creditInvalid')}</p>}
         {full && <p className="mt-1 text-[11px] text-danger" role="alert">{t('appearance.custom.themeLimit', { max: CUSTOM_THEME_MAX })}</p>}

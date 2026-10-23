@@ -26,17 +26,17 @@ export type View =
   | 'vault'
   | 'files'
   /** Plain-text files on the user's own disk. Never touches the encrypted
-   *  store. Spec: ops/docs/plans/markdown-folder.md (no sync, history, or PIN-protect - vault-only features) */
+   *  store. Spec: ops/docs/archive/markdown-folder.md (no sync, history, or PIN-protect - vault-only features) */
   | 'markdown'
   /** Bookmarks pillar - notes of type 'link'. GUI name "Bookmarks", never
-   *  "Links". Spec: ops/docs/plans/bookmarks-pillar.md (free feature, not gated behind Pro) */
+   *  "Links". Spec: ops/docs/archive/bookmarks-pillar.md (free feature, not gated behind Pro) */
   | 'bookmarks'
   /** Contacts pillar - notes of type 'contact'. Free and ungated, like
-   *  bookmarks. Spec: ops/docs/plans/contacts-pillar.md (section 4, the View union member) */
+   *  bookmarks. Spec: ops/docs/archive/contacts-pillar.md (section 4, the View union member) */
   | 'contacts'
   /** Calendar pillar - every dated item on one calendar; it owns notes of
    *  type 'event'. The list pane is the agenda, the editor pane the month,
-   *  week or day. Free. Spec: ops/docs/plans/calendar-pillar-spec.md */
+   *  week or day. Free. Spec: ops/docs/archive/calendar-pillar-spec.md */
   | 'calendar'
   /** Archive - items kept but out of sight. A state, like 'starred', not a
    *  type. Spec: ops/issues/archive/0388.md */
@@ -62,7 +62,7 @@ export type View =
  * narrow icon strip (`CollapsedSidebar`) and the pillar dropdown in a list
  * title (`notesView/ListNav`). Platform availability is checked separately, and
  * first: Markdown stays hidden where no filesystem API exists whatever this
- * says. Spec: ops/docs/plans/sidebar-views.md (governs Show in sidebar only, separate from Show in All)
+ * says. Spec: ops/docs/archive/sidebar-views.md (governs Show in sidebar only, separate from Show in All)
  */
 export function isViewShown(view: View, hidden: View[] | undefined, current: View): boolean {
   return view === current || !hidden?.includes(view);
@@ -74,7 +74,7 @@ export function isViewShown(view: View, hidden: View[] | undefined, current: Vie
  * Views absent from this map contribute no types: 'home' is the All list
  * itself, 'starred' and 'trash' are states rather than types, and 'markdown'
  * reads the user's disk and never enters the encrypted store at all.
- * Spec: ops/docs/plans/sidebar-views.md (feeds the Show in All filter, the funnel icon setting)
+ * Spec: ops/docs/archive/sidebar-views.md (feeds the Show in All filter, the funnel icon setting)
  */
 export const VIEW_NOTE_TYPES: Partial<Record<View, NoteType[]>> = {
   // 'all' is the Notes pillar, NOT the All list - see the union above, where

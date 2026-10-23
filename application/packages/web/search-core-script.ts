@@ -14,8 +14,8 @@ const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'src/textM
 
 export const SEARCH_CORE_SCRIPT_TAG = '<script src="/search-core.js" defer></script>';
 
-/** The matcher as a classic script that defines the global `pnSearch`. */
-export async function buildSearchCoreScript(): Promise<string> {
+/** One module and its imports as a classic script, for a static page under `script-src 'self'`. */
+export async function buildClassicScript(entry: string, name: string, fileName: string): Promise<string> {
   const result = await build({
     configFile: false,
     logLevel: 'silent',
@@ -23,7 +23,7 @@ export async function buildSearchCoreScript(): Promise<string> {
     build: {
       write: false,
       minify: true,
-      lib: { entry: ENTRY, formats: ['iife'], name: 'pnSearch', fileName: () => 'search-core.js' },
+      lib: { entry, formats: ['iife'], name, fileName: () => fileName },
     },
   });
   for (const out of Array.isArray(result) ? result : [result]) {
@@ -31,7 +31,12 @@ export async function buildSearchCoreScript(): Promise<string> {
     const chunk = out.output.find((o) => o.type === 'chunk');
     if (chunk?.type === 'chunk') return chunk.code;
   }
-  throw new Error('pn-search-core-script: the build produced no script');
+  throw new Error(`pn-classic-script: the build of ${fileName} produced no script`);
+}
+
+/** The matcher as a classic script that defines the global `pnSearch`. */
+export function buildSearchCoreScript(): Promise<string> {
+  return buildClassicScript(ENTRY, 'pnSearch', 'search-core.js');
 }
 
 export function searchCoreScriptPlugin(): Plugin {

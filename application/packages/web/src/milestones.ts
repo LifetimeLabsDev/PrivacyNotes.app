@@ -14,7 +14,7 @@ import { intlLocale } from './languages';
  * Statistics pane, which carry the same numbers the pane shows anyway,
  * and only the honest families CELEBRATE with the toast, until the streak
  * and the words have a source of their own.
- * Spec: ops/docs/plans/wellness-statistics.md (section 21)
+ * Spec: ops/docs/archive/wellness-statistics.md (section 21)
  *
  * The module is pure: the caller passes the seen keys in and persists the
  * ones it spends. Seen state lives in `UserSettings.milestonesSeen` and
@@ -47,7 +47,7 @@ const CELEBRATED_FAMILIES: readonly MilestoneFamily[] = ['notes', 'age'];
  * Deliberately low: someone who has written 25 notes by hand has decided
  * they like the app, and asking a heavy user at 500 wastes the goodwill
  * of the 24 lighter users who would also have said something kind.
- * Spec: ops/docs/plans/rating-prompt-handoff.md (section 3)
+ * Spec: ops/docs/archive/rating-prompt-handoff.md (section 3)
  */
 export const RATING_TRIGGERS = new Set<string>(['notes:25', 'notes:50']);
 

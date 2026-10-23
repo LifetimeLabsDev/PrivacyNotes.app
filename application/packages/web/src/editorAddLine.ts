@@ -119,11 +119,14 @@ function buildHint(): HTMLElement {
   hint.className = 'pn-add-line-hint pointer-events-none fixed z-[5] flex -translate-y-1/2 items-center gap-1.5';
   hint.setAttribute('aria-hidden', 'true');
   const text = document.createElement('span');
-  text.className = 'flex items-center gap-1 text-xs leading-none text-accent';
+  // The ghost look, shared with the top zone in Editor.tsx: muted text and a
+  // dashed line, so a pass over the gaps while scrolling stays quiet. The
+  // short fade-in delay (.pn-add-line-hint in index.css) does the rest.
+  text.className = 'flex items-center gap-1 text-xs leading-none text-pn-muted';
   text.innerHTML = PLUS_ICON;
   text.append(i18n.t('editor:addLine.add'));
   const line = document.createElement('span');
-  line.className = 'h-px flex-1 bg-accent/40';
+  line.className = 'flex-1 border-t border-dashed border-pn-muted/40';
   hint.append(text, line);
   hint.style.display = 'none';
   return hint;

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useEscapeToClose } from '../useEscapeToClose';
 import { useIsMobile } from '../useIsMobile';
 
-// Spec: ops/docs/ui-patterns.md (section 38 - mobile drawer gestures)
+// Spec: ops/docs/archive/ui-patterns.md (section 38 - mobile drawer gestures)
 /** Leftward travel on the open panel that dismisses it. */
 const SWIPE_CLOSE_PX = 48;
 

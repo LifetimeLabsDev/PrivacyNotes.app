@@ -24,11 +24,11 @@
  *
  * Spec: ops/docs/design-decisions.md (editor paragraph rhythm)
  */
-import { Extension } from '@tiptap/core';
+import { Extension, type Editor } from '@tiptap/core';
 import { DOMSerializer, Fragment, Slice, type Node as ProseMirrorNode, type ResolvedPos, type Schema } from '@tiptap/pm/model';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import type { EditorView } from '@tiptap/pm/view';
-import { paragraphGapCss, readLineSpacing, readPasteFormat } from './theme';
+import { paragraphGapCss, readLineSpacing, readPasteFormat, withCopyFormat, type CopyFormat } from './theme';
 import { END_BREAK_ATTR, LINES_ATTR, LINE_BREAK_ATTR, joinParagraphLines } from './paragraphLines';
 import { keepPaletteStyles } from './pasteStyles';
 
@@ -619,6 +619,41 @@ const PlainPastePlacement = Extension.create({
     ];
   },
 });
+
+/**
+ * "Copy as plain text" or "Copy as Markdown": the clipboard holds that text
+ * and nothing else, so an app that reads formatting gets the same text as one
+ * that does not. The text comes from the editor's own text serializer, so it
+ * is exactly what Copy writes under that Copied text setting. A press with
+ * nothing selected copies the whole note, and the caret goes back where it was.
+ * Spec: ops/issues/0546.md (Spec)
+ */
+export function copySelectionAs(ed: Editor, format: CopyFormat): void {
+  const before = ed.state.selection;
+  const view = ed.view;
+  ed.commands.focus();
+  if (before.empty) ed.commands.selectAll();
+  const { from, to } = view.state.selection;
+  let text = '';
+  withCopyFormat(format, () => {
+    text = view.someProp('clipboardTextSerializer', (f) => f(view.state.selection.content(), view)) || '';
+  });
+  if (!text) text = view.state.doc.textBetween(from, to, '\n\n');
+  // Ahead of the editor's own copy handler, which would add the HTML.
+  const write = (event: ClipboardEvent) => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    event.clipboardData?.setData('text/plain', text);
+  };
+  document.addEventListener('copy', write, { capture: true });
+  try {
+    document.execCommand('copy');
+  } finally {
+    document.removeEventListener('copy', write, { capture: true });
+  }
+  // Select all leaves the document as it was, so the old caret still fits.
+  if (before.empty) view.dispatch(view.state.tr.setSelection(before));
+}
 
 /**
  * Wires both halves into the editor. The paste half runs after the image sanitizer,

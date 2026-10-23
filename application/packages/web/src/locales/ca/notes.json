@@ -18,10 +18,8 @@
   "header": {
     "new": "Nova",
     "newNote": "Nota nova",
-    "newNoteHover": "Nota nova ({{hotkey}})",
     "trash": "Paperera",
-    "newEvent": "Esdeveniment nou",
-    "newEventHover": "Esdeveniment nou ({{hotkey}})"
+    "newEvent": "Esdeveniment nou"
   },
   "folderChip": {
     "clear": "Treu el filtre de carpeta: {{folder}}",
@@ -35,15 +33,18 @@
     "ariaLabel": "Element nou de la caixa forta",
     "login": "Inici de sessió",
     "card": "Targeta de crèdit",
-    "sshKey": "Clau SSH"
+    "sshKey": "Clau SSH",
+    "generator": "Contrasenya"
   },
   "newMenu": {
     "note": "Nota",
     "task": "Tasca",
+    "kanban": "Tauler Kanban",
     "journal": "Diari",
     "login": "Inici de sessió",
     "file": "Fitxer",
     "bookmark": "Marcador",
+    "clipPage": "Retalla una pàgina",
     "contact": "Contacte",
     "event": "Esdeveniment",
     "quickAdd": "Afegit ràpid"
@@ -55,8 +56,7 @@
     "keys": "Claus"
   },
   "journal": {
-    "newEntry": "Entrada de diari nova",
-    "newEntryHover": "Entrada de diari nova ({{hotkey}})"
+    "newEntry": "Entrada de diari nova"
   },
   "tasks": {
     "newTitle": "Tasques del {{date}}"
@@ -70,7 +70,8 @@
   "search": {
     "sortOptions": "Opcions d'ordenació i visualització",
     "placeholderVault": "Cerca a la caixa forta…",
-    "placeholderNotes": "Cerca notes…"
+    "placeholderNotes": "Cerca notes…",
+    "placeholderEvents": "Cerca esdeveniments…"
   },
   "selection": {
     "countOf": "{{selected}} de {{total}} seleccionats",
@@ -82,9 +83,14 @@
     "vault": "La caixa forta és buida.",
     "notes": "Encara no hi ha notes.",
     "archive": "No hi ha res arxivat.",
+    "trash": "La paperera és buida.",
     "filtered": "Cap element coincideix amb els teus filtres.",
     "clearFilters": "Neteja els filtres",
-    "filteredAfter": "per mostrar-los."
+    "filteredAfter": "per mostrar-los.",
+    "hiddenInAll_other": "El filtre Mostra a Tot amaga {{count}} elements. Obre el filtre al costat de Tot per mostrar-los.",
+    "inOtherSpace_other": "Tens {{count}} elements a l'espai {{space}}. Canvia a {{space}} a la barra lateral per veure'ls.",
+    "inOtherSpace_one": "Tens {{count}} element a l'espai {{space}}. Canvia a {{space}} a la barra lateral per veure'l.",
+    "hiddenInAll_one": "El filtre Mostra a Tot amaga {{count}} element. Obre el filtre al costat de Tot per mostrar-lo."
   },
   "listGroups": {
     "previous7Days": "Últims 7 dies",
@@ -104,12 +110,25 @@
     "calendar": "Calendari"
   },
   "footerStats": {
-    "journals": "Diaris",
-    "items": "Elements",
-    "trashed": "A la paperera",
-    "notes": "Notes",
-    "bookmarks": "Marcadors",
-    "contacts": "Contactes"
+    "journals_other": "Diaris",
+    "journals_one": "Diari",
+    "items_other": "Elements",
+    "items_one": "Element",
+    "trashed_other": "A la paperera",
+    "trashed_one": "A la paperera",
+    "notes_other": "Notes",
+    "notes_one": "Nota",
+    "bookmarks_other": "Marcadors",
+    "bookmarks_one": "Marcador",
+    "contacts_other": "Contactes",
+    "files_other": "Fitxers",
+    "lists_other": "Llistes",
+    "tasks_other": "Tasques",
+    "today": "Avui",
+    "tasks_one": "Tasca",
+    "lists_one": "Llista",
+    "files_one": "Fitxer",
+    "contacts_one": "Contacte"
   },
   "toast": {
     "imageUploadFailed": "La pujada de la imatge ha fallat: {{error}}",
@@ -167,7 +186,7 @@
   },
   "zen": {
     "exit": "Surt del Zen",
-    "exitHover": "Surt del mode Zen (Esc)",
+    "exitHover": "Surt del mode Zen",
     "enterHover": "Entra al mode Zen",
     "proHover": "Mode Zen (Pro)",
     "enterAriaShortcut": "Entra al mode Zen ({{keys}})"
@@ -244,9 +263,12 @@
     "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Obre les estadístiques",
     "journalCalendar": "Calendari del diari",
-    "words": "Paraules",
+    "words_other": "Paraules",
+    "words_one": "Paraula",
     "zen": "Mode Zen",
     "appearance": "Aparença",
+    "lockApp": "Bloqueja l'app",
+    "lockAppSetUp": "Primer, configura un PIN a Seguretat",
     "goToTop": "Vés a l'inici",
     "goToEnd": "Vés al final",
     "signOut": "Tanca la sessió",
@@ -270,6 +292,7 @@
     "editorLabel": "Editor",
     "formatBarLabel": "Barra de format",
     "listsLabel": "Llistes",
+    "trackersLabel": "Seguiments",
     "helpLabel": "Ajuda",
     "aboutLabel": "Informació",
     "languageLabel": "Llengua",
@@ -287,7 +310,7 @@
   },
   "bulkTrash": {
     "title": "Mou a la paperera",
-    "body_one": "Vols moure <highlight>{{count}} element</highlight> a la paperera? Després el podràs restaurar.",
+    "body_one": "Vols moure <highlight>{{count}} element</highlight> a la paperera? El podràs restaurar més tard.",
     "body_other": "Vols moure <highlight>{{count}} elements</highlight> a la paperera? Després els podràs restaurar.",
     "body_many": "Vols moure <highlight>{{count}} elements</highlight> a la paperera? Després els podràs restaurar.",
     "readOnlyTitle": "Només de lectura",
@@ -341,5 +364,14 @@
   "ambiguousLink": {
     "title": "Dues notes tenen aquest títol",
     "body": "Hi ha més d'una nota amb el títol <highlight>“{{title}}”</highlight>, així que aquest enllaç no diu a quina es refereix. Canvia el nom a una i l'enllaç apuntarà a l'altra."
+  },
+  "connections": {
+    "title": "Connexions",
+    "hide": "Amaga les connexions",
+    "linkedFrom": "Enllaçada des de",
+    "linksTo": "Enllaça a",
+    "missing": "Encara no creada",
+    "protectedHidden_one": "{{count}} element protegit amb PIN no es mostra",
+    "protectedHidden_other": "{{count}} elements protegits amb PIN no es mostren"
   }
 }

@@ -38,7 +38,9 @@ export type CalloutType =
   | 'abstract'
   | 'question'
   | 'definition'
-  | 'seealso';
+  | 'seealso'
+  | 'kanban'
+  | 'column';
 
 export interface CalloutColor {
   /** Accent hex, used for the border, icon, and title. Empty for Fold. */
@@ -88,7 +90,38 @@ export const CALLOUT_COLORS: Record<CalloutType, CalloutColor> = {
   question: YELLOW,
   definition: TEAL,
   seealso: GRAY,
+  // A Kanban board and its columns. Neither is in the callout picker: the
+  // board comes from the + menu, and a column takes its color from its
+  // metadata (`[!column|green]`), gray when it has none.
+  kanban: { color: '', rgb: '' },
+  column: GRAY,
 };
+
+/** The palette keys a Kanban column can carry as `[!column|key]`, with the
+ *  same hues as the text colors and the callouts. */
+const COLUMN_COLORS = {
+  gray: GRAY,
+  red: RED,
+  orange: ORANGE,
+  yellow: YELLOW,
+  green: GREEN,
+  teal: TEAL,
+  blue: BLUE,
+  purple: PURPLE,
+  pink: PINK,
+} as const;
+
+export type ColumnColor = keyof typeof COLUMN_COLORS;
+
+export function isColumnColor(key: string | null | undefined): key is ColumnColor {
+  return !!key && Object.prototype.hasOwnProperty.call(COLUMN_COLORS, key);
+}
+
+/** The color of a callout: a column reads its metadata, every other type its table row. */
+export function calloutColorOf(type: CalloutType, meta: string | null | undefined): CalloutColor {
+  if (type === 'column' && isColumnColor(meta)) return COLUMN_COLORS[meta];
+  return CALLOUT_COLORS[type];
+}
 
 /**
  * Keyword -> canonical type. Covers Obsidian's aliases, GitHub's five alerts
@@ -156,6 +189,8 @@ const CALLOUT_ALIASES: Record<string, CalloutType> = {
   seealso: 'seealso',
   'see-also': 'seealso',
   related: 'seealso',
+  kanban: 'kanban',
+  column: 'column',
 };
 
 /** Fold a raw callout keyword (Obsidian alias or our own) to a canonical type. */

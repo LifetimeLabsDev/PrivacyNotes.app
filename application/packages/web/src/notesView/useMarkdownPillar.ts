@@ -15,7 +15,7 @@ import { useFolderRefresh } from '../markdownFolder/useFolderRefresh';
  * filters, saving files into the encrypted notes, and moving files to the
  * folder's `.trash/`. The panes themselves stay static imports of NotesView,
  * for the reason the comment on those imports gives.
- * Spec: ops/docs/plans/markdown-folder.md
+ * Spec: ops/docs/archive/markdown-folder.md
  */
 export function useMarkdownPillar({
   view,
@@ -69,7 +69,7 @@ export function useMarkdownPillar({
   /** The Markdown reference card, opened by the `?` on the folder row. Was also
    *  a first-run gate in front of the picker until 2026-08-14; that mode went
    *  when the empty state started carrying the same pitch.
-   *  Spec: ops/docs/plans/markdown-folder.md (section 12) */
+   *  Spec: ops/docs/archive/markdown-folder.md (section 12) */
   const [markdownExplain, setMarkdownExplain] = useState(false);
   const [markdownDelete, setMarkdownDelete] = useState<OpenedMarkdownFile | null>(null);
   const [markdownDeleteMany, setMarkdownDeleteMany] = useState<string[] | null>(null);
@@ -104,7 +104,7 @@ export function useMarkdownPillar({
   /** Copy a plaintext file into the encrypted notes. One-way on purpose: the
    *  original file is left exactly where it is, so nobody loses a copy they
    *  still rely on in another editor.
-   *  Spec: ops/docs/plans/markdown-folder.md (section 10) */
+   *  Spec: ops/docs/archive/markdown-folder.md (section 10) */
   async function handleImportMarkdown(filename: string, raw: string) {
     // Converted the way a DROPPED .md is converted: front matter becomes the
     // title, the tags and the trackers, and the body arrives without it. It

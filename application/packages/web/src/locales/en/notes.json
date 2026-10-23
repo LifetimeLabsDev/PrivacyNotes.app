@@ -18,10 +18,8 @@
   "header": {
     "new": "New",
     "newNote": "New note",
-    "newNoteHover": "New note ({{hotkey}})",
     "trash": "Trash",
-    "newEvent": "New event",
-    "newEventHover": "New event ({{hotkey}})"
+    "newEvent": "New event"
   },
   "folderChip": {
     "clear": "Clear folder filter: {{folder}}",
@@ -35,15 +33,18 @@
     "ariaLabel": "New vault item",
     "login": "Login",
     "card": "Credit Card",
-    "sshKey": "SSH Key"
+    "sshKey": "SSH Key",
+    "generator": "Password"
   },
   "newMenu": {
     "note": "Note",
     "task": "Task",
+    "kanban": "Kanban board",
     "journal": "Journal",
     "login": "Login",
     "file": "File",
     "bookmark": "Bookmark",
+    "clipPage": "Clip page",
     "contact": "Contact",
     "event": "Event",
     "quickAdd": "Quick add"
@@ -55,8 +56,7 @@
     "keys": "Keys"
   },
   "journal": {
-    "newEntry": "New journal entry",
-    "newEntryHover": "New journal entry ({{hotkey}})"
+    "newEntry": "New journal entry"
   },
   "tasks": {
     "newTitle": "Tasks for {{date}}"
@@ -70,7 +70,8 @@
   "search": {
     "sortOptions": "Sort and view options",
     "placeholderVault": "Search vault…",
-    "placeholderNotes": "Search notes…"
+    "placeholderNotes": "Search notes…",
+    "placeholderEvents": "Search events…"
   },
   "selection": {
     "countOf": "{{selected}} of {{total}} selected",
@@ -82,9 +83,14 @@
     "vault": "Vault is empty.",
     "notes": "No notes yet.",
     "archive": "Nothing archived.",
+    "trash": "Trash is empty.",
     "filtered": "No items match your filters.",
     "clearFilters": "Clear filters",
-    "filteredAfter": "To display them."
+    "filteredAfter": "To display them.",
+    "hiddenInAll_one": "{{count}} item is hidden by the Show in All filter. Open the filter next to All to show it.",
+    "hiddenInAll_other": "{{count}} items are hidden by the Show in All filter. Open the filter next to All to show them.",
+    "inOtherSpace_one": "{{count}} item is in your {{space}} space. Switch to {{space}} in the sidebar to see it.",
+    "inOtherSpace_other": "{{count}} items are in your {{space}} space. Switch to {{space}} in the sidebar to see them."
   },
   "listGroups": {
     "previous7Days": "Previous 7 days",
@@ -104,12 +110,25 @@
     "calendar": "Calendar"
   },
   "footerStats": {
-    "journals": "Journals",
-    "items": "Items",
-    "trashed": "Trashed",
-    "notes": "Notes",
-    "bookmarks": "Bookmarks",
-    "contacts": "Contacts"
+    "journals_one": "Journal",
+    "journals_other": "Journals",
+    "items_one": "Item",
+    "items_other": "Items",
+    "trashed_one": "Trashed",
+    "trashed_other": "Trashed",
+    "notes_one": "Note",
+    "notes_other": "Notes",
+    "bookmarks_one": "Bookmark",
+    "bookmarks_other": "Bookmarks",
+    "contacts_one": "Contact",
+    "contacts_other": "Contacts",
+    "files_one": "File",
+    "files_other": "Files",
+    "lists_one": "List",
+    "lists_other": "Lists",
+    "tasks_one": "Task",
+    "tasks_other": "Tasks",
+    "today": "Today"
   },
   "toast": {
     "imageUploadFailed": "Image upload failed: {{error}}",
@@ -165,7 +184,7 @@
   },
   "zen": {
     "exit": "Exit Zen",
-    "exitHover": "Exit Zen mode (Esc)",
+    "exitHover": "Exit Zen mode",
     "enterHover": "Enter Zen mode",
     "proHover": "Zen mode (Pro)",
     "enterAriaShortcut": "Enter Zen mode ({{keys}})"
@@ -242,9 +261,12 @@
     "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Open stats",
     "journalCalendar": "Journal calendar",
-    "words": "Words",
+    "words_one": "Word",
+    "words_other": "Words",
     "zen": "Zen",
     "appearance": "Design",
+    "lockApp": "Lock app",
+    "lockAppSetUp": "Set a PIN in Security first",
     "goToTop": "Go to top",
     "goToEnd": "Go to end",
     "signOut": "Sign out",
@@ -268,6 +290,7 @@
     "editorLabel": "Editor",
     "formatBarLabel": "Toolbar",
     "listsLabel": "Lists",
+    "trackersLabel": "Trackers",
     "helpLabel": "Help",
     "aboutLabel": "About",
     "languageLabel": "Language",
@@ -285,7 +308,7 @@
   },
   "bulkTrash": {
     "title": "Move to Trash",
-    "body_one": "Move <highlight>{{count}} item</highlight> to trash? You can restore them later.",
+    "body_one": "Move <highlight>{{count}} item</highlight> to trash? You can restore it later.",
     "body_other": "Move <highlight>{{count}} items</highlight> to trash? You can restore them later.",
     "readOnlyTitle": "Read-only",
     "readOnlyAcknowledge": "Got it",
@@ -331,5 +354,14 @@
   "ambiguousLink": {
     "title": "Two notes share that title",
     "body": "More than one note is titled <highlight>“{{title}}”</highlight>, so this link does not say which one it means. Rename one of them and the link will point at the other."
+  },
+  "connections": {
+    "title": "Connections",
+    "hide": "Hide connections",
+    "linkedFrom": "Linked from",
+    "linksTo": "Links to",
+    "missing": "Not created yet",
+    "protectedHidden_one": "{{count}} PIN-protected item not shown",
+    "protectedHidden_other": "{{count}} PIN-protected items not shown"
   }
 }

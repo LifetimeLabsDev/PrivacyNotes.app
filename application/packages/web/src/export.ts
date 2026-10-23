@@ -1,6 +1,7 @@
 // jszip is ~95 KB minified and only needed when the user actually
 // exports a zip, so it is imported dynamically inside the two zip
 // functions instead of statically here.
+import type { CustomHabitDef } from './habitList';
 import {
   buildBackupPayload,
   encodeBackup,
@@ -34,6 +35,7 @@ import type { VaultContent } from './vaultFields';
 import { ancestorIds, folderNamePath, type FolderDef } from './folders';
 import type { ItemStyles } from './itemStyles';
 import type { CustomThemes } from './customThemes';
+import type { FactorDef } from './trackerTypes';
 import { linkExportMarkdown } from './linkBody';
 import { slugify, zipEntryStems } from './exportNames';
 import { lineHeightCss, paragraphGapCss, readLineSpacing } from './theme';
@@ -359,10 +361,10 @@ export interface BackupManifest {
    *  to list, so a whole backup's manifest has no such key; a restore of a
    *  backup that has one reports each entry. */
   missing?: Pick<MissingBlob, 'id' | 'kind'>[];
-  /** The looks of folders, tags and notes and the custom themes, the two
-   *  settings maps the notes alone cannot carry. Written only when there is
-   *  something to carry; the restore validates both. */
-  settings?: { itemStyles?: unknown; customThemes?: unknown };
+  /** The looks of folders, tags and notes, the custom themes and the factor
+   *  names, the settings the notes alone cannot carry. Written only when there
+   *  is something to carry; the restore validates each. */
+  settings?: { itemStyles?: unknown; customThemes?: unknown; factors?: unknown; customHabits?: unknown };
 }
 
 /**
@@ -466,7 +468,7 @@ async function buildFullBackupZip(
   attachmentStore?: AttachmentStore | null,
   onProgress?: (msg: string) => void,
   folders: FolderDef[] = [],
-  settings: { itemStyles?: ItemStyles; customThemes?: CustomThemes } = {},
+  settings: { itemStyles?: ItemStyles; customThemes?: CustomThemes; factors?: FactorDef[]; customHabits?: CustomHabitDef[] } = {},
 ): Promise<{ blob: Blob; missing: MissingBlob[] }> {
   const { default: JSZip } = await import('jszip');
   const zip = new JSZip();
@@ -573,7 +575,7 @@ async function buildFullBackupZip(
 
   // The calendar as one .ics for other apps. A restore reads only the
   // root .md files, so it never brings an event back twice.
-  // Spec: ops/docs/plans/google-calendar-import.md (section 6)
+  // Spec: ops/docs/archive/google-calendar-import.md (section 6)
   const calendar = await calendarFileForBackup(notes);
   if (calendar) zip.file('calendar.ics', calendar);
 
@@ -591,6 +593,8 @@ async function buildFullBackupZip(
   const carried = {
     ...(Object.keys(settings.itemStyles ?? {}).length > 0 ? { itemStyles: settings.itemStyles } : {}),
     ...(Object.keys(settings.customThemes ?? {}).length > 0 ? { customThemes: settings.customThemes } : {}),
+    ...((settings.factors ?? []).length > 0 ? { factors: settings.factors } : {}),
+    ...((settings.customHabits ?? []).length > 0 ? { customHabits: settings.customHabits } : {}),
   };
   if (Object.keys(carried).length > 0) manifest.settings = carried;
   zip.file('manifest.json', JSON.stringify(manifest, null, 2));
@@ -610,7 +614,7 @@ export async function exportAllMarkdownZip(
   attachmentStore?: AttachmentStore | null,
   onProgress?: (msg: string) => void,
   folders: FolderDef[] = [],
-  settings: { itemStyles?: ItemStyles; customThemes?: CustomThemes } = {},
+  settings: { itemStyles?: ItemStyles; customThemes?: CustomThemes; factors?: FactorDef[]; customHabits?: CustomHabitDef[] } = {},
 ): Promise<MissingBlob[]> {
   const { blob, missing } = await buildFullBackupZip(notes, imageStore, attachmentStore, onProgress, folders, settings);
   const stamp = toLocalIso(new Date());
@@ -632,7 +636,7 @@ export async function exportEncryptedFullBackup(
   encryptionKey: Uint8Array,
   onProgress?: (msg: string) => void,
   folders: FolderDef[] = [],
-  settings: { itemStyles?: ItemStyles; customThemes?: CustomThemes } = {},
+  settings: { itemStyles?: ItemStyles; customThemes?: CustomThemes; factors?: FactorDef[]; customHabits?: CustomHabitDef[] } = {},
 ): Promise<MissingBlob[]> {
   const { blob, missing } = await buildFullBackupZip(notes, imageStore, attachmentStore, onProgress, folders, settings);
   const sealed = encodeZipBackup(new Uint8Array(await blob.arrayBuffer()), encryptionKey);
@@ -656,13 +660,15 @@ export async function exportAllJson(
   folders: FolderDef[] = [],
   itemStyles: ItemStyles = {},
   customThemes: CustomThemes = {},
+  factors: FactorDef[] = [],
+  customHabits: CustomHabitDef[] = [],
 ): Promise<void> {
   // Same payload builder as the encrypted .pnbackup, folders included since
   // 2026-08-26. It used to pass none, which meant every note carried a
   // `folderId` pointing at a folder the file did not contain: a restore had
   // the membership and no tree to hang it on. The field is additive, so an
   // older reader ignores it.
-  const payload = buildBackupPayload(notes, folders, undefined, itemStyles, customThemes);
+  const payload = buildBackupPayload(notes, folders, undefined, itemStyles, customThemes, factors, customHabits);
   const blob = new Blob([JSON.stringify(payload, null, 2)], {
     type: 'application/json',
   });
@@ -700,7 +706,7 @@ export async function exportBookmarksHtml(
  * reads. Labels go back out in Apple's dialect and every unmodelled line
  * is written back verbatim, which is what makes the file readable by the
  * phone it came from. Loaded on demand like the bookmarks writer.
- * Spec: ops/docs/plans/contacts-pillar.md (section 8)
+ * Spec: ops/docs/archive/contacts-pillar.md (section 8)
  */
 export async function exportContactsVcf(notes: LocalNote[]): Promise<void> {
   const contacts = notes.filter(
@@ -743,7 +749,7 @@ export async function exportContactsVcf(notes: LocalNote[]): Promise<void> {
  * The calendar as an .ics file for Google Calendar, Apple Calendar or
  * Outlook. Past Google's 1 MB import limit the file is cut into parts of
  * whole events and saved as one .zip. Loaded on demand like the vCard writer.
- * Spec: ops/docs/plans/google-calendar-import.md (section 5)
+ * Spec: ops/docs/archive/google-calendar-import.md (section 5)
  */
 export async function exportCalendarIcs(notes: LocalNote[]): Promise<void> {
   const { buildCalendarFiles } = await import('./calendarIcs');
@@ -928,13 +934,14 @@ export function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []
   // The schedule under the title: an event's, or a dated note's or task
   // list's, and a journal entry's time when it has one. The day of a journal
   // entry is its title already.
-  // Spec: ops/docs/plans/calendar-pillar-spec.md (step 4)
+  // Spec: ops/docs/archive/calendar-pillar-spec.md (step 4)
   const schedule = scheduleOf(note.trackers as Record<string, unknown> | undefined, note.type);
   const scheduleHtml = schedule && !titleOnly && (note.type !== 'journal' || schedule.time)
     ? `\n      <div class="meta schedule">${escapeHtml(describeSchedule(schedule, i18n.getFixedT(null, 'shell')))}</div>`
     : '';
-  const trackerSettings = loadLocalSettings().trackerSettings;
-  const rows = trackerRows(note.trackers, trackerSettings.weightUnit, trackerSettings.customTrackers);
+  const settings = loadLocalSettings();
+  const trackerSettings = settings.trackerSettings;
+  const rows = trackerRows(note.trackers, trackerSettings, trackerSettings.customTrackers, settings.factors);
   const trackersHtml =
     rows.length > 0
       ? `<section class="trackers">
@@ -1704,8 +1711,12 @@ export async function exportEncryptedBackup(
   itemStyles: ItemStyles = {},
   /** The custom color themes (userSettings.customThemes). */
   customThemes: CustomThemes = {},
+  /** The factor names (userSettings.factors). */
+  factors: FactorDef[] = [],
+  /** The person's own habit questions (userSettings.customHabits). */
+  customHabits: CustomHabitDef[] = [],
 ): Promise<void> {
-  const out = encodeBackup(buildBackupPayload(notes, folders, undefined, itemStyles, customThemes), encryptionKey);
+  const out = encodeBackup(buildBackupPayload(notes, folders, undefined, itemStyles, customThemes, factors, customHabits), encryptionKey);
 
   const stamp = toLocalIso(new Date());
   await downloadBlob(

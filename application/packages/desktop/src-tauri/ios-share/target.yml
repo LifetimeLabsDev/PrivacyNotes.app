@@ -1,7 +1,7 @@
   # The share extension: PrivacyNotes in the system share sheet. Appended by
   # scripts/apply-ios-appearance-icons.sh, because a fresh `tauri ios init`
   # writes a spec without it. Its sources live outside gen/ for the same reason.
-  # Spec: ops/docs/plans/share-into-app.md
+  # Spec: ops/docs/archive/share-into-app.md
   privacynotes_Share:
     type: app-extension
     platform: iOS

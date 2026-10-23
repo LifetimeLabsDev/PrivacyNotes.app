@@ -81,6 +81,10 @@ export const FAQ_SOURCES: Readonly<Record<string, readonly FaqSource[]>> = {
     { doc: 'security', heading: 'What the server sees' },
     { doc: 'verify', heading: 'Tier 1: one minute, no tools' },
   ],
+  'us-company': [
+    { doc: 'security', heading: 'What the server sees' },
+    { doc: 'verify', heading: 'Tier 1: one minute, no tools' },
+  ],
   'phrase-vs-password': [{ doc: 'threatModel', heading: 'Key derivation' }],
   'threat-model-levels': [
     { doc: 'threatModel', heading: 'OAuth users' },

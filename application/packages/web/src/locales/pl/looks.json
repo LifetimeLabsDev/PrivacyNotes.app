@@ -1,6 +1,8 @@
 {
   "captionFolder": "Folder",
   "captionTag": "Tag",
+  "captionNote": "Notatka",
+  "captionTracker": "Tracker",
   "useDefault": "Przywróć domyślne",
   "color": "Kolor",
   "noColor": "Bez koloru",

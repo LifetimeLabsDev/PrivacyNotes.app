@@ -12,7 +12,7 @@
  * module only decides WHETHER to cover, and hands that decision to the side
  * that can act on it in time. Android has no web-reachable control at all: the
  * recents picture is a window property.
- * Spec: ops/docs/plans/app-switcher-privacy-screen.md
+ * Spec: ops/docs/archive/app-switcher-privacy-screen.md
  *
  * Armed by the app lock or by the capture block below, so what the switches
  * say in Settings is what the phone does. `shouldReLock` additionally demands
@@ -23,7 +23,7 @@
  * screen sharing, where the operating system offers a way to. It is a device
  * setting and never syncs: what it can do differs per platform, and switching
  * it off on one device must not switch it off on another.
- * Spec: ops/docs/plans/app-switcher-privacy-screen.md (section 14)
+ * Spec: ops/docs/archive/app-switcher-privacy-screen.md (section 14)
  */
 
 import { useSyncExternalStore } from 'react';

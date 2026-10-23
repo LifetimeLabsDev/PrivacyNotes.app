@@ -1,7 +1,9 @@
-import { assertMfaAccess, isMfaRefusal, MfaRequiredError } from './mfaStep';
+import { readCustomHabits, type CustomHabitDef } from './habitList';
+import { latestRevision, withRevision } from './medicationDoses';
+import { isMfaRefusal, MfaRequiredError } from './mfaStep';
 import { encryptJson, decryptJson, bytesToBase64, base64ToBytes, type SupabaseClient } from '@notes/shared';
 import { hydrateListPrefsStore } from './listPrefs';
-import { defaultTrackerSettings, WEIGHT_UNITS, type TrackerSettings, type WeightUnit, type CustomTrackerTemplate, type MedicationTemplate } from './trackerTypes';
+import { CAFFEINE_UNITS, defaultTrackerSettings, readFactors, readHabits, WATER_UNITS, type CaffeineUnit, WEIGHT_UNITS, type WaterUnit, type FactorDef, type TrackerSettings, type WeightUnit, type CustomTrackerTemplate, type MedicationTemplate } from './trackerTypes';
 import { isColorTheme, isLineSpacing } from './theme';
 import { isJournalTitleFormat, JOURNAL_SUFFIX_MAX } from './notesViewUtils';
 import { isClock, isDateOrder } from './intlFormat';
@@ -20,7 +22,7 @@ import { deletedFolderIds, isNoteColorStyle, itemStylesEqual, mergeItemStyles, v
 import { deviceLabelsEqual, mergeDeviceLabels, validateDeviceLabels } from './deviceLabels';
 import { customThemesEqual, mergeCustomThemes, validateCustomThemes } from './customThemes';
 import { formatBarSettingsEqual, mergeFormatBarSettings, validateFormatBarSetting } from './formatBar';
-import { CREDENTIAL_FIELDS, defaultCalendarSettings, defaultSettings, type CalendarSettings, type UserSettings } from './userSettingsShape';
+import { CREDENTIAL_FIELDS, defaultCalendarSettings, defaultCheckInSettings, defaultSettings, type CalendarSettings, type CheckInSettings, type UserSettings } from './userSettingsShape';
 import { isTime, type Alert } from './schedule';
 
 /**
@@ -54,7 +56,7 @@ import { isTime, type Alert } from './schedule';
 
 // The settings shape and its defaults live in userSettingsShape.ts; callers
 // keep importing them from here.
-export { defaultSettings, toggleHiddenView, isShownInAll, withCredentialChanges, type CalendarSettings, type ImageSwitch, type UserSettings } from './userSettingsShape';
+export { defaultSettings, toggleHiddenView, isShownInAll, withCredentialChanges, type CalendarSettings, type CheckInSettings, type ImageSwitch, type UserSettings } from './userSettingsShape';
 
 /** Merge a partial/legacy blob into a fully-populated settings object. */
 function hydrate(raw: unknown): UserSettings {
@@ -112,6 +114,9 @@ function hydrate(raw: unknown): UserSettings {
   if (typeof obj.sinkCheckedTasks === 'boolean') {
     base.sinkCheckedTasks = obj.sinkCheckedTasks;
   }
+  if (typeof obj.taskConfetti === 'boolean') {
+    base.taskConfetti = obj.taskConfetti;
+  }
   if (typeof obj.spaces === 'boolean') {
     base.spaces = obj.spaces;
   }
@@ -133,11 +138,18 @@ function hydrate(raw: unknown): UserSettings {
   if (obj.trackerSettings && typeof obj.trackerSettings === 'object') {
     const ts = obj.trackerSettings as Partial<TrackerSettings>;
     const dts = defaultTrackerSettings();
+    // A blob without the Habits question list predates the Habits tracker,
+    // so nobody switched it off: it starts on, like on a new account. Once
+    // the list is written, the person's choice stands.
+    const adoptHabits = !('habits' in ts) && Array.isArray(ts.activeBuiltins) && !ts.activeBuiltins.includes('habits');
     base.trackerSettings = {
-      activeBuiltins: Array.isArray(ts.activeBuiltins) ? ts.activeBuiltins : dts.activeBuiltins,
+      activeBuiltins: Array.isArray(ts.activeBuiltins) ? (adoptHabits ? [...ts.activeBuiltins, 'habits'] : ts.activeBuiltins) : dts.activeBuiltins,
       customTrackers: Array.isArray(ts.customTrackers) ? ts.customTrackers : dts.customTrackers,
       archivedMedications: Array.isArray(ts.archivedMedications) ? ts.archivedMedications : dts.archivedMedications,
+      habits: readHabits(ts.habits),
       weightUnit: WEIGHT_UNITS.includes(ts.weightUnit as WeightUnit) ? (ts.weightUnit as WeightUnit) : dts.weightUnit,
+      waterUnit: WATER_UNITS.includes(ts.waterUnit as WaterUnit) ? (ts.waterUnit as WaterUnit) : dts.waterUnit,
+      caffeineUnit: CAFFEINE_UNITS.includes(ts.caffeineUnit as CaffeineUnit) ? (ts.caffeineUnit as CaffeineUnit) : dts.caffeineUnit,
     };
   }
   if (typeof obj.autoDeleteTrashDays === 'number' && Number.isFinite(obj.autoDeleteTrashDays) && obj.autoDeleteTrashDays >= 0) {
@@ -271,6 +283,9 @@ function hydrate(raw: unknown): UserSettings {
     base.ratingDone = obj.ratingDone;
   }
   if (obj.calendar && typeof obj.calendar === 'object') base.calendar = readCalendarSettings(obj.calendar as Record<string, unknown>);
+  if (obj.checkIn && typeof obj.checkIn === 'object') base.checkIn = readCheckInSettings(obj.checkIn as Record<string, unknown>);
+  if (Array.isArray(obj.factors)) base.factors = readFactors(obj.factors);
+  if (Array.isArray(obj.customHabits)) base.customHabits = readCustomHabits(obj.customHabits);
   if (typeof obj.importPromptDismissed === 'boolean') {
     base.importPromptDismissed = obj.importPromptDismissed;
   }
@@ -326,6 +341,14 @@ function readCalendarSettings(c: Record<string, unknown>): CalendarSettings {
   return out;
 }
 
+function readCheckInSettings(c: Record<string, unknown>): CheckInSettings {
+  const out = defaultCheckInSettings();
+  for (const key of ['all', 'askTrackers', 'showTextless'] as const) {
+    if (typeof c[key] === 'boolean') out[key] = c[key] as boolean;
+  }
+  return out;
+}
+
 /** The alert lists a new alert starts with, from Settings › Calendar. */
 export function alertDefaults(s: Pick<UserSettings, 'calendar'>): { timed: Alert[]; allDay: Alert[] } {
   const c = s.calendar;
@@ -342,7 +365,7 @@ export function alertDefaults(s: Pick<UserSettings, 'calendar'>): { timed: Alert
  * stands. A merged collection needs no entry: its merge never reads absence
  * as a reset.
  */
-const NEWER_SCALARS = ['tintNotes', 'noteColorStyle', 'archivedInAll', 'includeSubfolders', 'sinkCheckedTasks', 'spaces', 'dateOrder', 'clock', 'journalTitlePattern', 'calendar'] as const;
+const NEWER_SCALARS = ['tintNotes', 'noteColorStyle', 'archivedInAll', 'includeSubfolders', 'sinkCheckedTasks', 'taskConfetti', 'spaces', 'dateOrder', 'clock', 'journalTitlePattern', 'calendar', 'checkIn'] as const;
 
 /**
  * Whether the blob lacks a newer scalar this device holds at a value of its
@@ -355,7 +378,10 @@ function keptNewerScalar(local: UserSettings, raw: unknown): boolean {
   const defaults = defaultSettings();
   return (
     NEWER_SCALARS.some((key) => !(key in raw) && JSON.stringify(local[key]) !== JSON.stringify(defaults[key])) ||
-    (lacksWeightUnit(raw) && local.trackerSettings.weightUnit !== defaults.trackerSettings.weightUnit)
+    (lacksWeightUnit(raw) && local.trackerSettings.weightUnit !== defaults.trackerSettings.weightUnit) ||
+    (lacksTrackerKey(raw, 'waterUnit') && local.trackerSettings.waterUnit !== defaults.trackerSettings.waterUnit) ||
+    (lacksTrackerKey(raw, 'caffeineUnit') && local.trackerSettings.caffeineUnit !== defaults.trackerSettings.caffeineUnit) ||
+    (lacksHabits(raw) && JSON.stringify(local.trackerSettings.habits) !== JSON.stringify(defaults.trackerSettings.habits))
   );
 }
 
@@ -380,12 +406,31 @@ function hydrateOver(local: UserSettings, raw: unknown): UserSettings {
   if (lacksWeightUnit(raw)) {
     out.trackerSettings = { ...out.trackerSettings, weightUnit: local.trackerSettings.weightUnit };
   }
+  // The water unit and the Habits question list sit there too, and are
+  // kept the same way.
+  if (lacksTrackerKey(raw, 'waterUnit')) {
+    out.trackerSettings = { ...out.trackerSettings, waterUnit: local.trackerSettings.waterUnit };
+  }
+  if (lacksTrackerKey(raw, 'caffeineUnit')) {
+    out.trackerSettings = { ...out.trackerSettings, caffeineUnit: local.trackerSettings.caffeineUnit };
+  }
+  if (lacksHabits(raw)) {
+    out.trackerSettings = { ...out.trackerSettings, habits: local.trackerSettings.habits };
+  }
   return out;
 }
 
 function lacksWeightUnit(raw: object): boolean {
+  return lacksTrackerKey(raw, 'weightUnit');
+}
+
+function lacksHabits(raw: object): boolean {
+  return lacksTrackerKey(raw, 'habits');
+}
+
+function lacksTrackerKey(raw: object, key: string): boolean {
   const ts = (raw as { trackerSettings?: unknown }).trackerSettings;
-  return !!ts && typeof ts === 'object' && !('weightUnit' in ts);
+  return !!ts && typeof ts === 'object' && !(key in ts);
 }
 
 /** The earlier of two optional ISO stamps; null only when both are null. */
@@ -434,7 +479,6 @@ type LocalCache = {
   // unknown wrap, and the push takes the four fields from the server row it
   // reads rather than sending nulls over the account's wrap. Never written
   // to disk. Always false on a trusted device, whose envelope is unchanged.
-  // Spec: ops/docs/archive/sec-24-untrusted-settings-cache.md
   wrapWithheld: boolean;
   // The account's freshness counter as of the last completed sync: the row
   // this device last adopted or pushed. The restore of unknown wrap fields
@@ -574,7 +618,7 @@ function writeLocal(cache: LocalCache): void {
   // arrives from another device, and the recovery paths. Arming on one of
   // them and disarming on none is the half of this that breaks in silence, so
   // the cover follows the value from the single place the value is written.
-  // Spec: ops/docs/plans/app-switcher-privacy-screen.md
+  // Spec: ops/docs/archive/app-switcher-privacy-screen.md
   applyPrivacyScreen(cache.settings.appLockEnabled);
   const { wrapWithheld, syncedRev, ...stored } = cache;
   const trusted = isTrustedDevice();
@@ -918,25 +962,60 @@ function mergeMedications(
   const merged = mergeTemplates(local, remote, unstampedWinner);
   const localById = new Map(local.map((m) => [m.id, m]));
   const remoteById = new Map(remote.map((m) => [m.id, m]));
-  const keyOf = (h: { dosage: string; changedAt: string }) => `${h.dosage}\u0000${h.changedAt}`;
   return merged.map((m) => {
     const other = m === localById.get(m.id) ? remoteById.get(m.id) : localById.get(m.id);
-    if (m.deletedAt || !other || other.deletedAt || !Array.isArray(other.dosageHistory)) return m;
-    const own = Array.isArray(m.dosageHistory) ? m.dosageHistory : [];
-    const counts = new Map<string, number>();
-    for (const h of own) counts.set(keyOf(h), (counts.get(keyOf(h)) ?? 0) + 1);
-    const seen = new Map<string, number>();
-    const extra = other.dosageHistory.filter((h) => {
-      const n = (seen.get(keyOf(h)) ?? 0) + 1;
-      seen.set(keyOf(h), n);
-      return n > (counts.get(keyOf(h)) ?? 0);
-    });
-    if (extra.length === 0) return m;
-    const ordered = [...extra.map((h) => ({ h, own: 0 })), ...own.map((h) => ({ h, own: 1 }))]
-      .map((e, at) => ({ ...e, at }))
-      .sort((a, b) => (a.h.changedAt < b.h.changedAt ? -1 : a.h.changedAt > b.h.changedAt ? 1 : a.own - b.own || a.at - b.at));
-    return { ...m, dosageHistory: ordered.map((e) => e.h) };
+    if (m.deletedAt || !other || other.deletedAt) return m;
+    return mergeMedicationEvents(mergeDosageHistory(m, other), other);
   });
+}
+
+/** The dose history union described above. */
+function mergeDosageHistory(m: MedicationTemplate, other: MedicationTemplate): MedicationTemplate {
+  const keyOf = (h: { dosage: string; changedAt: string }) => `${h.dosage}\u0000${h.changedAt}`;
+  if (!Array.isArray(other.dosageHistory)) return m;
+  const own = Array.isArray(m.dosageHistory) ? m.dosageHistory : [];
+  const counts = new Map<string, number>();
+  for (const h of own) counts.set(keyOf(h), (counts.get(keyOf(h)) ?? 0) + 1);
+  const seen = new Map<string, number>();
+  const extra = other.dosageHistory.filter((h) => {
+    const n = (seen.get(keyOf(h)) ?? 0) + 1;
+    seen.set(keyOf(h), n);
+    return n > (counts.get(keyOf(h)) ?? 0);
+  });
+  if (extra.length === 0) return m;
+  const ordered = [...extra.map((h) => ({ h, own: 0 })), ...own.map((h) => ({ h, own: 1 }))]
+    .map((e, at) => ({ ...e, at }))
+    .sort((a, b) => (a.h.changedAt < b.h.changedAt ? -1 : a.h.changedAt > b.h.changedAt ? 1 : a.own - b.own || a.at - b.at));
+  return { ...m, dosageHistory: ordered.map((e) => e.h) };
+}
+
+/**
+ * The schedule revisions and the refills are events too (section 6.7 of the
+ * tracker spec): both union by id, and the schedule fields are then set from
+ * the newest revision, so the winner of the stamp above decides the name and
+ * the strength but never brings an old schedule back. A winner with no
+ * revision at all was written by a client that predates schedules (every
+ * newer client writes one); it also keeps the form and color the other side
+ * holds, which that client could not know about.
+ */
+function mergeMedicationEvents(m: MedicationTemplate, other: MedicationTemplate): MedicationTemplate {
+  let next = m;
+  if (Array.isArray(other.refills) && other.refills.length) {
+    const own = Array.isArray(m.refills) ? m.refills : [];
+    const ids = new Set(own.map((r) => r?.id));
+    const extra = other.refills.filter((r) => r && typeof r.id === 'string' && !ids.has(r.id));
+    if (extra.length) next = { ...next, refills: [...own, ...extra].sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0)) };
+  }
+  const own = Array.isArray(m.scheduleHistory) ? m.scheduleHistory : [];
+  const theirs = Array.isArray(other.scheduleHistory) ? other.scheduleHistory : [];
+  if (own.length === 0 && theirs.length > 0) {
+    next = { ...next, ...(other.form && !m.form ? { form: other.form } : {}), ...(other.color && !m.color ? { color: other.color } : {}) };
+  }
+  const ids = new Set(own.map((h) => h?.id));
+  const extra = theirs.filter((h) => h && typeof h.id === 'string' && !ids.has(h.id));
+  if (extra.length) next = { ...next, scheduleHistory: [...own, ...extra].sort((a, b) => (a.changedAt < b.changedAt ? -1 : a.changedAt > b.changedAt ? 1 : 0)) };
+  const latest = latestRevision(next.scheduleHistory);
+  return latest ? withRevision(next, latest) : next;
 }
 
 /** Merge the whole tracker-config object: templates union, the rest
@@ -963,7 +1042,7 @@ function mergeTrackerSettings(
 }
 
 /** The fields `mergeAtEverySyncPoint` owns. */
-type EntryMerged = 'folders' | 'foldersDeleted' | 'itemStyles' | 'deviceLabels' | 'customThemes' | 'formatBar';
+type EntryMerged = 'folders' | 'foldersDeleted' | 'itemStyles' | 'deviceLabels' | 'customThemes' | 'formatBar' | 'factors' | 'customHabits';
 
 /**
  * The folder tree, the folder and tag looks, the device labels, the custom
@@ -990,6 +1069,8 @@ function mergeAtEverySyncPoint(
     deviceLabels: mergeDeviceLabels(local.deviceLabels, remote.deviceLabels),
     customThemes: mergeCustomThemes(local.customThemes, remote.customThemes),
     formatBar: mergeFormatBarSettings(local.formatBar, remote.formatBar),
+    factors: mergeTemplates<FactorDef>(local.factors, remote.factors, unstampedWinner),
+    customHabits: mergeTemplates<CustomHabitDef>(local.customHabits, remote.customHabits, unstampedWinner),
   };
 }
 
@@ -1140,9 +1221,9 @@ export async function syncUserSettings(
     return readLocal().settings;
   }
   claimGateLogged = false;
-  // Settings also run outside note sync, including sign-out. A filtered
-  // row is not proof that this account has no settings.
-  await assertMfaAccess(supabase);
+  // No separate 2FA check: the table gate raises mfa_required on the row
+  // itself, so a missing row is never a refused one, and every read and
+  // write below turns that refusal into MfaRequiredError.
   // Private copy of the key for this pass: signOut zeroes the caller's
   // Uint8Array in place once sign-out begins, and a pass still in flight
   // at that moment used to encrypt/decrypt with the zeroed buffer -
@@ -1266,7 +1347,9 @@ export async function syncUserSettings(
           !itemStylesEqual(pulled.itemStyles, remoteSettings.itemStyles) ||
           !deviceLabelsEqual(pulled.deviceLabels, remoteSettings.deviceLabels) ||
           !customThemesEqual(pulled.customThemes, remoteSettings.customThemes) ||
-          !formatBarSettingsEqual(pulled.formatBar, remoteSettings.formatBar);
+          !formatBarSettingsEqual(pulled.formatBar, remoteSettings.formatBar) ||
+          JSON.stringify(pulled.factors) !== JSON.stringify(remoteSettings.factors) ||
+          JSON.stringify(pulled.customHabits) !== JSON.stringify(remoteSettings.customHabits);
         Object.assign(remoteSettings, pulled);
         if (treeRepaired) {
           logAuthEvent('settings:folders-repaired', {
@@ -1523,6 +1606,7 @@ export async function syncUserSettings(
         .eq('user_pubkey', pubkey)
         .maybeSingle();
       if (existingErr) recordSyncFault({ step: 'settings', status: existingStatus, code: existingErr.code || undefined });
+      if (isMfaRefusal(existingErr)) throw new MfaRequiredError();
 
       if (!existing) {
         // No row - first-time insert.
@@ -1609,6 +1693,7 @@ export async function syncUserSettings(
             commit(effective);
           }
         } catch (err) {
+          if (err instanceof MfaRequiredError) throw err;
           decryptFailed = true;
           console.error('[settings] merge decrypt failed:', err);
           recordSyncFault({ step: 'settings', code: 'decrypt' });

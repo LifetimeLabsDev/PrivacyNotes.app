@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccountLogins } from './accountLogins';
 import { useAuth } from './auth';
-import { SETTINGS_HELP, SettingsCallout } from './settingsUI';
+import { SETTINGS_BTN_PRIMARY, SETTINGS_HELP, SettingsCallout } from './settingsUI';
 
 /** Only known server refusals get specific copy; transport text is never
  * rendered as if it were a user-facing explanation. */
@@ -71,7 +71,7 @@ export function AccountSignInSetup({ onReady, purpose = 'twoFactor' }: { onReady
         <span>{t('connectedAccounts.updateAcknowledgment')}</span>
       </label>}
       <button type="button" disabled={busy || account.loading || (!repairing && !acknowledged)} onClick={() => void activate()}
-        className="rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed">
+        className={SETTINGS_BTN_PRIMARY}>
         {t(busy ? 'connectedAccounts.working' : repairing ? 'connectedAccounts.repairAction' : reclaiming ? 'connectedAccounts.reclaimAction' : forAccounts ? 'connectedAccounts.setupAction' : 'connectedAccounts.updateAction')}
       </button>
     </>}

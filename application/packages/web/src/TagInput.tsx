@@ -27,11 +27,13 @@ type Props = {
   /** All existing tags with note counts, for auto-suggest. */
   allTags?: [string, number][];
   /**
-   * Called when the user presses Tab (forward) from the tag input with no
-   * pending draft left to commit. Parent uses this to move focus into the
-   * editor body so title → tags → body flows naturally.
+   * Called when the user presses Tab (forward) from the tag input, after any
+   * draft is committed. Parent uses this to move focus into the editor body
+   * so title → tags → body flows naturally. It returns whether it moved
+   * focus: when it did not (no body to focus), the browser's own Tab runs,
+   * so the key can never leave the caret stuck in the tag field.
    */
-  onTabOut?: () => void;
+  onTabOut?: () => boolean;
   /**
    * Optional element rendered at the right end of the tag row. Used to host
    * the formatting-toolbar Hide/Show toggle so it sits inline with the tags
@@ -231,9 +233,8 @@ export const TagInput = forwardRef<TagInputHandle, Props>(function TagInput(
     } else if (e.key === 'Tab' && !e.shiftKey) {
       // Tab → body of the note. Commit any pending draft first so a
       // half-typed tag doesn't get lost.
-      e.preventDefault();
       commit();
-      onTabOut?.();
+      if (onTabOut?.()) e.preventDefault();
     } else if (e.key === 'Backspace' && draft === '') {
       const last = shown[shown.length - 1];
       if (!last) return;
@@ -411,7 +412,7 @@ export const TagInput = forwardRef<TagInputHandle, Props>(function TagInput(
                follows every theme. Round pills here and a square-cornered
                folder chip in the leading slot are the same split as list vs
                container: many labels vs one location.
-               Spec: ops/docs/ui-patterns.md (editor tag row) */
+               Spec: ops/docs/archive/ui-patterns.md (editor tag row) */
             data-tag-chip={tag}
             className="group inline-flex shrink-0 items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-accent/10 text-accent-strong hover:bg-accent/20 transition whitespace-nowrap"
             dir="auto"
@@ -442,6 +443,7 @@ export const TagInput = forwardRef<TagInputHandle, Props>(function TagInput(
           onFocus={handleFocus}
           onBlur={handleBlur}
           maxLength={TAG_MAX_LENGTH + 5}
+          aria-label={t('tagInput.placeholder')}
           placeholder={
             tags.length === 0 ? t('tagInput.placeholder') : ''
           }

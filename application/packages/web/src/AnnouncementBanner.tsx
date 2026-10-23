@@ -17,7 +17,7 @@ type Props = {
  * news in both themes, where an amber bar read as a warning in dark mode.
  * In the app it is a sibling in NotesView's h-dvh flex column, exactly
  * like DemoBanner - in-flow chrome cannot occlude editor controls.
- * Spec: ops/docs/ui-patterns.md section 39 (persistent chrome sits in the flow)
+ * Spec: ops/docs/archive/ui-patterns.md section 39 (persistent chrome sits in the flow)
  *
  * On the site it is the first strip of the landing page. It reads its
  * dismissal synchronously from localStorage state in LandingPage, so it

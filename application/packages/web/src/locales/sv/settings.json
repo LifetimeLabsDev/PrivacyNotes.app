@@ -1,7 +1,9 @@
 {
   "shell": {
     "title": "Inställningar",
-    "allSettings": "Alla inställningar"
+    "allSettings": "Alla inställningar",
+    "fillWindow": "Använd hela fönstret",
+    "restoreWindow": "Tillbaka till normal storlek"
   },
   "account": {
     "title": "Konto",
@@ -106,6 +108,11 @@
     "sharedSlot_other": "{{count}} installationer delar en enhetsplats",
     "added": "tillagd {{time}}",
     "lastActive": "senast aktiv {{time}}",
+    "versionUnknown": "okänd version",
+    "idLabel": "ID",
+    "browser": "Webbläsare",
+    "update": "Uppdatera",
+    "updateHint": "Den här versionen kan inte längre synka. Uppdatera appen på den här enheten.",
     "removeAll": "Ta bort alla",
     "recentlyRemoved": "Nyligen borttagna",
     "removedAt": "Borttagen {{time}}"
@@ -191,6 +198,8 @@
     "faviconsProxy": "Ikonerna laddas via vår proxy. Bara den här enheten.",
     "invisiblesTitle": "Osynliga tecken",
     "invisiblesDesc": "Visar mellanslag, radbrytningar och styckemarkeringar medan du skriver.",
+    "listsTabGeneral": "Allmänt",
+    "listsTabSidebar": "Sidofält och Alla",
     "sidebarTitle": "<sb>Sidofält</sb> och <all>Alla</all>",
     "sidebarDesc": "Vilka vyer som visas i sidofältet och vilka objekt listan Alla innehåller.",
     "colInSidebar": "Sidofält",
@@ -211,14 +220,30 @@
     "contentWidthFull": "Maximal",
     "lineSpacingTitle": "Radavstånd",
     "noteColorsTitle": "Mapp- och taggfärger",
+    "noteColorsPickerTitle": "För alla mappar och taggar",
     "noteColorsDesc": "Hur en anteckning visar färgen på sin mapp eller tagg: hela anteckningen, bara ikonen eller inte alls.",
     "noteColorsBackground": "Bakgrund",
     "noteColorsExampleTitle": "Helg i Lissabon",
     "noteColorsExampleFolder": "Resor, en grön mapp",
-    "noteColorsAccent": "Ikon",
+    "noteColorsAccent": "Bara ikon",
     "noteColorsOff": "Av",
+    "checkboxesTitle": "Kryssrutor",
+    "taskConfettiTitle": "Konfetti vid markering",
+    "taskConfettiDesc": "Lite konfetti flyger ut från en kryssruta när du markerar den.",
     "sinkCheckedTitle": "Flytta markerade punkter nedåt",
     "sinkCheckedDesc": "En markerad punkt flyttas under de omarkerade punkterna i sin lista.",
+    "defaultAppsTitle": "Öppna med PrivacyNotes",
+    "defaultAppsMarkdown": "Markdown-filer",
+    "defaultAppsText": "Textfiler",
+    "defaultAppsMarkdownHint": ".md-filer som du dubbelklickar på öppnas här.",
+    "defaultAppsTextHint": ".txt- och README-filer som du dubbelklickar på öppnas här.",
+    "defaultAppsTextHintWindows": ".txt-filer som du dubbelklickar på öppnas här.",
+    "defaultAppsTextFinderSteps": "Om du vill ändra det väljer du Visa info för en .txt-fil i Finder, väljer PrivacyNotes under Öppna med och klickar på Ändra alla.",
+    "defaultAppsMakeDefault": "Gör till standard",
+    "defaultAppsIsDefault": "Standard",
+    "defaultAppsOwnerOther": "De öppnas just nu med {{app}}.",
+    "defaultAppsOwnerOtherUnnamed": "De öppnas just nu med en annan app.",
+    "defaultAppsOwnerNone": "De har ingen standardapp än.",
     "spacesTitle": "Utrymmen",
     "spacesDesc": "Dela upp ditt bibliotek i Privat och Arbete och visa ett i taget.",
     "lineSpacingDesc": "Avståndet mellan rader och stycken när du skriver.",
@@ -248,7 +273,8 @@
       "none": "Inga teman här än.",
       "sortLabel": "Ordning",
       "sortVotes": "Flest röster",
-      "sortNewest": "Nyast"
+      "sortNewest": "Nyast",
+      "more": "Fler teman"
     },
     "custom": {
       "newTheme": "Nytt tema",
@@ -449,6 +475,8 @@
     "wifiHoldTooltip": "Filerna laddas upp när wifi är tillbaka. Anteckningarna synkar som vanligt.",
     "notBackedUp": "Inte säkerhetskopierad",
     "notSynced": "Inte synkad",
+    "firstSyncPending": "Den här enheten har inte slutfört sin första synk med servern ännu, så vissa anteckningar kan fortfarande saknas här.",
+    "pullFailed": "Den senaste synken kunde inte ladda ner från servern. Den försöker igen automatiskt.",
     "notBackedUpTooltip_one": "{{count}} anteckning är inte säkerhetskopierad. Klicka för att se varför.",
     "notBackedUpTooltip_other": "{{count}} anteckningar är inte säkerhetskopierade. Klicka för att se varför.",
     "notBackedUpAria_one": "{{count}} anteckning är inte säkerhetskopierad",
@@ -531,7 +559,7 @@
     "alertBirthday": "Födelsedagar",
     "alertsHelp": "Nya objekt börjar med de här aviseringarna. Därefter behåller varje objekt sina egna aviseringar.",
     "reminderTitles": "Visa titlar i påminnelser",
-    "reminderTitlesHelp": "Av: en påminnelse visar ordet Påminnelse och tiden. Ett objekt bakom din PIN gör det alltid.",
+    "reminderTitlesHelp": "På: en påminnelse visar objektets titel. Av: den visar bara \"Påminnelse\" och tiden. Ett objekt bakom din PIN visar aldrig sin titel.",
     "whereTitle": "Påminnelser på den här enheten",
     "reminderHint": {
       "mobile": "Påminnelser ringer på den här telefonen, även när PrivacyNotes är stängt.",
@@ -545,11 +573,14 @@
     "permissionDenied": "Aviseringar är blockerade för PrivacyNotes. Tillåt dem i inställningarna för den här webbläsaren eller enheten.",
     "weekNumbers": "Visa veckonummer",
     "weekNumbersHelp": "I månadsvyn och de små kalendrarna.",
-    "hours": "Dag och Vecka öppnas kl.",
+    "hours": "Första timmen i Dag och Vecka",
+    "checkInReminder": "Påminnelse om daglig incheckning",
+    "checkInReminderHelp": "\"Hur mår du i dag?\" en gång om dagen, på den här enheten. Inte en dag då du redan har loggat humör eller hoppat över.",
+    "checkInReminderAt": "Ringer kl.",
     "groupView": "Vy",
     "groupReminders": "Påminnelser",
     "groupDefaults": "Standardaviseringar",
-    "hoursHelp": "Skrolla uppåt för tidigare timmar.",
+    "hoursHelp": "Dag- och Vecka-vyerna öppnas skrollade till den här timmen. Timmarna före den ligger ovanför.",
     "to": "till"
   }
 }

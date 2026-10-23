@@ -1,7 +1,9 @@
 {
   "shell": {
     "title": "Ayarlar",
-    "allSettings": "Tüm ayarlar"
+    "allSettings": "Tüm ayarlar",
+    "fillWindow": "Tüm pencereyi kullan",
+    "restoreWindow": "Normal boyuta dön"
   },
   "account": {
     "title": "Hesap",
@@ -106,6 +108,11 @@
     "sharedSlot_other": "{{count}} kurulum tek bir cihaz yerini paylaşıyor",
     "added": "eklenme {{time}}",
     "lastActive": "son etkinlik {{time}}",
+    "versionUnknown": "sürüm bilinmiyor",
+    "idLabel": "ID",
+    "browser": "Tarayıcı",
+    "update": "Güncellenmeli",
+    "updateHint": "Bu sürüm artık eşitleme yapamaz. Bu cihazdaki uygulamayı güncelleyin.",
     "removeAll": "Tümünü kaldır",
     "recentlyRemoved": "Son kaldırılanlar",
     "removedAt": "{{time}} kaldırıldı"
@@ -191,6 +198,8 @@
     "faviconsProxy": "Simgeler proxy sunucumuz üzerinden yüklenir. Yalnızca bu cihazda.",
     "invisiblesTitle": "Görünmez karakterler",
     "invisiblesDesc": "Yazarken boşlukları, satır sonlarını ve paragraf işaretlerini gösterir.",
+    "listsTabGeneral": "Genel",
+    "listsTabSidebar": "Kenar çubuğu ve Tümü",
     "sidebarTitle": "<sb>Kenar çubuğu</sb> ve <all>Tümü</all>",
     "sidebarDesc": "Kenar çubuğunda hangi görünümlerin yer alacağı ve Tümü listesinin neleri içereceği.",
     "colInSidebar": "Kenar çubuğu",
@@ -211,14 +220,30 @@
     "contentWidthFull": "Tam",
     "lineSpacingTitle": "Satır aralığı",
     "noteColorsTitle": "Klasör ve etiket renkleri",
+    "noteColorsPickerTitle": "Tüm klasörler ve etiketler için",
     "noteColorsDesc": "Bir notun klasörünün veya etiketinin rengini nasıl gösterdiği: notun tamamı, yalnızca simgesi ya da hiç.",
     "noteColorsBackground": "Arka plan",
     "noteColorsExampleTitle": "Lizbon'da hafta sonu",
     "noteColorsExampleFolder": "Seyahat, yeşil bir klasör",
-    "noteColorsAccent": "Simge",
+    "noteColorsAccent": "Yalnızca simge",
     "noteColorsOff": "Kapalı",
+    "checkboxesTitle": "Onay kutuları",
+    "taskConfettiTitle": "İşaretlenince konfeti",
+    "taskConfettiDesc": "Bir onay kutusunu işaretlediğinizde ondan biraz konfeti saçılır.",
     "sinkCheckedTitle": "İşaretli öğeleri aşağı taşı",
     "sinkCheckedDesc": "İşaretlenen bir öğe, listesindeki işaretsiz öğelerin altına iner.",
+    "defaultAppsTitle": "PrivacyNotes ile aç",
+    "defaultAppsMarkdown": "Markdown dosyaları",
+    "defaultAppsText": "Metin dosyaları",
+    "defaultAppsMarkdownHint": "Çift tıkladığınız .md dosyaları burada açılır.",
+    "defaultAppsTextHint": "Çift tıkladığınız .txt ve README dosyaları burada açılır.",
+    "defaultAppsTextHintWindows": "Çift tıkladığınız .txt dosyaları burada açılır.",
+    "defaultAppsTextFinderSteps": "Bunu değiştirmek için Finder'da bir .txt dosyası için Bilgi Al'ı seçin, Birlikte Aç altında PrivacyNotes'u seçin ve Tümünü Değiştir'e tıklayın.",
+    "defaultAppsMakeDefault": "Varsayılan yap",
+    "defaultAppsIsDefault": "Varsayılan",
+    "defaultAppsOwnerOther": "Şu anda {{app}} ile açılıyorlar.",
+    "defaultAppsOwnerOtherUnnamed": "Şu anda başka bir uygulamayla açılıyorlar.",
+    "defaultAppsOwnerNone": "Henüz varsayılan uygulamaları yok.",
     "spacesTitle": "Alanlar",
     "spacesDesc": "Kitaplığınızı Kişisel ve İş olarak ikiye ayırın ve aynı anda yalnızca birini gösterin.",
     "lineSpacingDesc": "Yazarken satırlar ve paragraflar arasındaki boşluk.",
@@ -248,7 +273,8 @@
       "none": "Burada henüz tema yok.",
       "sortLabel": "Sıralama",
       "sortVotes": "En çok oy",
-      "sortNewest": "En yeni"
+      "sortNewest": "En yeni",
+      "more": "Daha fazla tema"
     },
     "custom": {
       "newTheme": "Yeni tema",
@@ -449,6 +475,8 @@
     "wifiHoldTooltip": "Dosyalar Wi-Fi geldiğinde yüklenir. Notlar eşitlenmeye devam eder.",
     "notBackedUp": "Yedeklenmedi",
     "notSynced": "Eşitlenmedi",
+    "firstSyncPending": "Bu cihaz sunucuyla ilk eşitlemesini henüz tamamlamadı, bu yüzden bazı notlar burada hâlâ eksik olabilir.",
+    "pullFailed": "Son eşitleme sunucudan indirme yapamadı. Otomatik olarak yeniden denenecek.",
     "notBackedUpTooltip_one": "{{count}} not yedeklenmedi. Nedenini görmek için tıklayın.",
     "notBackedUpTooltip_other": "{{count}} not yedeklenmedi. Nedenini görmek için tıklayın.",
     "notBackedUpAria_one": "{{count}} not yedeklenmedi",
@@ -531,7 +559,7 @@
     "alertBirthday": "Doğum günleri",
     "alertsHelp": "Yeni öğeler bu uyarılarla başlar. Sonrasında her öğe kendi uyarılarını korur.",
     "reminderTitles": "Hatırlatıcılarda başlıkları göster",
-    "reminderTitlesHelp": "Kapalıyken bir hatırlatıcı yalnızca Hatırlatıcı sözcüğünü ve saati gösterir. PIN'inizin arkasındaki bir öğe her zaman böyle gösterilir.",
+    "reminderTitlesHelp": "Açıkken bir hatırlatıcı öğenin başlığını gösterir. Kapalıyken yalnızca \"Hatırlatıcı\" sözcüğünü ve saati gösterir. PIN'inizin arkasındaki bir öğe başlığını hiçbir zaman göstermez.",
     "whereTitle": "Bu cihazdaki hatırlatıcılar",
     "reminderHint": {
       "mobile": "Hatırlatıcılar bu telefonda, PrivacyNotes kapalıyken de çalar.",
@@ -545,11 +573,14 @@
     "permissionDenied": "PrivacyNotes için bildirimler engellendi. Bunlara bu tarayıcının veya cihazın ayarlarından izin verin.",
     "weekNumbers": "Hafta numaralarını göster",
     "weekNumbersHelp": "Ay görünümünde ve küçük takvimlerde.",
-    "hours": "Gün ve Hafta açılış saati",
+    "hours": "Gün ve Hafta görünümünde ilk saat",
+    "checkInReminder": "Günlük durum hatırlatıcısı",
+    "checkInReminderHelp": "Günde bir kez, bu cihazda \"Bugün nasılsınız?\" diye sorar. Ruh halini zaten kaydettiğiniz ya da atladığınız bir günde sormaz.",
+    "checkInReminderAt": "Çalma saati",
     "groupView": "Görünüm",
     "groupReminders": "Hatırlatıcılar",
     "groupDefaults": "Varsayılan uyarılar",
-    "hoursHelp": "Daha erken saatler için yukarı kaydırın.",
+    "hoursHelp": "Gün ve Hafta görünümleri bu saate kaydırılmış olarak açılır. Daha erken saatler yukarıdadır.",
     "to": "ila"
   }
 }

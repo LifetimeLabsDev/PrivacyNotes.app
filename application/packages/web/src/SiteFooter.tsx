@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ArrowCounterClockwise, DownloadSimple, FacebookLogo, FileText, GithubLogo, ListBullets, Lock, MastodonLogo, Palette, Printer, Question, RedditLogo, Scales, Shapes, ShieldCheck, XLogo, YoutubeLogo } from './icons';
 import { LogoIcon } from './LogoIcon';
 import { Brand } from './Brand';
@@ -7,6 +9,7 @@ import { FOOTER_COLUMNS, type FooterIcon } from './footerData';
 import { activeLocale } from './languages';
 import { helpPath } from './localeRoutes';
 import { marketingHomeHref } from './siteLinks';
+import { FOOTER_LINES_CSS, footerLinesHtml, mountFooterLines } from './footerLines';
 
 const KICKER = 'font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8F8776]';
 
@@ -19,57 +22,91 @@ const KICKER = 'font-mono text-[10px] font-semibold uppercase tracking-[0.18em] 
 // slab lifts slightly above the page so the footer has a visible start;
 // the text colors stay warm literals because the ground is always dark.
 
-function iconFor(icon: FooterIcon) {
+// Also the glyph of the homepage header rail (LandingNav.tsx), at 15px like
+// the static-page rail, so a section shows one icon on every surface.
+export function FooterGlyph({ icon, size = 18 }: { icon: FooterIcon; size?: number }) {
   switch (icon) {
     case 'github':
-      return <GithubLogo size={18} weight="fill" className="shrink-0" />;
+      return <GithubLogo size={size} weight="fill" className="shrink-0" />;
     case 'shield':
-      return <ShieldCheck size={18} className="shrink-0" />;
+      return <ShieldCheck size={size} className="shrink-0" />;
     case 'download':
-      return <DownloadSimple size={18} className="shrink-0" />;
+      return <DownloadSimple size={size} className="shrink-0" />;
     case 'x':
-      return <XLogo size={18} weight="fill" className="shrink-0" />;
+      return <XLogo size={size} weight="fill" className="shrink-0" />;
     case 'reddit':
-      return <RedditLogo size={18} weight="fill" className="shrink-0" />;
+      return <RedditLogo size={size} weight="fill" className="shrink-0" />;
     case 'mastodon':
-      return <MastodonLogo size={18} weight="fill" className="shrink-0" />;
+      return <MastodonLogo size={size} weight="fill" className="shrink-0" />;
     case 'youtube':
-      return <YoutubeLogo size={18} weight="fill" className="shrink-0" />;
+      return <YoutubeLogo size={size} weight="fill" className="shrink-0" />;
     case 'facebook':
-      return <FacebookLogo size={18} weight="fill" className="shrink-0" />;
+      return <FacebookLogo size={size} weight="fill" className="shrink-0" />;
     case 'faq':
-      return <Question size={18} className="shrink-0" />;
+      return <Question size={size} className="shrink-0" />;
     case 'changelog':
-      return <ListBullets size={18} className="shrink-0" />;
+      return <ListBullets size={size} className="shrink-0" />;
     case 'roadmap':
       return (
-        <svg width={18} height={18} viewBox="0 0 256 256" className="shrink-0" aria-hidden="true">
+        <svg width={size} height={size} viewBox="0 0 256 256" className="shrink-0" aria-hidden="true">
           <path d="M72 102V132Q72 172 112 172H162" fill="none" stroke="currentColor" strokeWidth={18} strokeLinecap="round" strokeLinejoin="round" />
           <circle cx={72} cy={76} r={26} fill="currentColor" />
           <circle cx={188} cy={172} r={26} fill="currentColor" />
         </svg>
       );
     case 'lock':
-      return <Lock size={18} className="shrink-0" />;
+      return <Lock size={size} className="shrink-0" />;
     case 'file':
-      return <FileText size={18} className="shrink-0" />;
+      return <FileText size={size} className="shrink-0" />;
     case 'refund':
-      return <ArrowCounterClockwise size={18} className="shrink-0" />;
+      return <ArrowCounterClockwise size={size} className="shrink-0" />;
     case 'scales':
-      return <Scales size={18} className="shrink-0" />;
+      return <Scales size={size} className="shrink-0" />;
     case 'brand':
-      return <Shapes size={18} className="shrink-0" />;
+      return <Shapes size={size} className="shrink-0" />;
     case 'themes':
-      return <Palette size={18} className="shrink-0" />;
+      return <Palette size={size} className="shrink-0" />;
     case 'print':
-      return <Printer size={18} className="shrink-0" />;
+      return <Printer size={size} className="shrink-0" />;
   }
+}
+
+/**
+ * The closing line: the same markup, CSS and engine the static pages' footer
+ * runs (./footerLines), so the two footers cannot drift. React only hands it
+ * the words; the line types inside markup React does not touch. The homepage
+ * also sets it on a hairline under the hero, where the ribbon was.
+ */
+export function FooterLines() {
+  const { t } = useTranslation('common');
+  const list = (key: string) => {
+    const value = t(key, { returnObjects: true });
+    return Array.isArray(value) ? (value as string[]) : [];
+  };
+  const html = footerLinesHtml({
+    lines: list('loading.lines'),
+    loadingOnly: list('loading.loadingOnly'),
+    pause: t('loading.pause'),
+    play: t('loading.play'),
+  });
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const root = ref.current?.firstElementChild;
+    return root instanceof HTMLElement ? mountFooterLines(root) : undefined;
+  }, [html]);
+  return (
+    <>
+      <style>{FOOTER_LINES_CSS}</style>
+      <div ref={ref} dangerouslySetInnerHTML={{ __html: html }} />
+    </>
+  );
 }
 
 export function SiteFooter() {
   return (
     <footer className="bg-[var(--wl-footer)] border-t border-[var(--wl-line)] mt-16">
-      <div className="mx-auto max-w-5xl px-5 sm:px-8 py-10 sm:py-14">
+      <FooterLines />
+      <div className="mx-auto max-w-5xl xl:max-w-7xl px-5 sm:px-8 py-10 sm:py-14">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10 text-sm">
           {FOOTER_COLUMNS.map((col, i) => (
             <div key={col.heading}>
@@ -115,7 +152,7 @@ export function SiteFooter() {
                     {...(link.external ? { target: '_blank', rel: `noopener noreferrer${link.relMe ? ' me' : ''}` } : {})}
                     className="text-[#A69E8F] hover:text-white transition inline-flex items-center gap-2"
                   >
-                    {iconFor(link.icon)}
+                    <FooterGlyph icon={link.icon} />
                     {link.label}
                   </a>
                 ))}
@@ -124,8 +161,11 @@ export function SiteFooter() {
           ))}
         </div>
         <div className="mt-10 pt-6 border-t border-[#2E2820]">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="text-sm text-[#A69E8F] space-y-1">
+          {/* One row at every width: on a phone the picker shrinks to its
+              flag (the header rail's trigger) and sits beside the legal
+              lines instead of taking a row of its own. */}
+          <div className="flex items-start justify-between gap-4 sm:items-center">
+          <div className="min-w-0 text-sm text-[#A69E8F] space-y-1">
             <p>
               Data Stored in{' '}
               <svg width="13" height="13" viewBox="0 0 32 32" aria-hidden="true" className="inline-block align-[-1.5px] rounded-[2px]">
@@ -142,8 +182,8 @@ export function SiteFooter() {
               {' '}<a href="https://lifetimelabs.dev/contact/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Contact</a>
             </p>
           </div>
-          <div className="flex justify-end">
-            <LanguageMenu dropUp dark navigate />
+          <div className="shrink-0">
+            <LanguageMenu dropUp dark navigate shortOnPhone />
           </div>
           </div>
         </div>

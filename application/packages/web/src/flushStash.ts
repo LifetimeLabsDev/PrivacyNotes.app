@@ -75,7 +75,7 @@ import { credentialKey, isDemoMode } from './demo';
  * change. Reader mode seals nothing, so there a refused stash is kept as it
  * was written, under the stamp rule.
  *
- * Spec: ops/docs/plans/local-at-rest.md (section 3.4, flushStash)
+ * Spec: ops/docs/archive/local-at-rest.md (section 3.4, flushStash)
  */
 
 // Demo-bucketed like the credential keys: `?demo=1` runs on the same

@@ -180,7 +180,7 @@ export function normalizeFolderName(raw: string): string {
  * which is right for a single lookup and quadratic inside a loop: rebuilding
  * it per folder is what made validating an imported tree cost 369 ms at four
  * thousand folders and tens of seconds at forty, on every boot rather than
- * once. Spec: ops/docs/audit-adversarial-2026-09-bfg.md (SEC-27)
+ * once.
  */
 function folderDepth(
   folders: FolderDef[],
@@ -228,7 +228,7 @@ export function subtreeIds(folders: FolderDef[], id: string): Set<string> {
  * list of the open folder. Off, a folder holds its direct members only; on,
  * it holds its whole branch. Unfiled has no branch, so the switch never
  * reaches it. The branch is built once here, not once per note.
- * Spec: ops/docs/plans/folder-subfolders.md (section 4)
+ * Spec: ops/docs/archive/folder-subfolders.md (section 4)
  */
 export function folderScope(
   folders: FolderDef[],
@@ -246,7 +246,7 @@ export function folderScope(
  * folder, so two subfolders that share a name read apart in a combined list.
  * More than two levels down, the leading levels give way to an ellipsis,
  * because the chip truncates and its leaf is the part that matters.
- * Spec: ops/docs/plans/folder-subfolders.md (D4)
+ * Spec: ops/docs/archive/folder-subfolders.md (D4)
  */
 export function branchPathLabels(folders: FolderDef[], rootId: string): Map<string, string> {
   const byId = new Map(folders.map((f) => [f.id, f]));

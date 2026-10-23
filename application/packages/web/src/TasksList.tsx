@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { TaskCheckbox } from './ui';
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { itemGridClass, useContextTarget, useItemList } from './itemList';
 import type { LocalNote } from './db';
 import { setPillarPrefs, type ListPrefs, type ListPrefsStore } from './listPrefs';
 import type { UserSettings } from './userSettings';
 import { selectTaskNotes, type TaskItem } from './tasks';
-import NoteRow, { itemDragSelection } from './NoteRow';
-import NoteCard from './NoteCard';
+import { itemDragSelection } from './NoteRow';
+import { WindowedNoteRow as NoteRow, WindowedNoteCard as NoteCard } from './WindowedNoteItem';
 import { compareNotes, stripToPlainText, type DayIndex } from './notesViewUtils';
 import type { ContextMenuItem } from './ContextMenu';
 import { HoverLabel } from './HoverLabel';
@@ -18,8 +19,9 @@ import type { Space } from './spaces';
 import { toLocalIso } from './intlFormat';
 import { ActiveFilterEntry, ActiveSearchEntry, FilteredEmpty, ListFilterChips } from './ListFilterChips';
 import { ListPrefsPopover } from './ListPrefsPopover';
-import { Check, CheckSquare, CheckFat, NotePencil, Eye, EyeSlash, Plus, PushPin, FunnelSimple, PILLAR_GLYPHS, NEW_GLYPHS } from './icons';
-import { NewButton } from './NewButton';
+import { CheckSquare, CheckFat, NotePencil, Eye, EyeSlash, Plus, PushPin, FunnelSimple, PILLAR_GLYPHS, NEW_GLYPHS } from './icons';
+import { NewDropdown } from './NewButton';
+import { keyText } from './shortcutMatch';
 import type { View } from './views';
 import { ListNav } from './notesView/ListNav';
 import { ImportPromptEntry, importPromptFor, type ImportOffer } from './ImportPrompt';
@@ -29,9 +31,12 @@ import { Switch } from './Switch';
 import { useListGroups } from './ListGroupHeader';
 
 export interface TasksListProps {
+  /** The view and space this list draws, so a return lands where it was;
+   *  null under a search. Spec: ops/docs/archive/keep-my-place.md */
+  place?: string | null;
   /** The calendar card, while a task list in the open space has a day.
-   *  Spec: ops/docs/plans/note-date.md (section 4) */
-  calendar?: ({ entries: DayIndex; onOpen: (id: string, occurrence?: string) => void; onCreate: (isoDate: string) => void } & CalendarCardExtras) | null;
+   *  Spec: ops/docs/archive/note-date.md (section 4) */
+  calendar?: ({ entries: DayIndex; onOpen: (id: string, occurrence?: string) => void; onCreate: (isoDate: string) => void; onEvent: (isoDate: string) => void } & CalendarCardExtras) | null;
   /** With Spaces on, the space that is not open, for the calendar switch. */
   otherSpace?: Space | null;
   allTasks: TaskItem[];
@@ -64,7 +69,6 @@ export interface TasksListProps {
   taskInputRef: React.RefObject<HTMLInputElement | null>;
   searchInputRef?: React.RefObject<HTMLInputElement | null>;
   mobileTabIndex: number | undefined;
-  hotkeyLabel: string;
   isNoteLocked: (n: LocalNote) => boolean;
   onSetShowDoneTasks: (updater: boolean | ((v: boolean) => boolean)) => void;
   onSetTaskDraft: (v: string) => void;
@@ -72,6 +76,8 @@ export interface TasksListProps {
   onOpenTaskSource: (task: TaskItem) => void;
   onAddQuickTask: (text: string) => void;
   onNew: () => void;
+  /** A new task that starts as a Kanban board. */
+  onNewKanban: () => void;
   /** Open the import modal - the standing import entry at the end of the list. */
   onOpenImport: () => void;
   onSelectNote: (id: string) => void;
@@ -101,6 +107,7 @@ export interface TasksListProps {
 }
 
 export default function TasksList({
+  place = null,
   allTasks,
   activeNotes,
   selectedId,
@@ -123,7 +130,6 @@ export default function TasksList({
   taskInputRef,
   searchInputRef,
   mobileTabIndex,
-  hotkeyLabel,
   isNoteLocked,
   onSetShowDoneTasks,
   onSetTaskDraft,
@@ -131,6 +137,7 @@ export default function TasksList({
   onOpenTaskSource,
   onAddQuickTask,
   onNew,
+  onNewKanban,
   onOpenImport,
   onSelectNote,
   onContextMenu,
@@ -157,7 +164,10 @@ export default function TasksList({
   calendar,
   otherSpace = null,
 }: TasksListProps) {
+  const taskActions = useRef({ onToggleTask, onOpenTaskSource });
+  useLayoutEffect(() => { taskActions.current = { onToggleTask, onOpenTaskSource }; }, [onToggleTask, onOpenTaskSource]);
   const { t: tr } = useTranslation('shell');
+  const { t } = useTranslation('notes');
   const [showListPrefs, setShowListPrefs] = useState(false);
   const listPrefsButtonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -171,6 +181,8 @@ export default function TasksList({
       onOpen={calendar.onOpen}
       onPick={calendar.onCreate}
       onToday={() => calendar.onCreate(toLocalIso(new Date()))}
+      creates="task"
+      onEvent={calendar.onEvent}
       onExpand={calendar.onExpand}
       drop={calendar.drop}
     />
@@ -317,6 +329,7 @@ export default function TasksList({
 
   const renderTaskNoteRow = (n: LocalNote) => (
     <ItemComp
+      windowed={taskContainingNotes.length > 100}
       key={n.id}
       note={n}
       isOpen={selectedId === n.id && !selectionMode}
@@ -347,7 +360,7 @@ export default function TasksList({
 
   /* Group headers (#448) over the notes that hold tasks, in the grid and in
      the list's first band. The "All tasks" section stays grouped by note.
-     Spec: ops/docs/plans/list-groups.md */
+     Spec: ops/docs/archive/list-groups.md */
   const grouping = useListGroups({
     notes: taskContainingNotes,
     listPrefs,
@@ -367,7 +380,7 @@ export default function TasksList({
   const noteItemCount = grouping.entries ? grouping.entries.length : taskContainingNotes.length;
   const taskLineCount = viewMode === 'grid' ? 0 : taskGroups.reduce((sum, g) => sum + g.tasks.length, 0);
   const revealTotal = noteItemCount + taskLineCount;
-  const list = useItemList([search, activeFolderName, activeTag, viewMode], revealTotal);
+  const list = useItemList([search, activeFolderName, activeTag, viewMode], revealTotal, place);
   const reveal = list.reveal;
   const revealedAll = reveal.visible >= revealTotal;
   useEffect(() => {
@@ -429,29 +442,7 @@ export default function TasksList({
           </HoverLabel>
           <ul className="pb-2">
             {g.tasks.slice(0, shown).map((t) => (
-              <li
-                key={`${t.noteId}:${t.lineIdx}`}
-                className="pn-lazy-row group flex items-start gap-2.5 px-4 py-1.5 hover:bg-surface-1/60 transition"
-              >
-                <button
-                  onClick={() => void onToggleTask(t, !t.checked)}
-                  aria-label={t.checked ? tr('tasksList.markIncomplete') : tr('tasksList.markComplete')}
-                  className={`mt-0.5 shrink-0 w-[18px] h-[18px] rounded border flex items-center justify-center transition ${
-                    t.checked
-                      ? 'bg-accent-fill border-accent-fill text-white'
-                      : 'border-pn-muted/50 hover:border-accent'
-                  }`}
-                >
-                  {t.checked && (
-                    <Check size={12} />
-                  )}
-                </button>
-                <ClampedTaskText
-                  text={t.text}
-                  checked={t.checked}
-                  onClick={() => void onOpenTaskSource(t)}
-                />
-              </li>
+              <TaskLine key={`${t.noteId}:${t.lineIdx}`} task={t} actions={taskActions} />
             ))}
           </ul>
         </div>
@@ -521,10 +512,12 @@ export default function TasksList({
           title={tr('tasksList.title')}
           icon={<PILLAR_GLYPHS.tasks size={26} className="text-accent shrink-0" aria-hidden="true" />}
         />
-        <NewButton
-          onClick={() => void onNew()}
+        <NewDropdown
           label={tr('tasksList.newTaskNote')}
-          hover={tr('tasksList.newTaskNoteWithHotkey', { hotkey: hotkeyLabel })}
+          options={[
+            { key: 'task', label: t('newMenu.task'), icon: <NEW_GLYPHS.task />, onSelect: () => onNew(), keys: keyText('newNote') },
+            { key: 'kanban', label: t('newMenu.kanban'), icon: <NEW_GLYPHS.kanban />, onSelect: () => onNewKanban() },
+          ]}
         />
       </div>
       )}
@@ -623,7 +616,7 @@ export default function TasksList({
             }}
             placeholder={tr('tasksList.quickAddPlaceholder')}
             enterKeyHint="done"
-            className="flex-1 bg-transparent text-[15px] focus:outline-none placeholder:text-pn-muted"
+            className="flex-1 min-w-0 bg-transparent text-[15px] focus:outline-none placeholder:text-pn-muted"
           />
         </div>
       </div>
@@ -690,19 +683,65 @@ export default function TasksList({
   );
 }
 
+type TaskActions = Pick<TasksListProps, 'onToggleTask' | 'onOpenTaskSource'>;
+
+const TaskLine = memo(function TaskLine({ task: t, actions }: {
+  task: TaskItem;
+  actions: React.RefObject<TaskActions>;
+}) {
+  const { t: tr } = useTranslation('shell');
+  return (
+    <li
+      className="pn-lazy-row group flex items-start gap-2.5 px-4 py-1.5 hover:bg-surface-1/60 transition"
+    >
+      <TaskCheckbox
+        checked={t.checked}
+        onChange={(event) => void actions.current.onToggleTask(t, event.target.checked)}
+        aria-label={t.checked ? tr('tasksList.markIncomplete') : tr('tasksList.markComplete')}
+        className="mt-0.5"
+      />
+      <ClampedTaskText
+        text={t.text}
+        checked={t.checked}
+        onClick={() => void actions.current.onOpenTaskSource(t)}
+      />
+    </li>
+  );
+});
+
 /* ── Clamped task text with See more / See less ──────────────── */
 
-const CLAMP_LINES = 2;
-
-/** One window listener for every clamped line, however many are drawn. */
+/** Only visible text participates in layout reads, including on resize. */
 const clampMeasures = new Set<() => void>();
+const clampTargets = new Map<Element, () => void>();
 const runClampMeasures = () => clampMeasures.forEach((m) => m());
-function onClampResize(measure: () => void): () => void {
-  if (clampMeasures.size === 0) window.addEventListener('resize', runClampMeasures);
-  clampMeasures.add(measure);
+let clampObserver: IntersectionObserver | null = null;
+function watchClamp(el: Element, measure: () => void): () => void {
+  if (clampTargets.size === 0) window.addEventListener('resize', runClampMeasures);
+  clampTargets.set(el, measure);
+  if (typeof IntersectionObserver === 'undefined') {
+    clampMeasures.add(measure);
+    measure();
+  } else {
+    clampObserver ??= new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        const read = clampTargets.get(entry.target);
+        if (!read) continue;
+        if (entry.isIntersecting) { clampMeasures.add(read); read(); }
+        else clampMeasures.delete(read);
+      }
+    });
+    clampObserver.observe(el);
+  }
   return () => {
     clampMeasures.delete(measure);
-    if (clampMeasures.size === 0) window.removeEventListener('resize', runClampMeasures);
+    clampTargets.delete(el);
+    clampObserver?.unobserve(el);
+    if (!clampTargets.size) {
+      window.removeEventListener('resize', runClampMeasures);
+      clampObserver?.disconnect();
+      clampObserver = null;
+    }
   };
 }
 
@@ -715,18 +754,18 @@ function ClampedTaskText({ text, checked, onClick }: {
   const textRef = useRef<HTMLSpanElement>(null);
   const [clamped, setClamped] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const plainText = useMemo(() => stripToPlainText(text), [text]);
 
   // Detect whether the text overflows the clamp.
   const measure = useCallback(() => {
     const el = textRef.current;
-    if (!el) return;
+    if (!el || expanded) return;
     setClamped(el.scrollHeight > el.clientHeight + 1);
-  }, []);
+  }, [expanded]);
 
   useEffect(() => {
-    measure();
-    // Re-measure on resize (font size, container width changes).
-    return onClampResize(measure);
+    const el = textRef.current;
+    if (el) return watchClamp(el, measure);
   }, [measure, text]);
 
   // Reset expansion when text changes (e.g. task toggled).
@@ -748,7 +787,7 @@ function ClampedTaskText({ text, checked, onClick }: {
           className={expanded ? '' : 'line-clamp-2'}
           dir="auto"
         >
-          {text ? stripToPlainText(text) : <span className="text-pn-muted italic">{tr('tasksList.empty')}</span>}
+          {text ? plainText : <span className="text-pn-muted italic">{tr('tasksList.empty')}</span>}
         </span>
       </button>
       {clamped && !expanded && (

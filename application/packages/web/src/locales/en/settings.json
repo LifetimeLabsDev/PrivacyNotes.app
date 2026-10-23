@@ -1,7 +1,9 @@
 {
   "shell": {
     "title": "Settings",
-    "allSettings": "All settings"
+    "allSettings": "All settings",
+    "fillWindow": "Use the full window",
+    "restoreWindow": "Back to the normal size"
   },
   "account": {
     "title": "Account",
@@ -106,6 +108,11 @@
     "sharedSlot_other": "{{count}} installs share one device slot",
     "added": "added {{time}}",
     "lastActive": "last active {{time}}",
+    "versionUnknown": "version unknown",
+    "idLabel": "ID",
+    "browser": "Browser",
+    "update": "Update",
+    "updateHint": "This version can no longer sync. Update the app on this device.",
     "removeAll": "Remove all",
     "recentlyRemoved": "Recently removed",
     "removedAt": "Removed {{time}}"
@@ -191,6 +198,8 @@
     "faviconsProxy": "Loads through our proxy. This device only.",
     "invisiblesTitle": "Invisible characters",
     "invisiblesDesc": "Show spaces, line breaks and paragraph marks while you write.",
+    "listsTabGeneral": "General",
+    "listsTabSidebar": "Sidebar and All",
     "sidebarTitle": "<sb>Sidebar</sb> and <all>All</all>",
     "sidebarDesc": "Which views appear in the sidebar, and which items the All list holds.",
     "colInSidebar": "Sidebar",
@@ -211,14 +220,30 @@
     "contentWidthFull": "Full",
     "lineSpacingTitle": "Line spacing",
     "noteColorsTitle": "Folder and tag colors",
+    "noteColorsPickerTitle": "For all folders and tags",
     "noteColorsDesc": "How a note shows the color of its folder or tag: the whole note, only its icon, or not at all.",
     "noteColorsBackground": "Background",
     "noteColorsExampleTitle": "Weekend in Lisbon",
     "noteColorsExampleFolder": "Travel, a green folder",
-    "noteColorsAccent": "Icon",
+    "noteColorsAccent": "Icon only",
     "noteColorsOff": "Off",
+    "checkboxesTitle": "Checkboxes",
+    "taskConfettiTitle": "Confetti when checked",
+    "taskConfettiDesc": "A little confetti flies from a checkbox when you check it.",
     "sinkCheckedTitle": "Move checked items down",
     "sinkCheckedDesc": "A checked item moves below the unchecked items in its list.",
+    "defaultAppsTitle": "Open with PrivacyNotes",
+    "defaultAppsMarkdown": "Markdown files",
+    "defaultAppsText": "Text files",
+    "defaultAppsMarkdownHint": ".md files you double-click open here.",
+    "defaultAppsTextHint": ".txt and README files you double-click open here.",
+    "defaultAppsTextHintWindows": ".txt files you double-click open here.",
+    "defaultAppsTextFinderSteps": "To change it, choose Get Info on a .txt file in Finder, pick PrivacyNotes under Open with, and click Change All.",
+    "defaultAppsMakeDefault": "Make default",
+    "defaultAppsIsDefault": "Default",
+    "defaultAppsOwnerOther": "They open with {{app}} now.",
+    "defaultAppsOwnerOtherUnnamed": "They open with another app now.",
+    "defaultAppsOwnerNone": "They have no default app yet.",
     "spacesTitle": "Spaces",
     "spacesDesc": "Split your library into Personal and Work and show one at a time.",
     "lineSpacingDesc": "Space between lines and paragraphs while you write.",
@@ -248,7 +273,8 @@
       "none": "No themes here yet.",
       "sortLabel": "Order",
       "sortVotes": "Most votes",
-      "sortNewest": "Newest"
+      "sortNewest": "Newest",
+      "more": "More themes"
     },
     "custom": {
       "newTheme": "New theme",
@@ -449,6 +475,8 @@
     "wifiHoldTooltip": "Files upload when wifi returns. Notes still sync.",
     "notBackedUp": "Not backed up",
     "notSynced": "Not synced",
+    "firstSyncPending": "This device has not finished its first sync with the server yet, so some notes can still be missing here.",
+    "pullFailed": "The last sync could not download from the server. It tries again automatically.",
     "notBackedUpTooltip_one": "{{count}} note is not backed up. Click to see why.",
     "notBackedUpTooltip_other": "{{count}} notes are not backed up. Click to see why.",
     "notBackedUpAria_one": "{{count}} note is not backed up",
@@ -531,7 +559,7 @@
     "alertBirthday": "Birthdays",
     "alertsHelp": "New items start with these alerts. Each item keeps its own alerts after that.",
     "reminderTitles": "Show titles in reminders",
-    "reminderTitlesHelp": "Off, a reminder shows the word Reminder and the time. An item behind your PIN always does.",
+    "reminderTitlesHelp": "On, a reminder shows the item's title. Off, it shows only \"Reminder\" and the time. An item behind your PIN never shows its title.",
     "whereTitle": "Reminders on this device",
     "reminderHint": {
       "mobile": "Reminders ring on this phone, also while PrivacyNotes is closed.",
@@ -545,11 +573,14 @@
     "permissionDenied": "Notifications are blocked for PrivacyNotes. Allow them in the settings of this browser or device.",
     "weekNumbers": "Show week numbers",
     "weekNumbersHelp": "In the month view and the small calendars.",
-    "hours": "Day and Week open at",
+    "hours": "First hour in Day and Week",
+    "checkInReminder": "Daily check-in reminder",
+    "checkInReminderHelp": "\"How are you today?\" once a day, on this device. Not on a day you already logged a mood or skipped.",
+    "checkInReminderAt": "Rings at",
     "groupView": "View",
     "groupReminders": "Reminders",
     "groupDefaults": "Default alerts",
-    "hoursHelp": "Scroll up for earlier hours.",
+    "hoursHelp": "The Day and Week views open scrolled to this hour. The hours before it are above.",
     "to": "to"
   }
 }

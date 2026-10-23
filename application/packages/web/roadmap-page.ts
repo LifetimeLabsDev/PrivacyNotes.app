@@ -2,7 +2,7 @@ import { transformWithOxc, type Plugin } from 'vite';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss } from './static-page-theme.ts';
+import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss, WASHI_DARK, WASHI_LIGHT } from './static-page-theme.ts';
 import { brandMark, CHROME_CSS, OG_IMAGE_TAGS, ogLocaleTag, SITE_FOOTER, siteNav } from './static-page-chrome.ts';
 // Type-only, so it erases at build time and leaves src/roadmap.ts the
 // import-free module loadRoadmap() transpiles and imports as a data URL.
@@ -21,7 +21,7 @@ import type { RoadmapIcon } from './src/roadmap.ts';
 // A "You are here" marker sits on the boundary.
 //
 // Why zigzag rather than the old single left-aligned column: the shell is
-// 1040px because the header nav needs that room, and a one-sided timeline
+// header-wide because the header nav needs that room, and a one-sided timeline
 // left half of every row empty. This uses the width it already has.
 //
 // Below 860px it folds back to exactly what it was - one column, spine on
@@ -216,7 +216,7 @@ const PAGE_CSS = `.meter{display:flex;align-items:center;gap:20px;border:1px sol
 .p-live .stub{background:var(--next-fg)}
 
 .card{display:flex;gap:13px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--bg)}
-.ico{flex:0 0 auto;width:36px;height:36px;border-radius:10px;background:var(--rail);color:var(--muted);display:flex;align-items:center;justify-content:center}
+.ico{flex:0 0 auto;width:36px;height:36px;border-radius:10px;background:var(--card);color:var(--muted);display:flex;align-items:center;justify-content:center}
 .txt{min-width:0}
 .badge{display:inline-block;font-size:9.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:20px;margin-bottom:6px}
 .b-shipped{background:var(--done-bg);color:var(--done-fg)}
@@ -229,7 +229,7 @@ const PAGE_CSS = `.meter{display:flex;align-items:center;gap:20px;border:1px sol
 /* Shipped work steps back so attention lands on what is next. Still fully
    legible at 78% - this is de-emphasis, not a grey-out. */
 .p-done{opacity:.78}
-.p-done .card{background:var(--rail)}
+.p-done .card{background:var(--card)}
 .p-live .card{border-color:var(--next-fg);border-width:2px;padding:13px 15px}
 .p-live .ico{background:var(--next-bg);color:var(--next-fg)}
 .p-future .card{border-style:dashed}
@@ -285,8 +285,8 @@ ${THEME_SCRIPT_TAG}
 <script src="/static-pages.js" defer></script>
 <style>
 ${themeVarsCss(
-  '--bg:#fff;--fg:#15171a;--muted:#5b6168;--faint:#8a9099;--line:#e7e9ec;--accent:#1E40AF;--imp-bg:#eff6ff;--mark-fg:#1E40AF;--chip:#eceef1;--rail:#f7f8fa;--on-accent:#fff;--done-bg:#eaf3de;--done-fg:#3b6d11;--prog-bg:#eff6ff;--prog-fg:#0c447c;--rev-bg:#f1e9fb;--rev-fg:#5b2ea6;--next-bg:#faeeda;--next-fg:#8f570b;--next-halo:rgba(239,159,39,.16);--late-bg:#eceef1;--late-fg:#5b6168;--node:#c9ced3;--node-done:#639922',
-  '--bg:#0e1014;--fg:#e7e9ec;--muted:#9aa1aa;--faint:#6b7178;--line:#23262c;--accent:#4A90D9;--imp-bg:#11233a;--mark-fg:#7FB0E4;--chip:#3a4149;--rail:#14171d;--on-accent:#03203E;--done-bg:#1c2a14;--done-fg:#a7cf6f;--prog-bg:#11233a;--prog-fg:#85b7eb;--rev-bg:#251a3a;--rev-fg:#bda2f2;--next-bg:#2e2410;--next-fg:#e3a84e;--next-halo:rgba(227,168,78,.18);--late-bg:#23262c;--late-fg:#9aa1aa;--node:#3a3f47;--node-done:#97c459'
+  `${WASHI_LIGHT};--accent:#1E40AF;--mark-fg:#1E40AF;--on-accent:#fff;--done-bg:#eaf3de;--done-fg:#3b6d11;--prog-bg:#E8EAF2;--prog-fg:#0c447c;--rev-bg:#f1e9fb;--rev-fg:#5b2ea6;--next-bg:#faeeda;--next-fg:#8f570b;--next-halo:rgba(239,159,39,.16);--late-bg:#E6DCBF;--late-fg:#6A6152;--node:#D4C9AA;--node-done:#639922`,
+  `${WASHI_DARK};--accent:#4A90D9;--mark-fg:#7FB0E4;--on-accent:#03203E;--done-bg:#1c2a14;--done-fg:#a7cf6f;--prog-bg:#1D2234;--prog-fg:#85b7eb;--rev-bg:#251a3a;--rev-fg:#bda2f2;--next-bg:#2e2410;--next-fg:#e3a84e;--next-halo:rgba(227,168,78,.18);--late-bg:#2B2419;--late-fg:#A69E8F;--node:#4A4030;--node-done:#97c459`
 )}
 ${THEME_TOGGLE_CSS}
 ${CHROME_CSS}

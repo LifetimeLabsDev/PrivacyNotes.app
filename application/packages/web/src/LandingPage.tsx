@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type { CSSProperties, MouseEvent, ReactNode } from 'react';
-import { AndroidLogo, AppleLogo, Archive, ArrowLeft, ArrowRight, ArrowUpRight, Bell, Book, Bookmarks, CalendarDots, CaretDown, ChartBar, Check, CheckCircle, CheckFat, CheckSquare, Copy, Cube, Export, FileText, Folder, GithubLogo, GooglePlayLogo, Image as ImageIcon, Key, List, Lock, LockSimple, Moon, MusicNotes, Package, Pill, PlusCircle, SealCheck, Shield, Square, Sun, TerminalWindow, UserCheck, VideoCamera, WindowsLogo, X } from './icons';
+import { AddressBook, AndroidLogo, AppleLogo, Archive, ArrowLeft, ArrowLineRight, ArrowRight, ArrowUpRight, Bell, Book, Bookmarks, CalendarBlank, CalendarCheck, CalendarDots, CalendarPlus, CaretDown, ChartBar, Check, CheckCircle, CheckFat, CheckSquare, Clock, ClockCounterClockwise, Copy, Cube, Export, FileText, Folder, GithubLogo, GooglePlayLogo, Hash, Image as ImageIcon, Key, LinkSimple, ListChecks, Lock, LockSimple, Moon, MusicNotes, Package, Pill, Play, PlusCircle, SealCheck, Shield, Smiley, Sparkle, Square, Sun, TerminalWindow, UserCheck, VideoCamera, WindowsLogo, X } from './icons';
+import { NinjaBox } from './NinjaBox';
+import { NinjaShotsButton } from './NinjaGallery';
+import { KATANA_LINE, NinjaIcon } from './NinjaIcon';
+import { DEMO_HREF } from './footerData';
+import { KEY_OS } from './shortcutMatch';
 import { LogoIcon } from './LogoIcon';
 import { TRACKER_ICONS } from './trackers/icons';
 import { Brand } from './Brand';
@@ -10,7 +15,9 @@ import { LanguageMenu } from './LanguageMenu';
 import { LanguageSuggest } from './LanguageSuggest';
 import { AnnouncementBanner } from './AnnouncementBanner';
 import { siteDismissedIds, dismissOnSite } from './announcements';
-import { SiteFooter } from './SiteFooter';
+import { FooterLines, SiteFooter } from './SiteFooter';
+import { cipherOf } from './typewriter';
+import { HeaderRail, NavMeasurer, OverlayRows, hasMenu, useNavItems, useNavMode } from './LandingNav';
 import { helpPath } from './localeRoutes';
 import { HelpChip } from './HelpChip';
 import { activeLocale } from './languages';
@@ -448,6 +455,16 @@ function peekSide(e: MouseEvent<HTMLDivElement>) {
 const LANDING_TRACKERS = ['mood', 'emotions', 'sleep', 'sleepScore', 'heartRate', 'activity', 'medication', 'energy', 'focus', 'weight', 'steps', 'water', 'screenTime', 'caffeine', 'pain', 'social'] as const;
 /* Two weeks of doses for the Medication card, two of them skipped. */
 const DOSE_DAYS = [true, true, true, false, true, true, true, true, true, false, true, true, true, true] as const;
+/* The medication tile and section: a day of plain supplements, catalog keys
+   for the names and doses, literal times. Nothing here names a condition:
+   a prescription on a homepage says what the reader has. The 28th day of
+   the section's month is today, drawn from the capsule's own state.
+   Spec: ops/design/patterns/141-144.md section 143 */
+const MEDS = [['08:00', 'med1', 'dose1'], ['13:00', 'med2', 'dose2'], ['20:00', 'med3', 'dose3'], ['22:30', 'med4', 'dose4']] as const;
+const MONTH_DOSES = [true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true] as const;
+const MONTH_TAKEN = MONTH_DOSES.filter(Boolean).length;
+/* 0 due, 1 taken, 2 skipped; a tap moves a dose one step round. */
+type DoseState = 0 | 1 | 2;
 
 function FeaturePill({ children }: { children: ReactNode }) {
   return (
@@ -513,11 +530,11 @@ function DownloadTile({
       <div className="flex w-20 flex-col items-center gap-2.5">
         <span
           aria-hidden="true"
-          className="inline-flex h-[72px] w-[72px] items-center justify-center rounded-2xl border-2 border-dashed border-[var(--wl-ink)]/15 bg-[var(--wl-tint)] text-[var(--wl-muted)]"
+          className="inline-flex h-[72px] w-[72px] items-center justify-center rounded-2xl border-2 border-dashed border-[var(--wl-ink)]/15 bg-[var(--wl-tint)] text-[var(--wl-sub)]"
         >
           {icon}
         </span>
-        <span className="text-sm font-semibold text-[var(--wl-muted)]">{name}</span>
+        <span className="text-sm font-semibold text-[var(--wl-sub)]">{name}</span>
       </div>
     );
   }
@@ -559,18 +576,6 @@ function DownloadTile({
   );
 }
 
-function Marquee({ items, separator, className }: { items: string[]; separator: string; className: string }) {
-  const content = items.map((item) => `${item}  ${separator}  `).join('');
-  return (
-    <div className={`overflow-hidden whitespace-nowrap py-2.5 ${className}`}>
-      <div className="inline-flex w-max pn-marquee">
-        <span>{content}</span>
-        <span aria-hidden="true">{content}</span>
-      </div>
-    </div>
-  );
-}
-
 /**
  * Two-state theme switch for the marketing chrome: it flips to the opposite
  * of what is on screen and pins that choice (theme.ts toggle semantics -
@@ -582,7 +587,7 @@ function Marquee({ items, separator, className }: { items: string[]; separator: 
  * two headers carry the same controls), in the mobile nav overlay, and on
  * the auth view's header row.
  */
-function ThemeToggle({ compact }: { compact?: boolean }) {
+function ThemeToggle({ compact, rail }: { compact?: boolean; rail?: boolean }) {
   const { t } = useTranslation('landing');
   const { theme, toggle } = useTheme();
   return (
@@ -590,9 +595,11 @@ function ThemeToggle({ compact }: { compact?: boolean }) {
       type="button"
       onClick={toggle}
       aria-label={t('header.themeToggle')}
-      className={`cursor-pointer inline-flex ${compact ? 'h-9 w-9' : 'h-10 w-10'} items-center justify-center rounded-full border-[1.5px] border-[var(--wl-ink)] text-[var(--wl-ink)] hover:bg-[var(--wl-ink)]/10 transition`}
+      className={rail
+        ? 'inline-flex h-[29px] w-[30px] cursor-pointer items-center justify-center rounded-lg transition hover:text-accent'
+        : `cursor-pointer inline-flex ${compact ? 'h-9 w-9' : 'h-10 w-10'} items-center justify-center rounded-full border-[1.5px] border-[var(--wl-ink)] text-[var(--wl-ink)] hover:bg-[var(--wl-ink)]/10 transition`}
     >
-      {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+      {theme === 'dark' ? <Sun size={rail ? 16 : 18} /> : <Moon size={rail ? 16 : 18} />}
     </button>
   );
 }
@@ -605,7 +612,6 @@ function Kicker({ children, className }: { children: ReactNode; className?: stri
   );
 }
 
-const RIBBON_ITEM_KEYS = ['ribbon.freeForever', 'ribbon.zeroKnowledge', 'ribbon.swissServers', 'ribbon.noSubscription', 'ribbon.openSource'];
 const WONT_FIND_KEYS = [
   'wontFind.noTracking',
   'wontFind.noAds',
@@ -639,9 +645,155 @@ const READ_IT_DOCS = [
   { file: 'crypto/crypto.ts', href: CRYPTO_SRC_URL, labelKey: 'readIt.crypto', icon: Key },
 ] as const;
 
+/** The hero window's sidebar, in the order of the pillar grid. */
+const HERO_PILLARS = [
+  { key: 'notes', Icon: FileText },
+  { key: 'tasks', Icon: CheckCircle },
+  { key: 'vault', Icon: Shield },
+  { key: 'journal', Icon: Book },
+  { key: 'files', Icon: Folder },
+  { key: 'calendar', Icon: CalendarDots },
+  { key: 'contacts', Icon: UserCheck },
+  { key: 'bookmarks', Icon: Bookmarks },
+] as const;
+
+/**
+ * The nouns the hero's first line takes turns through (`hero.rotate.<key>`):
+ * the pillars and the features inside them. Each phrase must fit one line
+ * of the hero column (480 px at 60 px type; "Your credit cards." is the
+ * widest at 480), so the long names take a short form: "medication", not
+ * "medication tracker".
+ */
+const HERO_WORDS = ['notes', 'tasks', 'vault', 'sshKeys', 'cards', 'journal', 'mood', 'medication', 'files', 'calendar', 'contacts', 'bookmarks', 'clipper', 'markdown'] as const;
+
+const ROTATE_MS = 3200;
+const DECRYPT_FRAME_MS = 35;
+const DECRYPT_FRAMES_PER_LETTER = 2;
+
+/**
+ * The hero's first line, "Your notes.", with the noun taking turns through
+ * the pillars. Each new noun is decrypted in place: it starts as cipher
+ * signs (the footer typewriter's, `cipherOf`) and resolves letter by letter
+ * from the left. Only the noun changes: the words around it (from the same
+ * catalog string, `Your <w>notes</w>.`) stay put, and the box between them
+ * eases to the new noun's width, so the period glides. A whole phrase per
+ * pillar, never a bare noun, so a locale can inflect the words around it;
+ * when they differ between two phrases they swap at once. One line at every
+ * width, so the heading keeps one height: when the widest phrase of the
+ * language (or the stroked last line) is wider than the heading, `onFit`
+ * gets the factor that shrinks the whole heading, all three lines alike.
+ * Still on "notes" under reduced motion, paused off screen; the h2 carries a
+ * plain sr-only twin.
+ * Spec: ops/design/patterns/145-150.md section 149
+ */
+function HeroRotator({ onFit }: { onFit?: (fit: number) => void }) {
+  const { t } = useTranslation('landing');
+  const [at, setAt] = useState(0);
+  const [shown, setShown] = useState<string>();
+  const [width, setWidth] = useState<number>();
+  const root = useRef<HTMLSpanElement>(null);
+  const ruler = useRef<HTMLSpanElement>(null);
+  const widest = useRef<HTMLSpanElement>(null);
+  const parts = HERO_WORDS.map((key) => {
+    const m = /^(.*)<w>(.*)<\/w>(.*)$/s.exec(t(`hero.rotate.${key}`));
+    return m ? { before: m[1] ?? '', word: m[2] ?? '', after: m[3] ?? '' } : { before: '', word: t(`hero.rotate.${key}`), after: '' };
+  });
+  const now = parts[at];
+  const words = useRef(parts);
+  words.current = parts;
+  useEffect(() => {
+    const measure = () => setWidth(ruler.current?.getBoundingClientRect().width);
+    measure();
+    window.addEventListener('resize', measure);
+    void document.fonts?.ready.then(measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [at, now?.word]);
+  // A translated phrase can be far wider than "Your credit cards.". Widths
+  // are read in em of their own text, so the factor does not change when the
+  // heading shrinks. The ruler splits each phrase as the line does, since
+  // the split sets wider than one run.
+  const phraseKey = parts.map((p) => p.before + p.word + p.after).join('\u0000');
+  useEffect(() => {
+    const measure = () => {
+      const h2 = root.current?.closest('h2');
+      if (!h2 || !widest.current) return;
+      const em = (el: Element) => el.getBoundingClientRect().width / (parseFloat(getComputedStyle(el).fontSize) || 1);
+      const stroke = h2.querySelector('[data-hero-stroke]');
+      const need = Math.max(em(widest.current), stroke ? em(stroke) : 0) * parseFloat(getComputedStyle(h2).fontSize);
+      onFit?.(need > h2.clientWidth ? Math.floor((h2.clientWidth / need) * 1000) / 1000 : 1);
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    void document.fonts?.ready.then(measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [phraseKey, onFit]);
+  useEffect(() => {
+    const el = root.current;
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let timer = 0;
+    let live = false;
+    let i = 0;
+    const next = () => {
+      i = (i + 1) % HERO_WORDS.length;
+      const word = words.current[i]?.word ?? '';
+      let frame = 0;
+      const step = () => {
+        const done = Math.floor(frame / DECRYPT_FRAMES_PER_LETTER);
+        const cipher = cipherOf(word);
+        setShown(Array.from(word, (c, j) => (j < done ? c : cipher[j])).join(''));
+        if (done < word.length) {
+          frame++;
+          timer = window.setTimeout(step, DECRYPT_FRAME_MS);
+        } else {
+          setShown(undefined);
+          if (live) timer = window.setTimeout(next, ROTATE_MS);
+        }
+      };
+      setAt(i);
+      step();
+    };
+    const io = new IntersectionObserver(([e]) => {
+      const on = !!e?.isIntersecting;
+      if (on === live) return;
+      live = on;
+      window.clearTimeout(timer);
+      if (live) timer = window.setTimeout(next, ROTATE_MS);
+      else setShown(undefined);
+    });
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      live = false;
+      window.clearTimeout(timer);
+    };
+  }, []);
+  return (
+    <span ref={root} className="relative whitespace-nowrap">
+      <span ref={widest} className="invisible absolute start-0 top-0 flex flex-col items-start">
+        {parts.map((p, i) => (
+          <span key={i}>
+            {p.before}
+            <span className="inline-block">{p.word}</span>
+            {p.after}
+          </span>
+        ))}
+      </span>
+      {now?.before}
+      <span
+        className="relative inline-block align-bottom text-accent transition-[width] duration-500 ease-[cubic-bezier(.22,1,.36,1)] motion-reduce:transition-none"
+        style={{ width }}
+      >
+        <span ref={ruler} className="invisible absolute start-0 top-0">{now?.word}</span>
+        {shown ?? now?.word}
+      </span>
+      {now?.after}
+    </span>
+  );
+}
+
 /* Landing-only hover effects (scoped pn-fx- classes) plus the washi palette
    variables (--wl-*) the marketing page is tinted with, both rendered in a
-   <style> tag next to the marquee keyframes. The palette is scoped to the
+   <style> tag. The palette is scoped to the
    .pn-washi wrapper so the app theme tokens stay untouched; the .dark block
    flips it to the sumi ink set. Every value passes WCAG AA against the
    grounds it is used on - re-check contrast if any value changes.
@@ -651,10 +803,11 @@ export const FX_CSS = `
 --wl-bg:#F7F1E1;--wl-card:#FCF8EC;--wl-tint:#ECE3C9;
 --wl-ink:#1C1917;--wl-sub:#6A6152;--wl-muted:#6F654C;--wl-line:#E0D7BD;
 --brand-ink:var(--wl-ink);
---wl-slab-sub:#A9A195;
+--wl-slab:#1C1917;--wl-on-slab:#F7F1E1;--wl-slab-line:#1C1917;--wl-slab-sub:#A9A195;
+--wl-edge:#1C1917;
 --wl-ink-card:#201B15;--wl-ink-line:#37301F;--wl-ink-text:#D8D2C3;--wl-ink-sub:#A69E8F;
 --wl-pro:#1E40AF;
---wl-tint-blue:#E8EAF2;--wl-tint-green:#E4EBD5;--wl-tint-amber:#F7EAB8;
+--wl-tint-blue:#E8EAF2;--wl-tint-blue-deep:#E8EAF2;--wl-tint-green:#E4EBD5;--wl-tint-amber:#F7EAB8;
 --wl-amber-text:#92400E;--wl-amber-border:#B45309;
 --wl-emerald:#065F46;
 --wl-teal:#0B604A;--wl-tint-teal:#DDEFE6;
@@ -666,10 +819,11 @@ export const FX_CSS = `
 .dark .pn-washi{
 --wl-bg:#171310;--wl-card:#201B15;--wl-tint:#241E15;
 --wl-ink:#EDE7DB;--wl-sub:#A69E8F;--wl-muted:#8F8776;--wl-line:#352D20;
---wl-slab-sub:#6A6152;
+--wl-slab:#29231B;--wl-on-slab:#EDE7DB;--wl-slab-line:#413729;--wl-slab-sub:#A69E8F;
+--wl-edge:#3F362A;
 --wl-ink-card:#251F17;--wl-ink-line:#3A3226;--wl-ink-text:#D8D2C3;--wl-ink-sub:#A69E8F;
---wl-pro:#24439E;
---wl-tint-blue:#212940;--wl-tint-green:#1E2A1F;--wl-tint-amber:#2C230F;
+--wl-pro:#1F3170;
+--wl-tint-blue:#212940;--wl-tint-blue-deep:#1D2234;--wl-tint-green:#1E2A1F;--wl-tint-amber:#2C230F;
 --wl-amber-text:#FBBF24;--wl-amber-border:rgba(251,191,36,.55);
 --wl-emerald:#34D399;
 --wl-teal:#5DCAA5;--wl-tint-teal:#182A25;
@@ -701,7 +855,7 @@ export const FX_CSS = `
 .pn-fx-shake:hover{animation:pn-headshake .4s ease;background:#fef2f2;border-color:#dc2626;color:#dc2626}
 @keyframes pn-headshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
 .pn-fx-slab{transition:transform .15s ease,box-shadow .15s ease}
-.pn-fx-slab:hover{transform:translate(-4px,-4px);box-shadow:6px 6px 0 var(--wl-ink)}
+.pn-fx-slab:hover{transform:translate(-4px,-4px);box-shadow:6px 6px 0 var(--wl-edge)}
 .pn-fx-peek{position:relative;transition:background-color .15s ease,color .15s ease}
 .pn-fx-peek::after{content:attr(data-peek);position:absolute;bottom:calc(100% + 5px);inset-inline-start:0;transform-origin:bottom left;transform:translateY(6px) scale(.92);opacity:0;background:var(--wl-ink);color:var(--wl-bg);font-size:11px;font-weight:600;line-height:1;padding:5px 9px;border-radius:7px;white-space:nowrap;pointer-events:none;z-index:2;transition:opacity .15s ease,transform .2s cubic-bezier(.34,1.56,.64,1)}
 .pn-fx-peek-end::after{inset-inline-start:auto;inset-inline-end:0;transform-origin:bottom right}
@@ -773,6 +927,33 @@ export const FX_CSS = `
 .pn-fx-cal-bell{transform-origin:50% 0}
 .pn-fx-cal:hover .pn-fx-cal-bell{animation:pn-ring .6s ease}
 @keyframes pn-ring{0%,100%{transform:rotate(0)}20%{transform:rotate(16deg)}45%{transform:rotate(-13deg)}70%{transform:rotate(7deg)}}
+.pn-fx-meds-cap{transform:rotate(-4deg);transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
+.pn-fx-meds:hover .pn-fx-meds-cap{transform:rotate(0)}
+.pn-fx-meds-fill{width:50%;transition:width .7s cubic-bezier(.22,1,.36,1)}
+.pn-fx-meds:hover .pn-fx-meds-fill{width:100%}
+.pn-fx-meds-due{transition:opacity .15s ease .25s,transform .2s ease .25s}
+.pn-fx-meds-done{opacity:0;transform:translateY(10px);transition:opacity .2s ease .35s,transform .25s cubic-bezier(.34,1.56,.64,1) .35s}
+.pn-fx-meds:hover .pn-fx-meds-due{opacity:0;transform:translateY(-10px)}
+.pn-fx-meds:hover .pn-fx-meds-done{opacity:1;transform:none}
+.pn-fx-meds-next{transition:opacity .2s ease .15s}
+.pn-fx-meds:hover .pn-fx-meds-next{opacity:0}
+.pn-fx-meds-row{transition:border-color .18s ease}
+.pn-fx-meds-ring{transition:background-color .18s ease,border-color .18s ease}
+.pn-fx-meds-ring svg{opacity:0;transition:opacity .18s ease}
+.pn-fx-meds:hover .pn-fx-meds-row{border-color:var(--wl-emerald)}
+.pn-fx-meds:hover .pn-fx-meds-ring{background:var(--wl-emerald);border-color:var(--wl-emerald)}
+.pn-fx-meds:hover .pn-fx-meds-ring svg{opacity:1}
+.pn-fx-meds:hover .pn-fx-meds-row:nth-child(2),.pn-fx-meds:hover .pn-fx-meds-row:nth-child(2) .pn-fx-meds-ring,.pn-fx-meds:hover .pn-fx-meds-row:nth-child(2) .pn-fx-meds-ring svg{transition-delay:.2s}
+.pn-fx-meds:hover .pn-fx-meds-row:nth-child(3),.pn-fx-meds:hover .pn-fx-meds-row:nth-child(3) .pn-fx-meds-ring,.pn-fx-meds:hover .pn-fx-meds-row:nth-child(3) .pn-fx-meds-ring svg{transition-delay:.4s}
+.pn-fx-meds-seg{transition:background-color .15s ease,color .15s ease}
+.pn-fx-ninja-caret{animation:pn-ninja-blink 1s steps(1) infinite}
+@keyframes pn-ninja-blink{50%{opacity:0}}
+.pn-seam .fl-pill{background:var(--wl-card);border-color:var(--wl-line);color:var(--wl-sub)}
+.pn-seam .fl-caret{background:var(--wl-sub)}
+.pn-seam .fl-sel,.pn-seam .fl-scan{color:var(--wl-ink)}
+.pn-seam .fl-cipher{color:rgb(var(--pn-accent))}
+.pn-seam .fl-btn{border-color:var(--wl-line);color:var(--wl-sub)}
+.pn-seam .fl-btn:hover{color:var(--wl-ink);border-color:var(--wl-edge)}
 .pn-fx-ribbon{position:relative;overflow:hidden}
 .pn-fx-ribbon::before{content:"";position:absolute;top:-2px;inset-inline-end:26px;width:22px;height:40px;background:rgb(var(--pn-accent));clip-path:polygon(0 0,100% 0,100% 100%,50% 74%,0 100%);transition:top .3s cubic-bezier(.34,1.56,.64,1)}
 .pn-fx-ribbon:hover::before{top:-44px}
@@ -796,7 +977,7 @@ export const FX_CSS = `
    halves of those rules (the gradient, the scanlines) stay; they cost one
    paint, not a frame budget. */
 @media (hover:none){.pn-fx-conic-btn:hover,.group:hover .pn-fx-conic-btn,.pn-fx-conic-tile:hover,.pn-fx-ants:hover,.pn-fx-cal:hover .pn-fx-cal-bell{animation:none!important}}
-@media (prefers-reduced-motion:reduce){.pn-sticky,.pn-fx-conic-btn,.pn-fx-conic-tile,.pn-fx-popmix>span,.pn-fx-shake:hover,.pn-fx-slab,.pn-fx-stamp::after,.pn-fx-peek,.pn-fx-peek::after,.pn-fx-rank-bar,.pn-fx-next-arrow,.pn-fx-dose-dot,.pn-fx-hand-chip,.pn-fx-type:hover .pn-fx-icons svg,.pn-fx-ants:hover,.pn-fx-seal-chip,.pn-fx-fill,.pn-fx-cal-pill,.pn-fx-cal-bell{animation:none!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce){.pn-sticky,.pn-fx-conic-btn,.pn-fx-conic-tile,.pn-fx-popmix>span,.pn-fx-shake:hover,.pn-fx-slab,.pn-fx-stamp::after,.pn-fx-peek,.pn-fx-peek::after,.pn-fx-rank-bar,.pn-fx-next-arrow,.pn-fx-dose-dot,.pn-fx-hand-chip,.pn-fx-type:hover .pn-fx-icons svg,.pn-fx-ants:hover,.pn-fx-seal-chip,.pn-fx-fill,.pn-fx-cal-pill,.pn-fx-cal-bell,.pn-fx-meds-cap,.pn-fx-meds-fill,.pn-fx-meds-due,.pn-fx-meds-done,.pn-fx-meds-next,.pn-fx-meds-row,.pn-fx-meds-ring,.pn-fx-meds-ring svg,.pn-fx-meds-seg,.pn-fx-ninja-caret{animation:none!important;transition:none!important}}
 `;
 
 export function LandingPage({
@@ -807,6 +988,8 @@ export function LandingPage({
   onAuthedEnterApp?: () => void;
 }) {
   const { t } = useTranslation('landing');
+  // The hero heading's shrink factor, from HeroRotator (1 when it fits).
+  const [heroFit, setHeroFit] = useState(1);
   const { auth } = useAuth();
   // Drives the live-demo shot below, which ships as a light and a dark
   // capture. Read here rather than through a CSS class pair so only the
@@ -834,6 +1017,10 @@ export function LandingPage({
   // rather than a single direct download. Collapsed by default.
   const [linuxOpen, setLinuxOpen] = useState(false);
   const [androidOpen, setAndroidOpen] = useState(false);
+  const [doses, setDoses] = useState<DoseState[]>([1, 1, 0, 0]);
+  const dosesTaken = doses.filter((d) => d === 1).length;
+  const adherencePct = Math.round((MONTH_TAKEN + dosesTaken / MEDS.length) / (MONTH_DOSES.length + 1) * 100);
+  const cycleDose = (i: number) => setDoses((prev) => prev.map((d, j) => (j === i ? (((d + 1) % 3) as DoseState) : d)));
   const [pkgOpen, setPkgOpen] = useState(false);
 
   // Detected architecture first, and the other one behind a toggle. When detection
@@ -853,6 +1040,15 @@ export function LandingPage({
   const [navOpen, setNavOpen] = useState(false);
   const [pastHero, setPastHero] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
+  const brandRef = useRef<HTMLDivElement>(null);
+  const measurerRef = useRef<HTMLDivElement>(null);
+  const navItems = useNavItems();
+  const navMode = useNavMode(headerRef, brandRef, measurerRef);
+  // The overlay belongs to the hamburger modes; a window widened past them
+  // must not leave it open with no button to close it from.
+  useEffect(() => {
+    if (!hasMenu(navMode)) setNavOpen(false);
+  }, [navMode]);
 
   // The marketing homepage AND the auth card are both brand surfaces
   // designed for the default (white) palette. A visitor may have a tinted
@@ -1094,7 +1290,6 @@ export function LandingPage({
 
   return (
     <div className="pn-washi min-h-screen bg-[var(--wl-bg)] text-[var(--wl-ink)] overflow-x-clip">
-      <style>{'@keyframes pn-marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.pn-marquee{animation:pn-marquee 40s linear infinite}@media (prefers-reduced-motion:reduce){.pn-marquee{animation:none}}'}</style>
       <style>{FX_CSS}</style>
 
       <AnnouncementBanner
@@ -1106,19 +1301,14 @@ export function LandingPage({
         }}
       />
 
-      {/* Top padding grows only at lg, where the language utility row
-          needs the room; below lg the selector is a header-row icon and
-          the old sm:pt-14 was dead space above the brand. */}
-      <div className="relative mx-auto max-w-5xl px-5 sm:px-8 pt-[calc(env(safe-area-inset-top)+0.75rem)] sm:pt-6 lg:pt-14">
-        {/* Language utility row, top-right of the page. The row carries no
-            margin of its own: below lg the selector lives in the header row
-            instead, and a row-level margin would reserve a blank strip
-            where nothing renders. Each child brings its own margin. */}
+      {/* Top padding grows at lg, where the poster-sized brand wants the
+          air; below lg it was dead space above the brand. */}
+      <div className="relative mx-auto max-w-5xl xl:max-w-7xl px-5 sm:px-8 pt-[calc(env(safe-area-inset-top)+0.75rem)] sm:pt-6 lg:pt-14">
+        {/* The language picker lives in the header rail at every width;
+            this row only carries the language suggestion, and has no margin
+            of its own, so it takes no height when there is none. */}
         <div className="flex items-center justify-end gap-2">
           <LanguageSuggest className="mb-3 sm:mb-4" />
-          <span className="mb-3 hidden sm:mb-4 lg:block">
-            <LanguageMenu navigate />
-          </span>
         </div>
         {/* Top brand row. Mirrored in plain HTML+CSS by landingHeader() in
             ../landing-pages.ts for the static SEO landing pages (same deal as
@@ -1126,74 +1316,37 @@ export function LandingPage({
             shared because the static pages ship no React/Tailwind and the two
             auth buttons here are JS - change the structure, links or CTAs
             here and update the twin in the same commit. */}
-        <header ref={headerRef} className="flex items-center justify-between gap-x-3 sm:gap-x-6 mb-10 sm:mb-16">
-          {/* Below sm the brand steps down a size: this row now carries the App
-              pill at every width, and the poster-sized wordmark plus four
-              controls do not fit a 375px line. min-w-0 + truncate + shrink-0
-              are the backstop for the narrowest phones, same as the sticky
-              bar. */}
-          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-            <LogoIcon size={64} className="shrink-0 text-accent w-8 h-8 sm:w-16 sm:h-16" />
-            <h1 className="truncate text-lg sm:text-4xl tracking-tight">
+        <header ref={headerRef} className="relative flex items-center justify-between gap-x-3 sm:gap-x-6 mb-10 sm:mb-16">
+          {/* Below lg the brand steps down a size (at sm or md it squeezed the
+              demo out of the rail on the way up). min-w-0 + truncate are
+              the backstop only: useNavMode picks a rail that fits beside
+              the brand at its full width, so the name is never cut. */}
+          <div ref={brandRef} className="flex min-w-0 items-center gap-2 lg:gap-3">
+            <LogoIcon size={64} className="shrink-0 text-accent w-8 h-8 lg:w-16 lg:h-16" />
+            <h1 className="truncate text-lg lg:text-4xl tracking-tight">
               <Brand />
             </h1>
           </div>
-          <nav className="flex shrink-0 items-center gap-2 sm:gap-3 lg:gap-4 text-sm text-[var(--wl-sub)]">
-            {/* Priority ladder (most important first): App and language
-                always, toggle from sm, demo from md, Downloads and Help
-                from 896px, Changelog at lg - where the hamburger that
-                also carries them disappears, so nothing gates past lg.
-                The 896px step is deliberate: at plain md the long locales
-                (fr measures ~900px of content at 768) overflow, while
-                waiting for lg wastes a third of the row. There is no Log
-                in button: the App pill opens the same auth card, and the
-                hero microcopy keeps an explicit log-in link. Width
-                budget: ui-patterns.md section 49. */}
-            <a href="https://try.privacynotes.app/" className="pn-fx-navlink hidden md:inline hover:text-accent transition">{t('hero.tryDemo')}</a>
-            <a href="#downloads" className="pn-fx-navlink hidden min-[896px]:inline hover:text-accent transition">{t('header.downloads')}</a>
-            <a href={helpPath(activeLocale())} className="pn-fx-navlink hidden min-[896px]:inline hover:text-accent transition">{t('header.help')}</a>
-            <a href="/changelog" className="pn-fx-navlink hidden lg:inline hover:text-accent transition">{t('header.changelog')}</a>
-              <a href="/roadmap" className="pn-fx-navlink hidden lg:inline hover:text-accent transition">{t('header.roadmap')}</a>
-            <span className="hidden sm:block">
-              <ThemeToggle compact />
-            </span>
-            {/* Same label and the same always-on rule as the sticky bar's
-                CTA below: the two headers swap over on scroll, so a button
-                that only one of them carries reads as the page losing it.
-                "App" is a deliberate literal, not a locale key - see the
-                sticky bar for why. */}
-            <button
-              type="button"
-              onClick={() => openAuth('create')}
-              className="pn-fx-conic-btn cursor-pointer whitespace-nowrap inline-flex items-center justify-center rounded-full bg-[var(--wl-ink)] text-[var(--wl-bg)] px-4 py-1.5 text-sm font-semibold"
-            >
-              App
-            </button>
-            {/* Below lg the language selector rides the header row as an
-                icon; the lg+ utility row above is hidden at these widths. */}
-            <span className="lg:hidden">
-              <LanguageMenu navigate iconOnly />
-            </span>
-            <button
-              type="button"
-              onClick={() => setNavOpen(true)}
-              aria-label={t('header.menuLabel')}
-              aria-expanded={navOpen}
-              className="lg:hidden cursor-pointer inline-flex h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-[var(--wl-ink)] text-[var(--wl-ink)]"
-            >
-              <List size={20} />
-            </button>
-          </nav>
+          {/* The rail, in the widest mode that fits (LandingNav.tsx): every
+              section, then Explore folding all but Downloads and Help, then
+              all but Downloads, then the hamburger. Measured per locale and window, not by
+              breakpoint. There is no Log in button: the App pill opens the
+              same auth card, and the hero microcopy keeps an explicit
+              log-in link. Spec: ops/docs/archive/ui-patterns.md section 49 */}
+          <div className="shrink-0">
+            <HeaderRail mode={navMode} items={navItems} themeToggle={<ThemeToggle rail />} onApp={() => openAuth('create')} onMenu={() => setNavOpen(true)} menuOpen={navOpen} />
+          </div>
+          <NavMeasurer measurerRef={measurerRef} items={navItems} themeToggle={<ThemeToggle rail />} onApp={() => {}} onMenu={() => {}} menuOpen={false} />
         </header>
 
-        {/* Mobile nav overlay: the only path to Roadmap, Help and Changelog
-            below lg, where the inline header links are hidden. */}
+        {/* Nav overlay: opened by the rail's hamburger modes, the only
+            path to the sections there. Every row, flat, no Explore step. */}
         {navOpen && (
           <div
             role="dialog"
             aria-modal="true"
             aria-label={t('header.menuLabel')}
-            className="fixed inset-0 z-[70] overflow-y-auto bg-[var(--wl-bg)] lg:hidden"
+            className="fixed inset-0 z-[70] overflow-y-auto bg-[var(--wl-bg)]"
           >
             <div className="mx-auto flex min-h-full max-w-5xl flex-col px-5 sm:px-8 pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-10">
               <div className="mb-10 flex items-center justify-between">
@@ -1213,23 +1366,7 @@ export function LandingPage({
                 </button>
               </div>
               <nav className="flex flex-col text-3xl font-black tracking-tight text-[var(--wl-ink)]">
-                <button type="button" onClick={() => goToSection('downloads')} className="cursor-pointer border-b border-[var(--wl-line)] py-4 text-start">
-                  {t('header.downloads')}
-                </button>
-                <a href={helpPath(activeLocale())} className="border-b border-[var(--wl-line)] py-4">
-                  {t('header.help')}
-                </a>
-                {/* Help, Changelog, Roadmap run in the order the inline
-                    header puts them in, so the two navs read as one menu at
-                    the width where they swap over. Pricing has no inline
-                    counterpart and keeps its place. The last row carries no
-                    rule, so the divider moves with the order. */}
-                <a href="/changelog" className="border-b border-[var(--wl-line)] py-4">
-                  {t('header.changelog')}
-                </a>
-                <a href="/roadmap" className="py-4">
-                  {t('header.roadmap')}
-                </a>
+                <OverlayRows items={navItems} onSection={goToSection} />
               </nav>
               <div className="mt-auto space-y-3 pt-10">
                 {/* One auth button, not a create/log-in pair: the auth card
@@ -1264,54 +1401,19 @@ export function LandingPage({
           page this tall. Rendered only after the top header scrolls out. */}
       {pastHero && (
         <div className="pn-sticky fixed inset-x-0 top-0 z-50 border-b border-[var(--wl-line)] bg-[var(--wl-bg)]/90 backdrop-blur">
-          <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 px-5 sm:px-8">
-            {/* min-w-0 + truncate on the wordmark, shrink-0 on the actions: this
-                row has no room to spare below lg, so the logo gives way first
-                instead of the two sides overlapping. */}
+          <div className="mx-auto flex h-14 max-w-5xl xl:max-w-7xl items-center justify-between gap-3 px-5 sm:px-8">
             <button type="button" onClick={() => window.scrollTo({ top: 0 })} className="flex min-w-0 cursor-pointer items-center gap-2">
               <LogoIcon size={28} className="shrink-0 text-accent" />
               <span className="truncate text-base tracking-tight text-[var(--wl-ink)]">
                 <Brand />
               </span>
             </button>
-            <div className="flex shrink-0 items-center gap-3 lg:gap-4 text-sm text-[var(--wl-sub)]">
-              <a href="https://try.privacynotes.app/" className="pn-fx-navlink hidden md:inline hover:text-accent transition">{t('hero.tryDemo')}</a>
-              <a href="#downloads" className="pn-fx-navlink hidden min-[896px]:inline hover:text-accent transition">{t('header.downloads')}</a>
-              <a href={helpPath(activeLocale())} className="pn-fx-navlink hidden min-[896px]:inline hover:text-accent transition">{t('header.help')}</a>
-              <a href="/changelog" className="pn-fx-navlink hidden lg:inline hover:text-accent transition">{t('header.changelog')}</a>
-              <a href="/roadmap" className="pn-fx-navlink hidden lg:inline hover:text-accent transition">{t('header.roadmap')}</a>
-              <span className="hidden sm:block">
-                <ThemeToggle compact />
-              </span>
-              {/* "App", not the full "Create your vault" the page's other CTAs
-                  carry, and deliberately NOT a locale key: this bar keeps the
-                  logo, a language button and the menu on one 375px row, and a
-                  translated label there is what pushed this CTA over the
-                  wordmark. The word is a short loan word in every catalog we
-                  ship, so one literal serves all of them. The top brand row
-                  carries the twin of this button. */}
-              <button
-                type="button"
-                onClick={() => openAuth('create')}
-                className="pn-fx-conic-btn cursor-pointer whitespace-nowrap rounded-full bg-[var(--wl-ink)] text-[var(--wl-bg)] px-4 py-1.5 text-sm font-semibold"
-              >
-                App
-              </button>
-              {/* The sticky bar carries the language icon at every width:
-                  below lg it mirrors the top header's icon, and at lg+ it
-                  stands in for the utility-row selector that scrolled away. */}
-              <span>
-                <LanguageMenu navigate iconOnly compact />
-              </span>
-              <button
-                type="button"
-                onClick={() => setNavOpen(true)}
-                aria-label={t('header.menuLabel')}
-                aria-expanded={navOpen}
-                className="lg:hidden cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] border-[var(--wl-ink)] text-[var(--wl-ink)]"
-              >
-                <List size={18} />
-              </button>
+            {/* Same rail and the same mode as the top header, so the two
+                swap over on scroll without a control appearing or going.
+                This brand is far narrower, so the mode that fits above
+                fits here too. */}
+            <div className="shrink-0">
+              <HeaderRail mode={navMode} items={navItems} themeToggle={<ThemeToggle rail />} onApp={() => openAuth('create')} onMenu={() => setNavOpen(true)} menuOpen={navOpen} />
             </div>
           </div>
         </div>
@@ -1320,7 +1422,7 @@ export function LandingPage({
       <main>
         <div className="relative mx-auto max-w-5xl px-5 sm:px-8 pb-10 sm:pb-14">
         {/* ── Hero (poster, two-column) ───────────────────────── */}
-        <div className="relative grid lg:grid-cols-[minmax(0,1fr)_360px] gap-12 items-center mb-12 sm:mb-16">
+        <div className="relative grid lg:grid-cols-[minmax(0,1fr)_400px] gap-12 lg:gap-20 items-center mb-12 sm:mb-16">
         {/* Below lg the card column (and its asanoha patch) is hidden, so
             this twin keeps the motif on phones and tablets: same pattern,
             bleeding off the top end corner behind the hero text. Own ids
@@ -1359,14 +1461,21 @@ export function LandingPage({
             <Lock size={12} className="shrink-0" />
             {t('hero.badge')}
           </a>
-          <h2 className="text-5xl sm:text-7xl lg:text-6xl font-black tracking-tight leading-[0.95] text-[var(--wl-ink)]">
+          <h2 className="text-5xl sm:text-7xl lg:text-6xl font-black tracking-tight leading-[1.05] text-[var(--wl-ink)]">
+            <span className="sr-only">{t('hero.headlineSr')}</span>
             <Trans
               i18nKey="landing:hero.headline"
+              parent="span"
+              aria-hidden="true"
+              className="block"
+              style={heroFit < 1 ? { fontSize: `${heroFit}em` } : undefined}
               components={{
+                rotate: <HeroRotator onFit={setHeroFit} />,
                 br: <br />,
                 stroke: (
                   <span
-                    className="block mt-1.5 leading-[1.05]"
+                    data-hero-stroke
+                    className="block w-fit leading-[1.05]"
                     style={{
                       WebkitTextStroke: '2.5px rgb(var(--pn-accent))',
                       color: 'var(--wl-bg)',
@@ -1423,7 +1532,7 @@ export function LandingPage({
           </div>
         </div>
 
-        {/* Hero visual: tilted product-shaped cards, pure CSS */}
+        {/* Hero visual: a small copy of the app, pure CSS */}
         <div className="relative hidden lg:block h-[480px]" aria-hidden="true">
           {/* Asanoha (hemp leaf) patch in faint brand blue: the washi
               pattern behind the tilted cards, replacing the old sparkle
@@ -1451,82 +1560,62 @@ export function LandingPage({
             </defs>
             <rect width="240" height="240" fill="url(#pn-asanoha)" mask="url(#pn-asanoha-mask)" />
           </svg>
-          {/* Vault card */}
-          <div className="pn-fx-straighten absolute top-4 end-0 w-60 rotate-3 rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)] p-4">
-            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--wl-sub)] mb-3">{t('heroCard.vault')}</div>
-            <div className="space-y-2">
-              {['github.com', 'proton.me', 'bank login'].map((site) => (
-                <div key={site} className="flex items-center justify-between rounded-lg border border-[var(--wl-line)] px-3 py-2">
-                  <span className="text-xs font-semibold text-[var(--wl-ink)]">{site}</span>
-                  <span className="font-mono text-[10px] text-[var(--wl-sub)]">••••••••</span>
+          {/* The app, small: the sidebar names every pillar, the open list
+              is the Tasks pillar, and the mood card over the corner is the
+              Journal. Spec: ops/design/patterns/145-150.md section 149 */}
+          <div className="absolute inset-x-0 top-10 grid h-[380px] grid-cols-[158px_minmax(0,1fr)] overflow-hidden rounded-2xl border-2 border-[var(--wl-edge)] bg-[var(--wl-card)]">
+            <div className="space-y-0.5 border-e border-[var(--wl-line)] p-2">
+              {HERO_PILLARS.map(({ key, Icon }) => (
+                <div
+                  key={key}
+                  className={`flex items-center gap-2 rounded-lg px-2.5 py-[7px] text-xs font-semibold ${key === 'tasks' ? 'bg-[var(--wl-tint-blue)] text-accent' : 'text-[var(--wl-sub)]'}`}
+                >
+                  <Icon size={15} weight="duotone" className="shrink-0" />
+                  <span className="truncate">{key === 'vault' ? t('heroCard.passwords') : t(`pillars.${key}Name`)}</span>
                 </div>
               ))}
             </div>
-          </div>
-          {/* Note card */}
-          <div className="pn-fx-straighten absolute top-44 start-0 w-64 -rotate-2 rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)] p-4">
-            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--wl-sub)] mb-2">{t('heroCard.today')}</div>
-            <div className="text-sm font-extrabold text-[var(--wl-ink)] mb-2.5">{t('heroCard.tripTitle')}</div>
-            <div className="space-y-2 text-xs text-[var(--wl-sub)]">
-              <div className="flex items-center gap-2">
-                <Check size={13} className="shrink-0 text-accent" />
-                <span className="line-through text-[var(--wl-sub)]">{t('heroCard.taskPassport')}</span>
+            <div className="p-6">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--wl-sub)]">{t('heroCard.today')}</div>
+              <div className="mt-2 mb-4 text-lg font-extrabold leading-snug text-[var(--wl-ink)]">{t('heroCard.tripTitle')}</div>
+              <div className="space-y-2.5 text-sm text-[var(--wl-ink)]">
+                {(['taskPassport', 'taskInsurance', 'taskChargers', 'taskHotel'] as const).map((k, i) => (
+                  <div key={k} className="flex items-center gap-2.5">
+                    {i < 2 ? (
+                      <Check size={15} className="shrink-0 text-accent" />
+                    ) : (
+                      <span className="inline-block h-3.5 w-3.5 shrink-0 rounded-[4px] border border-[var(--wl-muted)]/60" />
+                    )}
+                    <span className={i < 2 ? 'line-through text-[var(--wl-sub)]' : ''}>{t(`heroCard.${k}`)}</span>
+                  </div>
+                ))}
               </div>
-              <div className="flex items-center gap-2">
-                <Check size={13} className="shrink-0 text-accent" />
-                <span className="line-through text-[var(--wl-sub)]">{t('heroCard.taskInsurance')}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="inline-block w-3 h-3 rounded-[3px] border border-[var(--wl-muted)]/60 shrink-0" />
-                <span>{t('heroCard.taskChargers')}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="inline-block w-3 h-3 rounded-[3px] border border-[var(--wl-muted)]/60 shrink-0" />
-                <span>{t('heroCard.taskHotel')}</span>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <span className="rounded-full bg-[var(--wl-tint-teal)] px-2.5 py-1 text-[11px] font-semibold text-[var(--wl-teal)]">{t('heroCard.flight')}</span>
+                <span className="rounded-full bg-[var(--wl-tint-green)] px-2.5 py-1 text-[11px] font-semibold text-[var(--wl-emerald)]">{t('heroCard.encrypted')}</span>
               </div>
             </div>
           </div>
-          {/* Phrase card (front) */}
-          <div className="pn-fx-straighten absolute bottom-2 end-4 w-72 rotate-1 rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-ink)] p-4">
-            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-400 dark:text-emerald-800 mb-3">{t('heroCard.yourKey')}</div>
-            <div className="flex flex-wrap gap-1.5">
-              {/*
-                DECORATIVE ONLY, AND DELIBERATELY NOT A REAL MNEMONIC.
-                Five of these twelve words (quartz, ember, willow, prism, cedar) are not in
-                the BIP-39 English wordlist at all, so this set can never pass
-                validateMnemonic() and can never open a vault no matter how the checksum
-                falls. Do not "refresh" it with a generated phrase: phrase identity is
-                derived client-side, so a valid mnemonic printed on the homepage is a live
-                account that every visitor co-owns. Re-check with validateMnemonic() if any
-                word here changes.
-                Spec: ops/docs/design-decisions.md (Phrase mockups must never be valid BIP-39)
-              */}
-              {['velvet', 'canyon', 'orbit', 'maple', 'quartz', 'ember', 'willow', 'prism', 'cedar', 'noble', 'drift', 'lunar'].map((word) => (
-                <span key={word} className="font-mono text-[11px] px-2 py-1 rounded bg-[var(--wl-bg)]/15 text-[var(--wl-bg)]">{word}</span>
+          <div className="pn-fx-straighten absolute bottom-0 -end-3 w-60 rotate-3 rounded-2xl border-2 border-[var(--wl-edge)] bg-[var(--wl-card)] p-4">
+            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--wl-emerald)]">{t('heroCard.moodWeek')}</div>
+            <div className="mt-3 flex gap-1.5">
+              {[0.35, 0.6, 0.5, 1, 0.8, 0.9, 0.7].map((o, i) => (
+                <span key={i} className={`h-7 flex-1 rounded-md ${i === 2 ? 'bg-[var(--wl-amber-border)]' : 'bg-[var(--wl-emerald)]'}`} style={{ opacity: o }} />
               ))}
             </div>
           </div>
         </div>
         </div>
 
-        {/* ── Ribbon marquee (tilted) ─────────────────────────── */}
-        <div className="-mx-5 sm:-mx-8 mb-14 sm:mb-20" style={{ transform: 'rotate(-1.5deg) scale(1.03)' }}>
-          <Marquee
-            items={RIBBON_ITEM_KEYS.map((k) => t(k))}
-            separator="✦"
-            className="bg-[var(--wl-ink)] text-[var(--wl-bg)] text-[13px] font-extrabold uppercase tracking-[0.15em]"
-          />
-        </div>
-
         {/* ── Live demo shot: click-through into the sandbox ────
-            Sits directly under the ribbon, ABOVE the pillar grid: the real
+            Sits directly under the hero, ABOVE the pillar grid: the real
             app is the strongest proof on the page, so it comes before the
             feature claims. */}
         <div className="max-w-5xl mx-auto mb-8 sm:mb-10">
           <Kicker className="text-[var(--wl-amber-text)]">{t('demoShot.kicker')}</Kicker>
           <a
             href="https://try.privacynotes.app/"
-            className="group relative block overflow-hidden rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)]"
+            className="group relative block overflow-hidden rounded-2xl border-2 border-[var(--wl-edge)] bg-[var(--wl-card)]"
           >
             {/* Two captures of the same screen, one per mode, so the shot
                 matches the page around it instead of pasting a white app
@@ -1570,13 +1659,22 @@ export function LandingPage({
           <p className="mt-3 text-center text-xs text-[var(--wl-muted)]">{t('demoShot.caption')}</p>
         </div>
 
+        {/* ── The typewriter on a seam ──────────────────────────
+            The footer's closing line (footerLines.ts), set on a hairline
+            under the demo shot's caption: half above the line, half
+            below, like the footer's own seam. Spec:
+            ops/design/patterns/145-150.md section 149 */}
+        <div className="pn-seam -mx-5 sm:-mx-8 mt-14 mb-14 sm:mb-16 border-t border-[var(--wl-line)]">
+          <FooterLines />
+        </div>
+
         {/* ── Featured on PrivacyTools.io badge ─────────────────
             Live star rating, served from our own origin: worker.ts
             proxies it at /badge/privacytools.svg for the same reason
             it proxies favicons - this page promises no tracking, so
             it stays single-origin. The badge is a fixed brand asset;
             its light artwork sits on its own card in both modes. */}
-        <div className="mb-14 sm:mb-20 flex flex-col items-center gap-2">
+        <div className="mb-14 sm:mb-20 flex flex-col items-center">
           <a href="https://privacytools.io/app/privacynotes" target="_blank" rel="noopener">
             <img
               src="/badge/privacytools.svg"
@@ -1586,16 +1684,15 @@ export function LandingPage({
               loading="lazy"
             />
           </a>
-          <p className="text-xs text-[var(--wl-muted)]">{t('badges.privacyToolsCaption')}</p>
         </div>
 
         {/* ── Pillars (tile grid) ─────────────────────────────── */}
         <div className="max-w-5xl mx-auto mb-2">
           <Kicker>{t('pillars.kicker')}</Kicker>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
-            <div className="pn-fx-invert col-span-2 sm:col-span-1 rounded-2xl bg-[var(--wl-ink)] p-4 sm:p-6">
-              <FileText size={30} weight="duotone" className="text-blue-400 dark:text-blue-600" />
-              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl lg:text-xl font-extrabold tracking-tight text-[var(--wl-bg)]">{t('pillars.notesName')}</div>
+            <div className="pn-fx-invert col-span-2 sm:col-span-1 rounded-2xl border-2 border-[var(--wl-slab-line)] bg-[var(--wl-slab)] p-4 sm:p-6">
+              <FileText size={30} weight="duotone" className="text-blue-400" />
+              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl lg:text-xl font-extrabold tracking-tight text-[var(--wl-on-slab)]">{t('pillars.notesName')}</div>
               <p className="mt-1 text-sm leading-relaxed text-[var(--wl-slab-sub)]">
                 {t('pillars.notesBlurb')}
               </p>
@@ -1684,12 +1781,117 @@ export function LandingPage({
                 Tile order is a checkerboard of grounds, not the app's pillar
                 order: ink, blue, green, cream above tan, teal, cream, ink, so
                 no tile sits beside or under one of its own hue. */}
-            <div className="pn-fx-ribbon pn-fx-ribbon-ink col-span-2 sm:col-span-1 rounded-2xl bg-[var(--wl-ink)] p-4 sm:p-6">
-              <Bookmarks size={30} weight="duotone" className="text-blue-400 dark:text-blue-600" />
-              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl lg:text-xl font-extrabold tracking-tight text-[var(--wl-bg)]">{t('pillars.bookmarksName')}</div>
+            <div className="pn-fx-ribbon pn-fx-ribbon-ink col-span-2 sm:col-span-1 rounded-2xl border-2 border-[var(--wl-slab-line)] bg-[var(--wl-slab)] p-4 sm:p-6">
+              <Bookmarks size={30} weight="duotone" className="text-blue-400" />
+              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl lg:text-xl font-extrabold tracking-tight text-[var(--wl-on-slab)]">{t('pillars.bookmarksName')}</div>
               <p className="mt-1 text-sm leading-relaxed text-[var(--wl-slab-sub)]">
                 {t('pillars.bookmarksBlurb')}
               </p>
+            </div>
+          </div>
+          {/* Ninja, the ⌘K box, takes the full width right under the grid: it
+              is the "one key" of the kicker, the door to every pillar above
+              it, so it closes the grid before the Medication tile and the
+              Markdown slab. Left: the key caps, the tagline, the name, the
+              blurb and nine chips, one per thing the box does. Right: a copy
+              of the box that types four scenes in a loop (NinjaBox.tsx).
+              Spec: ops/design/patterns/145-150.md section 145 */}
+          <div className="pn-fx-ninja mt-2.5 sm:mt-3 grid lg:grid-cols-2 gap-6 sm:gap-8 items-center lg:items-stretch rounded-2xl bg-[var(--wl-tint-blue)] border-2 border-accent/40 p-5 sm:p-7">
+            <div className="flex flex-col">
+              {/* The mark, the key and its memory trick on one line: K for
+                  Katana. */}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                <NinjaIcon size={40} tone="real" className="shrink-0" />
+                <span className="inline-flex gap-1" aria-hidden="true">
+                  {(KEY_OS === 'mac' ? ['⌘', 'K'] : ['Ctrl', 'K']).map((k) => (
+                    <span key={k} className="inline-flex h-8 min-w-8 items-center justify-center rounded-md border-2 border-b-4 border-[var(--wl-ink)] bg-[var(--wl-card)] px-2 font-mono text-[13px] font-bold text-[var(--wl-ink)]">{k}</span>
+                  ))}
+                </span>
+                <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-accent dark:text-blue-300">{'// '}{KATANA_LINE}</span>
+              </div>
+              <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span className="text-3xl sm:text-4xl font-black tracking-tight text-[var(--wl-ink)]">{t('ninja.tileName')}</span>
+                <span className="text-base sm:text-lg font-semibold text-[var(--wl-sub)]">{t('ninja.tileTagline')}</span>
+              </div>
+              <p className="mt-2 text-lg sm:text-xl font-bold leading-snug tracking-tight text-[var(--wl-ink)]">{t('ninja.tileLead')}</p>
+              <p className="mt-2 text-base leading-relaxed text-[var(--wl-sub)] max-w-lg">
+                {t('ninja.tileBlurb', { key: KEY_OS === 'mac' ? '⌘K' : 'Ctrl+K' })}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-1.5">
+                {([['chipDates', CalendarPlus], ['chipAppend', ListChecks], ['chipTab', ArrowLineRight], ['chipTags', Hash], ['chipDay', CalendarBlank], ['chipLink', LinkSimple]] as const).map(([k, Glyph]) => (
+                  <span key={k} className="inline-flex items-center gap-1 rounded-full border-[1.5px] border-[var(--wl-chip-border)] bg-[var(--wl-card)] px-2.5 py-1 text-[11px] font-semibold text-[var(--wl-chip-text)] [&_svg]:size-3 [&_svg]:text-accent dark:[&_svg]:text-blue-300">
+                    <Glyph weight="duotone" />
+                    {t(`ninja.${k}`)}
+                  </span>
+                ))}
+              </div>
+              {/* Two doors, side by side under the chips: the demo, where
+                  the key works for real, and the screenshots of the real box
+                  in the shared viewer (NinjaGallery.tsx). */}
+              <div className="mt-5 lg:mt-auto lg:pt-5 flex flex-wrap items-center gap-2.5">
+                <a href={DEMO_HREF} className="pn-fx-conic-btn inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-[var(--wl-bg)]">
+                  <Play size={15} weight="fill" aria-hidden="true" />
+                  {t('ninja.tryDemo')}
+                </a>
+                <NinjaShotsButton />
+              </div>
+            </div>
+            <NinjaBox />
+          </div>
+          {/* The ninth pillar takes the full width under the grid, above the
+              Markdown slab: a ninth small tile would leave a row of one, and a
+              new pillar earns more room than its siblings for a while. The right
+              half is one day: a capsule and three dose rows. On hover the day
+              gets taken, start to end, like the Files chips seal: each row's
+              hollow ring fills with a check, one after another, while the
+              capsule straightens and its green half grows until the whole
+              capsule reads Taken. The tile shows what one tap a day does.
+              Below lg the capsule and rows sit under the text: a tablet's
+              half-width column holds the chips on three rows and clips the
+              capsule label. Without a pointer the tile rests at the due
+              state, which reads on its own.
+              Spec: ops/design/patterns/141-144.md section 143 */}
+          <div className="pn-fx-meds mt-2.5 sm:mt-3 grid lg:grid-cols-[1.4fr_1fr] gap-6 sm:gap-8 items-center rounded-2xl bg-[var(--wl-tint-green)] border-2 border-[var(--wl-emerald)]/40 p-5 sm:p-7">
+            <div>
+              <Pill size={30} weight="duotone" className="text-[var(--wl-emerald)]" />
+              <div className="mt-2.5 sm:mt-3 text-2xl sm:text-3xl font-black tracking-tight text-[var(--wl-ink)]">{t('meds.tileName')}</div>
+              <p className="mt-2 text-sm leading-relaxed text-[var(--wl-sub)] max-w-md">
+                {t('meds.tileBlurb')}
+              </p>
+              {/* Nine chips on two rows at every desktop width, with room
+                  for a longer catalog: short labels, the metadata size, tight
+                  gaps. A third row pushes the day below the text. */}
+              <div className="mt-4 flex flex-wrap gap-1.5">
+                {([['chipReminders', Bell], ['chipSchedules', Clock], ['chipHistory', ClockCounterClockwise], ['chipRefills', Package], ['chipStats', ChartBar], ['chipDoctor', FileText], ['chipPrompt', Sparkle], ['chipMood', Smiley], ['chipAdherence', CalendarCheck]] as const).map(([k, Glyph]) => (
+                  <span key={k} className="inline-flex items-center gap-1 rounded-full border-[1.5px] border-[var(--wl-chip-border)] bg-[var(--wl-card)] px-2.5 py-1 text-[11px] font-semibold text-[var(--wl-chip-text)] [&_svg]:size-3 [&_svg]:text-[var(--wl-emerald)]">
+                    <Glyph weight="duotone" />
+                    {t(`meds.${k}`)}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div aria-hidden="true">
+              <div className="pn-fx-meds-cap relative mx-2 h-16 overflow-hidden rounded-full border-[2.5px] border-[var(--wl-edge)] bg-[var(--wl-card)]">
+                <div className="pn-fx-meds-fill absolute inset-y-0 start-0 flex items-center justify-center bg-[var(--wl-emerald)] text-sm font-extrabold text-[var(--wl-bg)]">
+                  <span dir="ltr" className="pn-fx-meds-due inline-flex items-center gap-2 font-mono"><Clock size={20} weight="bold" />{MEDS[0][0]}</span> {/* rtl-ok: a clock time stays LTR */}
+                  <span className="pn-fx-meds-done absolute inline-flex items-center gap-2"><Check size={20} weight="bold" />{t('meds.tileTaken')}</span>
+                </div>
+                <div className="pn-fx-meds-next absolute inset-y-0 end-0 flex w-1/2 items-center justify-center whitespace-nowrap font-mono text-[13px] text-[var(--wl-ink)]">
+                  {t('meds.med1')}<span className="hidden sm:inline"> · {t('meds.dose1')}</span>
+                </div>
+              </div>
+              <div className="mt-4 space-y-1.5">
+                {MEDS.slice(0, 3).map(([time, name, dose]) => (
+                  <div key={name} className="pn-fx-meds-row flex items-center gap-3 rounded-lg border-[1.5px] border-[var(--wl-line)] bg-[var(--wl-card)] px-3 py-2 text-sm">
+                    <span dir="ltr" className="font-mono text-[11px] text-[var(--wl-sub)]">{time}</span> {/* rtl-ok: a clock time stays LTR */}
+                    <span className="font-semibold text-[var(--wl-ink)]">{t(`meds.${name}`)}</span>
+                    <span className="text-xs text-[var(--wl-sub)]">{t(`meds.${dose}`)}</span>
+                    <span className="pn-fx-meds-ring ms-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-[var(--wl-line)] text-[var(--wl-bg)]">
+                      <Check size={12} weight="bold" />
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
           {/* The slab under the grid, and deliberately outside the "one key"
@@ -1715,7 +1917,7 @@ export function LandingPage({
               </div>
               <p className="mt-4 text-xs text-[var(--wl-sub)]">{t('mdEditor.platforms')}</p>
             </div>
-            <div className="overflow-hidden rounded-xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)]">
+            <div className="overflow-hidden rounded-xl border-2 border-[var(--wl-edge)] bg-[var(--wl-card)]">
               <div className="flex items-center gap-1.5 border-b border-[var(--wl-line)] px-3.5 py-2.5">
                 <span aria-hidden="true" className="h-2 w-2 rounded-full bg-red-400" />
                 <span aria-hidden="true" className="h-2 w-2 rounded-full bg-amber-400" />
@@ -1746,8 +1948,12 @@ export function LandingPage({
           </div>
         </div>
 
-        {/* ── Downloads ─────────────────────────────────────── */}
-        <div id="downloads" className="max-w-4xl mx-auto mt-16 sm:mt-24 mb-14 scroll-mt-24 text-center">
+        {/* ── Downloads ─────────────────────────────────────────
+            One framed panel, the way to get the app: the platforms, the
+            routes and the call to action in its footer. Unframed, the
+            centered stack floated between the Markdown slab and the
+            Under-the-hood card. Spec: ops/design/patterns/145-150.md section 149 */}
+        <div id="downloads" className="mx-auto mt-8 sm:mt-10 mb-14 scroll-mt-24 text-center rounded-3xl border-2 border-accent/40 bg-[var(--wl-tint-blue-deep)] px-5 pt-12 pb-10 sm:px-10 sm:pt-14">
           <Kicker>{t('downloads.kicker')}</Kicker>
           <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-[var(--wl-ink)]">
             {t('downloads.heading')}
@@ -1953,19 +2159,19 @@ export function LandingPage({
               installs, so the app keeps itself current; a channel that UNPACKS it does
               not, which is why Scoop is amber. Apply that test to any channel added here.
               Spec: mockups/downloads-pkgmgr.html */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <button
               type="button"
               onClick={() => { setLinuxOpen(false); setAndroidOpen(false); setPkgOpen((v) => !v); }}
               aria-expanded={pkgOpen}
-              className="flex cursor-pointer items-start gap-2 text-sm font-semibold text-accent transition hover:opacity-80"
+              className="flex cursor-pointer items-start gap-2 text-start rounded-full border border-[var(--wl-ink)]/15 bg-[var(--wl-card)] px-4 py-2 text-sm font-semibold text-[var(--wl-ink)] transition hover:border-accent/60"
             >
               {/* Centred inside a 20px box, which is the text's own line height, so the
                   mark sits on the first line instead of floating between two. These
                   labels name their platforms, so they are long in English and longer in
                   German, and a centred icon beside a wrapped label reads as orphaned.
                   Same box the help chip uses, for the same reason. */}
-              <span className="flex h-5 shrink-0 items-center">
+              <span className="flex h-5 shrink-0 items-center text-accent">
                 <Package size={17} weight="fill" aria-hidden="true" />
               </span>
               {/* This label names the rows in the panel below. Adding or removing a row
@@ -1976,14 +2182,14 @@ export function LandingPage({
               href={GITHUB_RELEASES_URL}
               target="_blank"
               rel="noopener"
-              className="flex items-start gap-2 text-sm font-semibold text-accent transition hover:opacity-80"
+              className="flex items-start gap-2 rounded-full border border-[var(--wl-ink)]/15 bg-[var(--wl-card)] px-4 py-2 text-sm font-semibold text-[var(--wl-ink)] transition hover:border-accent/60"
             >
-              <span className="flex h-5 shrink-0 items-center">
+              <span className="flex h-5 shrink-0 items-center text-accent">
                 <GithubLogo size={17} weight="fill" aria-hidden="true" />
               </span>
               <span>
                 {t('downloads.githubLink')}
-                <ArrowUpRight size={13} className="ms-1.5 inline align-[-1px]" aria-hidden="true" />
+                <ArrowUpRight size={13} className="ms-1.5 inline align-[-1px] text-[var(--wl-sub)]" aria-hidden="true" />
               </span>
             </a>
           </div>
@@ -2030,31 +2236,30 @@ export function LandingPage({
           <p className="mt-8 text-sm text-[var(--wl-sub)]">
             {t('downloads.availability')}
           </p>
-        </div>
-
-        {/* ── CTA repeat ──────────────────────────────────────── */}
-        <div className="max-w-4xl mx-auto mb-14 grid grid-cols-2 sm:flex sm:flex-wrap justify-center items-center gap-2 sm:gap-3">
-          <button
-            type="button"
-            onClick={() => openAuth('create')}
-            className="pn-fx-conic-btn cursor-pointer rounded-full bg-[var(--wl-ink)] text-[var(--wl-bg)] px-3 sm:px-7 py-3.5 text-sm sm:text-base font-bold"
-          >
-            {t('ctaRepeat.getStarted')}
-          </button>
-          <a
-            href="https://try.privacynotes.app/"
-            className="pn-fx-amber inline-flex items-center justify-center gap-2 rounded-full border-2 border-[var(--wl-amber-border)] text-[var(--wl-amber-text)] px-3 sm:px-6 py-3 text-sm sm:text-base font-bold transition"
-          >
-            {t('hero.tryDemo')}
-            <ArrowUpRight size={16} className="shrink-0" aria-hidden="true" />
-          </a>
-          <p className="col-span-2 basis-full text-center mt-1 text-xs text-[var(--wl-muted)]">
-            {t('hero.microcopy')}
-          </p>
+          {/* ── CTA repeat, as the panel's footer ── */}
+          <div className="-mx-5 sm:-mx-10 mt-10 border-t border-accent/20 px-5 pt-9 sm:px-10 grid grid-cols-2 sm:flex sm:flex-wrap justify-center items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={() => openAuth('create')}
+              className="pn-fx-conic-btn cursor-pointer rounded-full bg-[var(--wl-ink)] text-[var(--wl-bg)] px-3 sm:px-7 py-3.5 text-sm sm:text-base font-bold"
+            >
+              {t('ctaRepeat.getStarted')}
+            </button>
+            <a
+              href="https://try.privacynotes.app/"
+              className="pn-fx-amber inline-flex items-center justify-center gap-2 rounded-full border-2 border-[var(--wl-amber-border)] text-[var(--wl-amber-text)] px-3 sm:px-6 py-3 text-sm sm:text-base font-bold transition"
+            >
+              {t('hero.tryDemo')}
+              <ArrowUpRight size={16} className="shrink-0" aria-hidden="true" />
+            </a>
+            <p className="col-span-2 basis-full text-center mt-1 text-xs text-[var(--wl-sub)]">
+              {t('hero.microcopy')}
+            </p>
+          </div>
         </div>
 
         {/* ── Under the hood - dark terminal aesthetic ─────────── */}
-        <div className="max-w-4xl mx-auto mb-14">
+        <div className="mx-auto mb-14">
           <div className="pn-fx-stamp pn-fx-stamp-bright rounded-xl border border-[var(--wl-ink-line)] bg-[var(--wl-ink-card)] p-6 sm:p-7 relative overflow-hidden" data-stamp="ENCRYPTED">
             {/* Subtle grid background */}
             <div
@@ -2127,7 +2332,7 @@ export function LandingPage({
         </div>
 
         {/* ── Mood & Wellness Tracker deep dive ─────────────── */}
-        <div className="max-w-4xl mx-auto mb-14">
+        <div className="mx-auto mb-14">
           <Kicker className="text-[var(--wl-emerald)]">{t('mood.kicker')}</Kicker>
           <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-[var(--wl-ink)]">
             {t('mood.heading')}
@@ -2167,7 +2372,7 @@ export function LandingPage({
               for the same reason the pillar tiles' are: a numeral reads the
               same in every catalog. */}
           <div className="mt-6 grid sm:grid-cols-2 gap-4">
-            <div className="pn-fx-rank rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)] p-5 space-y-2">
+            <div className="pn-fx-rank rounded-2xl border-2 border-[var(--wl-edge)] bg-[var(--wl-card)] p-5 space-y-2">
               <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--wl-tint-green)] text-[var(--wl-emerald)]">
                 <ChartBar size={20} weight="duotone" />
               </div>
@@ -2188,7 +2393,7 @@ export function LandingPage({
               </div>
             </div>
 
-            <div className="pn-fx-rank pn-fx-next rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)] p-5 space-y-2">
+            <div className="pn-fx-rank pn-fx-next rounded-2xl border-2 border-[var(--wl-edge)] bg-[var(--wl-card)] p-5 space-y-2">
               <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--wl-tint-green)] text-[var(--wl-emerald)]">
                 <Moon size={20} weight="duotone" />
               </div>
@@ -2217,7 +2422,7 @@ export function LandingPage({
               </div>
             </div>
 
-            <div className="pn-fx-dose rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)] p-5 space-y-2">
+            <div className="pn-fx-dose rounded-2xl border-2 border-[var(--wl-edge)] bg-[var(--wl-card)] p-5 space-y-2">
               <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--wl-tint-green)] text-[var(--wl-emerald)]">
                 <Pill size={20} weight="duotone" />
               </div>
@@ -2232,7 +2437,7 @@ export function LandingPage({
               </div>
             </div>
 
-            <div className="pn-fx-hand rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)] p-5 space-y-2">
+            <div className="pn-fx-hand rounded-2xl border-2 border-[var(--wl-edge)] bg-[var(--wl-card)] p-5 space-y-2">
               <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--wl-tint-green)] text-[var(--wl-emerald)]">
                 <Export size={20} weight="duotone" />
               </div>
@@ -2272,13 +2477,120 @@ export function LandingPage({
           </div>
         </div>
 
+        {/* ── Medication deep dive ───────────────────────────── */}
+        <div className="mx-auto mb-14">
+          <Kicker className="text-[var(--wl-emerald)]">{t('meds.kicker')}</Kicker>
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-[var(--wl-ink)]">
+            {t('meds.heading')}
+          </h2>
+          <p className="mt-4 text-base text-[var(--wl-sub)] leading-relaxed max-w-xl">
+            {t('meds.intro')}
+          </p>
+
+          {/* The day as one capsule, cut into one segment per dose. A tap
+              moves a dose round: due, taken, skipped, due. The count above,
+              the adherence figure and today's dot in the month below follow
+              it, so the reader does the one thing the pillar asks and sees
+              every surface answer. Green is taken, amber is skipped, the
+              same two colours the Statistics calendar uses. The month is
+              marketing data, like the tracker pills' sample values; only the
+              last dot is live. Below sm a segment shows the time and hides
+              the dose, or four segments cannot share a phone's width. */}
+          <div className="mt-7 flex items-baseline justify-between font-mono text-[11px] uppercase tracking-widest text-[var(--wl-sub)]">
+            <span>{t('meds.todayLabel')}</span>
+            <span>{t('meds.todayCount', { taken: dosesTaken, total: MEDS.length })}</span>
+          </div>
+          <div className="mt-2 flex h-20 overflow-hidden rounded-full border-[3px] border-[var(--wl-edge)] bg-[var(--wl-card)]">
+            {MEDS.map(([time, name, dose], i) => {
+              const state = doses[i];
+              const stateLabel = t(state === 1 ? 'meds.stateTaken' : state === 2 ? 'meds.stateSkipped' : 'meds.stateDue');
+              return (
+                <button
+                  key={name}
+                  type="button"
+                  aria-label={`${t(`meds.${name}`)} ${time}: ${stateLabel}`}
+                  onClick={() => cycleDose(i)}
+                  className={`pn-fx-meds-seg flex flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 border-e-[3px] border-[var(--wl-edge)] last:border-e-0 ${state === 1 ? 'bg-[var(--wl-emerald)] text-[var(--wl-bg)]' : state === 2 ? 'bg-[var(--wl-tint-amber)] text-[var(--wl-amber-text)]' : 'text-[var(--wl-ink)] hover:bg-[var(--wl-tint-green)]'}`}
+                >
+                  <span className="text-xs font-extrabold sm:text-[13px]">{t(`meds.${name}`)}</span>
+                  <span dir="ltr" className="font-mono text-[11px] opacity-80">{time}<span className="hidden sm:inline"> · {t(`meds.${dose}`)}</span></span> {/* rtl-ok: a clock time and a dose stay LTR */}
+                </button>
+              );
+            })}
+          </div>
+          <div className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+            <span dir="ltr" className="text-4xl font-black tracking-tight tabular-nums text-[var(--wl-ink)]">{t('meds.adherencePct', { pct: adherencePct })}</span> {/* rtl-ok: a percentage stays LTR */}
+            <span className="font-mono text-[11px] text-[var(--wl-sub)]">{t('meds.adherenceLabel', { days: MONTH_DOSES.length + 1 })}</span>
+            <span className="ms-auto flex gap-3 font-mono text-[11px] text-[var(--wl-sub)]">
+              <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[var(--wl-emerald)]" />{t('meds.legendTaken')}</span>
+              <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[var(--wl-amber-border)]" />{t('meds.legendSkipped')}</span>
+            </span>
+          </div>
+          <div aria-hidden="true" className="mt-3 grid grid-cols-14 sm:grid-cols-28 gap-1">
+            {MONTH_DOSES.map((taken, i) => (
+              <span key={i} className={`block aspect-square rounded-full ${taken ? 'bg-[var(--wl-emerald)]' : 'bg-[var(--wl-amber-border)]'}`} />
+            ))}
+            <span className={`block aspect-square rounded-full outline outline-2 outline-offset-1 outline-[var(--wl-ink)] ${dosesTaken === MEDS.length ? 'bg-[var(--wl-emerald)]' : dosesTaken > 0 ? 'bg-[var(--wl-emerald)]/50' : doses.includes(2) ? 'bg-[var(--wl-amber-border)]' : 'bg-[var(--wl-line)]'}`} />
+          </div>
+
+          {/* What the pillar adds beyond a log: three cards on the slab lift. */}
+          <div className="mt-6 grid sm:grid-cols-3 gap-4">
+            <div className="pn-fx-slab rounded-2xl border-2 border-[var(--wl-edge)] bg-[var(--wl-card)] p-5 space-y-2">
+              <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--wl-tint-green)] text-[var(--wl-emerald)]">
+                <Clock size={20} weight="duotone" />
+              </div>
+              <div className="font-extrabold text-[var(--wl-ink)]">{t('meds.cardScheduleTitle')}</div>
+              <p className="text-sm text-[var(--wl-sub)] leading-relaxed">
+                {t('meds.cardScheduleBody')}
+              </p>
+              <div aria-hidden="true" className="flex flex-wrap gap-1.5 pt-1">
+                {(['schedDaily', 'schedTwice', 'schedAlternate', 'schedWeekly', 'schedAsNeeded'] as const).map((k) => (
+                  <span key={k} className="rounded-md border-[1.5px] border-[var(--wl-line)] bg-[var(--wl-bg)] px-2 py-0.5 text-[11px] font-semibold text-[var(--wl-ink)]">{t(`meds.${k}`)}</span>
+                ))}
+              </div>
+            </div>
+
+            <div className="pn-fx-slab rounded-2xl border-2 border-[var(--wl-edge)] bg-[var(--wl-card)] p-5 space-y-2">
+              <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--wl-tint-green)] text-[var(--wl-emerald)]">
+                <ClockCounterClockwise size={20} weight="duotone" />
+              </div>
+              <div className="font-extrabold text-[var(--wl-ink)]">{t('meds.cardHistoryTitle')}</div>
+              <p className="text-sm text-[var(--wl-sub)] leading-relaxed">
+                {t('meds.cardHistoryBody')}
+              </p>
+              <div aria-hidden="true" dir="ltr" className="relative mt-1 h-9 font-mono text-[11px] text-[var(--wl-sub)]"> {/* rtl-ok: a timeline runs left to right */}
+                <span className="absolute inset-x-0 top-5 h-0.5 bg-[var(--wl-line)]" />
+                <span className="absolute start-0 top-[14px] h-3 w-3 rounded-full bg-[var(--wl-emerald)]" />
+                <span className="absolute start-[46%] top-[14px] h-3 w-3 rounded-full bg-[var(--wl-emerald)]" />
+                <span className="absolute start-0 top-0">{t('meds.dose2')}</span>
+                <span className="absolute start-[46%] top-0 font-bold text-[var(--wl-ink)]">{t('meds.dose1')}</span>
+                <span className="absolute end-0 top-0">{t('meds.historyToday')}</span>
+              </div>
+            </div>
+
+            <div className="pn-fx-slab rounded-2xl border-2 border-[var(--wl-edge)] bg-[var(--wl-card)] p-5 space-y-2">
+              <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--wl-tint-green)] text-[var(--wl-emerald)]">
+                <Package size={20} weight="duotone" />
+              </div>
+              <div className="font-extrabold text-[var(--wl-ink)]">{t('meds.cardRefillTitle')}</div>
+              <p className="text-sm text-[var(--wl-sub)] leading-relaxed">
+                {t('meds.cardRefillBody')}
+              </p>
+              <div aria-hidden="true" className="flex items-baseline gap-2 pt-1">
+                <span className="text-2xl font-black tracking-tight text-[var(--wl-ink)]">11</span>
+                <span className="font-mono text-[11px] text-[var(--wl-sub)]">{t('meds.refillLeft')} · {t('meds.refillBy', { days: 12 })}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* ── Comparison: why not three apps? ─────────────────── */}
-        <div className="max-w-4xl mx-auto mb-14">
+        <div className="mx-auto mb-14">
           <Kicker>{t('comparison.kicker')}</Kicker>
           <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-[var(--wl-ink)] max-w-2xl mb-6">
             {t('comparison.heading')}
           </h2>
-          <div className="pn-fx-slab grid sm:grid-cols-2 rounded-2xl border-2 border-[var(--wl-ink)] overflow-hidden text-sm">
+          <div className="pn-fx-slab grid sm:grid-cols-2 rounded-2xl border-2 border-[var(--wl-edge)] overflow-hidden text-sm">
             {/* "Them" column */}
             <div className="p-6 bg-[var(--wl-card)] space-y-2.5">
               <div className="font-mono font-semibold text-[var(--wl-sub)] uppercase tracking-[0.18em] text-[10px] mb-3">{t('comparison.typicalSetup')}</div>
@@ -2312,8 +2624,8 @@ export function LandingPage({
               </div>
             </div>
             {/* "Us" column - inverted */}
-            <div className="p-6 bg-[var(--wl-ink)] space-y-2.5">
-              <div className="font-mono uppercase tracking-[0.18em] text-[10px] mb-3 text-[var(--wl-bg)]"><Brand tone="invert" /></div>
+            <div className="p-6 bg-[var(--wl-slab)] space-y-2.5">
+              <div className="font-mono uppercase tracking-[0.18em] text-[10px] mb-3 text-[var(--wl-on-slab)]"><Brand tone="invert" /></div>
               {[
                 t('comparison.usAllInOne'),
                 t('comparison.usTracking'),
@@ -2325,8 +2637,8 @@ export function LandingPage({
                   ? t('comparison.usPriceBeta', { earlyPrice: EARLY_PRICE })
                   : t('comparison.usPrice', { proPrice: PRO_PRICE }),
               ].map((text) => (
-                <div key={text} className="flex items-center gap-2 text-[var(--wl-card)]">
-                  <Check className="shrink-0 text-emerald-400 dark:text-emerald-600" />
+                <div key={text} className="flex items-center gap-2 text-[var(--wl-on-slab)]">
+                  <Check className="shrink-0 text-emerald-400" />
                   {text}
                 </div>
               ))}
@@ -2335,7 +2647,7 @@ export function LandingPage({
         </div>
 
         {/* ── CTA pair between the comparison and pricing slabs ── */}
-        <div className="max-w-4xl mx-auto mb-14 grid grid-cols-2 sm:flex sm:flex-wrap justify-center items-center gap-2 sm:gap-3">
+        <div className="mx-auto mb-14 grid grid-cols-2 sm:flex sm:flex-wrap justify-center items-center gap-2 sm:gap-3">
           <button
             type="button"
             onClick={() => openAuth('create')}
@@ -2353,8 +2665,8 @@ export function LandingPage({
         </div>
 
         {/* ── Free vs Pro (split slab) ────────────────────────── */}
-        <div id="pricing" className="max-w-4xl mx-auto mb-14 scroll-mt-24">
-          <div className="pn-fx-slab grid sm:grid-cols-2 rounded-2xl border-2 border-[var(--wl-ink)] overflow-hidden">
+        <div id="pricing" className="mx-auto mb-14 scroll-mt-24">
+          <div className="pn-fx-slab grid sm:grid-cols-2 rounded-2xl border-2 border-[var(--wl-edge)] overflow-hidden">
           {/* Free tier */}
           <div className="bg-[var(--wl-card)] p-6 sm:p-7 space-y-4">
             <div>
@@ -2480,8 +2792,8 @@ export function LandingPage({
         </div>
 
         {/* ── Storage add-on detail ───────────────────────────── */}
-        <div id="storage-addons" className="max-w-4xl mx-auto mb-14 scroll-mt-24">
-          <div className="pn-fx-lift rounded-2xl border-2 border-[var(--wl-ink)] bg-[var(--wl-card)] px-6 py-5 text-sm text-[var(--wl-sub)]">
+        <div id="storage-addons" className="mx-auto mb-14 scroll-mt-24">
+          <div className="pn-fx-lift rounded-2xl border-2 border-[var(--wl-edge)] bg-[var(--wl-card)] px-6 py-5 text-sm text-[var(--wl-sub)]">
             <div className="flex items-center gap-4">
               <Package size={64} weight="duotone" className="shrink-0 text-accent" />
               <div>
@@ -2499,10 +2811,10 @@ export function LandingPage({
         </div>
 
         {/* ── Plus extras pills ───────────────────────────────── */}
-        <div className="max-w-4xl mx-auto mb-2">
+        <div className="mx-auto mb-2">
           <Kicker>{t('extras.kicker')}</Kicker>
         </div>
-        <div className="pn-fx-popmix flex flex-wrap gap-2 text-xs text-[var(--wl-sub)] mb-14 max-w-4xl mx-auto">
+        <div className="pn-fx-popmix flex flex-wrap gap-2 text-xs text-[var(--wl-sub)] mb-14 mx-auto">
           <FeaturePill>{t('extras.fileVault')}</FeaturePill>
           <FeaturePill>{t('extras.passwordVault')}</FeaturePill>
           <FeaturePill>{t('extras.cardStorage')}</FeaturePill>
@@ -2529,7 +2841,7 @@ export function LandingPage({
              for payment processors. No law-enforcement angle, no
              surveillance framing - just the everyday "your notes
              shouldn't shop for you" story. */}
-        <div className="max-w-4xl mx-auto mb-14">
+        <div className="mx-auto mb-14">
           <Kicker>{t('whyPrivacy.kicker')}</Kicker>
           <h3 className="text-2xl sm:text-4xl font-black tracking-tight text-[var(--wl-ink)] max-w-2xl">
             <Trans i18nKey="landing:whyPrivacy.heading" components={{ accent: <span className="block text-accent" /> }} />
@@ -2568,7 +2880,7 @@ export function LandingPage({
              the attacker's view, the server's view, and the cipher.
              Every label names a real file, so a reader who does not
              recognise "threat model" still sees where they land. */}
-        <div className="max-w-4xl mx-auto mb-14">
+        <div className="mx-auto mb-14">
           <div className="rounded-xl border border-[var(--wl-ink-line)] bg-[var(--wl-ink-card)] p-6 sm:p-7">
             {/* 60/40 rather than even halves: the left column is a heading,
                 a paragraph and a button, and at 50% the paragraph broke into
@@ -2615,7 +2927,7 @@ export function LandingPage({
         </div>
 
         {/* ── What you won't find ─────────────────────────────── */}
-        <div className="max-w-4xl mx-auto mb-4">
+        <div className="mx-auto mb-4">
           <Kicker className="text-[var(--wl-amber-text)]">{t('wontFind.kicker')}</Kicker>
           <div className="flex flex-wrap gap-2">
             {WONT_FIND_KEYS.map((k) => (
@@ -2688,7 +3000,7 @@ export function LandingPage({
                   different colours by mode. A mask takes the ink token
                   itself, so there is one file instead of a light and a
                   dark copy that have to be kept identical by hand.
-                  Spec: ops/docs/ui-patterns.md (section 93, one-colour partner logo) */}
+                  Spec: ops/docs/archive/ui-patterns.md (section 93, one-colour partner logo) */}
               <span
                 role="img"
                 aria-label={t('badges.alternativeToAlt')}
@@ -2776,8 +3088,10 @@ export function LandingPage({
                 >
                   {meta.icon ? (
                     <img src={`/help/icons/${meta.icon}`} alt="" width={16} height={16} loading="lazy" className="h-4 w-4 shrink-0" />
-                  ) : (
+                  ) : id === 'contacts' ? (
                     // A guide with no app logo wears the pillar glyph instead.
+                    <AddressBook size={16} aria-hidden="true" className="h-4 w-4 shrink-0" />
+                  ) : (
                     <Key size={16} aria-hidden="true" className="h-4 w-4 shrink-0" />
                   )}
                   {meta.name}

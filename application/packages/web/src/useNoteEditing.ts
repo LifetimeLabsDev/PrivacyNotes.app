@@ -56,6 +56,7 @@ interface UseNoteEditingReturn {
   isEditorStale: (noteId: string) => boolean;
   handleTagsChange: (id: string, tags: string[]) => Promise<void>;
   handleTrackersChange: (id: string, trackers: JournalTrackerData) => Promise<void>;
+  handleTrackersPatch: (id: string, patch: JournalTrackerData) => Promise<boolean>;
   /** Commit a vault form's Save: the body, and for a login its tracker map,
    *  in one write. Resolves false when the write was refused. */
   handleVaultSave: (id: string, body: string, trackers?: Record<string, unknown>) => Promise<boolean>;
@@ -421,13 +422,13 @@ export function useNoteEditing({
     //   the renamed note itself - the editor holds its live document and
     //     overwrites the rewrite on its next save;
     //   trashed notes - a body write bumps updatedAt, which is the signal
-    //     the trash auto-purge reads, so it would reset the purge clock;
-    //   read-only notes - the flag exists to stop writes the user did not
-    //     make, and this is one.
+    //     the trash auto-purge reads, so it would reset the purge clock.
+    // Read-only notes are rewritten: the flag stops typing, and a rename is
+    // a change the person made, so its links follow it there too (#549).
     // Structured bodies are JSON consumed by a form, not markdown. Rewriting
     // inside one would corrupt a stored field. Same exemption, and the same
     // reasoning, that `import/linkify.ts` carries.
-    const skipped = (n: LocalNote) => n.id === id || n.trashed !== 0 || n.locked === 1 || hasStructuredBody(n.type);
+    const skipped = (n: LocalNote) => n.id === id || n.trashed !== 0 || hasStructuredBody(n.type);
     // The notes this view shows linking the old title are the ones read
     // again; the rewrite is made from each row inside the write, so a body a
     // pull stored since this view last drew it is rewritten, not replaced.
@@ -688,6 +689,34 @@ export function useNoteEditing({
     if (written && before && changesContent(before, { trackers: trackers as Record<string, unknown> })) recordEdit(id, before);
   }
 
+  /**
+   * Merge tracker values into an entry against the row as stored, inside the
+   * write. The check-in card writes this way: it sits beside the editor, and
+   * a snapshot taken when the card rendered could undo a value the entry's
+   * own pills wrote a moment later. A key set to undefined is removed. A
+   * read-only entry takes nothing.
+   */
+  async function handleTrackersPatch(id: string, patch: JournalTrackerData): Promise<boolean> {
+    let rowBefore: LocalNote | undefined;
+    let merged: Record<string, unknown> | undefined;
+    const written = await updateNoteFrom(id, (current) => {
+      if (current.locked === 1 || current.deleted === 1 || current.trashed === 1) return null;
+      rowBefore = current;
+      const next: Record<string, unknown> = { ...((current.trackers as Record<string, unknown> | undefined) ?? {}) };
+      for (const [key, value] of Object.entries(patch)) {
+        if (value === undefined) delete next[key];
+        else next[key] = value;
+      }
+      merged = next;
+      return { trackers: next };
+    });
+    if (!written || !merged) return false;
+    patchLocal(id, { trackers: merged }, new Date().toISOString());
+    scheduleSync();
+    if (rowBefore && changesContent(rowBefore, { trackers: merged })) recordEdit(id, rowBefore);
+    return true;
+  }
+
   async function handleVaultSave(id: string, body: string, trackers?: Record<string, unknown>): Promise<boolean> {
     const patch = trackers === undefined ? { body } : { body, trackers };
     const before = currentNote(id);
@@ -710,6 +739,7 @@ export function useNoteEditing({
     isEditorStale,
     handleTagsChange,
     handleTrackersChange,
+    handleTrackersPatch,
     handleVaultSave,
     scheduleSync,
     patchLocal,

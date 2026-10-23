@@ -95,6 +95,18 @@ export function monthName(year: number, monthIndex: number): string {
   return fmt.format(new Date(year, monthIndex, 1));
 }
 
+/** The one-letter month of a column axis ("J", "F"), where a year fits in twelve columns. */
+export function monthInitial(monthIndex: number): string {
+  const loc = intlLocale();
+  const key = `${loc}:monthInitial`;
+  let fmt = dateFormatters.get(key);
+  if (!fmt) {
+    fmt = new Intl.DateTimeFormat(loc, { month: 'narrow', timeZone: 'UTC' });
+    dateFormatters.set(key, fmt);
+  }
+  return fmt.format(new Date(Date.UTC(2024, monthIndex, 1)));
+}
+
 /** Local calendar date as `YYYY-MM-DD`. Never UTC: an entry belongs to
  *  the day the writer is living, not to the day in Greenwich. */
 export function toLocalIso(d: Date): string {
@@ -181,6 +193,11 @@ const DATE_STYLES = {
   time: { hour: 'numeric', minute: '2-digit' },
   /** A weekday name in a menu. */
   weekday: { weekday: 'long' },
+  /** The month and weekday lines of a date tile (the event card). */
+  monthShort: { month: 'short' },
+  weekdayShort: { weekday: 'short' },
+  /** A month heading: a calendar of days in Statistics. */
+  monthYear: { month: 'long', year: 'numeric' },
   /** Day, month and year as digits, in the order the date setting names. */
   numeric: { day: 'numeric', month: 'numeric', year: 'numeric' },
 } satisfies Record<string, Intl.DateTimeFormatOptions>;
@@ -343,7 +360,9 @@ export function formatInstantWith(prefs: DatePrefs, value: string | Date, style:
   const time = () => (fullHour
     ? dateFormatter(r, { hour: 'numeric' }, 'hour')
     : dateFormatter(r, DATE_STYLES.time, 'time')).format(d);
-  if (r.iso && style !== 'time' && style !== 'weekday') {
+  // Standalone labels have no date order. The event tile asks for its month
+  // and weekday separately; replacing either with a full ISO date breaks it.
+  if (r.iso && style !== 'time' && style !== 'weekday' && style !== 'monthShort' && style !== 'weekdayShort') {
     const day = toLocalIso(d);
     switch (style) {
       case 'row':
@@ -429,7 +448,7 @@ function tokenValue(token: PatternToken, d: Date, tag: string): string {
  * weekday names come from the date locale. Any other Latin letter outside
  * brackets is an error that names it, and so are an unclosed bracket and a
  * pattern that writes nothing. A letter of another script is text.
- * Spec: ops/docs/plans/dates.md (section 3.5)
+ * Spec: ops/docs/archive/dates.md (section 3.5)
  */
 export function formatPattern(d: Date, pattern: string, language: string = activeLocale()): PatternResult {
   const tag = dateLocale(language);

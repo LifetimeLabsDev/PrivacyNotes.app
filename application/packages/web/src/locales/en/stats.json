@@ -3,7 +3,7 @@
   "tabs": {
     "overview": "Overview",
     "writing": "Writing",
-    "wellness": "Wellness"
+    "wellness": "Trackers"
   },
   "writing": {
     "notes": "Notes",
@@ -22,6 +22,44 @@
     "tooltipEdits_other": "{{date}}: {{count}} edits",
     "longestNote": "Longest note: <name>{{title}}</name> ({{count}} words)"
   },
+  "home": {
+    "inARow_one": "{{count}} day in a row",
+    "inARow_other": "{{count}} days in a row",
+    "firstInsight_one": "The first insight needs {{count}} logged day",
+    "firstInsight_other": "The first insight needs {{count}} logged days",
+    "standsOut": "What stands out",
+    "lifts": "Lifts your mood",
+    "onAverage": "{{word}} on average",
+    "daysOf": "{{logged}} of {{days}} days",
+    "medsTaken": "{{pct}}% meds taken",
+    "moodByDay": "Mood, day by day",
+    "moodLegend": "Bars: each day. Line: the 7-day average.",
+    "yourWeek": "Your week",
+    "yourWeekHint": "Average mood by weekday",
+    "weekLine": "Your best day is {{best}} ({{bestAvg}}), the hardest {{worst}} ({{worstAvg}}).",
+    "daysSplit": "{{a}} days against {{b}}",
+    "yourDays": "Your days",
+    "yesOf": "yes on {{yes}} of {{total}}",
+    "goesWith": "What {{name}} goes with",
+    "goesWithHint": "{{side}}, against the other days",
+    "byWeekday": "By weekday",
+    "last30": "Last 30 days",
+    "openEntry": "Open entry",
+    "nothingThatDay": "Nothing logged that day.",
+    "drags": "Drags it down",
+    "nextDay": "next day",
+    "label": {
+      "above": "{{name}} above {{threshold}}",
+      "levels": "{{name}}: {{levels}}",
+      "taken": "{{name}} taken"
+    },
+    "footnoteShort": "Points of mood against your other logged days. More dots, more days behind the number. A link, not proof of a cause.",
+    "trackers": "Your trackers",
+    "tapHint": "Tap one to open it",
+    "delta": "{{delta}} vs the days before",
+    "sureEarly": "Early: {{a}} days with, {{b}} without. Keep logging.",
+    "sureDays": "{{a}} days with, {{b}} without"
+  },
   "range": {
     "7d": "7 days",
     "14d": "14 days",
@@ -39,12 +77,14 @@
       "patterns": "Patterns"
     },
     "empty": {
-      "title": "No wellness data yet.",
+      "title": "No tracker data yet.",
       "hint": "Open a journal entry and log your mood to get started."
     },
     "export": {
       "heading": "Export",
       "downloadJSON": "Download JSON",
+      "downloadCSV": "Download CSV",
+      "csvDate": "Date",
       "doctorPDF": "Doctor PDF",
       "copyAIPrompt": "Show & copy AI prompt",
       "copied": "Copied!",
@@ -52,7 +92,13 @@
       "proBadge": "PRO",
       "usesRange": "Uses the range above",
       "promptShown": "The prompt you copied. Paste it into the chatbot of your choice.",
-      "hidePrompt": "Hide"
+      "hidePrompt": "Hide",
+      "intro": "Your tracker values from journal entries, in the range you pick.",
+      "aiPromptDesc": "A summary of your trackers to paste into a chatbot. It shows here and goes to the clipboard.",
+      "doctorDesc": "A printable report of mood, sleep, medication and trends, to take to an appointment.",
+      "jsonDesc": "Every tracker value with its date and definition, for another app or your own analysis.",
+      "csvDesc": "One row per day and one column per tracker, for a spreadsheet.",
+      "openExport": "Export your tracker data"
     },
     "medication": {
       "adherence": "Adherence",
@@ -62,6 +108,7 @@
       },
       "dosageTimeline": "Dosage timeline",
       "started": "Started {{dosage}}",
+      "startedPlain": "Started",
       "changedTo": "Changed to {{dosage}}"
     },
     "patterns": {
@@ -70,7 +117,9 @@
       "proBadge": "PRO",
       "insightsLocked_one": "{{count}} insight detected. Upgrade to Pro to view",
       "insightsLocked_other": "{{count}} insights detected. Upgrade to Pro to view",
-      "tableLocked": "Upgrade to Pro to see which trackers move your mood"
+      "tableLocked": "Upgrade to Pro to see which trackers move your mood",
+      "waiting_one": "{{count}} more tracker needs more logged days to compare.",
+      "waiting_other": "{{count}} more trackers need more logged days to compare."
     },
     "week": {
       "range": "{{start}} to {{end}}",
@@ -85,7 +134,7 @@
       "reflectionPlaceholder": "How did this week feel overall? Any thoughts to capture...",
       "heading": "Week in review",
       "proBadge": "PRO",
-      "locked": "Upgrade to Pro to see your weekly wellness summary"
+      "locked": "Upgrade to Pro to see your weekly tracker summary"
     },
     "units": {
       "days_one": "{{count}} day",
@@ -111,27 +160,30 @@
       "doseChange": "Around the {{name}} change to {{dosage}} on {{date}}, your mood averaged {{before}} in the {{nBefore}} days before and {{after}} in the {{nAfter}} days after."
     },
     "aiPrompt": {
-      "intro": "I've been tracking my mood and wellness. Please analyze the data below for patterns, trends, and actionable insights.",
+      "intro": "I keep a daily journal with trackers. Below is my data. Mood is my own rating from 1 (awful) to 10 (amazing). A day with no value means I did not log it, not a zero.",
       "overview": "Overview",
       "daysTracked": "Days tracked: {{days}}",
       "avgMood": "Average mood: {{mood}}/10",
       "avgSleep": "Average sleep: {{hours}}h",
       "adherence": "Medication adherence: {{pct}}%",
       "topEmotions": "Top emotions: {{list}}",
-      "moodTrend": "Mood trend (last 30 days)",
+      "moodTrend": "Mood by day",
       "columnDate": "Date",
       "columnMood": "Mood",
+      "columnAverage": "7-day average",
       "sleepDistribution": "Sleep quality distribution",
       "activityDistribution": "Activity level distribution",
       "adherenceHeading": "Medication adherence",
-      "adherenceLine": "{{name}}: taken on {{taken}} of {{total}} tracked days ({{pct}}%)",
+      "adherenceLine": "{{name}}: {{taken}} of {{total}} scheduled doses taken ({{pct}}%)",
       "dosageTimeline": "Dosage timeline",
       "patterns": "Detected patterns",
-      "questions": "What I'd like to know",
-      "question1": "Are there patterns in my mood over time?",
-      "question2": "Do sleep quality and activity level correlate with mood?",
-      "question3": "Any concerning trends I should discuss with a healthcare provider?",
-      "question4": "Actionable suggestions based on the data.",
+      "questions": "How to answer",
+      "question1": "Start with the three findings that matter most, each with the numbers behind it.",
+      "question2": "Keep what the data shows apart from what you guess. Two trackers that move together do not prove that one causes the other.",
+      "question3": "Say when a pattern rests on too few days to trust.",
+      "question4": "Suggest two or three small changes I can try for two weeks, and what to track to see if they work.",
+      "question5": "Point out anything worth bringing to a doctor. Do not diagnose.",
+      "question6": "If the data leaves you unsure, ask me up to three questions first.",
       "footer": "Generated by PrivacyNotes (privacynotes.app)",
       "period": "Period: {{from}} to {{to}}",
       "daysLogged": "Days logged: {{logged}} of {{days}}",
@@ -140,7 +192,7 @@
       "trackerYesLine": "{{name}}: yes on {{yes}} of {{count}} days",
       "effects": "Mood on days with and without",
       "effectLine": "{{name}} ({{rule}}): {{a}} with, {{b}} without, difference {{delta}}, {{na}} / {{nb}} days",
-      "customQuestion": "Does {{name}} relate to my mood, the same day or the day after?"
+      "customQuestion": "Also check whether {{name}} relates to my mood, the same day or the day after."
     },
     "report": {
       "documentTitle": "Wellness report",
@@ -161,9 +213,9 @@
       "activityDistribution": "Activity level distribution",
       "columnLevel": "Level",
       "adherenceHeading": "Medication adherence",
-      "adherenceNote": "Doses taken as a share of the journalled days on which each medication was being tracked. A day the medication was not marked counts as not taken. Days with no journal entry are not counted either way.",
+      "adherenceNote": "Scheduled doses taken, as a share of the doses due on the journalled days since each medication was first logged. A due dose that was not marked counts as not taken. Days with no journal entry, and medications taken as needed, are not counted.",
       "columnMedication": "Medication",
-      "columnTaken": "Taken/Days",
+      "columnTaken": "Taken/Doses",
       "columnRate": "Rate",
       "dosageTimeline": "Medication dosage timeline",
       "started": "Started {{dosage}} on {{date}}",
@@ -209,6 +261,15 @@
       "legend": "Line: 7-day average. Triangle: a dose change.",
       "dose": "{{name}} {{dosage}}"
     },
+    "pixels": {
+      "heading": "Year in pixels",
+      "aria": "Mood of every day in {{year}}, one square per day",
+      "hint": "One square per day, in the mood colors.",
+      "hintTap": "One square per day, in the mood colors. A tap opens the day.",
+      "saveImage": "Save as image",
+      "prevYear": "Previous year",
+      "nextYear": "Next year"
+    },
     "trackers": {
       "heading": "Trackers",
       "tapHint": "A tap opens Explore",
@@ -218,13 +279,22 @@
       "unknown": "Unknown tracker {{id}}",
       "sleepHours": "Sleep hours",
       "sleepQuality": "Sleep quality",
-      "avgDays": "avg, {{count}} days",
-      "sumDays": "total, {{count}} days",
+      "avgDays_one": "avg, {{count}} day",
+      "avgDays_other": "avg, {{count}} days",
+      "sumDays_one": "total, {{count}} day",
+      "sumDays_other": "total, {{count}} days",
+      "daysLogged_one": "{{count}} day logged",
+      "daysLogged_other": "{{count}} days logged",
       "yesNo": "yes on {{yes}}, no on {{no}}",
       "notLogged": "{{count}} not logged",
       "latestLowHigh": "latest {{latest}}, low {{low}}, high {{high}}",
-      "topLevel": "{{level}} on {{count}} days",
+      "topLevel_one": "{{level}} on {{count}} day",
+      "topLevel_other": "{{level}} on {{count}} days",
       "taken": "taken on {{taken}} of {{total}}",
+      "takenDoses_one": "{{taken}} of {{count}} dose taken",
+      "takenDoses_other": "{{taken}} of {{count}} doses taken",
+      "asNeededDoses_one": "{{count}} dose as needed",
+      "asNeededDoses_other": "{{count}} doses as needed",
       "empty": "Nothing logged in this range",
       "unanswered": "{{count}} logged days without an answer"
     },
@@ -245,6 +315,14 @@
       "footnote": "An observation among logged days, not a cause.",
       "higher": "{{outcome}} runs {{delta}} points higher on these days.",
       "lower": "{{outcome}} runs {{delta}} points lower on these days.",
+      "side": {
+        "with": "Days with {{name}}",
+        "without": "Days without",
+        "above": "Above {{threshold}}",
+        "atOrBelow": "{{threshold}} or below",
+        "taken": "Taken",
+        "missed": "Missed"
+      },
       "rule": {
         "yesno": "days with vs without",
         "halves": "above {{threshold}} vs {{threshold}} and below",
@@ -347,7 +425,7 @@
     "milestones": "Milestones",
     "longestStreak": "Longest streak: {{count}} days",
     "openWriting": "Open Writing",
-    "openWellness": "Open Wellness",
+    "openWellness": "Open Trackers",
     "computed": "computed on this device",
     "pillars": {
       "notes": "Notes",
@@ -358,6 +436,68 @@
       "contacts": "Contacts",
       "logins": "Logins"
     },
-    "ledgerEstimated": "Estimated from your notes until counting starts."
+    "ledgerEstimated": "Estimated from your notes until counting starts.",
+    "today": "Today, {{date}}",
+    "lastEdit": "Last edit at {{time}}",
+    "wordsToday_one": "{{formatted}} word today",
+    "wordsToday_other": "{{formatted}} words today",
+    "edited_one": "{{count}} item edited",
+    "edited_other": "{{count}} items edited",
+    "created_one": "{{count}} new",
+    "created_other": "{{count}} new",
+    "scheduled_one": "{{count}} on your calendar",
+    "scheduled_other": "{{count}} on your calendar",
+    "next": "{{title}}, {{time}}",
+    "checkedIn": "{{word}}, checked in",
+    "thisWeek": "This week",
+    "thisWeekHint": "The last 7 days against the 7 before",
+    "vsLastWeek": "{{delta}} vs last week",
+    "activeDays": "Active days",
+    "notesCreated": "Items created",
+    "checkIns": "Check-ins",
+    "streaks": "Streaks",
+    "checkInStreak": "Check-in streak",
+    "keep": "Everything you keep",
+    "keepSub": "new in the last 7 days",
+    "growingTags": "Growing tags",
+    "moodMonth": "{{word}} on average, last 30 days"
+  },
+  "recap": {
+    "thisWeek": "This week",
+    "previous": "Previous week",
+    "next": "Next week",
+    "bestWorst": "{{best}} was your best day ({{bestMood}}), {{worst}} the hardest ({{worstMood}}).",
+    "noMood": "No mood logged this week.",
+    "also": "{{logged}} of 7 days with a mood, {{created}} items created.",
+    "againstWeekBefore": "Changes are against the week before.",
+    "prompt": "What made {{day}} good?"
+  },
+  "writingTab": {
+    "inOneLook": "This range in one look",
+    "wordsWritten": "Words written",
+    "daysWrote": "Days you wrote",
+    "perDay": "{{words}} words a day",
+    "notesStarted": "Notes started",
+    "vsBefore": "{{delta}} vs the days before",
+    "readTime_one": "About {{count}} minute of reading written",
+    "readTime_other": "About {{count}} minutes of reading written",
+    "novels_one": "{{count}} novel's worth, all time",
+    "novels_other": "{{count}} novels' worth, all time",
+    "tagsUsed": "{{count}} tags, {{used}} used in this range",
+    "wordsPerDay": "Words per day",
+    "wordsPerWeek": "Words per week",
+    "biggest": "Your biggest day was {{day}} ({{words}} words). Your best weekday is {{weekday}}.",
+    "year": "Your writing year",
+    "yearHint": "Darker: more edits that day",
+    "hoursHint": "Edits by weekday and hour",
+    "topTags": "Top tags",
+    "lengths": "Note lengths",
+    "short": "Short",
+    "median": "Half your notes are under {{words}} words.",
+    "longest": "Your longest notes",
+    "words_one": "{{formatted}} word",
+    "words_other": "{{formatted}} words",
+    "readHours_one": "About {{count}} hour of reading written",
+    "readHours_other": "About {{count}} hours of reading written"
   }
 }

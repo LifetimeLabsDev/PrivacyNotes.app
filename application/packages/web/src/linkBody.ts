@@ -16,7 +16,7 @@
  *     Both are carried so the export can write them back; nothing in the app
  *     reads them otherwise.
  *
- * Spec: ops/docs/plans/bookmarks-pillar.md (section 2)
+ * Spec: ops/docs/archive/bookmarks-pillar.md (section 2)
  */
 
 import { domainFromUrlString } from './favicon';

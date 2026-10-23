@@ -13,14 +13,14 @@ import { hasSettingsPulled, syncUserSettings, updateLocalSettings, type UserSett
 import { syncPinCache } from './pin';
 import { syncPinWrap } from './pinRecovery';
 import { hasLiveSignIn, signInStamp, signedOutSince } from './liveSignIn';
-import { seedOnboardingNotes, SEED_MEDICATION } from './welcomeNote';
+import { seedOnboardingNotes, SEED_MEDICATION, withSeedFactors } from './welcomeNote';
 import { isDemoMode } from './demo';
 import { reconcileOrphanBlobs, sweepBlobGC } from './imageGC';
 import { pullOpensTrashPurge } from './trashPurge';
 import { markPulledClean, wipeGenerationNow } from './pullState';
 import { publishShareLimit } from './useShareInbox';
 import { perfSpan } from './perf';
-import { setSyncingFlag } from './syncingStore';
+import { beginSyncPass } from './syncingStore';
 import { recordSyncPass } from './syncLog';
 import { classifyPushFailure, recordPassPushFailures } from './pushFailures';
 import { reconcileFlushStash } from './flushStash';
@@ -226,7 +226,7 @@ export function useSyncOrchestrator({
     const openNoteId = selectedIdRef.current;
     const openNoteBefore = openNoteId ? await db.notes.get(openNoteId) : undefined;
     const endPass = perfSpan('syncPass');
-    setSyncingFlag(true);
+    const endSyncing = beginSyncPass();
     // Per-pass error accumulator for the banner. The callback below feeds
     // it from sync.ts.
     let passErrors: { count: number; lastMessage: string } | null = null;
@@ -387,11 +387,12 @@ export function useSyncOrchestrator({
             // which dropped every one of those folders a line later. The
             // seeded journal entries reference this medication, so it has to
             // exist before they are pushed.
-            merged = updateLocalSettings((prev) =>
-              prev.medications?.some((m) => m.id === SEED_MEDICATION.id)
+            merged = updateLocalSettings((prev) => {
+              const withMed = prev.medications?.some((m) => m.id === SEED_MEDICATION.id)
                 ? prev
-                : { ...prev, medications: [...(prev.medications ?? []), SEED_MEDICATION] },
-            );
+                : { ...prev, medications: [...(prev.medications ?? []), SEED_MEDICATION] };
+              return { ...withMed, factors: withSeedFactors(withMed.factors) };
+            });
             // Push the seeded notes to the server BEFORE marking seeding
             // as done. Without this, the flag can land on the server while
             // the notes themselves are still local-only (dirty: 1). If the
@@ -597,7 +598,7 @@ export function useSyncOrchestrator({
         }
         // Verify before the hard-block modal. SessionExpiredError is
         // thrown from ten shape-matched classification sites in sync.ts
-        // with no grace and no retry, and the 2026-08-25 session audit
+        // with no grace and no retry, and a review
         // confirmed transients can wear the right shape (an expired
         // access token seconds before its refresh, clock skew, a
         // proxy-mangled 401 body). One getUser round trip settles it:
@@ -655,7 +656,7 @@ export function useSyncOrchestrator({
       console.error('[sync]', err);
     } finally {
       endPass();
-      setSyncingFlag(false);
+      endSyncing();
       // If this pass surfaced push errors, banner them. If it was clean,
       // clear the prior banner and reset the dismissed key so a future
       // error will surface fresh. See gap #42.

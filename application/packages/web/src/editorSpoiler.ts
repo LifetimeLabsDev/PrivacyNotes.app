@@ -13,7 +13,7 @@
  * the new run and the run stays hidden until the next edit or caret move,
  * so the person sees at once what the mark does.
  *
- * Spec: ops/docs/plans/spoiler-and-copy.md
+ * Spec: ops/docs/archive/spoiler-and-copy.md
  */
 
 import { Mark, getMarkRange, markInputRule, markPasteRule, mergeAttributes } from '@tiptap/core';

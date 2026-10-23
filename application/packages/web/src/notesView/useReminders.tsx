@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LocalNote } from '../db';
-import { BellSimple } from '../icons';
+import { BellSimple, Check } from '../icons';
 import { UpdateToast } from '../UpdateToast';
 import { formatInstant, toLocalIso } from '../intlFormat';
 import { contactBirthday, parseContactBody } from '../contactBody';
 import { entryDayOf } from '../notesViewUtils';
 import { scheduleOf, type Schedule } from '../schedule';
 import { isDemoMode } from '../demo';
+import { CHECK_IN_REMINDER_ID, checkInReminderItem } from '../checkIn';
+import { MEDICATION_REMINDER_PREFIX } from '../medicationReminders';
 import { mayWriteUnstamped } from '../liveSignIn';
 import {
   markUnseen,
@@ -26,8 +28,10 @@ import {
  * a phone, the timer in an open app, the in-app toast with Open and Snooze,
  * and the bell on the Calendar row. The plan re-runs on every change to the
  * items, on foreground and on launch; Pro locked (a refund) plans nothing,
- * which cancels everything this device scheduled.
- * Spec: ops/docs/plans/calendar-pillar-spec.md (step 7, section 8)
+ * which cancels everything this device scheduled. The daily check-in
+ * reminder is one more item of the same plan, free, with no private text.
+ * Spec: ops/docs/archive/calendar-pillar-spec.md (step 7, section 8);
+ * ops/issues/0439.md (Reminder plan)
  */
 
 const NATIVE_MOBILE = __PN_BUILD_PLATFORM__ === 'ios' || __PN_BUILD_PLATFORM__ === 'android';
@@ -526,6 +530,45 @@ function alertOfAction(actionId: string, nid: number | undefined): Scheduled | u
   return rang.length === 1 ? rang[0] : undefined;
 }
 
+/** The permission of this device, for a settings row: Allow while the OS
+ *  would still ask, Allowed, and after a denial the reason and, on a phone,
+ *  the way to the OS page. */
+export function ReminderPermissionControl() {
+  const { t } = useTranslation('settings');
+  const permission = useReminderPermission();
+  if (permission === 'prompt') {
+    return (
+      <button
+        type="button"
+        onClick={() => void askReminderPermission().catch(() => {})}
+        className="shrink-0 rounded-md bg-accent-fill text-white px-3 py-1.5 text-sm font-medium hover:bg-accent-fill-hover transition"
+      >
+        {t('calendar.permissionAsk')}
+      </button>
+    );
+  }
+  if (permission === 'granted') {
+    return (
+      <span role="status" className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-track px-3 py-1.5 text-sm text-pn-muted">
+        <Check size={14} aria-hidden="true" />
+        {t('calendar.permissionGranted')}
+      </span>
+    );
+  }
+  if (permission === 'denied' && REMINDER_PLATFORM === 'mobile') {
+    return (
+      <button
+        type="button"
+        onClick={() => void openReminderSettings().catch(() => {})}
+        className="shrink-0 rounded-md border border-divider px-3 py-1.5 text-sm font-medium text-pn hover:bg-track transition"
+      >
+        {t('calendar.permissionOpenSettings')}
+      </button>
+    );
+  }
+  return null;
+}
+
 /** Show one alert now: the plugin on a desktop, the Notification API in a browser. */
 async function showNow(title: string, body: string, onClick: () => void) {
   if (NATIVE) {
@@ -544,8 +587,10 @@ async function showNow(title: string, body: string, onClick: () => void) {
 
 // ── The hook ──────────────────────────────────────────────────────────
 
+const NO_ITEMS: readonly ReminderItem[] = [];
+
 export function useReminders({
-  notes, loaded, titleOf, folderName, alertsUnlocked, titles, appLock, birthday, onOpen,
+  notes, loaded, titleOf, folderName, alertsUnlocked, titles, appLock, birthday, checkIn, medications = NO_ITEMS, onOpen,
 }: {
   notes: readonly LocalNote[];
   /** The first read of this device's items has landed. Before it the list is
@@ -565,6 +610,14 @@ export function useReminders({
   appLock: boolean;
   /** Settings › Calendar: the birthday alert, or null for none. */
   birthday: { days: number; at: string } | null;
+  /** The daily check-in reminder of this device: its time, and whether
+   *  today's check-in is done. Null while it is off. Free: it rings with
+   *  alerts locked. Opened under CHECK_IN_REMINDER_ID. */
+  checkIn: { time: string; done: boolean } | null;
+  /** The medication reminders of this device (medicationReminderItems).
+   *  Pro, like the calendar alerts: with alerts locked they ring never. They
+   *  never name the medication. */
+  medications?: readonly ReminderItem[];
   onOpen: (id: string, occurrence: string) => void;
 }): { toast: ReactNode } {
   const { t } = useTranslation('shell');
@@ -578,8 +631,10 @@ export function useReminders({
 
   // The items that can ring, with what each may show.
   const items = useMemo<ReminderItem[]>(() => {
-    if (!alertsUnlocked) return [];
     const out: ReminderItem[] = [];
+    if (checkIn) out.push(checkInReminderItem(checkIn.time, toLocalIso(new Date()), checkIn.done));
+    if (!alertsUnlocked) return out;
+    out.push(...medications);
     for (const n of notes) {
       if (n.deleted !== 0 || n.trashed !== 0 || n.archived === 1) continue;
       let s: Schedule | null = null;
@@ -603,13 +658,21 @@ export function useReminders({
     }
     return out;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [notes, alertsUnlocked, birthday?.days, birthday?.at, tick]);
+  }, [notes, alertsUnlocked, birthday?.days, birthday?.at, checkIn?.time, checkIn?.done, medications, tick]);
 
   const plan = useMemo(() => {
     const raw = planAlerts(items, Date.now(), readSnoozes());
     const byId = new Map(items.map((i) => [i.id, i]));
     return raw.map((a) => {
       const item = byId.get(a.itemId)!;
+      // The check-in reminder carries the question and nothing else: no
+      // title, no value, so the lock and the titles switch change nothing.
+      if (a.itemId === CHECK_IN_REMINDER_ID) return { ...a, plain: true, title: t('checkIn.prompt'), body: '' };
+      // A medication reminder says what it is and when, never which one:
+      // a lock screen is read over a shoulder.
+      if (a.itemId.startsWith(MEDICATION_REMINDER_PREFIX)) {
+        return { ...a, plain: true, title: t('alerts.medication'), body: formatInstant(new Date(a.startsAt), 'time') };
+      }
       const start = new Date(a.startsAt);
       const today = toLocalIso(start) === toLocalIso(new Date());
       const when = item.schedule.time ? formatInstant(start, today ? 'time' : 'row') : formatInstant(start, today ? 'weekday' : 'date');
@@ -706,7 +769,8 @@ export function useReminders({
       if (wait > MAX_TIMER_MS || zoneNow() !== planZone) { setTick((n) => n + 1); return; }
       firedHere.current.set(next.key, Date.now());
       markFired(next.key);
-      markUnseen(next.itemId);
+      // The bell is the Calendar row's; the check-in has no item there.
+      if (next.itemId !== CHECK_IN_REMINDER_ID && !next.itemId.startsWith(MEDICATION_REMINDER_PREFIX)) markUnseen(next.itemId);
       setShown(next);
       if (!NATIVE_MOBILE) void showNow(next.title, next.body, () => onOpenRef.current(next.itemId, next.occurrence));
       setTick((n) => n + 1);

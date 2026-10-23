@@ -9,7 +9,9 @@
  * this version does not list goes back to Default without a word. Its colors
  * may change, and a device that shows it then repaints. The build refuses an entry whose code does not parse or fails
  * a check, or whose id another entry has, here or in the community list, or
- * whose name another theme of the same mode has.
+ * whose name another theme of the same mode has. Each entry carries a
+ * description for /themes, in the pattern the community descriptions follow
+ * (ops/docs/community-themes.md, section 3); the build refuses one without.
  *
  * Import-free: themes-page.ts loads this file on its own.
  * Spec: ops/docs/color-themes.md (section 6)
@@ -17,15 +19,17 @@
 export interface TeamTheme {
   id: string;
   code: string;
+  /** What /themes shows on the card and in the viewer; the app does not show it. */
+  description: string;
 }
 
 export const TEAM_THEMES: TeamTheme[] = [
-  { id: 'midnightink0', code: 'pn1:Midnight:0B0B0B,000000,262626,E6E6E6,8A8A8A,E0A458' },
-  { id: 'rosewater000', code: 'pn1:Rose:FDF8F8,F2E4E4,E6D3D3,2A1A1F,6B4E57,A33A5A' },
-  { id: 'frost0000000', code: 'pn1:Frost:3B4252,2E3440,434C5E,ECEFF4,B8C0CE,88C0D0' },
-  { id: 'papermint000', code: 'pn1:Mint:FBFCFA,EEF3EF,DCE5DE,1C2620,55665B,286E50' },
-  { id: 'espresso0000', code: 'pn1:Espresso:2A211C,211A16,3D312A,EDE3D9,B5A597,D99A5B' },
-  { id: 'lavender0000', code: 'pn1:Lavender:FAF8FD,EFEBF7,DDD6EC,221D2E,5F5874,6B46C1' },
-  { id: 'plum00000000', code: 'pn1:Plum:2A2133,211A29,3B2F47,EDE6F3,B3A6C2,E58FB8' },
-  { id: 'apricot00000', code: 'pn1:Apricot:FFF9F4,FBEBDD,F0D9C6,2B1D14,6E5646,A9401B' },
+  { id: 'midnightink0', code: 'pn1:Midnight:0B0B0B,000000,262626,E6E6E6,8A8A8A,E0A458', description: "Ink at midnight: black and charcoal with a warm amber accent." },
+  { id: 'rosewater000', code: 'pn1:Rose:FDF8F8,F2E4E4,E6D3D3,2A1A1F,6B4E57,A33A5A', description: "Rose petals: soft blush pinks with a deep raspberry accent." },
+  { id: 'frost0000000', code: 'pn1:Frost:3B4252,2E3440,434C5E,ECEFF4,B8C0CE,88C0D0', description: "A frozen fjord: cool polar greys with an icy blue accent." },
+  { id: 'papermint000', code: 'pn1:Mint:FBFCFA,EEF3EF,DCE5DE,1C2620,55665B,286E50', description: "Fresh mint leaves: off-white paper with a deep mint-green accent." },
+  { id: 'espresso0000', code: 'pn1:Espresso:2A211C,211A16,3D312A,EDE3D9,B5A597,D99A5B', description: "A dark roast: espresso browns with a caramel crema accent." },
+  { id: 'lavender0000', code: 'pn1:Lavender:FAF8FD,EFEBF7,DDD6EC,221D2E,5F5874,6B46C1', description: "A lavender field: pale lilac surfaces with a deep violet accent." },
+  { id: 'plum00000000', code: 'pn1:Plum:2A2133,211A29,3B2F47,EDE6F3,B3A6C2,E58FB8', description: "Ripe plums: dark purple surfaces with a soft pink accent." },
+  { id: 'apricot00000', code: 'pn1:Apricot:FFF9F4,FBEBDD,F0D9C6,2B1D14,6E5646,A9401B', description: "Ripe apricots: peach paper with a burnt orange accent." },
 ];

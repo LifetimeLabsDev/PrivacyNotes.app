@@ -7,7 +7,6 @@
   "tasksList": {
     "title": "任務",
     "newTaskNote": "新增任務筆記",
-    "newTaskNoteWithHotkey": "新增任務筆記（{{hotkey}}）",
     "hideCompleted": "隱藏已完成任務",
     "showCompleted": "顯示已完成任務",
     "searchPlaceholder": "搜尋任務…",
@@ -235,8 +234,10 @@
     "color": "顏色",
     "colorNone": "無顏色",
     "colorUseDefault": "恢復預設",
+    "icon": "圖示",
     "colorFromFolder": "來自資料夾：{{name}}",
     "colorFromTag": "來自標籤：#{{name}}",
+    "colorOwnHint": "在這裡選的顏色會填滿這則筆記的背景。<setting>資料夾與標籤顏色</setting>不會改變它。",
     "details": "詳細資料",
     "readOnly": "唯讀",
     "readOnlyDescription": "關掉之前都不能編輯。",
@@ -278,12 +279,12 @@
     "endsAt": "結束時間",
     "noEnd": "無",
     "removeFromCalendar": "從日曆移除",
-    "makeEvent": "改成活動就能重複",
+    "makeEvent": "轉換為<b>活動</b>即可重複",
     "typeEvent": "活動",
     "repeatRemoved": "重複設定會被移除"
   },
   "selectionToolbar": {
-    "exitSelectionTooltip": "離開選取（Esc）",
+    "exitSelectionTooltip": "離開選取",
     "exitSelection": "離開選取",
     "unpin": "取消釘選",
     "pin": "釘選",
@@ -315,6 +316,7 @@
     "showSize": "顯示檔案大小",
     "showTags": "顯示資料夾與標籤",
     "showCalendar": "顯示行事曆",
+    "showCheckIn": "顯示打卡卡片",
     "showWorkItems": "顯示<b>工作</b>項目",
     "showPersonalItems": "顯示<b>個人</b>項目",
     "other": "其他",
@@ -333,12 +335,13 @@
     "groupsByLetter": "依首字分組",
     "groupsNoneForSize": "依大小排序時無法使用",
     "compactRows": "精簡列",
-    "compactRowsHint": "不顯示圖示，間距較小"
+    "compactRowsHint": "不顯示圖示，間距較小",
+    "moodCalendar": "在日曆中顯示心情"
   },
   "backfillPopover": {
     "calendarLabel": "日誌行事曆",
     "today": "今天",
-    "chooseEntry": "{{date}} 的日誌"
+    "chooseEntry": "{{date}} 的項目"
   },
   "monthGrid": {
     "previousMonth": "上個月",
@@ -346,6 +349,7 @@
     "dayWithEntry": "{{date}}，有日誌",
     "dayWithEntryIn": "{{date}}，「{{space}}」有日誌",
     "dayWithItems_other": "{{date}}，{{count}} 個項目",
+    "dayWithMood": "{{date}}，心情 {{mood}}",
     "previousWeek": "上一週",
     "nextWeek": "下一週",
     "showMonth": "{{month}}，顯示整個月",
@@ -354,6 +358,7 @@
   "contextMenu": {
     "newNote": "新增筆記",
     "newTask": "新增任務",
+    "newKanban": "新增看板",
     "newLogin": "新增登入資訊",
     "newJournal": "新增日誌",
     "newFile": "新增檔案",
@@ -387,6 +392,8 @@
     "openBookmark": "開啟",
     "copyBookmarkUrl": "複製網址",
     "editBookmark": "編輯書籤",
+    "saveAsNote": "存成筆記",
+    "openClippedNote": "開啟筆記",
     "openInTab": "在分頁中開啟",
     "openInTabHint": "{{key}}-點按",
     "closeTab": "關閉分頁",
@@ -484,6 +491,7 @@
     "assocWindowsManual": "Windows 只允許你自己選。",
     "assocWindowsOpen": "開啟 Windows 設定",
     "assocChangeHint": "到系統設定裡更改。",
+    "assocFinderSteps": "若要更改，請在 Finder 裡對 .md 檔選擇「取得資訊」，在「打開檔案的應用程式」中選取 PrivacyNotes，再按一下「全部更改」。",
     "assocFailed": "無法更改預設的應用程式。",
     "assocWorking": "正在詢問系統…",
     "copyPath": "複製路徑",
@@ -495,7 +503,6 @@
     "importedManyToast": "已把 {{count}} 個檔案存進你加密的筆記。原始檔案完全沒動。",
     "alreadySavedToast": "「{{title}}」已經在你的筆記裡了。",
     "importedManySkippedToast": "已存 {{saved}} 個檔案，略過 {{skipped}} 個已經在筆記裡的。",
-    "footerFiles": "檔案",
     "bridge_other": "Markdown 中有 {{count}} 個結果"
   },
   "importPrompt": {
@@ -705,6 +712,7 @@
     "workEmpty": "「工作」是空的。在「個人」中打開項目或資料夾的選單，選擇「移到工作」。"
   },
   "calendar": {
+    "importLabel": "匯入日曆",
     "moveToToday": "移到今天",
     "moveToTomorrow": "移到明天",
     "moveToNextWeek": "移到下週",
@@ -822,6 +830,7 @@
     "at": "時間",
     "remove": "移除 {{alert}}",
     "reminder": "提醒",
+    "medication": "用藥提醒",
     "open": "開啟",
     "snooze": "10 分鐘後再提醒",
     "offOnPhone": "這支手機上的提醒已關閉",
@@ -831,12 +840,34 @@
   "quickAdd": {
     "group": "建立",
     "items": "項目",
+    "addTo": "新增至",
+    "newListWith_other": "新增任務清單「{{title}}」，含 {{count}} 個任務",
+    "appendHint": "將「{{text}}」新增至你現有的清單或筆記",
+    "appendHintDetail": "輸入 >>，再輸入它名稱的開頭",
+    "appendNone": "還沒有可以新增的任務清單或筆記",
+    "appendNoneDetail": "在 >> 後輸入名稱，即可建立該名稱的任務清單",
+    "linkGroup": "儲存這個連結",
+    "linkDetail": {
+      "bookmark": "保留網址。接著由你命名。",
+      "clip": "將文章文字與圖片存成筆記。",
+      "login": "保留網址並以網站名稱命名。接著由你新增密碼。"
+    },
+    "addTasks_other": "將 {{count}} 個任務新增至「{{title}}」",
+    "addLine": "新增至「{{title}}」",
+    "added": "已新增至「{{title}}」",
+    "notAdded": "沒有任何內容新增至「{{title}}」。請再試一次。",
     "createNamed": "{{type}}：{{title}}",
     "types": {
       "event": "新增活動",
       "note": "新增筆記",
       "task": "新增任務清單",
-      "journal": "新增日誌紀錄"
+      "journal": "新增日誌紀錄",
+      "kanban": "新增看板",
+      "login": "新增登入資訊",
+      "file": "上傳檔案",
+      "contact": "新增聯絡人",
+      "bookmark": "新增書籤",
+      "clip": "擷取網頁"
     },
     "keepAsText": "保留為文字",
     "placeholder": "標題、日期、時間、重複...",
@@ -891,11 +922,90 @@
         "label": "類型",
         "examples": "任務 · 筆記 · 日誌（沒有輸入時就是活動）",
         "insert": "任務"
+      },
+      "append": {
+        "label": "新增至你現有的清單或筆記",
+        "examples": "牛奶, 雞蛋 >> 採買 · 打電話給銀行 >> 雜事",
+        "insert": "牛奶, 雞蛋 >>"
       }
     },
     "label": "快速新增"
   },
   "offline": {
     "notLoaded": "你目前離線，App 的這個部分還沒載入。恢復連線後再試一次。"
+  },
+  "checkIn": {
+    "prompt": "你今天好嗎？",
+    "promptOn": "你在 {{date}} 過得如何？",
+    "edit": "修改已記錄的內容",
+    "anotherDay": "記錄其他日子",
+    "backToToday": "回到今天",
+    "options": "打卡選項",
+    "skipToday": "今天略過",
+    "hide": "隱藏這張卡片",
+    "change": "更改心情",
+    "saved": "已儲存",
+    "chooseTrackers": "選擇追蹤項目",
+    "settings": "打卡設定",
+    "skipped": "今天已略過。",
+    "startOver": "重新開始",
+    "cleared": "已清除打卡。",
+    "hidden": "卡片已隱藏。在清單偏好設定中開啟「顯示打卡卡片」即可重新顯示。",
+    "undo": "復原",
+    "done": "完成",
+    "write": "寫下今天",
+    "writeOn": "寫下 {{date}}",
+    "streak": "連續第 {{n}} 天",
+    "streakFirst": "第 1 天，好的開始",
+    "allDone": "今天全部完成",
+    "niceWork": "為自己撥出時間，做得好。",
+    "locked": "今天的日誌已鎖定",
+    "lockedOn": "{{date}} 的日誌已鎖定",
+    "toggle": "顯示打卡",
+    "hiddenCount_other": "已隱藏 {{count}} 筆打卡。",
+    "showThem": "顯示"
+  },
+  "clipper": {
+    "saveAsNote": "存成筆記",
+    "saving": "正在存成筆記…",
+    "stepPage": "正在下載網頁",
+    "stepPictures": "正在儲存圖片，第 {{done}} 張，共 {{total}} 張",
+    "openNote": "開啟筆記",
+    "alreadySaved": "這個網頁已經存成筆記了（{{date}}）。",
+    "savedOn": "已於 {{date}} 存成筆記",
+    "windowTitle": "擷取網頁",
+    "addressLabel": "網址",
+    "addressPlaceholder": "貼上連結…",
+    "savePictures": "儲存圖片",
+    "savePicturesHint": "最多 20 張圖片，與筆記一起儲存，並計入你的儲存空間。",
+    "downloading": "正在下載網頁…",
+    "downloadingPictures": "正在下載圖片，第 {{done}} 張，共 {{total}} 張",
+    "picturesLine_other": "{{count}} 張圖片 · {{size}}，與筆記一起儲存",
+    "sourceLabel": "來源",
+    "imageLabel": "圖片",
+    "saved": "已存成筆記",
+    "somePicturesFailed_other": "已儲存。有 {{count}} 張圖片無法儲存，會保留為連結。",
+    "storageFull_other": "已儲存，但少了 {{count}} 張圖片：你的儲存空間已滿。",
+    "blocked": "這個網站不允許擷取。書籤已儲存。",
+    "noMainText": "這個網頁找不到主要內文。書籤已儲存。",
+    "tooLong": "這個網頁太長，無法存成一則筆記。書籤已儲存。",
+    "offline": "你目前離線。書籤已儲存；請稍後再試一次「存成筆記」。",
+    "timeout": "網頁載入太久。書籤已儲存；請稍後再試。",
+    "notAPage": "這個網址不是網頁。書籤已儲存。",
+    "refused": "這個網址無法擷取。",
+    "rateLimit": "短時間內儲存了太多網頁。請過一分鐘再試。",
+    "failed": "無法儲存這個網頁。書籤已儲存。",
+    "shortText": "這個網頁的文字很少，可能是登入、Cookie 或驗證頁面。要改為只保留書籤嗎？",
+    "keepBookmark": "保留書籤",
+    "saveAnyway": "仍要儲存",
+    "shortTextSaved": "已儲存，但這個網頁的文字很少，可能是登入、Cookie 或驗證頁面。",
+    "demoLimit": "示範版目前已達擷取上限。註冊帳號即可不受限制地擷取。"
+  },
+  "eventCard": {
+    "show": "顯示排程：{{when}}",
+    "hide": "隱藏排程",
+    "until": "直到 {{day}}",
+    "noAlert": "無提醒",
+    "endsLater": "於另一天結束"
   }
 }

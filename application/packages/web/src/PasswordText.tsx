@@ -41,7 +41,7 @@ export function passwordCharClass(ch: string): PasswordCharClass {
  * The light shades sit a step or two darker than the usual pairing, because
  * the palest surface any theme paints has to clear 4.5 to 1 against all
  * three: these are small monospace glyphs somebody is already squinting at.
- * Spec: ops/docs/ui-patterns.md (a revealed password paints its own value)
+ * Spec: ops/docs/archive/ui-patterns.md (a revealed password paints its own value)
  */
 const CLASS_COLOR: Record<PasswordCharClass, string> = {
   plain: '',
@@ -71,7 +71,7 @@ export function PasswordText({ value }: { value: string }) {
  * selection and the platform mask; while the value is shown its own text
  * goes transparent and a copy above it draws the characters in colour.
  *
- * Spec: ops/docs/ui-patterns.md (a revealed password paints its own value)
+ * Spec: ops/docs/archive/ui-patterns.md (a revealed password paints its own value)
  * ──────────────────────────────────────────────────────────────── */
 
 /** The caret is spelled out because `caret-color` follows `color`, and the

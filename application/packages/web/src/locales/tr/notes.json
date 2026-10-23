@@ -18,10 +18,8 @@
   "header": {
     "new": "Yeni",
     "newNote": "Yeni not",
-    "newNoteHover": "Yeni not ({{hotkey}})",
     "trash": "Çöp kutusu",
-    "newEvent": "Yeni etkinlik",
-    "newEventHover": "Yeni etkinlik ({{hotkey}})"
+    "newEvent": "Yeni etkinlik"
   },
   "folderChip": {
     "clear": "Klasör filtresini temizle: {{folder}}",
@@ -35,15 +33,18 @@
     "ariaLabel": "Yeni kasa öğesi",
     "login": "Giriş bilgisi",
     "card": "Kredi kartı",
-    "sshKey": "SSH anahtarı"
+    "sshKey": "SSH anahtarı",
+    "generator": "Parola"
   },
   "newMenu": {
     "note": "Not",
     "task": "Görev",
+    "kanban": "Kanban panosu",
     "journal": "Günlük",
     "login": "Giriş bilgisi",
     "file": "Dosya",
     "bookmark": "Yer imi",
+    "clipPage": "Sayfayı kırp",
     "contact": "Kişi",
     "event": "Etkinlik",
     "quickAdd": "Hızlı ekle"
@@ -55,8 +56,7 @@
     "keys": "Anahtarlar"
   },
   "journal": {
-    "newEntry": "Yeni günlük kaydı",
-    "newEntryHover": "Yeni günlük kaydı ({{hotkey}})"
+    "newEntry": "Yeni günlük kaydı"
   },
   "tasks": {
     "newTitle": "{{date}} görevleri"
@@ -70,7 +70,8 @@
   "search": {
     "sortOptions": "Sıralama ve görünüm seçenekleri",
     "placeholderVault": "Kasada arayın…",
-    "placeholderNotes": "Notlarda arayın…"
+    "placeholderNotes": "Notlarda arayın…",
+    "placeholderEvents": "Etkinliklerde arayın…"
   },
   "selection": {
     "countOf": "{{total}} öğeden {{selected}} tanesi seçildi",
@@ -82,9 +83,14 @@
     "vault": "Kasa boş.",
     "notes": "Henüz not yok.",
     "archive": "Arşivlenmiş öğe yok.",
+    "trash": "Çöp kutusu boş.",
     "filtered": "Filtrelerinizle eşleşen öğe yok.",
     "clearFilters": "Filtreleri temizle",
-    "filteredAfter": "ve hepsini görün."
+    "filteredAfter": "ve hepsini görün.",
+    "hiddenInAll_other": "{{count}} öğe Tümü'nde göster filtresiyle gizleniyor. Göstermek için Tümü'nün yanındaki filtreyi açın.",
+    "inOtherSpace_other": "{{count}} öğe {{space}} alanınızda. Görmek için kenar çubuğundan {{space}} alanına geçin.",
+    "inOtherSpace_one": "{{count}} öğe {{space}} alanınızda. Görmek için kenar çubuğundan {{space}} alanına geçin.",
+    "hiddenInAll_one": "{{count}} öğe Tümü'nde göster filtresiyle gizleniyor. Göstermek için Tümü'nün yanındaki filtreyi açın."
   },
   "listGroups": {
     "previous7Days": "Son 7 gün",
@@ -104,12 +110,25 @@
     "calendar": "Takvim"
   },
   "footerStats": {
-    "journals": "Günlük",
-    "items": "Öğe",
-    "trashed": "Çöpte",
-    "notes": "Not",
-    "bookmarks": "Yer imi",
-    "contacts": "Kişiler"
+    "journals_other": "Günlük",
+    "journals_one": "Günlük",
+    "items_other": "Öğe",
+    "items_one": "Öğe",
+    "trashed_other": "Çöpte",
+    "trashed_one": "Çöpte",
+    "notes_other": "Not",
+    "notes_one": "Not",
+    "bookmarks_other": "Yer imi",
+    "bookmarks_one": "Yer imi",
+    "contacts_other": "Kişi",
+    "files_other": "Dosya",
+    "lists_other": "Liste",
+    "tasks_other": "Görev",
+    "today": "Bugün",
+    "tasks_one": "Görev",
+    "lists_one": "Liste",
+    "files_one": "Dosya",
+    "contacts_one": "Kişi"
   },
   "toast": {
     "imageUploadFailed": "Görsel yüklenemedi: {{error}}",
@@ -165,7 +184,7 @@
   },
   "zen": {
     "exit": "Zen'den çık",
-    "exitHover": "Zen modundan çık (Esc)",
+    "exitHover": "Zen modundan çık",
     "enterHover": "Zen moduna gir",
     "proHover": "Zen modu (Pro)",
     "enterAriaShortcut": "Zen moduna gir ({{keys}})"
@@ -242,9 +261,12 @@
     "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "İstatistikleri aç",
     "journalCalendar": "Günlük takvimi",
-    "words": "Kelime",
+    "words_other": "Kelime",
+    "words_one": "Kelime",
     "zen": "Zen modu",
     "appearance": "Görünüm",
+    "lockApp": "Uygulamayı kilitle",
+    "lockAppSetUp": "Önce Güvenlik bölümünden bir PIN oluşturun",
     "goToTop": "Başa git",
     "goToEnd": "Sona git",
     "signOut": "Çıkış yap",
@@ -268,6 +290,7 @@
     "editorLabel": "Düzenleyici",
     "formatBarLabel": "Araç çubuğu",
     "listsLabel": "Listeler",
+    "trackersLabel": "Takipler",
     "helpLabel": "Yardım",
     "aboutLabel": "Hakkında",
     "languageLabel": "Dil",
@@ -285,7 +308,7 @@
   },
   "bulkTrash": {
     "title": "Çöp kutusuna taşı",
-    "body_one": "<highlight>{{count}} öğe</highlight> çöp kutusuna taşınsın mı? Sonradan geri yükleyebilirsiniz.",
+    "body_one": "<highlight>{{count}} öğe</highlight> çöp kutusuna taşınsın mı? Öğeyi sonradan geri yükleyebilirsiniz.",
     "body_other": "<highlight>{{count}} öğe</highlight> çöp kutusuna taşınsın mı? Sonradan geri yükleyebilirsiniz.",
     "readOnlyTitle": "Salt okunur",
     "readOnlyAcknowledge": "Anladım",
@@ -331,5 +354,14 @@
   "ambiguousLink": {
     "title": "İki not aynı başlığı taşıyor",
     "body": "<highlight>“{{title}}”</highlight> başlığını birden fazla not taşıyor, bu yüzden bu bağlantı hangisini kastettiğini söylemiyor. Birini yeniden adlandırın, bağlantı diğerine gitsin."
+  },
+  "connections": {
+    "title": "Bağlantılar",
+    "hide": "Bağlantıları gizle",
+    "linkedFrom": "Buraya bağlantı verenler",
+    "linksTo": "Bağlantı verilenler",
+    "missing": "Henüz oluşturulmadı",
+    "protectedHidden_one": "PIN korumalı {{count}} öğe gösterilmiyor",
+    "protectedHidden_other": "PIN korumalı {{count}} öğe gösterilmiyor"
   }
 }

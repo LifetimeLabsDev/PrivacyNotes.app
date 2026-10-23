@@ -40,7 +40,7 @@
           "h": "Neler geliyor",
           "p": [
             "Her etkinlik günüyle, saatiyle ve süresiyle gelir, birkaç güne yayılan etkinlikler de dahil. Tekrarlayan etkinlikler kurallarını korur; Google'da taşıdığınız ya da sildiğiniz bir tekrar, taşınmış ya da silinmiş olarak kalır. Her takvim bir klasör olur.",
-            "Bir etkinliğe koyduğunuz hatırlatıcılar da gelir, e-posta hatırlatıcıları dahil: bunlar uygulama hatırlatıcılarına dönüşür ve çalmaları için PrivacyNotes Pro gerekir. Takviminizin varsayılan hatırlatıcılarını kullanan bir etkinlik hatırlatıcısız gelir, çünkü Google varsayılanları dosyaya yazmaz. Yer, görüntülü görüşme bağlantısı, katılımcılar ve açıklama etkinliğin metnine girer. Saatler, içe aktardığınız sırada bu cihazda göründükleri gibi gösterilir.",
+            "Bir etkinliğe koyduğunuz hatırlatıcılar da gelir, e-posta hatırlatıcıları dahil: [bunlar uygulama hatırlatıcılarına dönüşür](/tr/help/reminders/) ve çalmaları için PrivacyNotes Pro gerekir. Takviminizin varsayılan hatırlatıcılarını kullanan bir etkinlik hatırlatıcısız gelir, çünkü Google varsayılanları dosyaya yazmaz. Yer, görüntülü görüşme bağlantısı, katılımcılar ve açıklama etkinliğin metnine girer. [Saatler, içe aktardığınız sırada bu cihazda göründükleri gibi gösterilir](/tr/help/calendar-time-zones/).",
             "Herhangi bir takvim uygulamasından tek bir .ics dosyası da işe yarar, Apple Takvim ve Outlook dahil.",
             "Aynı dosyayı sonra bir kez daha içe aktarırsanız burada zaten bulunan etkinlikler atlanır, böylece yalnızca yeniler eklenir."
           ]
@@ -66,7 +66,7 @@
         {
           "h": "Neler geliyor",
           "p": [
-            "Başlıklar, not metni ve biçimlendirme olduğu gibi gelir. Keep kontrol listeleri PrivacyNotes'un kendi görev listelerine dönüşür, Keep etiketleriniz de etiket olarak gelir.",
+            "Başlıklar, not metni ve biçimlendirme olduğu gibi gelir. Keep kontrol listeleri [PrivacyNotes'un kendi görev listelerine](/tr/help/tasks/) dönüşür, Keep etiketleriniz de etiket olarak gelir.",
             "Takeout .zip dosyasının tamamını içe aktarıcıya bırakın. Arşivi zaten açtıysanız Takeout/Keep klasöründeki tek bir .json not dosyası da işe yarar."
           ]
         }
@@ -95,7 +95,7 @@
         {
           "h": "Neler geliyor",
           "p": [
-            "Klasör yapısı, not metni ve gömülü görseller yolculuktan sağ çıkar. Notlar başlıklarını korur, ekler ise notlarıyla birlikte şifreli dosya deposuna iner."
+            "Klasör yapısı, not metni ve gömülü görseller yolculuktan sağ çıkar. Notlar başlıklarını korur, ekler ise notlarıyla birlikte [şifreli dosya deposuna](/tr/help/attachment-limits/) iner."
           ]
         }
       ]
@@ -126,9 +126,9 @@
         {
           "h": "Neler geliyor",
           "p": [
-            "Etiketleriniz etiket olarak gelir. #work/projects gibi iç içe etiketler ayrıca klasör olarak yeniden kurulur ve her not en derin etiketinin klasörüne iner. Notlar arasındaki bağlantılar not bağlantısına dönüşür; bir başlığa verilen bağlantı da o başlığı gösterir.",
+            "Etiketleriniz etiket olarak gelir. #work/projects gibi iç içe etiketler ayrıca klasör olarak yeniden kurulur ve her not en derin etiketinin klasörüne iner. [Notlar arasındaki bağlantılar not bağlantısına dönüşür](/tr/help/note-links/); bir başlığa verilen bağlantı da o başlığı gösterir.",
             "Biçimlendirme korunur: başlıklar, kalın, italik, altı çizili, üstü çizili, Bear renklerindeki vurgular, görev listeleri, tablolar, kod blokları, alıntılar, bilgi kutuları, matematik ve dipnotlar. Görseller tam genişlikte açılır, katlanmış başlıklar ise açık gelir.",
-            "Sabitlenmiş notlar sabit kalır, arşivlenmiş notlar Arşiv'e, çöp kutusundaki notlar Çöp kutusu'na iner, salt okunur notlar salt okunur kalır ve her not özgün tarihlerini korur.",
+            "Sabitlenmiş notlar sabit kalır, [arşivlenmiş notlar Arşiv'e iner](/tr/help/archive/), çöp kutusundaki notlar Çöp kutusu'na iner, salt okunur notlar salt okunur kalır ve her not özgün tarihlerini korur.",
             "Notlarınıza ekli görseller ve dosyalar depolamanıza aktarılır. Yedekte bulunmayan bir dosyayı gösteren not yine de içe aktarılır; içe aktarma önizlemesi de bunun kaç bağlantıyı etkilediğini söyler."
           ]
         }
@@ -152,9 +152,9 @@
           "h": "Neler geliyor",
           "p": [
             "Klasör yapınız etiketlere düzleştirilmeden, ne kadar derin olursa olsun gerçek klasörler olarak yeniden kurulur. Work/Projects içindeki bir not, Work > Projects klasörüne iner. Aynı kasayı yeniden aktardığınızda daha önce oluşturduğu klasörler yeniden kullanılır, kopyaları çıkmaz.",
-            "Ücretsiz planda bu klasörlere hemen göz atabilirsiniz; klasör oluşturmak, yeniden adlandırmak ve taşımak Pro özelliğidir, yani bir Obsidian içe aktarması, yükseltmeden önce bunu denemenin iyi bir yolu.",
+            "Ücretsiz planda bu klasörlere hemen göz atabilirsiniz; [klasör oluşturmak, yeniden adlandırmak ve taşımak Pro özelliğidir](/tr/help/folders/), yani bir Obsidian içe aktarması, yükseltmeden önce bunu denemenin iyi bir yolu.",
             "YAML frontmatter anlaşılır: tags, aliases ve oluşturulma tarihleri dikkate alınır, gövdedeki satır içi #etiketler de etiket alanına eklenir. İçe aktarma sırasında \"Notları klasörüne göre de etiketle\" seçeneğini işaretleyerek her klasör adını etiket olarak da ekleyebilirsiniz; etiketle filtrelemeyi sevenler için pratik.",
-            "[[...]] bağlantılarınız çalışmaya devam eder: PrivacyNotes onları not bağlantısı olarak gösterir, yani notlar arasındaki bağlar taşınmadan sağ çıkar. .obsidian yapılandırma klasörü ve .trash otomatik olarak atlanır."
+            "[[...]] bağlantılarınız çalışmaya devam eder: [PrivacyNotes onları not bağlantısı olarak gösterir](/tr/help/note-links/), yani notlar arasındaki bağlar taşınmadan sağ çıkar. .obsidian yapılandırma klasörü ve .trash otomatik olarak atlanır."
           ]
         }
       ]
@@ -177,7 +177,7 @@
         {
           "h": "Super notlar, kontrol listeleri ve 2FA kodları biçimlerini korur",
           "p": [
-            "Super notlar biçimlendirmesini korur: başlıklar, listeler, kontrol listeleri, tablolar, kod blokları, vurgular, renkler, metin hizalama ve daraltılabilir bölümler. Başka bir nota verilen bağlantı not bağlantısına dönüşür ve metindeki #hashtag notun etiketi olur. Kontrol listeleri Görevler'e düşer, hesap tabloları tabloya dönüşür ve kimlik doğrulayıcı kayıtları 2FA anahtarlarıyla birlikte Kasa'da giriş bilgisi olur. İç içe etiketler klasöre dönüşür ve her not etiketlerini de korur.",
+            "Super notlar biçimlendirmesini korur: başlıklar, listeler, kontrol listeleri, tablolar, kod blokları, vurgular, renkler, metin hizalama ve daraltılabilir bölümler. [Başka bir nota verilen bağlantı not bağlantısına dönüşür](/tr/help/note-links/) ve metindeki #hashtag notun etiketi olur. Kontrol listeleri Görevler'e düşer, hesap tabloları tabloya dönüşür ve kimlik doğrulayıcı kayıtları [2FA anahtarlarıyla birlikte Kasa'da giriş bilgisi](/tr/help/vault-totp/) olur. İç içe etiketler klasöre dönüşür ve her not etiketlerini de korur.",
             "Standard Notes'a yüklediğiniz dosyalar onların sunucusunda kalır, bu yüzden yedekte yalnızca adları bulunur. İçe aktarılan her not, bir dosyanın bulunduğu yeri işaretler. Bu dosyaları Standard Notes'tan indirin ve nota yeniden ekleyin."
           ]
         },
@@ -230,7 +230,7 @@
         {
           "h": "Neler geliyor",
           "p": [
-            ".docx dışa aktarmalarından: kalın, italik, altı çizili, üstü çizili, madde işaretli ve numaralı listeler ve onay kutuları (bunlar görev listesine dönüşür) sağ çıkar. .txt dışa aktarmalarından: metin, başka hiçbir şey.",
+            ".docx dışa aktarmalarından: kalın, italik, altı çizili, üstü çizili, madde işaretli ve numaralı listeler ve onay kutuları (bunlar [görev listesine](/tr/help/tasks/) dönüşür) sağ çıkar. .txt dışa aktarmalarından: metin, başka hiçbir şey.",
             "Samsung notuna gömülü görselleri elle taşırsınız: içe aktarıcı, görsel içeren her notu işaretler, böylece resimleri nereye geri koyacağınızı tam olarak bilirsiniz. Metin, başlıklar ve tarihler aynı geçişte gelir."
           ]
         }
@@ -254,7 +254,7 @@
         {
           "h": "Neler nereye iniyor",
           "p": [
-            "Giriş bilgileri Kasa'daki giriş kayıtlarına (site simgeleriyle birlikte), kartlar kart kayıtlarına, SSH anahtarları SSH anahtarı kayıtlarına dönüşür; güvenli notlar ve kimlikler ise okunabilir not olarak gelir. Bitwarden klasörleri etiketlere eşlenir, favoriler de yıldızlı gelir. Kimlik doğrulama anahtarları (TOTP) da birlikte gelir, böylece 2FA kodlarınız çalışmaya devam eder.",
+            "Giriş bilgileri [Kasa'daki giriş kayıtlarına](/tr/help/vault/) (site simgeleriyle birlikte), kartlar kart kayıtlarına, SSH anahtarları SSH anahtarı kayıtlarına dönüşür; güvenli notlar ve kimlikler ise okunabilir not olarak gelir. Bitwarden klasörleri etiketlere eşlenir, favoriler de yıldızlı gelir. Kimlik doğrulama anahtarları (TOTP) da birlikte gelir, böylece [2FA kodlarınız çalışmaya devam eder](/tr/help/vault-totp/).",
             "Dışa aktarılan dosya parolalarınızı düz metin olarak tutar, bu yüzden içe aktarın, her şeyin geldiğini doğrulayın, sonra dosyayı düzgünce silin. PrivacyNotes içinde her şey yeniden şifrelenir, hem cihazınızda hem de sunucuya giderken."
           ]
         }
@@ -305,7 +305,7 @@
         {
           "h": "Neler geliyor, neler gelmiyor",
           "p": [
-            "Tablolar, kod blokları, vurgular, altı çizili metin, metin rengi ve formüller sağ çıkar. Kontrol listeleri görev listesine dönüşür, not hatırlatıcıları notun en üstünde bir göreve dönüşür, ekler ve görseller depolama alanınıza yeniden şifrelenerek girer, web kupürleri kaynak URL'lerini korur, sesli notlar da dökümlerini korur. İç bağlantılar not bağlantılarına dönüşür; Evernote not kimliği dışa aktarmadığı için eşleştirme, bağlanan notun başlığı üzerinden yapılır.",
+            "Tablolar, kod blokları, vurgular, altı çizili metin, metin rengi ve formüller sağ çıkar. [Kontrol listeleri görev listesine dönüşür](/tr/help/tasks/), not hatırlatıcıları notun en üstünde bir göreve dönüşür, ekler ve görseller depolama alanınıza yeniden şifrelenerek girer, web kupürleri kaynak URL'lerini korur, sesli notlar da dökümlerini korur. [İç bağlantılar not bağlantılarına dönüşür](/tr/help/note-links/); Evernote not kimliği dışa aktarmadığı için eşleştirme, bağlanan notun başlığı üzerinden yapılır.",
             "Görevler gelmiyor: dışa aktarma, her görev bloğunun yerine bir \"Content not supported\" yer tutucusu bırakıyor, okunacak başlık, son tarih ya da tamamlanma durumu kalmıyor. Şifreli bloklar şifreli kalır, onları önce Evernote'ta çözün. Özel yazı tipleri, metin hizalaması ve iç içe etiket hiyerarşisi düşer."
           ]
         },
@@ -334,7 +334,7 @@
         {
           "h": "Dosyalar nasıl okunuyor",
           "p": [
-            "YAML frontmatter varsa dikkate alınır: title, created, updated ve tags alanları doğrudan kullanılır, bu da onu PrivacyNotes'un kendi Markdown dışa aktarmaları için geri yükleme yolu yapar. Metnin içine #etiket olarak yazılan etiketler de okunur. Frontmatter'ı olmayan düz dosyalarda dosya adı başlık, içerik ise gövde olur. Ayrıştırıcı bilerek hoşgörülü: .md, .markdown, .mdown, .mkd ve .txt kabul edilir.",
+            "YAML frontmatter varsa dikkate alınır: title, created, updated ve tags alanları doğrudan kullanılır, bu da onu [PrivacyNotes'un kendi Markdown dışa aktarmaları için geri yükleme yolu](/tr/help/export/) yapar. Metnin içine #etiket olarak yazılan etiketler de okunur. Frontmatter'ı olmayan düz dosyalarda dosya adı başlık, içerik ise gövde olur. Ayrıştırıcı bilerek hoşgörülü: .md, .markdown, .mdown, .mkd ve .txt kabul edilir.",
             "Klasörün tamamını ziplerseniz yapı da onunla gelir. Alt klasörler, ne kadar derinde olursa olsun gerçek klasör olarak yeniden kurulur; notlarınızın bağlandığı görseller ve dosyalar da yanlarında içe aktarılır. Hiçbir şeyin bağlanmadığı dosyalar geride bırakılır ve sayısı size söylenir, böylece eski ekran görüntüleriyle dolu bir klasör alanınızı yemez."
           ]
         }
@@ -374,9 +374,9 @@
         {
           "h": "Neler geliyor",
           "p": [
-            "Defterleriniz etiketlere düzleştirilmeden, Notesnook'ta iç içe geçtikleri derinlikte gerçek klasörler olarak yeniden kurulur. Work > Projects içindeki bir not, Work > Projects klasörüne iner.",
+            "[Defterleriniz etiketlere düzleştirilmeden, Notesnook'ta iç içe geçtikleri derinlikte gerçek klasörler olarak yeniden kurulur](/tr/help/folders/). Work > Projects içindeki bir not, Work > Projects klasörüne iner.",
             "Sabitlenmiş ve favori notlar işaretli kalır. Notesnook, Pin ve Favorite'ı iki ayrı özellik olarak tutuyor; PrivacyNotes'ta tek bir Sabitlenmiş listesi var, bu yüzden ikisinden biri olan not oraya iner.",
-            "Vurgular, matematik ve metin hizalaması olduğu gibi gelir: vurgulanmış metin vurgulu kalır, formüller yeniden matematik olarak görüntülenir ve ortalanmış ya da sağa hizalanmış bloklar hizalamalarını korur. Özel yazı tiplerinin, yazı tipi boyutlarının ve metin renklerinin burada karşılığı yok, bu yüzden o stil düşer, metin ise korunur."
+            "Vurgular, metin renkleri, yazı tipi boyutları, üst simge, alt simge, matematik ve metin hizalaması olduğu gibi gelir: her renk paletimizdeki en yakın renge taşınır, seçtiğiniz bir yazı tipi boyutu Küçük, Büyük ya da Çok büyük olur, formüller yeniden matematik olarak görüntülenir ve ortalanmış ya da sağa hizalanmış bloklar hizalamalarını korur. Özel yazı tiplerinin burada karşılığı yok, bu yüzden yazı tipi düşer, metin ise korunur."
           ]
         },
         {
@@ -414,15 +414,15 @@
         {
           "h": "Neler geliyor",
           "p": [
-            "Her kayıt Notlar'a değil Günlükler'e iner ve Journal'ın üstünde gösterdiği tarihi taşır, böylece geçmişiniz şeklini korur.",
-            "Fotoğraflar ve Live Photos görsel olarak, videolar ve ses notları ek olarak içe aktarılır. Apple fotoğrafları çoğu tarayıcının gösteremediği HEIC biçiminde verdiği için PrivacyNotes her birini girişte JPEG'e çevirir. Büyük bir içe aktarmanın yavaş kısmı budur: birkaç yüz fotoğraf birkaç dakika sürebilir, ilerleme satırı da onları sizin için sayar.",
+            "[Her kayıt Notlar'a değil Günlükler'e iner](/tr/help/journal/) ve Journal'ın üstünde gösterdiği tarihi taşır, böylece geçmişiniz şeklini korur.",
+            "Fotoğraflar ve Live Photos görsel olarak, videolar ve ses notları ek olarak içe aktarılır. Apple fotoğrafları çoğu tarayıcının gösteremediği HEIC biçiminde verdiği için PrivacyNotes [her birini girişte JPEG'e çevirir](/tr/help/image-quality/). Büyük bir içe aktarmanın yavaş kısmı budur: birkaç yüz fotoğraf birkaç dakika sürebilir, ilerleme satırı da onları sizin için sayar.",
             "Kalın, italik, altı çizili, üstü çizili, metin renkleri, madde işaretli ve numaralı listeler ve alıntı blokları sağ çıkar."
           ]
         },
         {
           "h": "Fotoğraflar, videolar ve depolama alanınız",
           "p": [
-            "Fotoğraf dolu bir günlük, metin dolu bir günlükten çok daha büyüktür ve depolama alanınızdan diğer her şey gibi düşer. İçe aktarma önizlemesi, siz onaylamadan önce toplamı hesaplar ve sığmayacaksa başlamayı reddeder."
+            "Fotoğraf dolu bir günlük, metin dolu bir günlükten çok daha büyüktür ve [depolama alanınızdan diğer her şey gibi düşer](/tr/help/storage-usage/). İçe aktarma önizlemesi, siz onaylamadan önce toplamı hesaplar ve sığmayacaksa başlamayı reddeder."
           ]
         },
         {
@@ -435,7 +435,7 @@
         {
           "h": "Ruh hali",
           "p": [
-            "Bir ruh hali (State of Mind) kaydettiyseniz, PrivacyNotes o kayıttaki ruh hali ve duygu takiplerini, Apple'ın ifadesi bizimkilerden biriyle eşleştiği her yerde doldurur. Eşleştiremediği her şey ve etiketlediğiniz yaşam alanları bir satır metin olarak saklanır, böylece hiçbir şey kaybolmaz."
+            "Bir ruh hali (State of Mind) kaydettiyseniz, PrivacyNotes o kayıttaki [ruh hali ve duygu takiplerini](/tr/help/choose-trackers/), Apple'ın ifadesi bizimkilerden biriyle eşleştiği her yerde doldurur. Eşleştiremediği her şey ve etiketlediğiniz yaşam alanları bir satır metin olarak saklanır, böylece hiçbir şey kaybolmaz."
           ]
         },
         {
@@ -507,7 +507,7 @@
           "h": "Neler geliyor",
           "p": [
             "Defterleriniz, UpNote'ta iç içe geçtikleri derinlikte gerçek klasörler olarak yeniden kurulur. Birden çok defterde yaşayan bir not ilkine iner ve diğerlerini etiket olarak taşır.",
-            "Pinned ve Quick Access notları Sabitlenmiş olarak gelir. Çöpteki notlar çöpe iner, şablonlar #template etiketiyle not olarak içe aktarılır, notlar arasındaki bağlantılar not bağlantılarına dönüşür ve her not özgün tarihlerini korur.",
+            "Pinned ve Quick Access notları Sabitlenmiş olarak gelir. Çöpteki notlar çöpe iner, şablonlar #template etiketiyle not olarak içe aktarılır, [notlar arasındaki bağlantılar not bağlantılarına dönüşür](/tr/help/note-links/) ve her not özgün tarihlerini korur.",
             "Biçimlendirme sağ çıkar: kontrol listeleri, tablolar, kod blokları, matematik, altı çizili metin, alt ve üst simgeler, metin hizalaması ve vurgular. Katlanabilir bölümler katlanabilir bilgi kutularına dönüşür ve açık ya da kapalı durumlarını korur. Metin renkleri de vurgu renkleri de editörün kendi paletiyle eşleştirilir, böylece sarı bir vurgu sarı, yeşil olan da yeşil kalır. Her not, UpNote'un en son kaydettiği haliyle gelir."
           ]
         },
@@ -554,7 +554,7 @@
           "h": "Neler geliyor",
           "p": [
             "Defterleriniz, Joplin'de iç içe oldukları kadar derin gerçek klasörler olarak yeniden kurulur ve her not etiketlerini ile Joplin'in size gösterdiği oluşturulma ve güncellenme tarihlerini korur.",
-            "Yapılacaklar, işaretleyebileceğiniz bir onay kutusu olan görev notlarına dönüşür; yapılacak tamamlanmışsa kutu zaten işaretli gelir, bitiş tarihi de başlığın yanında yazılı kalır. Notlar arasındaki bağlantılar not bağlantısına dönüşür. Görseller ve ekler depolamanıza aktarılır ve notta yerinde kalır. Web kırpıntıları gibi HTML olarak kaydedilmiş notlar biçimlendirmeleriyle dönüştürülür.",
+            "[Yapılacaklar görev notlarına dönüşür](/tr/help/tasks/): işaretleyebileceğiniz bir onay kutusu gelir, yapılacak tamamlanmışsa kutu zaten işaretlidir, bitiş tarihi de başlığın yanında yazılı kalır. [Notlar arasındaki bağlantılar not bağlantısına dönüşür](/tr/help/note-links/). Görseller ve ekler depolamanıza aktarılır ve notta yerinde kalır. Web kırpıntıları gibi HTML olarak kaydedilmiş notlar biçimlendirmeleriyle dönüştürülür.",
             "Joplin'in Conflicts defterindeki notlar \"conflict\" etiketiyle gelir; böylece onları bulup ayıklayabilirsiniz. Joplin'in şifrelemesini kullanıyorsanız, dışa aktarmadan önce şifre çözmeyi bitirmesine izin verin: hâlâ şifreli olan bir öğe atlanır ve içe aktarma önizlemesi kaç tane olduğunu söyler."
           ]
         }
@@ -615,7 +615,7 @@
             "Sahip olduğunuz her klasör, bıraktığınız iç içe düzenle birlikte, Bookmarks adlı tek bir yeni klasörün içine gelir. Yer imi çubuğu istisnadır: içeriği klasöre dönüşmek yerine bir seviye yukarı çıkar, çünkü her tarayıcı bu çubuğa her dilde başka bir ad verir. Safari hiçbir şeyi işaretlemez, bu yüzden onun Favorites klasörü gerçekten klasör olarak gelir.",
             "Her yer imini kaydettiğiniz gün de birlikte gelir. Hiç tarih yazmayan tek tarayıcı Safari olduğu için, Safari'den gelen dosyadaki her satır bugünün tarihini alır.",
             "Bir yer imiyle birlikte etiketleri ve adres çubuğu anahtar sözcüğünü saklayan tek tarayıcı da Firefox'tur. Dosyanız bunları taşıyorsa önizleme size bunları saklamak için bir onay kutusu sunar ve ikisi de burada etiket olarak görünür.",
-            "Üç şey bilerek geride kalır. Most Visited gibi tarayıcıya özgü kısayollar gerçek bağlantı değildir; sayılır ve atlanır. Site simgeleri de dosyadan okunmaz, çünkü içine kaydedilen kopya eskir; PrivacyNotes yenisini getirir. Ve içinde hiç yer imi olmayan bir klasör yeniden oluşturulmaz.",
+            "Üç şey bilerek geride kalır. Most Visited gibi tarayıcıya özgü kısayollar gerçek bağlantı değildir; sayılır ve atlanır. Site simgeleri de dosyadan okunmaz, çünkü içine kaydedilen kopya eskir; [PrivacyNotes yenisini getirir](/tr/help/bookmarks/). Ve içinde hiç yer imi olmayan bir klasör yeniden oluşturulmaz.",
             "Aynı dosyayı iki kez içe aktarmak güvenlidir. Adresini zaten kaydettiğiniz bir yer imi yeniden eklenmek yerine atlanır ve önizleme kaç tane olduğunu söyler."
           ]
         },
@@ -679,7 +679,7 @@
         {
           "h": "Neler geliyor",
           "p": [
-            "Her satır; sitesi, kullanıcı adı ve parolasıyla birlikte bir giriş bilgisine dönüşür, tarayıcının yanında tuttuğu not da gelir. Üçü içinde tarihi yazan tek tarayıcı Firefox, bu yüzden onun kayıtları ilk kaydettiğiniz günü korur, diğerleri bugünün tarihiyle gelir. Kimlik doğrulama anahtarını dışa aktaran tek tarayıcı Safari, o da yalnızca doğrulama kodlarını Safari'de tuttuysanız. Öyleyse kod burada da çalışmaya devam eder.",
+            "Her satır; sitesi, kullanıcı adı ve parolasıyla birlikte bir giriş bilgisine dönüşür, tarayıcının yanında tuttuğu not da gelir. Üçü içinde tarihi yazan tek tarayıcı Firefox, bu yüzden onun kayıtları ilk kaydettiğiniz günü korur, diğerleri bugünün tarihiyle gelir. Kimlik doğrulama anahtarını dışa aktaran tek tarayıcı Safari, o da yalnızca doğrulama kodlarını Safari'de tuttuysanız. Öyleyse [kod burada da çalışmaya devam eder](/tr/help/vault-totp/).",
             "Tarayıcılar her oturum açma sayfası için ayrı bir kayıt tutar, bu yüzden büyük bir dosyada aynı şirkete ait birkaç satır bulunur. Hepsi içe aktarılır, sonrasında birleştirebilir veya silebilirsiniz.",
             "Tarayıcı parolaları tek bir düz listede tutar, dolayısıyla yeniden kurulacak bir klasör yapısı yoktur. Bunun yerine her giriş bilgisi etiketli gelir ve tek tıkla tüm partiyi karşınıza getirir."
           ]
@@ -774,7 +774,7 @@
         {
           "h": "Zettelkasten bağlantıları metnini korur, hedefini değil",
           "p": [
-            "Zettlr notları kimlik numarasıyla bağlar, yani bir bağlantı [[20260823120000]] biçiminde okunur. Biz not bağlantılarını yazıldıkları gibi bırakırız; dolayısıyla kimlik numaralı bir bağlantı burada ancak bir notun başlığı gerçekten o numaraysa hedefini bulur. Dosya adıyla yazılan bağlantılar normal çalışır, bu yüzden onlara güveniyorsanız dışa aktarmadan önce iç bağlantı biçiminizi dosya adına geçirin.",
+            "Zettlr notları kimlik numarasıyla bağlar, yani bir bağlantı [[20260823120000]] biçiminde okunur. [Biz not bağlantılarını yazıldıkları gibi bırakırız](/tr/help/note-links/); dolayısıyla kimlik numaralı bir bağlantı burada ancak bir notun başlığı gerçekten o numaraysa hedefini bulur. Dosya adıyla yazılan bağlantılar normal çalışır, bu yüzden onlara güveniyorsanız dışa aktarmadan önce iç bağlantı biçiminizi dosya adına geçirin.",
             "[@doe2026] gibi kaynak anahtarları bizim için metindir. Değişmeden gelirler ve tıklanabilir olmaktan çıkarlar."
           ]
         },
@@ -812,6 +812,57 @@
           "h": "İki uzantı da olur",
           "p": [
             "Notes kutudan çıktığı hâliyle .txt yazar; siz ya da yöneticiniz ayarı değiştirdiğinde .md yazar. İkisini de burada okuyoruz, ayrıca .markdown, .mdown ve .mkd de okunur, yani dışa aktarmadan önce ne bir şeyin adını değiştirmeniz ne de sunucuya dokunmanız gerekir."
+          ]
+        }
+      ]
+    },
+    "contacts": {
+      "app": "Kişiler (vCard)",
+      "title": "Kişilerinizi dışa aktarın",
+      "metaTitle": "Kişilerinizi vCard olarak dışa aktarma - PrivacyNotes",
+      "lead": "Her telefon ve adres defteri kişilerinizi tek bir .vcf dosyası olarak dışa aktarabilir, PrivacyNotes da bu dosyayı fotoğraflarıyla birlikte doğrudan okur.",
+      "sections": [
+        {
+          "h": "iPhone'unuzdan dışa aktarın",
+          "steps": [
+            "Kişiler uygulamasını açın ve sol üst köşedeki \"Listeler\" seçeneğine dokunun.",
+            "\"Tüm Kişiler\" öğesine dokunup basılı tutun, ardından Dışa Aktar seçeneğini seçin.",
+            ".vcf dosyasını Dosyalar'a kaydedin ya da içe aktaracağınız cihaza AirDrop ile gönderin."
+          ]
+        },
+        {
+          "h": "Mac'inizden veya iCloud'dan dışa aktarın",
+          "steps": [
+            "Kişiler'de \"Tüm Kişiler\" öğesini seçin ve Command-A tuşlarına basın.",
+            "Dosya > Dışa Aktar > vCard'ı Dışa Aktar seçeneğini seçin.",
+            "[icloud.com/contacts](https://www.icloud.com/contacts) adresinde tümünü seçin, ardından \"...\" menüsünü açıp \"vCard'ı Dışa Aktar\" seçeneğini seçin."
+          ]
+        },
+        {
+          "h": "Android'den veya Google Contacts'tan dışa aktarın",
+          "steps": [
+            "Google Contacts uygulamasında \"Fix & manage\" (düzelt ve yönet) > \"Export to file\" (dosyaya aktar) seçeneğine dokunun.",
+            "[contacts.google.com](https://contacts.google.com) adresinde Export (dışa aktar) seçeneğini seçin, ardından \"vCard (for iOS Contacts)\" biçimini seçin.",
+            "Samsung telefonda Kişiler > Kişileri yönet > Kişileri içe veya dışa aktar > Dışa aktar yolunu izleyin."
+          ]
+        },
+        {
+          "h": "CSV değil, vCard seçin",
+          "p": [
+            "Google, vCard'ın yanında iki CSV biçimi de sunar. İçe aktarıcı yalnızca .vcf dosyalarını okur, bu yüzden bir CSV dosyası dosya seçicide görünmez. Yeniden dışa aktarın ve vCard'ı seçin."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Dosyadaki her kart gelir: adlar, telefonlar, e-posta adresleri, posta adresleri, doğum günleri ve diğer tarihler, web siteleri, sosyal profiller ve notlar. Kendi etiketleriniz yazdığınız gibi kalır, yani \"Annemin iş hattı\" yine \"Annemin iş hattı\" olarak kalır.",
+            "Dosyanın içindeki bir fotoğraf gelir. Yalnızca bir web bağlantısı olan fotoğraf bağlantı olarak kalır ve hiçbir şey indirilmez. [Fotoğraflar depolama alanınıza sığmadığında](/tr/help/storage-usage/) kişiler yine içe aktarılır, fotoğraflar dışarıda kalır."
+          ]
+        },
+        {
+          "h": "Aynı dosyayı istediğiniz zaman yeniden içe aktarın",
+          "p": [
+            "İkinci bir içe aktarma, zaten sahip olduğunuz kişileri atlar. Her kartı önce kimliğiyle, sonra ad ve ortak bir telefon numarasıyla, sonra da ortak bir e-posta adresiyle eşleştirir. Daha önce kaydettiğiniz kişiler değiştirilmez, bu yüzden burada yaptığınız düzenlemeler güvende kalır."
           ]
         }
       ]

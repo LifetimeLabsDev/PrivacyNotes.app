@@ -10,6 +10,8 @@
     "back": "Zurück",
     "next": "Weiter",
     "remove": "Entfernen",
+    "deleteConfirm": "Löschen?",
+    "removeConfirm": "Entfernen?",
     "copy": "Kopieren",
     "rename": "Umbenennen",
     "create": "Erstellen",
@@ -59,15 +61,17 @@
   },
   "palette": {
     "label": "Befehle",
-    "open": "Befehle (>)",
+    "open": "Befehle",
     "empty": "Kein passender Befehl",
     "groups": {
+      "features": "Funktionen",
       "commands": "Befehle",
       "new": "Neu",
-      "goTo": "Gehe zu"
+      "goTo": "Gehe zu",
+      "themes": "Designs"
     },
     "commands": {
-      "quickSwitcher": "Zu einem Eintrag oder einer Einstellung springen",
+      "quickSwitcher": "Ninja öffnen: Eintrag finden, alles hinzufügen, Befehl ausführen",
       "historyBack": "Zurück",
       "historyForward": "Vorwärts",
       "toggleSidebar": "Seitenleiste ein-/ausblenden",
@@ -93,9 +97,9 @@
     }
   },
   "quickSwitcher": {
-    "label": "Zu einem Eintrag oder einer Einstellung springen",
-    "jumpTo": "Springen",
-    "placeholder": "Titel oder Einstellung eingeben, oder > für Befehle",
+    "label": "Ninja: Eintrag oder Einstellung finden, alles hinzufügen, Befehl ausführen",
+    "jumpTo": "Ninja",
+    "placeholder": "Ninja zu Diensten: ein Titel, + zum Hinzufügen, > für Befehle",
     "recent": "Zuletzt",
     "empty": "Kein Eintrag und keine Einstellung mit diesem Namen",
     "searchAll": "Alles durchsuchen: „{{query}}“",
@@ -114,6 +118,7 @@
     "tagItems_other": "{{count}} Einträge",
     "emptyTags": "Kein Tag mit diesem Namen",
     "emptyFolders": "Kein Ordner mit diesem Namen",
+    "emptyVault": "Noch nichts hier. Tippe +, um deinen ersten Eintrag hinzuzufügen.",
     "onlyTags": "Tags",
     "onlyFolders": "Ordner",
     "showOnlyTags": "Nur Tags",
@@ -124,7 +129,13 @@
     "createTag": "Tag #{{name}} erstellen",
     "createFolder": "Ordner „{{name}}“ erstellen",
     "newTag": "Neues Tag",
-    "newFolder": "Neuer Ordner"
+    "newFolder": "Neuer Ordner",
+    "goToDay": "Zum Tag springen",
+    "inText": "Im Text",
+    "actions": "Aktionen",
+    "back": "zurück",
+    "actionsPlaceholder": "Aktionen filtern",
+    "onlyCreate": "hinzufügen"
   },
   "cardForm": {
     "cardholderName": "Karteninhaber",
@@ -182,46 +193,48 @@
     "removeTag": "{{tag}} entfernen"
   },
   "loading": {
+    "pause": "Sprüche anhalten",
+    "play": "Sprüche abspielen",
     "lines": [
-      "lade dein verschlüsseltes grübeln…",
-      "moment, wir enttäuschen gerade werbetreibende.",
-      "zu verschlüsselt, um sich zu kümmern.",
-      "schweizer banktresor-energie fürs notizenmachen.",
-      "wir beschützen deine dusch-gedanken.",
-      "deine geheimnisse haben den nächsten neustart überlebt.",
-      "nichts verlässt das gerät nackt.",
-      "öffne leise den tresor…",
-      "kühllager für warme gedanken.",
-      "diese notiz respektiert ihre privatsphäre selbst.",
-      "lesen unmöglich. syncen möglich.",
-      "lokal entschlüsselt. global ignoriert.",
-      "deine notizen halten abstand.",
-      "geheimtext rein, geheimtext raus.",
-      "wieder ein schöner tag zum verschlüsseln.",
-      "geheimnisse langweilig halten seit tag eins.",
-      "du schreibst es. niemand liest es.",
-      "privatsphäre ohne den ted talk.",
-      "entschlüsseln, geht keinen was an.",
-      "wir halten die cloud verwirrt.",
-      "server weiß nichts. server mag das so.",
-      "weniger überwachung. mehr notizen.",
-      "verschlüsselter unsinn, wie erwartet.",
-      "mathematisch nicht verfügbar.",
-      "null wissen. maximale dreistigkeit.",
-      "tracking deaktiviert, emotional und technisch.",
-      "dein gerät hütet den klatsch.",
-      "lokal angebauter klartext.",
-      "verwandle gedanken in unlesbaren brei.",
-      "nur du und die schlüssel.",
-      "private gedanken im privaten modus.",
-      "deine künftigen leaks bleiben fiktiv.",
-      "wieder eine notiz vorm kapitalismus versteckt.",
-      "privatsphäre ist hier kein aufpreis.",
-      "sicherheit durch echte sicherheit.",
-      "leiser widerstand gegen datenhändler.",
-      "kein ki-trainingsmaterial entdeckt.",
-      "stärker verschlüsselt als nötig.",
-      "privatsphäre: wird geladen.",
+      "schweizer banktresor-energie fürs notizenmachen",
+      "wir beschützen deine dusch-gedanken",
+      "deine notizen sind auf deinem gerät verschlüsselt",
+      "kühllager für warme gedanken",
+      "wieder ein schöner tag zum verschlüsseln",
+      "geheimnisse langweilig halten seit tag eins",
+      "privatsphäre ohne den ted talk",
+      "wir halten die cloud verwirrt",
+      "der server speichert geheimtext. er findet ihn öde",
+      "weniger überwachung. mehr notizen",
+      "verschlüsselter unsinn, wie erwartet",
+      "tracking deaktiviert, emotional und technisch",
+      "dein gerät hütet den klatsch",
+      "private gedanken im privaten modus",
+      "wieder eine notiz vorm kapitalismus versteckt",
+      "privatsphäre ist hier kein aufpreis",
+      "sicherheit durch echte sicherheit",
+      "leiser widerstand gegen datenhändler",
+      "kein ki-trainingsmaterial entdeckt",
+      "stärker verschlüsselt als nötig",
+      "nur signal. keine überwachung",
+      "vertrauensprobleme, zu software verarbeitet",
+      "deine gedanken bleiben unverkäuflich",
+      "datensammler fanden nichts als traurigkeit",
+      "dein tresor bleibt aggressiv verschlüsselt",
+      "schweizer neutralität, nur für notizen",
+      "keine werbung. keine tracker. kein plot-twist",
+      "open source, damit du die mathe selbst prüfen kannst",
+      "geheimtext ist unsere liebessprache",
+      "wir machen deine notizen langweilig für fremde",
+      "dein tagebuch hat angerufen. es will privatsphäre",
+      "dein stimmungs-tracker hat dich vermisst",
+      "deine ideen, ohne publikum",
+      "dein tagebuch hat über nacht dichtgehalten",
+      "ein privater ort für alles, was du nie posten würdest",
+      "hier entscheidet kein algorithmus, was du siehst",
+      "dein gedankenchaos ist sicher verstaut",
+      "schreiben ist denken. denken ist privat",
+      "es wurden keine influencer befragt",
       "lade geheimnisse verantwortungsvoll.",
       "nur signal. keine überwachung.",
       "wieder ein verschlüsseltes meisterwerk im anflug.",
@@ -236,6 +249,27 @@
       "entschlüssle lokal existenzielle gedanken…",
       "dein tresor bleibt aggressiv unlesbar.",
       "schweizer neutralität, aber für notizen."
+    ],
+    "loadingOnly": [
+      "lade dein verschlüsseltes grübeln",
+      "moment, wir enttäuschen gerade werbetreibende",
+      "deine geheimnisse haben den nächsten neustart überlebt",
+      "öffne leise den tresor",
+      "lokal entschlüsselt. global ignoriert",
+      "entschlüsseln, geht keinen was an",
+      "lokal angebauter klartext",
+      "verwandle gedanken in unlesbaren brei",
+      "das nächste verschlüsselte meisterwerk kommt",
+      "schaffe ordnung im verschlüsselten chaos",
+      "entschlüssle lokal existenzielle gedanken",
+      "wärme die schlüssel auf",
+      "suche deinen roten faden",
+      "zähle deine offenen aufgaben. ganz ohne urteil",
+      "während dieses ladens lief keine werbung",
+      "lege deine notizen dorthin zurück, wo du sie gelassen hast",
+      "entwirre die gedanken von gestern",
+      "sortiere bits in eine schöne reihenfolge",
+      "erinnere mich an das, was du dir merken wolltest"
     ]
   },
   "neverBackedUp": {
@@ -245,5 +279,57 @@
     "changesOne": "Die letzten Änderungen sind nicht gesichert und würden verloren gehen.",
     "changesSome_one": "{{count}} dieser Notizen hat Änderungen, die nicht gesichert sind und verloren gehen würden.",
     "changesSome_other": "{{count}} dieser Notizen haben Änderungen, die nicht gesichert sind und verloren gehen würden."
+  },
+  "ninja": {
+    "recent": "Zuletzt",
+    "topHit": "Bester Treffer",
+    "trashEmpty": "Der Papierkorb ist leer",
+    "allThemes": "Alle Designs",
+    "features": {
+      "stats": {
+        "label": "Statistiken",
+        "detail": "Dein Schreiben, deine Serien und Tracker im Zeitverlauf"
+      },
+      "trackers": {
+        "label": "Tracker",
+        "detail": "Stimmung, Gewohnheiten, Faktoren und Medikamente"
+      },
+      "medication": {
+        "label": "Medikamente",
+        "detail": "Dosen, Uhrzeiten und Erinnerungen"
+      },
+      "yearInPixels": {
+        "label": "Jahr in Pixeln",
+        "detail": "Jeder Tag des Jahres als ein farbiges Quadrat"
+      },
+      "importExport": {
+        "label": "Import & Export",
+        "detail": "Notizen hereinholen, ein Backup mitnehmen"
+      },
+      "generator": {
+        "label": "Passwortgenerator",
+        "detail": "Ein starkes Passwort oder eine Passphrase, bereit zum Kopieren"
+      },
+      "themes": {
+        "label": "Designs",
+        "detail": "Farbdesigns für hell und dunkel"
+      }
+    },
+    "new": {
+      "medication": "Neues Medikament",
+      "customTracker": "Neuer benutzerdefinierter Tracker"
+    },
+    "commands": {
+      "syncResume": "Synchronisierung fortsetzen",
+      "changelog": "Was ist neu",
+      "help": "Hilfe",
+      "themesPage": "Community-Designs",
+      "website": "PrivacyNotes-Website"
+    },
+    "themes": {
+      "word": "Design",
+      "light": "Helles Design",
+      "dark": "Dunkles Design"
+    }
   }
 }

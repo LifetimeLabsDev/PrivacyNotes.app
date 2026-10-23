@@ -5,7 +5,7 @@
  * so the builder never reorders anything and the sort direction needs no code.
  *
  * Generic over the item, so the list shell of every pane can call it.
- * Spec: ops/docs/plans/list-groups.md
+ * Spec: ops/docs/archive/list-groups.md
  */
 import type { SortField } from './listPrefs';
 

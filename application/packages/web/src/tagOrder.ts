@@ -14,8 +14,10 @@
  * loading the note store: which tag gives a note its color follows it too.
  * Spec: issue #259.
  */
+const tagCollator = new Intl.Collator(undefined, { sensitivity: 'base', numeric: true });
+
 export function sortTags(tags: string[]): string[] {
   return tags
     .slice()
-    .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base', numeric: true }));
+    .sort(tagCollator.compare);
 }

@@ -1,7 +1,9 @@
 {
   "shell": {
     "title": "설정",
-    "allSettings": "모든 설정"
+    "allSettings": "모든 설정",
+    "fillWindow": "창 전체 사용",
+    "restoreWindow": "기본 크기로 돌아가기"
   },
   "account": {
     "title": "계정",
@@ -104,6 +106,11 @@
     "sharedSlot_other": "설치 {{count}}개가 기기 슬롯 하나를 공유해요",
     "added": "추가 {{time}}",
     "lastActive": "마지막 활동 {{time}}",
+    "versionUnknown": "버전 알 수 없음",
+    "idLabel": "ID",
+    "browser": "브라우저",
+    "update": "업데이트",
+    "updateHint": "이 버전은 더 이상 동기화할 수 없어요. 이 기기에서 앱을 업데이트하세요.",
     "removeAll": "모두 제거",
     "recentlyRemoved": "최근 제거됨",
     "removedAt": "{{time}} 제거됨"
@@ -181,6 +188,8 @@
     "faviconsProxy": "아이콘은 저희 프록시를 거쳐 불러와요. 이 기기에서만 적용돼요.",
     "invisiblesTitle": "보이지 않는 문자",
     "invisiblesDesc": "쓰는 동안 공백, 줄바꿈, 문단 기호를 보여줘요.",
+    "listsTabGeneral": "일반",
+    "listsTabSidebar": "사이드바 및 전체",
     "sidebarTitle": "<sb>사이드바</sb> 및 <all>전체</all>",
     "sidebarDesc": "사이드바에 표시할 뷰와 전체 목록에 넣을 항목을 정해요.",
     "colInSidebar": "사이드바",
@@ -201,14 +210,30 @@
     "contentWidthFull": "전체",
     "lineSpacingTitle": "줄 간격",
     "noteColorsTitle": "폴더와 태그 색상",
+    "noteColorsPickerTitle": "모든 폴더와 태그에 적용",
     "noteColorsDesc": "노트에 폴더나 태그의 색을 어떻게 보여 줄지 정해요: 노트 전체, 아이콘만, 또는 보여 주지 않기.",
     "noteColorsBackground": "배경",
     "noteColorsExampleTitle": "리스본에서 보낸 주말",
     "noteColorsExampleFolder": "여행, 초록색 폴더",
-    "noteColorsAccent": "아이콘",
+    "noteColorsAccent": "아이콘만",
     "noteColorsOff": "끄기",
+    "checkboxesTitle": "체크박스",
+    "taskConfettiTitle": "체크하면 색종이",
+    "taskConfettiDesc": "체크박스를 체크하면 작은 색종이가 날려요.",
     "sinkCheckedTitle": "체크된 항목을 아래로 이동",
     "sinkCheckedDesc": "체크한 항목은 목록에서 체크하지 않은 항목 아래로 이동해요.",
+    "defaultAppsTitle": "PrivacyNotes로 열기",
+    "defaultAppsMarkdown": "Markdown 파일",
+    "defaultAppsText": "텍스트 파일",
+    "defaultAppsMarkdownHint": "더블클릭한 .md 파일이 여기서 열려요.",
+    "defaultAppsTextHint": "더블클릭한 .txt 파일과 README 파일이 여기서 열려요.",
+    "defaultAppsTextHintWindows": "더블클릭한 .txt 파일이 여기서 열려요.",
+    "defaultAppsTextFinderSteps": "바꾸려면 Finder에서 .txt 파일의 '정보 가져오기'를 선택하고, '다음으로 열기'에서 PrivacyNotes를 고른 다음 '모두 변경'을 클릭하세요.",
+    "defaultAppsMakeDefault": "기본 앱으로 설정",
+    "defaultAppsIsDefault": "기본 앱",
+    "defaultAppsOwnerOther": "지금은 {{app}}(으)로 열려요.",
+    "defaultAppsOwnerOtherUnnamed": "지금은 다른 앱으로 열려요.",
+    "defaultAppsOwnerNone": "아직 기본 앱이 없어요.",
     "spacesTitle": "공간",
     "spacesDesc": "라이브러리를 개인과 업무로 나누고 한 번에 하나만 보여 줘요.",
     "lineSpacingDesc": "쓰는 동안 줄과 문단 사이의 간격이에요.",
@@ -238,7 +263,8 @@
       "none": "아직 여기에 테마가 없어요.",
       "sortLabel": "정렬",
       "sortVotes": "추천 많은 순",
-      "sortNewest": "최신순"
+      "sortNewest": "최신순",
+      "more": "테마 더 보기"
     },
     "custom": {
       "newTheme": "새 테마",
@@ -433,6 +459,8 @@
     "wifiHoldTooltip": "와이파이가 돌아오면 파일을 올려요. 노트는 계속 동기화돼요.",
     "notBackedUp": "백업 안 됨",
     "notSynced": "동기화 안 됨",
+    "firstSyncPending": "이 기기는 아직 서버와의 첫 동기화를 마치지 않아서, 일부 노트가 여기에 아직 없을 수 있어요.",
+    "pullFailed": "마지막 동기화에서 서버로부터 다운로드하지 못했어요. 자동으로 다시 시도해요.",
     "notBackedUpTooltip_other": "노트 {{count}}개가 백업되지 않았어요. 클릭하면 이유를 볼 수 있어요.",
     "notBackedUpAria_other": "노트 {{count}}개가 백업되지 않았어요",
     "haltedTooltip_other": "동기화가 중단되어 노트 {{count}}개가 백업되지 않았어요. 클릭하면 이유를 볼 수 있어요.",
@@ -503,7 +531,7 @@
     "alertBirthday": "생일",
     "alertsHelp": "새 항목은 이 알림으로 시작해요. 그 뒤로는 항목마다 자기 알림을 유지해요.",
     "reminderTitles": "미리 알림에 제목 표시",
-    "reminderTitlesHelp": "끄면 미리 알림에 '미리 알림'이라는 말과 시간만 표시돼요. PIN으로 보호된 항목은 항상 그렇게 표시돼요.",
+    "reminderTitlesHelp": "켜면 미리 알림에 항목 제목이 표시돼요. 끄면 '미리 알림'이라는 말과 시간만 표시돼요. PIN으로 보호된 항목은 제목을 절대 표시하지 않아요.",
     "whereTitle": "이 기기의 미리 알림",
     "reminderHint": {
       "mobile": "미리 알림은 이 휴대폰에서 울리고, PrivacyNotes가 닫혀 있을 때도 울려요.",
@@ -517,11 +545,14 @@
     "permissionDenied": "PrivacyNotes의 알림이 차단되어 있어요. 이 브라우저나 기기의 설정에서 허용해 주세요.",
     "weekNumbers": "주 번호 표시",
     "weekNumbersHelp": "월 보기와 작은 캘린더에 표시돼요.",
-    "hours": "일 보기와 주 보기 시작 시간",
+    "hours": "일 보기와 주 보기의 첫 시간",
+    "checkInReminder": "매일 체크인 미리 알림",
+    "checkInReminderHelp": "이 기기에서 하루에 한 번 \"오늘 기분은 어때요?\"라고 물어요. 이미 기분을 기록했거나 건너뛴 날에는 울리지 않아요.",
+    "checkInReminderAt": "알림 시간",
     "groupView": "보기",
     "groupReminders": "미리 알림",
     "groupDefaults": "기본 알림",
-    "hoursHelp": "더 이른 시간은 위로 스크롤하세요.",
+    "hoursHelp": "일 보기와 주 보기가 이 시간으로 스크롤된 채 열려요. 그 전 시간은 위에 있어요.",
     "to": "~"
   }
 }

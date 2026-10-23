@@ -10,6 +10,8 @@
     "back": "Späť",
     "next": "Ďalej",
     "remove": "Odobrať",
+    "deleteConfirm": "Odstrániť?",
+    "removeConfirm": "Odobrať?",
     "copy": "Kopírovať",
     "rename": "Premenovať",
     "create": "Vytvoriť",
@@ -61,15 +63,17 @@
   },
   "palette": {
     "label": "Príkazy",
-    "open": "Príkazy (>)",
+    "open": "Príkazy",
     "empty": "Žiadny zodpovedajúci príkaz",
     "groups": {
+      "features": "Funkcie",
       "commands": "Príkazy",
       "new": "Nové",
-      "goTo": "Prejsť na"
+      "goTo": "Prejsť na",
+      "themes": "Motívy"
     },
     "commands": {
-      "quickSwitcher": "Prejsť na položku alebo nastavenie",
+      "quickSwitcher": "Otvoriť Ninja: nájdi položku, pridaj čokoľvek, spusti príkaz",
       "historyBack": "Prejsť späť",
       "historyForward": "Prejsť dopredu",
       "toggleSidebar": "Zobraziť alebo skryť bočný panel",
@@ -95,9 +99,9 @@
     }
   },
   "quickSwitcher": {
-    "label": "Prejsť na položku alebo nastavenie",
-    "jumpTo": "Prejsť",
-    "placeholder": "Napíš názov položky alebo nastavenia, alebo > pre príkazy",
+    "label": "Ninja: nájdi položku alebo nastavenie, pridaj čokoľvek, spusti príkaz",
+    "jumpTo": "Ninja",
+    "placeholder": "Ninja k tvojim službám: názov, + na pridanie, > pre príkazy",
     "recent": "Nedávne",
     "empty": "Žiadna položka ani nastavenie s týmto názvom",
     "searchAll": "Hľadať všade: „{{query}}“",
@@ -118,6 +122,7 @@
     "tagItems_other": "{{count}} položiek",
     "emptyTags": "Žiadna značka s týmto názvom",
     "emptyFolders": "Žiadny priečinok s týmto názvom",
+    "emptyVault": "Zatiaľ tu nič nie je. Napíš + a pridaj prvú položku.",
     "onlyTags": "značky",
     "onlyFolders": "priečinky",
     "showOnlyTags": "Iba značky",
@@ -128,7 +133,13 @@
     "createTag": "Vytvoriť značku #{{name}}",
     "createFolder": "Vytvoriť priečinok „{{name}}“",
     "newTag": "Nová značka",
-    "newFolder": "Nový priečinok"
+    "newFolder": "Nový priečinok",
+    "goToDay": "Prejsť na deň",
+    "inText": "V texte",
+    "actions": "akcie",
+    "back": "späť",
+    "actionsPlaceholder": "Filtrovať akcie",
+    "onlyCreate": "pridať"
   },
   "cardForm": {
     "cardholderName": "Meno držiteľa karty",
@@ -188,46 +199,48 @@
     "removeTag": "Odobrať {{tag}}"
   },
   "loading": {
+    "pause": "Pozastaviť hlášky",
+    "play": "Spustiť hlášky",
     "lines": [
-      "načítavam tvoje šifrované premýšľanie…",
-      "chvíľku, práve sklamávame inzerentov.",
-      "príliš zašifrované na to, aby to niekoho zaujímalo.",
-      "švajčiarske bankové tajomstvo, ale pre poznámky.",
-      "chránime tvoje nápady zo sprchy.",
-      "tvoje tajomstvá prežili ďalší reštart.",
-      "nič neopustí zariadenie nahé.",
-      "potichu otváram trezor…",
-      "chladné úložisko pre hrejivé myšlienky.",
-      "táto poznámka si váži súkromie.",
-      "čítanie nemožné. synchronizácia možná.",
-      "lokálne dešifrované. globálne ignorované.",
-      "tvoje poznámky dodržiavajú odstup.",
-      "šifrovaný text dnu, šifrovaný text von.",
-      "ďalší krásny deň na šifrovanie.",
-      "tajomstvá nudné od prvého dňa.",
-      "ty to napíšeš. nikto to neprečíta.",
-      "súkromie bez ted talku.",
-      "dešifrujem, akoby nič.",
-      "cloud ostáva zmätený.",
-      "server nevie nič. a tak to má rád.",
-      "menej sledovania. viac poznámok.",
-      "šifrovaný nezmysel, ako sa čakalo.",
-      "matematicky nedostupné.",
-      "nulová znalosť. maximálna drzosť.",
-      "sledovanie vypnuté citovo aj technicky.",
-      "klebety drží tvoje zariadenie.",
-      "čistý text z miestnych zdrojov.",
-      "mením myšlienky na nečitateľnú polievku.",
-      "len ty a kľúče.",
-      "súkromné myšlienky prechádzajú do súkromného režimu.",
-      "tvoje budúce úniky ostanú vymyslené.",
-      "ďalšia poznámka skrytá pred kapitalizmom.",
-      "súkromie tu nie je prémiové.",
-      "bezpečnosť cez skutočnú bezpečnosť.",
-      "potichu vzdorujeme dátovým brokerom.",
-      "nenašiel sa žiadny materiál na tréning ai.",
-      "zašifrované dôkladnejšie, ako treba.",
-      "súkromie: načítava sa.",
+      "švajčiarske bankové tajomstvo, ale pre poznámky",
+      "chránime tvoje nápady zo sprchy",
+      "tvoje poznámky sú šifrované na tvojom zariadení",
+      "chladné úložisko pre hrejivé myšlienky",
+      "ďalší krásny deň na šifrovanie",
+      "tajomstvá nudné od prvého dňa",
+      "súkromie bez ted talku",
+      "cloud ostáva zmätený",
+      "server ukladá šifrovaný text. pripadá mu nudný",
+      "menej sledovania. viac poznámok",
+      "šifrovaný nezmysel, ako sa čakalo",
+      "sledovanie vypnuté citovo aj technicky",
+      "klebety drží tvoje zariadenie",
+      "súkromné myšlienky prechádzajú do súkromného režimu",
+      "ďalšia poznámka skrytá pred kapitalizmom",
+      "súkromie tu nie je prémiové",
+      "bezpečnosť cez skutočnú bezpečnosť",
+      "potichu vzdorujeme dátovým brokerom",
+      "nenašiel sa žiadny materiál na tréning ai",
+      "zašifrované dôkladnejšie, ako treba",
+      "samý signál. žiadne sledovanie",
+      "meníme problémy s dôverou na softvér",
+      "tvoje myšlienky ostávajú mimo trhu",
+      "dátoví baníci nenašli nič, len smútok",
+      "tvoj trezor ostáva agresívne zašifrovaný",
+      "švajčiarska neutralita, ale pre poznámky",
+      "žiadne reklamy. žiadne sledovacie prvky. žiadny zvrat",
+      "open source, takže si matematiku môžeš overiť",
+      "šifrovaný text je náš jazyk lásky",
+      "tvoje poznámky sú pre cudzích nudné",
+      "volal tvoj denník. chce súkromie",
+      "sledovanie nálady za tebou smútilo",
+      "tvoje nápady, ale bez publika",
+      "tvoj denník cez noc udržal tvoje tajomstvá",
+      "jedno súkromné miesto pre všetko, čo nikdy nepôjde von",
+      "o tom, čo tu vidíš, nerozhoduje žiadny algoritmus",
+      "tvoj myšlienkový chaos je v bezpečí",
+      "písanie je myslenie. myslenie je súkromné",
+      "neradili sme sa so žiadnymi influencermi",
       "zodpovedne načítavam tajomstvá.",
       "samý signál. žiadne sledovanie.",
       "blíži sa ďalšie šifrované majstrovské dielo.",
@@ -242,6 +255,27 @@
       "lokálne dešifrujem existenciálne myšlienky…",
       "tvoj trezor ostáva agresívne nečitateľný.",
       "švajčiarska neutralita, ale pre poznámky."
+    ],
+    "loadingOnly": [
+      "načítavam tvoje šifrované premýšľanie",
+      "chvíľku, práve sklamávame inzerentov",
+      "tvoje tajomstvá prežili ďalší reštart",
+      "potichu otváram trezor",
+      "lokálne dešifrované. globálne ignorované",
+      "dešifrujem, akoby nič",
+      "čistý text z miestnych zdrojov",
+      "mením myšlienky na nečitateľnú polievku",
+      "ďalšie šifrované majstrovské dielo na ceste",
+      "obnovujem poriadok zo šifrovaného chaosu",
+      "lokálne dešifrujem existenciálne myšlienky",
+      "zahrievam kľúče",
+      "hľadám niť tvojich myšlienok",
+      "počítam tvoje nesplnené úlohy. bez súdenia",
+      "počas tohto načítania sa nezobrazili žiadne reklamy",
+      "vraciam tvoje poznámky na ich miesto",
+      "rozmotávam včerajšie myšlienky",
+      "ukladám bity do pekného poradia",
+      "spomínam si na to, na čo sa zabudlo"
     ]
   },
   "neverBackedUp": {
@@ -255,5 +289,57 @@
     "changesSome_few": "{{count}} z týchto poznámok majú zmeny, ktoré nie sú zálohované a stratili by sa.",
     "changesSome_many": "{{count}} z týchto poznámok má zmeny, ktoré nie sú zálohované a stratili by sa.",
     "changesSome_other": "{{count}} z týchto poznámok má zmeny, ktoré nie sú zálohované a stratili by sa."
+  },
+  "ninja": {
+    "recent": "Nedávne",
+    "topHit": "Najlepšia zhoda",
+    "trashEmpty": "Kôš je prázdny",
+    "allThemes": "Všetky motívy",
+    "features": {
+      "stats": {
+        "label": "Štatistiky",
+        "detail": "Tvoje písanie, série a sledované hodnoty v čase"
+      },
+      "trackers": {
+        "label": "Sledované hodnoty",
+        "detail": "Nálada, návyky, faktory a lieky"
+      },
+      "medication": {
+        "label": "Lieky",
+        "detail": "Dávky, časy a pripomienky"
+      },
+      "yearInPixels": {
+        "label": "Rok v pixeloch",
+        "detail": "Každý deň roka ako jeden farebný štvorček"
+      },
+      "importExport": {
+        "label": "Import & Export",
+        "detail": "Prines poznámky dnu, odnes si zálohu von"
+      },
+      "generator": {
+        "label": "Generátor hesiel",
+        "detail": "Silné heslo alebo prístupová fráza, pripravené na skopírovanie"
+      },
+      "themes": {
+        "label": "Motívy",
+        "detail": "Farebné motívy pre svetlý aj tmavý režim"
+      }
+    },
+    "new": {
+      "medication": "Nový liek",
+      "customTracker": "Nová vlastná sledovaná hodnota"
+    },
+    "commands": {
+      "syncResume": "Obnoviť synchronizáciu",
+      "changelog": "Čo je nové",
+      "help": "Pomocník",
+      "themesPage": "Motívy komunity",
+      "website": "Webová stránka PrivacyNotes"
+    },
+    "themes": {
+      "word": "Motív",
+      "light": "Svetlý motív",
+      "dark": "Tmavý motív"
+    }
   }
 }

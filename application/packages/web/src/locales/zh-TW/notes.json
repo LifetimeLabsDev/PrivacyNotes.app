@@ -18,10 +18,8 @@
   "header": {
     "new": "新增",
     "newNote": "新增筆記",
-    "newNoteHover": "新增筆記（{{hotkey}}）",
     "trash": "垃圾桶",
-    "newEvent": "新增活動",
-    "newEventHover": "新增活動（{{hotkey}}）"
+    "newEvent": "新增活動"
   },
   "folderChip": {
     "clear": "清除資料夾篩選：{{folder}}",
@@ -35,15 +33,18 @@
     "ariaLabel": "新增保險庫項目",
     "login": "登入資訊",
     "card": "信用卡",
-    "sshKey": "SSH 金鑰"
+    "sshKey": "SSH 金鑰",
+    "generator": "密碼"
   },
   "newMenu": {
     "note": "筆記",
     "task": "任務",
+    "kanban": "看板",
     "journal": "日誌",
     "login": "登入資訊",
     "file": "檔案",
     "bookmark": "書籤",
+    "clipPage": "擷取網頁",
     "contact": "聯絡人",
     "event": "活動",
     "quickAdd": "快速新增"
@@ -55,8 +56,7 @@
     "keys": "金鑰"
   },
   "journal": {
-    "newEntry": "新增日誌",
-    "newEntryHover": "新增日誌（{{hotkey}}）"
+    "newEntry": "新增日誌"
   },
   "tasks": {
     "newTitle": "{{date}} 的任務"
@@ -70,7 +70,8 @@
   "search": {
     "sortOptions": "排序與檢視選項",
     "placeholderVault": "搜尋保險庫…",
-    "placeholderNotes": "搜尋筆記…"
+    "placeholderNotes": "搜尋筆記…",
+    "placeholderEvents": "搜尋活動…"
   },
   "selection": {
     "countOf": "已選取 {{selected}}/{{total}} 項",
@@ -82,9 +83,12 @@
     "vault": "保險庫是空的。",
     "notes": "還沒有筆記。",
     "archive": "沒有封存的項目。",
+    "trash": "垃圾桶是空的。",
     "filtered": "沒有項目符合篩選條件。",
     "clearFilters": "清除篩選",
-    "filteredAfter": "即可顯示。"
+    "filteredAfter": "即可顯示。",
+    "hiddenInAll_other": "有 {{count}} 個項目被「顯示於『全部』」篩選條件隱藏。開啟「全部」旁的篩選條件即可顯示。",
+    "inOtherSpace_other": "有 {{count}} 個項目在你的「{{space}}」空間中。在側邊欄切換到「{{space}}」即可查看。"
   },
   "listGroups": {
     "previous7Days": "過去 7 天",
@@ -104,12 +108,16 @@
     "calendar": "日曆"
   },
   "footerStats": {
-    "journals": "日誌",
-    "items": "項目",
-    "trashed": "垃圾桶",
-    "notes": "筆記",
-    "bookmarks": "書籤",
-    "contacts": "聯絡人"
+    "journals_other": "日誌",
+    "items_other": "項目",
+    "trashed_other": "垃圾桶",
+    "notes_other": "筆記",
+    "bookmarks_other": "書籤",
+    "contacts_other": "聯絡人",
+    "files_other": "檔案",
+    "lists_other": "清單",
+    "tasks_other": "任務",
+    "today": "今天"
   },
   "toast": {
     "imageUploadFailed": "圖片上傳失敗：{{error}}",
@@ -163,7 +171,7 @@
   },
   "zen": {
     "exit": "離開 Zen",
-    "exitHover": "離開 Zen 模式（Esc）",
+    "exitHover": "離開 Zen 模式",
     "enterHover": "進入 Zen 模式",
     "proHover": "Zen 模式（Pro）",
     "enterAriaShortcut": "進入 Zen 模式（{{keys}}）"
@@ -240,9 +248,11 @@
     "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "開啟統計",
     "journalCalendar": "日誌行事曆",
-    "words": "字數",
+    "words_other": "字",
     "zen": "Zen 模式",
     "appearance": "外觀",
+    "lockApp": "鎖定應用程式",
+    "lockAppSetUp": "請先到「安全性」設定 PIN 碼",
     "goToTop": "移至頂端",
     "goToEnd": "移至結尾",
     "signOut": "登出",
@@ -266,6 +276,7 @@
     "editorLabel": "編輯器",
     "formatBarLabel": "工具列",
     "listsLabel": "清單",
+    "trackersLabel": "追蹤項目",
     "helpLabel": "說明",
     "aboutLabel": "關於",
     "languageLabel": "語言",
@@ -321,5 +332,13 @@
   "ambiguousLink": {
     "title": "有兩則筆記用同一個標題",
     "body": "不只一則筆記的標題是 <highlight>「{{title}}」</highlight>，所以這個連結說不出它指的是哪一則。把其中一則重新命名，連結就會指向另一則。"
+  },
+  "connections": {
+    "title": "關聯",
+    "hide": "隱藏關聯",
+    "linkedFrom": "被以下項目連結",
+    "linksTo": "連結至",
+    "missing": "尚未建立",
+    "protectedHidden_other": "有 {{count}} 個受 PIN 碼保護的項目未顯示"
   }
 }

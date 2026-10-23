@@ -1,6 +1,8 @@
 {
   "captionFolder": "Carpeta",
   "captionTag": "Etiqueta",
+  "captionNote": "Nota",
+  "captionTracker": "Seguiment",
   "useDefault": "Per defecte",
   "color": "Color",
   "noColor": "Sense color",

@@ -13,7 +13,7 @@
  * stack: <DT><H3 ...>name</H3> opens a folder, <DT><A ...>name</A> is a
  * bookmark, </DL> closes the current folder.
  *
- * Mapping (decided 2026-08-22, ops/docs/plans/bookmarks-pillar.md):
+ * Mapping (decided 2026-08-22, ops/docs/archive/bookmarks-pillar.md):
  *   - The folder tree imports as REAL folders under one "Bookmarks" root.
  *   - Container roots are dropped and their children merge one level up.
  *     Detection is ATTRIBUTE-based (PERSONAL_TOOLBAR_FOLDER,
@@ -114,7 +114,7 @@ function toIso(raw: string | null): string | null {
  * its address-bar keyword, normalized and de-duplicated into one list.
  * Kept transient on the note - `withBrowserTags` decides whether they
  * become real tags, so the preview checkbox can flip without re-parsing.
- * Spec: ops/docs/plans/bookmarks-pillar.md (section 9)
+ * Spec: ops/docs/archive/bookmarks-pillar.md (section 9)
  */
 function browserTagsOf(attrs: string): string[] {
   const out: string[] = [];

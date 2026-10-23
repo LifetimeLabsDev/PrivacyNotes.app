@@ -1,30 +1,15 @@
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
-import {
-  ArrowsOutSimple,
-  ClockCounterClockwise,
-  Columns,
-  Database,
-  FileArrowUp,
-  Folder,
-  Key,
-  Lock,
-  MagnifyingGlass,
-  Monitor,
-  Palette,
-  Password,
-  BellSimple,
-  RocketLaunch,
-  X,
-} from './icons';
+import { ArrowsOutSimple, ClockCounterClockwise, Columns, Database, FileArrowUp, Folder, Key, Lock, MagnifyingGlass, Monitor, Palette, Password, Shapes, BellSimple, RocketLaunch } from './icons';
 import { isPaddleConfigured, isBetaPricing } from './paddle';
-import { startProCheckout, PRO_PRODUCT_ID } from './billing';
+import { startProCheckout, PRO_PRODUCT_ID, isNativeStoreBuild } from './billing';
 import { PRO_PRICE, EARLY_PRICE, COMPARE_YEARS, COMPETITOR_YEARLY } from './pricing';
 import { useStorePrices } from './storePrices';
 import { isDemoMode, DEMO_APP_URL } from './demo';
 import { withSource } from './campaignSource';
 import { HelpChip } from './HelpChip';
+import { CloseButton } from './ui/Button';
 
 type Props = {
   onClose: () => void;
@@ -45,7 +30,7 @@ type Props = {
 /** Which Pro feature opened the modal; picks the intro line. */
 export type UpgradeTrigger =
   | 'lock' | 'protect' | 'history' | 'devices' | 'zen' | 'theme' | 'storage'
-  | 'fileSize' | 'folders' | 'looks' | 'spaces' | 'formatBar' | 'totp' | 'replace' | 'passphrase' | 'alerts' | null;
+  | 'fileSize' | 'folders' | 'looks' | 'noteIcon' | 'spaces' | 'formatBar' | 'totp' | 'replace' | 'passphrase' | 'alerts' | null;
 
 const FEATURES: Array<{ icon: React.JSX.Element; labelKey: string }> = [
   { icon: <IconDevices />, labelKey: 'upgrade.features.devices' },
@@ -78,6 +63,8 @@ function introKey(trigger: Props['trigger']): string {
       return 'upgrade.intro.folders';
     case 'looks':
       return 'upgrade.intro.looks';
+    case 'noteIcon':
+      return 'upgrade.intro.noteIcon';
     case 'spaces':
       return 'upgrade.intro.spaces';
     case 'formatBar':
@@ -117,6 +104,8 @@ function triggerIcon(trigger: Props['trigger']): React.JSX.Element {
     case 'theme':
     case 'looks':
       return <Palette size={size} aria-hidden="true" />;
+    case 'noteIcon':
+      return <Shapes size={size} aria-hidden="true" />;
     case 'storage':
       return <Database size={size} aria-hidden="true" />;
     case 'fileSize':
@@ -146,10 +135,7 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
   const configured = isPaddleConfigured();
   const beta = isBetaPricing();
 
-  // What the App Store / Play will actually charge, already localized to the
-  // user's storefront. Null on web, desktop, and any native build where the
-  // lookup fails, in which case the Paddle USD figure below is rendered exactly
-  // as it always was. Spec: ops/docs/design-decisions.md (fair global pricing)
+  const nativeStore = isNativeStoreBuild();
   const storePrices = useStorePrices();
   const storePro = storePrices?.[PRO_PRODUCT_ID]?.formatted ?? null;
 
@@ -200,7 +186,7 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
     <div
       /* Stacked overlay, not the standard one: a Pro gate can sit inside
          another modal, and the pitch is always the thing to read on top.
-         Spec: ops/docs/ui-patterns.md (z-index tier system) */
+         Spec: ops/docs/archive/ui-patterns.md (z-index tier system) */
       className="fixed inset-0 bg-black/40 dark:bg-black/40 flex items-center justify-center p-4 sm:p-6 z-[55]"
       onClick={onClose}
     >
@@ -211,13 +197,7 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
         {/* Celebration header - one-time payment is good news, so this
             reads as a win, not an error. */}
         <div className="relative bg-amber-50/80 dark:bg-amber-950/50 rounded-t-lg px-6 pt-5 pb-5">
-          <button
-            onClick={onClose}
-            aria-label={t('common:actions.close')}
-            className="absolute top-4 end-4 text-amber-700/70 hover:text-amber-800 dark:text-amber-300/70 dark:hover:text-amber-200 transition p-1 -m-1"
-          >
-            <X size={18} />
-          </button>
+          <CloseButton onClick={onClose} className="absolute top-4 end-4" />
 
           <div className="flex items-center gap-2 text-[13px] font-semibold text-amber-700 dark:text-amber-300">
             <IconUpgrade size={16} />
@@ -226,20 +206,20 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
 
           {beta ? (
             <div className="flex items-baseline gap-2 mt-2.5">
-              <span className="text-4xl font-bold tracking-tight text-amber-900 dark:text-amber-100">{storePro ?? `$${EARLY_PRICE}`}</span>
+              <span className="text-4xl font-bold tracking-tight text-amber-900 dark:text-amber-100">{storePro ?? (nativeStore ? '…' : `$${EARLY_PRICE}`)}</span>
               {/* The struck-through full price is a Paddle web figure. The stores
                   have no "was" price and sell on their own fixed tiers, so on a
                   native build it would compare the real charge against a number
                   the user can never be billed. Badge stays: the price genuinely
                   does rise later. */}
-              {!storePro && (
+              {!nativeStore && (
                 <span className="text-lg font-semibold line-through text-warning">${PRO_PRICE}</span>
               )}
               <span className="text-[11px] font-semibold text-amber-900 dark:text-amber-100 bg-amber-200 dark:bg-amber-800 rounded-md px-2 py-0.5">{t('upgrade.earlyAdopterBadge')}</span>
             </div>
           ) : (
             <div className="flex items-baseline gap-2 mt-2.5">
-              <span className="text-4xl font-bold tracking-tight text-amber-900 dark:text-amber-100">{storePro ?? `$${PRO_PRICE}`}</span>
+              <span className="text-4xl font-bold tracking-tight text-amber-900 dark:text-amber-100">{storePro ?? (nativeStore ? '…' : `$${PRO_PRICE}`)}</span>
               <span className="text-sm font-medium text-amber-700/70 dark:text-amber-300/70">{t('upgrade.oneTime')}</span>
             </div>
           )}
@@ -247,7 +227,7 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
           {/* Web and desktop only, like the comparison sentence it replaced:
               the fees are USD figures and a store build shows a localized
               price with nothing to chart against it. */}
-          {!storePro && (
+          {!nativeStore && (
             <div className="mt-4 space-y-1.5">
               {compareRows.map((row) => (
                 <div key={row.name} className="grid grid-cols-[6.5rem_1fr_3.5rem] items-center gap-2 text-[12px]">
@@ -300,7 +280,7 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
                 ? t('upgrade.ctaSignUp')
                 : loading
                   ? t('upgrade.ctaOpening')
-                  : t('upgrade.ctaUnlockPrice', { price: storePro ?? `$${ourPrice}` })}
+                  : t('upgrade.ctaUnlockPrice', { price: storePro ?? (nativeStore ? '…' : `$${ourPrice}`) })}
             </button>
             <p className="text-[11px] text-pn-muted text-center">{t('upgrade.subscriptionPitch')}</p>
           </div>
@@ -397,7 +377,7 @@ export function ProGlyph({ pro, children }: { pro: boolean; children: ReactNode 
  *  `!isPro`, never `proUnlocked`, so the demo still labels what it unlocks. */
 export function ProMark() {
   return (
-    <span className="shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold text-accent">
+    <span className="shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold normal-case tracking-normal text-accent">
       <IconUpgrade size={12} /> Pro
     </span>
   );

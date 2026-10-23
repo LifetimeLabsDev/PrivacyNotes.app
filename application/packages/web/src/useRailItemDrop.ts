@@ -23,11 +23,11 @@ import { UNFILED_ID, type FolderDef } from './folders';
  * and so does the hidden half of the Tags | Folders switch. Both last for the
  * drag only: the stored choice does not change, and every folder the drag
  * opened closes again, so the reader's own collapse wins.
- * Spec: ops/docs/plans/drag-to-folder-and-tag.md (sections 5.4 and 7)
+ * Spec: ops/docs/archive/drag-to-folder-and-tag.md (sections 5.4 and 7)
  */
 
 /** How long a drag rests on a closed folder, or on the hidden half of the
- *  switch, before it opens. Spec: ops/docs/plans/drag-to-folder-and-tag.md (section 5.4) */
+ *  switch, before it opens. Spec: ops/docs/archive/drag-to-folder-and-tag.md (section 5.4) */
 const SPRING_MS = 600;
 
 type BrowseMode = 'tags' | 'folders';

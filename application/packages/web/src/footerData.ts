@@ -129,3 +129,16 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
     ],
   },
 ];
+
+/**
+ * The marketing site's sections: the Help-column links that carry a `short`
+ * nav label. The homepage header (LandingNav.tsx) and siteNav() in
+ * ../static-page-chrome.ts both read this list, so both headers and the
+ * footer list the same sections.
+ */
+export const NAV_SECTIONS = (FOOTER_COLUMNS.find((c) => c.heading === 'Help')?.links ?? []).filter(
+  (l) => l.short != null,
+);
+
+/** The "Try the demo" pill of both header rails. */
+export const DEMO_HREF = 'https://try.privacynotes.app/';

@@ -9,7 +9,8 @@
     "tabExport": "내보내기",
     "tabRestore": "복원",
     "tabVault": "비밀번호",
-    "working": "작업 중…"
+    "working": "작업 중…",
+    "tabWellness": "트래커"
   },
   "footer": {
     "exportNote": "내보내기는 로컬에서 실행돼요. 아무것도 업로드되지 않아요.",
@@ -20,7 +21,9 @@
     "autoTagLabel": "가져온 노트에 출처 태그 달기",
     "autoTagDesc": "Google Keep 노트에는 <keep>#google</keep>, Obsidian에는 <obsidian>#obsidian</obsidian> 태그가 붙는 식이에요.",
     "guideAria": "{{app}} 가져오기 가이드",
-    "guideLabel": "가이드"
+    "guideLabel": "가이드",
+    "groupGeneral": "일반",
+    "groupNotes": "노트"
   },
   "folderImport": {
     "tagLabel": "폴더 이름도 태그로 달기",
@@ -46,6 +49,24 @@
     "timeZone": "시간대",
     "ends": "종료",
     "repeats": "반복"
+  },
+  "webcal": {
+    "title": "Webcal",
+    "desc": "Proton, iCloud, Outlook 또는 공개 캘린더의 webcal:// 링크 같은 캘린더 주소예요. 한 번만 다운로드되며, 나중에 다시 붙여 넣으면 새 일정만 추가돼요.",
+    "fieldLabel": "캘린더 주소",
+    "import": "가져오기",
+    "downloading": "다운로드 중…",
+    "errors": {
+      "invalid": "webcal://, webcals:// 또는 https://로 시작하는 주소를 붙여 넣어 주세요.",
+      "refused": "이 주소는 열 수 없어요.",
+      "wrongType": "이 주소는 캘린더 파일로 연결되지 않아요.",
+      "tooLarge": "이 캘린더는 10 MB보다 커요.",
+      "timeout": "캘린더 서버가 제때 응답하지 않았어요. 나중에 다시 시도해 주세요.",
+      "blocked": "캘린더 서버가 다운로드를 거부했어요. 캘린더가 공유 또는 공개 상태인지 확인해 주세요.",
+      "offline": "오프라인 상태예요. 연결한 후 다시 시도해 주세요.",
+      "limit": "짧은 시간에 다운로드가 너무 많았어요. 1분 정도 기다린 후 다시 시도해 주세요.",
+      "failed": "캘린더를 다운로드할 수 없었어요. 주소를 확인하고 다시 시도해 주세요."
+    }
   },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip(Keep 폴더) 또는 단일 .json 노트. 체크리스트는 기본 할 일 목록으로 가져와요.",
@@ -79,7 +100,7 @@
     "intro": "다른 비밀번호 관리자에서 로그인, 신용카드, SSH 키를 가져오세요."
   },
   "restorePick": {
-    "intro": "이전에 내보낸 PrivacyNotes 백업을 복원하세요. 파일은 로컬에서 읽고 복호화해요.",
+    "intro": "이전에 내보낸 PrivacyNotes 백업을 복원하세요.",
     "fullBackupTitle": "전체 백업 (.zip)",
     "fullBackupDesc": "노트, 저널, 보관함 항목, 할 일, 이미지, 오디오, 파일을 복원해요. 이미 있는 노트는 그대로 두고, 백업에 더 새로운 버전이 있을 때만 업데이트해요.",
     "encryptedBackupTitle": "암호화 백업 (.pnbackup, .pnbackupz)",

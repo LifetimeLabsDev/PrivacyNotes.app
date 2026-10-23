@@ -18,10 +18,8 @@
   "header": {
     "new": "Nieuw",
     "newNote": "Nieuwe notitie",
-    "newNoteHover": "Nieuwe notitie ({{hotkey}})",
     "trash": "Prullenbak",
-    "newEvent": "Nieuwe afspraak",
-    "newEventHover": "Nieuwe afspraak ({{hotkey}})"
+    "newEvent": "Nieuwe afspraak"
   },
   "folderChip": {
     "clear": "Mapfilter wissen: {{folder}}",
@@ -35,15 +33,18 @@
     "ariaLabel": "Nieuw kluisitem",
     "login": "Login",
     "card": "Creditcard",
-    "sshKey": "SSH-sleutel"
+    "sshKey": "SSH-sleutel",
+    "generator": "Wachtwoord"
   },
   "newMenu": {
     "note": "Notitie",
     "task": "Taak",
+    "kanban": "Kanbanbord",
     "journal": "Dagboek",
     "login": "Login",
     "file": "Bestand",
     "bookmark": "Bladwijzer",
+    "clipPage": "Pagina clippen",
     "contact": "Contact",
     "event": "Afspraak",
     "quickAdd": "Snel toevoegen"
@@ -55,8 +56,7 @@
     "keys": "Sleutels"
   },
   "journal": {
-    "newEntry": "Nieuwe dagboeknotitie",
-    "newEntryHover": "Nieuwe dagboeknotitie ({{hotkey}})"
+    "newEntry": "Nieuwe dagboeknotitie"
   },
   "tasks": {
     "newTitle": "Taken voor {{date}}"
@@ -70,7 +70,8 @@
   "search": {
     "sortOptions": "Sorteer- en weergaveopties",
     "placeholderVault": "Kluis doorzoeken…",
-    "placeholderNotes": "Notities zoeken…"
+    "placeholderNotes": "Notities zoeken…",
+    "placeholderEvents": "Afspraken zoeken…"
   },
   "selection": {
     "countOf": "{{selected}} van {{total}} geselecteerd",
@@ -82,9 +83,14 @@
     "vault": "De kluis is leeg.",
     "notes": "Nog geen notities.",
     "archive": "Niets gearchiveerd.",
+    "trash": "De prullenbak is leeg.",
     "filtered": "Geen items voldoen aan je filters.",
     "clearFilters": "Filters wissen",
-    "filteredAfter": "om ze te tonen."
+    "filteredAfter": "om ze te tonen.",
+    "hiddenInAll_other": "{{count}} items zijn verborgen door het filter Tonen in Alles. Open het filter naast Alles om ze te tonen.",
+    "inOtherSpace_other": "{{count}} items staan in je ruimte {{space}}. Schakel in de zijbalk over naar {{space}} om ze te zien.",
+    "inOtherSpace_one": "{{count}} item staat in je ruimte {{space}}. Schakel in de zijbalk over naar {{space}} om het te zien.",
+    "hiddenInAll_one": "{{count}} item is verborgen door het filter Tonen in Alles. Open het filter naast Alles om het te tonen."
   },
   "listGroups": {
     "previous7Days": "Afgelopen 7 dagen",
@@ -104,12 +110,25 @@
     "calendar": "Agenda"
   },
   "footerStats": {
-    "journals": "Dagboeken",
-    "items": "Items",
-    "trashed": "In prullenbak",
-    "notes": "Notities",
-    "bookmarks": "Bladwijzers",
-    "contacts": "Contacten"
+    "journals_other": "Dagboeknotities",
+    "journals_one": "Dagboeknotitie",
+    "items_other": "Items",
+    "items_one": "Item",
+    "trashed_other": "In prullenbak",
+    "trashed_one": "In prullenbak",
+    "notes_other": "Notities",
+    "notes_one": "Notitie",
+    "bookmarks_other": "Bladwijzers",
+    "bookmarks_one": "Bladwijzer",
+    "contacts_other": "Contacten",
+    "files_other": "Bestanden",
+    "lists_other": "Lijsten",
+    "tasks_other": "Taken",
+    "today": "Vandaag",
+    "tasks_one": "Taak",
+    "lists_one": "Lijst",
+    "files_one": "Bestand",
+    "contacts_one": "Contact"
   },
   "toast": {
     "imageUploadFailed": "Uploaden van afbeelding mislukt: {{error}}",
@@ -165,7 +184,7 @@
   },
   "zen": {
     "exit": "Zen verlaten",
-    "exitHover": "Zen-modus verlaten (Esc)",
+    "exitHover": "Zen-modus verlaten",
     "enterHover": "Zen-modus starten",
     "proHover": "Zen-modus (Pro)",
     "enterAriaShortcut": "Zen-modus starten ({{keys}})"
@@ -242,9 +261,12 @@
     "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Statistieken openen",
     "journalCalendar": "Dagboekkalender",
-    "words": "Woorden",
+    "words_other": "Woorden",
+    "words_one": "Woord",
     "zen": "Zen-modus",
     "appearance": "Weergave",
+    "lockApp": "App vergrendelen",
+    "lockAppSetUp": "Stel eerst een PIN in bij Beveiliging",
     "goToTop": "Naar boven",
     "goToEnd": "Naar het einde",
     "signOut": "Afmelden",
@@ -268,6 +290,7 @@
     "editorLabel": "Editor",
     "formatBarLabel": "Opmaakbalk",
     "listsLabel": "Lijsten",
+    "trackersLabel": "Trackers",
     "helpLabel": "Help",
     "aboutLabel": "Over",
     "languageLabel": "Taal",
@@ -285,7 +308,7 @@
   },
   "bulkTrash": {
     "title": "Naar prullenbak",
-    "body_one": "<highlight>{{count}} item</highlight> naar de prullenbak verplaatsen? Je kunt het later herstellen.",
+    "body_one": "<highlight>{{count}} item</highlight> naar de prullenbak verplaatsen? Je kunt het later nog herstellen.",
     "body_other": "<highlight>{{count}} items</highlight> naar de prullenbak verplaatsen? Je kunt ze later herstellen.",
     "readOnlyTitle": "Alleen-lezen",
     "readOnlyAcknowledge": "Begrepen",
@@ -331,5 +354,14 @@
   "ambiguousLink": {
     "title": "Twee notities hebben die titel",
     "body": "Meer dan één notitie heet <highlight>“{{title}}”</highlight>, dus deze link zegt niet welke hij bedoelt. Geef er een andere naam aan, dan wijst de link naar de andere."
+  },
+  "connections": {
+    "title": "Verbanden",
+    "hide": "Verbanden verbergen",
+    "linkedFrom": "Gelinkt vanuit",
+    "linksTo": "Linkt naar",
+    "missing": "Nog niet aangemaakt",
+    "protectedHidden_one": "{{count}} met PIN beveiligd item niet getoond",
+    "protectedHidden_other": "{{count}} met PIN beveiligde items niet getoond"
   }
 }

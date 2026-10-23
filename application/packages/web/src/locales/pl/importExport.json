@@ -9,7 +9,8 @@
     "tabExport": "Eksport",
     "tabRestore": "Przywracanie",
     "tabVault": "Hasła",
-    "working": "Pracuję…"
+    "working": "Pracuję…",
+    "tabWellness": "Trackery"
   },
   "footer": {
     "exportNote": "Eksport działa lokalnie. Nic nie jest wysyłane.",
@@ -20,7 +21,9 @@
     "autoTagLabel": "Oznacz zaimportowane notatki tagiem źródła",
     "autoTagDesc": "Notatki z Google Keep dostają <keep>#google</keep>, Obsidian dostaje <obsidian>#obsidian</obsidian> i tak dalej.",
     "guideAria": "Przewodnik importu dla {{app}}",
-    "guideLabel": "Poradnik"
+    "guideLabel": "Poradnik",
+    "groupGeneral": "Ogólne",
+    "groupNotes": "Notatki"
   },
   "folderImport": {
     "tagLabel": "Oznacz notatki też tagiem folderu",
@@ -56,6 +59,24 @@
     "ends": "Koniec",
     "repeats": "Powtarzanie"
   },
+  "webcal": {
+    "title": "Webcal",
+    "desc": "Adres kalendarza, na przykład link webcal:// z Proton, iCloud, Outlook lub z kalendarza publicznego. Jest pobierany raz; wklej go ponownie później, aby dodać tylko nowe wydarzenia.",
+    "fieldLabel": "Adres kalendarza",
+    "import": "Importuj",
+    "downloading": "Pobieranie…",
+    "errors": {
+      "invalid": "Wklej adres zaczynający się od webcal://, webcals:// lub https://.",
+      "refused": "Nie można otworzyć tego adresu.",
+      "wrongType": "Ten adres nie prowadzi do pliku kalendarza.",
+      "tooLarge": "Ten kalendarz jest większy niż 10 MB.",
+      "timeout": "Serwer kalendarza nie odpowiedział na czas. Spróbuj ponownie później.",
+      "blocked": "Serwer kalendarza odmówił pobrania. Sprawdź, czy kalendarz jest udostępniony lub publiczny.",
+      "offline": "Jesteś offline. Połącz się i spróbuj ponownie.",
+      "limit": "Za dużo pobrań w krótkim czasie. Odczekaj minutę i spróbuj ponownie.",
+      "failed": "Nie udało się pobrać kalendarza. Sprawdź adres i spróbuj ponownie."
+    }
+  },
   "sourceDesc": {
     "googleKeep": "Plik .zip z Google Takeout (folder Keep) lub pojedyncza notatka .json. Listy kontrolne importują się jako natywne listy zadań.",
     "googleCalendar": "Plik .zip z Settings > Import & export w Google Calendar albo pojedynczy plik .ics. Wydarzenia zachowują godziny, powtarzanie i przypomnienia.",
@@ -88,7 +109,7 @@
     "intro": "Zaimportuj loginy, karty kredytowe i klucze SSH z innego menedżera haseł."
   },
   "restorePick": {
-    "intro": "Przywróć kopię zapasową PrivacyNotes wyeksportowaną wcześniej. Twój plik jest odczytywany i odszyfrowywany lokalnie.",
+    "intro": "Przywróć kopię zapasową PrivacyNotes wyeksportowaną wcześniej.",
     "fullBackupTitle": "Pełna kopia zapasowa (.zip)",
     "fullBackupDesc": "Przywróć notatki, dzienniki, elementy sejfu, zadania, obrazy, dźwięk i pliki. Notatka, którą już masz, zostaje zachowana albo zaktualizowana, jeśli kopia zawiera jej nowszą wersję.",
     "encryptedBackupTitle": "Zaszyfrowana kopia zapasowa (.pnbackup, .pnbackupz)",

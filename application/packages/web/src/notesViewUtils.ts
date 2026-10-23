@@ -3,6 +3,7 @@
  * date formatting. Extracted from NotesView.tsx for maintainability.
  */
 
+import { isUntouchedKanbanBody } from './kanbanLayout';
 import type { NoteType } from '@notes/shared';
 import type { LocalNote } from './db';
 import type { Space } from './spaces';
@@ -22,6 +23,7 @@ import type { NoteConflict } from './sync';
 import { isDelimiterRow, tableWidthFromMarker } from './tableDelimiterRow';
 import { bindingCaps, bindingText, visibleBindings } from './commandKeys';
 import { DESKTOP_APP, KEY_OS } from './shortcutMatch';
+import { hasLoggedTrackers } from './trackerTypes';
 
 /** Regex to match pn:file/ links in note bodies. Not a picture placed from
  *  Files (`![...](pn:file/...)`), which shows a file rather than holding one. */
@@ -302,10 +304,15 @@ function stripInlineMarkdown(line: string): string {
     // ==highlight== -> highlight, with the guards of the parse rule in
     // editorInlineSyntax.ts, so "a == b" stays as typed.
     .replace(/==(?![\s=])([^\n]*?)==/g, (run, inner: string) => (inner && !/\s$/.test(inner) ? inner : run))
-    // [text](url) -> text
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
-    // [[note link]] -> note link
-    .replace(/\[\[([^\]]+)\]\]/g, '$1')
+    // [text](url) -> text; an empty one ("[](url)", left when its text was a
+    // picture, as a clipped page writes a linked image) -> "".
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    // "](url)" with no "[" on this line: a link whose text began on the line
+    // before, as a clipped heading writes one. A typed "]" is escaped on save.
+    .replace(/\]\((?:https?:|mailto:|#|\/)[^)\s]*\)/g, '')
+    // [[note link]] -> note link; [[note link|label]] -> label, as the
+    // editor shows it (same groups as NOTE_LINK_RE in noteLinks.ts).
+    .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_m, target: string, label?: string) => label ?? target)
     // <http://...> autolink -> http://...
     .replace(/<((?:https?|mailto):[^>\s]+)>/g, '$1')
     // Emphasis and strike delimiters. Every literal `*`, `~` and backtick is
@@ -349,9 +356,10 @@ function stripBlockMarkers(line: string): string {
   // "# 1. Introduction".
   return out
     .replace(/^#{1,6}\s+/, '')
-    // Callout marker: `[!warning]-` / `[!info]+ Title` -> drop the marker so
+    // Callout marker: `[!warning]-` / `[!info]+ Title` / `[!column|blue]+ To do`
+    // -> drop the marker so
     // previews show the title (or fall through to the body).
-    .replace(/^\[!\w+\][+-]?\s*/, '')
+    .replace(/^\[![\w-]+(?:\|[\w-]+)?\][+-]?\s*/, '')
     // Footnote definition: `[^1]: text` -> "text".
     .replace(/^\[\^[^\]\s]+\]:\s*/, '');
 }
@@ -443,7 +451,7 @@ export function deriveTitleFromContent(n: LocalNote): string {
   const t = (n.title ?? '').trim();
   if (t) return t;
   // Bookmarks: the domain IS the default name (render-time fallback, per
-  // ops/docs/plans/bookmarks-pillar.md section 2 - never stored).
+  // ops/docs/archive/bookmarks-pillar.md section 2 - never stored).
   if (n.type === 'link') return linkDomain(parseLinkBody(n.body).url);
   // Contacts: the name the fields spell, else the company, else an address.
   if (n.type === 'contact') return contactDisplayName('', parseContactBody(n.body));
@@ -540,7 +548,7 @@ export function isPlaceholderTitle(n: LocalNote): boolean {
  * A BOOKMARK is why this function exists rather than a `.title` read. A
  * bookmark stores an EMPTY title when the user gave no name, and shows its
  * domain instead - decided at render time so an edited URL can never leave a
- * stale name behind (`ops/docs/plans/bookmarks-pillar.md` section 2). So the
+ * stale name behind (`ops/docs/archive/bookmarks-pillar.md` section 2). So the
  * app calls it "github.com" everywhere while its stored title is '', and a
  * `.title` read made it unlinkable and unresolvable: it never appeared in the
  * autocomplete, and `[[github.com]]` typed by hand offered to create a note.
@@ -646,6 +654,8 @@ export function editedAtOf(n: Pick<LocalNote, 'editedAt' | 'updatedAt'>): string
   return n.editedAt ?? n.updatedAt;
 }
 
+const titleCollator = new Intl.Collator(undefined, { sensitivity: 'base', numeric: true });
+
 /**
  * The ordering rule for every notes surface: pinned (starred) notes
  * float to the top regardless of the user's choice, then the chosen
@@ -668,10 +678,7 @@ export function compareNotes(
   if (prefs.sortField === 'title') {
     // Sort on the displayed title so "Untitled (first body line)" notes
     // sort where the user sees them, not as blank strings.
-    cmp = deriveDisplayTitle(a).localeCompare(deriveDisplayTitle(b), undefined, {
-      sensitivity: 'base',
-      numeric: true,
-    });
+    cmp = titleCollator.compare(deriveDisplayTitle(a), deriveDisplayTitle(b));
   } else if (prefs.sortField === 'size') {
     // The same measure the row displays - see `noteSizeBytes`.
     cmp = noteSizeBytes(a) - noteSizeBytes(b);
@@ -717,7 +724,7 @@ function deriveNoteSize(n: LocalNote): string {
  * while the list is sorted by size: the rest of the time it is a byte count on
  * every row that nobody asked for, and while it is the sort key it is the only
  * way to see why the rows are in the order they are in.
- * Spec: ops/docs/ui-patterns.md (section 66)
+ * Spec: ops/docs/archive/ui-patterns.md (section 66)
  */
 export function rowSizeLabel(n: LocalNote, sortField: string): string {
   return sortField === 'size' ? deriveNoteSize(n) : '';
@@ -898,6 +905,21 @@ export function journalDateOf(n: LocalNote): string | null {
   return typeof stored === 'string' ? stored : null;
 }
 
+/**
+ * A check-in: a journal entry that holds tracker values and no text, neither
+ * a body nor a weekly reflection. The title plays no part, because whether it
+ * is the one the app gave can only be judged against today's title settings.
+ * Text can be added at any time, and the entry is then an ordinary one.
+ * Spec: ops/issues/0439.md (Spec)
+ */
+export function isCheckIn(n: LocalNote): boolean {
+  if (n.type !== 'journal') return false;
+  if ((n.body ?? '').trim() !== '') return false;
+  const trackers = n.trackers as Record<string, unknown> | undefined;
+  if (typeof trackers?.weekReflection === 'string' && trackers.weekReflection.trim() !== '') return false;
+  return hasLoggedTrackers(trackers, false);
+}
+
 /** The live journal entry written for a day, tracker values or not. */
 export function journalOn(notes: LocalNote[], date: string): LocalNote | undefined {
   return notes.find((n) => n.type === 'journal' && n.deleted === 0 && n.trashed === 0 && journalDateOf(n) === date);
@@ -911,7 +933,7 @@ export function entryDayOf(n: LocalNote): string {
 
 /** Each day that holds a live journal entry, to the id of its newest one.
  *  Trashed and archived entries stay off the calendar.
- *  Spec: ops/docs/plans/journal-calendar.md (the data) */
+ *  Spec: ops/docs/archive/journal-calendar.md (the data) */
 export function journalEntriesByDay(notes: readonly LocalNote[]): Map<string, string> {
   const newest = new Map<string, LocalNote>();
   for (const n of notes) {
@@ -945,6 +967,9 @@ export type DayEntry = {
   alerted?: true;
   /** The first day of this occurrence of a repeating item. */
   occurrence?: string;
+  /** The item's tags and folder, for its color (useNoteLook). */
+  tags?: readonly string[];
+  folderId?: string | null;
 };
 
 /** What a calendar reads: whether a day holds anything, and what. */
@@ -1005,7 +1030,7 @@ export function isWeekJournal(n: LocalNote): boolean {
 
 /** Date shapes offered for new journal entry titles (GitHub #200).
  *  Rendered live in the picker, so no shape needs a translated label. */
-export const JOURNAL_TITLE_FORMATS = ['long', 'iso', 'iso-weekday', 'short', 'numeric'] as const;
+const JOURNAL_TITLE_FORMATS = ['long', 'iso', 'iso-weekday', 'short', 'numeric'] as const;
 export type JournalTitleFormat = (typeof JOURNAL_TITLE_FORMATS)[number];
 
 /** Longest suffix a title may carry. Sized against `TITLE_MAX_LENGTH`
@@ -1063,11 +1088,25 @@ export function journalTitle(
   return tail ? `${date} ${tail}` : date;
 }
 
+/** The presets the picker lists: one per distinct title for that day. Two
+ *  shapes can write the same text (the digits under the ISO date setting, the
+ *  short and long shapes in Arabic); the selected one keeps its row, else the
+ *  first in list order. Equal text today means equal titles today. */
+export function distinctJournalFormats(d: Date, selected: JournalTitleFormat, locale: string): JournalTitleFormat[] {
+  const keep = new Map<string, JournalTitleFormat>();
+  for (const f of JOURNAL_TITLE_FORMATS) {
+    const text = journalTitle(d, f, '', locale);
+    if (!keep.has(text) || f === selected) keep.set(text, f);
+  }
+  const shown = new Set(keep.values());
+  return JOURNAL_TITLE_FORMATS.filter((f) => shown.has(f));
+}
+
 /**
  * Whether a title is still exactly one the app made for that day: the custom
  * pattern, or any preset with the current suffix or with none. Only such a
  * title follows the entry when its day changes; a title the person typed stays.
- * Spec: ops/docs/plans/dates.md (section 3.4)
+ * Spec: ops/docs/archive/dates.md (section 3.4)
  */
 export function isGeneratedJournalTitle(title: string, day: string, suffix: string, locale: string, pattern = ''): boolean {
   const d = new Date(`${day}T12:00:00`);
@@ -1087,7 +1126,7 @@ export function isGeneratedJournalTitle(title: string, day: string, suffix: stri
  * read-only entry keeps its title: the write refuses a title change there. So
  * does an entry the PIN guards right now, which the caller says with
  * `keepTitle`, because the gate is the view's state, not the row's.
- * Spec: ops/docs/plans/dates.md (section 3.4)
+ * Spec: ops/docs/archive/dates.md (section 3.4)
  */
 export function journalDatePatch(
   n: Pick<LocalNote, 'type' | 'title' | 'trackers' | 'createdAt' | 'locked'>,
@@ -1145,7 +1184,7 @@ function scheduleOfItem(n: LocalNote): Schedule | null {
  * events, entries, notes, task lists and birthdays, newest first. A repeating
  * event is expanded for the day asked, so no window is needed and a day is
  * read once.
- * Spec: ops/docs/plans/note-date.md (section 4), ops/docs/plans/calendar-pillar-spec.md (section 4.3)
+ * Spec: ops/docs/archive/note-date.md (section 4), ops/docs/archive/calendar-pillar-spec.md (section 4.3)
  */
 export function calendarIndex(
   notes: readonly LocalNote[],
@@ -1224,6 +1263,8 @@ export function calendarIndex(
           space: opts.spaceOf ? opts.spaceOf(n) : null,
           title: opts.titleOf(n),
           at: n.createdAt,
+          tags: n.tags,
+          folderId: n.folderId ?? null,
         };
         if (s.time) entry.time = s.time;
         if (s.timeEnd) entry.timeEnd = s.timeEnd;
@@ -1241,6 +1282,8 @@ export function calendarIndex(
         space: opts.spaceOf ? opts.spaceOf(n) : null,
         title: opts.titleOf(n),
         at: n.createdAt,
+        tags: n.tags,
+        folderId: n.folderId ?? null,
       })),
     ]
       .sort((a, b) =>
@@ -1269,7 +1312,7 @@ export function calendarIndex(
  * time, so a new date setting needs no index rebuild. A query with no digit,
  * or shorter than four characters, names no day: a word never lists every
  * dated item.
- * Spec: ops/docs/plans/note-date.md
+ * Spec: ops/docs/archive/note-date.md
  */
 export function itemsDatedAs(query: string, notes: readonly LocalNote[], isGated: (n: LocalNote) => boolean): Set<string> {
   const found = new Set<string>();
@@ -1307,7 +1350,7 @@ export function itemsDatedAs(query: string, notes: readonly LocalNote[], isGated
  * it. A move takes the whole schedule along: a multi-day item keeps its
  * length. Taking the day away removes the whole schedule, and `backfilled`,
  * which belongs to a journal entry, goes with it. An event always has a day.
- * Spec: ops/docs/plans/note-date.md, ops/docs/plans/calendar-pillar-spec.md (step 4)
+ * Spec: ops/docs/archive/note-date.md, ops/docs/archive/calendar-pillar-spec.md (step 4)
  */
 export function schedulePatch(
   n: Pick<LocalNote, 'type' | 'trackers'>,
@@ -1394,7 +1437,12 @@ export function isNoteEmpty(note: LocalNote | undefined): boolean {
   // signal, but only while the draft is still untouched (#122).
   // A new task list starts with one empty checkbox, which is no content.
   if (note.type === 'task' || note.type === 'journal') {
-    const content = hasBody && !(note.type === 'task' && body === TASK_LIST_EMPTY_BODY);
+    // A logged tracker value is content: the check-in card writes a mood into
+    // an entry in the same write that creates it, so the untouched stamp
+    // alone would call that entry an empty draft and discard it.
+    // A new Kanban task starts as a board with empty card lines: no content either.
+    const content = (hasBody && !(note.type === 'task' && (body === TASK_LIST_EMPTY_BODY || isUntouchedKanbanBody(body))))
+      || (note.type === 'journal' && hasLoggedTrackers(trackers));
     return !content && !hasTags && note.createdAt === note.updatedAt;
   }
   if (hasTitle) return false;

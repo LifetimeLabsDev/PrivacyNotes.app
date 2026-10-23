@@ -10,6 +10,8 @@
     "back": "Back",
     "next": "Next",
     "remove": "Remove",
+    "deleteConfirm": "Delete?",
+    "removeConfirm": "Remove?",
     "copy": "Copy",
     "rename": "Rename",
     "create": "Create",
@@ -59,15 +61,17 @@
   },
   "palette": {
     "label": "Commands",
-    "open": "Commands (>)",
+    "open": "Commands",
     "empty": "No matching command",
     "groups": {
+      "features": "Features",
       "commands": "Commands",
       "new": "New",
-      "goTo": "Go to"
+      "goTo": "Go to",
+      "themes": "Themes"
     },
     "commands": {
-      "quickSwitcher": "Jump to an item or a setting",
+      "quickSwitcher": "Open Ninja: find an item, add anything, run a command",
       "historyBack": "Go back",
       "historyForward": "Go forward",
       "toggleSidebar": "Show or hide the sidebar",
@@ -93,9 +97,9 @@
     }
   },
   "quickSwitcher": {
-    "label": "Jump to an item or a setting",
-    "jumpTo": "Jump",
-    "placeholder": "Type a title or a setting, or > for commands",
+    "label": "Ninja: find an item or a setting, add anything, run a command",
+    "jumpTo": "Ninja",
+    "placeholder": "Ninja at your service: a title, + to add, > for commands",
     "recent": "Recent",
     "empty": "No item or setting with that name",
     "searchAll": "Search everything for “{{query}}”",
@@ -114,6 +118,7 @@
     "tagItems_other": "{{count}} items",
     "emptyTags": "No tag with that name",
     "emptyFolders": "No folder with that name",
+    "emptyVault": "Nothing here yet. Type + to add your first item.",
     "onlyTags": "tags",
     "onlyFolders": "folders",
     "showOnlyTags": "Only tags",
@@ -124,7 +129,13 @@
     "createTag": "Create tag #{{name}}",
     "createFolder": "Create folder “{{name}}”",
     "newTag": "New Tag",
-    "newFolder": "New Folder"
+    "newFolder": "New Folder",
+    "goToDay": "Go to day",
+    "inText": "In the text",
+    "actions": "actions",
+    "back": "back",
+    "actionsPlaceholder": "Filter the actions",
+    "onlyCreate": "add"
   },
   "cardForm": {
     "cardholderName": "Cardholder Name",
@@ -182,60 +193,69 @@
     "removeTag": "Remove {{tag}}"
   },
   "loading": {
+    "pause": "Pause the lines",
+    "play": "Play the lines",
     "lines": [
-      "loading your encrypted overthinking…",
-      "one moment while we disappoint advertisers.",
-      "too encrypted to care.",
-      "bringing swiss banking energy to note taking.",
-      "protecting your shower thoughts.",
-      "your secrets survived another reboot.",
-      "nothing leaves the device naked.",
-      "opening the vault quietly…",
-      "cold storage for warm thoughts.",
-      "this note self-respects privacy.",
-      "reading impossible. syncing possible.",
-      "locally decrypted. globally ignored.",
-      "your notes are socially distant.",
-      "ciphertext in, ciphertext out.",
-      "another beautiful day for encryption.",
-      "keeping secrets boring since launch.",
-      "you write it. nobody reads it.",
-      "privacy without the ted talk.",
-      "decrypting like it’s nobody’s business.",
-      "keeping the cloud confused.",
-      "server knows nothing. server likes it that way.",
-      "less surveillance. more notes.",
-      "encrypted nonsense, as expected.",
-      "mathematically unavailable.",
-      "zero knowledge. maximum audacity.",
-      "tracking disabled emotionally and technically.",
-      "your device holds the gossip.",
-      "locally sourced plaintext.",
-      "turning thoughts into unreadable soup.",
-      "just you and the keys.",
-      "private thoughts entering private mode.",
-      "keeping your future leaks fictional.",
-      "another note hidden from capitalism.",
-      "privacy isn’t premium here.",
-      "security through actual security.",
-      "quietly resisting data brokers.",
-      "no ai training material detected.",
-      "encrypted harder than necessary.",
-      "privacy: now loading.",
-      "loading secrets responsibly.",
-      "all signal. no surveillance.",
-      "another encrypted masterpiece incoming.",
-      "converting trust issues into software.",
-      "your thoughts remain off-market.",
-      "this sync contains zero gossip for us.",
-      "because “just trust us” is stupid.",
-      "thinking privately at scale.",
-      "your notes remain legally mysterious.",
-      "restoring order from encrypted chaos.",
-      "data miners found nothing but sadness.",
-      "locally decrypting existential thoughts…",
-      "your vault remains aggressively unreadable.",
-      "swiss neutrality, but for notes."
+      "bringing swiss banking energy to note taking",
+      "protecting your shower thoughts",
+      "your notes are encrypted on your device",
+      "cold storage for warm thoughts",
+      "another beautiful day for encryption",
+      "keeping secrets boring since launch",
+      "privacy without the ted talk",
+      "keeping the cloud confused",
+      "the server stores ciphertext. it finds it dull",
+      "less surveillance. more notes",
+      "encrypted nonsense, as expected",
+      "tracking disabled emotionally and technically",
+      "your device holds the gossip",
+      "private thoughts entering private mode",
+      "another note hidden from capitalism",
+      "privacy isn’t premium here",
+      "security through actual security",
+      "quietly resisting data brokers",
+      "no ai training material detected",
+      "encrypted harder than necessary",
+      "all signal. no surveillance",
+      "converting trust issues into software",
+      "your thoughts remain off-market",
+      "data miners found nothing but sadness",
+      "your vault stays aggressively encrypted",
+      "swiss neutrality, but for notes",
+      "no ads. no trackers. no plot twist",
+      "open source, so you can check the math",
+      "ciphertext is our love language",
+      "making your notes boring to strangers",
+      "your diary called. it wants privacy",
+      "your mood tracker missed you",
+      "your ideas, minus the audience",
+      "your journal kept your secrets overnight",
+      "one private place for everything you’d never post",
+      "no algorithm decides what you see here",
+      "your brain dump is safe and sound",
+      "writing is thinking. thinking is private",
+      "no influencers were consulted"
+    ],
+    "loadingOnly": [
+      "loading your encrypted overthinking",
+      "one moment while we disappoint advertisers",
+      "your secrets survived another reboot",
+      "opening the vault quietly",
+      "locally decrypted. globally ignored",
+      "decrypting like it’s nobody’s business",
+      "locally sourced plaintext",
+      "turning thoughts into unreadable soup",
+      "another encrypted masterpiece incoming",
+      "restoring order from encrypted chaos",
+      "locally decrypting existential thoughts",
+      "warming up the keys",
+      "finding your train of thought",
+      "counting your unchecked tasks. no judgment",
+      "no ads were shown during this loading",
+      "putting your notes back where you left them",
+      "untangling yesterday’s thoughts",
+      "shuffling bits into a nice order",
+      "remembering what you forgot to remember"
     ]
   },
   "neverBackedUp": {
@@ -245,5 +265,57 @@
     "changesOne": "Its latest changes are not backed up and would be lost.",
     "changesSome_one": "{{count}} of these notes has changes that are not backed up and would be lost.",
     "changesSome_other": "{{count}} of these notes have changes that are not backed up and would be lost."
+  },
+  "ninja": {
+    "recent": "Recent",
+    "topHit": "Best match",
+    "trashEmpty": "The trash is empty",
+    "allThemes": "All themes",
+    "features": {
+      "stats": {
+        "label": "Statistics",
+        "detail": "Your writing, streaks and trackers over time"
+      },
+      "trackers": {
+        "label": "Trackers",
+        "detail": "Mood, habits, factors and medication"
+      },
+      "medication": {
+        "label": "Medication",
+        "detail": "Doses, times and reminders"
+      },
+      "yearInPixels": {
+        "label": "Year in pixels",
+        "detail": "Each day of the year as one colored square"
+      },
+      "importExport": {
+        "label": "Import & Export",
+        "detail": "Bring notes in, take a backup out"
+      },
+      "generator": {
+        "label": "Password generator",
+        "detail": "A strong password or passphrase, ready to copy"
+      },
+      "themes": {
+        "label": "Themes",
+        "detail": "Color themes for light and dark"
+      }
+    },
+    "new": {
+      "medication": "New medication",
+      "customTracker": "New custom tracker"
+    },
+    "commands": {
+      "syncResume": "Resume sync",
+      "changelog": "What is new",
+      "help": "Help",
+      "themesPage": "Community themes",
+      "website": "PrivacyNotes website"
+    },
+    "themes": {
+      "word": "Theme",
+      "light": "Light theme",
+      "dark": "Dark theme"
+    }
   }
 }

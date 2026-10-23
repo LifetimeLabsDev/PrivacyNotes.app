@@ -49,7 +49,7 @@ export function useIsMobile(): boolean {
  * a chip row that scrolls sideways with its scrollbar hidden. A finger
  * swipes it; a pointer cannot reach it at all, because the scrollbar is
  * gone and a vertical wheel does not move a horizontal scroller.
- * Spec: ops/docs/ui-patterns.md section 85 (hidden sideways scroll).
+ * Spec: ops/docs/archive/ui-patterns.md section 85 (hidden sideways scroll).
  */
 /** The phone bar is on screen: below the md breakpoint, where an open item
  *  fills the screen, and taller than the 320px at which the bar hides. */

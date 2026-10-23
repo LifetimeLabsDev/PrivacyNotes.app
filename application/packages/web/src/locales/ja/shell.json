@@ -7,7 +7,6 @@
   "tasksList": {
     "title": "タスク",
     "newTaskNote": "新規タスクノート",
-    "newTaskNoteWithHotkey": "新規タスクノート({{hotkey}})",
     "hideCompleted": "完了したタスクを隠す",
     "showCompleted": "完了したタスクを表示",
     "searchPlaceholder": "タスクを検索…",
@@ -235,8 +234,10 @@
     "color": "色",
     "colorNone": "色なし",
     "colorUseDefault": "標準に戻す",
+    "icon": "アイコン",
     "colorFromFolder": "フォルダから: {{name}}",
     "colorFromTag": "タグから: #{{name}}",
+    "colorOwnHint": "ここで選んだ色は、このノートの背景を塗りつぶします。<setting>フォルダとタグの色</setting>では変わりません。",
     "details": "詳細",
     "readOnly": "読み取り専用",
     "readOnlyDescription": "オフに戻すまで編集できません。",
@@ -278,12 +279,12 @@
     "endsAt": "終了時刻",
     "noEnd": "なし",
     "removeFromCalendar": "カレンダーから削除",
-    "makeEvent": "繰り返すには予定に変更してください",
+    "makeEvent": "繰り返すには<b>予定</b>に変換してください",
     "typeEvent": "予定",
     "repeatRemoved": "繰り返しは削除されます"
   },
   "selectionToolbar": {
-    "exitSelectionTooltip": "選択を終了(Esc)",
+    "exitSelectionTooltip": "選択を終了",
     "exitSelection": "選択を終了",
     "unpin": "ピン留めを解除",
     "pin": "ピン留め",
@@ -315,6 +316,7 @@
     "showSize": "ファイルサイズを表示",
     "showTags": "フォルダとタグを表示",
     "showCalendar": "カレンダーを表示",
+    "showCheckIn": "チェックインカードを表示",
     "showWorkItems": "<b>仕事</b>のアイテムを表示",
     "showPersonalItems": "<b>個人</b>のアイテムを表示",
     "other": "その他",
@@ -333,12 +335,13 @@
     "groupsByLetter": "頭文字でグループ化",
     "groupsNoneForSize": "サイズ順では使用できません",
     "compactRows": "コンパクトな行",
-    "compactRowsHint": "アイコンなし、余白を縮小"
+    "compactRowsHint": "アイコンなし、余白を縮小",
+    "moodCalendar": "カレンダーに気分を表示"
   },
   "backfillPopover": {
     "calendarLabel": "ジャーナルカレンダー",
     "today": "今日",
-    "chooseEntry": "{{date}}のエントリー"
+    "chooseEntry": "{{date}}のアイテム"
   },
   "monthGrid": {
     "previousMonth": "前の月",
@@ -346,6 +349,7 @@
     "dayWithEntry": "{{date}}、エントリーあり",
     "dayWithEntryIn": "{{date}}、「{{space}}」にエントリーあり",
     "dayWithItems_other": "{{date}}、{{count}}件のアイテム",
+    "dayWithMood": "{{date}}、気分 {{mood}}",
     "previousWeek": "前の週",
     "nextWeek": "次の週",
     "showMonth": "{{month}}、月全体を表示",
@@ -354,6 +358,7 @@
   "contextMenu": {
     "newNote": "新規ノート",
     "newTask": "新規タスク",
+    "newKanban": "新規カンバンボード",
     "newLogin": "新規ログイン",
     "newJournal": "新規ジャーナル",
     "newFile": "新規ファイル",
@@ -387,6 +392,8 @@
     "openBookmark": "開く",
     "copyBookmarkUrl": "URLをコピー",
     "editBookmark": "ブックマークを編集",
+    "saveAsNote": "ノートとして保存",
+    "openClippedNote": "ノートを開く",
     "openInTab": "タブで開く",
     "openInTabHint": "{{key}}+クリック",
     "closeTab": "タブを閉じる",
@@ -484,6 +491,7 @@
     "assocWindowsManual": "Windowsでは、自分で選ぶ必要があります。",
     "assocWindowsOpen": "Windowsの設定を開く",
     "assocChangeHint": "これはシステム設定で変更できます。",
+    "assocFinderSteps": "変更するには、Finderで.mdファイルの「情報を見る」を選び、「このアプリケーションで開く」でPrivacyNotesを選んで「すべてを変更」をクリックします。",
     "assocFailed": "既定のアプリを変更できませんでした。",
     "assocWorking": "システムに問い合わせ中…",
     "copyPath": "パスをコピー",
@@ -495,7 +503,6 @@
     "importedManyToast": "{{count}}個のファイルを暗号化されたノートに保存しました。元のファイルはそのままです。",
     "alreadySavedToast": "「{{title}}」はすでにノートにあります。",
     "importedManySkippedToast": "{{saved}}個のファイルを保存し、すでにノートにある{{skipped}}個はスキップしました。",
-    "footerFiles": "ファイル",
     "bridge_other": "Markdown に {{count}} 件"
   },
   "importPrompt": {
@@ -705,6 +712,7 @@
     "workEmpty": "「仕事」は空です。「個人」で項目かフォルダのメニューを開き、「仕事に移動」を選んでください。"
   },
   "calendar": {
+    "importLabel": "カレンダーを読み込む",
     "moveToToday": "今日に移動",
     "moveToTomorrow": "明日に移動",
     "moveToNextWeek": "来週に移動",
@@ -822,6 +830,7 @@
     "at": "の",
     "remove": "{{alert}}を削除",
     "reminder": "リマインダー",
+    "medication": "服薬リマインダー",
     "open": "開く",
     "snooze": "10分後に再通知",
     "offOnPhone": "このスマートフォンではリマインダーがオフです",
@@ -831,12 +840,34 @@
   "quickAdd": {
     "group": "作成",
     "items": "アイテム",
+    "addTo": "追加先",
+    "newListWith_other": "新規タスクリスト「{{title}}」({{count}}件のタスク)",
+    "appendHint": "「{{text}}」を既存のリストやノートに追加",
+    "appendHintDetail": ">> に続けて名前の先頭を入力します",
+    "appendNone": "追加先のタスクリストやノートはまだありません",
+    "appendNoneDetail": ">> に続けて名前を入力すると、その名前のタスクリストを作成します",
+    "linkGroup": "このリンクを保存",
+    "linkDetail": {
+      "bookmark": "アドレスを保存します。名前は次に付けます。",
+      "clip": "記事の本文と画像をノートとして保存します。",
+      "login": "アドレスを保存し、サイト名を名前にします。パスワードは次に追加します。"
+    },
+    "addTasks_other": "{{count}}件のタスクを{{title}}に追加",
+    "addLine": "{{title}}に追加",
+    "added": "{{title}}に追加しました",
+    "notAdded": "{{title}}には何も追加されませんでした。もう一度お試しください。",
     "createNamed": "{{type}}: {{title}}",
     "types": {
       "event": "新規予定",
       "note": "新規ノート",
       "task": "新規タスクリスト",
-      "journal": "新規ジャーナル"
+      "journal": "新規ジャーナル",
+      "kanban": "新規カンバンボード",
+      "login": "新規ログイン",
+      "file": "ファイルをアップロード",
+      "contact": "新規連絡先",
+      "bookmark": "新規ブックマーク",
+      "clip": "ページをクリップ"
     },
     "keepAsText": "テキストのままにする",
     "placeholder": "タイトル、日、時刻、繰り返し...",
@@ -891,11 +922,90 @@
         "label": "種類",
         "examples": "タスク · ノート · ジャーナル(何も入力しなければ予定)",
         "insert": "タスク"
+      },
+      "append": {
+        "label": "既存のリストやノートに追加",
+        "examples": "牛乳, 卵 >> 買い物 · 銀行に電話 >> 用事",
+        "insert": "牛乳, 卵 >>"
       }
     },
     "label": "クイック追加"
   },
   "offline": {
     "notLoaded": "オフラインのため、アプリのこの部分はまだ読み込まれていません。オンラインに戻ってから、もう一度お試しください。"
+  },
+  "checkIn": {
+    "prompt": "今日の気分はどうですか?",
+    "promptOn": "{{date}}の気分はどうでしたか?",
+    "edit": "記録した内容を変更",
+    "anotherDay": "別の日を記録",
+    "backToToday": "今日に戻る",
+    "options": "チェックインのオプション",
+    "skipToday": "今日はスキップ",
+    "hide": "このカードを非表示",
+    "change": "気分を変更",
+    "saved": "保存しました",
+    "chooseTrackers": "トラッカーを選択",
+    "settings": "チェックインの設定",
+    "skipped": "今日はスキップしました。",
+    "startOver": "最初からやり直す",
+    "cleared": "チェックインをクリアしました。",
+    "hidden": "カードを非表示にしました。リスト設定の「チェックインカードを表示」で再び表示できます。",
+    "undo": "元に戻す",
+    "done": "完了",
+    "write": "今日のことを書く",
+    "writeOn": "{{date}}のことを書く",
+    "streak": "{{n}}日連続",
+    "streakFirst": "1日目、いいスタートです",
+    "allDone": "今日はすべて完了",
+    "niceWork": "自分のための時間、よくがんばりました。",
+    "locked": "今日のジャーナルの記録はロックされています",
+    "lockedOn": "{{date}}のジャーナルの記録はロックされています",
+    "toggle": "チェックインを表示",
+    "hiddenCount_other": "{{count}}件のチェックインが非表示になっています。",
+    "showThem": "表示"
+  },
+  "clipper": {
+    "saveAsNote": "ノートとして保存",
+    "saving": "ノートとして保存中…",
+    "stepPage": "ページをダウンロード中",
+    "stepPictures": "画像を保存中 ({{done}}/{{total}})",
+    "openNote": "ノートを開く",
+    "alreadySaved": "このページはすでにノートとして保存されています ({{date}})。",
+    "savedOn": "{{date}}にノートとして保存済み",
+    "windowTitle": "ページをクリップ",
+    "addressLabel": "Webアドレス",
+    "addressPlaceholder": "リンクを貼り付け…",
+    "savePictures": "画像を保存",
+    "savePicturesHint": "最大20枚の画像をノートと一緒に保存します。ストレージの使用量に含まれます。",
+    "downloading": "ページをダウンロード中…",
+    "downloadingPictures": "画像をダウンロード中 ({{done}}/{{total}})",
+    "picturesLine_other": "画像{{count}}枚 · {{size}}、ノートと一緒に保存",
+    "sourceLabel": "出典",
+    "imageLabel": "画像",
+    "saved": "ノートとして保存しました",
+    "somePicturesFailed_other": "保存しました。{{count}}枚の画像は保存できなかったため、リンクのまま残ります。",
+    "storageFull_other": "ストレージがいっぱいのため、{{count}}枚の画像を除いて保存しました。",
+    "blocked": "このサイトはクリップを許可していません。ブックマークは保存されています。",
+    "noMainText": "このページに本文が見つかりません。ブックマークは保存されています。",
+    "tooLong": "このページは長すぎるため、1つのノートとして保存できません。ブックマークは保存されています。",
+    "offline": "オフラインです。ブックマークは保存されています。後で「ノートとして保存」をお試しください。",
+    "timeout": "ページの読み込みに時間がかかりすぎました。ブックマークは保存されています。後でもう一度お試しください。",
+    "notAPage": "このアドレスはWebページではありません。ブックマークは保存されています。",
+    "refused": "このアドレスはクリップできません。",
+    "rateLimit": "短時間に保存したページが多すぎます。1分後にもう一度お試しください。",
+    "failed": "ページを保存できませんでした。ブックマークは保存されています。",
+    "shortText": "このページにはテキストがほとんどありません。サインイン、Cookie、または確認のページかもしれません。代わりにブックマークとして残しますか？",
+    "keepBookmark": "ブックマークを残す",
+    "saveAnyway": "このまま保存",
+    "shortTextSaved": "保存しましたが、このページにはテキストがほとんどありませんでした。サインイン、Cookie、または確認のページかもしれません。",
+    "demoLimit": "デモのクリップ上限に達しました。アカウントを作成すると、上限なしでクリップできます。"
+  },
+  "eventCard": {
+    "show": "スケジュールを表示: {{when}}",
+    "hide": "スケジュールを非表示",
+    "until": "{{day}}まで",
+    "noAlert": "通知なし",
+    "endsLater": "別の日に終了"
   }
 }

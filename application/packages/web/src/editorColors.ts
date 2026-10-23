@@ -17,6 +17,14 @@ export const TEXT_COLORS: { name: string; value: string }[] = [
   { name: 'Pink', value: '#c2255c' },
 ];
 
+
+/** The palette by name, for a surface that needs one fixed color of it (a
+ *  chart's bars) and must not carry a hex of its own. */
+export const PALETTE = Object.fromEntries(TEXT_COLORS.map((c) => [c.name.toLowerCase(), c.value])) as Record<
+  'gray' | 'red' | 'orange' | 'yellow' | 'green' | 'teal' | 'blue' | 'purple' | 'pink',
+  string
+>;
+
 /**
  * Font families offered by the toolbar's Font popover.
  *

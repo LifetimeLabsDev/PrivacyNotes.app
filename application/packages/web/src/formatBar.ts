@@ -18,7 +18,7 @@
  * The saved arrangement names every list, so a key in none of them is an
  * item a later version added. It takes its stock home and stock position, so
  * a person who arranged the bar still meets the new button.
- * Spec: ops/docs/plans/format-bar.md
+ * Spec: ops/docs/archive/format-bar.md
  */
 import {
   mergeRegisterMaps,
@@ -51,6 +51,8 @@ const attached = (key: string, menuAllowed = true): FormatBarItem => ({ key, hom
 // A separator is a thin line on the bar. Each key exists once, so a person
 // who wants more than one line takes the next one.
 const separator = (key: string): FormatBarItem => ({ key, home: 'hidden', group: 'format', menuAllowed: false, attachAllowed: false });
+// Hidden until a person places it, on the bar or in the menu.
+const offered = (key: string, group: FormatBarGroup): FormatBarItem => ({ key, home: 'hidden', group, menuAllowed: true, attachAllowed: false });
 
 /** Stock order: the row, the menu, the attach menu, the end of the bar, hidden. */
 export const FORMAT_BAR_ITEMS: readonly FormatBarItem[] = [
@@ -60,7 +62,7 @@ export const FORMAT_BAR_ITEMS: readonly FormatBarItem[] = [
   row('highlight', false), row('callout', false), row('strike'),
   menu('table', 'insert'), menu('hr', 'insert'), menu('bullets', 'insert'), menu('numbered', 'insert'),
   menu('fromFiles', 'insert', true), menu('date', 'insert'), menu('dateTime', 'insert'),
-  menu('quote', 'blocks'), menu('codeblock', 'blocks'), menu('copybox', 'blocks'),
+  menu('quote', 'blocks'), menu('codeblock', 'blocks'), menu('copybox', 'blocks'), menu('kanban', 'blocks'),
   menu('inlinecode', 'notation'), menu('math', 'notation'), menu('blockmath', 'notation'),
   menu('superscript', 'notation'), menu('subscript', 'notation'), menu('spoiler', 'notation'),
   menu('footnote', 'notation'),
@@ -68,6 +70,7 @@ export const FORMAT_BAR_ITEMS: readonly FormatBarItem[] = [
   // arrangement saved before the paperclip existed gets it after them.
   attached('image'), attached('attach'), attached('audio', false),
   end('attachMenu', false), end('customize'), end('markdownView'),
+  offered('copyAsPlain', 'notation'), offered('copyAsMarkdown', 'notation'),
   separator('separator1'), separator('separator2'), separator('separator3'), separator('separator4'),
 ];
 

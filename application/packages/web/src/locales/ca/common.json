@@ -10,6 +10,8 @@
     "back": "Enrere",
     "next": "Següent",
     "remove": "Elimina",
+    "deleteConfirm": "Suprimir?",
+    "removeConfirm": "Treure?",
     "copy": "Copia",
     "rename": "Canvia el nom",
     "create": "Crea",
@@ -60,15 +62,17 @@
   },
   "palette": {
     "label": "Ordres",
-    "open": "Ordres (>)",
+    "open": "Ordres",
     "empty": "Cap ordre coincident",
     "groups": {
+      "features": "Funcions",
       "commands": "Ordres",
       "new": "Nou",
-      "goTo": "Vés a"
+      "goTo": "Vés a",
+      "themes": "Temes"
     },
     "commands": {
-      "quickSwitcher": "Vés a un element o a un ajust",
+      "quickSwitcher": "Obre Ninja: troba un element, afegeix qualsevol cosa, executa una ordre",
       "historyBack": "Vés enrere",
       "historyForward": "Vés endavant",
       "toggleSidebar": "Mostra o amaga la barra lateral",
@@ -94,9 +98,9 @@
     }
   },
   "quickSwitcher": {
-    "label": "Vés a un element o a un ajust",
-    "jumpTo": "Salta",
-    "placeholder": "Escriu un títol o un ajust, o > per a les ordres",
+    "label": "Ninja: troba un element o un ajust, afegeix qualsevol cosa, executa una ordre",
+    "jumpTo": "Ninja",
+    "placeholder": "Ninja al teu servei: un títol, + per afegir, > per a les ordres",
     "recent": "Recents",
     "empty": "Cap element ni ajust amb aquest nom",
     "searchAll": "Cerca a tot arreu: «{{query}}»",
@@ -115,6 +119,7 @@
     "tagItems_other": "{{count}} elements",
     "emptyTags": "Cap etiqueta amb aquest nom",
     "emptyFolders": "Cap carpeta amb aquest nom",
+    "emptyVault": "Encara no hi ha res. Escriu + per afegir el teu primer element.",
     "onlyTags": "etiquetes",
     "onlyFolders": "carpetes",
     "showOnlyTags": "Només etiquetes",
@@ -125,7 +130,13 @@
     "createTag": "Crea l'etiqueta #{{name}}",
     "createFolder": "Crea la carpeta «{{name}}»",
     "newTag": "Etiqueta nova",
-    "newFolder": "Carpeta nova"
+    "newFolder": "Carpeta nova",
+    "goToDay": "Vés al dia",
+    "inText": "Al text",
+    "actions": "accions",
+    "back": "enrere",
+    "actionsPlaceholder": "Filtra les accions",
+    "onlyCreate": "afegeix"
   },
   "cardForm": {
     "cardholderName": "Nom del titular",
@@ -184,46 +195,48 @@
     "removeTag": "Elimina {{tag}}"
   },
   "loading": {
+    "pause": "Posa en pausa les frases",
+    "play": "Reprèn les frases",
     "lines": [
-      "carregant els teus maldecaps xifrats…",
-      "un moment mentre decebem els anunciants.",
-      "massa xifrat perquè ens importi.",
-      "energia de banca suïssa per a les teves notes.",
-      "protegint les teves idees de dutxa.",
-      "els teus secrets han sobreviscut un altre reinici.",
-      "res no surt del dispositiu despullat.",
-      "obrint la caixa forta sense fer soroll…",
-      "emmagatzematge fred per a pensaments càlids.",
-      "aquesta nota es pren la privadesa seriosament.",
-      "llegir-ho, impossible. sincronitzar-ho, possible.",
-      "desxifrat localment. ignorat globalment.",
-      "les teves notes mantenen la distància social.",
-      "entra text xifrat, surt text xifrat.",
-      "un altre dia esplèndid per xifrar.",
-      "fent avorrits els secrets des del primer dia.",
-      "tu ho escrius. ningú no ho llegeix.",
-      "privadesa sense la xerrada TED.",
-      "desxifrant com si no fos assumpte de ningú.",
-      "mantenint el núvol confós.",
-      "el servidor no sap res. i li agrada que sigui així.",
-      "menys vigilància. més notes.",
-      "galimaties xifrat, com era d'esperar.",
-      "matemàticament indisponible.",
-      "coneixement zero. audàcia màxima.",
-      "seguiment desactivat, emocionalment i tècnicament.",
-      "les xafarderies es queden al teu dispositiu.",
-      "text en clar de proximitat.",
-      "convertint pensaments en sopa il·legible.",
-      "només tu i les claus.",
-      "pensaments privats entrant en mode privat.",
-      "mantenint les teves futures filtracions en la ficció.",
-      "una altra nota amagada del capitalisme.",
-      "aquí la privadesa no és de pagament.",
-      "seguretat mitjançant seguretat de debò.",
-      "resistint en silenci els mercaders de dades.",
-      "cap material d'entrenament d'ia detectat.",
-      "xifrat més fort del necessari.",
-      "privadesa: carregant.",
+      "energia de banca suïssa per a les teves notes",
+      "protegint les teves idees de dutxa",
+      "les teves notes estan xifrades al teu dispositiu",
+      "emmagatzematge fred per a pensaments càlids",
+      "un altre dia esplèndid per xifrar",
+      "fent avorrits els secrets des del primer dia",
+      "privadesa sense la xerrada TED",
+      "mantenint el núvol confós",
+      "el servidor guarda text xifrat. li sembla avorrit",
+      "menys vigilància. més notes",
+      "galimaties xifrat, com era d'esperar",
+      "rastreig desactivat, emocionalment i tècnicament",
+      "les xafarderies es queden al teu dispositiu",
+      "pensaments privats entrant en mode privat",
+      "una altra nota amagada del capitalisme",
+      "aquí la privadesa no és de pagament",
+      "seguretat mitjançant seguretat de debò",
+      "resistint en silenci els mercaders de dades",
+      "cap material d'entrenament d'IA detectat",
+      "xifrat més fort del necessari",
+      "tot senyal. gens de vigilància",
+      "convertint la desconfiança en programari",
+      "els teus pensaments no estan en venda",
+      "els miners de dades només hi han trobat tristesa",
+      "la teva caixa forta continua ferotgement xifrada",
+      "neutralitat suïssa, però per a notes",
+      "sense anuncis. sense rastrejadors. sense girs de guió",
+      "codi obert, perquè puguis revisar els càlculs",
+      "el text xifrat és el nostre llenguatge de l'amor",
+      "fent les teves notes avorrides per als desconeguts",
+      "ha trucat el teu diari. vol privadesa",
+      "el teu seguiment de l'ànim t'ha trobat a faltar",
+      "les teves idees, sense públic",
+      "el teu diari ha guardat els teus secrets tota la nit",
+      "un lloc privat per a tot el que mai no publicaries",
+      "aquí cap algoritme no decideix què veus",
+      "el teu buidatge mental està sa i estalvi",
+      "escriure és pensar. pensar és privat",
+      "no s'ha consultat cap influencer",
       "carregant secrets amb responsabilitat.",
       "tot senyal. gens de vigilància.",
       "arriba una altra obra mestra xifrada.",
@@ -238,6 +251,27 @@
       "desxifrant localment pensaments existencials…",
       "la teva caixa forta continua sent agressivament il·legible.",
       "neutralitat suïssa, però per a notes."
+    ],
+    "loadingOnly": [
+      "carregant els teus maldecaps xifrats",
+      "un moment mentre decebem els anunciants",
+      "els teus secrets han sobreviscut un altre reinici",
+      "obrint la caixa forta sense fer soroll",
+      "desxifrat localment. ignorat globalment",
+      "desxifrant com si no fos assumpte de ningú",
+      "text en clar de proximitat",
+      "convertint pensaments en sopa il·legible",
+      "arriba una altra obra mestra xifrada",
+      "posant ordre al caos xifrat",
+      "desxifrant localment pensaments existencials",
+      "escalfant les claus",
+      "retrobant el fil dels teus pensaments",
+      "comptant les tasques que tens pendents. sense jutjar",
+      "durant aquesta càrrega no s'ha mostrat cap anunci",
+      "tornant les teves notes on les havies deixat",
+      "desembolicant els pensaments d'ahir",
+      "posant els bits en un ordre ben bonic",
+      "recordant el que vas oblidar recordar"
     ]
   },
   "neverBackedUp": {
@@ -247,5 +281,57 @@
     "changesOne": "Els darrers canvis no tenen còpia de seguretat i es perdrien.",
     "changesSome_one": "{{count}} d'aquestes notes té canvis sense còpia de seguretat que es perdrien.",
     "changesSome_other": "{{count}} d'aquestes notes tenen canvis sense còpia de seguretat que es perdrien."
+  },
+  "ninja": {
+    "recent": "Recents",
+    "topHit": "Millor coincidència",
+    "trashEmpty": "La paperera és buida",
+    "allThemes": "Tots els temes",
+    "features": {
+      "stats": {
+        "label": "Estadístiques",
+        "detail": "La teva escriptura, les ratxes i els seguiments al llarg del temps"
+      },
+      "trackers": {
+        "label": "Seguiments",
+        "detail": "Estat d'ànim, hàbits, factors i medicació"
+      },
+      "medication": {
+        "label": "Medicació",
+        "detail": "Dosis, hores i recordatoris"
+      },
+      "yearInPixels": {
+        "label": "Any en píxels",
+        "detail": "Cada dia de l'any com un quadrat de color"
+      },
+      "importExport": {
+        "label": "Import & Export",
+        "detail": "Porta-hi notes, treu-ne una còpia de seguretat"
+      },
+      "generator": {
+        "label": "Generador de contrasenyes",
+        "detail": "Una contrasenya o frase de pas forta, a punt per copiar"
+      },
+      "themes": {
+        "label": "Temes",
+        "detail": "Temes de color per a clar i fosc"
+      }
+    },
+    "new": {
+      "medication": "Medicament nou",
+      "customTracker": "Seguiment personalitzat nou"
+    },
+    "commands": {
+      "syncResume": "Reprèn la sincronització",
+      "changelog": "Novetats",
+      "help": "Ajuda",
+      "themesPage": "Temes de la comunitat",
+      "website": "Lloc web de PrivacyNotes"
+    },
+    "themes": {
+      "word": "Tema",
+      "light": "Tema clar",
+      "dark": "Tema fosc"
+    }
   }
 }

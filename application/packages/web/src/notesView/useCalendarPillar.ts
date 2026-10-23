@@ -26,7 +26,7 @@ function readMode(): CalendarMode {
  * none while another item is selected: the quick switcher and a note-link
  * select an item without `openItem`, and a Delete or a schedule edit there
  * must never act at the day of the item opened before.
- * Spec: ops/docs/plans/calendar-pillar-spec.md (step 3)
+ * Spec: ops/docs/archive/calendar-pillar-spec.md (step 3)
  */
 export function useCalendarPillar({ view, selectedId, setSelectedId, selectView }: {
   view: View;
@@ -63,11 +63,14 @@ export function useCalendarPillar({ view, selectedId, setSelectedId, selectView 
     setSelectedId(null);
   }, [setSelectedId]);
 
-  /** The pillar at a day's month (the card's expand button). */
-  const openAt = useCallback(async (day: string) => {
+  /** The pillar at a day's month (the card's expand button). With `mark`
+   *  (the switcher's "Go to day"), the day pulses and takes the keyboard
+   *  focus, so the eye and the arrow keys start there. */
+  const openAt = useCallback(async (day: string, opts: { mark?: boolean } = {}) => {
     setFocus(day);
     await selectView('calendar');
     setSelectedId(null);
+    if (opts.mark) markDay(day);
   }, [selectView, setSelectedId]);
 
   /** The day a new event takes: the focused one in the pillar, else today. */
@@ -77,3 +80,28 @@ export function useCalendarPillar({ view, selectedId, setSelectedId, selectView 
 }
 
 export type CalendarPillar = ReturnType<typeof useCalendarPillar>;
+
+/** How long the day's pulse runs: the jump-to-file flash, `pn-file-flash` in index.css. */
+const DAY_FLASH_MS = 1700;
+
+/**
+ * Pulse every cell of `day` the calendar draws (the pane's grid and the
+ * list's small month) and focus the pane's, once the view has drawn them.
+ * A second try covers a view that mounts late, as a lazy pane does.
+ */
+function markDay(day: string, tries = 2): void {
+  window.setTimeout(() => {
+    const cells = [...document.querySelectorAll<HTMLElement>(`[data-day="${day}"]`)];
+    if (!cells.length) {
+      if (tries > 1) markDay(day, tries - 1);
+      return;
+    }
+    for (const cell of cells) {
+      cell.classList.remove('pn-day-flash');
+      void cell.offsetWidth;
+      cell.classList.add('pn-day-flash');
+      window.setTimeout(() => cell.classList.remove('pn-day-flash'), DAY_FLASH_MS);
+    }
+    (cells.find((c) => c.closest('[data-pane="editor"], main')) ?? cells[cells.length - 1])!.focus({ preventScroll: false });
+  }, tries > 1 ? 50 : 300);
+}

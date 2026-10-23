@@ -72,7 +72,7 @@ function toDraft(c: Contact): Contact {
  * the display name and writes live, and Done fills it in from the name
  * fields only while it is empty or still equal to the last derived name.
  *
- * Spec: ops/docs/plans/contacts-pillar.md (section 6)
+ * Spec: ops/docs/archive/contacts-pillar.md (section 6)
  */
 export function ContactItem({
   note,

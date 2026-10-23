@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useAuth } from './auth';
 import { useEscapeToClose } from './useEscapeToClose';
@@ -23,16 +23,19 @@ import { ArrowsClockwise, Check, CreditCard, Database, Devices, Key, PencilSimpl
 import { InlineRenameField } from './InlineRenameField';
 import { DEVICE_LABEL_MAX, deviceLabelOf, type DeviceLabels } from './deviceLabels';
 import { HoverLabel } from './HoverLabel';
+import { DeviceIcon } from './DeviceIcon';
+import { deviceVersionFloor, isBelowFloor } from './deviceLook';
 import { DangerZone } from './DangerZone';
 import { QuotaRing } from './QuotaRing';
 import { IconUpgrade } from './UpgradeModal';
 import { RatingStar } from './RatingStar';
 import { isStorageConfigured, getStoragePackages, isBetaPricing } from './paddle';
-import { startStorageCheckout, startStorageUpgrade, openNativeSubscriptionManagement, storageProductId, isNativeStoreBuild, restoreNativePurchases, type RestoreOutcome } from './billing';
+import { startStorageCheckout, startStorageUpgrade, openNativeSubscriptionManagement, storageProductId, PRO_PRODUCT_ID, isNativeStoreBuild, restoreNativePurchases, type RestoreOutcome } from './billing';
 import { STORAGE_ADDON_PRICE, STORAGE_PACKAGES, PRO_PRICE, EARLY_PRICE } from './pricing';
 import { useStorePrices, type StorePrice } from './storePrices';
 import { formatInstant, formatRelative } from './intlFormat';
-import { AccentBar, HeadlineRule, SectionEyebrow, SettingsCallout, SETTINGS_HELP, SettingsTabStrip, settingsTabClass } from './settingsUI';
+import { SectionEyebrow, SettingsCallout, SETTINGS_BTN, SETTINGS_BTN_UPGRADE, SETTINGS_HELP, SettingsTabStrip, settingsTabClass } from './settingsUI';
+import { CloseButton, Modal } from './ui';
 import { SyncPanel } from './SyncPanel';
 import { HelpChip } from './HelpChip';
 import { AccountLoginsPanel } from './AccountLoginsPanel';
@@ -41,6 +44,7 @@ import type { UserSettings } from './userSettings';
 import { isDemoMode } from './demo';
 import { DemoAccountTeaser } from './DemoAccountTeaser';
 import { BetaFlask } from './BetaReportLink';
+import { usePaneTab } from './settingsPaneTab';
 
 type Props = {
   onClose: () => void;
@@ -134,7 +138,6 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
   const [error, setError] = useState<string | null>(null);
   const [confirm, setConfirm] = useState<RevokeTarget | null>(null);
 
-  useEscapeToClose(onClose, !embedded && !confirm);
 
   const authed = auth.status === 'authenticated' ? auth : null;
   // Pro status comes from auth state (set at sign-in by registerDevice).
@@ -167,7 +170,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
   const storeSheetUpgrade = activeStorageSub?.source === 'play' || activeStorageSub?.source === 'apple';
   // Tab is controllable: when the shell drives it (rail items), `controlledTab`
   // wins and the internal tab strip is hidden. Otherwise local state runs it.
-  const [internalTab, setInternalTab] = useState<'plan' | 'storage' | 'sync' | 'me'>('plan');
+  const [internalTab, setInternalTab] = usePaneTab<'plan' | 'storage' | 'sync' | 'me'>('account', 'plan');
   const tab = controlledTab ?? internalTab;
   const setTab = onTabChange ?? setInternalTab;
   const [selectedAccountSection, setAccountSection] = useState<'overview' | 'connectedAccounts' | 'keyCustody'>(initialSection ?? 'overview');
@@ -175,6 +178,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
   const demoAccountPages = isDemoMode();
   const accountSection = accountPagesAvailable || demoAccountPages ? selectedAccountSection : 'overview';
   useEffect(() => { setAccountSection(initialSection ?? 'overview'); }, [initialSection]);
+  const [billingRefresh, setBillingRefresh] = useState(0);
 
   useEffect(() => {
     if (!authed) return;
@@ -187,39 +191,50 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
     const needsRecount = tab === 'storage';
     if (!needsAccountData) return;
     let stale = false;
-    void (async () => {
-      // Paint first, heal second. Awaiting recalculateQuota BEFORE the reads
-      // would hold the whole panel empty until four serial round-trips
-      // completed - measured at ~10s on a phone whose NAT had killed the
-      // connection pool (2026-08-26). So the reads go out immediately and
-      // the panel paints off them; the recalc runs after, and one more quota
-      // read swaps the healed figure in under the already-painted UI.
-      //
-      // A read that fails leaves the figure already on screen alone. The
-      // alternative is a panel that blanks its own numbers whenever the
-      // server refuses, and a stale figure beside a sync status that says
-      // what is wrong beats no figure at all.
-      const [ds, q, subs] = await Promise.all([
-        listDevices(supabase).catch(() => null),
-        fetchQuotaUsage(supabase, isPro ?? false).catch(() => null),
-        fetchMyStorageSubs(supabase).catch(() => null),
-      ]);
-      if (stale) return;
-      if (ds) setDevices(ds);
-      if (q) setQuota(q);
-      if (subs) setStorageSubs(subs);
-      if (ds && q && subs) writePanelCache(authed.pubkey, { devices: ds, quota: q, storageSubs: subs });
-      if (!needsRecount) return;
-      // Recompute blob bytes from Storage ground truth so a drifted
-      // image_bytes self-heals when the storage settings open. Best-effort;
-      // the refetch swaps the healed figure in under the already-painted UI.
-      await recalculateQuota(supabase);
-      if (stale) return;
-      const healed = await fetchQuotaUsage(supabase, isPro ?? false).catch(() => null);
-      if (stale || !healed) return;
-      setQuota(healed);
-      if (ds && subs) writePanelCache(authed.pubkey, { devices: ds, quota: healed, storageSubs: subs });
-    })();
+    let busy = false;
+    const refresh = async (recount = false) => {
+      if (busy || stale) return;
+      busy = true;
+      try {
+        // Paint first, heal second. Awaiting recalculateQuota BEFORE the reads
+        // would hold the whole panel empty until four serial round-trips
+        // completed - measured at ~10s on a phone whose NAT had killed the
+        // connection pool (2026-08-26). So the reads go out immediately and
+        // the panel paints off them; the recalc runs after, and one more quota
+        // read swaps the healed figure in under the already-painted UI.
+        //
+        // A read that fails leaves the figure already on screen alone. The
+        // alternative is a panel that blanks its own numbers whenever the
+        // server refuses, and a stale figure beside a sync status that says
+        // what is wrong beats no figure at all.
+        const [ds, q, subs] = await Promise.all([
+          listDevices(supabase, authed.pubkey).catch(() => null),
+          fetchQuotaUsage(supabase, isPro ?? false).catch(() => null),
+          fetchMyStorageSubs(supabase).catch(() => null),
+        ]);
+        if (stale) return;
+        if (ds) setDevices(ds);
+        if (q) setQuota(q);
+        if (subs) setStorageSubs(subs);
+        if (ds && q && subs) writePanelCache(authed.pubkey, { devices: ds, quota: q, storageSubs: subs });
+        if (!recount) return;
+        // Recompute blob bytes from Storage ground truth so a drifted
+        // image_bytes self-heals when the storage settings open. Best-effort;
+        // the refetch swaps the healed figure in under the already-painted UI.
+        await recalculateQuota(supabase).catch(() => {});
+        if (stale) return;
+        const healed = await fetchQuotaUsage(supabase, isPro ?? false).catch(() => null);
+        if (stale || !healed) return;
+        setQuota(healed);
+        if (ds && subs) writePanelCache(authed.pubkey, { devices: ds, quota: healed, storageSubs: subs });
+      } finally { busy = false; }
+    };
+    void refresh(needsRecount);
+    const onReturn = () => { if (!document.hidden) void refresh(); };
+    window.addEventListener('focus', onReturn);
+    document.addEventListener('visibilitychange', onReturn);
+    // Spec: ops/docs/billing-integration.md (billing panel refresh cadence)
+    const timer = window.setInterval(onReturn, 60_000);
     // `tab` is a dependency on purpose: the settings shell keeps this
     // component mounted while the user moves between panels, so a
     // mount-only fetch showed a figure frozen at open time - another
@@ -230,8 +245,11 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
     // a re-run for another panel must not overwrite fresher state.
     return () => {
       stale = true;
+      window.clearInterval(timer);
+      window.removeEventListener('focus', onReturn);
+      document.removeEventListener('visibilitychange', onReturn);
     };
-  }, [authed, supabase, isPro, tab]);
+  }, [authed, supabase, isPro, tab, billingRefresh]);
 
   // Fetch the real prorated amount when the upgrade dialog opens, and again
   // on each retry.
@@ -280,7 +298,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
     setRestoreBusy(true);
     setRestoreOutcome(null);
     const outcome = await restoreNativePurchases(authed.pubkey);
-    if (outcome === 'restored') {
+    if (outcome === 'restored' || outcome === 'none') {
       await refreshProStatus({ silent: true, attempts: 1 });
       const [q, subs] = await Promise.all([
         fetchQuotaUsage(supabase, true).catch(() => null),
@@ -434,7 +452,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
         }
       }
 
-      const fresh = await listDevices(supabase);
+      const fresh = await listDevices(supabase, authed.pubkey);
       setDevices(fresh);
       setConfirm(null);
     } catch (err) {
@@ -450,38 +468,15 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
   const slots = groupDeviceSlots(devices ?? [], authed?.deviceId ?? null);
 
   return (
-    <div
-      className={embedded ? 'contents' : 'fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 sm:p-6 z-50'}
-      onClick={embedded ? undefined : onClose}
+    <>
+    <Modal
+      embedded={embedded}
+      embeddedClassName="flex-1 min-h-0 flex flex-col text-pn"
+      onClose={onClose}
+      escape={!confirm}
+      title={t('account.title')}
+      className="max-w-md p-6 space-y-5 max-h-[90vh] overflow-y-auto"
     >
-      <div
-        className={
-          embedded
-            ? 'flex-1 min-h-0 overflow-y-auto px-6 pb-6 pt-3 space-y-5 text-pn'
-            : 'bg-surface-2 border border-divider text-pn rounded-lg max-w-md w-full p-6 space-y-5 max-h-[90vh] overflow-y-auto'
-        }
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        {!embedded && (
-        <div className="flex items-center gap-2.5">
-          {/* An accent bar, not an icon beside the title: bar + icon + title
-              read as double ornament. */}
-          <AccentBar />
-          <h2 className="text-lg font-semibold">
-            {t('account.title')}
-          </h2>
-          <HeadlineRule />
-          <button
-            onClick={onClose}
-            className="text-pn-muted hover:text-pn transition p-1 -m-1"
-            aria-label={t('common:actions.close')}
-          >
-            <X size={18} />
-          </button>
-        </div>
-        )}
-
         {/* Tab bar - hidden when embedded; the shell rail drives the tab. */}
         {!embedded && (
         <SettingsTabStrip className="-mx-6 px-4 sm:px-6">
@@ -505,7 +500,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
         </SettingsTabStrip>
         )}
 
-        {tab === 'plan' && (accountPagesAvailable || demoAccountPages) && <SettingsTabStrip className="-mx-6 px-4 sm:px-6">
+        {tab === 'plan' && (accountPagesAvailable || demoAccountPages) && <SettingsTabStrip className={embedded ? 'shrink-0 px-4 sm:px-6' : '-mx-6 px-4 sm:px-6'}>
           {([
             { section: 'overview', label: 'overview', Icon: Devices },
             { section: 'connectedAccounts', label: 'accounts', Icon: SignIn },
@@ -521,6 +516,8 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
           </button>)}
         </SettingsTabStrip>}
 
+        {/* Embedded, the pane scrolls under its tab strip, as every pane does. */}
+        <PaneBody embedded={embedded}>
         {/* ── Account overview ── */}
         {tab === 'plan' && accountSection === 'overview' && (
           <>
@@ -654,7 +651,6 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
         {/* ── Storage tab ── */}
         {tab === 'storage' && (
           <>
-            <HelpChip surface="storage" />
             {/* Storage quota + add-on packages */}
             {authed && quota && isPro !== null && (
               <div data-setting="storage.quota">
@@ -696,7 +692,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                                  form (container query `pn-storage`, index.css): tier CARDS in
                                  the wide desktop shell, growth ROWS in the max-w-md modal and
                                  on phones. Both variants render the same views/handlers; the
-                                 inactive one is display:none. ops/docs/ui-patterns.md sec 48. */
+                                 inactive one is display:none. ops/docs/archive/ui-patterns.md sec 48. */
                               const packages = getStoragePackages();
                               const largestGb = packages.reduce((m, p) => Math.max(m, p.gb), 0);
                               // Marketing math mirrors upgradeTotal: the Pro base is 0.5 GB.
@@ -733,12 +729,12 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                                   isDowngrade,
                                   isBest: pkg.gb === largestGb,
                                   perGb,
-                                  /** True when the figures below came from the store, not pricing.ts. */
-                                  fromStore: !!store,
-                                  priceLabel: store ? store.formatted : `$${pkg.pricePerYear.toFixed(2)}`,
-                                  discounted: perGb < baseRate - 0.001,
+                                  /** Store builds never show derived web-price comparisons. */
+                                  fromStore: isNativeStoreBuild(),
+                                  priceLabel: store ? store.formatted : isNativeStoreBuild() ? '…' : `$${pkg.pricePerYear.toFixed(2)}`,
+                                  discounted: (!isNativeStoreBuild() || !!(baseTier && store)) && perGb < baseRate - 0.001,
                                   saving: (baseRate - perGb) * pkg.gb,
-                                  pct: Math.round((1 - perGb / baseRate) * 100),
+                                  pct: isNativeStoreBuild() && !(baseTier && store) ? 0 : Math.round((1 - perGb / baseRate) * 100),
                                   actionable: !owned && !isDowngrade && !storageBusy && !storageActionBusy,
                                 };
                               });
@@ -757,7 +753,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                                   authed.pubkey,
                                   v.pkg.gb,
                                   () => {
-                                    void fetchQuotaUsage(supabase, true).then(setQuota, () => { /* keep the figure on screen */ });
+                                    setBillingRefresh((run) => run + 1);
                                   },
                                   // Native IAP failure: surface it inline, a silent
                                   // no-op reads as a dead button (Play internal test).
@@ -950,15 +946,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                                   className="relative w-[340px] max-w-full rounded-xl border border-divider bg-surface-2 p-6 text-center"
                                   onClick={(e) => e.stopPropagation()}
                                 >
-                                  <button
-                                    type="button"
-                                    aria-label={t('common:actions.close')}
-                                    disabled={storageActionBusy}
-                                    onClick={() => setConfirmingUpgrade(null)}
-                                    className="absolute top-2.5 end-2.5 w-7 h-7 flex items-center justify-center rounded-md text-pn-muted hover:bg-surface-1 transition disabled:opacity-50"
-                                  >
-                                    <span aria-hidden="true" className="text-lg leading-none">&times;</span>
-                                  </button>
+                                  <CloseButton onClick={() => setConfirmingUpgrade(null)} disabled={storageActionBusy} className="absolute top-2.5 end-2.5" />
                                   <div className="mx-auto mb-3 w-11 h-11 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400">
                                     <IconUpgrade size={20} />
                                   </div>
@@ -1151,7 +1139,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                           <div className="flex-1 min-w-0 pb-4">
                             <div className="text-sm font-medium text-pn">{t('plan.upgradeToPro')}</div>
                             <p className="text-sm text-pn-soft leading-relaxed mt-0.5">{t('storage.stepProBody')}</p>
-                            {isBetaPricing() ? (
+                            {isBetaPricing() && !isNativeStoreBuild() ? (
                               <div className="mt-2 flex flex-wrap items-center gap-2.5">
                                 <span className="text-2xl font-bold tracking-tight text-amber-900 dark:text-amber-100">${EARLY_PRICE}</span>
                                 <span className="text-lg font-semibold line-through text-warning">${PRO_PRICE}</span>
@@ -1161,7 +1149,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                               </div>
                             ) : (
                               <div className="mt-2 flex items-baseline gap-2">
-                                <span className="text-2xl font-bold tracking-tight text-amber-900 dark:text-amber-100">${PRO_PRICE}</span>
+                                <span className="text-2xl font-bold tracking-tight text-amber-900 dark:text-amber-100">{storePrices?.[PRO_PRODUCT_ID]?.formatted ?? (isNativeStoreBuild() ? '…' : `$${PRO_PRICE}`)}</span>
                                 <span className="text-sm font-medium text-amber-700/70 dark:text-amber-300/70">{t('storage.oneTime')}</span>
                               </div>
                             )}
@@ -1182,7 +1170,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                             <div className="text-sm font-medium text-pn-soft">{t('storage.stepAddonTitle')}</div>
                             <p className="text-sm text-pn-soft leading-relaxed mt-0.5">
                               {t('storage.stepAddonBody', {
-                                price: storePrices?.[storageProductId(1)]?.formatted ?? `$${STORAGE_ADDON_PRICE.toFixed(2)}`,
+                                price: storePrices?.[storageProductId(1)]?.formatted ?? (isNativeStoreBuild() ? '…' : `$${STORAGE_ADDON_PRICE.toFixed(2)}`),
                                 total: 0.5 + STORAGE_PACKAGES.reduce((m, p) => Math.max(m, p.gb), 0),
                               })}
                             </p>
@@ -1194,7 +1182,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                 </div>
               </div>
             )}
-
+            <HelpChip surface="storage" />
           </>
         )}
 
@@ -1206,11 +1194,10 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
               <SectionEyebrow setting="plan.devices" className="mb-2" icon={Devices}>
                 {t('devices.heading')}
               </SectionEyebrow>
-              <HelpChip surface={isPro ? 'devicesPro' : 'devices'} className="mb-3" />
               {devices === null ? (
                 <div className="text-sm text-pn-muted">{t('common:state.loading')}</div>
               ) : slots.length === 0 ? (
-                <div className="text-sm text-pn-muted">
+                <div className={SETTINGS_HELP}>
                   {t('devices.empty')}
                 </div>
               ) : (
@@ -1287,7 +1274,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                       <div className="min-w-0">
                         <div className="text-sm font-medium truncate text-pn-muted">
                           <span dir="auto">{deviceLabelOf(deviceLabels, d.device_id) ?? d.device_name}</span>
-                          <span className="font-mono text-[11px] font-normal ms-2">{shortDeviceId(d.device_id)}</span>
+                          <span className="text-[11px] font-normal ms-2"><DeviceId id={d.device_id} /></span>
                         </div>
                         <div className="text-[11px] text-pn-muted">
                           {t('devices.removedAt', { time: formatRelative(d.revoked_at!) })}
@@ -1312,7 +1299,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                 data-setting="plan.upgrade"
                 onClick={onOpenUpgrade}
                 disabled={!onOpenUpgrade}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-accent-fill hover:bg-accent-fill-hover text-white text-sm font-semibold px-3 py-2.5 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                className={`w-full ${SETTINGS_BTN_UPGRADE}`}
               >
                 <IconUpgrade size={16} onFill />
                 {t('plan.upgradeToPro')}
@@ -1328,7 +1315,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                   onClose();
                   onSignOut();
                 }}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-divider hover:bg-surface-1 text-sm font-medium px-3 py-2.5 transition text-pn-soft"
+                className={`w-full ${SETTINGS_BTN}`}
               >
                 <SignOut size={16} className="text-accent" />
                 {t('account.signOut')}
@@ -1339,6 +1326,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                 sign out, deliberately not in the sync readout. */}
             {authed && <DangerZone onDeleteStarted={() => { /* page reloads after wipe */ }} />}
 
+            <HelpChip surface={isPro ? 'devicesPro' : 'devices'} />
           </>
         )}
 
@@ -1348,20 +1336,13 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
         {/* ── Me tab (ID & Sync - the full sync readout) ── */}
         {tab === 'me' && (
           <>
-            <HelpChip surface="me" />
             <SyncPanel pubkey={authed?.pubkey} onSyncNow={onSyncNow} supabase={supabase} autoVerify={autoVerify} onOpenNote={onOpenNote} />
+            <HelpChip surface="me" />
           </>
         )}
 
-        {!embedded && (
-          <button
-            onClick={onClose}
-            className="w-full rounded-md border border-divider hover:bg-surface-1 px-3 py-2 text-sm transition"
-          >
-            {t('common:actions.close')}
-          </button>
-        )}
-      </div>
+        </PaneBody>
+    </Modal>
 
       {confirm && authed && (
         <RevokeConfirm
@@ -1374,7 +1355,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
           onConfirm={() => void handleRevoke(confirm)}
         />
       )}
-    </div>
+    </>
   );
 }
 
@@ -1416,53 +1397,85 @@ function DeviceRowLabel({
     onRename?.(row.device_id, value, row.device_name);
   };
 
+  const behind = isBelowFloor(row.app_version, deviceVersionFloor());
+  const versionChip = row.app_version ? (
+    <span
+      dir="ltr"
+      className={`shrink-0 rounded border px-1.5 py-0.5 font-mono text-[11px] whitespace-nowrap ${behind ? 'border-warning/40 bg-warning/10 text-warning' : 'border-divider text-pn-muted'}`}
+    >
+      {behind ? `v${row.app_version} · ${t('devices.update')}` : `v${row.app_version}`}
+    </span>
+  ) : (
+    <span className="shrink-0 text-[11px] text-pn-muted/75 whitespace-nowrap">{t('devices.versionUnknown')}</span>
+  );
+
   return (
-    <div className="min-w-0 flex-1">
-      <div className="text-sm font-medium flex items-center gap-2 min-w-0">
-        {editing ? (
-          <InlineRenameField
-            value={value}
-            onValueChange={setValue}
-            onCommit={commit}
-            onCancel={() => setEditing(false)}
-            // Opens selected: a new name usually replaces the old one whole.
-            onFocus={(e) => e.currentTarget.select()}
-            maxLength={DEVICE_LABEL_MAX}
-            placeholder={row.device_name}
-            aria-label={t('devices.renameField')}
-            className="min-w-0 flex-1 bg-transparent border-b border-accent/50 focus:border-accent outline-none text-sm font-medium text-pn"
-          />
-        ) : (
-          <>
-            <span className="truncate" dir="auto">{label ?? row.device_name}</span>
-            {onRename && (
-              <HoverLabel label={t('devices.rename')}>
-                <button
-                  type="button"
-                  onClick={start}
-                  aria-label={t('devices.rename')}
-                  className="shrink-0 -m-1.5 p-1.5 rounded text-pn-muted hover:text-pn hover:bg-surface-1 transition"
-                >
-                  <PencilSimple size={14} aria-hidden="true" />
-                </button>
-              </HoverLabel>
-            )}
-          </>
-        )}
-        {isSelf && (
-          <span className="shrink-0 text-[10px] uppercase tracking-wide text-accent">
-            {t('devices.thisDevice')}
-          </span>
-        )}
+    <div className="min-w-0 flex-1 flex items-center gap-3">
+      <DeviceIcon row={row} />
+      <div className="min-w-0 flex-1">
+        <div className="text-sm font-medium flex items-center gap-2 min-w-0">
+          {editing ? (
+            <InlineRenameField
+              value={value}
+              onValueChange={setValue}
+              onCommit={commit}
+              onCancel={() => setEditing(false)}
+              // Opens selected: a new name usually replaces the old one whole.
+              onFocus={(e) => e.currentTarget.select()}
+              maxLength={DEVICE_LABEL_MAX}
+              placeholder={row.device_name}
+              aria-label={t('devices.renameField')}
+              className="min-w-0 flex-1 bg-transparent border-b border-accent/50 focus:border-accent outline-none text-sm font-medium text-pn"
+            />
+          ) : (
+            <>
+              <span className="truncate" dir="auto">{label ?? row.device_name}</span>
+              {onRename && (
+                <HoverLabel label={t('devices.rename')}>
+                  <button
+                    type="button"
+                    onClick={start}
+                    aria-label={t('devices.rename')}
+                    className="shrink-0 -m-1.5 p-1.5 rounded text-pn-muted hover:text-pn hover:bg-surface-1 transition"
+                  >
+                    <PencilSimple size={14} aria-hidden="true" />
+                  </button>
+                </HoverLabel>
+              )}
+            </>
+          )}
+          {isSelf && (
+            <span className="shrink-0 text-[10px] uppercase tracking-wide text-accent">
+              {t('devices.thisDevice')}
+            </span>
+          )}
+        </div>
+        <div className="text-[11px] text-pn-muted">
+          {/* An app names itself ("Desktop app on macOS"); a browser row is
+              named by its OS only, so it says Browser here. */}
+          {label && <><span dir="auto">{row.device_name}</span>{' · '}</>}
+          {row.platform === 'web' && `${t('devices.browser')} · `}
+          <DeviceId id={row.device_id} />
+          {` · ${t('devices.added', { time: formatRelative(row.created_at) })}`}
+          {` · ${t('devices.lastActive', { time: formatRelative(row.last_seen_at) })}`}
+        </div>
+        {/* A phone has no room beside the name, so the chip drops below it. */}
+        <div className="sm:hidden mt-1 flex">{versionChip}</div>
       </div>
-      <div className="text-[11px] text-pn-muted">
-        {label ? <span dir="auto">{row.device_name}</span> : row.platform}
-        {' · '}
-        <span className="font-mono">{shortDeviceId(row.device_id)}</span>
-        {` · ${t('devices.added', { time: formatRelative(row.created_at) })}`}
-        {` · ${t('devices.lastActive', { time: formatRelative(row.last_seen_at) })}`}
+      <div className="hidden sm:flex shrink-0">
+        {behind ? <HoverLabel label={t('devices.updateHint')}>{versionChip}</HoverLabel> : versionChip}
       </div>
     </div>
+  );
+}
+
+/** The short device id with its label, so the code reads as an id. */
+function DeviceId({ id }: { id: string }) {
+  const { t } = useTranslation('settings');
+  return (
+    <span className="whitespace-nowrap">
+      {t('devices.idLabel')} <span dir="ltr" className="font-mono">{shortDeviceId(id)}</span>
+    </span>
   );
 }
 
@@ -1488,7 +1501,6 @@ function RevokeConfirm({
   onConfirm: () => void;
 }) {
   const { t } = useTranslation('settings');
-  useEscapeToClose(onCancel);
 
   const { slot, rows } = target;
   // A whole-slot removal frees the slot; a single row out of several does not.
@@ -1499,22 +1511,12 @@ function RevokeConfirm({
   const name = deviceLabelOf(labels, row.device_id) ?? row.device_name;
 
   return (
-    <div
-      className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-[60]"
-      onClick={onCancel}
-    >
-      <div
-        className="bg-surface-2 border border-divider rounded-lg max-w-sm w-full p-5 space-y-4"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <h2 className="text-lg font-semibold">
-          {wholeSlot ? t('revoke.title', { name }) : t('revoke.titleInstall')}
-        </h2>
+    <Modal onClose={onCancel} layer="z-[60]" title={wholeSlot ? t('revoke.title', { name }) : t('revoke.titleInstall')} className="max-w-sm p-6 space-y-4">
         {!wholeSlot && (
           <p className="text-sm text-pn-soft">
             <span dir="auto">{name}</span>
             {' · '}
-            <span className="font-mono">{shortDeviceId(row.device_id)}</span>
+            <DeviceId id={row.device_id} />
             {` · ${t('devices.added', { time: formatRelative(row.created_at) })} · ${t('devices.lastActive', { time: formatRelative(row.last_seen_at) })}`}
           </p>
         )}
@@ -1548,7 +1550,13 @@ function RevokeConfirm({
             {busy === slot.key ? t('revoke.removing') : t('common:actions.remove')}
           </button>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
+}
+
+/** The scroll area under the pane title and tabs when the pane sits in the
+ *  settings window; the standalone dialog scrolls as a whole. */
+function PaneBody({ embedded, children }: { embedded: boolean; children: ReactNode }) {
+  if (!embedded) return <>{children}</>;
+  return <div className="flex-1 min-h-0 overflow-y-auto px-6 pb-6 pt-4 space-y-5">{children}</div>;
 }

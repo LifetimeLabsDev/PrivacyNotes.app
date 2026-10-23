@@ -10,6 +10,8 @@
     "back": "Tillbaka",
     "next": "Nästa",
     "remove": "Ta bort",
+    "deleteConfirm": "Radera?",
+    "removeConfirm": "Ta bort?",
     "copy": "Kopiera",
     "rename": "Byt namn",
     "create": "Skapa",
@@ -59,15 +61,17 @@
   },
   "palette": {
     "label": "Kommandon",
-    "open": "Kommandon (>)",
+    "open": "Kommandon",
     "empty": "Inget matchande kommando",
     "groups": {
+      "features": "Funktioner",
       "commands": "Kommandon",
       "new": "Nytt",
-      "goTo": "Gå till"
+      "goTo": "Gå till",
+      "themes": "Teman"
     },
     "commands": {
-      "quickSwitcher": "Gå till ett objekt eller en inställning",
+      "quickSwitcher": "Öppna Ninja: hitta ett objekt, lägg till vad som helst, kör ett kommando",
       "historyBack": "Gå bakåt",
       "historyForward": "Gå framåt",
       "toggleSidebar": "Visa eller dölj sidofältet",
@@ -93,9 +97,9 @@
     }
   },
   "quickSwitcher": {
-    "label": "Gå till ett objekt eller en inställning",
-    "jumpTo": "Gå till",
-    "placeholder": "Skriv en titel eller en inställning, eller > för kommandon",
+    "label": "Ninja: hitta ett objekt eller en inställning, lägg till vad som helst, kör ett kommando",
+    "jumpTo": "Ninja",
+    "placeholder": "Ninja till din tjänst: en titel, + för att lägga till, > för kommandon",
     "recent": "Senaste",
     "empty": "Inget objekt eller ingen inställning med det namnet",
     "searchAll": "Sök överallt: ”{{query}}”",
@@ -114,6 +118,7 @@
     "tagItems_other": "{{count}} objekt",
     "emptyTags": "Ingen tagg med det namnet",
     "emptyFolders": "Ingen mapp med det namnet",
+    "emptyVault": "Inget här än. Skriv + för att lägga till ditt första objekt.",
     "onlyTags": "taggar",
     "onlyFolders": "mappar",
     "showOnlyTags": "Bara taggar",
@@ -124,7 +129,13 @@
     "createTag": "Skapa taggen #{{name}}",
     "createFolder": "Skapa mappen ”{{name}}”",
     "newTag": "Ny tagg",
-    "newFolder": "Ny mapp"
+    "newFolder": "Ny mapp",
+    "goToDay": "Gå till dag",
+    "inText": "I texten",
+    "actions": "åtgärder",
+    "back": "tillbaka",
+    "actionsPlaceholder": "Filtrera åtgärderna",
+    "onlyCreate": "lägg till"
   },
   "cardForm": {
     "cardholderName": "Kortinnehavarens namn",
@@ -182,46 +193,48 @@
     "removeTag": "Ta bort {{tag}}"
   },
   "loading": {
+    "pause": "Pausa raderna",
+    "play": "Spela upp raderna",
     "lines": [
-      "laddar ditt krypterade övertänkande…",
-      "ett ögonblick, vi gör annonsörer besvikna.",
-      "för krypterat för att bry sig.",
-      "schweizisk bankkänsla, fast för anteckningar.",
-      "skyddar dina duschtankar.",
-      "dina hemligheter överlevde ännu en omstart.",
-      "ingenting lämnar enheten naket.",
-      "öppnar valvet tyst…",
-      "kylförvaring för varma tankar.",
-      "den här anteckningen respekterar din integritet.",
-      "omöjligt att läsa. möjligt att synka.",
-      "lokalt dekrypterat. globalt ignorerat.",
-      "dina anteckningar håller social distans.",
-      "chiffertext in, chiffertext ut.",
-      "ännu en vacker dag för kryptering.",
-      "håller hemligheter tråkiga sedan lanseringen.",
-      "du skriver det. ingen läser det.",
-      "integritet utan ted talk.",
-      "dekrypterar som om det inte angår någon.",
-      "håller molnet förvirrat.",
-      "servern vet ingenting. servern trivs med det.",
-      "mindre övervakning. fler anteckningar.",
-      "krypterat nonsens, som väntat.",
-      "matematiskt otillgänglig.",
-      "noll kunskap. maximal fräckhet.",
-      "spårning avstängd känslomässigt och tekniskt.",
-      "din enhet håller skvallret.",
-      "närproducerad klartext.",
-      "gör tankar till oläslig soppa.",
-      "bara du och nycklarna.",
-      "privata tankar går in i privat läge.",
-      "håller dina framtida läckor fiktiva.",
-      "ännu en anteckning gömd för kapitalismen.",
-      "integritet kostar inget extra här.",
-      "säkerhet genom faktisk säkerhet.",
-      "gör tyst motstånd mot datamäklare.",
-      "inget träningsmaterial för ai hittat.",
-      "krypterat hårdare än nödvändigt.",
-      "integritet: laddar nu.",
+      "schweizisk bankkänsla, fast för anteckningar",
+      "skyddar dina duschtankar",
+      "dina anteckningar är krypterade på din enhet",
+      "kylförvaring för varma tankar",
+      "ännu en vacker dag för kryptering",
+      "håller hemligheter tråkiga sedan lanseringen",
+      "integritet utan ted talk",
+      "håller molnet förvirrat",
+      "servern lagrar chiffertext. den tycker att det är tråkigt",
+      "mindre övervakning. fler anteckningar",
+      "krypterat nonsens, som väntat",
+      "spårning avstängd känslomässigt och tekniskt",
+      "din enhet håller skvallret",
+      "privata tankar går in i privat läge",
+      "ännu en anteckning gömd för kapitalismen",
+      "integritet kostar inget extra här",
+      "säkerhet genom faktisk säkerhet",
+      "gör tyst motstånd mot datamäklare",
+      "inget träningsmaterial för ai hittat",
+      "krypterat hårdare än nödvändigt",
+      "bara signal. ingen övervakning",
+      "gör förtroendeproblem till mjukvara",
+      "dina tankar är inte till salu",
+      "datagruvarna hittade bara sorg",
+      "ditt valv förblir aggressivt krypterat",
+      "schweizisk neutralitet, fast för anteckningar",
+      "inga annonser. inga spårare. ingen plot twist",
+      "öppen källkod, så du kan kolla matten",
+      "chiffertext är vårt kärleksspråk",
+      "gör dina anteckningar tråkiga för främlingar",
+      "din dagbok ringde. den vill ha integritet",
+      "ditt humörmätvärde har saknat dig",
+      "dina idéer, minus publiken",
+      "din dagbok höll dina hemligheter över natten",
+      "en privat plats för allt du aldrig skulle posta",
+      "ingen algoritm bestämmer vad du ser här",
+      "dina tankehögar är i säkert förvar",
+      "att skriva är att tänka. att tänka är privat",
+      "inga influencers rådfrågades",
       "laddar hemligheter ansvarsfullt.",
       "bara signal. ingen övervakning.",
       "ännu ett krypterat mästerverk på väg.",
@@ -236,6 +249,27 @@
       "dekrypterar existentiella tankar lokalt…",
       "ditt valv förblir aggressivt oläsbart.",
       "schweizisk neutralitet, fast för anteckningar."
+    ],
+    "loadingOnly": [
+      "laddar ditt krypterade övertänkande",
+      "ett ögonblick, vi gör annonsörer besvikna",
+      "dina hemligheter överlevde ännu en omstart",
+      "öppnar valvet tyst",
+      "lokalt dekrypterat. globalt ignorerat",
+      "dekrypterar som om det inte angår någon",
+      "närproducerad klartext",
+      "gör tankar till oläslig soppa",
+      "ännu ett krypterat mästerverk på väg",
+      "skapar ordning ur krypterat kaos",
+      "dekrypterar existentiella tankar lokalt",
+      "värmer upp nycklarna",
+      "letar efter din tankegång",
+      "räknar dina obockade uppgifter. utan att döma",
+      "inga annonser visades under den här laddningen",
+      "lägger tillbaka dina anteckningar där du lämnade dem",
+      "reder ut gårdagens tankar",
+      "sorterar bitar i fin ordning",
+      "kommer ihåg det du glömde att komma ihåg"
     ]
   },
   "neverBackedUp": {
@@ -245,5 +279,57 @@
     "changesOne": "De senaste ändringarna är inte säkerhetskopierade och skulle gå förlorade.",
     "changesSome_one": "{{count}} av de här anteckningarna har ändringar som inte är säkerhetskopierade och skulle gå förlorade.",
     "changesSome_other": "{{count}} av de här anteckningarna har ändringar som inte är säkerhetskopierade och skulle gå förlorade."
+  },
+  "ninja": {
+    "recent": "Senaste",
+    "topHit": "Bästa träff",
+    "trashEmpty": "Papperskorgen är tom",
+    "allThemes": "Alla teman",
+    "features": {
+      "stats": {
+        "label": "Statistik",
+        "detail": "Ditt skrivande, dina sviter och dina mätvärden över tid"
+      },
+      "trackers": {
+        "label": "Mätvärden",
+        "detail": "Humör, vanor, faktorer och medicin"
+      },
+      "medication": {
+        "label": "Medicin",
+        "detail": "Doser, tider och påminnelser"
+      },
+      "yearInPixels": {
+        "label": "Året i pixlar",
+        "detail": "Varje dag på året som en färgad ruta"
+      },
+      "importExport": {
+        "label": "Import & Export",
+        "detail": "Ta in anteckningar, ta ut en säkerhetskopia"
+      },
+      "generator": {
+        "label": "Lösenordsgenerator",
+        "detail": "Ett starkt lösenord eller en lösenfras, redo att kopiera"
+      },
+      "themes": {
+        "label": "Teman",
+        "detail": "Färgteman för ljust och mörkt"
+      }
+    },
+    "new": {
+      "medication": "Ny medicin",
+      "customTracker": "Nytt eget mätvärde"
+    },
+    "commands": {
+      "syncResume": "Återuppta synk",
+      "changelog": "Nyheter",
+      "help": "Hjälp",
+      "themesPage": "Communityteman",
+      "website": "PrivacyNotes webbplats"
+    },
+    "themes": {
+      "word": "Tema",
+      "light": "Ljust tema",
+      "dark": "Mörkt tema"
+    }
   }
 }

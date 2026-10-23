@@ -9,10 +9,10 @@
  * Typing always wins: a key that types a character on this keyboard runs
  * nothing.
  *
- * Spec: ops/docs/plans/keyboard-shortcuts.md (section 4.3, the matcher rules)
+ * Spec: ops/docs/archive/keyboard-shortcuts.md (section 4.3, the matcher rules)
  */
 
-import { COMMAND_KEYS, commandKeyText, type CommandId, type KeyBinding, type KeyOs } from './commandKeys';
+import { COMMAND_KEYS, bindingText, commandKeyText, type CommandId, type KeyBinding, type KeyOs } from './commandKeys';
 import { isPlainEscape } from './plainEscape';
 
 export type { KeyBinding };
@@ -51,6 +51,19 @@ export const KEY_OS: KeyOs = APPLE ? 'mac' : 'pc';
 /** A command's key as this device and app show it, for a tooltip: "⇧⌘K", "Ctrl+Shift+K". */
 export function keyText(id: CommandId): string {
   return commandKeyText(id, KEY_OS, DESKTOP_APP);
+}
+
+/** The key of the nth sidebar section (1 is All), or '' past 9 and in a
+ *  browser, which keeps Mod+1 to 9 for its tabs. */
+export function sectionKeyText(n: number): string {
+  const b = COMMAND_KEYS.goToSection[n - 1];
+  return b && DESKTOP_APP ? bindingText(b, KEY_OS) : '';
+}
+
+/** A key that belongs to one control and to no command (Enter in the find
+ *  bar), in the same format as `keyText`: "⇧↩", "Shift+Enter". */
+export function bindingKeyText(b: KeyBinding): string {
+  return bindingText(b, KEY_OS);
 }
 
 /** The US keyboard key of each unshifted punctuation character. */

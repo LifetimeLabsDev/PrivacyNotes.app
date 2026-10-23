@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Upload, X } from './icons';
-import { useEscapeToClose } from './useEscapeToClose';
+import { Upload } from './icons';
 import { extractPhraseFromScan } from './qrSignIn';
 import { isLinuxNative } from './devices';
 import { Brand } from './Brand';
+import { Modal } from './ui';
 
 /** Camera QR scanner for sign-in. Dynamically imports `qr-scanner`. */
 export function QrScannerModal({
@@ -154,7 +154,6 @@ export function QrScannerModal({
     };
   }, [onScanned, linuxNative]);
 
-  useEscapeToClose(onClose);
 
   async function handleImageFile(file: File) {
     setHint(null);
@@ -190,24 +189,7 @@ export function QrScannerModal({
   }
 
   return (
-    <div
-      className="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 flex items-center justify-center p-4"
-      onClick={onClose}
-    >
-      <div
-        className="bg-surface-2 border border-divider rounded-lg max-w-md w-full overflow-hidden text-pn"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-divider">
-          <h2 className="text-lg font-semibold">{t('qrScanner.title')}</h2>
-          <button
-            onClick={onClose}
-            aria-label={t('common:actions.close')}
-            className="text-pn-muted hover:text-pn-soft transition p-1 -m-1"
-          >
-            <X size={18} />
-          </button>
-        </div>
+    <Modal onClose={onClose} title={t('qrScanner.title')} header="bar" className="max-w-md overflow-hidden">
 
         <div className="relative bg-black aspect-square flex items-center justify-center">
           <video
@@ -283,7 +265,6 @@ export function QrScannerModal({
             components={{ brand: <Brand /> }}
           />
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

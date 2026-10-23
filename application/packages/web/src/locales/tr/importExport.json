@@ -9,7 +9,8 @@
     "tabExport": "Dışa aktar",
     "tabRestore": "Geri yükle",
     "tabVault": "Parolalar",
-    "working": "İşleniyor…"
+    "working": "İşleniyor…",
+    "tabWellness": "Takipler"
   },
   "footer": {
     "exportNote": "Dışa aktarma cihazınızda çalışır. Hiçbir şey yüklenmez.",
@@ -20,7 +21,9 @@
     "autoTagLabel": "İçe aktarılan notları kaynağına göre etiketle",
     "autoTagDesc": "Google Keep notları <keep>#google</keep>, Obsidian notları <obsidian>#obsidian</obsidian> etiketini alır; gerisi de böyle.",
     "guideAria": "{{app}} için içe aktarma rehberi",
-    "guideLabel": "Kılavuz"
+    "guideLabel": "Kılavuz",
+    "groupGeneral": "Genel",
+    "groupNotes": "Notlar"
   },
   "folderImport": {
     "tagLabel": "Notları klasörüne göre de etiketle",
@@ -49,6 +52,24 @@
     "timeZone": "Saat dilimi",
     "ends": "Bitiş",
     "repeats": "Tekrar"
+  },
+  "webcal": {
+    "title": "Webcal",
+    "desc": "Bir takvim adresi; örneğin Proton, iCloud, Outlook veya herkese açık bir takvimden alınan webcal:// bağlantısı. Takvim bir kez indirilir; yalnızca yeni etkinlikleri eklemek için adresi daha sonra yeniden yapıştırın.",
+    "fieldLabel": "Takvim adresi",
+    "import": "İçe aktar",
+    "downloading": "İndiriliyor…",
+    "errors": {
+      "invalid": "webcal://, webcals:// veya https:// ile başlayan bir adres yapıştırın.",
+      "refused": "Bu adres açılamıyor.",
+      "wrongType": "Bu adres bir takvim dosyasına yönlendirmiyor.",
+      "tooLarge": "Bu takvim 10 MB'tan büyük.",
+      "timeout": "Takvim sunucusu zamanında yanıt vermedi. Daha sonra yeniden deneyin.",
+      "blocked": "Takvim sunucusu indirmeyi reddetti. Takvimin paylaşılmış veya herkese açık olduğunu kontrol edin.",
+      "offline": "Çevrimdışısınız. Bağlanıp yeniden deneyin.",
+      "limit": "Kısa sürede çok fazla indirme yapıldı. Bir dakika bekleyip yeniden deneyin.",
+      "failed": "Takvim indirilemedi. Adresi kontrol edip yeniden deneyin."
+    }
   },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip dosyası (Keep klasörü) veya tek bir .json notu. Kontrol listeleri gerçek görev listesi olarak aktarılır.",
@@ -82,7 +103,7 @@
     "intro": "Başka bir parola yöneticisinden giriş bilgilerini, kredi kartlarını ve SSH anahtarlarını içe aktarın."
   },
   "restorePick": {
-    "intro": "Daha önce dışa aktardığınız bir PrivacyNotes yedeğini geri yükleyin. Dosyanız cihazınızda okunup şifresi çözülür.",
+    "intro": "Daha önce dışa aktardığınız bir PrivacyNotes yedeğini geri yükleyin.",
     "fullBackupTitle": "Tam yedek (.zip)",
     "fullBackupDesc": "Notları, günlükleri, kasa öğelerini, görevleri, görselleri, sesleri ve dosyaları geri yükleyin. Zaten sahip olduğunuz bir not korunur ya da yedekte daha yeni bir kopyası varsa güncellenir.",
     "encryptedBackupTitle": "Şifreli yedek (.pnbackup, .pnbackupz)",

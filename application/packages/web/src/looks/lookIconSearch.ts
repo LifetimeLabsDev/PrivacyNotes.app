@@ -3,7 +3,7 @@
  *
  * Both are pure, so the picker stays a view and the rules have a test
  * (tests/lookIconSearch.test.ts).
- * Spec: ops/docs/plans/folder-tag-icons.md (section 6.3)
+ * Spec: ops/docs/archive/folder-tag-icons.md (section 6.3)
  */
 import type { ItemStyles } from '../itemStyles';
 import { textMatcher } from '../textMatch';

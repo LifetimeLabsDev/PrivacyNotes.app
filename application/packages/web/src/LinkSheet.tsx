@@ -19,6 +19,7 @@ import { isImeComposing } from './imeComposing';
 import { useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
 import { usePopoverPosition } from './usePopoverPosition';
+import { CloseButton } from './ui/Button';
 import { getMarkRange } from '@tiptap/core';
 import { looksLikeUrl, normalizeUrl } from './editorLinks';
 import type { Editor } from '@tiptap/react';
@@ -258,6 +259,13 @@ export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
     </>
   );
 
+  const header = (
+    <div className="mb-3 flex items-center justify-between gap-2">
+      <h3 className="text-base font-semibold text-pn">{isEditing ? t('link.editTitle') : t('link.addTitle')}</h3>
+      <CloseButton onClick={onClose} className="-me-2" />
+    </div>
+  );
+
   if (isMobile) {
     // Bottom sheet - fixed to viewport bottom, above keyboard.
     return (
@@ -276,9 +284,7 @@ export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
         >
           {/* Handle */}
           <div className="w-8 h-1 bg-pn-muted/35 rounded-full mx-auto mb-4" />
-          <h3 className="text-base font-semibold text-pn mb-3">
-            {isEditing ? t('link.editTitle') : t('link.addTitle')}
-          </h3>
+          {header}
           {form}
         </div>
       </>
@@ -301,9 +307,7 @@ export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
       role="dialog"
       aria-label={isEditing ? t('link.editTitle') : t('link.addTitle')}
     >
-      <h3 className="text-sm font-semibold text-pn mb-3">
-        {isEditing ? t('link.editTitle') : t('link.addTitle')}
-      </h3>
+      {header}
       {form}
     </div>,
     document.body,

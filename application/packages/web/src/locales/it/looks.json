@@ -1,6 +1,8 @@
 {
   "captionFolder": "Cartella",
   "captionTag": "Tag",
+  "captionNote": "Nota",
+  "captionTracker": "Tracker",
   "useDefault": "Usa predefinito",
   "color": "Colore",
   "noColor": "Nessun colore",

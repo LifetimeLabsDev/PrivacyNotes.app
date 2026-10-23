@@ -15,7 +15,7 @@ const plain = (e: KeyboardEvent) => !e.metaKey && !e.ctrlKey && !e.altKey && !e.
  * a focus ring behind. `canOpen` is false in multi-select, where a click on
  * a row picks it instead of opening it.
  *
- * Spec: ops/docs/plans/keyboard-shortcuts.md (section 6)
+ * Spec: ops/docs/archive/keyboard-shortcuts.md (section 6)
  */
 export function useListKeys(
   inputRef: RefObject<HTMLInputElement | null>,
@@ -31,8 +31,10 @@ export function useListKeys(
       if (!row) return;
       row.tabIndex = -1;
       row.focus();
-      row.scrollIntoView({ block: 'nearest' });
-      if (canOpen()) row.click();
+      // Focusing a window placeholder mounts the real row in its place.
+      const live = rows().find((el) => el.dataset.itemId === row.dataset.itemId) ?? row;
+      live.scrollIntoView({ block: 'nearest' });
+      if (canOpen()) live.click();
     };
     function onInputKey(e: KeyboardEvent) {
       // Command mode owns the arrows of the field (commandPalette.ts).

@@ -34,6 +34,8 @@ import {
   Clock,
   ListNumbers,
   MapPin,
+  Kanban,
+  Columns,
 } from './icons';
 import { CALLOUT_COLORS, type CalloutColor, type CalloutType } from './calloutKeywords';
 
@@ -72,14 +74,20 @@ const ICONS: Record<CalloutType, Icon> = {
   question: Question,
   definition: BookOpen,
   seealso: Link,
+  kanban: Kanban,
+  column: Columns,
 };
 
 /** Picker order is the key order of CALLOUT_COLORS. */
-export const CALLOUT_TYPES: CalloutTypeDef[] = (Object.keys(CALLOUT_COLORS) as CalloutType[]).map((type) => ({
+const CALLOUT_TYPES: CalloutTypeDef[] = (Object.keys(CALLOUT_COLORS) as CalloutType[]).map((type) => ({
   type,
   ...CALLOUT_COLORS[type],
   icon: ICONS[type],
 }));
+
+/** The types the callout picker offers. A Kanban board and its columns come
+ *  from the + menu and the board's own menus instead. */
+export const CALLOUT_PICKER_TYPES = CALLOUT_TYPES.filter((c) => c.type !== 'kanban' && c.type !== 'column');
 
 export const CALLOUT_BY_TYPE: Record<CalloutType, CalloutTypeDef> = Object.fromEntries(
   CALLOUT_TYPES.map((c) => [c.type, c]),

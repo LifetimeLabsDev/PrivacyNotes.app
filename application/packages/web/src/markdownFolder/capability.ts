@@ -10,7 +10,7 @@
  * is the whole feature on web, so asking whether it exists is both the honest
  * question and the one that stays correct when Safari or Firefox ship it.
  *
- * Spec: ops/docs/plans/markdown-folder.md (section 5, platform matrix)
+ * Spec: ops/docs/archive/markdown-folder.md (section 5, platform matrix)
  */
 import { detectPlatform } from '../devices';
 
@@ -31,7 +31,7 @@ export type MarkdownSupport =
  * navigation to `brave://`, so an anchor here would look clickable and do
  * nothing. The UI renders it as text to copy.
  */
-// Spec: ops/docs/plans/markdown-folder.md (section 5, the Brave row)
+// Spec: ops/docs/archive/markdown-folder.md (section 5, the Brave row)
 export const BRAVE_FLAG_URL = 'brave://flags/#file-system-access-api';
 
 /**
@@ -46,7 +46,7 @@ export const BRAVE_FLAG_URL = 'brave://flags/#file-system-access-api';
  * there. `check:locales` enforces placeholder parity, which means no catalog can
  * drop or reword it without failing CI.
  */
-// Spec: ops/docs/plans/markdown-folder.md (section 5, the Brave row)
+// Spec: ops/docs/archive/markdown-folder.md (section 5, the Brave row)
 export const BRAVE_FLAG_NAME = 'File System Access API';
 
 export function markdownSupport(): MarkdownSupport {

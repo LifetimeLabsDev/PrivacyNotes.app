@@ -10,7 +10,7 @@ import { AccentBar, HeadlineRule } from './settingsUI';
  * save into: a contact read as one design in view mode and another in edit
  * mode. A form is the same pane with the values typeable, so it takes its
  * headline and its label anatomy from the same place the pane does.
- * Spec: ops/docs/ui-patterns.md (the item forms wear the detail pane's anatomy)
+ * Spec: ops/docs/archive/ui-patterns.md (the item forms wear the detail pane's anatomy)
  */
 
 export const FIELD_CLASS =

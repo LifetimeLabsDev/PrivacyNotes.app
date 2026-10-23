@@ -1,7 +1,9 @@
 {
   "shell": {
     "title": "設定",
-    "allSettings": "すべての設定"
+    "allSettings": "すべての設定",
+    "fillWindow": "ウィンドウ全体を使う",
+    "restoreWindow": "通常のサイズに戻す"
   },
   "account": {
     "title": "アカウント",
@@ -104,6 +106,11 @@
     "sharedSlot_other": "{{count}}件のインストールが1つのデバイス枠を共有しています",
     "added": "追加{{time}}",
     "lastActive": "最終アクティブ{{time}}",
+    "versionUnknown": "バージョン不明",
+    "idLabel": "ID",
+    "browser": "ブラウザ",
+    "update": "要アップデート",
+    "updateHint": "このバージョンは同期できなくなりました。このデバイスのアプリをアップデートしてください。",
     "removeAll": "すべて削除",
     "recentlyRemoved": "最近削除",
     "removedAt": "削除: {{time}}"
@@ -181,6 +188,8 @@
     "faviconsProxy": "アイコンは当社のプロキシ経由で読み込まれます。このデバイスだけに適用されます。",
     "invisiblesTitle": "不可視文字",
     "invisiblesDesc": "入力中にスペース、改行、段落記号を表示します。",
+    "listsTabGeneral": "一般",
+    "listsTabSidebar": "サイドバーとすべて",
     "sidebarTitle": "<sb>サイドバー</sb>と<all>すべて</all>",
     "sidebarDesc": "サイドバーに表示するビューと、「すべて」に含める項目を選びます。",
     "colInSidebar": "サイドバー",
@@ -201,14 +210,30 @@
     "contentWidthFull": "全幅",
     "lineSpacingTitle": "行間",
     "noteColorsTitle": "フォルダとタグの色",
+    "noteColorsPickerTitle": "すべてのフォルダとタグに適用",
     "noteColorsDesc": "ノートにフォルダやタグの色をどう表示するか：ノート全体、アイコンのみ、または表示しない。",
     "noteColorsBackground": "背景",
     "noteColorsExampleTitle": "リスボンの週末",
     "noteColorsExampleFolder": "旅行、緑のフォルダー",
-    "noteColorsAccent": "アイコン",
+    "noteColorsAccent": "アイコンのみ",
     "noteColorsOff": "オフ",
+    "checkboxesTitle": "チェックボックス",
+    "taskConfettiTitle": "チェック時に紙吹雪",
+    "taskConfettiDesc": "チェックボックスにチェックを入れると、小さな紙吹雪が舞います。",
     "sinkCheckedTitle": "チェック済みの項目を下へ移動",
     "sinkCheckedDesc": "チェックした項目は、リスト内の未チェックの項目の下に移動します。",
+    "defaultAppsTitle": "PrivacyNotesで開く",
+    "defaultAppsMarkdown": "Markdownファイル",
+    "defaultAppsText": "テキストファイル",
+    "defaultAppsMarkdownHint": "ダブルクリックした.mdファイルがここで開きます。",
+    "defaultAppsTextHint": "ダブルクリックした.txtファイルとREADMEファイルがここで開きます。",
+    "defaultAppsTextHintWindows": "ダブルクリックした.txtファイルがここで開きます。",
+    "defaultAppsTextFinderSteps": "変更するには、Finderで.txtファイルの「情報を見る」を選び、「このアプリケーションで開く」でPrivacyNotesを選んで「すべてを変更」をクリックします。",
+    "defaultAppsMakeDefault": "既定にする",
+    "defaultAppsIsDefault": "既定",
+    "defaultAppsOwnerOther": "現在は{{app}}で開きます。",
+    "defaultAppsOwnerOtherUnnamed": "現在は別のアプリで開きます。",
+    "defaultAppsOwnerNone": "まだ既定のアプリがありません。",
     "spacesTitle": "スペース",
     "spacesDesc": "ライブラリを「個人」と「仕事」に分けて、一度にどちらか一方を表示します。",
     "lineSpacingDesc": "執筆中の行と段落の間隔。",
@@ -238,7 +263,8 @@
       "none": "ここにはまだテーマがありません。",
       "sortLabel": "並び順",
       "sortVotes": "投票が多い順",
-      "sortNewest": "新しい順"
+      "sortNewest": "新しい順",
+      "more": "その他のテーマ"
     },
     "custom": {
       "newTheme": "新しいテーマ",
@@ -433,6 +459,8 @@
     "wifiHoldTooltip": "Wi-Fiに戻るとファイルをアップロードします。ノートの同期は続きます。",
     "notBackedUp": "未バックアップ",
     "notSynced": "未同期",
+    "firstSyncPending": "このデバイスはサーバーとの最初の同期がまだ完了していないため、一部のノートがまだ表示されない場合があります。",
+    "pullFailed": "前回の同期でサーバーからダウンロードできませんでした。自動的に再試行します。",
     "notBackedUpTooltip_other": "{{count}}件のノートがバックアップされていません。クリックすると理由を確認できます。",
     "notBackedUpAria_other": "{{count}}件のノートがバックアップされていません",
     "haltedTooltip_other": "同期が停止し、{{count}}件のノートがバックアップされていません。クリックすると理由を確認できます。",
@@ -503,7 +531,7 @@
     "alertBirthday": "誕生日",
     "alertsHelp": "新しいアイテムはこの通知で始まります。その後は、アイテムごとに通知を設定できます。",
     "reminderTitles": "リマインダーにタイトルを表示",
-    "reminderTitlesHelp": "オフにすると、リマインダーには「リマインダー」という語と時刻だけが表示されます。PINで保護されたアイテムは常にそうなります。",
+    "reminderTitlesHelp": "オンにすると、リマインダーにアイテムのタイトルが表示されます。オフにすると、「リマインダー」と時刻だけが表示されます。PINで保護されたアイテムのタイトルは表示されません。",
     "whereTitle": "このデバイスのリマインダー",
     "reminderHint": {
       "mobile": "PrivacyNotesを閉じていても、このスマートフォンでリマインダーが鳴ります。",
@@ -517,11 +545,14 @@
     "permissionDenied": "PrivacyNotesの通知はブロックされています。このブラウザまたはデバイスの設定で許可してください。",
     "weekNumbers": "週番号を表示",
     "weekNumbersHelp": "月表示と小さなカレンダーに表示されます。",
-    "hours": "日と週の表示の開始時刻",
+    "hours": "日と週の表示の最初の時刻",
+    "checkInReminder": "毎日のチェックインのリマインダー",
+    "checkInReminderHelp": "「今日の気分はどうですか?」を1日1回、このデバイスで通知します。すでに気分を記録した日やスキップした日には通知しません。",
+    "checkInReminderAt": "通知する時刻",
     "groupView": "表示",
     "groupReminders": "リマインダー",
     "groupDefaults": "既定の通知",
-    "hoursHelp": "それより前の時間は上にスクロールすると表示されます。",
+    "hoursHelp": "日と週の表示は、この時刻までスクロールした状態で開きます。それより前の時間は上にあります。",
     "to": "〜"
   }
 }

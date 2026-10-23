@@ -1,6 +1,8 @@
 {
   "captionFolder": "フォルダ",
   "captionTag": "タグ",
+  "captionNote": "ノート",
+  "captionTracker": "トラッカー",
   "useDefault": "標準に戻す",
   "color": "色",
   "noColor": "色なし",

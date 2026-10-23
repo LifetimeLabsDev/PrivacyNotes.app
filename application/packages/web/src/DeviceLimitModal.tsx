@@ -8,6 +8,7 @@ import { isPaddleConfigured, isBetaPricing } from './paddle';
 import { startProCheckout } from './billing';
 import { PRO_PRICE, EARLY_PRICE } from './pricing';
 import { PhraseView } from './security/PhraseView';
+import { Modal } from './ui';
 
 /**
  * Blocking modal shown immediately after sign-in when the free-tier
@@ -34,7 +35,7 @@ export function DeviceLimitModal() {
   // down loses the vault on one keypress. That is the exact
   // Escape-to-wipe pattern backlog #121 removed from
   // SessionExpiredModal; the explicit button below (next to the phrase
-  // backup link) is the only way out. Session audit 2026-08-25.
+  // backup link) is the only way out.
 
   // A paid checkout whose webhook outlives refreshProStatus's ~15 s poll
   // dispatches pro-activation-pending - and the only other listener
@@ -86,16 +87,10 @@ export function DeviceLimitModal() {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-50">
-      <div className="bg-surface-2 border border-divider text-pn rounded-lg max-w-lg w-full p-6 space-y-5 max-h-[90vh] overflow-y-auto">
-        <div>
-          <h2 className="text-lg font-semibold mb-1">
-            {t('deviceLimit.title')}
-          </h2>
-          <p className="text-sm text-pn-muted leading-relaxed">
-            {t('deviceLimit.body', { limit: auth.limit, count: activeDevices.length })}
-          </p>
-        </div>
+    <Modal title={t('deviceLimit.title')} className="max-w-lg p-6 space-y-5 max-h-[90vh] overflow-y-auto">
+        <p className="text-sm text-pn-muted leading-relaxed">
+          {t('deviceLimit.body', { limit: auth.limit, count: activeDevices.length })}
+        </p>
 
         {/* Active devices */}
         {activeDevices.length > 0 && (
@@ -252,8 +247,7 @@ export function DeviceLimitModal() {
         >
           {t('deviceLimit.signOut')}
         </button>
-      </div>
-    </div>
+    </Modal>
   );
 }
 

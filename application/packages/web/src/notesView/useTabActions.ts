@@ -6,7 +6,7 @@ import type { useOpenTabs } from './useOpenTabs';
  * What the tab strip, the tab keys and the "Open in tab" actions do with the
  * open tabs: show one, step round them, close one or several. Closing drops
  * the empty drafts a tab was keeping, the same rule every draft follows.
- * Spec: ops/docs/plans/note-tabs.md
+ * Spec: ops/docs/archive/note-tabs.md
  */
 export function useTabActions({
   view,
@@ -18,6 +18,7 @@ export function useTabActions({
   discardIfEmpty,
   refresh,
   runSync,
+  onCloseLast,
 }: {
   view: View;
   setView: Dispatch<SetStateAction<View>>;
@@ -28,11 +29,13 @@ export function useTabActions({
   discardIfEmpty: (id: string | null, evenWithTab?: boolean) => Promise<boolean>;
   refresh: () => Promise<unknown>;
   runSync: () => Promise<void>;
+  /** Empties the editor pane: the open item lost the last tab. */
+  onCloseLast: () => void;
 }) {
   /** Show a tab's item. It goes through the bookmark path because a plain
    *  selection of a bookmark opens its address, and a tab shows the bookmark.
    *  Trash and Markdown cannot show a live item, so they are left for All
-   *  items first. Spec: ops/docs/plans/note-tabs.md (section 4) */
+   *  items first. Spec: ops/docs/archive/note-tabs.md (section 4) */
   function showTab(id: string) {
     if (view === 'trash' || view === 'markdown') setView('home');
     void selectBookmarkForEdit(id);
@@ -57,17 +60,29 @@ export function useTabActions({
   }
 
   /** Closing the open item's tab moves to the tab beside it, the way a
-   *  browser does. The last tab leaves its item open with no tab. */
+   *  browser does. The last tab takes its item off the screen, as a browser
+   *  window closes with its last tab. Spec: ops/issues/0568.md (Spec) */
   function closeTab(id: string) {
     if (openTabs.pinnedIds.has(id)) return;
-    let stays = false;
     if (id === selectedId) {
       const at = openTabs.tabs.findIndex((n) => n.id === id);
       const next = openTabs.tabs[at + 1] ?? openTabs.tabs[at - 1];
       if (next) showTab(next.id);
-      else stays = true;
+      else onCloseLast();
     }
-    closeTabs(stays ? [] : [id], [id]);
+    closeTabs([id]);
+  }
+
+  /** "Close all tabs": the open item leaves with its tab, and a pinned tab
+   *  that stays shows in its place. An open item with no tab stays. */
+  function closeAllTabs() {
+    const tabs = openTabs.tabs;
+    if (selectedId !== null && openTabs.tabIds.has(selectedId) && !openTabs.pinnedIds.has(selectedId)) {
+      const pinned = tabs.find((n) => openTabs.pinnedIds.has(n.id));
+      if (pinned) showTab(pinned.id);
+      else onCloseLast();
+    }
+    closeTabs(tabs.map((n) => n.id));
   }
 
   /** Close tabs, then drop the empty drafts a tab was keeping: the rule every
@@ -84,5 +99,5 @@ export function useTabActions({
     })();
   }
 
-  return { showTab, openInTab, stepTab, closeTab, closeTabs };
+  return { showTab, openInTab, stepTab, closeTab, closeAllTabs, closeTabs };
 }

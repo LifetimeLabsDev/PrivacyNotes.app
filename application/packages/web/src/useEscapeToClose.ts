@@ -18,7 +18,9 @@ import { isImeComposing } from './imeComposing';
  * Pass `enabled={false}` to disable the hook temporarily without
  * unmounting it.
  */
-type EscEntry = { id: symbol; close: () => void };
+/** `inline`: the overlay sits in the page flow (the calendar's day list),
+ *  so a pane drag has nothing to reposition and leaves it open. */
+type EscEntry = { id: symbol; close: () => void; inline: boolean };
 
 const escStack: EscEntry[] = [];
 
@@ -35,6 +37,13 @@ export function closeTopOverlay(): boolean {
   return true;
 }
 
+/** Close the topmost overlay when it is anchored to the page (a popover, a
+ *  menu), which a pane drag would leave floating; an inline one stays. */
+export function closeTopAnchoredOverlay(): void {
+  const top = escStack[escStack.length - 1];
+  if (top && !top.inline) top.close();
+}
+
 /** True while any Escape-dismissible overlay is open. */
 export function hasOpenOverlay(): boolean {
   return escStack.length > 0;
@@ -45,9 +54,9 @@ export function hasOpenOverlay(): boolean {
  * off. The hook below is built on it; an overlay made of plain DOM, outside
  * React, calls it directly so it stops Escape the same way (codeLanguages.ts).
  */
-export function pushEscapeHandler(onEscape: () => void): () => void {
+export function pushEscapeHandler(onEscape: () => void, inline = false): () => void {
   const id = Symbol('esc');
-  escStack.push({ id, close: onEscape });
+  escStack.push({ id, close: onEscape, inline });
   function handler(e: KeyboardEvent) {
     if (e.key !== 'Escape') return;
     // An Escape that cancels a conversion belongs to the input method.
@@ -67,7 +76,7 @@ export function pushEscapeHandler(onEscape: () => void): () => void {
   };
 }
 
-export function useEscapeToClose(onClose: () => void, enabled = true) {
+export function useEscapeToClose(onClose: () => void, enabled = true, inline = false) {
   // Keep the latest callback in a ref so the effect only re-runs (and
   // re-orders the stack) when `enabled` flips, not on every render.
   const cbRef = useRef(onClose);
@@ -75,6 +84,6 @@ export function useEscapeToClose(onClose: () => void, enabled = true) {
 
   useEffect(() => {
     if (!enabled) return;
-    return pushEscapeHandler(() => cbRef.current());
-  }, [enabled]);
+    return pushEscapeHandler(() => cbRef.current(), inline);
+  }, [enabled, inline]);
 }

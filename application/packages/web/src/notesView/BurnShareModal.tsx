@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useEscapeToClose } from '../useEscapeToClose';
 import { HelpChip } from '../HelpChip';
-import { Copy, Fire, Warning, X } from '../icons';
+import { Check, Copy, Fire, Warning } from '../icons';
 import { createBurnLink } from '../burnShare';
 import type { VaultField } from '../vaultFields';
+import { Button, Modal, ModalFooter } from '../ui';
 import {
   BURN_LIFETIME_HOURS,
   BURN_READ_SECONDS,
@@ -36,7 +36,6 @@ export function BurnShareModal({
   onClose: () => void;
 }) {
   const { t } = useTranslation('notesChrome');
-  useEscapeToClose(onClose);
   const [readSeconds, setReadSeconds] = useState(DEFAULT_BURN_READ_SECONDS);
   const [lifetimeHours, setLifetimeHours] = useState(DEFAULT_BURN_LIFETIME_HOURS);
   const [url, setUrl] = useState<string | null>(null);
@@ -102,31 +101,7 @@ export function BurnShareModal({
     'w-full rounded-md border border-divider bg-surface-1 text-sm px-2.5 py-2 disabled:opacity-60';
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 p-4"
-      onClick={onClose}
-    >
-      <div
-        className="w-full max-w-md rounded-lg bg-surface-2 border border-divider text-pn p-6 space-y-4"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-2.5">
-            <span className="text-orange-500">
-              <Fire size={22} />
-            </span>
-            <h2 className="text-lg font-semibold">
-              {t('burnShareModal.title')}
-            </h2>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-pn-muted hover:text-pn-soft transition p-1 -m-1"
-            aria-label={t('close')}
-          >
-            <X size={18} />
-          </button>
-        </div>
+    <Modal onClose={onClose} title={t('burnShareModal.title')} icon={<Fire size={16} className="text-orange-500" />} className="max-w-md p-6 space-y-4">
         <p className="text-sm text-pn-muted leading-relaxed">
           <Trans
             i18nKey="notesChrome:burnShareModal.body"
@@ -188,23 +163,14 @@ export function BurnShareModal({
           />
         )}
         {error && <p className="text-[13px] text-danger">{error}</p>}
-        <div className="flex gap-2">
-          <button
-            onClick={onClose}
-            className="flex-1 rounded-md border border-divider hover:bg-surface-1 px-4 py-2 text-sm transition"
-          >
-            {t('common:actions.close')}
-          </button>
-          <button
+        <ModalFooter>
+          {!url && <Button action="cancel" onClick={onClose} />}
+          <Button
+            variant="primary"
+            icon={copied ? <Check size={15} aria-hidden="true" /> : <Copy size={15} aria-hidden="true" />}
             onClick={handlePrimary}
             disabled={busy}
-            className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition flex items-center justify-center gap-1.5 disabled:opacity-60 ${
-              copied
-                ? 'bg-green-500 text-white'
-                : 'bg-accent-fill text-white hover:bg-accent-fill-hover'
-            }`}
           >
-            <Copy size={16} />
             {copied
               ? t('burnShareModal.copied')
               : share
@@ -212,9 +178,8 @@ export function BurnShareModal({
                 : url
                   ? t('common:actions.copy')
                   : t('burnShareModal.create')}
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </ModalFooter>
+    </Modal>
   );
 }

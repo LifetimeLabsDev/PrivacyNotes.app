@@ -8,7 +8,7 @@ import {
 import { clearLocalDatabase } from './notesRepo';
 import { clearLocalSettings, loadLocalSettings, saveLocalSettings } from './userSettings';
 import { DEMO_PHRASE, demoSessionIsFresh } from './demo';
-import { seedOnboardingNotes, SEED_MEDICATION } from './welcomeNote';
+import { seedOnboardingNotes, SEED_MEDICATION, withSeedFactors } from './welcomeNote';
 import type { AuthState } from './auth';
 
 export async function buildDemoAuthState(): Promise<AuthState> {
@@ -29,10 +29,11 @@ export async function buildDemoAuthState(): Promise<AuthState> {
   // Seed the example medication template so the wellness pill
   // renders, mirroring the first-run flow in NotesView.
   const s = loadLocalSettings();
-  if (!s.medications?.some((m) => m.id === SEED_MEDICATION.id)) {
+  if (!s.medications?.some((m) => m.id === SEED_MEDICATION.id) || (s.factors ?? []).length === 0) {
     saveLocalSettings({
       ...s,
-      medications: [...(s.medications ?? []), SEED_MEDICATION],
+      medications: s.medications?.some((m) => m.id === SEED_MEDICATION.id) ? s.medications : [...(s.medications ?? []), SEED_MEDICATION],
+      factors: withSeedFactors(s.factors),
     });
   }
   return {

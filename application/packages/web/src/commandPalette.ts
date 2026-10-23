@@ -14,10 +14,10 @@ import { textMatcher } from './textMatch';
  * NotesView builds the entries and hands them to the switcher; the context
  * only tells the list search which field it is and how to open command mode.
  *
- * Spec: ops/docs/plans/keyboard-shortcuts.md (decisions D5 and D15)
+ * Spec: ops/docs/archive/keyboard-shortcuts.md (decisions D5 and D15)
  */
 
-export type PaletteGroup = 'new' | 'goTo' | 'commands';
+export type PaletteGroup = 'features' | 'new' | 'goTo' | 'commands' | 'themes';
 
 export type PaletteEntry = {
   id: string;
@@ -29,6 +29,16 @@ export type PaletteEntry = {
   icon?: ComponentType<IconProps>;
   /** A ready-made glyph instead, as the New menu draws it (sized by the switcher). */
   glyph?: ReactNode;
+  /** A line under the label: what a feature does, or a theme's mode. */
+  detail?: string;
+  /** The text the query matches, when it is not the label alone. */
+  match?: string;
+  /** Behind Pro: the row wears the Pro mark and still opens its target. */
+  pro?: boolean;
+  /** Set now, as a check mark says: the theme on screen. */
+  checked?: boolean;
+  /** Also a Create row of the quick add ("+"). */
+  inCreate?: boolean;
   run: () => void;
 };
 
@@ -46,7 +56,7 @@ export const CommandPaletteContext = createContext<CommandPaletteContextValue | 
 /** The prefix that turns the quick switcher (and the list search) into command mode. */
 export const COMMAND_PREFIX = '>';
 
-export const GROUP_ORDER: PaletteGroup[] = ['commands', 'new', 'goTo'];
+export const GROUP_ORDER: PaletteGroup[] = ['features', 'commands', 'new', 'goTo', 'themes'];
 
 /** The entries that match the query, best match first, then in list order. */
 export function matchEntries(entries: PaletteEntry[], query: string): PaletteEntry[] {
@@ -55,7 +65,7 @@ export function matchEntries(entries: PaletteEntry[], query: string): PaletteEnt
   if (!q) return [...entries].sort(byGroup);
   const match = textMatcher(q);
   return entries
-    .map((entry, i) => ({ entry, i, m: match(entry.label) }))
+    .map((entry, i) => ({ entry, i, m: match(entry.match ?? entry.label) }))
     .filter((x) => x.m)
     .sort((a, b) => b.m!.rank - a.m!.rank || byGroup(a.entry, b.entry) || a.i - b.i)
     .map((x) => x.entry);

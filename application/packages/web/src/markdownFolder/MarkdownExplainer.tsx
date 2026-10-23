@@ -19,26 +19,13 @@
  * user's to handle, and the honest way to say that is to state where the files
  * are and what we do not do with them.
  *
- * Spec: ops/docs/plans/markdown-folder.md (section 12)
+ * Spec: ops/docs/archive/markdown-folder.md (section 12)
  */
 import { useTranslation } from 'react-i18next';
-import {
-  FileMd,
-  X,
-  Robot,
-  Book,
-  GitBranch,
-  Sparkle,
-  Eye,
-  ListChecks,
-  Tag,
-  Table,
-  Laptop,
-  CloudSlash,
-  Brain,
-} from '../icons';
+import { FileMd, Robot, Book, GitBranch, Sparkle, Eye, ListChecks, Tag, Table, Laptop, CloudSlash, Brain } from '../icons';
 import { useEscapeToClose } from '../useEscapeToClose';
 import { MarkdownDefaultAppRow } from './MarkdownDefaultApp';
+import { CloseButton } from '../ui';
 
 /**
  * The pitch itself, without any modal chrome.
@@ -150,7 +137,7 @@ export function MarkdownPitch({ actions }: { actions?: React.ReactNode }) {
             Below the second-brain line and not above it: everything above is the
             pitch, and this is the one row that changes the machine rather than
             describing the feature.
-            Spec: ops/docs/plans/markdown-folder.md (section 11) */}
+            Spec: ops/docs/archive/markdown-folder.md (section 11) */}
         <MarkdownDefaultAppRow />
     </>
   );
@@ -177,14 +164,7 @@ export function MarkdownExplainer({ onClose }: { onClose: () => void }) {
           <h2 id="markdown-explainer-title" className="flex-1 text-lg font-semibold text-pn">
             {t('markdown.explainTitle')}
           </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label={t('markdown.close')}
-            className="shrink-0 text-pn-muted hover:text-pn-soft transition p-1 -m-1"
-          >
-            <X size={18} />
-          </button>
+          <CloseButton onClick={onClose} className="shrink-0" />
         </div>
 
         {/* One dismiss, no confirm. This was also the first-folder-pick gate

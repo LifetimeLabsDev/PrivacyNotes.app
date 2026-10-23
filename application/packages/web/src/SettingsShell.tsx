@@ -11,18 +11,12 @@ export type SettingsCategory = {
    */
   group?: string;
   /**
-   * The pane draws its own headline, below a row that comes first: the
-   * Toolbar pane puts the free bar position above the Pro heading. The
-   * desktop window then draws no headline of its own.
-   */
-  ownHeading?: boolean;
-  /**
    * Turns the row into an external link instead of a pane: it opens in a new
    * tab (the system browser on desktop, via App.tsx's opener interceptor),
    * never becomes the active selection, and never lands as the desktop
    * default. Use `siteHref()` so the URL is absolute off the web.
    * `render` is ignored when this is set.
-   * Spec: ops/docs/ui-patterns.md section 36 (settings standard)
+   * Spec: ops/docs/archive/ui-patterns.md section 36 (settings standard)
    */
   href?: string;
   /**

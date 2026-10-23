@@ -44,6 +44,10 @@ export function setSoftKeyboardUp(up: boolean): void {
   keyboardUp = up;
 }
 
+export function isSoftKeyboardUp(): boolean {
+  return keyboardUp;
+}
+
 /**
  * True on touch-first devices (phones, tablets) where moving focus into a
  * contenteditable pops the on-screen keyboard. Mirrors the `(hover: none)`

@@ -1,11 +1,13 @@
+import { VaultFieldAction } from './ui/VaultFieldAction';
+import { VaultFormActions } from './ui/VaultFormActions';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { hasPin } from './pin';
 import { PinInfoModal } from './PinInfoModal';
-import { HoverLabel } from './HoverLabel';
-import { Calendar, CreditCard, Check, Copy, Eye, EyeSlash, Info, FloppyDisk, Lock, MapPin, NotePencil, User } from './icons';
+import { Calendar, CreditCard, Info, Lock, MapPin, NotePencil, User } from './icons';
 import { useCopyToClipboard } from './clipboard';
-import { FIELD_BUTTON, FIELD_CLASS, FieldLabel } from './formFields';
+import { FIELD_CLASS, FieldLabel } from './formFields';
+import { storedVaultKeys } from './vaultBody';
 
 /* ────────────────────────────────────────────────────────────────
  * CardData - the JSON blob stored in the note body for card-type
@@ -40,8 +42,9 @@ export function parseCardBody(body: string): CardData {
   }
 }
 
-export function serializeCardBody(data: CardData): string {
-  return JSON.stringify(data);
+/** `previous` is the stored body; keys a newer version wrote in it are kept. */
+export function serializeCardBody(data: CardData, previous = ''): string {
+  return JSON.stringify({ ...storedVaultKeys(previous), ...data });
 }
 
 /** Detect card network from the first digits (BIN). */
@@ -79,23 +82,6 @@ function deriveCardTitle(data: CardData): string {
   const last4 = digits.slice(-4);
   const network = detectCardNetwork(digits);
   return network ? `${network} ending in ${last4}` : `Card ending in ${last4}`;
-}
-
-/* ────────────────────────────────────────────────────────────────
- * Copy button (shared)
- * ──────────────────────────────────────────────────────────────── */
-function CopyBtn({ onClick, active, title }: { onClick: () => void; active: boolean; title: string }) {
-  return (
-    <HoverLabel label={title} position="start">
-      <button type="button" onClick={onClick} aria-label={title} className={FIELD_BUTTON}>
-        {active ? (
-          <Check size={16} className="text-emerald-500" />
-        ) : (
-          <Copy size={16} />
-        )}
-      </button>
-    </HoverLabel>
-  );
 }
 
 /* ────────────────────────────────────────────────────────────────
@@ -145,9 +131,9 @@ export function CardForm({
   const updateBody = useCallback(
     (patch: Partial<CardData>) => {
       const next = { ...data, ...patch };
-      onBodyChange(noteId, serializeCardBody(next));
+      onBodyChange(noteId, serializeCardBody(next, body));
     },
-    [noteId, data, onBodyChange]
+    [noteId, data, body, onBodyChange]
   );
 
   /** Auto-derive title from card number on blur. */
@@ -218,17 +204,8 @@ export function CardForm({
                 inputMode="numeric"
                 className={`${fieldClass} font-mono`}
               />
-              <HoverLabel label={showNumber ? t('cardForm.hideNumber') : t('cardForm.showNumber')} position="above">
-                <button
-                  type="button"
-                  onClick={() => setShowNumber(!showNumber)}
-                  aria-label={showNumber ? t('cardForm.hideNumber') : t('cardForm.showNumber')}
-                  className={FIELD_BUTTON}
-                >
-                  {showNumber ? <EyeSlash size={16} /> : <Eye size={16} />}
-                </button>
-              </HoverLabel>
-            <CopyBtn
+              <VaultFieldAction kind="reveal" active={showNumber} title={showNumber ? t('cardForm.hideNumber') : t('cardForm.showNumber')} onClick={() => setShowNumber(!showNumber)} />
+            <VaultFieldAction kind="copy"
               onClick={() => copy(data.cardNumber, 'number')}
               active={copied === 'number'}
               title={t('cardForm.copyCardNumber')}
@@ -298,20 +275,7 @@ export function CardForm({
                 maxLength={4}
                 className={`${fieldClass} font-mono`}
               />
-              <HoverLabel label={showCvv ? t('cardForm.hideCvv') : t('cardForm.showCvv')} position="above">
-              <button
-                type="button"
-                onClick={() => setShowCvv(!showCvv)}
-                aria-label={showCvv ? t('cardForm.hideCvv') : t('cardForm.showCvv')}
-                className={FIELD_BUTTON}
-              >
-                {showCvv ? (
-                  <EyeSlash size={16} />
-                ) : (
-                  <Eye size={16} />
-                )}
-              </button>
-              </HoverLabel>
+              <VaultFieldAction kind="reveal" active={showCvv} title={showCvv ? t('cardForm.hideCvv') : t('cardForm.showCvv')} onClick={() => setShowCvv(!showCvv)} />
             </div>
           </div>
         </div>
@@ -378,31 +342,7 @@ export function CardForm({
           </p>
         )}
 
-        {/* Save / Cancel */}
-        {saveError && (
-          <p className="text-[11px] text-danger">{saveError}</p>
-        )}
-        {!locked && (
-          <div className="flex gap-2 -mt-2">
-            {!isNew && (
-              <button
-                type="button"
-                onClick={onCancel}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium border border-divider text-pn-muted hover:bg-pn/5 transition"
-              >
-                {t('actions.cancel')}
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={onSave}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-accent-fill text-white hover:bg-accent-fill-hover transition"
-            >
-              <FloppyDisk />
-              {t('actions.save')}
-            </button>
-          </div>
-        )}
+        <VaultFormActions locked={locked} isNew={isNew} saveError={saveError} onSave={onSave} onCancel={onCancel} />
       </div>
     </div>
   );

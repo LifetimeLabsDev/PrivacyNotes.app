@@ -9,7 +9,7 @@ import type { SharedItem } from './useShareInbox';
  * into it. Any installed app can send a share with no step by the person, so
  * nothing is saved until they choose: Save all, Discard, or neither (the
  * window closed), which leaves the items for the next time the app opens.
- * Spec: ops/docs/plans/share-into-app.md
+ * Spec: ops/docs/archive/share-into-app.md
  */
 /** Text from another app, with the direction controls that could make it
  *  show something other than what it holds taken out. */

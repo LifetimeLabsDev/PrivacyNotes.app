@@ -18,10 +18,8 @@
   "header": {
     "new": "Nový",
     "newNote": "Nová poznámka",
-    "newNoteHover": "Nová poznámka ({{hotkey}})",
     "trash": "Koš",
-    "newEvent": "Nová událost",
-    "newEventHover": "Nová událost ({{hotkey}})"
+    "newEvent": "Nová událost"
   },
   "folderChip": {
     "clear": "Zrušit filtr složky: {{folder}}",
@@ -35,15 +33,18 @@
     "ariaLabel": "Nová položka trezoru",
     "login": "Přihlašovací údaje",
     "card": "Kreditní karta",
-    "sshKey": "SSH klíč"
+    "sshKey": "SSH klíč",
+    "generator": "Heslo"
   },
   "newMenu": {
     "note": "Poznámka",
     "task": "Úkol",
+    "kanban": "Kanbanová tabule",
     "journal": "Deník",
     "login": "Přihlašovací údaje",
     "file": "Soubor",
     "bookmark": "Záložka",
+    "clipPage": "Uložit stránku",
     "contact": "Kontakt",
     "event": "Událost",
     "quickAdd": "Rychlé přidání"
@@ -55,8 +56,7 @@
     "keys": "Klíče"
   },
   "journal": {
-    "newEntry": "Nový záznam v deníku",
-    "newEntryHover": "Nový záznam v deníku ({{hotkey}})"
+    "newEntry": "Nový záznam v deníku"
   },
   "tasks": {
     "newTitle": "Úkoly na {{date}}"
@@ -70,7 +70,8 @@
   "search": {
     "sortOptions": "Možnosti řazení a zobrazení",
     "placeholderVault": "Hledat v trezoru…",
-    "placeholderNotes": "Hledat v poznámkách…"
+    "placeholderNotes": "Hledat v poznámkách…",
+    "placeholderEvents": "Hledat v událostech…"
   },
   "selection": {
     "countOf": "Vybráno {{selected}} z {{total}}",
@@ -82,9 +83,16 @@
     "vault": "Trezor je prázdný.",
     "notes": "Zatím žádné poznámky.",
     "archive": "Nic není archivováno.",
+    "trash": "Koš je prázdný.",
     "filtered": "Žádné položky neodpovídají tvým filtrům.",
     "clearFilters": "Zrušit filtry",
-    "filteredAfter": "a zobrazit položky."
+    "filteredAfter": "a zobrazit položky.",
+    "hiddenInAll_one": "{{count}} položku skrývá filtr Zobrazit v sekci Vše. Zobrazíš ji ve filtru vedle Vše.",
+    "hiddenInAll_few": "{{count}} položky skrývá filtr Zobrazit v sekci Vše. Zobrazíš je ve filtru vedle Vše.",
+    "hiddenInAll_other": "{{count}} položek skrývá filtr Zobrazit v sekci Vše. Zobrazíš je ve filtru vedle Vše.",
+    "inOtherSpace_one": "{{count}} položka je v prostoru {{space}}. Přepni v bočním panelu na {{space}} a uvidíš ji.",
+    "inOtherSpace_few": "{{count}} položky jsou v prostoru {{space}}. Přepni v bočním panelu na {{space}} a uvidíš je.",
+    "inOtherSpace_other": "{{count}} položek je v prostoru {{space}}. Přepni v bočním panelu na {{space}} a uvidíš je."
   },
   "listGroups": {
     "previous7Days": "Posledních 7 dní",
@@ -104,12 +112,34 @@
     "calendar": "Kalendář"
   },
   "footerStats": {
-    "journals": "Deníků",
-    "items": "Položek",
-    "trashed": "V koši",
-    "notes": "Poznámek",
-    "bookmarks": "Záložek",
-    "contacts": "Kontakty"
+    "journals_one": "Deník",
+    "journals_few": "Deníky",
+    "journals_other": "Deníků",
+    "items_one": "Položka",
+    "items_few": "Položky",
+    "items_other": "Položek",
+    "trashed_one": "V koši",
+    "trashed_few": "V koši",
+    "trashed_other": "V koši",
+    "notes_one": "Poznámka",
+    "notes_few": "Poznámky",
+    "notes_other": "Poznámek",
+    "bookmarks_one": "Záložka",
+    "bookmarks_few": "Záložky",
+    "bookmarks_other": "Záložek",
+    "contacts_one": "Kontakt",
+    "contacts_few": "Kontakty",
+    "contacts_other": "Kontaktů",
+    "files_one": "Soubor",
+    "files_few": "Soubory",
+    "files_other": "Souborů",
+    "lists_one": "Seznam",
+    "lists_few": "Seznamy",
+    "lists_other": "Seznamů",
+    "tasks_one": "Úkol",
+    "tasks_few": "Úkoly",
+    "tasks_other": "Úkolů",
+    "today": "Dnes"
   },
   "toast": {
     "imageUploadFailed": "Nahrání obrázku se nezdařilo: {{error}}",
@@ -169,7 +199,7 @@
   },
   "zen": {
     "exit": "Ukončit Zen",
-    "exitHover": "Ukončit režim Zen (Esc)",
+    "exitHover": "Ukončit režim Zen",
     "enterHover": "Zapnout režim Zen",
     "proHover": "Režim Zen (Pro)",
     "enterAriaShortcut": "Zapnout režim Zen ({{keys}})"
@@ -246,9 +276,13 @@
     "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Otevřít statistiky",
     "journalCalendar": "Kalendář deníku",
-    "words": "Slov",
+    "words_one": "Slovo",
+    "words_few": "Slova",
+    "words_other": "Slov",
     "zen": "Režim Zen",
     "appearance": "Vzhled",
+    "lockApp": "Zamknout aplikaci",
+    "lockAppSetUp": "Nejdřív nastav PIN v Zabezpečení",
     "goToTop": "Přejít nahoru",
     "goToEnd": "Přejít na konec",
     "signOut": "Odhlásit se",
@@ -272,6 +306,7 @@
     "editorLabel": "Editor",
     "formatBarLabel": "Panel nástrojů",
     "listsLabel": "Seznamy",
+    "trackersLabel": "Sledované hodnoty",
     "helpLabel": "Nápověda",
     "aboutLabel": "O aplikaci",
     "languageLabel": "Jazyk",
@@ -289,7 +324,7 @@
   },
   "bulkTrash": {
     "title": "Přesunout do koše",
-    "body_one": "Přesunout <highlight>{{count}} položku</highlight> do koše? Můžeš ji později obnovit.",
+    "body_one": "Přesunout <highlight>{{count}} položku</highlight> do koše? Později ji můžeš obnovit.",
     "body_other": "Přesunout <highlight>{{count}} položek</highlight> do koše? Můžeš je později obnovit.",
     "body_few": "Přesunout <highlight>{{count}} položky</highlight> do koše? Můžeš je později obnovit.",
     "body_many": "Přesunout <highlight>{{count}} položky</highlight> do koše? Můžeš je později obnovit.",
@@ -351,5 +386,15 @@
   "ambiguousLink": {
     "title": "Ten název mají dvě poznámky",
     "body": "Název <highlight>„{{title}}“</highlight> nese víc než jedna poznámka, takže tenhle odkaz neříká, kterou myslí. Přejmenuj jednu z nich a odkaz povede na tu druhou."
+  },
+  "connections": {
+    "title": "Propojení",
+    "hide": "Skrýt propojení",
+    "linkedFrom": "Odkazují sem",
+    "linksTo": "Odkazuje na",
+    "missing": "Zatím nevytvořeno",
+    "protectedHidden_one": "{{count}} položka chráněná PINem se nezobrazuje",
+    "protectedHidden_few": "{{count}} položky chráněné PINem se nezobrazují",
+    "protectedHidden_other": "{{count}} položek chráněných PINem se nezobrazuje"
   }
 }

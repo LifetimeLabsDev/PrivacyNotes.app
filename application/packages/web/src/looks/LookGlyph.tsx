@@ -12,7 +12,7 @@
  * one, is set on the glyph itself and so wins over the caller's amber; an
  * active row keeps its colored glyph, because its background already says
  * that it is active.
- * Spec: ops/docs/plans/folder-tag-icons.md (section 7)
+ * Spec: ops/docs/archive/folder-tag-icons.md (section 7)
  */
 import { createContext, useContext, useMemo, type CSSProperties } from 'react';
 import { Folder, Hash, Star } from '../icons';
@@ -21,6 +21,7 @@ import {
   folderLookKey,
   isLookColor,
   lookOf,
+  noteOwnIcon,
   resolveNoteLook,
   tagLookKey,
   type ColorFilter,
@@ -58,6 +59,16 @@ export function useNoteLook(noteId: string, tags: readonly string[], folderId: s
   );
 }
 
+/** The paths of the icon set on a note, or null while it has none (or the
+ *  icon set has not loaded): the caller then draws the type icon. One hook
+ *  for the row, the tile, the compact row and the tab. */
+export function useNoteIconPaths(noteId: string): readonly string[] | null {
+  const { styles } = useContext(LooksContext);
+  const icon = noteOwnIcon(styles, noteId);
+  const catalog = useLookIcons(icon !== null);
+  return (icon && catalog?.LOOK_ICONS[icon]) || null;
+}
+
 /** A color as a light background, drawn as an image so the background color
  *  of a state underneath (open, selected, hover) still shows through. */
 function tintStyle(color: LookColor | null): CSSProperties | undefined {
@@ -68,7 +79,7 @@ function tintStyle(color: LookColor | null): CSSProperties | undefined {
 
 /** A folder or tag row in the sidebar wears its tint only with the
  *  Background choice; with Accent or Off, its icon carries the color alone.
- *  Spec: ops/docs/plans/note-color-style.md (decision N4) */
+ *  Spec: ops/docs/archive/note-color-style.md (decision N4) */
 export function sidebarRowTint(
   color: LookColor | null,
   { tintNotes, noteColorStyle }: Pick<LooksValue, 'tintNotes' | 'noteColorStyle'>,
@@ -77,18 +88,52 @@ export function sidebarRowTint(
 }
 
 /**
- * A note row's or tile's color at its strength. A background is the tint
- * (tintStyle). An accent sets two variables that index.css hands to the
- * item's icon only (`[data-color-style='accent']`), so the row stays plain.
- * Spec: ops/docs/plans/note-color-style.md (section 3.1)
+ * A note row's or tile's color at its strength. Both strengths set two
+ * variables that index.css hands to the item's icon (`[data-color-style]`),
+ * so the icon wears the color as the tab and the settings example show it;
+ * a background adds the tint (tintStyle) on the whole row.
+ * Spec: ops/docs/archive/note-color-style.md (section 3.1)
  */
-export function noteLookStyle(look: NoteLook | null): CSSProperties | undefined {
+function noteLookStyle(look: NoteLook | null): CSSProperties | undefined {
   if (!look) return undefined;
-  if (look.style === 'background') return tintStyle(look.color);
-  return {
+  const icon = {
     '--pn-accent-ink': `var(--pn-label-${look.color}-ink)`,
     '--pn-accent-tint': `var(--pn-label-${look.color}-tint)`,
   } as CSSProperties;
+  return look.style === 'background' ? { ...icon, ...tintStyle(look.color) } : icon;
+}
+
+/**
+ * How one item draws its color: the one answer for every place that shows an
+ * item (list row, grid tile, calendar, quick switcher, connections). The icon
+ * wears the ink at both strengths; `row` adds the tint for a background look
+ * and carries the variables index.css hands to a `[data-slot='icon']` box.
+ * Spec: ops/docs/archive/note-color-style.md (section 3.1)
+ */
+export type ItemLookDraw = {
+  look: NoteLook | null;
+  /** On the item's root: the tint (background only) and the icon variables. */
+  row?: CSSProperties;
+  /** On an icon the caller draws itself: the ink. */
+  icon?: CSSProperties;
+};
+
+export function itemLookDraw(look: NoteLook | null): ItemLookDraw {
+  return look ? { look, row: noteLookStyle(look), icon: inkStyle(look.color) } : { look: null };
+}
+
+/** An item's look and its own icon (null without one), from the looks context. */
+export function useItemLook(noteId: string, tags: readonly string[], folderId: string | null): ItemLookDraw & { iconPaths: readonly string[] | null } {
+  const look = useNoteLook(noteId, tags, folderId);
+  const iconPaths = useNoteIconPaths(noteId);
+  return { ...itemLookDraw(look), iconPaths };
+}
+
+/** The same for a list that resolves many items in one render (the quick
+ *  switcher), where a hook per item is not possible. */
+export function useItemLookResolver(): (n: { id: string; tags: readonly string[]; folderId?: string | null }) => ItemLookDraw {
+  const { styles, tintNotes, noteColorStyle, filter } = useContext(LooksContext);
+  return (n) => itemLookDraw(resolveNoteLook(n.id, n.tags, n.folderId ?? null, styles, tintNotes, noteColorStyle, filter));
 }
 
 /** The open note's color, as a variable the note body reads (index.css,

@@ -1,6 +1,8 @@
 /**
- * The folder and tag look picker: a color, an icon, and the one switch that
- * decides whether an open note takes its color as its background.
+ * The look picker of a folder, a tag or a note: a color, an icon, and the one
+ * switch that decides whether an open note takes its color as its background.
+ * A note target shows the icon grid alone: its color keeps the note menu's
+ * own view, which knows "take the tag's or folder's color" and "no color".
  *
  * Two tabs, Icon first, because the icon search needs the room: with the
  * colors above it, a phone keyboard left the hits no space at all.
@@ -17,19 +19,18 @@
  * grid scrolls, and a hover label above a cell would be clipped by it. A
  * query in the search field swaps the groups for one list of hits; with no
  * query, the icons the folders and tags already wear lead as one row.
- * Spec: ops/docs/plans/folder-tag-icons.md (section 6)
+ * Spec: ops/docs/archive/folder-tag-icons.md (section 6)
  */
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { Folder, Hash, Star, X } from '../icons';
-import { ColorSwatch } from '../ColorSwatch';
+import { File, Folder, Globe, Hash, Heartbeat, Palette, Shapes, Star } from '../icons';
+import { ColorSwatchRow } from '../ColorSwatch';
 import { useEscapeToClose } from '../useEscapeToClose';
 import { useIsMobile } from '../useIsMobile';
 import {
   folderLookKey,
   isLookColor,
-  LOOK_COLORS,
   lookOf,
   NOTE_COLOR_CHOICES,
   NOTE_COLOR_LABEL,
@@ -39,15 +40,17 @@ import {
   type NoteColorChoice,
 } from '../itemStyles';
 import { inkStyle, PathGlyph } from './LookGlyph';
+import { NoteColorExample } from './NoteColorExample';
 import { useLookIcons } from './lookIconsLoader';
 import { recentLookIcons, searchLookIcons } from './lookIconSearch';
 import i18n, { activeLocale, ensureLooksLoaded } from '../i18n';
 import { isImeComposing } from '../imeComposing';
 import { isSoftKeyboardDevice } from '../softKeyboard';
-import { HeadlineRule, SETTINGS_HELP } from '../settingsUI';
+import { HeadlineRule, SETTINGS_HELP, SETTINGS_TRACK, SettingsTabStrip, settingsSegClass, settingsTabClass } from '../settingsUI';
 import { useKeyboardOpen } from '../useKeyboardOpen';
 import { Switch } from '../Switch';
 import { ListSearchInput } from '../ListSearchInput';
+import { Button, CloseButton, ModalFooter } from '../ui';
 
 // Search keywords per language, from Unicode CLDR (tools/gen-look-keywords.mjs).
 // Only the reader's language and English load, with the picker.
@@ -60,16 +63,15 @@ async function loadKeywords(): Promise<{ local: Record<string, string>; en: Reco
 }
 
 export interface LookTarget {
-  kind: 'folder' | 'tag';
-  /** `folderLookKey(id)` or `tagLookKey(tag)`. */
+  /** A tracker is icon-only, as a note is: its color has its own swatches. */
+  kind: 'folder' | 'tag' | 'note' | 'tracker';
+  /** `folderLookKey(id)`, `tagLookKey(tag)` or `noteLookKey(id)`. */
   lookKey: string;
   /** The folder id, for a folder target. */
   folderId?: string;
   name: string;
   favorite?: boolean;
 }
-
-const TOUCH_SWATCH = '[@media(hover:none)]:w-11 [@media(hover:none)]:h-11';
 
 export function LookPicker({
   target,
@@ -108,6 +110,7 @@ export function LookPicker({
   const panelRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const iconOnly = target.kind === 'note' || target.kind === 'tracker';
   const [tab, setTab] = useState<'icon' | 'color'>('icon');
   const [query, setQuery] = useState('');
   const keyboard = useKeyboardRect(isSheet);
@@ -186,12 +189,19 @@ export function LookPicker({
 
   const previewIcon = hoverIcon ?? look.icon;
   const previewPaths = previewIcon ? catalog?.LOOK_ICONS[previewIcon] : undefined;
-  const DefaultGlyph = target.kind === 'folder' ? Folder : target.favorite ? Star : Hash;
+  const DefaultGlyph = target.kind === 'folder' ? Folder : target.kind === 'note' ? File : target.kind === 'tracker' ? Heartbeat : target.favorite ? Star : Hash;
   const caption = hoverIcon
     ? iconName(hoverIcon)
     : target.kind === 'folder'
       ? t('captionFolder')
-      : t('captionTag');
+      : target.kind === 'note'
+        ? t('captionNote')
+        : target.kind === 'tracker'
+          ? t('captionTracker')
+          : t('captionTag');
+  // A note's color belongs to the note menu, so its reset leaves the color.
+  const reset: Partial<Record<LookAttr, null>> = iconOnly ? { icon: null } : { icon: null, color: null };
+  const resettable = iconOnly ? !!look.icon : !!look.icon || !!look.color;
 
   /** Arrow keys walk the grid by position, across the group headings. */
   function onGridKeyDown(e: KeyboardEvent<HTMLDivElement>) {
@@ -286,95 +296,69 @@ export function LookPicker({
         )}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-[14px] font-medium text-pn truncate" dir="auto">
+        <p className="text-sm font-medium text-pn truncate" dir="auto">
           {target.kind === 'tag' ? `#${target.name}` : target.name}
         </p>
         <p className="text-[11px] text-pn-muted truncate" aria-live="polite">{caption}</p>
       </div>
       <button
         type="button"
-        onClick={() => onPick({ icon: null, color: null })}
-        disabled={!look.icon && !look.color}
+        onClick={() => onPick(reset)}
+        disabled={!resettable}
         className="shrink-0 text-[12px] font-medium px-2 py-1 rounded-md text-accent hover:bg-accent/10 disabled:opacity-40 disabled:hover:bg-transparent transition"
       >
         {t('useDefault')}
       </button>
-      <button
-        type="button"
-        onClick={onClose}
-        aria-label={tCommon('actions.close')}
-        className="shrink-0 -me-1 w-8 h-8 [@media(hover:none)]:w-11 [@media(hover:none)]:h-11 inline-flex items-center justify-center rounded-md text-pn-muted hover:text-pn hover:bg-pn/5 transition"
-      >
-        <X size={16} />
-      </button>
+      <CloseButton onClick={onClose} className="shrink-0" />
     </div>
   );
 
   const footer = (
-    <div className="shrink-0 grid grid-cols-2 gap-2 border-t border-divider px-4 pt-3">
-      <button
-        type="button"
-        onClick={() => {
-          onCancel();
-          onClose();
-        }}
-        className="h-9 [@media(hover:none)]:h-11 rounded-md border border-divider text-pn text-[14px] font-medium hover:bg-pn/5 transition"
-      >
-        {tCommon('actions.cancel')}
-      </button>
-      <button
-        type="button"
-        onClick={onClose}
-        className="h-9 [@media(hover:none)]:h-11 rounded-md bg-accent-fill text-white text-[14px] font-medium hover:opacity-90 transition"
-      >
-        {tCommon('actions.done')}
-      </button>
+    <div className="shrink-0 border-t border-divider px-4 pt-1">
+      <ModalFooter>
+        <Button
+          action="cancel"
+          onClick={() => {
+            onCancel();
+            onClose();
+          }}
+        />
+        <Button action="done" onClick={onClose} />
+      </ModalFooter>
     </div>
   );
 
   const tabs = (
-    <div role="tablist" aria-label={tShell('looks.menu')} className="mt-3 flex items-stretch border-b border-divider">
-      {(['icon', 'color'] as const).map((id) => (
-        <button
-          key={id}
-          type="button"
-          role="tab"
-          aria-selected={tab === id}
-          onClick={() => setTab(id)}
-          className={`flex-1 px-3 py-2 [@media(hover:none)]:py-3 text-sm font-medium border-b-2 -mb-px transition ${
-            tab === id ? 'border-accent text-accent' : 'border-transparent text-pn-soft hover:text-pn'
-          }`}
-        >
-          {t(id)}
-        </button>
-      ))}
-    </div>
+    <SettingsTabStrip role="tablist" aria-label={tShell('looks.menu')} className="mt-3">
+      {(['icon', 'color'] as const).map((id) => {
+        const TabGlyph = id === 'icon' ? Shapes : Palette;
+        return (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            aria-selected={tab === id}
+            onClick={() => setTab(id)}
+            className={settingsTabClass(tab === id)}
+          >
+            <TabGlyph size={16} aria-hidden="true" />
+            <span>{t(id)}</span>
+          </button>
+        );
+      })}
+    </SettingsTabStrip>
   );
 
   const colorSection = (
     <>
-      <div className="mt-4 flex flex-wrap gap-1.5 [@media(hover:none)]:gap-2">
-        <ColorSwatch
-          label={t('noColor')}
-          none
-          selected={!ownColor}
-          className={TOUCH_SWATCH}
-          // The first swatch sits at the panel's start edge, where a centered
-          // tip would hang out of the panel.
-          labelPosition="below-start"
-          onClick={() => onPick({ color: null })}
+      <div className="mt-4">
+        <ColorSwatchRow
+          selected={ownColor ?? 'none'}
+          noneLabel={t('noColor')}
+          colorLabel={(c) => tEditor(`color.names.${c}`)}
+          labelSide="below"
+          onPick={(c) => onPick({ color: c })}
         />
-        {LOOK_COLORS.map((c) => (
-          <ColorSwatch
-            key={c}
-            label={tEditor(`color.names.${c}`)}
-            background={`var(--pn-label-${c}-ink)`}
-            selected={ownColor === c}
-            className={TOUCH_SWATCH}
-            labelPosition="below"
-            onClick={() => onPick({ color: c })}
-          />
-        ))}
       </div>
       <div className="mt-3 border-t border-divider divide-y divide-divider">
         {onSubfoldersFollow && subfolderIds.length > 0 && (
@@ -386,26 +370,49 @@ export function LookPicker({
             onChange={onSubfoldersFollow}
           />
         )}
-        {/* One setting for all notes, shown here because this is where a
-            color is chosen. */}
+        {/* One setting for every folder and tag, shown here because this is
+            where a color is chosen. The heading says so, because inside one
+            tag's picker it otherwise reads as a setting of that tag, and the
+            example shows the picked color under the chosen option. */}
         <div className="py-2.5">
-          <p className="text-sm font-medium">{tSettings('appearance.noteColorsTitle')}</p>
+          <p className="text-sm font-medium flex items-center gap-1.5">
+            <Globe size={14} className="shrink-0 text-pn-muted" aria-hidden="true" />
+            {tSettings('appearance.noteColorsPickerTitle')}
+          </p>
           <p className={`${SETTINGS_HELP} mt-0.5`}>{tSettings('appearance.noteColorsDesc')}</p>
-          <div className="mt-2 flex gap-1 rounded-md p-1 bg-track" role="group" aria-label={tSettings('appearance.noteColorsTitle')}>
+          {/* The options fill the narrow window at every width. */}
+          <div className={`mt-2 ${SETTINGS_TRACK} [&>button]:flex-1`} role="group" aria-label={tSettings('appearance.noteColorsTitle')}>
             {NOTE_COLOR_CHOICES.map((c) => (
               <button
                 key={c}
                 type="button"
                 onClick={() => onNoteColors(c)}
                 aria-pressed={noteColors === c}
-                className={`flex-1 inline-flex items-center justify-center py-1.5 rounded text-xs transition ${
-                  noteColors === c ? 'bg-surface-2 shadow-sm text-pn font-semibold' : 'text-pn-soft hover:text-pn font-medium'
-                }`}
+                className={settingsSegClass(noteColors === c)}
               >
                 {tSettings(NOTE_COLOR_LABEL[c])}
               </button>
             ))}
           </div>
+          {ownColor && (
+            <div className="mt-2 rounded-md bg-track p-2">
+              <NoteColorExample
+                choice={noteColors}
+                color={ownColor}
+                title={tSettings('appearance.noteColorsExampleTitle')}
+                source={
+                  <>
+                    {target.kind === 'folder' ? (
+                      <Folder size={11} weight="fill" style={inkStyle(ownColor)} aria-hidden="true" />
+                    ) : (
+                      <Hash size={11} style={inkStyle(ownColor)} aria-hidden="true" />
+                    )}
+                    <span className="truncate">{target.name}</span>
+                  </>
+                }
+              />
+            </div>
+          )}
         </div>
       </div>
     </>
@@ -474,11 +481,11 @@ export function LookPicker({
     </div>
   );
 
-  const dialogLabel = tShell('looks.menu');
+  const dialogLabel = iconOnly ? t('icon') : tShell('looks.menu');
   const top = (
     <>
       {header}
-      {tabs}
+      {!iconOnly && tabs}
       {tab === 'icon' && searchField}
     </>
   );

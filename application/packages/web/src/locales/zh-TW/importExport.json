@@ -9,7 +9,8 @@
     "tabExport": "匯出",
     "tabRestore": "還原",
     "tabVault": "密碼",
-    "working": "處理中…"
+    "working": "處理中…",
+    "tabWellness": "追蹤項目"
   },
   "footer": {
     "exportNote": "匯出在本機執行，不會上傳任何資料。",
@@ -20,7 +21,9 @@
     "autoTagLabel": "依來源為匯入的筆記加上標籤",
     "autoTagDesc": "Google Keep 筆記會加上 <keep>#google</keep>，Obsidian 加上 <obsidian>#obsidian</obsidian>，依此類推。",
     "guideAria": "{{app}} 匯入指南",
-    "guideLabel": "指南"
+    "guideLabel": "指南",
+    "groupGeneral": "一般",
+    "groupNotes": "筆記"
   },
   "folderImport": {
     "tagLabel": "同時依資料夾加上標籤",
@@ -46,6 +49,24 @@
     "timeZone": "時區",
     "ends": "結束",
     "repeats": "重複"
+  },
+  "webcal": {
+    "title": "Webcal",
+    "desc": "日曆網址，例如來自 Proton、iCloud、Outlook 或公開日曆的 webcal:// 連結。只會下載一次；之後再貼上一次，即可只新增新的活動。",
+    "fieldLabel": "日曆網址",
+    "import": "匯入",
+    "downloading": "下載中…",
+    "errors": {
+      "invalid": "請貼上以 webcal://、webcals:// 或 https:// 開頭的網址。",
+      "refused": "無法開啟這個網址。",
+      "wrongType": "這個網址指向的不是日曆檔案。",
+      "tooLarge": "這個日曆超過 10 MB。",
+      "timeout": "日曆伺服器未及時回應。請稍後再試。",
+      "blocked": "日曆伺服器拒絕了下載。請確認日曆已分享或已公開。",
+      "offline": "你目前離線。請連線後再試一次。",
+      "limit": "短時間內下載次數過多。請等一分鐘後再試。",
+      "failed": "無法下載日曆。請檢查網址後再試一次。"
+    }
   },
   "sourceDesc": {
     "googleKeep": "Google Takeout 的 .zip（Keep 資料夾）或單一 .json 筆記。核取清單會匯入為原生任務清單。",
@@ -79,7 +100,7 @@
     "intro": "從其他密碼管理器匯入登入資訊、信用卡與 SSH 金鑰。"
   },
   "restorePick": {
-    "intro": "還原你先前匯出的 PrivacyNotes 備份。你的檔案會在本機讀取並解密。",
+    "intro": "還原你先前匯出的 PrivacyNotes 備份。",
     "fullBackupTitle": "完整備份（.zip）",
     "fullBackupDesc": "還原筆記、日誌、保險庫項目、任務、圖片、音訊與檔案。已有的筆記會保留，只有當備份中有較新版本時才會更新。",
     "encryptedBackupTitle": "加密備份（.pnbackup、.pnbackupz）",

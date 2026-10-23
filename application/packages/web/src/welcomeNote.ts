@@ -35,6 +35,7 @@ import { db, type LocalNote } from './db';
 import type {
   BuiltinTrackerId,
   JournalTrackerData,
+  FactorDef,
   MedicationTemplate,
 } from './trackerTypes';
 import { isDemoMode } from './demo';
@@ -98,6 +99,25 @@ export const SEED_MEDICATION: MedicationTemplate = {
   startedAt: toLocalIso(new Date()),
   dosageHistory: [],
 };
+
+/** The starter factors a fresh vault holds as its own list. The other
+ *  starter names stay suggestions in the Factors tab of the tracker setup. */
+const SEED_FACTOR_KEYS = ['work', 'family', 'travel', 'holiday', 'deadline', 'sick', 'period', 'badWeather'] as const;
+
+/**
+ * The list with the seed factors in it, named in the active language. Only an
+ * untouched list takes them: a removed seed leaves a tombstone, so it never
+ * comes back. Fixed ids, so two devices that both seed merge into one list.
+ */
+export function withSeedFactors(list: readonly FactorDef[] | undefined): FactorDef[] {
+  if (list && list.length > 0) return [...list];
+  const now = new Date().toISOString();
+  return SEED_FACTOR_KEYS.map((key, i) => ({
+    id: `00000000-0000-4000-b100-${String(i + 1).padStart(12, '0')}`,
+    name: i18n.t(`trackers:factors.starter.${key}`),
+    createdAt: now,
+  }));
+}
 
 /**
  * Build a deterministic UUID from the pubkey and a 4-char hex sentinel.
@@ -194,7 +214,7 @@ async function seedDoc(pubkey: string, doc: SeedDoc, timestamp: string): Promise
 /* ── Bookmark seeds - the rows from the mockup, so the pillar is never
  * empty on first sight. Hand-maintained: edit the list below to change
  * what a new vault links to. Same idempotent seedNote path; bodies use
- * the canonical link-body JSON. Spec: ops/docs/plans/bookmarks-pillar.md */
+ * the canonical link-body JSON. Spec: ops/docs/archive/bookmarks-pillar.md */
 const BOOKMARK_SEEDS: { sentinel: string; title: string; url: string; tags: string[] }[] = [
   { sentinel: '10b1', title: 'Like on AlternativeTo.net', url: 'https://alternativeto.net/software/privacynotes/about/', tags: ['rating'] },
   { sentinel: '10b2', title: 'Rate on PrivacyTools.io', url: 'https://privacytools.io/app/privacynotes', tags: ['privacy', 'rating'] },
@@ -232,7 +252,7 @@ async function seedBookmarkNotes(pubkey: string, baseTs: number): Promise<void> 
  * Every value is a placeholder or one of our own public links. The photo
  * is a static asset rather than a stored blob, the way every other seeded
  * picture is, so it costs no quota and draws on a device that never ran
- * the seeding. Spec: ops/docs/plans/contacts-pillar.md */
+ * the seeding. Spec: ops/docs/archive/contacts-pillar.md */
 // Built at seed time, so the translated sentences read in the active language.
 function contactSeeds(): { sentinel: string; title: string; tags: string[]; body: string }[] {
   return [
@@ -317,7 +337,7 @@ async function seedContactNotes(pubkey: string, baseTs: number): Promise<void> {
 /* ── The demo's Work space: one root folder in Work and a repeating event
  * in it, so the calendar shows a Work item with its briefcase every week
  * and the space switch has something to switch. Demo only: a real vault
- * starts with one space. Spec: ops/docs/plans/calendar-pillar-spec.md (step 2) */
+ * starts with one space. Spec: ops/docs/archive/calendar-pillar-spec.md (step 2) */
 const DEMO_WORK_FOLDER = { id: 'f01de001-0000-4000-8000-000000000007', name: 'Team', nameKey: 'shell:folders.seedTeam', icon: 'briefcase' };
 
 async function seedWorkEvent(pubkey: string, baseTs: number): Promise<void> {
@@ -341,7 +361,7 @@ async function seedWorkEvent(pubkey: string, baseTs: number): Promise<void> {
  * an alert, two items at the same time, a multi-day trip, a night past
  * midnight, repeats on chosen weekdays, every other week, on a day of the
  * month and on the Nth weekday, and a dated task list and note. Demo only,
- * like the Work event. Spec: ops/docs/plans/calendar-pillar-spec.md (step 2) */
+ * like the Work event. Spec: ops/docs/archive/calendar-pillar-spec.md (step 2) */
 async function seedCalendarDemo(pubkey: string, baseTs: number, now = new Date()): Promise<void> {
   const at = (n: number) => new Date(now.getFullYear(), now.getMonth(), now.getDate() + n, 12);
   const day = (n: number) => toLocalIso(at(n));
@@ -550,7 +570,7 @@ const SEED_FOLDERS: Record<string, SeedFolder> = {
 /**
  * The look icon of each tag the seeds use. Seed tags are the same English
  * words in every language, so the keys are fixed.
- * Spec: ops/docs/plans/folder-tag-icons.md (section 6.2)
+ * Spec: ops/docs/archive/folder-tag-icons.md (section 6.2)
  */
 export const SEED_TAG_ICONS: Record<string, string> = {
   encryption: 'key',
@@ -581,6 +601,7 @@ function seedFolderDefs(): FolderDef[] {
  * Real vaults keep the quieter default.
  */
 const DEMO_EXTRA_TRACKERS: BuiltinTrackerId[] = [
+  'habits',
   'sleepScore',
   'steps',
   'heartRate',

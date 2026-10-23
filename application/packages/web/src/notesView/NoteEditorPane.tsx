@@ -1,25 +1,28 @@
 import type { Space } from '../spaces';
+import type { TrackerSetupTab } from '../TrackerConfig';
 import type { SpaceMove } from '../NoteOptionsMenu';
-import { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { UpgradeTrigger } from '../UpgradeModal';
 import type { Dispatch, ReactNode, RefObject, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowUUpLeft as Undo2Icon, ArrowUUpRight as Redo2Icon, X, ArrowLeft, ArrowCounterClockwise, Trash, DotsThreeOutlineVertical, CaretLeft, CaretRight, PencilSimpleSlash, MarkdownLogo, TextAa, ArticleMedium, Paragraph, MagnifyingGlass, FrameCorners, ArrowCircleUp, ArrowCircleDown, CalendarDots, CalendarPlus } from '../icons';
 import type { AuthState } from '../auth';
-import { captureAnchor, restoreAnchor, type ViewAnchor } from '../viewSwitchAnchor';
+import { captureAnchor, followAnchor, type ViewAnchor } from '../viewSwitchAnchor';
+import { noteAnchor, rememberNoteAnchor } from './listPlace';
 import type { LocalNote } from '../db';
 import { updateNote } from '../notesRepo';
 import { Editor, type EditorHandle } from '../Editor';
 import { FormatBarContext } from '../formatBarContext';
-import { MarkdownSourceEditor } from '../MarkdownSourceEditor';
+import { MarkdownSourceEditor, type MarkdownSourceHandle } from '../MarkdownSourceEditor';
 import { TagInput, type TagInputHandle } from '../TagInput';
 import { withCredentialChanges, type UserSettings } from '../userSettings';
 import { NoteOptionsMenu, type NoteColorInfo, type NoteOptionsView } from '../NoteOptionsMenu';
+import { EventCard, type ScheduleRow } from '../EventCard';
 import { convertPatch, type ConvertTarget } from '../noteTypes';
 import type { NoteOwnColor } from '../itemStyles';
 import { ProtectedNoteGate } from '../ProtectedNoteGate';
 import { parseLinkBody, linkDomain } from '../linkBody';
-import { BookmarkItem } from '../BookmarkItem';
+import { BookmarkItem, type BookmarkClip } from '../BookmarkItem';
 import { ContactItem } from '../ContactItem';
 import { HoverLabel } from '../HoverLabel';
 import type { NoteJump } from './AppFooter';
@@ -29,7 +32,9 @@ import { TITLE_MAX_LENGTH, newEditorKey } from '../useNoteEditing';
 import { proUnlocked } from '../demo';
 import { usePushFailure } from '../pushFailures';
 import { VaultItem } from '../VaultItem';
-import { entryDayOf, hasStructuredBody, isKnownNoteType, isWeekJournal, shareSurface, toLocalIso } from '../notesViewUtils';
+import { entryDayOf, hasStructuredBody, isKnownNoteType, isWeekJournal, noteLinkName, shareSurface, toLocalIso } from '../notesViewUtils';
+import { buildLinkIndex } from '../connectionsIndex';
+import { ConnectionsPill } from '../ConnectionsPill';
 import { scheduleOf } from '../schedule';
 import { formatDay } from '../intlFormat';
 import { timeLabel } from '../JournalCalendar';
@@ -38,7 +43,7 @@ import type { View } from '../views';
 import { WordCount } from '../WordCount';
 import { storedNoteBytes } from '../sync';
 import { TrackerPills } from '../TrackerPills';
-import { APP_KEYS, matchesKey } from '../shortcutMatch';
+import { APP_KEYS, keyText, matchesKey } from '../shortcutMatch';
 import { editorCommands, registerEditorCommand } from '../editorCommands';
 import type { JournalTrackerData } from '../trackerTypes';
 import { ShareMenu } from './ShareMenu';
@@ -58,7 +63,7 @@ type Authed = Extract<AuthState, { status: 'authenticated' }>;
  * instrument rather than three. Colour is left to mean state - accent for
  * on, amber for burn, red for destructive - and grouping is carried by the
  * hairline in `HeaderDivider`, never by a filled container.
- * Spec: ops/docs/ui-patterns.md (section 80)
+ * Spec: ops/docs/archive/ui-patterns.md (section 80)
  */
 const HEADER_BTN_BASE =
   'shrink-0 flex items-center justify-center h-8 rounded-md transition disabled:opacity-30 disabled:cursor-not-allowed';
@@ -208,6 +213,10 @@ interface NoteEditorMenuActions {
   noteColor: NoteColorInfo | null;
   /** Set or clear the note's own color; null takes its tag's or folder's. */
   onSetNoteColor: (noteId: string, color: NoteOwnColor | null) => void;
+  /** Opens Settings at the "Folder and tag colors" row. */
+  onOpenColorSettings: () => void;
+  /** Opens the icon picker on a note (Pro). */
+  onPickNoteIcon: (noteId: string) => void;
   handleToggleStar: (id: string, starred: boolean) => Promise<void>;
   handleToggleArchive: (id: string, archived: boolean) => Promise<void>;
   /** Move a journal entry to another day (`YYYY-MM-DD`). */
@@ -255,7 +264,11 @@ export interface NoteEditorPaneProps {
    *  bookmark body's duplicate guard. Owned by NotesView so the editor and
    *  the quick-add bar can never guard against different sets. */
   bookmarkKeys: Map<string, string>;
+  /** Save as note for the open bookmark (useClipper). */
+  bookmarkClip: (bookmark: LocalNote) => BookmarkClip;
   auth: Authed;
+  /** Opens Settings › Wellness, the one tracker setup. */
+  onOpenTrackerSettings: (tab: TrackerSetupTab) => void;
 
   spellcheck: boolean;
   invisibles: boolean;
@@ -357,7 +370,9 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     view,
     notes,
     bookmarkKeys,
+    bookmarkClip,
     auth,
+    onOpenTrackerSettings,
     spellcheck,
     invisibles,
     setInvisibles,
@@ -414,7 +429,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
       handleTagsChange, handleTrackersChange, handleVaultSave,
     },
     noteMenu: {
-      noteColor, onSetNoteColor, handleToggleStar, handleToggleArchive, setJournalDate, setNoteDate,
+      noteColor, onSetNoteColor, onOpenColorSettings, onPickNoteIcon, handleToggleStar, handleToggleArchive, setJournalDate, setNoteDate,
       journalDays, requestTrash, handleRestore, handleDuplicate, splitNote, onOverSyncLimit, canUncheckAllTasks,
       handleUncheckAllTasks, canDeleteCheckedTasks, handleDeleteCheckedTasks,
       canSortTasksByStatus, handleSortTasksByStatus, handleSetLocked, handleSetPinProtected,
@@ -491,30 +506,68 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
   // its height has settled. Spec: ops/issues/0493.md (Reading position)
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const viewAnchorRef = useRef<ViewAnchor | null>(null);
+  const [paneEl, setPaneEl] = useState<HTMLDivElement | null>(null);
   const setScroller = useCallback((node: HTMLDivElement | null) => {
     scrollerRef.current = node;
     setNoteScroller(node);
+    setPaneEl(node);
   }, [setNoteScroller]);
   useEffect(() => {
     const anchor = viewAnchorRef.current;
     const pane = scrollerRef.current;
     viewAnchorRef.current = null;
     if (!anchor || !pane) return;
-    let frame = 0;
-    let tries = 0;
-    let placed = false;
-    const step = () => {
-      if (restoreAnchor(pane, anchor)) {
-        if (placed) return;
-        placed = true;
-      } else if (++tries > 30) {
-        return;
-      }
-      frame = requestAnimationFrame(step);
-    };
-    frame = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(frame);
+    return followAnchor(pane, anchor);
   }, [selectedEditorMode]);
+  // Each note opens at the line it was left at this session, on any way in:
+  // a row, a tab, a view switch and back. The line is read when a scroll
+  // settles, and only for the note it was read in: the swap to another note
+  // scrolls the pane too. Memory only, it holds words of the text.
+  // Spec: ops/docs/archive/keep-my-place.md (section 2.3)
+  const placeNoteRef = useRef(selected.id);
+  useEffect(() => {
+    const pane = paneEl;
+    const id = selected.id;
+    placeNoteRef.current = id;
+    if (!pane) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let ready = false;
+    const anchor = noteAnchor(id);
+    const stopFollow = anchor ? followAnchor(pane, anchor) : undefined;
+    // The swap's own scroll events land before this; listen from the next frame.
+    const frame = requestAnimationFrame(() => { ready = true; });
+    const onScroll = () => {
+      if (!ready) return;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        if (placeNoteRef.current === id) rememberNoteAnchor(id, captureAnchor(pane));
+      }, 200);
+    };
+    pane.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      stopFollow?.();
+      cancelAnimationFrame(frame);
+      clearTimeout(timer);
+      pane.removeEventListener('scroll', onScroll);
+    };
+  }, [selected.id, paneEl]);
+  // Tab from the title or the tag field lands in whichever body is mounted.
+  // False when none is, so the caller lets the browser's own Tab run.
+  const sourceRef = useRef<MarkdownSourceHandle | null>(null);
+  const focusBody = () =>
+    (selectedEditorMode === 'markdown' ? sourceRef.current?.focus() : editorRef.current?.focus()) ?? false;
+  // A contact, bookmark or vault item has fields instead of a body: Tab goes
+  // to the first text field after the tag row, past the photo button. With
+  // no field open (a vault item in view mode) the browser's own Tab runs.
+  const structuredColRef = useRef<HTMLDivElement | null>(null);
+  const focusFirstField = () => {
+    const from = document.activeElement;
+    const field = [...(structuredColRef.current?.querySelectorAll<HTMLElement>(
+      'input:not([type=file]):not([type=hidden]):not([type=checkbox]):not([type=radio]):not([disabled]), textarea:not([disabled])',
+    ) ?? [])].find((el) => !!from && !!(from.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING));
+    field?.focus();
+    return !!field;
+  };
   // Mod+Shift+M flips the open note between the two views, wherever the focus
   // is, on the notes that offer the switch (GitHub #260).
   const markdownKeyRef = useRef<(() => void) | null>(null);
@@ -546,9 +599,17 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
   // The view the "..." menu opens on: the header's convert button opens it
   // straight on the type list, the "..." button on the main view.
   const [optionsStartView, setOptionsStartView] = useState<NoteOptionsView>('main');
+  // The Schedule row the event card asked for (Repeat, Alert, Ends).
+  const [scheduleSub, setScheduleSub] = useState<'ends' | 'repeat' | 'alerts' | undefined>(undefined);
+  const openScheduleAt = (row: ScheduleRow) => {
+    setScheduleSub(row === 'main' ? undefined : row);
+    setOptionsStartView('schedule');
+    setShowNoteOptions(true);
+  };
   // A calendar menu asked for the Schedule view of this item.
   useEffect(() => {
     if (!schedule.ask || schedule.ask.id !== selected?.id) return;
+    setScheduleSub(undefined);
     setOptionsStartView('schedule');
     setShowNoteOptions(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -559,7 +620,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
    * journal entry that becomes a task keeps its date and tracker values, so
    * converting it back restores the entry unchanged.
    *
-   * Spec: ops/docs/plans/convert-type.md
+   * Spec: ops/docs/archive/convert-type.md
    */
   const convertNoteType = async (target: ConvertTarget) => {
     if (target === selected.type) return;
@@ -617,17 +678,47 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
    *
    * Find drives the rich editor's own search plugin through editorRef, so it
    * has nothing to act on over the markdown textarea and stays away there.
-   * Spec: ops/docs/ui-patterns.md (section 80)
+   * Spec: ops/docs/archive/ui-patterns.md (section 80)
    */
-  const bodyControls = selectedEditorMode !== 'markdown' && bodyOverflows ? (
+  const findPill = selectedEditorMode !== 'markdown' && bodyOverflows ? (
     <EditorSlotPill
       label={t('editor.findInNote')}
+      keys={keyText('find')}
       onClick={() => editorRef.current?.toggleFind()}
       tabIndex={isMobile ? -1 : undefined}
     >
       <MagnifyingGlass size={17} />
     </EditorSlotPill>
   ) : null;
+
+  // Which items link to which, for the Connections pill. A locked note
+  // answers to its gated name, so the set of locked notes keys the memo too.
+  // Spec: ops/issues/0351.md (Spec)
+  const lockedKey = notes.filter(isNoteLocked).map((n) => n.id).join(' ');
+  // Deferred: the scan reads every body, and a save must not wait for it.
+  const deferredNotes = useDeferredValue(notes);
+  const liveNotes = useMemo(() => deferredNotes.filter((n) => n.trashed === 0), [deferredNotes]);
+  const linkIndex = useMemo(
+    () => buildLinkIndex(liveNotes, {
+      nameOf: (n) => noteLinkName(n, isNoteLocked(n)),
+      isSource: (n) => !hasStructuredBody(n.type),
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [liveNotes, lockedKey],
+  );
+  const bodyControls = findPill;
+  const connections = (open: boolean, onOpenChange: (open: boolean) => void) => (
+    <ConnectionsPill
+      note={selected}
+      notes={liveNotes}
+      index={linkIndex}
+      isNoteLocked={isNoteLocked}
+      onOpen={onRevealNote}
+      open={open}
+      onOpenChange={onOpenChange}
+      tabIndex={isMobile ? -1 : undefined}
+    />
+  );
 
   // With the bar at the bottom, the pane keeps a row for it under the
   // scrolling column (see Editor's toolbarSlot).
@@ -669,7 +760,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           <ArrowLeft size={HEADER_ICON} />
         </button>
         {gridMode && (
-          <HoverLabel label={t('editor.backToGrid')} position="below-start">
+          <HoverLabel label={t('editor.backToGrid')} keys={keyText('closeTab')} position="below-start">
             <button
               onClick={() => void handleCloseEditor()}
               aria-label={t('editor.backToGrid')}
@@ -691,7 +782,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
         {!headerCompact && (
           <>
             <div className="shrink-0 flex items-center">
-              <HoverLabel label={t(navTabs ? 'editor.navPrevTab' : 'editor.navPrev')} position="below-start">
+              <HoverLabel label={t(navTabs ? 'editor.navPrevTab' : 'editor.navPrev')} keys={keyText(navTabs ? 'previousTab' : 'previousInList')} position="below-start">
                 <button
                   type="button"
                   tabIndex={mobileTabIndex}
@@ -703,7 +794,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                   <CaretLeft size={HEADER_ICON} />
                 </button>
               </HoverLabel>
-              <HoverLabel label={t(navTabs ? 'editor.navNextTab' : 'editor.navNext')} position="below-start">
+              <HoverLabel label={t(navTabs ? 'editor.navNextTab' : 'editor.navNext')} keys={keyText(navTabs ? 'nextTab' : 'nextInList')} position="below-start">
                 <button
                   type="button"
                   tabIndex={mobileTabIndex}
@@ -736,8 +827,9 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
             // Tab from title → tag input (skipping the star/trash
             // buttons so the flow is title → tags → body).
             if (e.key === 'Tab' && !e.shiftKey) {
+              if (tagInputRef.current) tagInputRef.current.focus();
+              else if (!focusBody()) return;
               e.preventDefault();
-              tagInputRef.current?.focus();
             }
           }}
           onFocus={() => { setTitleFocused(true); handleTitleFocus(selected.id); }}
@@ -856,14 +948,16 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
         {/* The calendar's door on every dated type: "Add to calendar" while
             the item has no day, its day and time once it has one. It opens
             the Schedule view of the "..." menu, the one place a schedule is
-            edited. Spec: ops/docs/plans/calendar-pillar-spec.md (step 8) */}
+            edited. Spec: ops/docs/archive/calendar-pillar-spec.md (step 8) */}
         {view !== 'trash' && !zenMode && (selected.type === 'note' || selected.type === 'task' || selected.type === 'event' || selected.type === 'journal') && (() => {
           const s = scheduleOf(selected.trackers as Record<string, unknown> | undefined, selected.type, selected.type === 'journal' ? entryDayOf(selected) : undefined);
           const day = s ? (schedule.occurrence && s.repeat ? schedule.occurrence : s.day) : null;
           const label = day
             ? [formatDay(day, 'weekdayDate'), s?.time ? timeLabel(day, s.time) : ''].filter(Boolean).join(' · ')
             : t('shell:calendar.addToCalendar');
-          const openSchedule = () => { setOptionsStartView('schedule'); setShowNoteOptions(true); };
+          // An event draws its schedule in the card above the body instead.
+          if (day && selected.type === 'event') return null;
+          const openSchedule = () => openScheduleAt('main');
           // One name per type wherever the view opens: a journal entry's date is the entry's own.
           const scheduleName = t(selected.type === 'journal' ? 'shell:noteOptionsMenu.entryDate' : 'shell:noteOptionsMenu.schedule');
           return day && !headerCompact ? (
@@ -927,7 +1021,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           <HoverLabel label={t('editor.noteOptions')} position="below-end">
             <button
               ref={noteOptionsButtonRef}
-              onClick={() => { setOptionsStartView('main'); setShowNoteOptions((v) => !v); }}
+              onClick={() => { setOptionsStartView('main'); setScheduleSub(undefined); setShowNoteOptions((v) => !v); }}
               aria-label={t('editor.noteOptions')}
               aria-expanded={showNoteOptions}
               // In zen it takes the bordered box its neighbours wear.
@@ -972,11 +1066,14 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               schedule={{
                 occurrence: schedule.occurrence,
                 onEdit: (edit) => schedule.edit(selected.id, schedule.occurrence, edit),
+                sub: scheduleSub,
               }}
               {...(noteColor
                 ? {
                     color: noteColor,
                     onSetColor: (c: NoteOwnColor | null) => onSetNoteColor(selected.id, c),
+                    onOpenColorSettings,
+                    onPickIcon: () => onPickNoteIcon(selected.id),
                   }
                 : {})}
               {...(canSwitchEditorMode
@@ -1008,11 +1105,10 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           // Last control in the row and hard against the window's
           // right edge, so the centered tip was cut by the viewport
           // (nothing in this chain clips - see ui-patterns 18a step 4):
-          // `bottom-left` opens it below, right-aligned, growing
-          // inward. `hiddenAtSm` then drops it at the width the button
-          // grows its own "Exit Zen" label, leaving the tip to do its
-          // job only while the button is the bare X.
-          <HoverLabel hiddenAtSm label={t('zen.exitHover')} position="below-end">
+          // `below-end` opens it below, end-aligned, growing inward.
+          // It stays beside the button's own "Exit Zen" label, because
+          // it carries the key.
+          <HoverLabel label={t('zen.exitHover')} keys={keyText('escape')} position="below-end">
             <button
               type="button"
               onClick={() => setZenMode(false)}
@@ -1029,7 +1125,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
       {/* Not backed up: the server refused this note on the last pass. Sits
           under the header so the header keeps its fixed height, and has no
           dismiss - the only thing that clears it is a pass that pushes the
-          note. Spec: ops/docs/ui-patterns.md (the not-backed-up state) */}
+          note. Spec: ops/docs/archive/ui-patterns.md (the not-backed-up state) */}
       {pushFailure && (
         <div
           role="status"
@@ -1081,7 +1177,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
            under a centered title read as two different layouts on wide
            screens (2026-08-22 review). */
         <div className="flex-1 overflow-y-auto">
-        <div className="pn-content-col flex min-h-full flex-col">
+        <div ref={structuredColRef} className="pn-content-col flex min-h-full flex-col">
           {!zenMode && view !== 'trash' && selected.locked !== 1 && (
             <TagInput
               key={`tags-${selected.id}`}
@@ -1090,7 +1186,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               allTags={tagCounts.tags}
               onChange={(tags) => handleTagsChange(selected.id, tags)}
               onSelectTag={(tag) => void handleSelectTag(tag)}
-              onTabOut={() => {}}
+              onTabOut={focusFirstField}
               leading={folderChipFor(selected)}
             />
           )}
@@ -1122,6 +1218,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               note={selected}
               bookmarkKeys={bookmarkKeys}
               isTrash={view === 'trash'}
+              clip={view === 'trash' ? undefined : bookmarkClip(selected)}
               onBodyChange={(id, body) => void handleBodyChange(id, body)}
               onPinProtectedChange={handleSetPinProtected}
             />
@@ -1160,7 +1257,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               allTags={tagCounts.tags}
               onChange={(tags) => handleTagsChange(selected.id, tags)}
               onSelectTag={(tag) => void handleSelectTag(tag)}
-              onTabOut={() => editorRef.current?.focus()}
+              onTabOut={focusBody}
               leading={folderChipFor(selected)}
               trailing={
                 // Undo/redo and the toolbar toggle are all TipTap
@@ -1193,7 +1290,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                       breakpoint only guesses.
                       Spec: ops/docs/design-decisions.md (share holds the header) */}
                   <div className="flex items-center gap-0.5 [@media(hover:hover)_and_(pointer:fine)]:hidden">
-                    <HoverLabel label={t('editor.undo')} position="below">
+                    <HoverLabel label={t('editor.undo')} keys={keyText('undo')} position="below">
                       <button
                         type="button"
                         tabIndex={isMobile ? -1 : undefined}
@@ -1205,7 +1302,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                         <Undo2Icon size={HEADER_ICON} />
                       </button>
                     </HoverLabel>
-                    <HoverLabel label={t('editor.redo')} position="below">
+                    <HoverLabel label={t('editor.redo')} keys={keyText('redo')} position="below">
                       <button
                         type="button"
                         tabIndex={isMobile ? -1 : undefined}
@@ -1256,6 +1353,22 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
             />
             </div>
           )}
+          {!zenMode && view !== 'trash' && selected.type === 'event' && (() => {
+            const s = scheduleOf(selected.trackers as Record<string, unknown> | undefined, 'event');
+            if (!s) return null;
+            return (
+              <EventCard
+                key={selected.id}
+                schedule={s}
+                day={schedule.occurrence && s.repeat ? schedule.occurrence : s.day}
+                fold={mobileEditing || (wcBody || selected.body).trim() !== ''}
+                alertsUnlocked={proUnlocked(auth.isPro)}
+                showPro={!auth.isPro}
+                onOpen={openScheduleAt}
+                onUpgrade={() => setShowUpgrade({ trigger: 'alerts' })}
+              />
+            );
+          })()}
           {!zenMode && selected.type === 'journal' && (
             <TrackerPills
               data={(selected.trackers as JournalTrackerData) ?? {}}
@@ -1263,11 +1376,12 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               trackerSettings={userSettings.trackerSettings}
               onSettingsChange={(ts) => mutateSettings((prev) => ({ ...prev, trackerSettings: ts }))}
               medications={userSettings.medications}
-              onMedicationsChange={(meds) => mutateSettings((prev) => ({ ...prev, medications: meds }))}
+              factors={userSettings.factors}
               readOnly={view === 'trash' || selected.locked === 1}
               isPro={auth.isPro}
               onOpenUpgrade={() => setShowUpgrade({ trigger: null })}
               collapsed={mobileEditing}
+              onOpenSetup={onOpenTrackerSettings}
             />
           )}
           {proUnlocked(auth.isPro) && selected.type === 'journal' && isWeekJournal(selected) && (
@@ -1295,6 +1409,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                  the word count. */
               <MarkdownSourceEditor
                 key={`${selected.id}-${editorRevision}`}
+                ref={sourceRef}
                 value={selected.body}
                 onChange={(body) => { handleBodyChange(selected.id, body, editorKey); setWcBody(body); }}
                 readOnly={view === 'trash' || selected.locked === 1}
@@ -1329,9 +1444,11 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                   : undefined}
                 fileNote={selected.type === 'file'}
                 bodyControls={bodyControls}
+                connections={connections}
                 toolbarSlot={barSlot}
                 onShowMarkdown={canSwitchEditorMode ? toggleEditorMode : undefined}
                 sinkCheckedTasks={userSettings.sinkCheckedTasks}
+                placeholder={selected.type === 'event' ? t('editor:eventPlaceholder') : undefined}
               />
             )}
             {/* 2-col footer: word/char counts left, editor-mode link right.
@@ -1384,6 +1501,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                   {selectedEditorMode !== 'markdown' && (
                     <HoverLabel
                       label={invisibles ? t('editor.invisiblesHide') : t('editor.invisiblesShow')}
+                      keys={keyText('invisibles')}
                       position="end"
                     >
                       {/* h-4 matches the text-xs line box next to it, so the

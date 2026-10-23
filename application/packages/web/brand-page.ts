@@ -2,7 +2,7 @@ import { type Plugin } from 'vite';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss } from './static-page-theme.ts';
+import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss, WASHI_DARK, WASHI_LIGHT } from './static-page-theme.ts';
 import { brandMark, CHROME_CSS, OG_IMAGE_TAGS, ogLocaleTag, SITE_FOOTER, siteNav } from './static-page-chrome.ts';
 import { formatBytes } from './src/formatBytes.ts';
 import { DEMO_SCREENSHOTS } from './src/demoScreenshots.ts';
@@ -244,14 +244,14 @@ const PAGE_CSS = `h2{font-size:20px;font-weight:750;letter-spacing:-.02em;margin
 .lead strong{color:var(--fg)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .grid.one{grid-template-columns:1fr}
-.card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--rail)}
+.card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
 .tile{display:flex;align-items:center;justify-content:center;padding:24px 16px;min-height:110px;border-bottom:1px solid var(--line);position:relative}
 .tile::after{content:attr(data-bg);position:absolute;top:7px;right:9px;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);opacity:.75}
 .tile img{max-width:100%;height:auto}
 .t-light{background:#fff}.t-dark{background:#0a0d12}
 .t-light::after{color:#8b94a3}.t-dark::after{color:rgba(255,255,255,.45)}
 .k-lockup img{height:38px}.k-wordmark img{height:34px}.k-icon img,.k-avatar img{height:72px}
-.shot{border-bottom:1px solid var(--line);background:var(--rail)}
+.shot{border-bottom:1px solid var(--line);background:var(--card)}
 .shot img{display:block;width:100%;height:auto}
 .meta{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;font-size:13px}
 .meta strong{display:block;font-weight:650}
@@ -261,7 +261,7 @@ const PAGE_CSS = `h2{font-size:20px;font-weight:750;letter-spacing:-.02em;margin
 .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:12px;font-weight:600;color:var(--accent);text-decoration:none;background:var(--bg);cursor:pointer}
 .pill:hover{border-color:var(--accent);text-decoration:none}
 .cbtn[hidden]{display:none}
-.panel{border:1px solid var(--line);border-radius:12px;background:var(--rail);padding:24px;display:flex;justify-content:center}
+.panel{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:24px;display:flex;justify-content:center}
 .only-dark{display:none}
 :root[data-theme=dark] .only-light{display:none}
 :root[data-theme=dark] .only-dark{display:revert}
@@ -269,24 +269,24 @@ const PAGE_CSS = `h2{font-size:20px;font-weight:750;letter-spacing:-.02em;margin
 :root:not([data-theme=light]) .only-light{display:none}
 :root:not([data-theme=light]) .only-dark{display:revert}
 }
-.minstrip{display:flex;align-items:center;gap:30px;border:1px solid var(--line);border-radius:12px;background:var(--rail);padding:18px 22px;flex-wrap:wrap;margin-top:14px}
+.minstrip{display:flex;align-items:center;gap:30px;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:18px 22px;flex-wrap:wrap;margin-top:14px}
 .ms{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .minstrip span{font-size:11.5px;color:var(--faint)}
 .ms-note{max-width:210px;margin-left:auto}
 .sws{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
-.sw{border:1px solid var(--line);border-radius:12px;background:var(--rail);padding:10px;font-size:12px;display:flex;flex-direction:column;gap:2px}
+.sw{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:10px;font-size:12px;display:flex;flex-direction:column;gap:2px}
 .sw .chip{height:48px;border-radius:8px;margin-bottom:6px}
 .sw code{font-size:12px;color:var(--fg)}
 .sw span{color:var(--muted);font-size:11px}
 .sw .role{color:var(--faint)}
-.cp{border:1px solid var(--line);border-radius:12px;background:var(--rail);padding:12px 16px;margin-bottom:12px}
+.cp{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:12px 16px;margin-bottom:12px}
 .cph{display:flex;align-items:center;gap:10px;margin-bottom:2px}
 .cph strong{font-size:13.5px}
 .cnt{font-size:11px;color:var(--faint);border:1px solid var(--line);border-radius:99px;padding:1px 8px}
 .cph .cbtn{margin-left:auto}
 .cbtn.on{border-color:var(--accent)}
 .cp p{margin:4px 0 2px;font-size:14px}
-.facts{border:1px solid var(--line);border-radius:12px;background:var(--rail);padding:6px 18px;font-size:14px}
+.facts{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:6px 18px;font-size:14px}
 .facts>div{display:flex;gap:14px;padding:9px 0;border-bottom:1px solid var(--line)}
 .facts>div:last-child{border-bottom:none}
 .facts b{flex:0 0 118px;font-weight:650;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em;padding-top:2px}
@@ -295,7 +295,7 @@ const PAGE_CSS = `h2{font-size:20px;font-weight:750;letter-spacing:-.02em;margin
    phone. Let them break mid-token rather than widen the document. */
 .facts>div>span{min-width:0;overflow-wrap:anywhere}
 .dd{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.ddcol{border:1px solid var(--line);border-radius:12px;background:var(--rail);padding:14px 18px;font-size:14px}
+.ddcol{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:14px 18px;font-size:14px}
 .ddcol h3{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.08em}
 .ddcol.do h3{color:var(--ok)}
 .ddcol.dont h3{color:var(--bad)}
@@ -347,8 +347,8 @@ ${OG_IMAGE_TAGS}
 ${THEME_SCRIPT_TAG}
 <style>
 ${themeVarsCss(
-  '--bg:#fff;--fg:#15171a;--muted:#5b6168;--faint:#8a9099;--line:#e7e9ec;--accent:#1E40AF;--imp-bg:#eff6ff;--mark-fg:#1E40AF;--chip:#eceef1;--rail:#f7f8fa;--on-accent:#fff;--ok:#3b6d11;--bad:#b3261e',
-  '--bg:#0e1014;--fg:#e7e9ec;--muted:#9aa1aa;--faint:#6b7178;--line:#23262c;--accent:#4A90D9;--imp-bg:#11233a;--mark-fg:#7FB0E4;--chip:#3a4149;--rail:#14171d;--on-accent:#03203E;--ok:#a7cf6f;--bad:#e0655e'
+  `${WASHI_LIGHT};--accent:#1E40AF;--mark-fg:#1E40AF;--on-accent:#fff;--ok:#3b6d11;--bad:#b3261e`,
+  `${WASHI_DARK};--accent:#4A90D9;--mark-fg:#7FB0E4;--on-accent:#03203E;--ok:#a7cf6f;--bad:#e0655e`
 )}
 ${THEME_TOGGLE_CSS}
 ${CHROME_CSS}

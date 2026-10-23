@@ -10,7 +10,7 @@
 //! take it away when the app comes back. It has to be a native view: when iOS
 //! backgrounds an app the web content process is already being suspended, so a
 //! cover painted from JavaScript races the picture and loses.
-//! Spec: ops/docs/plans/app-switcher-privacy-screen.md
+//! Spec: ops/docs/archive/app-switcher-privacy-screen.md
 //!
 //! Bound with raw `msg_send!` like `biometric.rs` and `print.rs`, so no new
 //! package enters Cargo.lock: UIKit is linked already by tao and wry.
@@ -42,7 +42,7 @@
 //! setting's own line allows for. Where the shield cannot be put in place, the
 //! cover above stays up while the screen is recorded or mirrored instead. On
 //! macOS and Windows the capture block is a window property, set by
-//! `set_capture_block` below. Spec: ops/docs/plans/app-switcher-privacy-screen.md (section 14)
+//! `set_capture_block` below. Spec: ops/docs/archive/app-switcher-privacy-screen.md (section 14)
 
 use std::sync::atomic::{AtomicBool, Ordering};
 

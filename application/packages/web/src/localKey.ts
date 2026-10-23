@@ -9,7 +9,7 @@
  * precedent), so every use takes a fresh copy and treats an all-zero
  * read as "no key".
  *
- * Spec: ops/docs/plans/local-at-rest.md (key lifecycle, section 3.1)
+ * Spec: ops/docs/archive/local-at-rest.md (key lifecycle, section 3.1)
  */
 
 let current: Uint8Array | null = null;

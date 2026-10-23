@@ -5,7 +5,7 @@
  * a type living in one component that the other imports is the shape of an
  * import cycle waiting to happen.
  *
- * Spec: ops/docs/plans/markdown-folder.md (never write a file whose stamp changed underneath us)
+ * Spec: ops/docs/archive/markdown-folder.md (never write a file whose stamp changed underneath us)
  */
 import type { AdaptedFile } from './adapter';
 import type { DirectoryEntry, FileStamp, OpenedDirectoryRef, OpenedFileRef } from './fileAccess';

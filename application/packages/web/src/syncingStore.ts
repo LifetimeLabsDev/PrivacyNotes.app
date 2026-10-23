@@ -12,13 +12,33 @@ import { useSyncExternalStore } from 'react';
  * else.
  */
 let syncing = false;
+let open = 0;
 const listeners = new Set<() => void>();
 
-/** Flip the flag. Only the orchestrator's sync pass should call this. */
-export function setSyncingFlag(next: boolean): void {
+function publish(): void {
+  const next = open > 0;
   if (next === syncing) return;
   syncing = next;
   for (const cb of listeners) cb();
+}
+
+/**
+ * Mark a pass as running until the returned function is called. Counted,
+ * not a boolean: a second call that the sync mutex skips ends at once,
+ * and as a plain flag its end cleared "syncing" while the first pass was
+ * still pulling, so a fresh device read "Synced" through its whole first
+ * download. Only the orchestrator's sync pass should call this.
+ */
+export function beginSyncPass(): () => void {
+  open++;
+  publish();
+  let ended = false;
+  return () => {
+    if (ended) return;
+    ended = true;
+    open--;
+    publish();
+  };
 }
 
 function subscribe(cb: () => void) {
@@ -29,6 +49,9 @@ function subscribe(cb: () => void) {
 function getSnapshot() {
   return syncing;
 }
+
+/** The flag outside React (tests/syncStanding.test.ts). */
+export const isSyncing = getSnapshot;
 
 /** Reactive boolean - `true` while a sync pass is in flight. */
 export function useSyncing(): boolean {

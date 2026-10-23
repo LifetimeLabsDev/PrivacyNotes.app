@@ -18,10 +18,8 @@
   "header": {
     "new": "Ny",
     "newNote": "Ny anteckning",
-    "newNoteHover": "Ny anteckning ({{hotkey}})",
     "trash": "Papperskorgen",
-    "newEvent": "Ny händelse",
-    "newEventHover": "Ny händelse ({{hotkey}})"
+    "newEvent": "Ny händelse"
   },
   "folderChip": {
     "clear": "Rensa mappfilter: {{folder}}",
@@ -35,15 +33,18 @@
     "ariaLabel": "Nytt objekt i valvet",
     "login": "Inloggning",
     "card": "Kreditkort",
-    "sshKey": "SSH-nyckel"
+    "sshKey": "SSH-nyckel",
+    "generator": "Lösenord"
   },
   "newMenu": {
     "note": "Anteckning",
     "task": "Uppgift",
+    "kanban": "Kanbantavla",
     "journal": "Dagbok",
     "login": "Inloggning",
     "file": "Fil",
     "bookmark": "Bokmärke",
+    "clipPage": "Klipp webbsida",
     "contact": "Kontakt",
     "event": "Händelse",
     "quickAdd": "Snabbtillägg"
@@ -55,8 +56,7 @@
     "keys": "Nycklar"
   },
   "journal": {
-    "newEntry": "Nytt dagboksinlägg",
-    "newEntryHover": "Nytt dagboksinlägg ({{hotkey}})"
+    "newEntry": "Nytt dagboksinlägg"
   },
   "tasks": {
     "newTitle": "Uppgifter för {{date}}"
@@ -70,7 +70,8 @@
   "search": {
     "sortOptions": "Sorterings- och visningsalternativ",
     "placeholderVault": "Sök i valvet…",
-    "placeholderNotes": "Sök bland anteckningar…"
+    "placeholderNotes": "Sök bland anteckningar…",
+    "placeholderEvents": "Sök bland händelser…"
   },
   "selection": {
     "countOf": "{{selected}} av {{total}} markerade",
@@ -82,9 +83,14 @@
     "vault": "Valvet är tomt.",
     "notes": "Inga anteckningar än.",
     "archive": "Inget arkiverat.",
+    "trash": "Papperskorgen är tom.",
     "filtered": "Inga objekt matchar dina filter.",
     "clearFilters": "Rensa filter",
-    "filteredAfter": "för att visa dem."
+    "filteredAfter": "för att visa dem.",
+    "hiddenInAll_other": "{{count}} objekt döljs av filtret Visa i Alla. Öppna filtret bredvid Alla för att visa dem.",
+    "inOtherSpace_other": "{{count}} objekt finns i ditt utrymme {{space}}. Byt till {{space}} i sidofältet för att se dem.",
+    "inOtherSpace_one": "{{count}} objekt finns i ditt utrymme {{space}}. Byt till {{space}} i sidofältet för att se det.",
+    "hiddenInAll_one": "{{count}} objekt döljs av filtret Visa i Alla. Öppna filtret bredvid Alla för att visa det."
   },
   "listGroups": {
     "previous7Days": "Senaste 7 dagarna",
@@ -104,12 +110,25 @@
     "calendar": "Kalender"
   },
   "footerStats": {
-    "journals": "Dagböcker",
-    "items": "Objekt",
-    "trashed": "I papperskorgen",
-    "notes": "Anteckningar",
-    "bookmarks": "Bokmärken",
-    "contacts": "Kontakter"
+    "journals_one": "dagboksinlägg",
+    "journals_other": "dagboksinlägg",
+    "items_one": "objekt",
+    "items_other": "objekt",
+    "trashed_one": "i papperskorgen",
+    "trashed_other": "i papperskorgen",
+    "notes_one": "anteckning",
+    "notes_other": "anteckningar",
+    "bookmarks_one": "bokmärke",
+    "bookmarks_other": "bokmärken",
+    "contacts_one": "kontakt",
+    "contacts_other": "kontakter",
+    "files_one": "fil",
+    "files_other": "filer",
+    "lists_one": "lista",
+    "lists_other": "listor",
+    "tasks_one": "uppgift",
+    "tasks_other": "uppgifter",
+    "today": "idag"
   },
   "toast": {
     "imageUploadFailed": "Bilduppladdningen misslyckades: {{error}}",
@@ -165,7 +184,7 @@
   },
   "zen": {
     "exit": "Avsluta Zen",
-    "exitHover": "Avsluta zenläge (Esc)",
+    "exitHover": "Avsluta zenläge",
     "enterHover": "Starta zenläge",
     "proHover": "Zenläge (Pro)",
     "enterAriaShortcut": "Starta zenläge ({{keys}})"
@@ -242,9 +261,12 @@
     "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Öppna statistik",
     "journalCalendar": "Dagbokskalender",
-    "words": "Ord",
+    "words_one": "ord",
+    "words_other": "ord",
     "zen": "Zenläge",
     "appearance": "Utseende",
+    "lockApp": "Lås appen",
+    "lockAppSetUp": "Ställ in en PIN under Säkerhet först",
     "goToTop": "Gå till toppen",
     "goToEnd": "Gå till slutet",
     "signOut": "Logga ut",
@@ -268,6 +290,7 @@
     "editorLabel": "Redigerare",
     "formatBarLabel": "Formatfält",
     "listsLabel": "Listor",
+    "trackersLabel": "Mätvärden",
     "helpLabel": "Hjälp",
     "aboutLabel": "Om",
     "languageLabel": "Språk",
@@ -285,7 +308,7 @@
   },
   "bulkTrash": {
     "title": "Flytta till papperskorgen",
-    "body_one": "Flytta <highlight>{{count}} objekt</highlight> till papperskorgen? Du kan återställa det senare.",
+    "body_one": "Flytta <highlight>{{count}} objekt</highlight> till papperskorgen? Du kan återställa objektet senare.",
     "body_other": "Flytta <highlight>{{count}} objekt</highlight> till papperskorgen? Du kan återställa dem senare.",
     "readOnlyTitle": "Skrivskyddad",
     "readOnlyAcknowledge": "Jag förstår",
@@ -331,5 +354,14 @@
   "ambiguousLink": {
     "title": "Två anteckningar har den titeln",
     "body": "Mer än en anteckning heter <highlight>”{{title}}”</highlight>, så den här länken säger inte vilken den menar. Byt namn på den ena, så pekar länken på den andra."
+  },
+  "connections": {
+    "title": "Kopplingar",
+    "hide": "Dölj kopplingar",
+    "linkedFrom": "Länkas från",
+    "linksTo": "Länkar till",
+    "missing": "Inte skapad än",
+    "protectedHidden_one": "{{count}} PIN-skyddat objekt visas inte",
+    "protectedHidden_other": "{{count}} PIN-skyddade objekt visas inte"
   }
 }

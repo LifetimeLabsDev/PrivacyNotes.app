@@ -14,6 +14,26 @@
 export const THEME_SCRIPT_TAG = '<script src="/theme-toggle.js"></script>';
 
 /**
+ * The light ground of every marketing page: the homepage's washi cream
+ * (`--wl-*` in src/LandingPage.tsx), mapped onto the static pages' neutral
+ * tokens. Pages put it first in their light vars and add only their own
+ * semantic colours after it. --faint is a warm grey at the old cool grey's
+ * contrast; --imp-bg is the homepage's blue tint. --footer is the footer
+ * slab, the homepage's `--wl-footer`.
+ */
+export const WASHI_LIGHT =
+  '--bg:#F7F1E1;--card:#FCF8EC;--fg:#1C1917;--muted:#6A6152;--faint:#857C68;--line:#E0D7BD;--chip:#E6DCBF;--rail:#ECE3C9;--imp-bg:#E8EAF2;--footer:#161210';
+
+/**
+ * The dark twin: the homepage's warm sumi. --faint and --imp-bg keep the
+ * contrast the cool palette had (3.88:1 on the ground; the accent at 4.72:1
+ * on the blue tint), which is why the tint is a step darker than the
+ * homepage's `--wl-tint-blue`.
+ */
+export const WASHI_DARK =
+  '--bg:#171310;--card:#201B15;--fg:#EDE7DB;--muted:#A69E8F;--faint:#7A7262;--line:#352D20;--chip:#3A3226;--rail:#241E15;--imp-bg:#1D2234;--footer:#1F1A14';
+
+/**
  * CSS variable blocks for both themes. Dark applies when the user
  * explicitly chose dark (data-theme="dark") OR the system prefers dark
  * and the user has not explicitly chosen light.

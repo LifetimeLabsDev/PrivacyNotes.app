@@ -32,7 +32,7 @@ import { saveCredential, type UserSettings } from './userSettings';
  * A fourth screen sits behind all of them: the recovery phrase, for a PIN
  * nobody remembers. Without it a forgotten PIN shuts these notes forever,
  * because the hash is synced and every screen that changes it asks for the
- * old one. Spec: ops/docs/plans/pin-recovery.md
+ * old one. Spec: ops/docs/archive/pin-recovery.md
  */
 export function ProtectedNoteGate({
   phrase,
@@ -170,7 +170,13 @@ function useBiometricUnlock(setErr: (msg: string | null) => void) {
     if (phrase) {
       onSuccess();
     } else {
-      setErr(failure === 'unopened' ? t('lockScreen.biometricUnopened') : t('protectedGate.biometricFailed'));
+      // A hardware key the OS destroyed gets the lock screen's line: biometric
+      // unlock must be set up again, and the PIN below still opens the item.
+      setErr(
+        failure === 'gone' ? t('lockScreen.biometricGone')
+          : failure === 'unopened' ? t('lockScreen.biometricUnopened')
+          : t('protectedGate.biometricFailed'),
+      );
       setBusy(false);
     }
   }

@@ -23,7 +23,7 @@ import type { UserSettings } from '../userSettings';
  * the editor's bar keeps the saved layout, leaving the tab drops the draft,
  * and "Keep this layout" hands it to the upgrade window. When the account
  * turns Pro the draft is saved, so the arrangement is not lost.
- * Spec: ops/docs/plans/format-bar.md
+ * Spec: ops/docs/archive/format-bar.md
  */
 export function useFormatBar({
   formatBar,

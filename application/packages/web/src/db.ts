@@ -210,7 +210,7 @@ interface DemoNoteVersion {
  * eviction. First tenant: the pubkey-owner mirror (`ownerPubkey`) -
  * the localStorage owner marker can be evicted while the notes in
  * IndexedDB survive, and that asymmetry made the owner-unknown wipe
- * destroy the user's own credentials (session audit 2026-08-25).
+ * destroy the user's own credentials.
  * Second tenant: the phrase wrap key (`phraseWrapKey`) - a
  * NON-EXTRACTABLE CryptoKey persisted as an object via structured
  * clone, never as exported bytes (phraseAtRest.ts). No schema change:
@@ -252,7 +252,7 @@ class NotesDb extends Dexie {
     // below 13. A change to sealed
     // content runs after unlock instead, the way the sweep does.
     // Test: tests/dbUpgradeSealed.test.ts
-    // Spec: ops/docs/plans/local-at-rest.md (section 5.1)
+    // Spec: ops/docs/archive/local-at-rest.md (section 5.1)
     // v1 - original schema.
     this.version(1).stores({
       notes: 'id, updatedAt, dirty, deleted',
@@ -455,7 +455,7 @@ class NotesDb extends Dexie {
 
     // v14 - the day ledger (dayLedger.ts): counts per local day, never note
     // text, so it is not sealed. New table, nothing to back-fill.
-    // Spec: ops/docs/plans/wellness-statistics.md (section 20)
+    // Spec: ops/docs/archive/wellness-statistics.md (section 20)
     this.version(14).stores({
       notes: 'id, updatedAt, dirty, deleted, trashed, starred, type, folderId',
       imageCache: 'id, cachedAt',
@@ -474,7 +474,7 @@ class NotesDb extends Dexie {
     // sealed writes on. Inert in demo mode. The raw escape hatch below
     // skips it for exactly two callers with a legitimate need to see
     // stored bytes: the sweep's scan and its conversions.
-    // Spec: ops/docs/plans/local-at-rest.md (section 3.3)
+    // Spec: ops/docs/archive/local-at-rest.md (section 3.3)
     if (!raw) this.use(localSealMiddleware());
   }
 }

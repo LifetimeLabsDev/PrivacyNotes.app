@@ -1,6 +1,8 @@
 {
   "captionFolder": "Папка",
   "captionTag": "Тег",
+  "captionNote": "Заметка",
+  "captionTracker": "Трекер",
   "useDefault": "Сбросить",
   "color": "Цвет",
   "noColor": "Без цвета",

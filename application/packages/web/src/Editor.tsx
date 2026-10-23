@@ -48,18 +48,20 @@ declare module '@tiptap/core' {
 import { invisibleCharacterBuilders, LazyInvisibleCharacters } from './editorInvisibles';
 import { FaviconChips, refreshFavicons } from './editorFavicons';
 import { EncryptedImage, isPictureSelection, sanitizePastedHtml } from './EncryptedImage';
-import { ClipboardSpacing } from './clipboardSpacing';
+import { ClipboardSpacing, copySelectionAs } from './clipboardSpacing';
 import { EncryptedAttachment, holdsOneFile, requestAttachmentRename } from './EncryptedAttachment';
 import { WikiLink } from './NoteLink';
 import { AudioRecordingBanner, type AudioRecordingState } from './AudioRecorder';
 import { LinkSheet } from './LinkSheet';
 import { Callout, CalloutTitle } from './Callout';
+import { proUnlocked } from './demo';
+import { stepKanban } from './kanban';
 import { Footnotes, carriedSection } from './footnotes';
 import { useIsMobile } from './useIsMobile';
 import { ContextMenu, useContextMenu, isTouchContextMenu, isLongPressEcho, type ContextMenuItem } from './ContextMenu';
 import {
   iconCopy, iconEditPencil, iconExternal, iconTrash,
-  Code, Highlighter, Link as LinkGlyph, Plus, Scissors, SortAscending, SortDescending, TextB, TextItalic, TextStrikethrough,
+  ClipboardText, Code, FileMd, Highlighter, Link as LinkGlyph, Plus, Scissors, SortAscending, SortDescending, TextB, TextItalic, TextStrikethrough,
 } from './icons';
 import { Spoiler } from './editorSpoiler';
 import { InlineCodeCopy, inlineCodeHint } from './editorCodeCopy';
@@ -143,7 +145,7 @@ type Props = {
   /** Whether the user has Pro. Gates the replace bar. */
   isPro?: boolean;
   /** Opens the upgrade modal when a free account asks for the replace bar. */
-  onOpenUpgrade?: (trigger: 'replace') => void;
+  onOpenUpgrade?: (trigger: 'replace' | null) => void;
   /** Hides the encrypted image / attachment / audio group - see Toolbar. */
   hideEncryptedMedia?: boolean;
   /** Takes the picture and file buttons' files when that group is hidden - see Toolbar. */
@@ -157,6 +159,12 @@ type Props = {
    * itself.
    */
   bodyControls?: ReactNode;
+  /**
+   * The Connections pill and panel, drawn between the other pills and the
+   * outline. Its open state lives here with the outline's, so the corner
+   * shows one panel at a time.
+   */
+  connections?: (open: boolean, onOpenChange: (open: boolean) => void) => ReactNode;
   /**
    * Where the format bar goes when it sits at the bottom: a row the pane
    * keeps under its scrolling column. Nothing is drawn until it exists.
@@ -179,6 +187,8 @@ type Props = {
   /** Whether a ticked task moves below the open ones (the synced
    *  `sinkCheckedTasks` setting). Defaults to on. */
   sinkCheckedTasks?: boolean;
+  /** The empty body's hint, when the item type has its own ("Add an agenda..." on an event). */
+  placeholder?: string;
   /** Called once with the editor after it is created. The history
    *  comparison adds its decorations through it. */
   onReady?: (editor: TipTapEditor) => void;
@@ -196,7 +206,8 @@ type Props = {
  * they could type by hand.
  */
 export type EditorHandle = {
-  focus: () => void;
+  /** Focus the body. False when there is no editor to focus yet. */
+  focus: () => boolean;
   /** Open the find-in-note bar, or close it if it is already open. The
    *  corner magnifier and Cmd/Ctrl+F share this one action. */
   toggleFind: () => void;
@@ -244,7 +255,7 @@ export type EditorHandle = {
 const TOUCH_HANDLE_HEIGHT = 32;
 
 const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }>(function EditorInner(
-  { value, onChange, readOnly = false, onFocusChange, toolbarVisible = true, isPro = false, onOpenUpgrade, noteId, cachedDoc, hideEncryptedMedia, onInsertFiles, bodyControls, toolbarSlot, onShowMarkdown, onRenameFile, fileNote = false, preview = false, sinkCheckedTasks = true, onReady },
+  { value, onChange, readOnly = false, onFocusChange, toolbarVisible = true, isPro = false, onOpenUpgrade, noteId, cachedDoc, hideEncryptedMedia, onInsertFiles, bodyControls, connections, toolbarSlot, onShowMarkdown, onRenameFile, fileNote = false, preview = false, sinkCheckedTasks = true, placeholder, onReady },
   ref
 ) {
   const { t } = useTranslation('editor');
@@ -266,6 +277,13 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
   onRenameFileRef.current = onRenameFile;
   const sinkCheckedRef = useRef(sinkCheckedTasks);
   sinkCheckedRef.current = sinkCheckedTasks;
+  const placeholderRef = useRef(placeholder);
+  placeholderRef.current = placeholder;
+  // Read by a Kanban board's Add column, which is Pro.
+  const isProRef = useRef(isPro);
+  isProRef.current = isPro;
+  const onOpenUpgradeRef = useRef(onOpenUpgrade);
+  onOpenUpgradeRef.current = onOpenUpgrade;
 
   const isMobile = useIsMobile();
   const { spellcheck, invisibles, favicons } = useTheme();
@@ -318,7 +336,8 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
    * The menu for a right click inside a selection: the clipboard, the marks
    * of the toolbar, a link, and Sort when the selection is two or more lines
    * of one kind. Cut and Copy go through the browser so the editor's own
-   * copy path writes the clipboard. Highlight applies the colour the
+   * copy path writes the clipboard. "Copy as plain text" and "Copy as Markdown"
+   * write that text alone, so every app pastes what the label says. Highlight applies the colour the
    * toolbar remembers, or removes a highlight that is already there.
    */
   const selectionMenuItems = (ed: TipTapEditor): ContextMenuItem[] => {
@@ -332,6 +351,8 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     const items: ContextMenuItem[] = [
       { label: t('bodyMenu.cut'), icon: <Scissors size={14} />, onSelect: () => { ed.commands.focus(); document.execCommand('cut'); } },
       { label: t('common:actions.copy'), icon: iconCopy(), onSelect: () => { ed.commands.focus(); document.execCommand('copy'); } },
+      { label: t('bodyMenu.copyAsPlain'), icon: <ClipboardText size={14} />, onSelect: () => copySelectionAs(ed, 'plain') },
+      { label: t('bodyMenu.copyAsMarkdown'), icon: <FileMd size={14} />, onSelect: () => copySelectionAs(ed, 'markdown') },
       { type: 'separator' },
       { label: t('toolbar.bold'), icon: <TextB size={14} />, checked: ed.isActive('bold'), onSelect: () => ed.chain().focus().toggleBold().run() },
       { label: t('toolbar.italic'), icon: <TextItalic size={14} />, checked: ed.isActive('italic'), onSelect: () => ed.chain().focus().toggleItalic().run() },
@@ -530,7 +551,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       Placeholder.configure({
         placeholder: ({ node }) =>
           node.type.name !== 'codeBlock'
-            ? t('placeholder')
+            ? (placeholderRef.current ?? t('placeholder'))
             : node.attrs['language'] === COPY_BOX_LANGUAGE
               ? t('copyBox.placeholder')
               : t('codeBlock.placeholder'),
@@ -585,6 +606,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         HTMLAttributes: {
           class: 'pn-table',
         },
+        formulasUnlocked: () => proUnlocked(isProRef.current),
       }),
       TableRow,
       TableCell,
@@ -599,9 +621,9 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       // what its name says - a toolbar affordance - and the plaintext boundary
       // is held where it can be held without breaking the document model: the
       // Markdown pane's own paste and drop capture handlers.
-      // Spec: ops/docs/plans/markdown-folder.md (section 5, isolation)
+      // Spec: ops/docs/archive/markdown-folder.md (section 5, isolation)
       // The paste guard on the upload itself rides on the same flag:
-      // ops/docs/plans/paste-pictures.md (section 3.3)
+      // ops/docs/archive/paste-pictures.md (section 3.3)
       EncryptedImage.configure({ plaintextOnly: !!hideEncryptedMedia }),
       EncryptedAttachment.configure({
         onRename: (name: string) => {
@@ -620,7 +642,10 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       }),
       WikiLink,
       CalloutTitle,
-      Callout,
+      Callout.configure({
+        kanbanUnlocked: () => proUnlocked(isProRef.current),
+        onUpgrade: () => onOpenUpgradeRef.current?.(null),
+      }),
       Footnotes,
       TrailingParagraph,
       PlainEscape,
@@ -646,9 +671,8 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       Superscript,
       // Subscript keeps its toolbar button but loses its default Mod-,
       // shortcut: Cmd+, is the app-wide "open settings" key, and both fired
-      // at once (subscript toggled AND settings opened, caught by the
-      // 2026-08-21 hotkey audit). The toolbar hint for subscript is already
-      // null for the same reason.
+      // at once (subscript toggled AND settings opened). The toolbar hint
+      // for subscript is already null for the same reason.
       Subscript.extend({
         addKeyboardShortcuts() {
           return {};
@@ -750,7 +774,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       // Sort the pictures of pasted HTML: ours stay, the ones whose bytes the
       // device holds become pending pictures, the rest go, so no broken image
       // node is ever made. A Markdown folder note stores none of them.
-      // Spec: GitHub #67, ops/docs/plans/paste-pictures.md (section 3.2)
+      // Spec: GitHub #67, ops/docs/archive/paste-pictures.md (section 3.2)
       transformPastedHTML: (html) => sanitizePastedHtml(html, { store: !hideEncryptedMedia, report: true }),
       // Long-press-to-paste shouldn't drag the keyboard up with it: the user
       // is reaching for the Cut/Copy/Paste bubble, not for the keys, and an
@@ -846,6 +870,8 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
             stepTableCell(editor, event.shiftKey ? -1 : 1);
             return true;
           }
+          // Inside a Kanban board, Tab steps through titles and cards.
+          if (stepKanban(editor.state, editor.view.dispatch, event.shiftKey ? -1 : 1)) return true;
           // Indent / outdent the item, checkbox lists included - this
           // handler runs BEFORE every plugin keymap, so TaskItem's own Tab
           // shortcut never gets a turn and the type has to be resolved
@@ -921,6 +947,8 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     barFocusTick,
     outlineOpen,
     setOutlineOpen,
+    connectionsOpen,
+    setConnectionsOpen,
     setPillsEl,
     findSeed,
     openFindWith,
@@ -1045,7 +1073,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
   useImperativeHandle(
     ref,
     () => ({
-      focus: () => editor?.commands.focus(),
+      focus: () => editor?.commands.focus() ?? false,
       toggleFind,
       toggleReplace,
       scrollToFile: (uuid: string) => {
@@ -1216,6 +1244,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
               pills instead of under them. */}
           <div ref={setPillsEl} className="flex items-start gap-1.5">
             {bodyControls}
+            {connections?.(connectionsOpen, setConnectionsOpen)}
             <OutlinePanel
               editor={editor}
               open={outlineOpen}
@@ -1249,13 +1278,13 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
             onClick={addLineAtTop}
             className="pn-top-line group absolute inset-x-0 top-0 z-[1] h-8 cursor-text outline-none"
           >
-            <span className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center gap-1.5 opacity-0 transition-opacity [@media(hover:hover)]:group-hover:opacity-100 group-focus-visible:opacity-100">
-              <span className="flex items-center gap-1 text-xs leading-none text-accent">
+            <span className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center gap-1.5 opacity-0 transition-opacity [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:delay-150 group-focus-visible:opacity-100">
+              <span className="flex items-center gap-1 text-xs leading-none text-pn-muted">
                 <Plus size={14} aria-hidden="true" />
                 {t('topRow.add')}
               </span>
               {/* Ends where the corner pills begin. */}
-              <span className="h-px flex-1 bg-accent/40" style={{ marginInlineEnd: 'var(--pn-outline-fw, 0px)' }} />
+              <span className="flex-1 border-t border-dashed border-pn-muted/40" style={{ marginInlineEnd: 'var(--pn-outline-fw, 0px)' }} />
             </span>
           </button>
         </div>
@@ -1265,7 +1294,9 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       {/* Always mounted, hidden by itself until the caret is in a table: a
           gate read here would only be as fresh as the last render of this
           component, which a transaction does not cause. */}
-      {editor && !readOnly && <TableControls editor={editor} />}
+      {editor && !readOnly && (
+        <TableControls editor={editor} formulasUnlocked={proUnlocked(isPro)} onUpgrade={() => onOpenUpgradeRef.current?.(null)} />
+      )}
       {editor && !readOnly && linkPopoverOpen && isMobile && (
         <LinkSheet editor={editor} isMobile={true} anchorRef={linkAnchorRef} onClose={() => setLinkPopoverOpen(false)} />
       )}

@@ -13,7 +13,7 @@
 #
 # MimeType comes from bundle.fileAssociations plus the deep-link schemes; the
 # variable is available even though the config schema's docstring omits it.
-# Spec: ops/docs/plans/markdown-folder.md (section 11)
+# Spec: ops/docs/archive/markdown-folder.md (section 11)
 [Desktop Entry]
 Categories={{categories}}
 {{#if comment}}

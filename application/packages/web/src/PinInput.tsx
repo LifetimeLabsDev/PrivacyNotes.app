@@ -8,6 +8,7 @@ import {
   type KeyboardEvent,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import { isSoftKeyboardUp } from './softKeyboard';
 
 export type PinInputHandle = {
   focus: () => void;
@@ -57,6 +58,20 @@ type Props = {
 const HIDDEN_TEXT = { color: 'transparent', caretColor: 'transparent' } as const;
 
 /**
+ * Move focus to a box without the browser's own scroll. iOS scrolls the whole
+ * page to every input focus() lands on, even one already in view above the
+ * keyboard, and the keyboard handler then scrolls it back: the page jumped
+ * at each digit. With the keyboard up, `useKeyboardOpen` keeps the box in
+ * view inside its own column; without one, it is brought into view here.
+ * Spec: ops/docs/mobile-dev-runbook.md (agent build on a physical iPhone)
+ */
+function focusBox(el: HTMLInputElement | null | undefined): void {
+  if (!el) return;
+  el.focus({ preventScroll: true });
+  if (!isSoftKeyboardUp()) el.scrollIntoView?.({ block: 'nearest' });
+}
+
+/**
  * One box per digit, for the 4-digit PIN and the 6-digit authenticator code.
  * Handles auto-advance, backspace, arrow navigation, paste, and iOS
  * one-time-code autofill.
@@ -81,7 +96,7 @@ export const PinInput = forwardRef<PinInputHandle, Props>(function PinInput(
   const inputs = useRef<Array<HTMLInputElement | null>>([]);
 
   useImperativeHandle(ref, () => ({
-    focus: () => inputs.current[0]?.focus(),
+    focus: () => focusBox(inputs.current[0]),
     // Callers are expected to set their `value` state to '' before invoking
     // `clear()` - `clear()` only refocuses the first box. Notifying the
     // parent via `onChange('')` here would race with error-state setters
@@ -95,7 +110,7 @@ export const PinInput = forwardRef<PinInputHandle, Props>(function PinInput(
       // focusing a disabled input does nothing at all. A microtask can run
       // before React commits that flag, which left a wrong PIN needing a click
       // before the next attempt. A frame always lands after the commit.
-      requestAnimationFrame(() => inputs.current[0]?.focus());
+      requestAnimationFrame(() => focusBox(inputs.current[0]));
     },
   }));
 
@@ -109,7 +124,7 @@ export const PinInput = forwardRef<PinInputHandle, Props>(function PinInput(
   function commit(next: string[], focusIndex: number) {
     const joined = next.join('').slice(0, LENGTH);
     onChange(joined);
-    inputs.current[Math.min(Math.max(focusIndex, 0), LENGTH - 1)]?.focus();
+    focusBox(inputs.current[Math.min(Math.max(focusIndex, 0), LENGTH - 1)]);
     if (joined.length === LENGTH) onComplete?.(joined);
   }
 
@@ -147,14 +162,14 @@ export const PinInput = forwardRef<PinInputHandle, Props>(function PinInput(
         const next = digits.slice();
         next[index - 1] = '';
         onChange(next.join(''));
-        inputs.current[index - 1]?.focus();
+        focusBox(inputs.current[index - 1]);
       }
     } else if (e.key === 'ArrowLeft' && index > 0) {
       e.preventDefault();
-      inputs.current[index - 1]?.focus();
+      focusBox(inputs.current[index - 1]);
     } else if (e.key === 'ArrowRight' && index < LENGTH - 1) {
       e.preventDefault();
-      inputs.current[index + 1]?.focus();
+      focusBox(inputs.current[index + 1]);
     }
   }
 
@@ -204,8 +219,19 @@ export const PinInput = forwardRef<PinInputHandle, Props>(function PinInput(
             disabled={disabled}
             style={mask ? HIDDEN_TEXT : undefined}
             aria-label={t('pinInput.digitAriaLabel', { index: i + 1 })}
-            className={`w-full h-full rounded-md bg-track text-pn border border-divider focus:border-accent dark:focus:border-accent text-center font-mono focus:outline-none disabled:cursor-not-allowed ${compact ? 'text-xl' : 'text-2xl'}`}
+            className={`peer w-full h-full rounded-md bg-track text-pn border border-divider focus:border-accent dark:focus:border-accent text-center font-mono focus:outline-none disabled:cursor-not-allowed ${compact ? 'text-xl' : 'text-2xl'}`}
           />
+          {!d && mask && (
+            // The caret the field no longer draws: its own is transparent with
+            // the text, and would sit beside a hidden digit, not in the middle.
+            // Only in the focused empty box, like a real caret.
+            <span
+              aria-hidden="true"
+              className="pn-pin-caret pointer-events-none absolute inset-0 hidden items-center justify-center peer-focus:flex"
+            >
+              <span className={`w-0.5 rounded-full bg-accent ${compact ? 'h-5' : 'h-7'}`} />
+            </span>
+          )}
           {d && mask && (
             // The bullet the field no longer draws. Same glyph, size and
             // family the browser used, so the boxes look untouched.

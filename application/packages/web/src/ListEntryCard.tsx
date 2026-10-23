@@ -15,7 +15,7 @@ import { X } from './icons';
  * than decoration: amber says "a filter is on" everywhere in the pane, accent
  * is the app's own colour and reads as furniture.
  *
- * Spec: ops/docs/ui-patterns.md (section 41)
+ * Spec: ops/docs/archive/ui-patterns.md (section 41)
  */
 export function ListEntryCard({
   variant,

@@ -6,8 +6,7 @@ import { Plugin, PluginKey } from '@tiptap/pm/state';
 import type { DecorationSet } from '@tiptap/pm/view';
 import type { NoteType, SupabaseClient } from '@notes/shared';
 import type { LocalNote } from './db';
-import { useEscapeToClose } from './useEscapeToClose';
-import { X } from './icons';
+import { Modal } from './ui';
 import { formatInstant } from './intlFormat';
 import { listNoteVersions, type NoteVersion } from './noteVersions';
 import { Editor } from './Editor';
@@ -49,8 +48,8 @@ function readableBody(type: NoteType, body: string, trackers?: Record<string, un
     return content ? vaultToMarkdown(content) : body;
   }
   if (type === 'journal' && trackers) {
-    const { weightUnit, customTrackers } = loadLocalSettings().trackerSettings;
-    const rows = trackerRows(trackers, weightUnit, customTrackers);
+    const settings = loadLocalSettings();
+    const rows = trackerRows(trackers, settings.trackerSettings, settings.trackerSettings.customTrackers, settings.factors);
     if (rows.length === 0) return body;
     // A custom tracker's name is user input: keep it literal.
     const esc = (s: string) => s.replace(/[\\`*_[\]<>#|~]/g, '\\$&');
@@ -97,7 +96,6 @@ export function NoteHistoryModal({
   onRestore,
 }: Props) {
   const { t } = useTranslation('billing');
-  useEscapeToClose(onClose);
   const [versions, setVersions] = useState<NoteVersion[] | null>(null);
   // A read that failed, kept apart from an empty history: listNoteVersions
   // throws on failure, and the panel says so in the reader's language
@@ -178,30 +176,13 @@ export function NoteHistoryModal({
   }
 
   return (
-    <div
-      className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 sm:p-6 z-50"
-      onClick={onClose}
+    <Modal
+      onClose={onClose}
+      title={t('shell:noteOptionsMenu.noteHistory')}
+      subtitle={t('history.subtitle')}
+      header="bar"
+      className={`max-w-3xl h-[90vh] sm:h-[80vh] flex flex-col overflow-hidden${compare && canCompare ? ' lg:max-w-6xl' : ''}`}
     >
-      <div
-        className={`bg-surface-2 border border-divider text-pn rounded-lg w-full max-w-3xl h-[90vh] sm:h-[80vh] flex flex-col overflow-hidden${compare && canCompare ? ' lg:max-w-6xl' : ''}`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-divider shrink-0">
-          <div>
-            <h2 className="text-lg font-semibold">{t('shell:noteOptionsMenu.noteHistory')}</h2>
-            <p className="text-[12px] text-pn-muted mt-0.5">
-              {t('history.subtitle')}
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            aria-label={t('common:actions.close')}
-            className="text-pn-muted hover:text-pn-soft transition p-1 -m-1"
-          >
-            <X size={18} />
-          </button>
-        </div>
-
         <div className="flex flex-col sm:flex-row flex-1 min-h-0">
           {/* Left pane: version list.
               The phone cap is set so the list ends PART WAY through a row:
@@ -409,8 +390,7 @@ export function NoteHistoryModal({
             )}
           </div>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }
 

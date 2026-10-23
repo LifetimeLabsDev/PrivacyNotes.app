@@ -164,7 +164,7 @@ function everyItemIsOneLine(list: ProseMirrorNode): boolean {
  * form field or a work tool prints as it is. A numbered list keeps its
  * numbers, because they carry the order. Blank lines follow the Markdown
  * copy: a gap between blocks, none between Compact paragraphs.
- * Spec: ops/docs/plans/paste-pictures.md (section 3.6)
+ * Spec: ops/docs/archive/paste-pictures.md (section 3.6)
  */
 function plainTextForClipboard(content: Fragment, tightParagraphs: boolean): string {
   const line = singleTextblock(content);

@@ -1,6 +1,8 @@
 {
   "captionFolder": "Klasör",
   "captionTag": "Etiket",
+  "captionNote": "Not",
+  "captionTracker": "Takip",
   "useDefault": "Varsayılanı kullan",
   "color": "Renk",
   "noColor": "Renksiz",

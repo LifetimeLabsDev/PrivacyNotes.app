@@ -4,6 +4,7 @@ import { compareNotes, deriveDisplayTitle, editedAtOf } from './notesViewUtils';
 import { nextFence, type Fence } from './markdownFence';
 import { createNote, getNote, updateNoteFrom } from './notesRepo';
 import { textMatcher } from './textMatch';
+import { activeLocale } from './languages';
 
 /**
  * Tasks as a derived view over existing notes.
@@ -26,6 +27,18 @@ import { textMatcher } from './textMatch';
  */
 
 const TASK_LINE = /^(\s*)([-*+])\s+\[([ xX])\]\s?(.*)$/;
+
+/** The quote markers a line starts with: a task inside a quote, a callout or
+ *  a Kanban board is written `> > - [ ] ...`, and it is a task all the same. */
+const QUOTE_PREFIX = /^(?:>[ \t]?)*/;
+
+/** A task line with its quote markers split off, or null for any other line.
+ *  Groups as TASK_LINE: indent, marker, box, text; `quote` is the prefix. */
+function matchTask(line: string): (RegExpMatchArray & { quote: string }) | null {
+  const quote = line.match(QUOTE_PREFIX)![0];
+  const m = line.slice(quote.length).match(TASK_LINE);
+  return m ? Object.assign(m, { quote }) : null;
+}
 
 export type TaskItem = {
   noteId: string;
@@ -50,7 +63,7 @@ function extractTasksFromNote(note: LocalNote): TaskItem[] {
   const title = deriveDisplayTitle(note);
   const prose = outsideFences(lines);
   for (let i = 0; i < lines.length; i++) {
-    const m = prose[i] ? lines[i]!.match(TASK_LINE) : null;
+    const m = prose[i] ? matchTask(lines[i]!) : null;
     if (!m) continue;
     out.push({
       noteId: note.id,
@@ -69,10 +82,19 @@ function extractTasksFromNote(note: LocalNote): TaskItem[] {
  * active (non-trashed) notes. Trashed notes' tasks don't show up in the
  * Tasks view - if you trashed the note, you trashed its tasks too.
  */
+const parsedTasks = new WeakMap<LocalNote, { body: string; title: string | null | undefined; editedAt: string; locale: string; tasks: TaskItem[] }>();
+
 export function extractAllTasks(notes: LocalNote[]): TaskItem[] {
   const all: TaskItem[] = [];
+  const locale = activeLocale();
   for (const n of notes) {
-    for (const t of extractTasksFromNote(n)) all.push(t);
+    const editedAt = editedAtOf(n);
+    let parsed = parsedTasks.get(n);
+    if (!parsed || parsed.body !== n.body || parsed.title !== n.title || parsed.editedAt !== editedAt || parsed.locale !== locale) {
+      parsed = { body: n.body, title: n.title, editedAt, locale, tasks: extractTasksFromNote(n) };
+      parsedTasks.set(n, parsed);
+    }
+    for (const t of parsed.tasks) all.push(t);
   }
   return all;
 }
@@ -137,10 +159,10 @@ function setTaskCheckedInBody(
   const lines = body.split(/\r?\n/);
   const line = lines[lineIdx];
   if (line == null || !outsideFences(lines)[lineIdx]) return null;
-  const m = line.match(TASK_LINE);
+  const m = matchTask(line);
   if (!m || taskText(m[4]) !== text) return null;
   const [, indent, marker, , rest] = m;
-  lines[lineIdx] = `${indent}${marker} [${checked ? 'x' : ' '}] ${rest ?? ''}`.replace(/\s+$/, '');
+  lines[lineIdx] = `${m.quote}${indent}${marker} [${checked ? 'x' : ' '}] ${rest ?? ''}`.replace(/\s+$/, '');
   return lines.join('\n');
 }
 
@@ -155,7 +177,7 @@ export function canUncheckAllTasks(body: string): boolean {
   const lines = body.split(/\r?\n/);
   const prose = outsideFences(lines);
   for (const [i, line] of lines.entries()) {
-    const m = prose[i] ? line.match(TASK_LINE) : null;
+    const m = prose[i] ? matchTask(line) : null;
     if (!m) continue;
     tasks++;
     if (m[3] !== ' ') checked = true;
@@ -169,10 +191,10 @@ function uncheckAllTasksInBody(body: string): string {
   const prose = outsideFences(lines);
   return lines
     .map((line, i) => {
-      const m = prose[i] ? line.match(TASK_LINE) : null;
+      const m = prose[i] ? matchTask(line) : null;
       if (!m || m[3] === ' ') return line;
       const [, indent, marker, , rest] = m;
-      return `${indent}${marker} [ ] ${rest ?? ''}`.replace(/\s+$/, '');
+      return `${m.quote}${indent}${marker} [ ] ${rest ?? ''}`.replace(/\s+$/, '');
     })
     .join('\n');
 }
@@ -222,7 +244,9 @@ type TaskNode = { head: string; rest: string[]; checked: boolean; line: number }
  */
 function outsideFences(lines: readonly string[]): boolean[] {
   let fence: Fence | null = null;
-  return lines.map((line) => {
+  return lines.map((quoted) => {
+    // A fence inside a quote or a callout is a fence too.
+    const line = quoted.slice(quoted.match(QUOTE_PREFIX)![0].length);
     const step = nextFence(fence, line, Infinity);
     fence = step.fence;
     return !step.isFence && fence === null;
@@ -249,6 +273,17 @@ function mapBlock(lines: string[], offset: number, fn: (items: TaskNode[]) => Ta
   let i = 0;
   while (i < lines.length) {
     const line = lines[i]!;
+    // A quote, a callout or a Kanban board: its lines without one level of
+    // `>` are a body of their own, with their own task lists. Line numbers
+    // stay one to one, so `offset` still names each line.
+    if (line.startsWith('>')) {
+      let j = i;
+      while (j < lines.length && lines[j]!.startsWith('>')) j++;
+      const inner = lines.slice(i, j).map((l) => l.replace(/^>[ \t]?/, ''));
+      for (const l of mapBlock(inner, offset + i, fn)) out.push(l === '' ? '>' : `> ${l}`);
+      i = j;
+      continue;
+    }
     if (!prose[i] || !TASK_LINE.test(line)) {
       out.push(line);
       i++;
@@ -311,7 +346,7 @@ export function countTasks(body: string): { done: number; total: number } {
   const prose = outsideFences(lines);
   for (const [i, line] of lines.entries()) {
     if (!prose[i]) continue;
-    const m = line.match(TASK_LINE);
+    const m = matchTask(line);
     if (!m) continue;
     total++;
     if (m[3] !== ' ') done++;
@@ -420,6 +455,56 @@ function appendTaskToBody(body: string, text: string): string {
     return `${trimmed}\n${line}\n`;
   }
   return `${trimmed}\n\n${line}\n`;
+}
+
+/** The empty first task a new task list holds in the formatted editor. */
+const EMPTY_TASK = /^(\s*)[-*+]\s+\[ \]\s*(?:&nbsp;)?\s*$/;
+/** The empty paragraphs the formatted editor keeps at the end of a body. */
+const TRAILING_BLANKS = /(?:\n+&nbsp;)+\s*$/;
+
+/**
+ * Add lines to the end of a body: as tasks after the last task line, or as
+ * one paragraph. The empty task of a new list takes the first line, and
+ * the empty paragraphs at the end stay at the end. Pure, for the switcher's
+ * ">>" (Spec: ops/docs/archive/quick-add-prefix.md). Tested in
+ * tests/switcherQuery.test.ts.
+ */
+export function appendLinesToBody(body: string, lines: string[], asTasks: boolean): string {
+  const clean = lines.map((l) => l.trim()).filter(Boolean);
+  if (!clean.length) return body;
+  const tail = body.match(TRAILING_BLANKS)?.[0] ?? '';
+  let out = body.slice(0, body.length - tail.length).replace(/\s+$/, '');
+  if (!asTasks) {
+    const para = clean.join(' ');
+    out = out ? `${out}\n\n${para}` : para;
+  } else {
+    let todo = clean;
+    if (EMPTY_TASK.test(out) && !out.includes('\n')) {
+      out = `- [ ] ${todo[0]}`;
+      todo = todo.slice(1);
+    }
+    for (const line of todo) out = appendTaskToBody(out, line).replace(/\s+$/, '');
+  }
+  return tail ? `${out}${tail.replace(/\s+$/, '')}` : `${out}\n`;
+}
+
+/**
+ * Append lines to an item that exists, made from `body` (the editor's text
+ * for the open note, so typing still in its save delay is kept) and written
+ * only while the row still holds it, as the "..." menu's task rewrites are.
+ * An item that takes no edits (read-only or behind the PIN) is never
+ * written. Returns the body written, or null when nothing was.
+ */
+export async function appendToNote(
+  id: string,
+  body: string,
+  lines: string[],
+  asTasks: boolean,
+  isGated: (n: LocalNote) => boolean,
+): Promise<string | null> {
+  const note = await getNote(id);
+  if (!note || !takesTaskEdit(note, isGated)) return null;
+  return writeFromBody(id, body, appendLinesToBody(body, lines, asTasks));
 }
 
 /**

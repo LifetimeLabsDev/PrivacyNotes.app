@@ -9,7 +9,7 @@ import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
  * Enter that ends a conversion after `compositionend`, with keyCode 229, so
  * the code is read as well as the flag. The editor needs no call: ProseMirror
  * already ignores keys while it composes.
- * Spec: ops/docs/ui-patterns.md (keys that belong to the input method)
+ * Spec: ops/docs/archive/ui-patterns.md (keys that belong to the input method)
  */
 export function isImeComposing(event: KeyboardEvent | ReactKeyboardEvent): boolean {
   const key = 'nativeEvent' in event ? event.nativeEvent : event;

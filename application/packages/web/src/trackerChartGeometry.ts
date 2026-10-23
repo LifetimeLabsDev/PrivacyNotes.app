@@ -5,7 +5,7 @@ import type { ChartSpec, DaySeries, TrackerValue } from './wellnessTypes';
  * from a spec and a size. The React chart and the printable report both draw
  * from it, so the two pictures cannot drift. Every mark sits on a calendar
  * axis: one slot per day (or per week), a missing day keeps its slot empty.
- * Spec: ops/docs/plans/wellness-statistics.md (section 6)
+ * Spec: ops/docs/archive/wellness-statistics.md (section 6)
  */
 
 type CellState = 'value' | 'no' | 'missing' | 'outside';

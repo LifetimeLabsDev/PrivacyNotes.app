@@ -10,7 +10,7 @@
  * needs no permission); on the web it costs one `queryPermission` call, and
  * only proceeds to a scan when the answer is already `granted`.
  *
- * Spec: ops/docs/plans/markdown-folder.md (section 5)
+ * Spec: ops/docs/archive/markdown-folder.md (section 5)
  */
 import { useEffect, useState } from 'react';
 import { checkHandle, forgetFolder, recallFolder, requestHandle } from './folderMemory';

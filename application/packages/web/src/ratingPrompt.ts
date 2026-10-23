@@ -10,14 +10,14 @@ import type { UserSettings } from './userSettings';
  * own module, free of React and i18n, so the rules are readable in one
  * screen and testable without a DOM.
  *
- * Spec: ops/docs/plans/rating-prompt-handoff.md (section 6)
+ * Spec: ops/docs/archive/rating-prompt-handoff.md (section 6)
  */
 
 /**
  * No ask in the first two weeks, whatever the counter says. Someone who
  * wrote 25 notes on day one is still deciding whether they trust the
  * app; asking then reads as a sales pitch rather than a thank-you.
- * Spec: ops/docs/plans/rating-prompt-handoff.md (section 6, rule 3)
+ * Spec: ops/docs/archive/rating-prompt-handoff.md (section 6, rule 3)
  */
 const RATING_MIN_ACCOUNT_DAYS = 14;
 

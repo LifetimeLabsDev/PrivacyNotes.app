@@ -87,7 +87,7 @@ function Highlighted({ text, mark }: { text: string; mark: SettingHit['mark'] })
  * The results pane: grouped by section, the group header carrying the
  * section's rail icon. The active result is the one the arrows point at;
  * the field keeps the focus, so the list is a listbox driven from there.
- * Spec: ops/docs/ui-patterns.md (section 114, settings search)
+ * Spec: ops/docs/archive/ui-patterns.md (section 114, settings search)
  */
 export function SettingsSearchResults({
   query,
@@ -193,9 +193,57 @@ export function SettingsSearchResults({
   );
 }
 
-function accentShadow(alpha: number): string {
+function accentColor(alpha: number): string {
   const rgb = getComputedStyle(document.documentElement).getPropertyValue('--pn-accent').trim() || '30 64 175';
   return `rgb(${rgb} / ${alpha})`;
+}
+
+/**
+ * The landing mark on a settings row: a soft, rounded accent wash behind the
+ * row that reaches a little past its sides, with a short accent bar at its
+ * start edge. It sits behind the row's text (`isolation` on the row, the
+ * layer at z-index -1), so the words keep their own color. It fades in,
+ * holds, and fades out, then removes itself and gives the row back the
+ * styles it had. With reduced motion it shows and goes with no fade.
+ */
+function flashRow(el: HTMLElement): void {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const before = { position: el.style.position, isolation: el.style.isolation };
+  if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+  el.style.isolation = 'isolate';
+  const wash = document.createElement('div');
+  wash.setAttribute('aria-hidden', 'true');
+  Object.assign(wash.style, {
+    position: 'absolute', insetBlock: '2px', insetInline: '-12px', zIndex: '-1',
+    borderRadius: '10px', background: accentColor(0.1), pointerEvents: 'none', opacity: '0',
+  });
+  const bar = document.createElement('div');
+  Object.assign(bar.style, {
+    position: 'absolute', insetInlineStart: '0', insetBlock: '8px', width: '3px',
+    borderRadius: '3px', background: accentColor(0.9),
+  });
+  wash.appendChild(bar);
+  el.appendChild(wash);
+  const frames: Keyframe[] = reduced
+    ? [{ opacity: 1 }, { opacity: 1 }]
+    : [{ opacity: 0 }, { opacity: 1, offset: 0.08 }, { opacity: 1, offset: 0.55 }, { opacity: 0 }];
+  const anim = wash.animate(frames, { duration: reduced ? 1200 : 2200, easing: 'ease-out' });
+  const done = () => {
+    wash.remove();
+    el.style.position = before.position;
+    el.style.isolation = before.isolation;
+  };
+  anim.onfinish = done;
+  anim.oncancel = done;
+}
+
+/** The visible height of the nearest ancestor that scrolls `el`, or the window's. */
+function scrollerHeight(el: HTMLElement): number {
+  for (let a = el.parentElement; a; a = a.parentElement) {
+    const y = getComputedStyle(a).overflowY;
+    if (y === 'auto' || y === 'scroll') return a.clientHeight;
+  }
+  return window.innerHeight;
 }
 
 /**
@@ -213,12 +261,6 @@ export function jumpToSetting(root: HTMLElement, id: string): () => void {
   let stableFrames = 0;
   let frame = 0;
   let stopped = false;
-  const flash = (el: HTMLElement) => {
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const on = { boxShadow: `0 0 0 2px ${accentShadow(0.55)}`, backgroundColor: accentShadow(0.12) };
-    const off = { boxShadow: `0 0 0 2px ${accentShadow(0)}`, backgroundColor: accentShadow(0) };
-    el.animate(reduced ? [on, on] : [on, on, off], { duration: reduced ? 1200 : 2000, easing: 'ease-out' });
-  };
   const step = () => {
     if (stopped) return;
     const now = performance.now();
@@ -231,9 +273,11 @@ export function jumpToSetting(root: HTMLElement, id: string): () => void {
     const top = el.getBoundingClientRect().top;
     stableFrames = Math.abs(top - lastTop) < 1 ? stableFrames + 1 : 0;
     lastTop = top;
-    el.scrollIntoView({ block: 'center', inline: 'nearest' });
+    // A row taller than the pane that scrolls it (the theme gallery) lands at
+    // its top, so its heading shows; centred, it opened mid-gallery.
+    el.scrollIntoView({ block: el.offsetHeight > scrollerHeight(el) ? 'start' : 'center', inline: 'nearest' });
     if (stableFrames >= 5 || now - foundAt > 1200) {
-      flash(el);
+      flashRow(el);
       return;
     }
     frame = requestAnimationFrame(step);

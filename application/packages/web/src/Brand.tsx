@@ -26,10 +26,10 @@ const TONE = {
   paper: 'text-[var(--brand-ink)]',
   // A permanently dark slab: the site footer.
   dark: 'text-white',
-  // A slab painted `bg-[var(--wl-ink)]`, which INVERTS to cream in dark mode
-  // (Spec: ops/docs/design-decisions.md, washi landing palette). The ink half
-  // inverts with it.
-  invert: 'text-[var(--wl-bg)]',
+  // A homepage slab painted `bg-[var(--wl-slab)]`: ink in light, a raised
+  // sumi surface in dark (Spec: ops/docs/design-decisions.md, washi landing
+  // palette). The ink half takes the slab's text color.
+  invert: 'text-[var(--wl-on-slab)]',
 } as const;
 
 /**

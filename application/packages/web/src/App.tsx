@@ -16,10 +16,10 @@ import {
   onWrappedBlobChange,
   type PinWrapBlob,
 } from './biometric';
-import { shouldPromptForPin, markPinUnlocked } from './pin';
+import { shouldPromptForAppLock, markAppUnlocked, clearPinUnlock, hasPin } from './pin';
 import { clearPin, phraseMatches } from './pinRecovery';
 import { phraseOwnsThisDevice } from './authStorage';
-import { lockCurtainIsStale, startReLockWatch } from './appReLock';
+import { clearManualLock, lockCurtainIsStale, manualLockArmed, startReLockWatch } from './appReLock';
 import { applyPrivacyScreen } from './privacyScreen';
 import { loadLocalSettings, saveLocalSettings } from './userSettings';
 import { hasStoredSession, isTrustedDevice } from './trustStorage';
@@ -100,7 +100,7 @@ if (hasStoredSession()) {
 }
 
 // Loaded only when a shortcut waits for sign-in in a computer browser.
-// Spec: ops/docs/plans/note-shortcuts.md (6.2)
+// Spec: ops/docs/archive/note-shortcuts.md (6.2)
 const ShortcutSignInCard = lazy(() => import('./ShortcutOffer').then((m) => ({ default: m.ShortcutSignInCard })));
 
 export default function App() {
@@ -172,20 +172,15 @@ export default function App() {
       const href = anchor?.getAttribute('href');
       // tel: and sms: ride along with mailto:: a contact's number is a
       // handoff to the dialer, which the WebView cannot make on its own.
-      // Spec: ops/docs/plans/contacts-pillar.md (section 9, tap to call)
+      // Spec: ops/docs/archive/contacts-pillar.md (section 9, tap to call)
       if (!href || !/^(https?:|mailto:|tel:|sms:)/i.test(href)) return;
-      // A link inside a note being written belongs to the caret, and a
-      // mouse says so by clicking it: the cursor goes in the link and the
-      // browser stays closed. Handing that click over instead moves the
-      // person to another application and costs them the cursor, which is
-      // the only thing the toolbar's Remove acts on (GitHub #293).
-      // `editorLinks.ts` owns what a mouse click does there, including
-      // Cmd/Ctrl-click to open. A finger keeps this route, because it has
-      // no modifier to say "follow it" with.
+      // A mouse click on a link inside a note being written is opened by
+      // `editorLinks.ts`, which also knows a file link from an address.
+      // A finger keeps this route.
       if (!isTouchPointer() && anchor?.closest('[contenteditable="true"]')) return;
       e.preventDefault();
       // A shortcut to an item of this vault opens in place.
-      // Spec: ops/docs/plans/note-shortcuts.md (5.4)
+      // Spec: ops/docs/archive/note-shortcuts.md (5.4)
       if (openShortcutInApp(href)) return;
       // iOS presents web links in an in-app SFSafariViewController sheet
       // ('inAppBrowser' is built into the opener plugin) instead of
@@ -261,9 +256,13 @@ export default function App() {
   // unlock - and stays there while the lock is armed: the post-unlock
   // sign-in deliberately skips the storage persist then (see
   // signInWithPhrase), so the unlock can never quietly write the
-  // phrase back to disk (pre-launch audit 2026-08-28, finding 8).
+  // phrase back to disk.
   const [locked, setLocked] = useState<boolean>(() => {
     const hasWrapped = hasBiometricCredential() || hasPinWrappedPhrase();
+    // Locked with the Lock app button and not unlocked since: a reload keeps
+    // the lock, also with the app lock off, as long as a door is left (a PIN
+    // alone is checked against its hash once the session is up).
+    if (manualLockArmed() && (hasWrapped || hasPin())) return true;
     if (!hasWrapped) return false;
     // Wrapped-only state: enabling app lock strips the stored
     // phrase, so after a reload the ONLY path back into the session
@@ -283,13 +282,13 @@ export default function App() {
     if (!hasStoredPhrase()) return true;
     const settings = loadLocalSettings();
     if (!settings.appLockEnabled) return false;
-    return shouldPromptForPin(settings.appLockTimeoutMinutes);
+    return shouldPromptForAppLock(settings.appLockTimeoutMinutes);
   });
 
   // Arm the native cover the operating system photographs in place of the
   // notes. Settings writes carry it from then on (writeLocal in
   // userSettings.ts); a cold start writes nothing, so it starts here.
-  // Spec: ops/docs/plans/app-switcher-privacy-screen.md
+  // Spec: ops/docs/archive/app-switcher-privacy-screen.md
   useEffect(() => {
     applyPrivacyScreen(loadLocalSettings().appLockEnabled);
   }, []);
@@ -303,6 +302,14 @@ export default function App() {
     if (locked || auth.status !== 'authenticated') return;
     return startReLockWatch(() => setLocked(true));
   }, [locked, auth.status]);
+
+  // A locked app shuts the PIN gate behind it, so the person who unlocks the
+  // app next meets the gate again at the first protected note.
+  useEffect(() => {
+    if (locked) clearPinUnlock();
+    // Any way out of the lock ends a lock the button armed.
+    else clearManualLock();
+  }, [locked]);
 
   // A sign-out in another tab signs this one out and removes the wrapped
   // doors. The curtain then has nothing behind it to guard, and its doors no
@@ -331,6 +338,9 @@ export default function App() {
       // signed in, which is the only state where a blob change is a real
       // app-lock config change.
       if (!hasStoredPhrase()) return;
+      // A lock the Lock app button armed is not the app lock setting: a
+      // change to the wraps does not lift it. Only an unlock does.
+      if (manualLockArmed()) return;
       const settings = loadLocalSettings();
       if (!settings.appLockEnabled) {
         setLocked(false);
@@ -366,7 +376,7 @@ export default function App() {
    * last door and the phrase did not read back at rest. The PIN then stays
    * and the unlock goes ahead: the phrase has already proved itself, and
    * the next lock screen offers the same door.
-   * Spec: ops/docs/plans/pin-recovery.md
+   * Spec: ops/docs/archive/pin-recovery.md
    */
   async function applyPinRecovery(phrase: string) {
     const cleared = await clearPin(loadLocalSettings(), phrase);
@@ -381,7 +391,6 @@ export default function App() {
    * pushes. Every device replaces a wrap that differs from the account's,
    * so an upgrade the account never learned of would be undone on the next
    * pass and redone on the next unlock.
-   * Spec: ops/docs/archive/sec-65-pin-change-follows.md
    */
   function applyPinWrapUpgrade(blob: PinWrapBlob) {
     saveLocalSettings({ ...loadLocalSettings(), ...blob });
@@ -424,7 +433,7 @@ export default function App() {
     // The lock screen is not a sign-in screen. It is up because this device
     // armed an app lock, so the phrase typed into it has to be the phrase of
     // the account behind that lock, and the refusal comes before anything
-    // here has a side effect, markPinUnlocked included.
+    // here has a side effect, markAppUnlocked included.
     //
     // Two questions, because the two branches below know the account in two
     // different ways. A re-lock leaves the session, the phrase and the seal
@@ -440,7 +449,7 @@ export default function App() {
         ? phraseMatches(phrase, auth.phrase)
         : await phraseOwnsThisDevice(phrase);
     if (!belongsHere) return false;
-    markPinUnlocked();
+    markAppUnlocked();
     unlockRecoverRef.current = recover;
     if (auth.status === 'authenticated') {
       if (recover) await applyPinRecovery(phrase);
@@ -482,7 +491,7 @@ export default function App() {
   // blanks the fragment out of the address bar immediately - we don't
   // want the master secret sitting in the URL longer than needed.
   // A shortcut that waits for sign-in offers the desktop app first, in a
-  // computer browser. Spec: ops/docs/plans/note-shortcuts.md (6.2)
+  // computer browser. Spec: ops/docs/archive/note-shortcuts.md (6.2)
   // Read on every render, so a target the notes view already opened never
   // shows on a later sign-in screen.
   const [shortcutCardOpen, setShortcutCardOpen] = useState(isComputerBrowser);
@@ -592,6 +601,11 @@ export default function App() {
     screen = (
       <LockScreen
         onUnlock={handleLockScreenUnlock}
+        // With the session live, the PIN or passcode may lift the screen by its
+        // hash, for a device that has a PIN but no wrap (Lock app with the app
+        // lock off). The notes are already open behind it; this is the same
+        // UI-only gate as the idle re-lock.
+        onPinVerified={auth.status === 'authenticated' ? () => { markAppUnlocked(); setLocked(false); } : undefined}
         onWrapUpgraded={applyPinWrapUpgrade}
         signInState={unlockSignIn}
         onRetrySignIn={() => {

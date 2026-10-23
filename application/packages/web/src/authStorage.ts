@@ -5,13 +5,14 @@ import {
   hasStoredPhrase,
 } from './biometric';
 import { hasPin } from './pin';
-import { credentialKey } from './demo';
+import { credentialKey, isDemoMode } from './demo';
 import { clearSyncLog } from './syncLog';
 import { clearSyncFaults } from './syncFaults';
+import { clearPlaces } from './notesView/listPlace';
 
 // Demo-bucketed (see credentialKey in demo.ts): a demo session must
 // never read or write a real account's credential keys on the same
-// origin. Session audit 2026-08-25.
+// origin.
 export const PHRASE_STORAGE_KEY = credentialKey('privacynotes.phrase');
 
 // Sticky flag: "this session's phrase was seeded via OAuth, not typed".
@@ -65,7 +66,7 @@ export const PUBKEY_OWNER_KEY = 'privacynotes.currentPubkey';
 // IndexedDB mirror of PUBKEY_OWNER_KEY (db.kv, key 'ownerPubkey').
 // localStorage can be evicted while the Dexie notes survive, and that
 // asymmetry made the owner-unknown wipe destroy the user's OWN wrapped
-// phrase and unsynced rows (session audit 2026-08-25). The mirror
+// phrase and unsynced rows. The mirror
 // lives with the data it vouches for, so the wipe check can tell "own
 // data, lost marker" from "foreign leftovers". Best-effort on write
 // (auth must not fail on a storage hiccup); null on read means the
@@ -99,6 +100,9 @@ export async function readOwnerMirror(): Promise<string | null> {
  */
 /** The account this device holds, from the marker or from its mirror. */
 async function claimedOwner(): Promise<string | null> {
+  // The demo never writes the marker, and a real account on the same origin
+  // does: read here, it refused every demo phrase on the lock screen.
+  if (isDemoMode()) return null;
   let owner: string | null = null;
   try {
     owner = localStorage.getItem(PUBKEY_OWNER_KEY);
@@ -202,6 +206,10 @@ export function clearAccountScopedUiState(): void {
     localStorage.removeItem('privacynotes.verifyStamp'); // verifyStamp.ts
     // Which items this account had open as tabs: ids only, but this account's.
     localStorage.removeItem('privacynotes.openTabs'); // notesView/useOpenTabs.ts
+    // The note this account had open at its last quit, and where it was in
+    // each list and note this session.
+    localStorage.removeItem('privacynotes.lastOpen'); // notesView/listPlace.ts
+    clearPlaces();
     // Which offers this account dismissed: the site announcement, and the
     // per-pillar import prompt keys an older build wrote. The import prompt
     // dismissal itself is synced in the settings blob.

@@ -11,7 +11,7 @@ import { Check, Copy, PencilSimple } from './icons';
  * actions as ONE outlined group at the end), one headline over a group, one
  * notes block. A pane composes these and owns nothing of the look, which is
  * what keeps the two panes from drifting apart again.
- * Spec: ops/docs/ui-patterns.md (section 99)
+ * Spec: ops/docs/archive/ui-patterns.md (section 99)
  */
 
 /**
@@ -95,8 +95,10 @@ export function DetailRow({ icon, label, children, actions, multiline = false }:
   multiline?: boolean;
 }) {
   return (
-    <div className={`flex ${multiline ? 'items-start' : 'items-center'} gap-3 py-2 border-b border-divider last:border-b-0`}>
-      <span className="shrink-0 w-24 flex items-center gap-1.5 text-xs text-pn-muted pt-0.5" dir="auto">
+    // Under 384 px (a phone, a narrow editor pane) the label takes its own
+    // line above the value, so an address keeps the width it needs.
+    <div className={`@container/row flex flex-wrap ${multiline ? 'items-start' : 'items-center'} gap-x-3 gap-y-1 py-2 border-b border-divider last:border-b-0`}>
+      <span className="shrink-0 w-24 @max-[23.98rem]/row:w-full flex items-center gap-1.5 text-xs text-pn-muted pt-0.5" dir="auto">
         {icon && <span className="shrink-0 text-accent" aria-hidden="true">{icon}</span>}
         <span className="truncate">{label}</span>
       </span>

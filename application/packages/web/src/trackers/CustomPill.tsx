@@ -1,22 +1,28 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { customTrackerColor, type CustomTrackerTemplate } from '../trackerTypes';
-import { PillShell, useCommitOnCollapse } from './PillShell';
+import type { CustomTrackerTemplate, CustomTrackerType, JournalTrackerData } from '../trackerTypes';
+import { useLastLogged } from '../trackerLastLogged';
+import { PillShell } from './PillShell';
+import { CustomTrackerGlyph } from './CustomTrackerGlyph';
+import { ScaleTiles } from '../MoodScale';
+import { ChoiceGrid, NumberStepper, PanelQuestion } from './panelUI';
 
 // Spec: ops/docs/design-decisions.md (number tracker bounds - prevents scientific-notation display)
 const MAX_NUMBER = 1e12;
 
-/** Clamp to a sane magnitude and round to 4 decimals so the value never stringifies to exponential form. Returns null for non-numeric input. */
-function sanitizeNumber(raw: string): number | null {
-  const n = parseFloat(raw);
-  if (isNaN(n)) return null;
+/** Clamp to a sane magnitude and round to 4 decimals so the value never stringifies to exponential form. */
+function sanitizeNumber(n: number): number {
   const clamped = Math.max(-MAX_NUMBER, Math.min(MAX_NUMBER, n));
   return Math.round(clamped * 10000) / 10000;
 }
 
+/** The quick picks of a 0 to 100 slider tracker. */
+const QUICK_HUNDRED = [25, 50, 75, 100] as const;
+
 /**
  * Custom (Pro) tracker pill. Picker shape by template type:
- * scale10 (0-10), scale5 (0-5), slider100 (0-100), number (+unit), yesno.
+ * scale10 (0-10) and scale5 (0-5) are tiles, slider100 (0-100) and number
+ * (+unit) are steppers, yesno is a two-tile choice.
  */
 export function CustomPill({
   template,
@@ -34,17 +40,11 @@ export function CustomPill({
   readOnly?: boolean;
 }) {
   const { t } = useTranslation('trackers');
-  const [draft, setDraft] = useState('');
-  const color = customTrackerColor(template);
-
-  // Closing the picker saves the typed number - see the hook. Only the
-  // 'number' shape has a free-text field; the scales and yes/no commit
-  // on the tap itself.
-  useCommitOnCollapse(expanded, () => {
-    if (template.type !== 'number') return;
-    const n = sanitizeNumber(draft);
-    if (n != null) onChange(n);
-  });
+  const readOwn = (d: JournalTrackerData) => {
+    const v = d.customTrackers?.find((e) => e.trackerId === template.id)?.value;
+    return typeof v === 'number' ? v : undefined;
+  };
+  const last = useLastLogged(readOwn);
 
   const filledLabel = useMemo(() => {
     if (value == null) return undefined;
@@ -53,130 +53,79 @@ export function CustomPill({
     if (template.type === 'number') return `${value}`;
     return `${value}/${template.type === 'scale5' ? 5 : 10}`;
   }, [value, template.type, t]);
+  const num = typeof value === 'number' ? value : null;
 
   return (
     <PillShell
       label={template.name}
-      color={color}
       filled={value != null}
       expanded={expanded}
-      onToggle={() => {
-        if (!expanded) setDraft(value != null ? String(value) : '');
-        onToggle();
-      }}
+      onToggle={onToggle}
       filledLabel={filledLabel}
+      icon={<CustomTrackerGlyph icon={template.icon} />}
       readOnly={readOnly}
     >
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-medium text-pn-soft">
-          {template.name}
-        </span>
-        {template.type === 'scale10' && (
-          <div className="flex gap-1">
-            {Array.from({ length: 11 }, (_, i) => i).map((n) => (
-              <button
-                key={n}
-                type="button"
-                onClick={() => { onChange(n); onToggle(); }}
-                className={`w-6 h-6 rounded text-[10px] font-semibold transition-colors ${
-                  value === n
-                    ? 'text-white'
-                    : 'bg-surface-0 text-pn-soft hover:opacity-80'
-                }`}
-                style={value === n ? { backgroundColor: color } : undefined}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
-        )}
-        {template.type === 'scale5' && (
-          <div className="flex gap-1">
-            {Array.from({ length: 6 }, (_, i) => i).map((n) => (
-              <button
-                key={n}
-                type="button"
-                onClick={() => { onChange(n); onToggle(); }}
-                className={`w-8 h-8 rounded-md text-xs font-semibold transition-colors ${
-                  value === n
-                    ? 'text-white'
-                    : 'bg-surface-0 text-pn-soft hover:opacity-80'
-                }`}
-                style={value === n ? { backgroundColor: color } : undefined}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
-        )}
-        {template.type === 'slider100' && (
-          <div className="flex items-center gap-3">
-            <input
-              type="range"
-              min={0}
-              max={100}
-              step={1}
-              value={typeof value === 'number' ? value : 50}
-              onChange={(e) => onChange(parseInt(e.target.value, 10))}
-              className="flex-1 h-1.5 cursor-pointer"
-              style={{ accentColor: color }}
-            />
-            <span className="text-sm font-medium text-pn-soft w-8 text-end tabular-nums">
-              {typeof value === 'number' ? value : 50}
-            </span>
-          </div>
-        )}
-        {template.type === 'number' && (
-          <div className="flex items-center gap-2">
-            <input
-              type="number"
-              inputMode="decimal"
-              step="any"
-              placeholder="0"
-              value={draft}
-              onChange={(e) => setDraft(e.target.value.slice(0, 16))}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  const n = sanitizeNumber(draft);
-                  if (n != null) { onChange(n); onToggle(); }
-                }
-              }}
-              className="w-24 px-2.5 py-1.5 rounded-md text-sm border border-pn-muted/50 bg-surface-0 text-pn tabular-nums"
-              autoFocus
-            />
-            <button
-              type="button"
-              onClick={() => {
-                const n = sanitizeNumber(draft);
-                if (n != null) { onChange(n); onToggle(); }
-              }}
-              className="px-3 py-1.5 rounded-md text-xs font-medium text-white transition-colors"
-              style={{ backgroundColor: color }}
-            >
-              {t('common:actions.save')}
-            </button>
-          </div>
-        )}
-        {template.type === 'yesno' && (
-          <div className="flex gap-2">
-            {[true, false].map((v) => (
-              <button
-                key={String(v)}
-                type="button"
-                onClick={() => { onChange(v); onToggle(); }}
-                className={`flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                  value === v
-                    ? 'text-white'
-                    : 'bg-surface-0 text-pn-soft hover:opacity-80'
-                }`}
-                style={value === v ? { backgroundColor: color } : undefined}
-              >
-                {v ? t('custom.yes') : t('custom.no')}
-              </button>
-            ))}
-          </div>
-        )}
+      <div className="max-w-[420px]">
+        <PanelQuestion>{template.name}</PanelQuestion>
+        <CustomTrackerInput
+          name={template.name}
+          type={template.type}
+          value={value}
+          onChange={onChange}
+          onDone={onToggle}
+          expanded={expanded}
+          start={template.startFromLast === false ? undefined : last}
+          autoFocus
+        />
       </div>
     </PillShell>
+  );
+}
+
+/**
+ * The input of a custom tracker, by type: tiles for the two scales, a
+ * stepper for the slider and the number, a two-tile choice for yes or no.
+ * The pill draws it, and so does the preview of the new-tracker dialog, so
+ * the preview is what the person will tap. `onDone` runs after a tap that
+ * commits a single value (a tile, a choice).
+ */
+export function CustomTrackerInput({ name, type, value, onChange, onDone, expanded, start, autoFocus = false }: {
+  name: string;
+  type: CustomTrackerType;
+  value: number | boolean | string | undefined;
+  onChange: (v: number | boolean) => void;
+  onDone?: () => void;
+  expanded: boolean;
+  start?: number;
+  autoFocus?: boolean;
+}) {
+  const { t } = useTranslation('trackers');
+  const num = typeof value === 'number' ? value : null;
+  if (type === 'scale10' || type === 'scale5') {
+    const max = type === 'scale5' ? 5 : 10;
+    return (
+      <ScaleTiles
+        min={0}
+        max={max}
+        value={num}
+        onPick={(n) => { onChange(n); onDone?.(); }}
+        label={name}
+        ends={[`0 · ${t('scaleEnds.low')}`, `${max} · ${t('scaleEnds.high')}`]}
+      />
+    );
+  }
+  if (type === 'slider100') {
+    return <NumberStepper value={num} onChange={onChange} min={0} max={100} step={1} quick={QUICK_HUNDRED} start={start} placeholder="50" expanded={expanded} />;
+  }
+  if (type === 'number') {
+    return <NumberStepper value={num} onChange={(n) => onChange(sanitizeNumber(n))} step={1} freeDecimals start={start} placeholder="0" expanded={expanded} autoFocus={autoFocus} />;
+  }
+  return (
+    <ChoiceGrid
+      options={[{ key: true, label: t('custom.yes') }, { key: false, label: t('custom.no') }]}
+      value={typeof value === 'boolean' ? value : null}
+      onPick={(v) => { onChange(v); onDone?.(); }}
+      size="lg"
+    />
   );
 }

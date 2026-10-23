@@ -103,6 +103,11 @@ const LIST_PAGE = 1000;
  * uuid is accounted for, so a full scan is the worst case rather than the norm,
  * and one call already costs a scan of the whole bucket.
  *
+ * `sizes` holds the wanted uuids only. The bucket also holds attachments, whose
+ * stored size is the encrypted one; a caller that maps sizes onto items by uuid
+ * would otherwise show that size in place of the real one. The remembered
+ * cache keeps every size the scan paid for, because it is read by uuid.
+ *
  * `absent` names the uuids the listing walked past without finding, which is
  * what a note referencing a removed blob leaves behind. Nothing here remembers
  * them: the same blob can still arrive from another device, so how long to stop
@@ -114,6 +119,7 @@ export async function listImageSizes(
   wanted: string[],
 ): Promise<{ sizes: Map<string, number>; absent: string[] }> {
   const sizes = new Map<string, number>();
+  const wantedSet = new Set(wanted);
   const outstanding = new Set(wanted);
   if (outstanding.size === 0) return { sizes, absent: [] };
 
@@ -129,7 +135,7 @@ export async function listImageSizes(
     for (const obj of page) {
       const size = (obj.metadata as Record<string, unknown> | null)?.size;
       if (typeof size === 'number' && size > 0) {
-        sizes.set(obj.name, size);
+        if (wantedSet.has(obj.name)) sizes.set(obj.name, size);
         learned[obj.name] = size;
       }
       outstanding.delete(obj.name);

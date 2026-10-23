@@ -1,7 +1,8 @@
 {
   "words": {
+    "add": "ajouter, ajoute",
     "every": "chaque, tous, toutes",
-    "weekday": "ouvré, ouvrés, ouvrable, ouvrables",
+    "weekday": "ouvré, ouvrés, ouvrable, ouvrables, jour ouvré, jours ouvrés, jour ouvrable, jours ouvrables",
     "daily": "quotidien, quotidienne, quotidiennement",
     "weekly": "hebdo, hebdomadaire",
     "monthly": "mensuel, mensuelle, mensuellement",
@@ -37,6 +38,7 @@
     "times": "fois, x",
     "ordinal": "er, re, e, ème, eme, .",
     "work": "travail, boulot, pro",
-    "personal": "perso, personnel, maison"
+    "personal": "perso, personnel, maison",
+    "in": "dans"
   }
 }

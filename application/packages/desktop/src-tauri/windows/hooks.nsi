@@ -36,7 +36,7 @@
 ; registration flags. The user does it in Settings, which is what the in-app
 ; button opens.
 ;
-; Spec: ops/docs/plans/markdown-folder.md (section 11), ops/docs/windows-release.md
+; Spec: ops/docs/archive/markdown-folder.md (section 11), ops/docs/windows-release.md
 
 ; ${If} reaches the generated script only transitively, through MUI2.nsh. Include
 ; it directly rather than depending on that: LogicLib guards itself, so a second

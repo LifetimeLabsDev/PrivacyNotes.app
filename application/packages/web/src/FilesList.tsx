@@ -19,7 +19,7 @@ import { editedAtOf, mimeToLabel } from './notesViewUtils';
 import { formatInstant, useDateFormatKey } from './intlFormat';
 import { CardGlyph, FileTileIcon, TagChips } from './NoteRow';
 import { ItemFlags, ItemRow, ItemTile, applyCompactRows, type ItemFlag, type ItemRootProps, type ItemState, type ListItem } from './listItem';
-import { noteLookStyle, useNoteLook } from './looks/LookGlyph';
+import { itemLookDraw, useNoteLook } from './looks/LookGlyph';
 import { itemGridClass, routeItemClick, useContextTarget, useItemList } from './itemList';
 import { useCompactRows } from './viewMode';
 import { iconPin, iconTrash, iconEditPencil, Check, Folder, LinkSimple, Upload, FunnelSimple, Files, PILLAR_GLYPHS } from './icons';
@@ -198,6 +198,21 @@ function listedWhileGated(items: FileItem[], gated: ReadonlySet<string>): FileIt
   return out;
 }
 
+/** The rows the Files list draws before its type filter, search and sort: the
+ *  gate, the "files in other items" switch and the locked and protected
+ *  switches. The status bar counts these rows, so the two never disagree. */
+export function visibleFileItems(
+  items: FileItem[],
+  gated: ReadonlySet<string>,
+  prefs: { showAttachedNotes: boolean; showLocked: boolean; showProtected: boolean },
+): FileItem[] {
+  let out = listedWhileGated(items, gated);
+  if (!prefs.showAttachedNotes) out = out.filter((f) => f.standalone);
+  if (!prefs.showLocked) out = out.filter((f) => !f.locked);
+  if (!prefs.showProtected) out = out.filter((f) => !f.pinProtected);
+  return out;
+}
+
 /** A picture the grid can draw and the viewer can show. */
 export function isPictureFileItem(item: FileItem): boolean {
   return item.kind === 'image' || isPictureMime(item.mime);
@@ -245,6 +260,9 @@ export function fileItemMediaRef(item: FileItem): MediaRef {
 // ── Component ──────────────────────────────────────────────────────────
 
 interface FilesListProps {
+  /** The view and space this list draws, so a return lands where it was;
+   *  null under a search. Spec: ops/docs/archive/keep-my-place.md */
+  place?: string | null;
   fileItems: FileItem[];
   filesCount: number;
   /** Pro folders: active folder filter, rendered as a dismissable chip
@@ -386,6 +404,7 @@ function ProUpsell({ onUpgrade, className = '' }: { onUpgrade: () => void; class
 }
 
 export function FilesList({
+  place = null,
   fileItems,
   filesCount,
   activeFolderName,
@@ -480,7 +499,7 @@ export function FilesList({
   // doesn't highlight both. We keep a local composite-key set for
   // visual state. The parent's selectedIds (noteIds), which is what the
   // bulk actions read, is re-derived from it on every change - see
-  // applyFileSelection. Spec: ops/docs/ui-patterns.md section 61.
+  // applyFileSelection. Spec: ops/docs/archive/ui-patterns.md section 61.
   const [selectedFileIds, setSelectedFileIds] = useState<Set<string>>(new Set());
   /** Anchor for shift-click range select - the last file toggled on its
    *  own. Mirrors `lastSelectedId` in useMultiSelect, in file-key space. */
@@ -679,15 +698,12 @@ export function FilesList({
    *  on every tab: the type tabs pick which files are listed, not which
    *  settings apply. `standalone` marks a file that is its own note, so with
    *  the toggle off only files uploaded as files remain. */
-  const visibleItems = useMemo(() => {
-    let items = listedWhileGated(fileItems, gatedNow);
-    if (!showNote) items = items.filter((f) => f.standalone);
-    if (!listPrefs.showLocked) items = items.filter((f) => !f.locked);
-    if (!listPrefs.showProtected) items = items.filter((f) => !f.pinProtected);
-    return items;
-  // gatedKey stands in for gatedNow, which is a fresh Set on every render.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fileItems, gatedKey, showNote, listPrefs.showLocked, listPrefs.showProtected]);
+  const visibleItems = useMemo(
+    () => visibleFileItems(fileItems, gatedNow, listPrefs),
+    // gatedKey stands in for gatedNow, which is a fresh Set on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [fileItems, gatedKey, showNote, listPrefs.showLocked, listPrefs.showProtected],
+  );
 
   const filtered = useMemo(() => {
     let items = visibleItems;
@@ -714,7 +730,7 @@ export function FilesList({
   }, [visibleItems, filter, search, sortField, sortDir]);
   // The files arrive in slices of 200; a different list - a new type filter,
   // search, folder or tag - starts at its top.
-  const list = useItemList([filter, search, activeFolderName, activeTag, showNote], filtered.length);
+  const list = useItemList([filter, search, activeFolderName, activeTag, showNote], filtered.length, place);
   const compactRows = useCompactRows();
 
   /**
@@ -723,7 +739,7 @@ export function FilesList({
    * the drop would move or tag the whole host note. In selection mode a
    * selected standalone file drags every selected standalone file the list
    * shows. Ids only, so a drop into an editor makes nothing.
-   * Spec: ops/docs/plans/drag-to-folder-and-tag.md (section 13)
+   * Spec: ops/docs/archive/drag-to-folder-and-tag.md (section 13)
    */
   const fileDragProps = (item: FileItem) => {
     const ids = () => fileDragIds(item, filtered, (f) => selectedFileIds.has(fileKey(f)), selectedFileIds.size > 0);
@@ -759,7 +775,7 @@ export function FilesList({
    * sorted, filtered and searched, and on close the pane follows it to the
    * note of the file that was on screen. A file in a note the PIN still
    * guards opens the gate instead, and never joins the list.
-   * Spec: ops/docs/ui-patterns.md (section 98, the picture viewer)
+   * Spec: ops/docs/archive/ui-patterns.md (section 98, the picture viewer)
    */
   function openViewerAt(item: FileItem) {
     if (!isViewableFileItem(item)) return;
@@ -875,6 +891,7 @@ export function FilesList({
             key={key}
             type="button"
             onClick={() => setFilter(key)}
+            aria-pressed={filter === key}
             tabIndex={mobileTabIndex}
             className={`text-xs px-2.5 py-1 rounded-full transition font-medium ${
               filter === key
@@ -1190,7 +1207,7 @@ function FileEntry({ item, file, grid, compact, state, rootProps, onToggleSelect
   return (
     <Layout
       as="button"
-      item={applyCompactRows({ ...item, look: look ? { color: look.color, style: look.style, css: noteLookStyle(look) } : null }, compact)}
+      item={applyCompactRows({ ...item, look: look ? { color: look.color, style: look.style, css: itemLookDraw(look).row } : null }, compact)}
       state={state}
       rootProps={rootProps}
       onToggleSelect={onToggleSelect}

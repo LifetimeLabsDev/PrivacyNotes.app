@@ -10,6 +10,8 @@
     "back": "Voltar",
     "next": "Seguinte",
     "remove": "Remover",
+    "deleteConfirm": "Eliminar?",
+    "removeConfirm": "Remover?",
     "copy": "Copiar",
     "rename": "Mudar o nome",
     "create": "Criar",
@@ -59,15 +61,17 @@
   },
   "palette": {
     "label": "Comandos",
-    "open": "Comandos (>)",
+    "open": "Comandos",
     "empty": "Nenhum comando corresponde",
     "groups": {
+      "features": "Funcionalidades",
       "commands": "Comandos",
       "new": "Novo",
-      "goTo": "Ir para"
+      "goTo": "Ir para",
+      "themes": "Temas"
     },
     "commands": {
-      "quickSwitcher": "Ir para um item ou uma definição",
+      "quickSwitcher": "Abrir o Ninja: encontrar um item, adicionar o que quiseres, executar um comando",
       "historyBack": "Recuar",
       "historyForward": "Avançar",
       "toggleSidebar": "Mostrar ou ocultar a barra lateral",
@@ -93,9 +97,9 @@
     }
   },
   "quickSwitcher": {
-    "label": "Ir para um item ou uma definição",
-    "jumpTo": "Ir",
-    "placeholder": "Escreve um título ou uma definição, ou > para comandos",
+    "label": "Ninja: encontra um item ou uma definição, adiciona o que quiseres, executa um comando",
+    "jumpTo": "Ninja",
+    "placeholder": "Ninja ao teu dispor: um título, + para adicionar, > para comandos",
     "recent": "Recentes",
     "empty": "Nenhum item ou definição com esse nome",
     "searchAll": "Procurar em tudo: “{{query}}”",
@@ -114,6 +118,7 @@
     "tagItems_other": "{{count}} itens",
     "emptyTags": "Nenhuma etiqueta com esse nome",
     "emptyFolders": "Nenhuma pasta com esse nome",
+    "emptyVault": "Ainda não há nada aqui. Escreve + para adicionares o teu primeiro item.",
     "onlyTags": "etiquetas",
     "onlyFolders": "pastas",
     "showOnlyTags": "Só etiquetas",
@@ -124,7 +129,13 @@
     "createTag": "Criar a etiqueta #{{name}}",
     "createFolder": "Criar a pasta “{{name}}”",
     "newTag": "Nova etiqueta",
-    "newFolder": "Nova pasta"
+    "newFolder": "Nova pasta",
+    "goToDay": "Ir para o dia",
+    "inText": "No texto",
+    "actions": "ações",
+    "back": "voltar",
+    "actionsPlaceholder": "Filtrar as ações",
+    "onlyCreate": "adicionar"
   },
   "cardForm": {
     "cardholderName": "Nome do Titular",
@@ -182,46 +193,48 @@
     "removeTag": "Remover {{tag}}"
   },
   "loading": {
+    "pause": "Pausar as frases",
+    "play": "Reproduzir as frases",
     "lines": [
-      "a carregar o teu excesso de pensamento encriptado…",
-      "um momento enquanto desiludimos os anunciantes.",
-      "demasiado encriptado para se importar.",
-      "a trazer a energia da banca suíça para as tuas notas.",
-      "a proteger os teus pensamentos de banho.",
-      "os teus segredos sobreviveram a mais um reinício.",
-      "nada sai do dispositivo nu.",
-      "a abrir o cofre em silêncio…",
-      "armazenamento frio para pensamentos quentes.",
-      "esta nota respeita-se e respeita a privacidade.",
-      "leitura impossível. sincronização possível.",
-      "desencriptado localmente. ignorado globalmente.",
-      "as tuas notas estão em distanciamento social.",
-      "texto cifrado entra, texto cifrado sai.",
-      "mais um belo dia para a encriptação.",
-      "a manter os segredos aborrecidos desde o lançamento.",
-      "tu escreves. ninguém lê.",
-      "privacidade sem a ted talk.",
-      "a desencriptar como se não fosse da conta de ninguém.",
-      "a manter a nuvem confusa.",
-      "o servidor não sabe nada. e gosta assim.",
-      "menos vigilância. mais notas.",
-      "disparates encriptados, como esperado.",
-      "matematicamente indisponível.",
-      "zero conhecimento. máxima ousadia.",
-      "rastreio desativado emocional e tecnicamente.",
-      "o teu dispositivo é que guarda a bisbilhotice.",
-      "texto simples de produção local.",
-      "a transformar pensamentos numa sopa ilegível.",
-      "só tu e as chaves.",
-      "pensamentos privados a entrar em modo privado.",
-      "a manter as tuas futuras fugas de dados no campo da ficção.",
-      "mais uma nota escondida do capitalismo.",
-      "aqui a privacidade não é premium.",
-      "segurança através de segurança a sério.",
-      "a resistir caladinho aos corretores de dados.",
-      "nenhum material de treino de ia detetado.",
-      "encriptado mais do que o necessário.",
-      "privacidade: a carregar.",
+      "a trazer a energia da banca suíça para as tuas notas",
+      "a proteger os teus pensamentos de banho",
+      "as tuas notas estão encriptadas no teu dispositivo",
+      "armazenamento frio para pensamentos quentes",
+      "mais um belo dia para a encriptação",
+      "a manter os segredos aborrecidos desde o lançamento",
+      "privacidade sem a ted talk",
+      "a manter a nuvem confusa",
+      "o servidor guarda texto encriptado. acha-o aborrecido",
+      "menos vigilância. mais notas",
+      "disparates encriptados, como esperado",
+      "rastreio desativado emocional e tecnicamente",
+      "o teu dispositivo é que guarda a bisbilhotice",
+      "pensamentos privados a entrar em modo privado",
+      "mais uma nota escondida do capitalismo",
+      "aqui a privacidade não é premium",
+      "segurança através de segurança a sério",
+      "a resistir caladinho aos corretores de dados",
+      "nenhum material de treino de ia detetado",
+      "encriptado mais do que o necessário",
+      "só sinal. zero vigilância",
+      "a transformar problemas de confiança em software",
+      "os teus pensamentos continuam fora do mercado",
+      "os mineradores de dados só encontraram tristeza",
+      "o teu cofre continua agressivamente encriptado",
+      "neutralidade suíça, mas para notas",
+      "sem anúncios. sem rastreadores. sem reviravoltas",
+      "open source, para poderes verificar as contas",
+      "o texto encriptado é a nossa linguagem do amor",
+      "a tornar as tuas notas aborrecidas para estranhos",
+      "o teu diário ligou. quer privacidade",
+      "o teu registo de humor teve saudades tuas",
+      "as tuas ideias, sem plateia",
+      "o teu diário guardou os teus segredos durante a noite",
+      "um lugar privado para tudo o que nunca publicarias",
+      "aqui nenhum algoritmo decide o que vês",
+      "as tuas ideias soltas estão sãs e salvas",
+      "escrever é pensar. pensar é privado",
+      "nenhum influencer foi consultado",
       "a carregar segredos com responsabilidade.",
       "tudo sinal. nenhuma vigilância.",
       "vem aí mais uma obra-prima encriptada.",
@@ -236,6 +249,27 @@
       "a desencriptar pensamentos existenciais localmente…",
       "o teu cofre continua agressivamente ilegível.",
       "neutralidade suíça, mas para notas."
+    ],
+    "loadingOnly": [
+      "a carregar o teu excesso de pensamento encriptado",
+      "um momento enquanto desiludimos os anunciantes",
+      "os teus segredos sobreviveram a mais um reinício",
+      "a abrir o cofre em silêncio",
+      "desencriptado localmente. ignorado globalmente",
+      "a desencriptar como se não fosse da conta de ninguém",
+      "texto simples de produção local",
+      "a transformar pensamentos numa sopa ilegível",
+      "mais uma obra-prima encriptada a caminho",
+      "a pôr ordem no caos encriptado",
+      "a desencriptar localmente pensamentos existenciais",
+      "a aquecer as chaves",
+      "a reencontrar o teu fio de pensamento",
+      "a contar as tuas tarefas por fazer. sem julgamentos",
+      "nenhum anúncio foi mostrado durante este carregamento",
+      "a pôr as tuas notas onde as deixaste",
+      "a desembaraçar os pensamentos de ontem",
+      "a arrumar bits numa ordem bonita",
+      "a lembrar o que te esqueceste de lembrar"
     ]
   },
   "neverBackedUp": {
@@ -245,5 +279,57 @@
     "changesOne": "As últimas alterações não têm cópia de segurança e perder-se-iam.",
     "changesSome_one": "{{count}} destas notas tem alterações sem cópia de segurança que se perderiam.",
     "changesSome_other": "{{count}} destas notas têm alterações sem cópia de segurança que se perderiam."
+  },
+  "ninja": {
+    "recent": "Recentes",
+    "topHit": "Melhor correspondência",
+    "trashEmpty": "O Lixo está vazio",
+    "allThemes": "Todos os temas",
+    "features": {
+      "stats": {
+        "label": "Estatísticas",
+        "detail": "A tua escrita, as sequências e os registos ao longo do tempo"
+      },
+      "trackers": {
+        "label": "Registos",
+        "detail": "Humor, hábitos, fatores e medicação"
+      },
+      "medication": {
+        "label": "Medicação",
+        "detail": "Doses, horas e lembretes"
+      },
+      "yearInPixels": {
+        "label": "Ano em píxeis",
+        "detail": "Cada dia do ano como um quadrado colorido"
+      },
+      "importExport": {
+        "label": "Import & Export",
+        "detail": "Traz notas para dentro, leva um backup para fora"
+      },
+      "generator": {
+        "label": "Gerador de palavras-passe",
+        "detail": "Uma palavra-passe forte ou uma frase-passe, pronta a copiar"
+      },
+      "themes": {
+        "label": "Temas",
+        "detail": "Temas de cor para claro e escuro"
+      }
+    },
+    "new": {
+      "medication": "Novo medicamento",
+      "customTracker": "Novo registo personalizado"
+    },
+    "commands": {
+      "syncResume": "Retomar a sincronização",
+      "changelog": "Novidades",
+      "help": "Ajuda",
+      "themesPage": "Temas da comunidade",
+      "website": "Site do PrivacyNotes"
+    },
+    "themes": {
+      "word": "Tema",
+      "light": "Tema claro",
+      "dark": "Tema escuro"
+    }
   }
 }

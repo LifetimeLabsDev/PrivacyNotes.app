@@ -12,7 +12,7 @@
  *   - Already running: `single-instance` (Windows, Linux) or `RunEvent::Opened`
  *     (macOS) queues it and emits `markdown-open-pending`.
  *
- * Spec: ops/docs/plans/markdown-folder.md (section 11)
+ * Spec: ops/docs/archive/markdown-folder.md (section 11)
  */
 import { useEffect, useRef } from 'react';
 import { detectPlatform } from '../devices';

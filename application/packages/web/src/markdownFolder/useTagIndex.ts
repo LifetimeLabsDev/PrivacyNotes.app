@@ -18,7 +18,7 @@
  * re-run: each pass fingerprints what it knows and only reads what is new or
  * has changed underneath us.
  *
- * Spec: ops/docs/plans/markdown-folder.md (section 9)
+ * Spec: ops/docs/archive/markdown-folder.md (section 9)
  */
 import { useEffect, useRef, useState } from 'react';
 import { adaptFile } from './adapter';

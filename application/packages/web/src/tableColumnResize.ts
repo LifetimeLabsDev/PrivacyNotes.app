@@ -12,7 +12,7 @@ import { tableWidthFromMarker } from './tableDelimiterRow';
  * Column widths in the editor: reading them out of the markdown, drawing
  * them, and dragging a border to change them. The storage rules live in
  * tableColumnWidths.ts; this file is the part that touches ProseMirror.
- * Spec: ops/docs/plans/table-column-widths.md
+ * Spec: ops/docs/archive/table-column-widths.md
  */
 
 /**

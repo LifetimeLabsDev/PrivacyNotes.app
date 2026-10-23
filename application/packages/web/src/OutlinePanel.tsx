@@ -2,16 +2,15 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { useTranslation } from 'react-i18next';
 import type { Editor as TipTapEditor } from '@tiptap/react';
 import type { Transaction } from '@tiptap/pm/state';
-import { BracketsSquare, CaretDown, Check, LinkSimple, ListBullets, X } from './icons';
+import { BracketsSquare, CaretDown, Check, LinkSimple, ListBullets } from './icons';
 import { ContextMenu, useContextMenu } from './ContextMenu';
 import { shortcutUrl, isShortcutId } from './noteShortcut';
 import { useCopyToClipboard } from './clipboard';
 import { getWikiLinkCurrentNote } from './NoteLinkSuggestion';
 import { headingCodeAt, headingsFromDoc } from './noteHeadings';
 import { noteLinkTarget } from './noteLinks';
-import { HoverLabel } from './HoverLabel';
 import { keyText } from './shortcutMatch';
-import { EditorSlotPill } from './EditorSlotPill';
+import { EditorSlotPanel, EditorSlotPill, SLOT_PANEL_ROW } from './EditorSlotPill';
 import { CALLOUT_BY_TYPE, type CalloutType } from './calloutTypes';
 
 type OutlineItem = { pos: number; level: number; text: string; callout?: CalloutType };
@@ -202,38 +201,24 @@ export function OutlinePanel({ editor, open, onOpenChange }: Props) {
     // EditorSlotPill, shared with find, the text switch and the
     // invisible-characters toggle that sit beside it.
     return (
-      <EditorSlotPill label={t('outline.title')} onClick={() => onOpenChange(true)}>
+      <EditorSlotPill label={t('outline.title')} keys={keyText('outline')} onClick={() => onOpenChange(true)}>
         <ListBullets size={16} />
       </EditorSlotPill>
     );
   }
 
   return (
-    <nav
-      ref={rootRef}
-      aria-label={t('outline.ariaLabel')}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') { e.preventDefault(); onOpenChange(false); }
-      }}
-      className="pointer-events-auto mt-1 w-56 max-w-[70vw] flex flex-col overflow-hidden rounded-lg border border-divider bg-surface-1 shadow-lg"
+    <EditorSlotPanel
+      panelRef={rootRef}
+      label={t('outline.ariaLabel')}
+      icon={<ListBullets size={16} />}
+      title={t('outline.title')}
+      count={headings.length}
+      closeLabel={t('outline.hide')}
+      closeKeys={keyText('outline')}
+      onClose={() => onOpenChange(false)}
     >
-      <div className="flex items-center gap-1.5 px-2 py-1.5 border-b border-divider">
-        <ListBullets size={15} className="text-pn-muted shrink-0" />
-        <span className="text-sm font-medium text-pn-soft">{t('outline.title')}</span>
-        <span className="text-xs tabular-nums text-pn-muted">{headings.length}</span>
-        <div className="flex-1" />
-        <HoverLabel label={t('outline.hideTitle', { keys: keyText('outline') })} position="start">
-          <button
-            type="button"
-            onClick={() => onOpenChange(false)}
-            aria-label={t('outline.hide')}
-            className="flex items-center justify-center w-6 h-6 rounded text-pn-muted [@media(hover:hover)]:hover:bg-pn/10 active:scale-95 transition shrink-0 outline-none"
-          >
-            <X size={14} />
-          </button>
-        </HoverLabel>
-      </div>
-      <ul className="py-1 overflow-y-auto max-h-[min(50vh,320px)]">
+      <ul>
         {outline.rows.map(({ item: h, hasKids, depth }) => {
           const isActive = h.pos === currentPos;
           const isFolded = hasKids && folded.has(h.pos);
@@ -252,16 +237,16 @@ export function OutlinePanel({ editor, open, onOpenChange }: Props) {
                 // by this list's overflow-y-auto, like the rail scroll tier.
                 title={label}
                 style={{ paddingInlineStart: `${indent}px` }}
-                className={`flex w-full items-center gap-1.5 ${canLink ? 'pe-7' : 'pe-2'} py-1 text-start text-sm transition outline-none [@media(hover:hover)]:hover:bg-pn/5 ${
+                className={`${SLOT_PANEL_ROW} ${canLink ? 'pe-7' : 'pe-2'} ${
                   isActive
-                    ? 'bg-pn/10 font-medium text-pn'
+                    ? 'bg-accent/10 font-medium text-pn'
                     : !h.callout && h.level >= 3
                       ? 'text-pn-muted'
                       : 'text-pn-soft'
                 }`}
               >
                 <span className="flex w-4 shrink-0 items-center justify-center">
-                  {CalloutIcon && <CalloutIcon size={14} weight="bold" color={CALLOUT_BY_TYPE[h.callout!].color} />}
+                  {CalloutIcon && <CalloutIcon size={16} weight="bold" color={CALLOUT_BY_TYPE[h.callout!].color} />}
                 </span>
                 <span className="truncate" dir="auto">{label}</span>
               </button>
@@ -277,7 +262,7 @@ export function OutlinePanel({ editor, open, onOpenChange }: Props) {
                     }
                     // Two links to the same heading: the note-link for inside
                     // the notes, the shortcut for other apps.
-                    // Spec: ops/docs/plans/note-shortcuts.md (4)
+                    // Spec: ops/docs/archive/note-shortcuts.md (4)
                     const r = e.currentTarget.getBoundingClientRect();
                     const rtl = document.documentElement.dir === 'rtl';
                     linkMenu.open(
@@ -301,8 +286,8 @@ export function OutlinePanel({ editor, open, onOpenChange }: Props) {
                   {/* No tip: the list clips any tip that leaves its visible
                       part, and the menu this icon opens names both links. */}
                   {isCopied
-                    ? <Check size={14} weight="bold" aria-hidden="true" />
-                    : <LinkSimple size={14} aria-hidden="true" />}
+                    ? <Check size={16} weight="bold" aria-hidden="true" />
+                    : <LinkSimple size={16} aria-hidden="true" />}
                 </button>
               )}
               {/* The fold arrow sits over the row's icon slot, which a heading
@@ -319,7 +304,7 @@ export function OutlinePanel({ editor, open, onOpenChange }: Props) {
                   className="absolute inset-y-0 flex w-4 items-center justify-center text-pn-muted [@media(hover:hover)]:hover:text-accent transition outline-none"
                 >
                   <CaretDown
-                    size={10}
+                    size={12}
                     weight="bold"
                     aria-hidden="true"
                     className={`transition-transform ${isFolded ? '-rotate-90 rtl:rotate-90' : ''}`}
@@ -331,6 +316,6 @@ export function OutlinePanel({ editor, open, onOpenChange }: Props) {
         })}
       </ul>
       <ContextMenu state={linkMenu.state} onClose={linkMenu.close} />
-    </nav>
+    </EditorSlotPanel>
   );
 }

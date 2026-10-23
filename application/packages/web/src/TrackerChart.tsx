@@ -7,7 +7,7 @@ import type { ChartSpec, TrackerValue } from './wellnessTypes';
  * One chart for every tracker: bars, a line, dots or a calendar, all drawn
  * from `chartGeometry`. A time axis runs left to right in every locale, so
  * the container is a forced-LTR island.
- * Spec: ops/docs/plans/wellness-statistics.md (section 6)
+ * Spec: ops/docs/archive/wellness-statistics.md (section 6)
  */
 
 const defaultFormat = (v: TrackerValue | number | undefined): string =>

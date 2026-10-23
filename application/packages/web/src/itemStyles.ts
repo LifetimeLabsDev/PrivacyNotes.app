@@ -11,7 +11,7 @@
  * The validator keeps key kinds and register names it does not know for the
  * same reason, so a later version's additions survive this one.
  *
- * Spec: ops/docs/plans/folder-tag-icons.md (section 5)
+ * Spec: ops/docs/archive/folder-tag-icons.md (section 5)
  */
 import { subtreeIds, type FolderDef, type FolderTombstone } from './folders';
 import {
@@ -65,8 +65,8 @@ export function tagLookKey(tag: string): string {
   return `t:${tag}`;
 }
 
-/** A note's own color. A key kind older builds do not know, which their
- *  validator and merge pass through untouched. */
+/** A note's own color and icon. A key kind older builds do not know, which
+ *  their validator and merge pass through untouched. */
 export function noteLookKey(id: string): string {
   return `n:${id}`;
 }
@@ -81,6 +81,11 @@ export type NoteOwnColor = LookColor | typeof NOTE_NO_COLOR;
 export function noteOwnColor(styles: ItemStyles, noteId: string): NoteOwnColor | null {
   const v = styles[noteLookKey(noteId)]?.color?.v;
   return v === NOTE_NO_COLOR || isLookColor(v) ? v : null;
+}
+
+/** The icon set on the note itself, or null for its type icon. */
+export function noteOwnIcon(styles: ItemStyles, noteId: string): string | null {
+  return styles[noteLookKey(noteId)]?.icon?.v ?? null;
 }
 
 const KEY_PATTERN = /^[a-z]:[\s\S]{1,200}$/;
@@ -324,7 +329,7 @@ export interface ColorFilter {
  * Otherwise the first colored tag in the order its tag chips show, else its
  * folder's own color. A tag comes first because it is a choice about this
  * note; a folder is the default for everything in it.
- * Spec: ops/docs/plans/folder-tag-icons.md (section 4.4)
+ * Spec: ops/docs/archive/folder-tag-icons.md (section 4.4)
  */
 export function resolveItemColor(
   tags: readonly string[],
@@ -432,7 +437,7 @@ export interface NoteLook {
  * choice: it is one deliberate pick for one note, made so that note stands
  * out, while Accent and Off exist to quiet the colors a folder or tag spreads
  * over many notes at once.
- * Spec: ops/docs/plans/note-color-style.md (decision N2)
+ * Spec: ops/docs/archive/note-color-style.md (decision N2)
  */
 export function resolveNoteLook(
   noteId: string,

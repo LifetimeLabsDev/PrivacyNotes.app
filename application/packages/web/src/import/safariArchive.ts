@@ -10,7 +10,7 @@
  * import as bookmarks, which is how a user ends up with every site they
  * have ever opened. Measured against a real Safari 26 export, 2026-08-25.
  *
- * Spec: ops/docs/plans/bookmarks-pillar.md (section 9.2)
+ * Spec: ops/docs/archive/bookmarks-pillar.md (section 9.2)
  */
 
 import JSZip from 'jszip';

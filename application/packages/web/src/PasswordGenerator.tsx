@@ -2,7 +2,7 @@ import { useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
 import { BIP39_WORDS } from '@notes/shared';
-import { ArrowsClockwise, Check, Copy, MinusCircle, PlusCircle, RocketLaunch, X } from './icons';
+import { ArrowsClockwise, MinusCircle, PlusCircle, RocketLaunch, X } from './icons';
 import { HoverLabel } from './HoverLabel';
 import { useEscapeToClose } from './useEscapeToClose';
 import { useCopyToClipboard } from './clipboard';
@@ -10,6 +10,7 @@ import { loadLocalSettings, saveLocalSettings, type UserSettings } from './userS
 import { proUnlocked } from './demo';
 import { PasswordText } from './PasswordText';
 import { isImeComposing } from './imeComposing';
+import { Button, CloseButton } from './ui';
 import {
   EXACT_COUNT_MAX,
   PASSPHRASE_WORDS,
@@ -214,14 +215,11 @@ function StrengthMeter({ bits }: { bits: number }) {
   );
 }
 
-// Spec: ops/docs/ui-patterns.md (button standards)
-const SECONDARY_BTN = 'flex-1 inline-flex items-center justify-center gap-1.5 rounded-md border border-divider hover:bg-pn/5 px-4 py-2 text-sm transition';
-const PRIMARY_BTN = 'w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-4 py-2 text-sm font-medium transition';
-
 function PasswordGenerator({ isPro, onOpenUpgrade, onGenerate }: {
   isPro: boolean | null;
   onOpenUpgrade: () => void;
-  onGenerate: (value: string) => void;
+  /** Fills a field; without it the generator only copies (the Vault's New menu, Ninja). */
+  onGenerate?: (value: string) => void;
 }) {
   const { t } = useTranslation('auth');
   const unlocked = proUnlocked(isPro);
@@ -396,19 +394,18 @@ function PasswordGenerator({ isPro, onOpenUpgrade, onGenerate }: {
       {/* Leaving without applying is the header's X, Escape or the backdrop;
           the one filled button is the one that writes the value. */}
       <div className="flex gap-2">
-        <button type="button" onClick={regenerate} className={SECONDARY_BTN}>
-          <ArrowsClockwise size={14} />
+        <Button action="regenerate" onClick={regenerate} className="flex-1">
           {t('loginForm.regenerate')}
-        </button>
-        <button type="button" onClick={() => copy(preview, 'generated')} className={SECONDARY_BTN}>
-          {copied ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+        </Button>
+        <Button action={copied ? 'done' : 'copy'} variant={onGenerate ? 'secondary' : 'primary'} onClick={() => copy(preview, 'generated')} className={`flex-1${copied ? ' [&_svg]:text-success' : ''}`}>
           {copied ? t('shell:vaultItem.copied') : t('loginForm.copyGenerated')}
-        </button>
+        </Button>
       </div>
-      <button type="button" onClick={() => onGenerate(preview)} className={`${PRIMARY_BTN} !mt-2`}>
-        <Check size={14} />
-        {passphrase ? t('loginForm.usePassphrase') : t('loginForm.usePassword')}
-      </button>
+      {onGenerate && (
+        <Button action="apply" onClick={() => onGenerate(preview)} className="w-full !mt-2">
+          {passphrase ? t('loginForm.usePassphrase') : t('loginForm.usePassword')}
+        </Button>
+      )}
     </div>
   );
 }
@@ -417,7 +414,7 @@ function PasswordGenerator({ isPro, onOpenUpgrade, onGenerate }: {
 export function PasswordGeneratorModal({ isPro, onOpenUpgrade, onGenerate, onClose }: {
   isPro: boolean | null;
   onOpenUpgrade: () => void;
-  onGenerate: (value: string) => void;
+  onGenerate?: (value: string) => void;
   onClose: () => void;
 }) {
   const { t } = useTranslation('auth');
@@ -430,9 +427,7 @@ export function PasswordGeneratorModal({ isPro, onOpenUpgrade, onGenerate, onClo
       >
         <div className="flex items-center justify-between px-4 pt-4 pb-0">
           <h2 className="text-base font-semibold text-pn">{t('loginForm.generateTitle')}</h2>
-          <button onClick={onClose} className="text-pn-muted hover:text-pn-soft transition p-1 -m-1" aria-label={t('common:actions.close')}>
-            <X size={18} />
-          </button>
+          <CloseButton onClick={onClose} />
         </div>
         <PasswordGenerator isPro={isPro} onOpenUpgrade={onOpenUpgrade} onGenerate={onGenerate} />
       </div>

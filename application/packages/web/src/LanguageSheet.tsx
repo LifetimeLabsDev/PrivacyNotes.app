@@ -4,10 +4,12 @@ import { SUPPORTED_LOCALES } from './i18n';
 import { LANGUAGE_META as META, Flag, activeLocale, currentLanguageChoice, setLanguage, sortByNative } from './languages';
 import { ArrowSquareOut, Bug, CalendarBlank, Check, Clock as ClockIcon, TextAUnderline, Translate } from './icons';
 import { HelpChip } from './HelpChip';
+import { Switch } from './Switch';
 import { useTheme } from './theme';
-import { EYEBROW_ICON_ROW, EyebrowGlyph, RowTitle, SETTINGS_EYEBROW, SETTINGS_HELP, SETTINGS_ROW, SETTINGS_TRACK, settingsSegClass } from './settingsUI';
+import { EYEBROW_ICON_ROW, EyebrowGlyph, ROW_TITLE, RowTitle, SETTINGS_EYEBROW, SETTINGS_HELP, SETTINGS_ROW, SETTINGS_TRACK, settingsSegClass, ResetDefaultsButton } from './settingsUI';
 import { JournalTitles, type JournalTitlesProps } from './JournalsSheet';
 import { journalTitle } from './notesViewUtils';
+import { defaultSettings } from './userSettingsShape';
 import { formatInstantWith, type Clock, type DateOrder } from './intlFormat';
 
 type Props = {
@@ -27,7 +29,7 @@ type DateProps = {
 /**
  * The "Language" pane: spell check and the app language, both device-local.
  * The date settings have their own pane, `DateSheet` below.
- * Spec: ops/docs/ui-patterns.md section 36 (settings standard)
+ * Spec: ops/docs/archive/ui-patterns.md section 36 (settings standard)
  */
 export function LanguageSheet({ embedded = false }: Props) {
   const { t } = useTranslation('settings');
@@ -76,30 +78,16 @@ export function LanguageSheet({ embedded = false }: Props) {
           already knew it was there.
           Spec: ops/docs/design-decisions.md (Spell check is the engine's,
           not ours) */}
-      <div data-setting="language.spellCheck">
-        <p className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW} mb-0.5`}>
-          <EyebrowGlyph icon={TextAUnderline} />
-          {t('appearance.spellCheckTitle')}
-        </p>
-        <p className={`${SETTINGS_HELP} mb-2`}>
-          {t('appearance.spellCheckDesc')}
-        </p>
-        <div className="flex gap-1 rounded-md p-1 bg-track">
-          {([true, false] as const).map((on) => (
-            <button
-              key={String(on)}
-              onClick={() => setSpellcheck(on)}
-              aria-pressed={spellcheck === on}
-              className={`flex-1 text-xs font-medium py-1.5 rounded transition ${
-                spellcheck === on
-                  ? 'bg-surface-2 shadow-sm text-pn'
-                  : 'text-pn-soft hover:text-pn'
-              }`}
-            >
-              {on ? t('appearance.spellCheckOn') : t('appearance.spellCheckOff')}
-            </button>
-          ))}
-        </div>
+      <div data-setting="language.spellCheck" className="border-b border-divider pb-1">
+        <Switch
+          label={t('appearance.spellCheckTitle')}
+          icon={<TextAUnderline size={14} className="text-accent" />}
+          labelClassName={ROW_TITLE}
+          description={t('appearance.spellCheckDesc')}
+          checked={spellcheck}
+          onChange={setSpellcheck}
+          className="gap-x-5 py-2"
+        />
       </div>
 
       <div data-setting="language.language" className="mt-4">
@@ -173,7 +161,7 @@ export function LanguageSheet({ embedded = false }: Props) {
 /** The "Date" pane: one preview line, then the synced date format and clock,
  *  then the titles new journal entries get, which are written in that format.
  *  The preview is the only place a choice shows its result, so no option
- *  needs an example of its own. Spec: ops/docs/plans/dates.md (section 3.3) */
+ *  needs an example of its own. Spec: ops/docs/archive/dates.md (section 3.3) */
 export function DateSheet({ journal, ...props }: DateProps & { journal: JournalTitlesProps }) {
   const now = new Date();
   const prefs = { order: props.dateOrder, clock: props.clock };
@@ -183,6 +171,18 @@ export function DateSheet({ journal, ...props }: DateProps & { journal: JournalT
         <DateTimeSection {...props} today={formatInstantWith(prefs, now, 'date')} now={formatInstantWith(prefs, now, 'time')} />
         <JournalTitles {...journal} />
       </div>
+      <div className="px-6 pb-6">
+        <ResetDefaultsButton
+          onReset={() => {
+            const d = defaultSettings();
+            props.onDateOrderChange(d.dateOrder);
+            props.onClockChange(d.clock);
+            journal.onFormatChange(d.journalTitleFormat);
+            journal.onSuffixChange(d.journalTitleSuffix);
+            journal.onPatternChange(d.journalTitlePattern);
+          }}
+        />
+      </div>
     </div>
   );
 }
@@ -190,7 +190,7 @@ export function DateSheet({ journal, ...props }: DateProps & { journal: JournalT
 /**
  * "Date format" and "Clock": synced, while Automatic resolves on each device.
  * Each row's help line writes today, or now, in the shape the row picks.
- * Spec: ops/docs/plans/dates.md (section 3.3)
+ * Spec: ops/docs/archive/dates.md (section 3.3)
  */
 function DateTimeSection({ dateOrder, onDateOrderChange, clock, onClockChange, today, now }: DateProps & { today: string; now: string }) {
   const { t } = useTranslation('settings');

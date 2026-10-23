@@ -3,7 +3,7 @@
   "tabs": {
     "overview": "Überblick",
     "writing": "Schreiben",
-    "wellness": "Wohlbefinden"
+    "wellness": "Tracker"
   },
   "writing": {
     "notes": "Notizen",
@@ -22,6 +22,44 @@
     "tooltipEdits_other": "{{date}}: {{count}} Bearbeitungen",
     "longestNote": "Längste Notiz: <name>{{title}}</name> ({{count}} Wörter)"
   },
+  "home": {
+    "inARow_other": "{{count}} Tage am Stück",
+    "firstInsight_other": "Die erste Erkenntnis braucht {{count}} erfasste Tage",
+    "standsOut": "Was auffällt",
+    "lifts": "Hebt deine Stimmung",
+    "onAverage": "Im Schnitt {{word}}",
+    "daysOf": "{{logged}} von {{days}} Tagen",
+    "medsTaken": "{{pct}}% Medis eingenommen",
+    "moodByDay": "Stimmung, Tag für Tag",
+    "moodLegend": "Balken: jeder Tag. Linie: der 7-Tage-Schnitt.",
+    "yourWeek": "Deine Woche",
+    "yourWeekHint": "Durchschnittliche Stimmung nach Wochentag",
+    "weekLine": "Dein bester Tag ist {{best}} ({{bestAvg}}), der schwerste {{worst}} ({{worstAvg}}).",
+    "daysSplit": "{{a}} Tage gegenüber {{b}}",
+    "yourDays": "Deine Tage",
+    "yesOf": "Ja an {{yes}} von {{total}}",
+    "goesWith": "Was mit {{name}} einhergeht",
+    "goesWithHint": "{{side}}, verglichen mit den anderen Tagen",
+    "byWeekday": "Nach Wochentag",
+    "last30": "Letzte 30 Tage",
+    "openEntry": "Eintrag öffnen",
+    "nothingThatDay": "An diesem Tag nichts erfasst.",
+    "drags": "Drückt sie nach unten",
+    "nextDay": "Folgetag",
+    "label": {
+      "above": "{{name}} über {{threshold}}",
+      "levels": "{{name}}: {{levels}}",
+      "taken": "{{name}} eingenommen"
+    },
+    "footnoteShort": "Stimmungspunkte im Vergleich zu deinen anderen erfassten Tagen. Mehr Punkte, mehr Tage hinter der Zahl. Ein Zusammenhang, kein Beweis für eine Ursache.",
+    "trackers": "Deine Tracker",
+    "tapHint": "Tipp einen an, um ihn zu öffnen",
+    "delta": "{{delta}} ggü. den Tagen davor",
+    "firstInsight_one": "Die erste Erkenntnis braucht {{count}} erfassten Tag",
+    "inARow_one": "{{count}} Tag am Stück",
+    "sureEarly": "Noch früh: {{a}} Tage mit, {{b}} ohne. Erfasse weiter.",
+    "sureDays": "{{a}} Tage mit, {{b}} ohne"
+  },
   "range": {
     "7d": "7 Tage",
     "14d": "14 Tage",
@@ -39,12 +77,14 @@
       "patterns": "Muster"
     },
     "empty": {
-      "title": "Noch keine Wohlbefindens-Daten.",
+      "title": "Noch keine Tracker-Daten.",
       "hint": "Öffne einen Tagebucheintrag und erfasse deine Stimmung, um loszulegen."
     },
     "export": {
       "heading": "Export",
       "downloadJSON": "JSON herunterladen",
+      "downloadCSV": "CSV herunterladen",
+      "csvDate": "Datum",
       "doctorPDF": "Arzt-PDF",
       "copyAIPrompt": "KI-Prompt anzeigen & kopieren",
       "copied": "Kopiert!",
@@ -52,7 +92,13 @@
       "proBadge": "PRO",
       "usesRange": "Nutzt den Zeitraum oben",
       "promptShown": "Der Prompt, den du kopiert hast. Füge ihn in den Chatbot deiner Wahl ein.",
-      "hidePrompt": "Ausblenden"
+      "hidePrompt": "Ausblenden",
+      "intro": "Deine Tracker-Werte aus Tagebucheinträgen, im Zeitraum, den du wählst.",
+      "aiPromptDesc": "Eine Zusammenfassung deiner Tracker zum Einfügen in einen Chatbot. Sie erscheint hier und landet in der Zwischenablage.",
+      "doctorDesc": "Ein druckbarer Bericht über Stimmung, Schlaf, Medikation und Trends, für einen Arzttermin.",
+      "jsonDesc": "Jeder Tracker-Wert mit Datum und Definition, für eine andere App oder deine eigene Auswertung.",
+      "csvDesc": "Eine Zeile pro Tag und eine Spalte pro Tracker, für eine Tabellenkalkulation.",
+      "openExport": "Deine Tracker-Daten exportieren"
     },
     "medication": {
       "adherence": "Einnahmetreue",
@@ -62,6 +108,7 @@
       },
       "dosageTimeline": "Dosierungsverlauf",
       "started": "Begonnen mit {{dosage}}",
+      "startedPlain": "Begonnen",
       "changedTo": "Geändert auf {{dosage}}"
     },
     "patterns": {
@@ -70,7 +117,9 @@
       "proBadge": "PRO",
       "insightsLocked_one": "{{count}} Erkenntnis gefunden. Rüste auf Pro auf, um sie anzuzeigen",
       "insightsLocked_other": "{{count}} Erkenntnisse gefunden. Rüste auf Pro auf, um sie anzuzeigen",
-      "tableLocked": "Upgrade auf Pro, um zu sehen, welche Tracker deine Stimmung bewegen"
+      "tableLocked": "Upgrade auf Pro, um zu sehen, welche Tracker deine Stimmung bewegen",
+      "waiting_other": "{{count}} weitere Tracker brauchen mehr erfasste Tage für einen Vergleich.",
+      "waiting_one": "{{count}} weiterer Tracker braucht mehr erfasste Tage für einen Vergleich."
     },
     "week": {
       "range": "{{start}} bis {{end}}",
@@ -85,7 +134,7 @@
       "reflectionPlaceholder": "Wie hat sich diese Woche insgesamt angefühlt? Gedanken zum Festhalten...",
       "heading": "Wochenrückblick",
       "proBadge": "PRO",
-      "locked": "Upgrade auf Pro, um deine wöchentliche Wohlbefindens-Zusammenfassung zu sehen"
+      "locked": "Upgrade auf Pro, um deine wöchentliche Tracker-Zusammenfassung zu sehen"
     },
     "units": {
       "days_one": "{{count}} Tag",
@@ -111,27 +160,30 @@
       "doseChange": "Rund um die Umstellung von {{name}} auf {{dosage}} am {{date}} lag deine Stimmung im Schnitt bei {{before}} in den {{nBefore}} Tagen davor und bei {{after}} in den {{nAfter}} Tagen danach."
     },
     "aiPrompt": {
-      "intro": "Ich erfasse meine Stimmung und mein Wohlbefinden. Bitte analysiere die Daten unten auf Muster, Trends und konkrete Erkenntnisse.",
+      "intro": "Ich führe ein tägliches Tagebuch mit Trackern. Unten stehen meine Daten. Die Stimmung ist meine eigene Bewertung von 1 (furchtbar) bis 10 (großartig). Ein Tag ohne Wert heißt, dass ich ihn nicht erfasst habe, nicht null.",
       "overview": "Überblick",
       "daysTracked": "Erfasste Tage: {{days}}",
       "avgMood": "Durchschnittliche Stimmung: {{mood}}/10",
       "avgSleep": "Durchschnittlicher Schlaf: {{hours}} Std.",
       "adherence": "Einnahmetreue: {{pct}}%",
       "topEmotions": "Häufigste Emotionen: {{list}}",
-      "moodTrend": "Stimmungstrend (letzte 30 Tage)",
+      "moodTrend": "Stimmung nach Tag",
       "columnDate": "Datum",
       "columnMood": "Stimmung",
+      "columnAverage": "7-Tage-Schnitt",
       "sleepDistribution": "Verteilung der Schlafqualität",
       "activityDistribution": "Verteilung der Aktivität",
       "adherenceHeading": "Einnahmetreue",
-      "adherenceLine": "{{name}}: an {{taken}} von {{total}} erfassten Tagen eingenommen ({{pct}}%)",
+      "adherenceLine": "{{name}}: {{taken}} von {{total}} geplanten Dosen eingenommen ({{pct}}%)",
       "dosageTimeline": "Dosierungsverlauf",
       "patterns": "Erkannte Muster",
-      "questions": "Was ich wissen möchte",
-      "question1": "Gibt es Muster in meiner Stimmung über die Zeit?",
-      "question2": "Hängen Schlafqualität und Aktivität mit der Stimmung zusammen?",
-      "question3": "Gibt es besorgniserregende Entwicklungen, die ich ärztlich abklären sollte?",
-      "question4": "Konkrete Vorschläge auf Basis der Daten.",
+      "questions": "So sollst du antworten",
+      "question1": "Beginne mit den drei wichtigsten Erkenntnissen, jeweils mit den Zahlen dahinter.",
+      "question2": "Trenne, was die Daten zeigen, von dem, was du vermutest. Zwei Tracker, die sich gemeinsam bewegen, beweisen nicht, dass der eine den anderen verursacht.",
+      "question3": "Sag, wenn ein Muster auf zu wenigen Tagen beruht, um ihm zu trauen.",
+      "question4": "Schlag zwei oder drei kleine Änderungen vor, die ich zwei Wochen lang ausprobieren kann, und was ich erfassen soll, um zu sehen, ob sie wirken.",
+      "question5": "Weise auf alles hin, was ich mit einem Arzt besprechen sollte. Stelle keine Diagnose.",
+      "question6": "Wenn dich die Daten unsicher lassen, stell mir zuerst bis zu drei Fragen.",
       "footer": "Erstellt mit PrivacyNotes (privacynotes.app)",
       "period": "Zeitraum: {{from}} bis {{to}}",
       "daysLogged": "Erfasste Tage: {{logged}} von {{days}}",
@@ -140,7 +192,7 @@
       "trackerYesLine": "{{name}}: Ja an {{yes}} von {{count}} Tagen",
       "effects": "Stimmung an Tagen mit und ohne",
       "effectLine": "{{name}} ({{rule}}): {{a}} mit, {{b}} ohne, Differenz {{delta}}, {{na}} / {{nb}} Tage",
-      "customQuestion": "Hängt {{name}} mit meiner Stimmung zusammen, am selben Tag oder am Tag danach?"
+      "customQuestion": "Prüfe auch, ob {{name}} mit meiner Stimmung zusammenhängt, am selben Tag oder am Tag danach."
     },
     "report": {
       "documentTitle": "Wohlbefinden-Bericht",
@@ -161,9 +213,9 @@
       "activityDistribution": "Verteilung der Aktivität",
       "columnLevel": "Stufe",
       "adherenceHeading": "Einnahmetreue",
-      "adherenceNote": "Eingenommene Dosen als Anteil der erfassten Tage, an denen das jeweilige Medikament verfolgt wurde. Ein Tag ohne Markierung zählt als nicht eingenommen. Tage ohne Journaleintrag zählen in keine Richtung.",
+      "adherenceNote": "Eingenommene geplante Dosen als Anteil der Dosen, die an den erfassten Tagen fällig waren, seit das jeweilige Medikament zum ersten Mal erfasst wurde. Eine fällige Dosis ohne Markierung zählt als nicht eingenommen. Tage ohne Tagebucheintrag und Medikamente, die bei Bedarf genommen werden, zählen nicht.",
       "columnMedication": "Medikament",
-      "columnTaken": "Eingenommen/Tage",
+      "columnTaken": "Eingenommen/Dosen",
       "columnRate": "Quote",
       "dosageTimeline": "Dosierungsverlauf",
       "started": "Begonnen mit {{dosage}} am {{date}}",
@@ -209,6 +261,15 @@
       "legend": "Linie: 7-Tage-Schnitt. Dreieck: eine Dosisänderung.",
       "dose": "{{name}} {{dosage}}"
     },
+    "pixels": {
+      "heading": "Jahr in Pixeln",
+      "aria": "Stimmung jedes Tages in {{year}}, ein Quadrat pro Tag",
+      "hint": "Ein Quadrat pro Tag, in den Stimmungsfarben.",
+      "hintTap": "Ein Quadrat pro Tag, in den Stimmungsfarben. Ein Tippen öffnet den Tag.",
+      "saveImage": "Als Bild speichern",
+      "prevYear": "Vorheriges Jahr",
+      "nextYear": "Nächstes Jahr"
+    },
     "trackers": {
       "heading": "Tracker",
       "tapHint": "Ein Tipp öffnet Erkunden",
@@ -218,13 +279,22 @@
       "unknown": "Unbekannter Tracker {{id}}",
       "sleepHours": "Schlafstunden",
       "sleepQuality": "Schlafqualität",
-      "avgDays": "Schnitt, {{count}} Tage",
-      "sumDays": "gesamt, {{count}} Tage",
+      "avgDays_one": "Schnitt, {{count}} Tag",
+      "avgDays_other": "Schnitt, {{count}} Tage",
+      "sumDays_one": "gesamt, {{count}} Tag",
+      "sumDays_other": "gesamt, {{count}} Tage",
+      "daysLogged_one": "{{count}} Tag erfasst",
+      "daysLogged_other": "{{count}} Tage erfasst",
       "yesNo": "Ja an {{yes}}, Nein an {{no}}",
       "notLogged": "{{count}} nicht erfasst",
       "latestLowHigh": "zuletzt {{latest}}, Tief {{low}}, Hoch {{high}}",
-      "topLevel": "{{level}} an {{count}} Tagen",
+      "topLevel_other": "{{level}} an {{count}} Tagen",
+      "topLevel_one": "{{level}} an {{count}} Tag",
       "taken": "eingenommen an {{taken}} von {{total}}",
+      "takenDoses_other": "{{taken}} von {{count}} Dosen eingenommen",
+      "asNeededDoses_other": "{{count}} Dosen bei Bedarf",
+      "asNeededDoses_one": "{{count}} Dosis bei Bedarf",
+      "takenDoses_one": "{{taken}} von {{count}} Dosis eingenommen",
       "empty": "In diesem Zeitraum nichts erfasst",
       "unanswered": "{{count}} erfasste Tage ohne Antwort"
     },
@@ -245,6 +315,14 @@
       "footnote": "Eine Beobachtung unter erfassten Tagen, keine Ursache.",
       "higher": "{{outcome}} liegt an diesen Tagen {{delta}} Punkte höher.",
       "lower": "{{outcome}} liegt an diesen Tagen {{delta}} Punkte niedriger.",
+      "side": {
+        "with": "Tage mit {{name}}",
+        "without": "Tage ohne",
+        "above": "Über {{threshold}}",
+        "atOrBelow": "{{threshold}} oder darunter",
+        "taken": "Eingenommen",
+        "missed": "Ausgelassen"
+      },
       "rule": {
         "yesno": "Tage mit vs. ohne",
         "halves": "über {{threshold}} vs. {{threshold}} und darunter",
@@ -347,7 +425,7 @@
     "milestones": "Meilensteine",
     "longestStreak": "Längste Serie: {{count}} Tage",
     "openWriting": "Schreiben öffnen",
-    "openWellness": "Wohlbefinden öffnen",
+    "openWellness": "Tracker öffnen",
     "computed": "auf diesem Gerät berechnet",
     "pillars": {
       "notes": "Notizen",
@@ -358,6 +436,68 @@
       "contacts": "Kontakte",
       "logins": "Logins"
     },
-    "ledgerEstimated": "Aus deinen Notizen geschätzt, bis die Zählung beginnt."
+    "ledgerEstimated": "Aus deinen Notizen geschätzt, bis die Zählung beginnt.",
+    "today": "Heute, {{date}}",
+    "lastEdit": "Zuletzt bearbeitet um {{time}}",
+    "wordsToday_other": "{{formatted}} Wörter heute",
+    "edited_other": "{{count}} Elemente bearbeitet",
+    "created_other": "{{count}} neu",
+    "scheduled_other": "{{count}} in deinem Kalender",
+    "next": "{{title}}, {{time}}",
+    "checkedIn": "{{word}}, Check-in erledigt",
+    "thisWeek": "Diese Woche",
+    "thisWeekHint": "Die letzten 7 Tage im Vergleich zu den 7 davor",
+    "vsLastWeek": "{{delta}} ggü. der Vorwoche",
+    "activeDays": "Aktive Tage",
+    "notesCreated": "Erstellte Elemente",
+    "checkIns": "Check-ins",
+    "streaks": "Serien",
+    "checkInStreak": "Check-in-Serie",
+    "keep": "Alles, was du aufbewahrst",
+    "keepSub": "neu in den letzten 7 Tagen",
+    "growingTags": "Wachsende Tags",
+    "moodMonth": "Im Schnitt {{word}}, letzte 30 Tage",
+    "scheduled_one": "{{count}} in deinem Kalender",
+    "created_one": "{{count}} neu",
+    "edited_one": "{{count}} Element bearbeitet",
+    "wordsToday_one": "{{formatted}} Wort heute"
+  },
+  "recap": {
+    "thisWeek": "Diese Woche",
+    "previous": "Vorherige Woche",
+    "next": "Nächste Woche",
+    "bestWorst": "{{best}} war dein bester Tag ({{bestMood}}), {{worst}} der schwerste ({{worstMood}}).",
+    "noMood": "Diese Woche keine Stimmung erfasst.",
+    "also": "{{logged}} von 7 Tagen mit Stimmung, {{created}} Elemente erstellt.",
+    "againstWeekBefore": "Veränderungen beziehen sich auf die Woche davor.",
+    "prompt": "Was hat {{day}} gut gemacht?"
+  },
+  "writingTab": {
+    "inOneLook": "Dieser Zeitraum auf einen Blick",
+    "wordsWritten": "Geschriebene Wörter",
+    "daysWrote": "Tage, an denen du geschrieben hast",
+    "perDay": "{{words}} Wörter pro Tag",
+    "notesStarted": "Begonnene Notizen",
+    "vsBefore": "{{delta}} ggü. den Tagen davor",
+    "readTime_other": "Etwa {{count}} Minuten Lesestoff geschrieben",
+    "novels_other": "So viel wie {{count}} Romane, insgesamt",
+    "tagsUsed": "{{count}} Tags, {{used}} in diesem Zeitraum verwendet",
+    "wordsPerDay": "Wörter pro Tag",
+    "wordsPerWeek": "Wörter pro Woche",
+    "biggest": "Dein stärkster Tag war {{day}} ({{words}} Wörter). Dein bester Wochentag ist {{weekday}}.",
+    "year": "Dein Schreibjahr",
+    "yearHint": "Dunkler: mehr Bearbeitungen an dem Tag",
+    "hoursHint": "Bearbeitungen nach Wochentag und Stunde",
+    "topTags": "Top-Tags",
+    "lengths": "Notizlängen",
+    "short": "Kurz",
+    "median": "Die Hälfte deiner Notizen hat weniger als {{words}} Wörter.",
+    "longest": "Deine längsten Notizen",
+    "words_other": "{{formatted}} Wörter",
+    "readHours_other": "Etwa {{count}} Stunden Lesestoff geschrieben",
+    "readHours_one": "Etwa {{count}} Stunde Lesestoff geschrieben",
+    "words_one": "{{formatted}} Wort",
+    "novels_one": "So viel wie {{count}} Roman, insgesamt",
+    "readTime_one": "Etwa {{count}} Minute Lesestoff geschrieben"
   }
 }

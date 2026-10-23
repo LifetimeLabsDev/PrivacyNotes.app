@@ -1,6 +1,7 @@
 import type { MouseEvent, PointerEvent } from 'react';
 import { HoverLabel, type positionClasses } from './HoverLabel';
 import { Prohibit } from './icons';
+import { LOOK_COLORS, type LookColor } from './itemStyles';
 
 /**
  * One round color swatch: the one the editor's text and highlight popovers
@@ -11,7 +12,7 @@ import { Prohibit } from './icons';
  * on pointer-down, with the default prevented, so its text selection survives
  * the click. The look picker picks on a click, so a finger that starts a
  * scroll in the phone sheet never picks a color.
- * Spec: ops/docs/plans/folder-tag-icons.md (section 4.3)
+ * Spec: ops/docs/archive/folder-tag-icons.md (section 4.3)
  */
 export function ColorSwatch({
   label,
@@ -68,3 +69,58 @@ export function ColorSwatch({
     </HoverLabel>
   );
 }
+
+/**
+ * The one color row: "no color" first, then every palette color through the
+ * theme's `--pn-label-<key>-ink` token, finger-sized on a touch screen. The
+ * note color, the folder and tag looks and the Kanban columns all draw it,
+ * so a color choice looks and behaves the same everywhere.
+ * Spec: ops/docs/archive/folder-tag-icons.md (section 4.3)
+ */
+export function ColorSwatchRow({
+  selected,
+  inherited = null,
+  noneLabel,
+  colorLabel,
+  labelSide = 'above',
+  onPick,
+}: {
+  /** The picked color, `none` for the "no color" swatch, null for neither. */
+  selected: LookColor | 'none' | null;
+  /** A color taken from elsewhere: a dashed ring. */
+  inherited?: LookColor | null;
+  noneLabel: string;
+  /** The name of a palette color, for its tooltip and screen readers. */
+  colorLabel: (color: LookColor) => string;
+  labelSide?: 'above' | 'below';
+  onPick: (color: LookColor | null) => void;
+}) {
+  return (
+    <div className="flex flex-wrap gap-1 [@media(hover:none)]:gap-0.5">
+      <ColorSwatch
+        label={noneLabel}
+        none
+        // The first swatch sits at the start edge, where a centered tip
+        // would hang out of its panel.
+        labelPosition={labelSide === 'above' ? 'above-start' : 'below-start'}
+        selected={selected === 'none'}
+        className={TOUCH_SWATCH}
+        onClick={() => onPick(null)}
+      />
+      {LOOK_COLORS.map((c) => (
+        <ColorSwatch
+          key={c}
+          label={colorLabel(c)}
+          background={`var(--pn-label-${c}-ink)`}
+          selected={selected === c}
+          inherited={selected !== c && inherited === c}
+          className={TOUCH_SWATCH}
+          labelPosition={labelSide}
+          onClick={() => onPick(c)}
+        />
+      ))}
+    </div>
+  );
+}
+
+const TOUCH_SWATCH = '[@media(hover:none)]:w-11 [@media(hover:none)]:h-11';

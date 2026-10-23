@@ -89,7 +89,7 @@ export function deriveEncryptionKey(seed: Uint8Array): Uint8Array {
  * the sync encryption branch so a local ciphertext can never pass as a
  * server row or the reverse. Never stored and never transmitted - it is
  * re-derived from the phrase on every unlock.
- * Spec: ops/docs/plans/local-at-rest.md (HKDF branch, section 3.1)
+ * Spec: ops/docs/archive/local-at-rest.md (HKDF branch, section 3.1)
  */
 export function deriveLocalDataKey(seed: Uint8Array): Uint8Array {
   return hkdf(
@@ -559,7 +559,7 @@ export function decryptJson<T = unknown>(
 // authentication tag. Used by the local at-rest seal, where the AAD
 // carries the table and row id so a ciphertext moved onto another row
 // or table fails authentication instead of decrypting.
-// Spec: ops/docs/plans/local-at-rest.md (seal format, section 3.2)
+// Spec: ops/docs/archive/local-at-rest.md (seal format, section 3.2)
 // ------------------------------------------------------------------
 
 /** Encrypt raw bytes with associated data. Fresh 24-byte nonce per call. */

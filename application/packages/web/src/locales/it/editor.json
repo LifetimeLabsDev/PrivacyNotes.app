@@ -1,13 +1,15 @@
 {
   "placeholder": "Inizia a scrivere…",
+  "eventPlaceholder": "Aggiungi un ordine del giorno, un indirizzo o delle note…",
   "toolbar": {
     "bold": "Grassetto",
+    "hideKeyboard": "Nascondi tastiera",
     "italic": "Corsivo",
     "underline": "Sottolineato",
     "heading": "Titolo",
     "taskList": "Elenco di attività",
     "bulletList": "Elenco puntato",
-    "addLink": "Aggiungi link ({{keys}})",
+    "addLink": "Aggiungi link",
     "noteLink": "Collega a un'altra nota (o digita [[)",
     "numberedList": "Elenco numerato",
     "textColor": "Colore del testo",
@@ -40,7 +42,6 @@
     "footnote": "Nota a piè di pagina",
     "spoiler": "Spoiler",
     "copyBox": "Riquadro da copiare",
-    "withHint": "{{label}} ({{hint}})",
     "customize": "Personalizza la barra di formattazione"
   },
   "align": {
@@ -98,7 +99,9 @@
       "update": "Aggiornamento",
       "time": "Tempo",
       "steps": "Passaggi",
-      "place": "Luogo"
+      "place": "Luogo",
+      "kanban": "Bacheca Kanban",
+      "column": "Colonna"
     }
   },
   "color": {
@@ -132,27 +135,51 @@
     "resizeHint": "Tieni premuto {{shift}} per cambiare solo questa colonna, {{alt}} per passi più fini",
     "deleteRow": "Elimina riga",
     "deleteColumn": "Elimina colonna",
-    "deleteTable": "Elimina tabella"
+    "deleteTable": "Elimina tabella",
+    "insertFormula": "Inserisci formula",
+    "formulaNoMatch": "Nessuna formula corrisponde",
+    "formula": {
+      "SUM": "Addiziona i valori",
+      "PRODUCT": "Moltiplica i valori",
+      "AVG": "Valore medio",
+      "AVERAGE": "Valore medio",
+      "MEDIAN": "Valore centrale",
+      "MIN": "Valore più piccolo",
+      "MAX": "Valore più grande",
+      "COUNT": "Quanti numeri ci sono",
+      "ABS": "Valore senza il segno",
+      "SQRT": "Radice quadrata",
+      "SIGN": "Se un valore è positivo o negativo",
+      "CEIL": "Arrotonda per eccesso a un numero intero",
+      "FLOOR": "Arrotonda per difetto a un numero intero",
+      "ROUND": "Arrotonda a un numero intero",
+      "LOG": "Logaritmo",
+      "RAND": "Un numero casuale",
+      "PI": "Il rapporto fra circonferenza e diametro",
+      "E": "Il numero di Eulero",
+      "TAU": "Il rapporto fra circonferenza e raggio",
+      "PHI": "La sezione aurea"
+    }
   },
   "find": {
     "placeholder": "Trova nella nota",
     "label": "Trova nella nota",
-    "previous": "Corrispondenza precedente (Shift+Enter)",
-    "previousTitle": "Precedente (Shift+Enter)",
-    "next": "Corrispondenza successiva (Enter)",
-    "nextTitle": "Successiva (Enter)",
+    "previous": "Corrispondenza precedente",
+    "previousTitle": "Precedente",
+    "next": "Corrispondenza successiva",
+    "nextTitle": "Successiva",
     "close": "Chiudi ricerca",
-    "closeTitle": "Chiudi ({{keys}})",
+    "closeTitle": "Chiudi",
     "replacePlaceholder": "Sostituisci con",
     "replaceLabel": "Sostituisci con",
     "replace": "Sostituisci",
-    "replaceTitle": "Sostituisci questa occorrenza (Enter)",
+    "replaceTitle": "Sostituisci questa occorrenza",
     "replaceAll": "Tutte",
     "replaceAllTitle": "Sostituisci tutte le occorrenze",
     "caseSensitive": "Maiuscole/minuscole",
     "caseSensitiveTitle": "Maiuscole/minuscole",
     "closeReplace": "Chiudi trova e sostituisci",
-    "closeReplaceTitle": "Chiudi ({{keys}})",
+    "closeReplaceTitle": "Chiudi",
     "showReplace": "Trova e sostituisci",
     "hideReplace": "Nascondi sostituzione",
     "replacedCount_one": "{{count}} sostituita",
@@ -164,7 +191,6 @@
     "title": "Struttura",
     "ariaLabel": "Struttura della nota",
     "hide": "Nascondi struttura",
-    "hideTitle": "Nascondi struttura ({{keys}})",
     "copyHeadingLink": "Copia il link al titolo",
     "copyNoteLink": "Copia il collegamento fra note",
     "copyHeadingShortcut": "Copia la scorciatoia al titolo",
@@ -172,6 +198,8 @@
   },
   "bodyMenu": {
     "cut": "Taglia",
+    "copyAsPlain": "Copia come testo semplice",
+    "copyAsMarkdown": "Copia come Markdown",
     "sortAsc": "Ordina le righe dalla A alla Z",
     "sortDesc": "Ordina le righe dalla Z alla A"
   },
@@ -286,6 +314,7 @@
     "hidden": "Nascosti",
     "hiddenNote": "Funzionano ancora con la scorciatoia e in Markdown.",
     "hiddenDrop": "Trascina qui un pulsante per nasconderlo.",
+    "arrangeTitle": "Pulsanti",
     "markdownViewNote": "La vista Markdown ha un proprio set fisso di pulsanti.",
     "hiddenEmpty": "Niente è nascosto.",
     "alwaysVisible": "Sempre visibili",
@@ -320,5 +349,20 @@
     "positionNote": "Scegli dove si trova la barra di formattazione nell’editor.",
     "positionTop": "In alto",
     "positionBottom": "In basso"
+  },
+  "kanban": {
+    "todo": "Da fare",
+    "inProgress": "In corso",
+    "review": "In revisione",
+    "done": "Completato",
+    "color": "Colore",
+    "columns": "Colonne",
+    "columnCount_other": "{{count}} colonne",
+    "cardCount_other": "{{count}} schede",
+    "addColumn": "Aggiungi colonna",
+    "removeBoard": "Rimuovi bacheca",
+    "moveTo": "Sposta in",
+    "cardCount_one": "{{count}} scheda",
+    "columnCount_one": "{{count}} colonna"
   }
 }

@@ -111,7 +111,7 @@ export async function applyImport(
   // while the old day stays live in the series. An event the .ics writer
   // named after one of this vault's items (`<id>@privacynotes.app`) is that
   // item. Skipped, never merged, like the two rules above.
-  // Spec: ops/docs/plans/google-calendar-import.md (section 4.10)
+  // Spec: ops/docs/archive/google-calendar-import.md (section 4.10)
   if (incoming.some((n) => n.type === 'event' && !ownsId(n) && icsUidOf(n.trackers))) {
     const held = new Set(
       (await db.notes.filter((n) => n.type === 'event' && n.deleted !== 1 && n.trashed !== 1).toArray())

@@ -17,7 +17,7 @@ import { isConvertSource } from '../noteTypes';
  * strip stands IN FOR a hidden row, so showing both would repeat it, while
  * this row is a shortcut to a menu the user may keep using exactly as
  * before. Nobody's habit breaks when the window gets wider.
- * Spec: ops/docs/ui-patterns.md (section 80)
+ * Spec: ops/docs/archive/ui-patterns.md (section 80)
  *
  * The markdown/formatted switch is deliberately NOT here. Its glyph is the
  * markdown logo, and the tag row one line below wears the same logo for the

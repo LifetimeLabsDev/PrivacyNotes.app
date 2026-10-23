@@ -10,20 +10,20 @@
  * `settingsSearch:keywords.<id with dots as underscores>`. `shownOn` names the
  * pane's own rule for a row some devices never show; the search reads it
  * through `isShown` in SettingsSearchResults.tsx, which keeps this file data.
- * Spec: ops/docs/ui-patterns.md (section 114, settings search)
+ * Spec: ops/docs/archive/ui-patterns.md (section 114, settings search)
  */
 export type SectionId =
   | 'stats'
   | 'import'
   | 'plan'
   | 'storage'
-  | 'images'
   | 'security'
   | 'me'
   | 'design'
   | 'editor'
   | 'formatBar'
   | 'lists'
+  | 'trackers'
   | 'language'
   | 'date'
   | 'about'
@@ -49,13 +49,13 @@ export const SECTION_LABEL: Record<SectionId, string> = {
   import: 'notes:settings.importLabel',
   plan: 'notes:settings.planLabel',
   storage: 'notes:settings.storageLabel',
-  images: 'notes:settings.imagesLabel',
   security: 'notes:settings.securityLabel',
   me: 'notes:settings.accountLabel',
   design: 'notes:settings.appearanceLabel',
   editor: 'notes:settings.editorLabel',
   formatBar: 'notes:settings.formatBarLabel',
   lists: 'notes:settings.listsLabel',
+  trackers: 'notes:settings.trackersLabel',
   language: 'notes:settings.languageLabel',
   date: 'notes:settings.dateLabel',
   about: 'notes:settings.aboutLabel',
@@ -64,12 +64,15 @@ export const SECTION_LABEL: Record<SectionId, string> = {
 
 /** The label of each inner tab, shown after a result's name. */
 export const TAB_LABEL: Record<string, string> = {
-  'stats/writing': 'stats:tabs.writing',
   'stats/wellness': 'stats:tabs.wellness',
+  'stats/writing': 'stats:tabs.writing',
+  'stats/medication': 'stats:wellness.subTabs.medication',
+  'stats/mood': 'stats:wellness.mood.heading',
   'import/import': 'importExport:shell.tabImport',
   'import/export': 'importExport:shell.tabExport',
   'import/restore': 'importExport:shell.tabRestore',
   'import/vault': 'importExport:shell.tabVault',
+  'import/wellness': 'importExport:shell.tabWellness',
   'security/pin': 'security:modal.tabPin',
   'security/biometric': 'security:modal.tabBiometric',
   'security/phrase': 'security:modal.tabPhrase',
@@ -79,6 +82,14 @@ export const TAB_LABEL: Record<string, string> = {
   'plan/overview': 'security:accountTabs.overview',
   'date/format': 'notes:settings.dateTabFormat',
   'date/calendar': 'notes:settings.calendarLabel',
+  'lists/general': 'settings:appearance.listsTabGeneral',
+  'lists/sidebar': 'settings:appearance.listsTabSidebar',
+  'trackers/trackers': 'trackers:config.tabGeneral',
+  'trackers/questions': 'trackers:config.tabGeneral',
+  'trackers/checkIn': 'trackers:config.tabGeneral',
+  'trackers/factors': 'trackers:labels.factors',
+  'trackers/medications': 'trackers:labels.medication',
+  'trackers/custom': 'trackers:config.tabCustom',
   'about/about': 'landing:about.tabs.about',
   'about/hotkeys': 'landing:about.tabs.hotkeys',
   'about/rating': 'landing:about.tabs.rating',
@@ -112,19 +123,18 @@ const keyedImporter = (id: string, key: string, tab: 'import' | 'vault' = 'impor
 const ROW_ENTRIES: SettingEntry[] = [
   // Statistics
   { id: 'stats.writing', section: 'stats', tab: 'writing', label: 'stats:tabs.writing', keywords: true },
-  { id: 'stats.streak', section: 'stats', tab: 'writing', label: 'stats:writing.currentStreak', options: ['stats:writing.longestStreak'], keywords: true },
-  { id: 'stats.milestones', section: 'stats', tab: 'writing', label: 'stats:milestones.heading', keywords: true },
-  { id: 'stats.wellness', section: 'stats', tab: 'wellness', label: 'stats:tabs.wellness', keywords: true },
-  { id: 'stats.overview', section: 'stats', tab: 'overview', label: 'stats:tabs.overview', keywords: true },
-  { id: 'stats.explore', section: 'stats', tab: 'wellness', label: 'stats:wellness.subTabs.explore', keywords: true },
-  { id: 'stats.medication', section: 'stats', tab: 'wellness', label: 'stats:wellness.subTabs.medication', keywords: true },
-  { id: 'stats.patterns', section: 'stats', tab: 'wellness', label: 'stats:wellness.subTabs.patterns', keywords: true },
+  { id: 'stats.streak', section: 'stats', label: 'stats:writing.currentStreak', options: ['stats:writing.longestStreak'], keywords: true },
+  { id: 'stats.milestones', section: 'stats', label: 'stats:milestones.heading', keywords: true },
+  { id: 'stats.wellness', section: 'stats', tab: 'wellness', label: 'stats:home.trackers', keywords: true },
+  { id: 'stats.overview', section: 'stats', label: 'stats:tabs.overview', keywords: true },
+  { id: 'stats.medication', section: 'stats', tab: 'medication', label: 'stats:wellness.subTabs.medication', keywords: true },
+  { id: 'stats.patterns', section: 'stats', tab: 'wellness', label: 'stats:home.standsOut', keywords: true },
   { id: 'stats.moodTrend', section: 'stats', tab: 'wellness', label: 'stats:wellness.mood.heading' },
-  { id: 'stats.wellnessExport', section: 'stats', tab: 'wellness', label: 'stats:wellness.export.heading', keywords: true },
+  { id: 'stats.yearInPixels', section: 'stats', tab: 'mood', label: 'stats:wellness.pixels.heading' },
 
   // Journals
-  { id: 'journals.titles', section: 'date', label: 'settings:journals.titlesTitle', keywords: true },
-  { id: 'journals.suffix', section: 'date', label: 'settings:journals.suffixTitle', keywords: true },
+  { id: 'journals.titles', section: 'date', tab: 'format', label: 'settings:journals.titlesTitle', keywords: true },
+  { id: 'journals.suffix', section: 'date', tab: 'format', label: 'settings:journals.suffixTitle', keywords: true },
 
   // Import & Export
   { id: 'import.import', section: 'import', tab: 'import', label: 'importExport:shell.tabImport' },
@@ -136,6 +146,7 @@ const ROW_ENTRIES: SettingEntry[] = [
   importer('bear', 'Bear'),
   importer('evernote', 'Evernote'),
   importer('google-calendar', 'Google Calendar'),
+  { id: 'import.webcal', section: 'import', tab: 'import', label: 'importExport:webcal.title' },
   importer('google-keep', 'Google Keep'),
   importer('ia-writer', 'iA Writer'),
   importer('joplin', 'Joplin'),
@@ -163,6 +174,11 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'restore.fullBackup', section: 'import', tab: 'restore', label: 'importExport:restorePick.fullBackupTitle' },
   { id: 'restore.encryptedBackup', section: 'import', tab: 'restore', label: 'importExport:restorePick.encryptedBackupTitle' },
   { id: 'import.vault', section: 'import', tab: 'vault', label: 'importExport:shell.tabVault', keywords: true },
+  { id: 'import.wellness', section: 'import', tab: 'wellness', label: 'stats:wellness.export.openExport', keywords: true },
+  { id: 'wellness.aiPrompt', section: 'import', tab: 'wellness', label: 'stats:wellness.export.copyAIPrompt' },
+  { id: 'wellness.doctorReport', section: 'import', tab: 'wellness', label: 'stats:wellness.export.doctorPDF' },
+  { id: 'wellness.json', section: 'import', tab: 'wellness', label: 'stats:wellness.export.downloadJSON' },
+  { id: 'wellness.csv', section: 'import', tab: 'wellness', label: 'stats:wellness.export.downloadCSV' },
   importer('bitwarden', 'Bitwarden', 'vault'),
   keyedImporter('browser-passwords', 'importExport:sourceLabel.browserPasswords', 'vault'),
 
@@ -177,10 +193,11 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'storage.quota', section: 'storage', label: 'settings:storage.quotaLabel', keywords: true },
   { id: 'storage.addon', section: 'storage', label: 'settings:storage.addonHeading', keywords: true },
 
-  // Images
-  { id: 'images.spaceSaver', section: 'images', label: 'settings:images.spaceSaverTitle', keywords: true },
-  { id: 'images.contactPhotos', section: 'images', label: 'settings:images.contactTitle' },
-  { id: 'images.removeLocation', section: 'images', label: 'settings:images.removeLocationTitle', keywords: true },
+  // Images, a tab of Storage since 2026-10-22
+  { id: 'storage.images', section: 'storage', tab: 'images', label: 'notes:settings.imagesLabel', keywords: true },
+  { id: 'images.spaceSaver', section: 'storage', tab: 'images', label: 'settings:images.spaceSaverTitle', keywords: true },
+  { id: 'images.contactPhotos', section: 'storage', tab: 'images', label: 'settings:images.contactTitle' },
+  { id: 'images.removeLocation', section: 'storage', tab: 'images', label: 'settings:images.removeLocationTitle', keywords: true },
 
   { id: 'account.connectedAccounts', section: 'plan', tab: 'connectedAccounts', label: 'security:connectedAccounts.title', options: ['security:connectedAccounts.providers.google', 'security:connectedAccounts.providers.apple', 'security:connectedAccounts.providers.github'], shownOn: 'realAccount' },
 
@@ -227,15 +244,23 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'appearance.formatBar', section: 'formatBar', label: 'settings:appearance.tabFormatBar', keywords: true },
   { id: 'appearance.startView', section: 'lists', label: 'settings:appearance.startViewTitle', keywords: true },
   { id: 'appearance.view', section: 'lists', label: 'settings:appearance.viewTitle', options: ['settings:appearance.viewList', 'settings:appearance.viewGrid'], keywords: true },
-  { id: 'appearance.sinkChecked', section: 'lists', label: 'settings:appearance.sinkCheckedTitle', keywords: true },
+  { id: 'appearance.taskConfetti', section: 'editor', label: 'settings:appearance.taskConfettiTitle', keywords: true },
+  { id: 'appearance.sinkChecked', section: 'editor', label: 'settings:appearance.sinkCheckedTitle', keywords: true },
+  { id: 'appearance.defaultApps', section: 'editor', label: 'settings:appearance.defaultAppsTitle', keywords: true, shownOn: 'desktopApp' },
+  { id: 'trackers.setup', section: 'trackers', tab: 'trackers', label: 'trackers:config.chooseTrackers', keywords: true },
+  { id: 'trackers.habitQuestions', section: 'trackers', tab: 'questions', label: 'trackers:config.habitQuestions', keywords: true },
+  { id: 'trackers.ownHabits', section: 'trackers', tab: 'questions', label: 'trackers:config.addHabit' },
+  { id: 'trackers.custom', section: 'trackers', tab: 'custom', label: 'trackers:config.customTrackers', keywords: true },
+  { id: 'trackers.factors', section: 'trackers', tab: 'factors', label: 'trackers:config.factorsTitle', keywords: true },
+  { id: 'trackers.medications', section: 'trackers', tab: 'medications', label: 'trackers:config.medicationsTitle', keywords: true },
   { id: 'appearance.spaces', section: 'lists', label: 'settings:appearance.spacesTitle', keywords: true },
-  { id: 'appearance.sidebar', section: 'lists', label: 'settings:appearance.sidebarTitle', options: ['settings:appearance.colInSidebar', 'settings:appearance.colInAll'], keywords: true },
+  { id: 'appearance.sidebar', section: 'lists', tab: 'sidebar', label: 'settings:appearance.sidebarTitle', options: ['settings:appearance.colInSidebar', 'settings:appearance.colInAll'], keywords: true },
 
   // Language
   { id: 'language.spellCheck', section: 'language', label: 'settings:appearance.spellCheckTitle', keywords: true },
   { id: 'language.language', section: 'language', label: 'settings:appearance.language', keywords: true },
-  { id: 'language.dateFormat', section: 'date', label: 'settings:language.dateFormat', options: ['settings:language.dayFirst', 'settings:language.monthFirst', 'settings:language.yearFirst'], keywords: true },
-  { id: 'language.clock', section: 'date', label: 'settings:language.clock', options: ['settings:language.hour24', 'settings:language.hour12'], keywords: true },
+  { id: 'language.dateFormat', section: 'date', tab: 'format', label: 'settings:language.dateFormat', options: ['settings:language.dayFirst', 'settings:language.monthFirst', 'settings:language.yearFirst'], keywords: true },
+  { id: 'language.clock', section: 'date', tab: 'format', label: 'settings:language.clock', options: ['settings:language.hour24', 'settings:language.hour12'], keywords: true },
   { id: 'language.reportMistake', section: 'language', label: 'settings:language.reportMistake' },
 
   // Calendar
@@ -244,6 +269,7 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'calendar.alertBirthday', section: 'date', tab: 'calendar', label: 'settings:calendar.alertBirthday', keywords: true },
   { id: 'calendar.reminderTitles', section: 'date', tab: 'calendar', label: 'settings:calendar.reminderTitles', keywords: true },
   { id: 'calendar.where', section: 'date', tab: 'calendar', label: 'settings:calendar.whereTitle', keywords: true },
+  { id: 'calendar.checkInReminder', section: 'trackers', tab: 'checkIn', label: 'settings:calendar.checkInReminder', keywords: true },
   { id: 'calendar.weekNumbers', section: 'date', tab: 'calendar', label: 'settings:calendar.weekNumbers', keywords: true },
   { id: 'calendar.hours', section: 'date', tab: 'calendar', label: 'settings:calendar.hours', keywords: true },
 

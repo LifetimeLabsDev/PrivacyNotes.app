@@ -1,6 +1,7 @@
 import { Trans, useTranslation } from 'react-i18next';
 import { useEscapeToClose } from '../useEscapeToClose';
-import { WarningCircle, X } from '../icons';
+import { WarningCircle } from '../icons';
+import { CloseButton } from '../ui';
 
 /**
  * Phrase-reminder confirmation shown when the user clicks Sign Out
@@ -79,13 +80,7 @@ export function SignOutConfirmModal({
           <h2 className="text-lg font-semibold">
             {t('signOutConfirm.title')}
           </h2>
-          <button
-            onClick={dismiss}
-            className="text-pn-muted hover:text-pn-soft transition p-1 -m-1"
-            aria-label={t('close')}
-          >
-            <X size={18} />
-          </button>
+          <CloseButton onClick={dismiss} />
         </div>
         <p className="text-sm text-pn-muted leading-relaxed">
           <Trans

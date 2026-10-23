@@ -9,7 +9,7 @@ import type { ImportBlob } from './types';
  * `{"root":{"type":"root","children":[...]}}`. The node types below are the
  * set Standard Notes registers (`SuperEditor/Lexical/Nodes/AllNodes.ts` in
  * their app repository), and every field read here is one its `exportJSON`
- * writes. Spec: ops/docs/plans/standard-notes-super.md
+ * writes. Spec: ops/docs/archive/standard-notes-super.md
  *
  * Mapping:
  *   paragraph / heading / quote          -> markdown; an aligned block is

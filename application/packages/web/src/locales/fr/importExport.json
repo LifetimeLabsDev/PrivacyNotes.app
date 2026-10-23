@@ -9,7 +9,8 @@
     "tabExport": "Exporter",
     "tabRestore": "Restaurer",
     "tabVault": "Mots de passe",
-    "working": "En cours…"
+    "working": "En cours…",
+    "tabWellness": "Suivis"
   },
   "footer": {
     "exportNote": "Les exports se font en local. Rien n'est envoyé.",
@@ -20,7 +21,9 @@
     "autoTagLabel": "Étiqueter les notes importées par source",
     "autoTagDesc": "Les notes Google Keep reçoivent <keep>#google</keep>, Obsidian reçoit <obsidian>#obsidian</obsidian>, et ainsi de suite.",
     "guideAria": "Guide d'import pour {{app}}",
-    "guideLabel": "Guide"
+    "guideLabel": "Guide",
+    "groupGeneral": "Général",
+    "groupNotes": "Notes"
   },
   "folderImport": {
     "tagLabel": "Étiqueter aussi les notes par dossier",
@@ -49,6 +52,24 @@
     "timeZone": "Fuseau horaire",
     "ends": "Fin",
     "repeats": "Répétition"
+  },
+  "webcal": {
+    "title": "Webcal",
+    "desc": "Une adresse de calendrier, comme un lien webcal:// de Proton, iCloud, Outlook ou d'un calendrier public. Le calendrier est téléchargé une seule fois ; colle l'adresse à nouveau plus tard pour n'ajouter que les nouveaux événements.",
+    "fieldLabel": "Adresse du calendrier",
+    "import": "Importer",
+    "downloading": "Téléchargement…",
+    "errors": {
+      "invalid": "Colle une adresse qui commence par webcal://, webcals:// ou https://.",
+      "refused": "Impossible d'ouvrir cette adresse.",
+      "wrongType": "Cette adresse ne mène pas à un fichier de calendrier.",
+      "tooLarge": "Ce calendrier dépasse 10 Mo.",
+      "timeout": "Le serveur du calendrier n'a pas répondu à temps. Réessaie plus tard.",
+      "blocked": "Le serveur du calendrier a refusé le téléchargement. Vérifie que le calendrier est partagé ou public.",
+      "offline": "Tu es hors ligne. Connecte-toi et réessaie.",
+      "limit": "Trop de téléchargements en peu de temps. Attends une minute et réessaie.",
+      "failed": "Impossible de télécharger le calendrier. Vérifie l'adresse et réessaie."
+    }
   },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip (dossier Keep) ou une seule note .json. Les listes de contrôle s'importent en listes de tâches natives.",
@@ -82,7 +103,7 @@
     "intro": "Importe des identifiants, cartes bancaires et clés SSH depuis un autre gestionnaire de mots de passe."
   },
   "restorePick": {
-    "intro": "Restaure une sauvegarde PrivacyNotes que tu as exportée plus tôt. Ton fichier est lu et déchiffré en local.",
+    "intro": "Restaure une sauvegarde PrivacyNotes que tu as exportée plus tôt.",
     "fullBackupTitle": "Sauvegarde complète (.zip)",
     "fullBackupDesc": "Restaure notes, journaux, éléments du coffre, tâches, images, audio et fichiers. Une note que tu as déjà est conservée, ou mise à jour si la sauvegarde en contient une version plus récente.",
     "encryptedBackupTitle": "Sauvegarde chiffrée (.pnbackup, .pnbackupz)",

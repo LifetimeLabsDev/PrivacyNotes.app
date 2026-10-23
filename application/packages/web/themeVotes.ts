@@ -50,7 +50,10 @@ export function rankThemes(
 }
 
 /** The current upvotes, from the edge cache or GitHub; null when neither answers. */
-export async function liveVotes(token: string | undefined): Promise<Map<number, number> | null> {
+export async function liveVotes(
+  token: string | undefined,
+  ctx: { waitUntil(promise: Promise<unknown>): void },
+): Promise<Map<number, number> | null> {
   if (!token) return null;
   const cache = caches.default;
   const key = new Request(CACHE_KEY);
@@ -76,14 +79,17 @@ export async function liveVotes(token: string | undefined): Promise<Map<number, 
     const body: unknown = await res.json();
     const votes = parseVotes(body);
     if (!votes) throw new Error('shape');
-    void cache.put(
-      key,
-      new Response(JSON.stringify(body), {
-        headers: { 'Content-Type': 'application/json', 'Cache-Control': `public, max-age=${TTL}` },
-      }),
+    ctx.waitUntil(
+      cache.put(
+        key,
+        new Response(JSON.stringify(body), {
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': `public, max-age=${TTL}` },
+        }),
+      ),
     );
     return votes;
-  } catch {
+  } catch (err) {
+    console.error(`theme-votes: ${err instanceof Error ? err.message : 'error'}`);
     failedAt = Date.now();
     return null;
   }

@@ -1,9 +1,12 @@
 import { useMemo } from 'react';
+import { PALETTE } from '../editorColors';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import type { MedicationTemplate } from '../trackerTypes';
 import type { TrackerStats } from '../trackerStats';
 import { SectionEyebrow } from '../settingsUI';
+import { ProMark } from '../UpgradeModal';
+import { ArrowsLeftRight, CalendarBlank, ClockCounterClockwise, Pill } from '../icons';
 import { formatDay } from '../intlFormat';
 import { TrackerChart } from '../TrackerChart';
 import { MIN_PER_SIDE } from '../trackerCompare';
@@ -23,7 +26,7 @@ function Legend({ t, dose, round }: { t: TFunction; dose?: boolean; round?: bool
       <span className="inline-flex items-center gap-1"><span className={`w-2.5 h-2.5 ${shape} bg-pn-soft`} />{t('wellness.medCalendar.taken')}</span>
       <span className="inline-flex items-center gap-1"><span className={`w-2.5 h-2.5 ${shape} ${round ? 'border-2 border-pn-soft' : 'bg-pn-soft opacity-30'}`} />{t('wellness.medCalendar.skipped')}, {t('wellness.medCalendar.missed')}</span>
       <span className="inline-flex items-center gap-1"><span className={`w-2.5 h-2.5 ${shape} border border-divider`} />{t('wellness.medCalendar.noEntry')}</span>
-      {dose && <span className="inline-flex items-center gap-1"><span style={{ color: '#C2512B' }}>&#9650;</span>{t('wellness.medCalendar.doseChange')}</span>}
+      {dose && <span className="inline-flex items-center gap-1"><span style={{ color: PALETTE.orange }}>&#9650;</span>{t('wellness.medCalendar.doseChange')}</span>}
     </div>
   );
 }
@@ -34,11 +37,12 @@ function MedTimeline({ medications }: { medications: MedicationTemplate[] }) {
   if (meds.length === 0) return null;
   return (
     <div className="mt-3 space-y-3">
-      <SectionEyebrow>{t('wellness.medication.dosageTimeline')}</SectionEyebrow>
+      <SectionEyebrow icon={ClockCounterClockwise}>{t('wellness.medication.dosageTimeline')}</SectionEyebrow>
       {meds.map((med) => {
         // dosageHistory[0] is the dose the medication STARTED on; `dosage` is the current one.
         const events: { date: string; label: string }[] = [
-          { date: med.startedAt, label: t('wellness.medication.started', { dosage: med.dosageHistory[0]?.dosage || med.dosage || med.name }) },
+          // Without a strength the line says only that it started.
+          { date: med.startedAt, label: (med.dosageHistory[0]?.dosage || med.dosage) ? t('wellness.medication.started', { dosage: med.dosageHistory[0]?.dosage || med.dosage }) : t('wellness.medication.startedPlain') },
           ...med.dosageHistory.slice(1).map((h) => ({ date: h.changedAt, label: t('wellness.medication.changedTo', { dosage: h.dosage }) })),
         ];
         events.sort((a, b) => a.date.localeCompare(b.date));
@@ -59,7 +63,7 @@ function MedTimeline({ medications }: { medications: MedicationTemplate[] }) {
   );
 }
 
-/** Spec: ops/docs/plans/wellness-statistics.md (section 10) */
+/** Spec: ops/docs/archive/wellness-statistics.md (section 10) */
 export function MedicationSubTab({ model, stats, medications, unlocked, isPro, onOpenDay }: {
   model: WellnessModel;
   stats: TrackerStats;
@@ -98,24 +102,27 @@ export function MedicationSubTab({ model, stats, medications, unlocked, isPro, o
   }
   return (
     <>
+      {/* No heading over an empty list: the breakdown is empty until a dose is logged. */}
+      {stats.medBreakdown.length > 0 && (
       <div>
-        <SectionEyebrow className="mb-2">{t('wellness.medication.adherence')}</SectionEyebrow>
+        <SectionEyebrow className="mb-2" icon={Pill}>{t('wellness.medication.adherence')}</SectionEyebrow>
         <div className="space-y-1.5">
           {stats.medBreakdown.map((m) => (
             <div key={m.id} className="flex items-center gap-2">
               <span className="text-xs text-pn-soft flex-1 truncate">{m.name}</span>
               <div className="w-24 h-3 bg-surface-0 rounded overflow-hidden">
-                <div className="h-full rounded" style={{ width: `${m.pct}%`, backgroundColor: m.pct >= 80 ? '#188562' : m.pct >= 50 ? '#A46714' : '#C2512B' }} />
+                <div className="h-full rounded" style={{ width: `${m.pct}%`, backgroundColor: m.pct >= 80 ? PALETTE.green : m.pct >= 50 ? PALETTE.yellow : PALETTE.red }} />
               </div>
               <span className="text-[11px] text-pn-muted w-12 text-end">{m.pct}%</span>
             </div>
           ))}
         </div>
       </div>
+      )}
 
       {meds.length > 0 && model.rangeDays <= STRIP_MAX_DAYS && (
         <div>
-          <SectionEyebrow className="mb-2">{t('wellness.medCalendar.heading')}</SectionEyebrow>
+          <SectionEyebrow className="mb-2" icon={CalendarBlank}>{t('wellness.medCalendar.heading')}</SectionEyebrow>
           <div className="space-y-1.5">
             {meds.map(({ d, series }) => (
               <div key={d.id} className="flex items-center gap-3">
@@ -139,13 +146,13 @@ export function MedicationSubTab({ model, stats, medications, unlocked, isPro, o
                   key={m.date + m.label}
                   title={`${formatDay(m.date, 'date')}: ${m.label}`}
                   className="absolute -translate-x-1/2 text-[10px] leading-none"
-                  style={{ left: `${((daysBetween(model.range.from, m.date) + 0.5) / model.rangeDays) * 100}%`, color: '#C2512B' }}
+                  style={{ left: `${((daysBetween(model.range.from, m.date) + 0.5) / model.rangeDays) * 100}%`, color: PALETTE.orange }}
                 >
                   &#9650;
                 </span>
               ))}
             </div>
-            <div className="flex justify-between text-[10px] text-pn-muted">
+            <div className="flex justify-between text-[11px] text-pn-muted">
               <span>{formatDay(model.range.from, 'dayMonth')}</span>
               <span>{formatDay(model.range.to, 'dayMonth')}</span>
             </div>
@@ -156,7 +163,7 @@ export function MedicationSubTab({ model, stats, medications, unlocked, isPro, o
 
       {model.rangeDays > STRIP_MAX_DAYS && meds.map(({ d, series }) => (
         <div key={d.id}>
-          <SectionEyebrow className="mb-2">{d.name}: {t('wellness.medCalendar.heading')}</SectionEyebrow>
+          <SectionEyebrow className="mb-2" icon={CalendarBlank}>{d.name}: {t('wellness.medCalendar.heading')}</SectionEyebrow>
           <TrackerChart
             spec={{ form: 'calendar', series, color: d.color }}
             height={CALENDAR_HEIGHT}
@@ -171,14 +178,14 @@ export function MedicationSubTab({ model, stats, medications, unlocked, isPro, o
       {lenses.length > 0 && (
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <SectionEyebrow>{t('wellness.medCalendar.doseLensHeading')}</SectionEyebrow>
-            {!isPro && <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">{t('wellness.patterns.proBadge')}</span>}
+            <SectionEyebrow icon={ArrowsLeftRight}>{t('wellness.medCalendar.doseLensHeading')}</SectionEyebrow>
+            {!isPro && <ProMark />}
           </div>
           {unlocked && (
             <div className="space-y-1.5">
               {lenses.map((l) => (
                 <div key={l.medicationId + l.date} className="rounded-md bg-track border border-divider px-3 py-2 text-xs text-pn-soft">
-                  <span className="text-pn-muted">{formatDay(l.date, 'date')}, {l.name} {l.dosage}: </span>
+                  <span className="text-pn-muted">{formatDay(l.date, 'date')}, {[l.name, l.dosage].filter(Boolean).join(' ')}: </span>
                   {l.before.n >= MIN_PER_SIDE && l.after.n >= MIN_PER_SIDE && l.before.mean !== null && l.after.mean !== null
                     ? t('wellness.medCalendar.doseLens', { before: formatNumber(l.before.mean), nBefore: l.before.n, after: formatNumber(l.after.mean), nAfter: l.after.n })
                     : t('wellness.medCalendar.doseLensShort', { count: MIN_PER_SIDE - Math.min(l.before.n, l.after.n) })}

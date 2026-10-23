@@ -27,7 +27,7 @@
  *      more often than a person switches apps: a closing OS dialog, devtools,
  *      and the folder picker itself all produce one.
  *
- * Spec: ops/docs/plans/markdown-folder.md (section 7, rule 1)
+ * Spec: ops/docs/archive/markdown-folder.md (section 7, rule 1)
  */
 import { useEffect, useRef } from 'react';
 import type { DirectoryEntry } from './fileAccess';

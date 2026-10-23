@@ -16,7 +16,7 @@ import { isDemoMode } from './demo';
  * The id rides in the fragment on the web, which the browser never sends to
  * a server.
  *
- * Spec: ops/docs/plans/note-shortcuts.md
+ * Spec: ops/docs/archive/note-shortcuts.md
  */
 
 export type ShortcutTarget = { id: string; heading?: string };
@@ -129,7 +129,7 @@ const OFFER_DISMISSED_KEY = 'privacynotes.ui.desktopOfferDismissed';
 
 /** True in a browser on a computer, where the desktop app may be installed.
  *  A phone that has the app opens the link there itself, and the demo's
- *  items exist in no app. Spec: ops/docs/plans/note-shortcuts.md (6) */
+ *  items exist in no app. Spec: ops/docs/archive/note-shortcuts.md (6) */
 export function isComputerBrowser(): boolean {
   if (isNative() || isDemoMode()) return false;
   const ua = navigator.userAgent;

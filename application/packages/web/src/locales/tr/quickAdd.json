@@ -1,20 +1,21 @@
 {
   "words": {
-    "every": "her, herbir",
-    "weekday": "haftaiçi, hafta-içi, işgünü, işgünleri",
+    "add": "ekle",
+    "every": "her, herbir, iki haftada bir, her iki haftada bir",
+    "weekday": "haftaiçi, hafta-içi, işgünü, işgünleri, iş günü, hafta içi",
     "daily": "hergün, gündelik",
     "weekly": "haftalık",
     "monthly": "aylık",
     "yearly": "yıllık, senelik",
     "until": "kadar, dek",
-    "for": "süre, süresi, boyunca",
+    "for": "süre, süresi, boyunca, süreyle",
     "at": "saat",
     "from": "başlangıç",
     "to": "ila, kadar, dek",
     "next": "gelecek, önümüzdeki, haftaya",
     "this": "bu",
     "last": "son",
-    "other": "ikinci",
+    "other": "ikinci, iki haftada bir, her iki haftada bir",
     "before": "önce, evvel",
     "alert": "hatırlat, hatırlatma, uyarı, alarm",
     "oclock": "saatte",
@@ -37,6 +38,7 @@
     "times": "kez, kere, defa, x",
     "ordinal": "., 'i, 'ı, 'u, 'ü, 'si, 'sı, 'inde, 'ında, 'unda, 'ünde, 'sinde, 'sında, 'de, 'da, 'te, 'ta",
     "work": "iş",
-    "personal": "kişisel, ev"
+    "personal": "kişisel, ev",
+    "in": "içinde, sonra"
   }
 }

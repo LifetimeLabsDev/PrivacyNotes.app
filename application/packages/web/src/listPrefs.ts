@@ -78,7 +78,7 @@ export type ListPrefs = {
    * Bookmarks pillar only: mix in read-only rows derived from URLs found
    * inside note bodies. Computed locally, never stored. Off in Global, on
    * from the start in the bookmarks pillar (PILLAR_DEFAULTS).
-   * Spec: ops/docs/plans/bookmarks-pillar.md (section 8)
+   * Spec: ops/docs/archive/bookmarks-pillar.md (section 8)
    */
   showNoteLinks: boolean;
   /**
@@ -92,7 +92,7 @@ export type ListPrefs = {
    * Whether the list draws group headers. The sort decides the groups: date
    * buckets for a date sort, first letters for the title sort, none for size.
    * Default false. Only the panes that draw groups offer the switch.
-   * Spec: ops/docs/plans/list-groups.md
+   * Spec: ops/docs/archive/list-groups.md
    */
   showGroups: boolean;
 };
@@ -175,7 +175,7 @@ const PILLAR_DEFAULTS: Partial<Record<Pillar, Partial<ListPrefs>>> = {
   // Contacts: a person's row says who they are and how to reach them; the
   // date of the last edit is noise there. Sort stays the global default
   // (date modified), by decision, and A to Z is one click away.
-  // Spec: ops/docs/plans/contacts-pillar.md (section 10, PILLAR_DEFAULTS)
+  // Spec: ops/docs/archive/contacts-pillar.md (section 10, PILLAR_DEFAULTS)
   contacts: { showDate: false },
   files: { showPreview: false, showDate: false },
   journal: { showDate: false, sortField: 'created' },

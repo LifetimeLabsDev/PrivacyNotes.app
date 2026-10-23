@@ -99,7 +99,7 @@ interface UseMultiSelectReturn {
  *  event, long before the click handler's `preventDefault()` runs. Attach to
  *  a list's scroll container so every row is covered by one handler - it
  *  fires only while shift is held, so ordinary text selection is untouched.
- *  Spec: ops/docs/ui-patterns.md section 53. */
+ *  Spec: ops/docs/archive/ui-patterns.md section 53. */
 export function suppressShiftTextSelection(e: React.MouseEvent) {
   if (e.shiftKey) e.preventDefault();
 }

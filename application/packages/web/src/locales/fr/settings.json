@@ -1,7 +1,9 @@
 {
   "shell": {
     "title": "Paramètres",
-    "allSettings": "Tous les paramètres"
+    "allSettings": "Tous les paramètres",
+    "fillWindow": "Utiliser toute la fenêtre",
+    "restoreWindow": "Revenir à la taille normale"
   },
   "account": {
     "title": "Compte",
@@ -106,6 +108,11 @@
     "sharedSlot_other": "{{count}} installations partagent une même place d'appareil",
     "added": "ajouté {{time}}",
     "lastActive": "dernière activité {{time}}",
+    "versionUnknown": "version inconnue",
+    "idLabel": "ID",
+    "browser": "Navigateur",
+    "update": "Mise à jour",
+    "updateHint": "Cette version ne peut plus synchroniser. Mets à jour l'app sur cet appareil.",
     "removeAll": "Tout supprimer",
     "recentlyRemoved": "Récemment supprimés",
     "removedAt": "Supprimé {{time}}"
@@ -191,6 +198,8 @@
     "faviconsProxy": "Les icônes passent par notre proxy. Uniquement sur cet appareil.",
     "invisiblesTitle": "Caractères invisibles",
     "invisiblesDesc": "Affiche les espaces, les sauts de ligne et les marques de paragraphe pendant que tu écris.",
+    "listsTabGeneral": "Général",
+    "listsTabSidebar": "Barre latérale et Tout",
     "sidebarTitle": "<sb>Barre latérale</sb> et <all>Tout</all>",
     "sidebarDesc": "Quelles vues apparaissent dans la barre latérale et quels éléments contient la liste « Tout ».",
     "colInSidebar": "Barre latérale",
@@ -211,14 +220,30 @@
     "contentWidthFull": "Pleine",
     "lineSpacingTitle": "Interligne",
     "noteColorsTitle": "Couleurs des dossiers et étiquettes",
+    "noteColorsPickerTitle": "Pour tous les dossiers et étiquettes",
     "noteColorsDesc": "Comment une note affiche la couleur de son dossier ou de son étiquette : toute la note, seulement son icône, ou pas du tout.",
     "noteColorsBackground": "Fond",
     "noteColorsExampleTitle": "Week-end à Lisbonne",
     "noteColorsExampleFolder": "Voyages, un dossier vert",
-    "noteColorsAccent": "Icône",
+    "noteColorsAccent": "Icône seule",
     "noteColorsOff": "Désactivé",
+    "checkboxesTitle": "Cases à cocher",
+    "taskConfettiTitle": "Confettis en cochant",
+    "taskConfettiDesc": "Quelques confettis jaillissent d'une case quand tu la coches.",
     "sinkCheckedTitle": "Descendre les éléments cochés",
     "sinkCheckedDesc": "Un élément coché passe sous les éléments non cochés de sa liste.",
+    "defaultAppsTitle": "Ouvrir avec PrivacyNotes",
+    "defaultAppsMarkdown": "Fichiers Markdown",
+    "defaultAppsText": "Fichiers texte",
+    "defaultAppsMarkdownHint": "Les fichiers .md sur lesquels tu double-cliques s'ouvrent ici.",
+    "defaultAppsTextHint": "Les fichiers .txt et README sur lesquels tu double-cliques s'ouvrent ici.",
+    "defaultAppsTextHintWindows": "Les fichiers .txt sur lesquels tu double-cliques s'ouvrent ici.",
+    "defaultAppsTextFinderSteps": "Pour changer cela, choisis « Lire les informations » sur un fichier .txt dans le Finder, sélectionne PrivacyNotes sous « Ouvrir avec », puis clique sur « Tout modifier ».",
+    "defaultAppsMakeDefault": "Définir par défaut",
+    "defaultAppsIsDefault": "Par défaut",
+    "defaultAppsOwnerOther": "Ils s'ouvrent actuellement avec {{app}}.",
+    "defaultAppsOwnerOtherUnnamed": "Ils s'ouvrent actuellement avec une autre app.",
+    "defaultAppsOwnerNone": "Ils n'ont pas encore d'app par défaut.",
     "spacesTitle": "Espaces",
     "spacesDesc": "Sépare ta bibliothèque en Personnel et Travail, et affiche-en un à la fois.",
     "lineSpacingDesc": "L'espace entre les lignes et les paragraphes quand tu écris.",
@@ -248,7 +273,8 @@
       "none": "Aucun thème ici pour l'instant.",
       "sortLabel": "Ordre",
       "sortVotes": "Plus de votes",
-      "sortNewest": "Plus récents"
+      "sortNewest": "Plus récents",
+      "more": "Plus de thèmes"
     },
     "custom": {
       "newTheme": "Nouveau thème",
@@ -449,6 +475,8 @@
     "wifiHoldTooltip": "Les fichiers partent dès le retour du wifi. Les notes continuent de se synchroniser.",
     "notBackedUp": "Non sauvegardé",
     "notSynced": "Non synchronisé",
+    "firstSyncPending": "Cet appareil n'a pas encore terminé sa première synchronisation avec le serveur, donc certaines notes peuvent encore manquer ici.",
+    "pullFailed": "La dernière synchronisation n'a pas pu télécharger depuis le serveur. Elle réessaie automatiquement.",
     "notBackedUpTooltip_one": "{{count}} note n'est pas sauvegardée. Clique pour voir pourquoi.",
     "notBackedUpTooltip_other": "{{count}} notes ne sont pas sauvegardées. Clique pour voir pourquoi.",
     "notBackedUpAria_one": "{{count}} note n'est pas sauvegardée",
@@ -531,7 +559,7 @@
     "alertBirthday": "Anniversaires",
     "alertsHelp": "Les nouveaux éléments démarrent avec ces alertes. Ensuite, chaque élément garde ses propres alertes.",
     "reminderTitles": "Afficher les titres dans les rappels",
-    "reminderTitlesHelp": "Désactivé, un rappel affiche le mot Rappel et l'heure. Un élément protégé par ton PIN le fait toujours.",
+    "reminderTitlesHelp": "Activé, un rappel affiche le titre de l'élément. Désactivé, il n'affiche que « Rappel » et l'heure. Un élément protégé par ton PIN n'affiche jamais son titre.",
     "whereTitle": "Rappels sur cet appareil",
     "reminderHint": {
       "mobile": "Les rappels sonnent sur ce téléphone, même quand PrivacyNotes est fermé.",
@@ -545,11 +573,14 @@
     "permissionDenied": "Les notifications sont bloquées pour PrivacyNotes. Autorise-les dans les paramètres de ce navigateur ou de cet appareil.",
     "weekNumbers": "Afficher les numéros de semaine",
     "weekNumbersHelp": "Dans la vue Mois et les petits calendriers.",
-    "hours": "Jour et Semaine s'ouvrent à",
+    "hours": "Première heure en Jour et Semaine",
+    "checkInReminder": "Rappel du bilan du jour",
+    "checkInReminderHelp": "« Comment vas-tu aujourd'hui ? » une fois par jour, sur cet appareil. Pas un jour où tu as déjà noté ton humeur ou passé le bilan.",
+    "checkInReminderAt": "Sonne à",
     "groupView": "Affichage",
     "groupReminders": "Rappels",
     "groupDefaults": "Alertes par défaut",
-    "hoursHelp": "Fais défiler vers le haut pour voir les heures plus tôt.",
+    "hoursHelp": "Les vues Jour et Semaine s'ouvrent défilées jusqu'à cette heure. Les heures d'avant sont au-dessus.",
     "to": "à"
   }
 }

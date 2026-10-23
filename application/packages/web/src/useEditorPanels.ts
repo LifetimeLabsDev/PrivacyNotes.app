@@ -12,7 +12,7 @@ import { getActiveMatchRange } from './editorSearch';
 import { isImeComposing } from './imeComposing';
 import { APP_KEYS, matchesKey } from './shortcutMatch';
 import { editorCommands, insertDateText, registerEditorCommand } from './editorCommands';
-import { readOutlinePref, writeOutlinePref } from './editorPrefs';
+import { readConnectionsPref, readOutlinePref, writeConnectionsPref, writeOutlinePref } from './editorPrefs';
 import { proUnlocked } from './demo';
 import { FormatBarContext } from './formatBarContext';
 import { SLOT_PILL_HEIGHT, SLOT_PILL_WIDTH } from './EditorSlotPill';
@@ -63,7 +63,24 @@ export function useEditorPanels({
   const [swapTerm, setSwapTerm] = useState('');
   // Document outline panel. Opened via the top-right toggle or Cmd/Ctrl+Shift+O;
   // shares the top-right slot with the find bar, so only one is open at a time.
-  const [outlineOpen, setOutlineOpen] = useState(readOutlinePref);
+  const [outlineOpen, setOutlineOpenRaw] = useState(readOutlinePref);
+  // The Connections panel (backlinks) is the slot's third panel. One panel
+  // at a time: opening any of the three closes the other two.
+  const [connectionsOpen, setConnectionsOpenRaw] = useState(() => !readOutlinePref() && readConnectionsPref());
+  const setOutlineOpen = useCallback((next: boolean | ((v: boolean) => boolean)) => {
+    setOutlineOpenRaw((v) => {
+      const open = typeof next === 'function' ? next(v) : next;
+      if (open) setConnectionsOpenRaw(false);
+      return open;
+    });
+  }, []);
+  const setConnectionsOpen = useCallback((open: boolean) => {
+    setConnectionsOpenRaw(open);
+    if (open) {
+      setOutlineOpenRaw(false);
+      setBar('none');
+    }
+  }, []);
   // The row of corner pills (find, the outline), measured so the note's
   // first lines wrap beside it instead of under it. The footprint is the
   // collapsed row whether the outline is open or not: the open panel covers
@@ -121,7 +138,8 @@ export function useEditorPanels({
     setBar('find');
     setBarFocusTick((t) => t + 1);
     setOutlineOpen(false);
-  }, []);
+    setConnectionsOpenRaw(false);
+  }, [setOutlineOpen]);
 
   /**
    * Open the find bar on a word the list search matched in this note, so the
@@ -134,7 +152,8 @@ export function useEditorPanels({
     setFindSeed((s) => ({ term, tick: (s?.tick ?? 0) + 1 }));
     setBar('find');
     setOutlineOpen(false);
-  }, []);
+    setConnectionsOpenRaw(false);
+  }, [setOutlineOpen]);
 
   /** Mirror of `findSeed` for closeSeededFind, which fires from an effect in
    *  NotesView and must not re-subscribe on every seed. */
@@ -170,7 +189,8 @@ export function useEditorPanels({
     setBar('replace');
     setBarFocusTick((t) => t + 1);
     setOutlineOpen(false);
-  }, [readOnly, isPro, onOpenUpgrade]);
+    setConnectionsOpenRaw(false);
+  }, [readOnly, isPro, onOpenUpgrade, setOutlineOpen]);
 
   // Turning read-only on under an open replace bar closes it. The find bar
   // stays: finding is reading, and a read-only note keeps it.
@@ -300,6 +320,16 @@ export function useEditorPanels({
         toggleReplace();
         return;
       }
+      // The Connections panel registers its toggle only while its pill is
+      // shown, so on a note with no links the key does nothing.
+      if (matchesKey(e, APP_KEYS.connections)) {
+        const toggle = editorCommands.connections;
+        if (inForeignField || !toggle) return;
+        e.preventDefault();
+        toggle();
+        return;
+      }
+
       const isOutline = matchesKey(e, APP_KEYS.outline);
       const isFind = matchesKey(e, APP_KEYS.find);
       if (!isOutline && !isFind) return;
@@ -332,6 +362,9 @@ export function useEditorPanels({
   useEffect(() => {
     writeOutlinePref(outlineOpen);
   }, [outlineOpen]);
+  useEffect(() => {
+    writeConnectionsPref(connectionsOpen);
+  }, [connectionsOpen]);
 
   // The pill row's footprint becomes a top-right spacer (see
   // .ProseMirror::before), so the first line wraps beside it. The spacer
@@ -378,6 +411,8 @@ export function useEditorPanels({
     barFocusTick,
     outlineOpen,
     setOutlineOpen,
+    connectionsOpen,
+    setConnectionsOpen,
     setPillsEl,
     findSeed,
     openFindWith,

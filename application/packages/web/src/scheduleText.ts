@@ -10,7 +10,7 @@ import { timeLabel } from './JournalCalendar';
  * alert, and the one-line summary under the Schedule view and in the quick
  * add. Every date and time through `intlFormat.ts`, every word from the
  * `shell` catalog. `t` is bound to `shell`.
- * Spec: ops/docs/plans/calendar-pillar-spec.md (steps 6 and 7)
+ * Spec: ops/docs/archive/calendar-pillar-spec.md (steps 6 and 7)
  */
 
 function weekdayName(w: number, width: 'long' | 'short' = 'long'): string {

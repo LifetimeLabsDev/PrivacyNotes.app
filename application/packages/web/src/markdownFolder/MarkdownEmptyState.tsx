@@ -5,10 +5,11 @@
  * situations - a desktop browser without the API has a fix worth selling, a
  * phone does not - plus the remembered-folder prompt that only Chromium needs.
  *
- * Spec: ops/docs/plans/markdown-folder.md (sections 5 and 12)
+ * Spec: ops/docs/archive/markdown-folder.md (sections 5 and 12)
  */
 import { useTranslation } from 'react-i18next';
-import { Download, SlidersHorizontal, Copy, Check } from '../icons';
+import { Download, SlidersHorizontal, Copy, Check, FileText, FolderOpen } from '../icons';
+import { Button } from '../ui';
 import { useCopyToClipboard } from '../clipboard';
 import { marketingHomeHref } from '../siteLinks';
 import { MarkdownPitch } from './MarkdownExplainer';
@@ -159,20 +160,21 @@ export function MarkdownEmptyState({
             the screen, and equal halves make them read as one choice with two
             answers instead of a primary with an afterthought. */}
         <div className="grid grid-cols-2 gap-2 mt-4">
-          <button
-            type="button"
+          <Button
+            variant="primary"
+            icon={<FolderOpen size={15} aria-hidden="true" className="shrink-0" />}
             onClick={onOpenFolder}
-            className="text-[13px] font-medium px-3 py-2 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover transition"
+            className="w-full justify-center"
           >
             {busy ? t('markdown.scanning') : t('markdown.openFolder')}
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            icon={<FileText size={15} aria-hidden="true" className="shrink-0" />}
             onClick={onOpenFile}
-            className="text-[13px] px-3 py-2 rounded-md border border-divider hover:bg-surface-1 transition"
+            className="w-full justify-center"
           >
             {t('markdown.openFile')}
-          </button>
+          </Button>
         </div>
         {error && <p className="text-[12px] text-danger mt-2 text-center">{error}</p>}
       </div>

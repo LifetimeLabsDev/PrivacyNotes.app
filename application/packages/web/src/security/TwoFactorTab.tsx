@@ -4,14 +4,15 @@ import { useTranslation } from 'react-i18next';
 import { formatInstant } from '../intlFormat';
 import { useAuth } from '../auth';
 import { isDemoMode } from '../demo';
-import { AppWindow, Check, Copy, DeviceMobile, Download, Key, ShieldCheck, ShieldPlus } from '../icons';
+import { AppWindow, Check, Copy, DeviceMobile, Download, Key, ShieldCheck, ShieldPlus, ShieldSlash } from '../icons';
+import { Button } from '../ui';
 import { MfaRecoveryHelp } from '../MfaPrompt';
 import { ensureLevel2, fetchMfaStatus, MfaCancelledError, notifyMfaChanged, verifyMfaCodeForSession, type MfaStatus } from '../mfaStep';
 import { mfaSessionIdentity } from '../sessionWriteGuard';
 import { saveBlob } from '../saveFile';
 import { PinInput } from '../PinInput';
 import { HelpChip } from '../HelpChip';
-import { SectionEyebrow, SETTINGS_HELP, SettingsCallout } from '../settingsUI';
+import { SectionEyebrow, SETTINGS_BTN_PRIMARY, SETTINGS_HELP, SettingsCallout } from '../settingsUI';
 import { AccountSignInSetup } from '../AccountSignInSetup';
 import { useAccountLogins } from '../accountLogins';
 
@@ -27,8 +28,8 @@ export function labelTotpUri(uri: URL, account: string): string {
   params.set('issuer', TOTP_ISSUER);
   return `otpauth://totp/${encodeURIComponent(TOTP_ISSUER)}:${encodeURIComponent(account)}?${params.toString()}`;
 }
-// Button tiers: ops/docs/ui-patterns.md section 16, in theme tokens.
-const primary = 'rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-4 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed';
+// Button tiers: ops/docs/archive/ui-patterns.md section 16, in theme tokens.
+const primary = SETTINGS_BTN_PRIMARY;
 const secondary = 'inline-flex items-center justify-center gap-1.5 rounded-md border border-divider text-pn hover:bg-surface-1 px-4 py-2 text-sm transition disabled:opacity-40 disabled:cursor-not-allowed';
 const field = 'w-full rounded-md bg-surface-1 border border-divider text-pn px-3 py-2.5 text-sm focus:border-accent focus:outline-none';
 
@@ -370,7 +371,7 @@ export function TwoFactorTab() {
             <div className="p-3"><MfaRecoveryHelp /></div>
           </div>
           {verified.length > 1 && <p className={SETTINGS_HELP}>{t('twoFactor.multipleFactors', { count: verified.length })}</p>}
-          {removable && <button type="button" className={secondary} disabled={busy} onClick={() => removeFactor(removable.id)}>{t(busy ? 'twoFactor.working' : verified.length > 1 ? 'twoFactor.removeFactor' : 'twoFactor.disable')}</button>}
+          {removable && <Button icon={<ShieldSlash size={15} aria-hidden="true" className="shrink-0" />} disabled={busy} onClick={() => removeFactor(removable.id)}>{t(busy ? 'twoFactor.working' : verified.length > 1 ? 'twoFactor.removeFactor' : 'twoFactor.disable')}</Button>}
           <HelpChip surface="twoFactor" className="pt-3 border-t border-divider" />
         </div>
       ) : !status.can_enroll && status.reason === 'mfa_managed_account_required' ? (

@@ -233,6 +233,8 @@ export async function parseBear(file: File, onProgress?: (msg: string) => void):
       fmTags = parseYamlTags(fm[1] ?? '');
       text = fm[2] ?? '';
     }
+    // Inline tags may be in the title; read the full text before splitting.
+    const paths = bearTags(text);
     const lines = text.split('\n');
     const first = lines.findIndex((l) => l.trim() !== '');
     let title = '';
@@ -241,7 +243,7 @@ export async function parseBear(file: File, onProgress?: (msg: string) => void):
       lines.splice(0, first + 1);
       if (lines[0]?.trim() === '') lines.shift();
     }
-    return { raw: r, title, body: lines.join('\n'), fmTags };
+    return { raw: r, title, body: lines.join('\n'), fmTags, paths };
   });
   const titles = new Set(split.map((s) => s.title));
   const byId = new Map<string, string>();
@@ -262,11 +264,10 @@ export async function parseBear(file: File, onProgress?: (msg: string) => void):
   const out: ImportedNote[] = [];
   const deepest: Array<string | null> = [];
 
-  for (const { raw, title, body: rawBody, fmTags } of split) {
+  for (const { raw, title, body: rawBody, fmTags, paths } of split) {
     let body = rawBody;
     const stateCount = (body.match(STATE_COMMENT) ?? []).length;
     droppedState += stateCount;
-    const paths = bearTags(body);
     const nested = paths
       .map((t) => t.split('/').map((seg) => seg.trim()).filter(Boolean))
       .filter((segs) => segs.length > 1)

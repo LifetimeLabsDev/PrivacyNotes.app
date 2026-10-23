@@ -1,13 +1,15 @@
 {
   "placeholder": "Schreib los…",
+  "eventPlaceholder": "Tagesordnung, Adresse oder Notizen hinzufügen…",
   "toolbar": {
     "bold": "Fett",
+    "hideKeyboard": "Tastatur ausblenden",
     "italic": "Kursiv",
     "underline": "Unterstrichen",
     "heading": "Überschrift",
     "taskList": "Aufgabenliste",
     "bulletList": "Aufzählungsliste",
-    "addLink": "Link hinzufügen ({{keys}})",
+    "addLink": "Link hinzufügen",
     "noteLink": "Auf eine andere Notiz verlinken (oder [[ tippen)",
     "numberedList": "Nummerierte Liste",
     "textColor": "Textfarbe",
@@ -40,7 +42,6 @@
     "footnote": "Fußnote",
     "spoiler": "Spoiler",
     "copyBox": "Kopierfeld",
-    "withHint": "{{label}} ({{hint}})",
     "customize": "Formatleiste anpassen"
   },
   "align": {
@@ -98,7 +99,9 @@
       "update": "Aktualisierung",
       "time": "Zeit",
       "steps": "Schritte",
-      "place": "Ort"
+      "place": "Ort",
+      "kanban": "Kanban-Board",
+      "column": "Spalte"
     }
   },
   "color": {
@@ -132,27 +135,51 @@
     "resizeHint": "Halte {{shift}} gedrückt, um nur diese Spalte zu ändern, {{alt}} für feinere Schritte",
     "deleteRow": "Zeile löschen",
     "deleteColumn": "Spalte löschen",
-    "deleteTable": "Tabelle löschen"
+    "deleteTable": "Tabelle löschen",
+    "insertFormula": "Formel einfügen",
+    "formulaNoMatch": "Keine passende Formel",
+    "formula": {
+      "SUM": "Werte addieren",
+      "PRODUCT": "Werte multiplizieren",
+      "AVG": "Durchschnitt der Werte",
+      "AVERAGE": "Durchschnitt der Werte",
+      "MEDIAN": "Mittlerer Wert",
+      "MIN": "Kleinster Wert",
+      "MAX": "Größter Wert",
+      "COUNT": "Anzahl der Zahlen",
+      "ABS": "Wert ohne Vorzeichen",
+      "SQRT": "Quadratwurzel",
+      "SIGN": "Ob ein Wert positiv oder negativ ist",
+      "CEIL": "Auf eine ganze Zahl aufrunden",
+      "FLOOR": "Auf eine ganze Zahl abrunden",
+      "ROUND": "Auf eine ganze Zahl runden",
+      "LOG": "Logarithmus",
+      "RAND": "Eine Zufallszahl",
+      "PI": "Die Kreiszahl",
+      "E": "Eulersche Zahl",
+      "TAU": "Zweimal die Kreiszahl",
+      "PHI": "Der goldene Schnitt"
+    }
   },
   "find": {
     "placeholder": "In Notiz suchen",
     "label": "In Notiz suchen",
-    "previous": "Vorheriger Treffer (Shift+Enter)",
-    "previousTitle": "Zurück (Shift+Enter)",
-    "next": "Nächster Treffer (Enter)",
-    "nextTitle": "Weiter (Enter)",
+    "previous": "Vorheriger Treffer",
+    "previousTitle": "Zurück",
+    "next": "Nächster Treffer",
+    "nextTitle": "Weiter",
     "close": "Suche schließen",
-    "closeTitle": "Schließen ({{keys}})",
+    "closeTitle": "Schließen",
     "replacePlaceholder": "Ersetzen durch",
     "replaceLabel": "Ersetzen durch",
     "replace": "Ersetzen",
-    "replaceTitle": "Diesen Treffer ersetzen (Enter)",
+    "replaceTitle": "Diesen Treffer ersetzen",
     "replaceAll": "Alle",
     "replaceAllTitle": "Alle Treffer ersetzen",
     "caseSensitive": "Groß-/Kleinschreibung beachten",
     "caseSensitiveTitle": "Groß-/Kleinschreibung beachten",
     "closeReplace": "Suchen und Ersetzen schließen",
-    "closeReplaceTitle": "Schließen ({{keys}})",
+    "closeReplaceTitle": "Schließen",
     "showReplace": "Suchen und ersetzen",
     "hideReplace": "Ersetzen ausblenden",
     "replacedCount_one": "{{count}} ersetzt",
@@ -164,7 +191,6 @@
     "title": "Gliederung",
     "ariaLabel": "Notizgliederung",
     "hide": "Gliederung ausblenden",
-    "hideTitle": "Gliederung ausblenden ({{keys}})",
     "copyHeadingLink": "Link zur Überschrift kopieren",
     "copyNoteLink": "Notiz-Link kopieren",
     "copyHeadingShortcut": "Verknüpfung zur Überschrift kopieren",
@@ -172,6 +198,8 @@
   },
   "bodyMenu": {
     "cut": "Ausschneiden",
+    "copyAsPlain": "Als reinen Text kopieren",
+    "copyAsMarkdown": "Als Markdown kopieren",
     "sortAsc": "Zeilen von A bis Z sortieren",
     "sortDesc": "Zeilen von Z bis A sortieren"
   },
@@ -285,6 +313,7 @@
     "hidden": "Ausgeblendet",
     "hiddenNote": "Sie funktionieren weiter über Tastenkürzel und Markdown.",
     "hiddenDrop": "Zieh eine Schaltfläche hierher, um sie auszublenden.",
+    "arrangeTitle": "Schaltflächen",
     "markdownViewNote": "Die Markdown-Ansicht hat ihre eigenen, festen Schaltflächen.",
     "hiddenEmpty": "Nichts ist ausgeblendet.",
     "alwaysVisible": "Immer sichtbar",
@@ -319,5 +348,20 @@
     "positionNote": "Wähle, wo die Formatleiste im Editor sitzt.",
     "positionTop": "Oben",
     "positionBottom": "Unten"
+  },
+  "kanban": {
+    "todo": "Zu erledigen",
+    "inProgress": "In Arbeit",
+    "review": "Prüfung",
+    "done": "Erledigt",
+    "color": "Farbe",
+    "columns": "Spalten",
+    "columnCount_one": "{{count}} Spalte",
+    "columnCount_other": "{{count}} Spalten",
+    "cardCount_one": "{{count}} Karte",
+    "cardCount_other": "{{count}} Karten",
+    "addColumn": "Spalte hinzufügen",
+    "removeBoard": "Board entfernen",
+    "moveTo": "Verschieben nach"
   }
 }

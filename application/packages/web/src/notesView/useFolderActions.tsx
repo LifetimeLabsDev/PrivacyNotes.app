@@ -328,7 +328,7 @@ export function useFolderActions({
    * Only live notes move, and only into a folder that still exists: a sync
    * can delete one during the drag. The move then takes the Move dialog's
    * path, so a free account gets the same upgrade window.
-   * Spec: ops/docs/plans/drag-to-folder-and-tag.md (section 6)
+   * Spec: ops/docs/archive/drag-to-folder-and-tag.md (section 6)
    */
   function handleDropOnFolder(ids: string[], folderId: string | null) {
     const live = liveItemIds(ids, activeNotes);
@@ -365,7 +365,7 @@ export function useFolderActions({
            note no longer changes the chip's height. Unfiled keeps a DASHED
            border for "no folder yet" but in accent rather than grey - a grey
            dashed ghost read as a disabled control.
-           Spec: ops/docs/ui-patterns.md (editor tag row) */
+           Spec: ops/docs/archive/ui-patterns.md (editor tag row) */
         className={`shrink-0 inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-md border transition ${
           noteFolder
             ? 'border-accent/40 bg-accent/15 text-accent-strong hover:bg-accent/25'

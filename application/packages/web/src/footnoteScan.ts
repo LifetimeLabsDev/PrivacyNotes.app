@@ -8,7 +8,7 @@
  * It skips the places markdown-it does not read a footnote: code fences, code
  * spans and an escaped `\[^1]`.
  *
- * Spec: ops/docs/plans/footnotes.md (section 8)
+ * Spec: ops/docs/archive/footnotes.md (section 8)
  */
 
 export interface ScannedFootnote {

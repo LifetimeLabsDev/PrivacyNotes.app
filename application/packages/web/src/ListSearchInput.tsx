@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Terminal, X } from './icons';
 import { HoverLabel } from './HoverLabel';
+import { keyText } from './shortcutMatch';
 import { COMMAND_PREFIX, CommandPaletteContext } from './commandPalette';
 
 /**
@@ -118,10 +119,10 @@ export function ListSearchInput({
           wrapper centres with inset and flex, never a transform: a transform
           makes a stacking context, and the list rows below then paint over
           the tip.
-          Spec: ops/docs/plans/keyboard-shortcuts.md (decision D5) */}
+          Spec: ops/docs/archive/keyboard-shortcuts.md (decision D5) */}
       {!draft && commandsHere && (
         <span className="absolute end-1 inset-y-0 flex items-center">
-          <HoverLabel label={t('palette.open')} position="below-end" className="flex">
+          <HoverLabel label={t('palette.open')} keys={keyText('commandMode')} position="below-end" className="flex">
             <button
               type="button"
               onMouseDown={(e) => e.preventDefault()}

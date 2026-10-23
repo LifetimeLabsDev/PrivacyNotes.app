@@ -5,7 +5,7 @@
  * Undo. A mode that has never been chosen starts with its first three cards
  * starred, so a new device shows three themes and the stars explain why;
  * after that an empty slot stays empty until the person stars a theme.
- * Spec: ops/docs/plans/theme-paper.md (section 12)
+ * Spec: ops/docs/archive/theme-paper.md (section 12)
  */
 import { useSyncExternalStore } from 'react';
 import { DARK_THEMES, LIGHT_THEMES, type Theme, type ThemeChoice } from './theme';

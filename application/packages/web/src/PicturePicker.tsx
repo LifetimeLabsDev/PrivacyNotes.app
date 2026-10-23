@@ -7,18 +7,18 @@
  * stored file, and never a picture from a PIN-protected note that is still
  * locked (NotesView builds it).
  *
- * Spec: ops/docs/ui-patterns.md (section 107, the file card and the picker)
+ * Spec: ops/docs/archive/ui-patterns.md (section 107, the file card and the picker)
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { X } from './icons';
 import { useEscapeToClose } from './useEscapeToClose';
 import { ListSearchInput } from './ListSearchInput';
 import { LazyPicture } from './LazyPicture';
 import { isSoftKeyboardDevice } from './softKeyboard';
 import { textMatcher } from './textMatch';
 import type { MediaRef } from './mediaRefs';
+import { CloseButton } from './ui';
 
 export function PicturePicker({ items, onPick, onClose }: {
   items: MediaRef[];
@@ -56,14 +56,7 @@ export function PicturePicker({ items, onPick, onClose }: {
       <div className="bg-surface-2 border border-divider text-pn rounded-lg w-full max-w-lg flex flex-col max-h-[calc(100dvh-2rem)]">
         <div className="flex items-center justify-between gap-3 px-5 pt-4 pb-3">
           <h2 className="text-lg font-semibold">{t('picker.title')}</h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="shrink-0 text-pn-muted hover:text-pn-soft transition p-1 -m-1"
-            aria-label={t('common:actions.close')}
-          >
-            <X size={18} />
-          </button>
+          <CloseButton onClick={onClose} className="shrink-0" />
         </div>
         {items.length > 0 && (
           <div className="px-5 pb-3">

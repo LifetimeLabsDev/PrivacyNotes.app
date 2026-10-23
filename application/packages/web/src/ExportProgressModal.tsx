@@ -9,7 +9,7 @@
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
-import { X } from './icons';
+import { Button, Callout, CloseButton, ProgressBar } from './ui';
 
 interface Props {
   /** Human-readable status from the export pipeline. Empty once an export
@@ -54,21 +54,14 @@ export function ExportProgressModal({ status, done, error, onClose }: Props) {
               too: an X that dismissed the window would leave the work going
               with nothing on screen reporting it. */}
           {(done || error) && (
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label={t('common:actions.close')}
-              className="p-1 -m-1 rounded text-pn-muted hover:text-pn transition"
-            >
-              <X size={16} />
-            </button>
+            <CloseButton onClick={onClose} />
           )}
         </div>
 
         {/* Body */}
         <div className="px-6 py-5">
           {error ? (
-            <p className="text-sm text-danger">{error}</p>
+            <Callout tone="danger">{error}</Callout>
           ) : (
             <>
               {/* While it runs, the progress line. A clean finish has no
@@ -81,33 +74,20 @@ export function ExportProgressModal({ status, done, error, onClose }: Props) {
                 </p>
               )}
               {/* Progress bar */}
-              <div className="h-1.5 rounded-full bg-track overflow-hidden">
-                <div className={`h-full rounded-full transition-all duration-300 ${
-                  incomplete
-                    ? 'w-full bg-amber-500 dark:bg-amber-400'
-                    : done
-                      ? 'w-full bg-emerald-500 dark:bg-emerald-400'
-                      : 'w-2/3 bg-accent-fill animate-pulse'
-                }`} />
-              </div>
+              <ProgressBar
+                label={incomplete ? t('exportProgress.incompleteTitle') : done ? t('exportProgress.completeTitle') : t('exportProgress.exportingTitle')}
+                value={done ? 1 : undefined}
+                tone={incomplete ? 'warning' : done ? 'success' : 'info'}
+              />
             </>
           )}
         </div>
 
         {/* Footer */}
         <div className="px-5 py-3 border-t border-divider flex justify-end">
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={!done && !error}
-            className={`text-[13px] font-medium px-4 py-1.5 rounded-md transition ${
-              done || error
-                ? 'bg-accent-fill text-white hover:bg-accent-fill-hover'
-                : 'bg-track text-pn-muted/75 cursor-not-allowed'
-            }`}
-          >
+          <Button action="done" onClick={onClose} disabled={!done && !error}>
             {done || error ? t('common:actions.done') : t('exportProgress.exporting')}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

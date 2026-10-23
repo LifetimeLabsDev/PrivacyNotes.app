@@ -6,7 +6,7 @@
  * construction below rather than an estimate: the bits shown in the
  * generator are the log of how many distinct outputs the same settings can
  * produce, each equally likely.
- * Spec: ops/docs/ui-patterns.md (the password generator)
+ * Spec: ops/docs/archive/ui-patterns.md (the password generator)
  */
 
 /**

@@ -10,6 +10,8 @@
     "back": "Atrás",
     "next": "Siguiente",
     "remove": "Quitar",
+    "deleteConfirm": "¿Eliminar?",
+    "removeConfirm": "¿Quitar?",
     "copy": "Copiar",
     "rename": "Renombrar",
     "create": "Crear",
@@ -59,15 +61,17 @@
   },
   "palette": {
     "label": "Comandos",
-    "open": "Comandos (>)",
+    "open": "Comandos",
     "empty": "Ningún comando coincide",
     "groups": {
+      "features": "Funciones",
       "commands": "Comandos",
       "new": "Nuevo",
-      "goTo": "Ir a"
+      "goTo": "Ir a",
+      "themes": "Temas"
     },
     "commands": {
-      "quickSwitcher": "Ir a un elemento o a un ajuste",
+      "quickSwitcher": "Abrir Ninja: encuentra un elemento, añade lo que sea, ejecuta un comando",
       "historyBack": "Ir atrás",
       "historyForward": "Ir adelante",
       "toggleSidebar": "Mostrar u ocultar la barra lateral",
@@ -93,9 +97,9 @@
     }
   },
   "quickSwitcher": {
-    "label": "Ir a un elemento o a un ajuste",
-    "jumpTo": "Ir",
-    "placeholder": "Escribe un título o un ajuste, o > para los comandos",
+    "label": "Ninja: encuentra un elemento o un ajuste, añade lo que sea, ejecuta un comando",
+    "jumpTo": "Ninja",
+    "placeholder": "Ninja a tu servicio: un título, + para añadir, > para los comandos",
     "recent": "Recientes",
     "empty": "Ningún elemento ni ajuste con ese nombre",
     "searchAll": "Buscar en todo: «{{query}}»",
@@ -114,6 +118,7 @@
     "tagItems_other": "{{count}} elementos",
     "emptyTags": "Ninguna etiqueta con ese nombre",
     "emptyFolders": "Ninguna carpeta con ese nombre",
+    "emptyVault": "Aquí aún no hay nada. Escribe + para añadir tu primer elemento.",
     "onlyTags": "etiquetas",
     "onlyFolders": "carpetas",
     "showOnlyTags": "Solo etiquetas",
@@ -124,7 +129,13 @@
     "createTag": "Crear la etiqueta #{{name}}",
     "createFolder": "Crear la carpeta «{{name}}»",
     "newTag": "Nueva etiqueta",
-    "newFolder": "Nueva carpeta"
+    "newFolder": "Nueva carpeta",
+    "goToDay": "Ir al día",
+    "inText": "En el texto",
+    "actions": "acciones",
+    "back": "volver",
+    "actionsPlaceholder": "Filtra las acciones",
+    "onlyCreate": "añadir"
   },
   "cardForm": {
     "cardholderName": "Nombre del titular",
@@ -182,46 +193,48 @@
     "removeTag": "Quitar {{tag}}"
   },
   "loading": {
+    "pause": "Pausar las frases",
+    "play": "Reanudar las frases",
     "lines": [
-      "cargando tu sobrepensamiento cifrado…",
-      "un momento mientras decepcionamos a los anunciantes.",
-      "demasiado cifrado para que nos importe.",
-      "energía de banca suiza para tomar notas.",
-      "protegiendo tus ideas de ducha.",
-      "tus secretos sobrevivieron a otro reinicio.",
-      "nada sale del dispositivo desnudo.",
-      "abriendo la bóveda en silencio…",
-      "almacenamiento en frío para ideas calientes.",
-      "esta nota se respeta a sí misma.",
-      "leer imposible. sincronizar posible.",
-      "descifrado localmente. ignorado globalmente.",
-      "tus notas guardan la distancia social.",
-      "entra texto cifrado, sale texto cifrado.",
-      "otro día precioso para cifrar.",
-      "manteniendo los secretos aburridos desde el lanzamiento.",
-      "tú lo escribes. nadie lo lee.",
-      "privacidad sin la charla ted.",
-      "descifrando como si no fuera asunto de nadie.",
-      "manteniendo a la nube confundida.",
-      "el servidor no sabe nada. y le gusta así.",
-      "menos vigilancia. más notas.",
-      "tonterías cifradas, como era de esperar.",
-      "matemáticamente no disponible.",
-      "cero conocimiento. máxima audacia.",
-      "rastreo desactivado emocional y técnicamente.",
-      "tu dispositivo guarda los chismes.",
-      "texto plano de origen local.",
-      "convirtiendo pensamientos en sopa ilegible.",
-      "solo tú y las llaves.",
-      "pensamientos privados entrando en modo privado.",
-      "manteniendo tus futuras filtraciones en la ficción.",
-      "otra nota escondida del capitalismo.",
-      "aquí la privacidad no es premium.",
-      "seguridad mediante seguridad de verdad.",
-      "resistiendo en silencio a los corredores de datos.",
-      "no se detecta material de entrenamiento para ia.",
-      "cifrado más fuerte de lo necesario.",
-      "privacidad: ya cargando.",
+      "energía de banca suiza para tomar notas",
+      "protegiendo tus ideas de ducha",
+      "tus notas están cifradas en tu dispositivo",
+      "almacenamiento en frío para ideas calientes",
+      "otro día precioso para cifrar",
+      "manteniendo los secretos aburridos desde el lanzamiento",
+      "privacidad sin la charla ted",
+      "manteniendo a la nube confundida",
+      "el servidor guarda texto cifrado. le parece aburrido",
+      "menos vigilancia. más notas",
+      "tonterías cifradas, como era de esperar",
+      "rastreo desactivado emocional y técnicamente",
+      "tu dispositivo guarda los chismes",
+      "pensamientos privados entrando en modo privado",
+      "otra nota escondida del capitalismo",
+      "aquí la privacidad no es premium",
+      "seguridad mediante seguridad de verdad",
+      "resistiendo en silencio a los corredores de datos",
+      "no se detecta material de entrenamiento para ia",
+      "cifrado más fuerte de lo necesario",
+      "toda la señal. nada de vigilancia",
+      "convirtiendo la desconfianza en software",
+      "tus pensamientos siguen fuera del mercado",
+      "los mineros de datos solo encontraron tristeza",
+      "tu bóveda sigue cifrada con saña",
+      "neutralidad suiza, pero para notas",
+      "sin anuncios. sin rastreadores. sin giro argumental",
+      "open source, para que puedas revisar las cuentas",
+      "el texto cifrado es nuestro lenguaje del amor",
+      "haciendo tus notas aburridas para los extraños",
+      "llamó tu diario. quiere privacidad",
+      "tu registro de ánimo te echaba de menos",
+      "tus ideas, sin público",
+      "tu diario guardó tus secretos durante la noche",
+      "un sitio privado para todo lo que nunca publicarías",
+      "aquí ningún algoritmo decide lo que ves",
+      "tu lluvia de ideas está sana y salva",
+      "escribir es pensar. pensar es privado",
+      "no se consultó a ningún influencer",
       "cargando secretos de forma responsable.",
       "solo señal. nada de vigilancia.",
       "otra obra maestra cifrada en camino.",
@@ -236,6 +249,27 @@
       "descifrando pensamientos existenciales en local…",
       "tu bóveda sigue siendo agresivamente ilegible.",
       "neutralidad suiza, pero para notas."
+    ],
+    "loadingOnly": [
+      "cargando tu sobrepensamiento cifrado",
+      "un momento mientras decepcionamos a los anunciantes",
+      "tus secretos sobrevivieron a otro reinicio",
+      "abriendo la bóveda en silencio",
+      "descifrado localmente. ignorado globalmente",
+      "descifrando como si no fuera asunto de nadie",
+      "texto plano de origen local",
+      "convirtiendo pensamientos en sopa ilegible",
+      "llega otra obra maestra cifrada",
+      "poniendo orden en el caos cifrado",
+      "descifrando localmente pensamientos existenciales",
+      "calentando las llaves",
+      "buscando el hilo de tus pensamientos",
+      "contando tus tareas sin marcar. sin juzgar",
+      "durante esta carga no se mostró ningún anuncio",
+      "dejando tus notas donde las dejaste",
+      "desenredando los pensamientos de ayer",
+      "ordenando los bits con buen gusto",
+      "recordando lo que olvidaste recordar"
     ]
   },
   "neverBackedUp": {
@@ -245,5 +279,57 @@
     "changesOne": "Sus últimos cambios no tienen copia de seguridad y se perderían.",
     "changesSome_one": "{{count}} de estas notas tiene cambios sin copia de seguridad que se perderían.",
     "changesSome_other": "{{count}} de estas notas tienen cambios sin copia de seguridad que se perderían."
+  },
+  "ninja": {
+    "recent": "Recientes",
+    "topHit": "Mejor resultado",
+    "trashEmpty": "La papelera está vacía",
+    "allThemes": "Todos los temas",
+    "features": {
+      "stats": {
+        "label": "Estadísticas",
+        "detail": "Tu escritura, tus rachas y tus registros a lo largo del tiempo"
+      },
+      "trackers": {
+        "label": "Registros",
+        "detail": "Estado de ánimo, hábitos, factores y medicación"
+      },
+      "medication": {
+        "label": "Medicación",
+        "detail": "Dosis, horas y recordatorios"
+      },
+      "yearInPixels": {
+        "label": "El año en píxeles",
+        "detail": "Cada día del año como un cuadrado de color"
+      },
+      "importExport": {
+        "label": "Import & Export",
+        "detail": "Trae tus notas, llévate una copia de seguridad"
+      },
+      "generator": {
+        "label": "Generador de contraseñas",
+        "detail": "Una contraseña o frase de contraseña segura, lista para copiar"
+      },
+      "themes": {
+        "label": "Temas",
+        "detail": "Temas de color para modo claro y oscuro"
+      }
+    },
+    "new": {
+      "medication": "Nueva medicación",
+      "customTracker": "Nuevo registro personalizado"
+    },
+    "commands": {
+      "syncResume": "Reanudar la sincronización",
+      "changelog": "Novedades",
+      "help": "Ayuda",
+      "themesPage": "Temas de la comunidad",
+      "website": "Web de PrivacyNotes"
+    },
+    "themes": {
+      "word": "Tema",
+      "light": "Tema claro",
+      "dark": "Tema oscuro"
+    }
   }
 }

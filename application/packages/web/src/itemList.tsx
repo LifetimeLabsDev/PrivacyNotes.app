@@ -9,6 +9,7 @@
  */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { useProgressiveReveal, type ProgressiveReveal } from './useProgressiveReveal';
+import { listTop, rememberListTop } from './notesView/listPlace';
 
 /** The grid of tiles. `pn-notes-grid` scopes the container-query column count
  *  and every mini-tile rule in index.css; `content-start` keeps a short grid
@@ -86,19 +87,70 @@ export interface ItemListState {
  * becomes a different list (`resetKey`: a new view, search or filter, never
  * an edit). `total` is what the reveal counts.
  */
-export function useItemList(resetKey: readonly unknown[], total: number): ItemListState {
-  const reveal = useProgressiveReveal();
+export function useItemList(resetKey: readonly unknown[], total: number, place: string | null = null): ItemListState {
+  // `place` names the view and space the pane draws, null under a search. A
+  // list that was open earlier this session comes back at its offset, with
+  // its rows drawn down to it first. Spec: ops/docs/archive/keep-my-place.md
+  const key = place === null ? null : `${place}|${JSON.stringify(resetKey)}`;
+  const reveal = useProgressiveReveal(() => key === null ? undefined : listTop(key)?.revealed);
   const scroll = useScrollRestore(resetKey);
+  const keyRef = useRef(key);
+  keyRef.current = key;
+  const back = useRef<{ top: number; revealed: number; tries: number } | null>(null);
   useLayoutEffect(() => {
-    reveal.reset();
+    const saved = key === null ? null : listTop(key);
+    reveal.reset(saved?.revealed);
+    back.current = saved && { ...saved, tries: 0 };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, resetKey);
+  }, [...resetKey, key]);
+  // The rows of the new list, and the cards above them, can grow for a few
+  // frames after the key: the offset is set again each frame until it holds,
+  // and a scroll by the person ends the wait.
+  useLayoutEffect(() => {
+    const want = back.current;
+    const el = scroll.ref.current;
+    if (!want || !el || el.clientHeight === 0) return;
+    if (reveal.visible < Math.min(want.revealed, total)) return;
+    back.current = null;
+    let frame = 0;
+    const stop = () => {
+      cancelAnimationFrame(frame);
+      el.removeEventListener('wheel', stop);
+      el.removeEventListener('touchstart', stop);
+    };
+    const place = () => {
+      el.scrollTop = want.top;
+      if (Math.abs(el.scrollTop - want.top) > 2 && ++want.tries < 10) frame = requestAnimationFrame(place);
+      else stop();
+    };
+    el.addEventListener('wheel', stop, { passive: true });
+    el.addEventListener('touchstart', stop, { passive: true });
+    place();
+  });
   const totalRef = useRef(total);
   totalRef.current = total;
+  const visibleRef = useRef(reveal.visible);
+  visibleRef.current = reveal.visible;
+  const fillViewport = useCallback(() => {
+    const el = scroll.ref.current;
+    // A wide compact grid can fit a whole slice without a scrollbar.
+    if (el && el.clientHeight > 0 && el.scrollHeight <= el.clientHeight) reveal.onScroll(el, total);
+  }, [scroll.ref, reveal.onScroll, total]);
+  useLayoutEffect(fillViewport);
+  useEffect(() => {
+    const el = scroll.ref.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(fillViewport);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [scroll.ref, fillViewport]);
   const onScroll = useCallback(
     (el: HTMLElement) => {
       scroll.onScroll(el);
       reveal.onScroll(el, totalRef.current);
+      if (keyRef.current !== null && el.clientHeight > 0) {
+        rememberListTop(keyRef.current, el.scrollTop, visibleRef.current);
+      }
     },
     [scroll, reveal],
   );

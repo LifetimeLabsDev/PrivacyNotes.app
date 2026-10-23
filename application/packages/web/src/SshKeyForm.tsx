@@ -1,12 +1,15 @@
+import { VaultFieldAction } from './ui/VaultFieldAction';
+import { Button } from './ui/Button';
+import { VaultFormActions } from './ui/VaultFormActions';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, Copy, Download, Eye, EyeSlash, FloppyDisk, Info, Key, Lock, NotePencil, Shield, Tag } from './icons';
+import { Info, Key, Lock, NotePencil, Shield, Tag } from './icons';
 import { hasPin } from './pin';
 import { PinInfoModal } from './PinInfoModal';
-import { HoverLabel } from './HoverLabel';
 import { useCopyToClipboard } from './clipboard';
 import { PasswordField } from './PasswordText';
-import { FIELD_BUTTON, FIELD_CLASS, FieldLabel } from './formFields';
+import { FIELD_CLASS, FieldLabel } from './formFields';
+import { storedVaultKeys } from './vaultBody';
 
 /* ────────────────────────────────────────────────────────────────
  * SshKeyData - the JSON blob stored in the note body for ssh-key
@@ -36,8 +39,9 @@ export function parseSshKeyBody(body: string): SshKeyData {
   }
 }
 
-export function serializeSshKeyBody(data: SshKeyData): string {
-  return JSON.stringify(data);
+/** `previous` is the stored body; keys a newer version wrote in it are kept. */
+export function serializeSshKeyBody(data: SshKeyData, previous = ''): string {
+  return JSON.stringify({ ...storedVaultKeys(previous), ...data });
 }
 
 /** Extract comment from an SSH public key (the trailing part after the base64). */
@@ -92,32 +96,6 @@ export async function generateEd25519Pair(label: string): Promise<{ privateKey: 
   }
 }
 
-/* ────────────────────────────────────────────────────────────────
- * Copy button (shared)
- * ──────────────────────────────────────────────────────────────── */
-function CopyBtn({ onClick, active, title }: { onClick: () => void; active: boolean; title: string }) {
-  return (
-    <HoverLabel label={title} position="start">
-      <button type="button" onClick={onClick} aria-label={title} className={FIELD_BUTTON}>
-        {active ? (
-          <Check size={16} className="text-emerald-500" />
-        ) : (
-          <Copy size={16} />
-        )}
-      </button>
-    </HoverLabel>
-  );
-}
-
-function DownloadBtn({ onClick, title }: { onClick: () => void; title: string }) {
-  return (
-    <HoverLabel label={title} position="start">
-      <button type="button" onClick={onClick} aria-label={title} className={FIELD_BUTTON}>
-        <Download size={16} />
-      </button>
-    </HoverLabel>
-  );
-}
 
 /* ────────────────────────────────────────────────────────────────
  * SshKeyForm - the editor replacement for ssh-key type notes.
@@ -168,9 +146,9 @@ export function SshKeyForm({
   const updateBody = useCallback(
     (patch: Partial<SshKeyData>) => {
       const next = { ...data, ...patch };
-      onBodyChange(noteId, serializeSshKeyBody(next));
+      onBodyChange(noteId, serializeSshKeyBody(next, body));
     },
-    [noteId, data, onBodyChange]
+    [noteId, data, body, onBodyChange]
   );
 
   /** Auto-derive title from label on blur. */
@@ -234,14 +212,9 @@ export function SshKeyForm({
 
         {/* Generate button */}
         {!locked && (
-          <button
-            type="button"
-            onClick={() => void handleGenerate()}
-            disabled={generating}
-            className="text-xs px-3 py-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-medium transition disabled:opacity-50"
-          >
+          <Button action="generate" onClick={() => void handleGenerate()} disabled={generating}>
             {generating ? 'Generating...' : 'Generate Ed25519 Key Pair'}
-          </button>
+          </Button>
         )}
         {genError && (
           <div className="text-xs text-warning">{genError}</div>
@@ -260,13 +233,13 @@ export function SshKeyForm({
               rows={3}
               className={`${fieldClass} font-mono text-xs resize-y`}
             />
-            <CopyBtn
+            <VaultFieldAction kind="copy"
               onClick={() => copy(data.publicKey, 'publicKey')}
               active={copied === 'publicKey'}
               title={t('sshKeyForm.copyPublicKey')}
             />
             {data.publicKey.trim() && (
-              <DownloadBtn onClick={() => void downloadKey('public')} title={t('sshKeyForm.downloadPublicKey')} />
+              <VaultFieldAction kind="download" onClick={() => void downloadKey('public')} title={t('sshKeyForm.downloadPublicKey')} />
             )}
           </div>
         </div>
@@ -294,24 +267,15 @@ export function SshKeyForm({
               )}
             </div>
             {data.privateKey && (
-              <HoverLabel label={showPrivate ? 'Hide private key' : 'Show private key'} position="above">
-                <button
-                  type="button"
-                  onClick={() => setShowPrivate(!showPrivate)}
-                  aria-label={showPrivate ? 'Hide private key' : 'Show private key'}
-                  className={FIELD_BUTTON}
-                >
-                  {showPrivate ? <EyeSlash size={16} /> : <Eye size={16} />}
-                </button>
-              </HoverLabel>
+              <VaultFieldAction kind="reveal" active={showPrivate} title={showPrivate ? 'Hide private key' : 'Show private key'} onClick={() => setShowPrivate(!showPrivate)} />
             )}
-            <CopyBtn
+            <VaultFieldAction kind="copy"
               onClick={() => copy(data.privateKey, 'privateKey')}
               active={copied === 'privateKey'}
               title={t('sshKeyForm.copyPrivateKey')}
             />
             {data.privateKey.trim() && (
-              <DownloadBtn onClick={() => void downloadKey('private')} title={t('sshKeyForm.downloadPrivateKey')} />
+              <VaultFieldAction kind="download" onClick={() => void downloadKey('private')} title={t('sshKeyForm.downloadPrivateKey')} />
             )}
           </div>
           {data.privateKey.trim() && (
@@ -334,17 +298,8 @@ export function SshKeyForm({
               placeholder={t('sshKeyForm.passphrasePlaceholder')}
               fieldClass={fieldClass}
             />
-            <HoverLabel label={showPassphrase ? t('sshKeyForm.hide') : t('sshKeyForm.show')} position="above">
-              <button
-                type="button"
-                onClick={() => setShowPassphrase(!showPassphrase)}
-                aria-label={showPassphrase ? t('sshKeyForm.hide') : t('sshKeyForm.show')}
-                className={FIELD_BUTTON}
-              >
-                {showPassphrase ? <EyeSlash size={16} /> : <Eye size={16} />}
-              </button>
-            </HoverLabel>
-            <CopyBtn
+            <VaultFieldAction kind="reveal" active={showPassphrase} title={showPassphrase ? t('sshKeyForm.hide') : t('sshKeyForm.show')} onClick={() => setShowPassphrase(!showPassphrase)} />
+            <VaultFieldAction kind="copy"
               onClick={() => copy(data.passphrase, 'passphrase')}
               active={copied === 'passphrase'}
               title={t('sshKeyForm.copyPassphrase')}
@@ -396,31 +351,7 @@ export function SshKeyForm({
           </p>
         )}
 
-        {/* Save / Cancel */}
-        {saveError && (
-          <p className="text-[11px] text-danger">{saveError}</p>
-        )}
-        {!locked && (
-          <div className="flex gap-2 -mt-2">
-            {!isNew && (
-              <button
-                type="button"
-                onClick={onCancel}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium border border-divider text-pn-muted hover:bg-pn/5 transition"
-              >
-                {t('actions.cancel')}
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={onSave}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-accent-fill text-white hover:bg-accent-fill-hover transition"
-            >
-              <FloppyDisk />
-              {t('actions.save')}
-            </button>
-          </div>
-        )}
+        <VaultFormActions locked={locked} isNew={isNew} saveError={saveError} onSave={onSave} onCancel={onCancel} />
       </div>
     </div>
   );

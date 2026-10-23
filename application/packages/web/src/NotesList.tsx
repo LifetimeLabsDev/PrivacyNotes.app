@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { ACTIONS } from './ui/actions';
 import { useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
 import type { ListPrefs, ListPrefsStore } from './listPrefs';
@@ -7,11 +8,11 @@ import { SelectionToolbar } from './SelectionToolbar';
 import { SelectionCountStrip } from './SelectionCountStrip';
 import { suppressShiftTextSelection } from './useMultiSelect';
 import { ListPrefsPopover } from './ListPrefsPopover';
-import NoteRow, { itemDragSelection } from './NoteRow';
-import NoteCard from './NoteCard';
+import { itemDragSelection } from './NoteRow';
+import { WindowedNoteRow, WindowedNoteCard } from './WindowedNoteItem';
 import { StorageBar } from './StorageBar';
 import { HoverLabel } from './HoverLabel';
-import { JournalCalendarCard, JournalCalendarPopover, useJournalCalendarShown, type CalendarCardExtras } from './JournalCalendar';
+import { JournalCalendarCard, JournalCalendarPopover, useJournalCalendarMood, useJournalCalendarShown, type CalendarCardExtras } from './JournalCalendar';
 import { Key, CreditCard, Lock, NotePencil, Trash, SquaresFour, Book, Shield, ShieldPlus, PushPin, FileText, FunnelSimple, Note, CheckSquare, Upload, BookmarkSimple, Plus, Notebook, CalendarPlus, PILLAR_GLYPHS, NEW_GLYPHS } from './icons';
 import { ActiveFilterEntry, ActiveSearchEntry, FilteredEmpty, ListFilterChips } from './ListFilterChips';
 import { ListEntryCard } from './ListEntryCard';
@@ -19,7 +20,7 @@ import { BookmarkRowActions } from './BookmarkRowActions';
 import { ListSearchInput } from './ListSearchInput';
 import { Switch } from './Switch';
 import { exemptOpts } from './i18nExempt';
-import { NewButton, NewButtonDock } from './NewButton';
+import { NewButton, NewButtonDock, NewDropdown, type NewMenuOption } from './NewButton';
 import { keyText } from './shortcutMatch';
 import type { View } from './views';
 import { ListNav } from './notesView/ListNav';
@@ -35,6 +36,9 @@ type VaultFilter = 'all' | 'login' | 'card' | 'ssh-key';
 
 
 export interface NotesListProps {
+  /** The view and space this list draws, so a return lands where it was;
+   *  null under a search. Spec: ops/docs/archive/keep-my-place.md */
+  place?: string | null;
   view: string;
   displayNotes: LocalNote[];
   selectedId: string | null;
@@ -111,11 +115,15 @@ export interface NotesListProps {
   isNoteLocked: (n: LocalNote) => boolean;
 
   // Actions
-  onNew: (vaultType?: 'login' | 'card' | 'ssh-key', overrideView?: View) => void;
+  onNew: (vaultType?: 'login' | 'card' | 'ssh-key', overrideView?: View, template?: 'kanban') => void;
   /** Switch to Files and open the OS file picker - the All-view "New"
    *  type picker's File option. */
   onNewFile: () => void;
+  /** The password generator on its own, last in the Vault's New menu. */
+  onOpenGenerator: () => void;
   onNewBookmark: () => void;
+  /** Opens the Clip page window. */
+  onClipPage: () => void;
   onNewContact: () => void;
   /** The quick add: the switcher in create mode. */
   onQuickAdd: () => void;
@@ -137,10 +145,26 @@ export interface NotesListProps {
   calendarBody?: ReactNode;
   /** Creates a note or a task list on a day picked in a calendar. */
   onCreateDated: (type: 'note' | 'task', isoDate: string) => void;
+  /** Opens Quick add for an event on an ISO day (the calendar's day panel). */
+  onNewEvent: (isoDate: string) => void;
+  /** The check-in card, first in the list when the view shows it. */
+  checkInCard?: ReactNode;
+  /** The card's switch for the list options menu, where this list can draw it. */
+  checkInCardToggle?: { checked: boolean; onChange: (on: boolean) => void };
+  /** "Show check-ins without text", while the list holds any. */
+  checkInToggle?: { on: boolean; onChange: (on: boolean) => void };
+  /** How many check-ins the list hides now, for the empty state. */
+  hiddenCheckIns?: number;
+  /** How many items the All options menu hides from the open All list, for the empty state. */
+  hiddenInAll?: number;
+  /** With Spaces on, the empty-list line that says how many of this list's
+   *  items are in the other space; undefined when there are none. */
+  otherSpaceLine?: string;
+  /** The mood of each journal day, for the Journals calendar's mood look. */
+  journalMoods?: ReadonlyMap<string, number | 'written'>;
   onEmptyTrash: () => void;
   trashedNotesLength: number;
   onRefreshStorage: () => Promise<void> | void;
-  hotkeyLabel: string;
 
   // Vault
   vaultFilter: VaultFilter;
@@ -155,93 +179,6 @@ export interface NotesListProps {
   onAutoDeleteTrashDaysChange: (days: number) => void;
 }
 
-/** One entry in a "New" dropdown menu. */
-type NewMenuOption = {
-  key: string;
-  label: string;
-  icon: React.ReactNode;
-  onSelect: () => void;
-  /** The key that runs it, drawn at the row's end. */
-  keys?: string;
-};
-
-/* ── Shared "New" dropdown ──────────────────────────────────────────
- * One menu, reused by the Vault view (login / card / ssh-key) and the All
- * view (note / task / journal / login / file) so the two can't drift in
- * style or behaviour. Callers pass fully-built, already-translated options;
- * the button label ("New") is the only string this component owns. */
-function NewDropdown({ options, label }: { options: NewMenuOption[]; label: string }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const { docked, slot } = useContext(NewButtonDock);
-  // The bar's slot comes and goes with an open item; a menu left open would
-  // greet the person on the way back.
-  useEffect(() => setOpen(false), [slot]);
-
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: PointerEvent | MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    // Use pointerdown for reliable mobile touch support; fall back to
-    // mousedown for environments where PointerEvent isn't available.
-    const evt = typeof PointerEvent !== 'undefined' ? 'pointerdown' : 'mousedown';
-    document.addEventListener(evt, handler as EventListener);
-    return () => document.removeEventListener(evt, handler as EventListener);
-  }, [open]);
-
-  return (
-    // Spec: ops/docs/ui-patterns.md section 45 (z-index tier system - the
-    // NewButton wrapper must not create a z-20 stacking context, or it traps the
-    // MobileHeader's z-50 pillar dropdown beneath it in the Vault view).
-    <NewButton
-      wrapRef={ref}
-      onClick={() => setOpen(!open)}
-      label={label}
-      popup="menu"
-      expanded={open}
-    >
-      {/*
-        `w-max` on the menu below is load-bearing, not decoration. The menu is
-        absolutely positioned inside a `relative` wrapper that is only as wide as
-        the "New" button, and an auto-width absolute box with `end-0` and no
-        `start` shrink-to-fits against its CONTAINING BLOCK, not the viewport. So
-        the menu was capped at the button's ~110px and every label longer than
-        that wrapped onto two lines. English never showed it ("Credit Card", 11
-        chars, fits); es "Tarjeta de credito" (18), pt "Cartao de Credito" (17),
-        ca (17), it (16), pl (15), fr (14) and cs (18) all wrapped, and had done
-        since each locale shipped. `w-max` opts out of the containing-block cap;
-        `max-w` keeps a pathological string from running off a narrow viewport;
-        `whitespace-nowrap` on the rows stops a two-word label breaking anyway.
-        Spec: ops/docs/ui-patterns.md section 45.
-      */}
-      {open && (
-        <div role="menu" className={`absolute end-0 ${docked ? 'bottom-full mb-2' : 'top-full mt-1'} z-50 w-max max-w-[calc(100vw-1.5rem)] bg-surface-2 border border-divider rounded-lg shadow-lg py-1`}>
-          {options.map(({ key, label, icon, onSelect, keys }) => (
-            <button
-              key={key}
-              type="button"
-              role="menuitem"
-              onClick={() => { onSelect(); setOpen(false); }}
-              className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-start whitespace-nowrap text-pn-soft hover:bg-pn/5 transition cursor-pointer"
-            >
-              {/* Accent, like every other menu that lists things to go to or
-                  make: the rail rows, the sidebar option menus and the view
-                  picker. Grey here made this the one menu whose glyphs read as
-                  decoration. The colour lives on the row rather than in
-                  NEW_GLYPHS, because the same glyphs are also drawn inside the
-                  New button itself, where they sit on an accent-tinted pill. */}
-              <span className="text-accent">{icon}</span>
-              {label}
-              {keys && <kbd className="ms-auto ps-4 font-sans text-[11px] text-pn-muted">{keys}</kbd>}
-            </button>
-          ))}
-        </div>
-      )}
-    </NewButton>
-  );
-}
-
 type RowHandlers = {
   onClick: (e: React.MouseEvent) => void;
   onContextMenu: (e: React.MouseEvent) => void;
@@ -250,6 +187,7 @@ type RowHandlers = {
 };
 
 export function NotesList({
+  place = null,
   view,
   displayNotes,
   selectedId,
@@ -301,7 +239,9 @@ export function NotesList({
   isNoteLocked,
   onNew,
   onNewFile,
+  onOpenGenerator,
   onNewBookmark,
+  onClipPage,
   onNewContact,
   onQuickAdd,
   onOpenImport,
@@ -313,10 +253,17 @@ export function NotesList({
   calendarExtras,
   calendarBody,
   onCreateDated,
+  onNewEvent,
+  checkInCard,
+  checkInCardToggle,
+  checkInToggle,
+  hiddenCheckIns = 0,
+  hiddenInAll = 0,
+  otherSpaceLine,
+  journalMoods,
   onEmptyTrash,
   trashedNotesLength,
   onRefreshStorage,
-  hotkeyLabel,
   vaultFilter,
   onVaultFilterChange,
   quotaUsedBytes,
@@ -367,7 +314,7 @@ export function NotesList({
 
 
   /* Group headers (#448): one switch, and the sort decides the groups.
-   * Spec: ops/docs/plans/list-groups.md */
+   * Spec: ops/docs/archive/list-groups.md */
   const grouping = useListGroups({
     notes: displayNotes,
     listPrefs,
@@ -387,7 +334,7 @@ export function NotesList({
   // changes identity: that array is rebuilt on every edit, and a reset there
   // would yank a person scrolled deep into a long list back to the first
   // slice because they typed. (#186 and the reveal live in itemList.tsx.)
-  const list = useItemList([view, selectedTag, activeFolderName, search, vaultFilter], revealTotal);
+  const list = useItemList([view, selectedTag, activeFolderName, search, vaultFilter], revealTotal, place);
   const reveal = list.reveal;
   useListKeys(searchInputRef, list.ref, () => !selectionMode);
 
@@ -468,14 +415,18 @@ export function NotesList({
     return itemDragSelection(all.filter((n) => ids.has(n.id)), gated);
   }).current;
 
-  const ItemComponent = viewMode === 'grid' ? NoteCard : NoteRow;
+  const ItemComponent = viewMode === 'grid' ? WindowedNoteCard : WindowedNoteRow;
   const calendarShown = useJournalCalendarShown();
+  const moodLook = useJournalCalendarMood();
 
   // Vault view "New" menu - structured secret types.
+  const GeneratorIcon = ACTIONS.generate.icon;
   const vaultNewOptions: NewMenuOption[] = [
     { key: 'login', label: t('vaultNew.login'), icon: <Lock />, onSelect: () => onNew('login') },
     { key: 'card', label: t('vaultNew.card'), icon: <CreditCard />, onSelect: () => onNew('card') },
     { key: 'ssh-key', label: t('vaultNew.sshKey', exemptOpts('notes:vaultNew.sshKey')), icon: <Key />, onSelect: () => onNew('ssh-key') },
+    // The login form's Generate icon: the same generator, here to copy.
+    { key: 'generator', label: t('vaultNew.generator'), icon: <GeneratorIcon />, onSelect: onOpenGenerator },
   ];
 
   // All + Pinned "New" type picker (#190) - same items as the global
@@ -486,16 +437,17 @@ export function NotesList({
   // created item is starred, from the active view. Bare-noun labels live in
   // notes:newMenu.* so the button's "New" isn't repeated in every row.
   // Order MUST match the sidebar pillar nav (TagsRail.tsx) and the right-click
-  // menu (contextMenus.tsx buildGlobalMenu): Note, Task, Login, File, Journal, Event, Contact, Bookmark.
+  // menu (contextMenus.tsx buildGlobalMenu): Note, Task, Kanban board, Login, File, Journal, Event, Contact, Bookmark.
   // A tag or folder filter narrows the list, never the menu: every type
   // inherits both filters on creation, so all seven stay reachable and land
   // where the user is looking (GitHub #324).
-  // Spec: ops/docs/ui-patterns.md section 45 (New-menu order invariant)
+  // Spec: ops/docs/archive/ui-patterns.md section 45 (New-menu order invariant)
   const allNewOptions: NewMenuOption[] = [
     // Quick add heads the menu: one line that reads a day and a time.
     { key: 'quickAdd', label: t('newMenu.quickAdd'), icon: <CalendarPlus />, onSelect: () => onQuickAdd(), keys: keyText('quickAdd') },
     { key: 'note', label: t('newMenu.note'), icon: <NEW_GLYPHS.note />, onSelect: () => onNew() },
     { key: 'task', label: t('newMenu.task'), icon: <NEW_GLYPHS.task />, onSelect: () => onNew(undefined, 'tasks') },
+    { key: 'kanban', label: t('newMenu.kanban'), icon: <NEW_GLYPHS.kanban />, onSelect: () => onNew(undefined, 'tasks', 'kanban') },
     { key: 'login', label: t('newMenu.login'), icon: <NEW_GLYPHS.login />, onSelect: () => onNew('login', 'vault') },
     { key: 'file', label: t('newMenu.file'), icon: <NEW_GLYPHS.file />, onSelect: () => onNewFile() },
     { key: 'journal', label: t('newMenu.journal'), icon: <NEW_GLYPHS.journal />, onSelect: () => onNew(undefined, 'journal') },
@@ -503,6 +455,7 @@ export function NotesList({
     { key: 'event', label: t('newMenu.event'), icon: <NEW_GLYPHS.event />, onSelect: () => onQuickAdd() },
     { key: 'contact', label: t('newMenu.contact'), icon: <NEW_GLYPHS.contact />, onSelect: () => onNewContact() },
     { key: 'bookmark', label: t('newMenu.bookmark'), icon: <NEW_GLYPHS.bookmark />, onSelect: () => onNewBookmark() },
+    { key: 'clipPage', label: t('newMenu.clipPage'), icon: <NEW_GLYPHS.clip />, onSelect: () => onClipPage() },
   ];
 
   return (
@@ -590,7 +543,7 @@ export function NotesList({
                 buttonRef={backfillButtonRef}
                 onClick={() => setShowBackfill((v) => !v)}
                 label={t('journal.newEntry')}
-                hover={t('journal.newEntryHover', { hotkey: hotkeyLabel })}
+                keys={keyText('newNote')}
                 popup="dialog"
                 expanded={showBackfill}
               >
@@ -600,6 +553,8 @@ export function NotesList({
                     onOpen={onOpenCalendarItem}
                     onToday={() => onNew()}
                     onPick={onBackfillDate}
+                    creates="journal"
+                    onEvent={onNewEvent}
                     onClose={() => setShowBackfill(false)}
                     anchorRef={backfillButtonRef}
                   />
@@ -609,13 +564,13 @@ export function NotesList({
               <NewButton
                 onClick={() => onQuickAdd()}
                 label={t('header.newEvent')}
-                hover={t('header.newEventHover', { hotkey: keyText('quickAdd') })}
+                keys={keyText('quickAdd')}
               />
             ) : (
               <NewButton
                 onClick={() => onNew()}
                 label={t('header.newNote')}
-                hover={t('header.newNoteHover', { hotkey: hotkeyLabel })}
+                keys={keyText('newNote')}
               />
             )}
           </div>
@@ -660,7 +615,7 @@ export function NotesList({
           labels wrapped to two lines, which every locale but English and Dutch
           has been doing since it shipped. Scrolling a chip row is the normal
           affordance; wrapping inside a pill is not.
-          Spec: ops/docs/ui-patterns.md section 45. */}
+          Spec: ops/docs/archive/ui-patterns.md section 45. */}
       {view === 'vault' && (
         <div className="shrink-0 px-3 pt-2 pb-1 flex gap-1.5 overflow-x-auto pn-scrollbar-none">
           {([
@@ -673,6 +628,7 @@ export function NotesList({
               key={key}
               type="button"
               onClick={() => onVaultFilterChange(key as VaultFilter)}
+              aria-pressed={vaultFilter === key}
               className={`shrink-0 whitespace-nowrap text-xs px-2.5 py-1 rounded-full transition font-medium ${
                 vaultFilter === key
                   ? 'bg-accent-fill text-white'
@@ -715,7 +671,7 @@ export function NotesList({
             tabIndex={mobileTabIndex}
             value={search}
             onChange={setSearch}
-            placeholder={view === 'vault' ? t('search.placeholderVault') : t('search.placeholderNotes')}
+            placeholder={view === 'vault' ? t('search.placeholderVault') : view === 'calendar' ? t('search.placeholderEvents') : t('search.placeholderNotes')}
           />
         </div>
         {showListPrefs && (
@@ -726,6 +682,7 @@ export function NotesList({
             anchorRef={listPrefsButtonRef}
             className="absolute start-3 top-full mt-1"
             calendarRows={view === 'journal' || view === 'all' || view === 'home'}
+            moodRow={view === 'journal'}
             otherSpace={otherSpace}
             /* Journal and Vault own their view. Everything else this list
                draws - Notes, All, Pinned, Trash, a folder or tag filter
@@ -733,10 +690,25 @@ export function NotesList({
                own would island the very pane the shared lists inherit from. */
             pillar={view === 'journal' ? 'journal' : view === 'vault' ? 'vault' : 'global'}
             showGroupsToggle
+            checkInCard={checkInCardToggle}
             {...(view === 'journal' ? { createdLabel: t('noteRow.entryDate') } : {})}
           />
         )}
       </div>
+      {/* The Files and Tasks pattern: one switch under the search for the
+          entries a list leaves out. Journals only: All follows it.
+          Spec: ops/issues/0439.md (Spec) */}
+      {checkInToggle && view === 'journal' && (
+        <div className="shrink-0 px-4 py-2 border-b border-divider">
+          <Switch
+            label={t('shell:checkIn.toggle')}
+            checked={checkInToggle.on}
+            onChange={checkInToggle.onChange}
+            className="gap-2 select-none"
+            labelClassName="text-xs text-pn-muted"
+          />
+        </div>
+      )}
       {/* Selection count strip - sits below the search bar so the
           toolbar's h-14 row stays narrow-sidebar friendly. Only
           rendered while multi-select is active. */}
@@ -750,18 +722,22 @@ export function NotesList({
       )}
       {view === 'calendar' ? calendarBody : (
       <ItemList list={list} grid={viewMode === 'grid'} onMouseDown={suppressShiftTextSelection}>
+        {checkInCard}
         {view === 'journal' && calendarShown && !search.trim() && !selectionMode && (
-          <JournalCalendarCard grid={viewMode === 'grid'} entries={calendarDays} onOpen={onOpenCalendarItem} onPick={onBackfillDate} onToday={() => onNew()} {...calendarExtras} />
+          <JournalCalendarCard grid={viewMode === 'grid'} entries={calendarDays} onOpen={onOpenCalendarItem} onPick={onBackfillDate} onToday={() => onNew()} creates="journal" onEvent={onNewEvent} moodOf={moodLook && journalMoods ? (d) => journalMoods.get(d) : undefined} {...calendarExtras} />
         )}
-        {/* Notes and All draw the same card once they hold a dated item; an
-            empty day there makes a note. Spec: ops/docs/plans/note-date.md (section 4) */}
+        {/* Notes and All draw the same card once they hold a dated item. A day
+            makes a note in Notes and a journal entry in All, where a date
+            reads as a journal day. Spec: ops/docs/archive/note-date.md (section 4) */}
         {((view === 'all' && datedLists.notes) || (view === 'home' && datedLists.all)) && calendarShown && !search.trim() && !selectionMode && (
           <JournalCalendarCard
             grid={viewMode === 'grid'}
             entries={calendarDays}
             onOpen={onOpenCalendarItem}
-            onPick={(day) => onCreateDated('note', day)}
-            onToday={() => onCreateDated('note', toLocalIso(new Date()))}
+            {...(view === 'home'
+              ? { onPick: onBackfillDate, onToday: () => onBackfillDate(toLocalIso(new Date())), creates: 'journal' as const }
+              : { onPick: (day: string) => onCreateDated('note', day), onToday: () => onCreateDated('note', toLocalIso(new Date())), creates: 'note' as const })}
+            onEvent={onNewEvent}
             {...calendarExtras}
           />
         )}
@@ -771,16 +747,31 @@ export function NotesList({
                 was deleted - "No notes yet." on a filtered pane reads as data
                 loss. A search that found nothing already names its own cause,
                 so it keeps the plain line. */}
-            {!search.trim() && (activeFolderName !== null || selectedTag !== null) ? (
+            {hiddenCheckIns > 0 && checkInToggle ? (
+              <p className="p-4 text-[13px] text-pn-muted text-center">
+                {t('shell:checkIn.hiddenCount', { count: hiddenCheckIns })}{' '}
+                <button type="button" onClick={() => checkInToggle.onChange(true)} className="text-accent hover:underline">
+                  {t('shell:checkIn.showThem')}
+                </button>
+              </p>
+            ) : !search.trim() && (activeFolderName !== null || selectedTag !== null) ? (
               <FilteredEmpty
                 folderName={activeFolderName}
                 tag={selectedTag}
                 onClearFolder={onClearFolder}
                 onClearTag={onClearTag}
               />
+            ) : !search.trim() && hiddenInAll > 0 ? (
+              <p className="p-4 text-[13px] text-pn-muted text-center">
+                {t('empty.hiddenInAll', { count: hiddenInAll })}
+              </p>
+            ) : !search.trim() && otherSpaceLine ? (
+              <p className="p-4 text-[13px] text-pn-muted text-center">
+                {otherSpaceLine}
+              </p>
             ) : (
               <p className="p-4 text-[13px] text-pn-muted text-center">
-                {search.trim() ? t('empty.noMatches') : view === 'vault' ? t('empty.vault') : view === 'archive' ? t('empty.archive') : t('empty.notes')}
+                {search.trim() ? t('empty.noMatches') : view === 'vault' ? t('empty.vault') : view === 'archive' ? t('empty.archive') : view === 'trash' ? t('empty.trash') : t('empty.notes')}
               </p>
             )}
           </li>
@@ -791,6 +782,7 @@ export function NotesList({
           return (
           <ItemComponent
             key={n.id}
+            windowed={displayNotes.length > 100}
             {...handlersFor(n.id)}
             note={n}
             isOpen={selectedId === n.id && !selectionMode}

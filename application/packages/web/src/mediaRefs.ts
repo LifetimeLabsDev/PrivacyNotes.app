@@ -12,7 +12,7 @@
  * what the viewer can show: pictures, PDFs and saved emails. A recording
  * keeps its player in the chip, and any other file keeps its Download button.
  *
- * Spec: ops/docs/ui-patterns.md (section 98, the picture viewer)
+ * Spec: ops/docs/archive/ui-patterns.md (section 98, the picture viewer)
  */
 import type { Node as PMNode } from '@tiptap/pm/model';
 

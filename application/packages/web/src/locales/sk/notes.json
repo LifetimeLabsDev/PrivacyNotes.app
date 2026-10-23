@@ -18,10 +18,8 @@
   "header": {
     "new": "Nové",
     "newNote": "Nová poznámka",
-    "newNoteHover": "Nová poznámka ({{hotkey}})",
     "trash": "Kôš",
-    "newEvent": "Nová udalosť",
-    "newEventHover": "Nová udalosť ({{hotkey}})"
+    "newEvent": "Nová udalosť"
   },
   "folderChip": {
     "clear": "Zrušiť filter priečinka: {{folder}}",
@@ -35,15 +33,18 @@
     "ariaLabel": "Nová položka trezoru",
     "login": "Prihlasovacie údaje",
     "card": "Kreditná karta",
-    "sshKey": "Kľúč SSH"
+    "sshKey": "Kľúč SSH",
+    "generator": "Heslo"
   },
   "newMenu": {
     "note": "Poznámka",
     "task": "Úloha",
+    "kanban": "Kanbanová tabuľa",
     "journal": "Denník",
     "login": "Prihlasovacie údaje",
     "file": "Súbor",
     "bookmark": "Záložka",
+    "clipPage": "Uložiť stránku",
     "contact": "Kontakt",
     "event": "Udalosť",
     "quickAdd": "Rýchle pridanie"
@@ -55,8 +56,7 @@
     "keys": "Kľúče"
   },
   "journal": {
-    "newEntry": "Nový záznam v denníku",
-    "newEntryHover": "Nový záznam v denníku ({{hotkey}})"
+    "newEntry": "Nový záznam v denníku"
   },
   "tasks": {
     "newTitle": "Úlohy na {{date}}"
@@ -70,7 +70,8 @@
   "search": {
     "sortOptions": "Možnosti zoradenia a zobrazenia",
     "placeholderVault": "Hľadať v trezore…",
-    "placeholderNotes": "Hľadať v poznámkach…"
+    "placeholderNotes": "Hľadať v poznámkach…",
+    "placeholderEvents": "Hľadať udalosti…"
   },
   "selection": {
     "countOf": "Vybrané: {{selected}} z {{total}}",
@@ -82,9 +83,16 @@
     "vault": "Trezor je prázdny.",
     "notes": "Zatiaľ žiadne poznámky.",
     "archive": "V archíve nič nie je.",
+    "trash": "Kôš je prázdny.",
     "filtered": "Tvojim filtrom nezodpovedajú žiadne položky.",
     "clearFilters": "Zrušiť filtre",
-    "filteredAfter": "a zobraziť položky."
+    "filteredAfter": "a zobraziť položky.",
+    "hiddenInAll_one": "{{count}} položku skrýva filter Zobraziť v zobrazení Všetko. Zobrazíš ju vo filtri vedľa Všetko.",
+    "hiddenInAll_few": "{{count}} položky skrýva filter Zobraziť v zobrazení Všetko. Zobrazíš ich vo filtri vedľa Všetko.",
+    "hiddenInAll_other": "{{count}} položiek skrýva filter Zobraziť v zobrazení Všetko. Zobrazíš ich vo filtri vedľa Všetko.",
+    "inOtherSpace_one": "{{count}} položka je v priestore {{space}}. Prepni v bočnom paneli na {{space}} a uvidíš ju.",
+    "inOtherSpace_few": "{{count}} položky sú v priestore {{space}}. Prepni v bočnom paneli na {{space}} a uvidíš ich.",
+    "inOtherSpace_other": "{{count}} položiek je v priestore {{space}}. Prepni v bočnom paneli na {{space}} a uvidíš ich."
   },
   "listGroups": {
     "previous7Days": "Posledných 7 dní",
@@ -104,12 +112,34 @@
     "calendar": "Kalendár"
   },
   "footerStats": {
-    "journals": "Denníky",
-    "items": "Položky",
-    "trashed": "V koši",
-    "notes": "Poznámky",
-    "bookmarks": "Záložky",
-    "contacts": "Kontakty"
+    "journals_one": "Denník",
+    "journals_few": "Denníky",
+    "journals_other": "Denníkov",
+    "items_one": "Položka",
+    "items_few": "Položky",
+    "items_other": "Položiek",
+    "trashed_one": "V koši",
+    "trashed_few": "V koši",
+    "trashed_other": "V koši",
+    "notes_one": "Poznámka",
+    "notes_few": "Poznámky",
+    "notes_other": "Poznámok",
+    "bookmarks_one": "Záložka",
+    "bookmarks_few": "Záložky",
+    "bookmarks_other": "Záložiek",
+    "contacts_one": "Kontakt",
+    "contacts_few": "Kontakty",
+    "contacts_other": "Kontaktov",
+    "files_one": "Súbor",
+    "files_few": "Súbory",
+    "files_other": "Súborov",
+    "lists_one": "Zoznam",
+    "lists_few": "Zoznamy",
+    "lists_other": "Zoznamov",
+    "tasks_one": "Úloha",
+    "tasks_few": "Úlohy",
+    "tasks_other": "Úloh",
+    "today": "Dnes"
   },
   "toast": {
     "imageUploadFailed": "Nahratie obrázka zlyhalo: {{error}}",
@@ -169,7 +199,7 @@
   },
   "zen": {
     "exit": "Ukončiť Zen",
-    "exitHover": "Ukončiť režim Zen (Esc)",
+    "exitHover": "Ukončiť režim Zen",
     "enterHover": "Zapnúť režim Zen",
     "proHover": "Režim Zen (Pro)",
     "enterAriaShortcut": "Zapnúť režim Zen ({{keys}})"
@@ -246,9 +276,13 @@
     "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Otvoriť štatistiky",
     "journalCalendar": "Kalendár denníka",
-    "words": "Slová",
+    "words_one": "Slovo",
+    "words_few": "Slová",
+    "words_other": "Slov",
     "zen": "Zen",
     "appearance": "Vzhľad",
+    "lockApp": "Zamknúť aplikáciu",
+    "lockAppSetUp": "Najprv nastav PIN v časti Zabezpečenie",
     "goToTop": "Na začiatok",
     "goToEnd": "Na koniec",
     "signOut": "Odhlásiť sa",
@@ -272,6 +306,7 @@
     "editorLabel": "Editor",
     "formatBarLabel": "Panel nástrojov",
     "listsLabel": "Zoznamy",
+    "trackersLabel": "Sledované hodnoty",
     "helpLabel": "Pomocník",
     "aboutLabel": "O aplikácii",
     "languageLabel": "Jazyk",
@@ -289,7 +324,7 @@
   },
   "bulkTrash": {
     "title": "Presunúť do koša",
-    "body_one": "Presunúť <highlight>{{count}} položku</highlight> do koša? Neskôr ju môžeš obnoviť.",
+    "body_one": "Presunúť <highlight>{{count}} položku</highlight> do koša? Môžeš ju neskôr obnoviť.",
     "body_few": "Presunúť <highlight>{{count}} položky</highlight> do koša? Neskôr ich môžeš obnoviť.",
     "body_many": "Presunúť <highlight>{{count}} položky</highlight> do koša? Neskôr ich môžeš obnoviť.",
     "body_other": "Presunúť <highlight>{{count}} položiek</highlight> do koša? Neskôr ich môžeš obnoviť.",
@@ -351,5 +386,15 @@
   "ambiguousLink": {
     "title": "Tento názov majú dve poznámky",
     "body": "Názov <highlight>„{{title}}“</highlight> má viac ako jedna poznámka, takže tento odkaz neurčuje, ktorú z nich myslí. Premenuj jednu z nich a odkaz bude smerovať na tú druhú."
+  },
+  "connections": {
+    "title": "Prepojenia",
+    "hide": "Skryť prepojenia",
+    "linkedFrom": "Odkazujú sem",
+    "linksTo": "Odkazuje na",
+    "missing": "Zatiaľ nevytvorená",
+    "protectedHidden_one": "{{count}} položka chránená PIN-om sa nezobrazuje",
+    "protectedHidden_few": "{{count}} položky chránené PIN-om sa nezobrazujú",
+    "protectedHidden_other": "{{count}} položiek chránených PIN-om sa nezobrazuje"
   }
 }

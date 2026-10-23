@@ -3,7 +3,8 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ViewMenu } from '../ViewMenu';
 import { switcherViewRows } from '../viewRows';
-import { List, CaretDown, Lightning } from '../icons';
+import { List, CaretDown } from '../icons';
+import { NinjaIcon } from '../NinjaIcon';
 import { CommandPaletteContext } from '../commandPalette';
 
 import { isViewShown, type View } from '../views';
@@ -25,7 +26,7 @@ import { isViewShown, type View } from '../views';
  * (NotesView), because the topmost element on a phone is no longer a single
  * fixed bar - it is whichever of the banners, the list pane, or the editor
  * happens to render first. Keep it on the root, not here.
- * Spec: ops/docs/ui-patterns.md section 51.
+ * Spec: ops/docs/archive/ui-patterns.md section 51.
  *
  * The switcher is live at every width. Below lg it is the only pillar control,
  * because the rail sits behind the drawer. At lg and above it stands beside the
@@ -45,7 +46,7 @@ export function ListNav({
   onSelectView: (next: View) => void;
   /** Views switched off in the sidebar options menu. This dropdown honours the
    *  same setting the rail does, so one hidden view is hidden in both.
-   *  Spec: ops/docs/plans/sidebar-views.md */
+   *  Spec: ops/docs/archive/sidebar-views.md */
   hiddenViews?: View[] | undefined;
   onOpenDrawer: () => void;
   /** The list's own view icon - each pillar keeps the glyph it already used. */
@@ -95,15 +96,16 @@ export function ListNav({
       {/* The quick switcher below lg, where the sidebar and its "Jump to" row
           sit behind the drawer. At the cluster's end, so it lands beside the
           pane's own button on the right.
-          Spec: ops/docs/plans/keyboard-shortcuts.md (decision D15) */}
+          Spec: ops/docs/archive/keyboard-shortcuts.md (decision D15) */}
       {palette && (
         <button
           type="button"
           onClick={palette.openSwitcher}
           aria-label={t('common:quickSwitcher.jumpTo')}
-          className="lg:hidden ms-auto inline-flex h-9 w-9 items-center justify-center rounded-lg bg-accent/10 hover:bg-accent/20 text-accent-strong transition shrink-0"
+          className="pn-jump lg:hidden ms-auto inline-flex h-9 w-9 items-center justify-center rounded-lg bg-accent/10 hover:bg-accent/20 text-accent-strong transition shrink-0"
         >
-          <Lightning size={18} weight="fill" />
+          <span className="pn-jump-charge" aria-hidden="true" />
+          <NinjaIcon size={28} />
         </button>
       )}
     </div>

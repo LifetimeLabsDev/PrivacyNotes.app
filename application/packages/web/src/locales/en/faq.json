@@ -15,6 +15,7 @@
     "clearSearch": "Clear search",
     "searchAll": "Search all answers for “{{q}}”",
     "copyLink": "Copy link to this answer",
+    "openAnswer": "Open this answer",
     "copied": "Link copied",
     "feedbackPrompt": "Your question wasn't answered here? Reach out:",
     "sourcesTitle": "Read the source",
@@ -58,7 +59,8 @@
     "syncDevices": "Sync & devices",
     "yourData": "Your data",
     "pricingPro": "Pricing & Pro",
-    "appsPlatforms": "Apps & platforms"
+    "appsPlatforms": "Apps & platforms",
+    "statsTrackers": "Statistics & trackers"
   },
   "entries": {
     "try-before-signup": {
@@ -71,14 +73,14 @@
     "need-email": {
       "q": "Do I need an email address to sign up?",
       "a": [
-        "No. A new vault is a freshly generated 12-word recovery phrase, nothing else. No email, no username, no phone number, no verification step. If you sign in with the phrase, we could not email you even if we wanted to, because we never learn who you are.",
-        "Prefer a familiar flow? Sign in with Google, Apple, or GitHub works too. That route necessarily tells us the email tied to that login, but your notes stay encrypted on your device either way, and you still get a phrase under the hood."
+        "No. A new vault is a freshly generated [12-word recovery phrase](/help/phrase-vs-password/), nothing else. No email, no username, no phone number, no verification step. If you sign in with the phrase, we could not email you even if we wanted to, because we never learn who you are.",
+        "Prefer a familiar flow? [Sign in with Google, Apple, or GitHub works too](/help/signup-options/). That route necessarily tells us the email tied to that login, but your notes stay encrypted on your device either way, and you still get a phrase under the hood."
       ]
     },
     "import-from-other-apps": {
       "q": "How do I move my notes in from another app?",
       "a": [
-        "Open Settings > Import & Export and pick your source. The list covers the apps people arrive from: Apple Notes, Bear, Obsidian, Evernote, Standard Notes, Joplin, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes and Apple Journal. Bitwarden and your browser's saved passwords land in the Vault, your browser bookmarks come across as bookmarks, and a generic Markdown importer takes any folder of .md files.",
+        "Open Settings > Import & Export and pick your source. The list covers the apps people arrive from: Apple Notes, Bear, Obsidian, Evernote, Standard Notes, Joplin, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes and Apple Journal. Bitwarden and your browser's saved passwords [land in the Vault](/help/vault/), your browser bookmarks [come across as bookmarks](/help/bookmarks/), and [a generic Markdown importer](/help/import/markdown/) takes any folder of .md files.",
         "Imports run entirely on your device: your exported files are parsed, encrypted, and stored locally, nothing is uploaded for processing. Each imported note is tagged with its source so you can review the batch afterwards, and Google Keep checklists even convert to native task lists."
       ]
     },
@@ -86,60 +88,68 @@
       "q": "How do I move my notes from Bear to PrivacyNotes?",
       "a": [
         "Make a Bear backup and import it. In Bear, choose File > Backup Notes... and save the .bear2bk file. Then open Settings > Import & Export, pick Bear and drop the file in. The backup holds your whole library, so archived and trashed notes come along, and pinned and read-only notes keep that state.",
-        "Your tags come across as tags, and nested tags such as #work/projects are also rebuilt as folders. Highlights keep their Bear colors, links between notes become note-links, and images and attached files are imported into your storage. The [Bear import guide](/help/import/bear/) shows every step."
+        "Your tags come across as tags, and nested tags such as #work/projects are also rebuilt as folders. Highlights keep their Bear colors, [links between notes become note-links](/help/note-links/), and images and attached files are imported into your storage. The [Bear import guide](/help/import/bear/) shows every step."
       ]
     },
     "import-joplin": {
       "q": "How do I import my notes from Joplin?",
       "a": [
         "Export a JEX file from Joplin and import it. In Joplin, choose File > Export all > \"JEX - Joplin Export File\" and save the file. Then open Settings > Import & Export, pick Joplin and drop the .jex file in. The newest file from Tools > Create backup works the same way.",
-        "Notebooks become folders, nested as deep as in Joplin, and every note keeps its tags and its dates. To-dos become tasks, links between notes become note-links, and attachments are imported into your storage. Joplin leaves its trash out of every export, so restore any note you want from the trash before you export. The [Joplin import guide](/help/import/joplin/) shows every step."
+        "Notebooks become folders, nested as deep as in Joplin, and every note keeps its tags and its dates. [To-dos become tasks](/help/tasks/), [links between notes become note-links](/help/note-links/), and attachments are imported into your storage. Joplin leaves its trash out of every export, so restore any note you want from the trash before you export. The [Joplin import guide](/help/import/joplin/) shows every step."
       ]
     },
     "markdown-support": {
       "q": "Is the editor Markdown-friendly?",
       "a": [
-        "Yes. Type Markdown and it formats live: # headings, **bold**, lists, - [ ] task checkboxes, quotes, and callouts. Notes export as clean Markdown too, so what you write stays portable.",
+        "Yes. [Type Markdown and it formats live](/help/markdown-syntax/): # headings, **bold**, lists, - [ ] task checkboxes, quotes, and callouts. [Notes export as clean Markdown](/help/export/) too, so what you write stays portable.",
         "You can also connect notes to each other: type [[ and an autocomplete offers your existing notes. A note-link opens its target with one click, and the outline panel plus find-in-note keep long documents navigable."
       ]
     },
     "what-can-you-see": {
       "q": "What can PrivacyNotes see about my notes?",
       "a": [
-        "Notes, titles, tags, and attachments are always encrypted, on your device and on the way to the server. Under self-custody, which every phrase sign-up starts with, no decryption key exists on our side. Signing up with Google, Apple, or GitHub asks where your key lives and starts on \"Keep it simple & convenient\", which stores your phrase on our server, encrypted under a key of ours. In that mode, our server can decrypt the phrase and therefore your notes. Settings > Account > Key custody shows your current mode and lets you switch.",
-        "What we can see is the information needed to run the service: how much encrypted storage you use, how many devices you have linked, and sync timestamps. If you use only your phrase and have not connected a Google, Apple, or GitHub account, we do not know your email address."
+        "Notes, titles, tags, and attachments are always encrypted, on your device and on the way to the server. [Under self-custody](/help/threat-model-levels/), which every phrase sign-up starts with, no decryption key exists on our side. Signing up with Google, Apple, or GitHub asks where your key lives and starts on \"Keep it simple & convenient\", which stores your phrase on our server, encrypted under a key of ours. In that mode, our server can decrypt the phrase and therefore your notes. Settings > Account > Key custody shows your current mode and lets you switch.",
+        "What we can see is the information needed to run the service: how much encrypted storage you use, how many devices you have linked, and sync timestamps. If you use only your phrase and [have not connected a Google, Apple, or GitHub account](/help/connected-logins/), we do not know your email address."
+      ]
+    },
+    "us-company": {
+      "q": "PrivacyNotes is run by a US company. Does that put my notes at risk?",
+      "a": [
+        "Your notes are encrypted on your device, and with [self-custody](/help/threat-model-levels/) the server holds nothing that opens them. What you write reaches it only as ciphertext, so a legal order in any country gets only ciphertext, wherever the company is registered. Check it: the code is [open source on GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), and your browser's network tab shows your words leave only as ciphertext.",
+        "Lifetime Labs LLC is a US company because that was the quickest way to put our projects under one name. Nobody on the team lives in the US, and your synced notes are stored in Zurich, Switzerland.",
+        "What the law can reach is the data the service needs: your public key, sync timestamps, storage size, short-lived server logs and, if you connect Google, Apple or GitHub, that email. With \"Keep it simple & convenient\", your recovery phrase is stored on our server too, and it opens your notes. Settings > Account > Key custody switches you to self-custody. [What PrivacyNotes can see](/help/what-can-you-see/) lists more."
       ]
     },
     "app-privacy-label": {
       "q": "Why does the App Store privacy label say my data is linked to me?",
       "a": [
         "Because Apple asks for one label that covers everything that can reach our server, even when it arrives encrypted and even when only some accounts send it. Linked to you means attached to an account, and the account behind a phrase sign-up is a key, not a name. Nothing is used for tracking, and the app carries no analytics, ads, or crash reporting. Each line on the label means one thing:",
-        "- **User Content**: your notes and files, encrypted on your device. Under self-custody we cannot read them.\n- **Identifiers**: a public key derived from your recovery phrase, and a device hash computed on your device that only enforces the free device limit.\n- **Contact Info**: an email address, only if you sign in with Google, Apple, or GitHub.\n- **Purchases**: whether your account has Pro. Apple handles the payment, and we never see your card.",
-        "To keep that list as short as possible for your own account, sign up with a recovery phrase instead of a Google, Apple, or GitHub login, and keep self-custody. Settings > Account > Key custody shows your current mode. [What PrivacyNotes can see](/help/what-can-you-see/) covers the rest."
+        "- **User Content**: your notes and files, encrypted on your device. [With self-custody](/help/threat-model-levels/), the server holds nothing that opens them.\n- **Identifiers**: a public key derived from your recovery phrase, and a device hash computed on your device that only enforces [the free device limit](/help/device-limit/).\n- **Contact Info**: an email address, only if you sign in with Google, Apple, or GitHub.\n- **Purchases**: whether your account has Pro. Apple handles the payment, and we never see your card.",
+        "To keep that list as short as possible for your own account, [sign up with a recovery phrase](/help/signup-options/) instead of a Google, Apple, or GitHub login, and keep self-custody. Settings > Account > Key custody shows your current mode. [What PrivacyNotes can see](/help/what-can-you-see/) covers the rest."
       ]
     },
     "phrase-vs-password": {
       "q": "Why a recovery phrase instead of a username and password?",
       "a": [
-        "It can feel backwards at first, but a single recovery phrase is the stronger construction. With a username and password, the username is not a secret (it shows up in every breach dump), so all the security rests on the password, and human-chosen passwords average maybe 30 to 40 bits of entropy. Your 12-word phrase is a guaranteed 128 bits, generated by your device, never chosen by a human, and never reused from another site.",
-        "There is also no password for us to lose. A password login means the server stores at least a password hash, which can be leaked, cracked, or phished. Under self-custody, your phrase never leaves your device: it derives your encryption keys locally, and the server only ever sees encrypted data. There is no hash to steal and no password reset flow for an attacker to abuse.",
-        "If typing 12 words feels clunky: you can save the phrase to your password manager with one tap (Settings > Security > Phrase), and signing in feels like any other login. Prefer a familiar flow? Sign in with Google, Apple, or GitHub works too: you still get a phrase under the hood, and you choose whether it stays on your device or we store it for you."
+        "It can feel backwards at first, but a single recovery phrase is the stronger construction. With a username and password, the username is not a secret (it shows up in every breach dump), so all the security rests on the password, and human-chosen passwords average maybe 30 to 40 bits of entropy. [Your 12-word phrase is a guaranteed 128 bits](/help/twelve-word-phrase/), generated by your device, never chosen by a human, and never reused from another site.",
+        "There is also no password for us to lose. A password login means the server stores at least a password hash, which can be leaked, cracked, or phished. [Under self-custody](/help/threat-model-levels/), your phrase never leaves your device: it derives your encryption keys locally, and the server only ever sees encrypted data. There is no hash to steal and no password reset flow for an attacker to abuse.",
+        "If typing 12 words feels clunky: you can save the phrase to your password manager with one tap (Settings > Security > Phrase), and signing in feels like any other login. Prefer a familiar flow? [Sign in with Google, Apple, or GitHub works too](/help/signup-options/): you still get a phrase under the hood, and you choose whether it stays on your device or we store it for you."
       ]
     },
     "threat-model-levels": {
       "q": "Can I choose my own balance between convenience and privacy?",
       "a": [
         "Yes, deliberately. Not everyone is defending against the same threats, so the account model is a ladder rather than a single dogma. Every rung keeps your notes encrypted on your device; what changes is who holds the key and what we know about you.",
-        "The convenient end: sign in with Google, Apple, or GitHub and leave \"Keep it simple & convenient\" selected when asked, which is where that screen starts. We store your recovery phrase for you, encrypted at rest on our server, so a new device can open your notes after provider sign-in and an authenticator code if 2FA is enabled. In exchange we know the email behind that login, and our server can decrypt your phrase. Save your phrase in case you lose the provider account, and keep your 2FA backup key if you enable two-factor sign-in.",
-        "The middle: sign in with Google, Apple, or GitHub but pick \"Maximum security & privacy\". Your phrase never touches our servers and the encryption is fully zero-knowledge; new devices need the phrase or a QR scan from a device that is already signed in. We still necessarily know the email behind that login, but we could not read a single note even under compulsion.",
+        "The convenient end: sign in with Google, Apple, or GitHub and leave \"Keep it simple & convenient\" selected when asked, which is where that screen starts. We store your recovery phrase for you, encrypted at rest on our server, so a new device can open your notes after provider sign-in and [an authenticator code if 2FA is enabled](/help/enable-2fa/). In exchange we know the email behind that login, and our server can decrypt your phrase. Save your phrase in case you lose the provider account, and keep your 2FA backup key if you enable two-factor sign-in.",
+        "The middle: sign in with Google, Apple, or GitHub but pick \"Maximum security & privacy\". Your phrase never touches our servers, so the server holds nothing that opens your notes; new devices need the phrase or [a QR scan from a device that is already signed in](/help/add-second-device/). We still know the email behind that login, and a legal order or a breach of our server can reach that email, never the content of your notes.",
         "The private end: skip the logins entirely and use only the 12-word phrase. No email, no name, no identity, and paired with an [anonymous Pro purchase](/help/buy-pro-anonymously/), even paying leaves no name anywhere. In exchange, key custody is entirely yours: lose the phrase with no signed-in device left, and nobody can help.",
-        "Settings > Account > Key custody shows both modes with their tradeoffs and lets you switch. Leaving server custody deletes our stored copy after you confirm three words from your saved phrase. Switching back uploads the phrase again and requires an explicit choice. Both directions are signed with your account key and need a fresh authenticator code when 2FA is enabled. A phrase account can connect a provider under Account > Accounts, then choose server custody separately; connecting the provider does not upload the phrase. Every mode can also use PIN app lock, biometric unlock and per-note protection."
+        "Settings > Account > Key custody shows both modes with their tradeoffs and lets you switch. Leaving server custody deletes our stored copy after you confirm three words from your saved phrase. Switching back uploads the phrase again and requires an explicit choice. Both directions are signed with your account key and need a fresh authenticator code when 2FA is enabled. [A phrase account can connect a provider](/help/connected-logins/) under Account > Accounts, then choose server custody separately; connecting the provider does not upload the phrase. Every mode can also use PIN app lock, biometric unlock and [per-note protection](/help/locked-vs-protected/)."
       ]
     },
     "twelve-word-phrase": {
       "q": "Is a 12-word recovery phrase secure enough? Why not 24 words like Bitcoin wallets?",
       "a": [
-        "Yes, 12 words is enough. A 12-word BIP-39 phrase encodes 128 bits of entropy. Brute-forcing 128 bits is not a \"needs a bigger computer\" problem, it is a \"more energy than humanity produces\" problem. There is no realistic attack that breaks 128 bits but fails at 256.",
+        "Yes, 12 words is enough. [A 12-word BIP-39 phrase](/help/bip39-wordlist/) encodes 128 bits of entropy. Brute-forcing 128 bits is not a \"needs a bigger computer\" problem, it is a \"more energy than humanity produces\" problem. There is no realistic attack that breaks 128 bits but fails at 256.",
         "The Bitcoin comparison actually shows why 24 words is mostly marketing: Bitcoin keys live on the secp256k1 curve, which itself only provides about 128 bits of security. A 24-word phrase feeds 256 bits of entropy into a lock that still only takes about 128 bits of work to break. That is also why many major wallets still default to 12 words.",
         "PrivacyNotes targets the same 128-bit security level end to end: your phrase is run through a key derivation function, and the encryption it protects (XChaCha20-Poly1305) is keyed to match. Adding 24 words would double what you write down and type without adding any practical security, so we stay at 12.",
         "What matters is where you keep the phrase, not how many words it has. Keep it in a password manager, type it nowhere else, and 12 words will outlive all of us."
@@ -157,15 +167,15 @@
       "q": "Can someone else get the same recovery phrase as me?",
       "a": [
         "No, not in practice. Your device picks your phrase at random from a huge number of possible phrases. Even if every person on Earth made an account, two matching phrases would be less likely than winning a 1-in-300-million lottery jackpot twice in a row. The same numbers are why [nobody can guess your phrase](/help/guess-phrase/).",
-        "Your Account ID comes from the phrase. So if you delete an account and sign in again with the same 12 words, you get a new, empty vault with the same Account ID. Nothing from the deleted vault comes back. After you move to a new phrase, remove the old one from your password manager, so you never sign in to the old account by mistake."
+        "Your Account ID comes from the phrase. So [if you delete an account](/help/delete-account/) and sign in again with the same 12 words, you get a new, empty vault with the same Account ID. Nothing from the deleted vault comes back. [After you move to a new phrase](/help/phrase-compromised/), remove the old one from your password manager, so you never sign in to the old account by mistake."
       ]
     },
     "enable-2fa": {
       "q": "How do I turn on two-factor authentication (2FA)?",
       "a": [
         "Turn on optional two-factor sign-in in Settings > Security > 2FA. Update PrivacyNotes on your other devices first. Scan the QR code with an authenticator app, or enter the setup key manually. Save the 2FA backup key outside PrivacyNotes, confirm the saved copy, then enter a current code to finish.",
-        "After setup, a new server session needs your phrase or a connected provider, followed by an authenticator code. Self-custody users still need their phrase to decrypt notes. Manage provider accounts in Settings > Account > Accounts; connecting one does not change key custody.",
-        "If you lose the authenticator, add the saved 2FA backup key to another authenticator app. Losing both means we cannot restore server access. Notes already unlocked on a device remain readable and exportable. Two-factor sign-in does not add encryption or protect an already unlocked device."
+        "After setup, a new server session needs your phrase or [a connected provider](/help/connected-logins/), followed by an authenticator code. Self-custody users still need their phrase to decrypt notes. Manage provider accounts in Settings > Account > Accounts; connecting one [does not change key custody](/help/threat-model-levels/).",
+        "[If you lose the authenticator](/help/lost-2fa/), add the saved 2FA backup key to another authenticator app. Losing both means we cannot restore server access. Notes already unlocked on a device remain readable and exportable. Two-factor sign-in does not add encryption or protect an already unlocked device."
       ]
     },
     "bip39-wordlist": {
@@ -179,21 +189,21 @@
     "search-local": {
       "q": "Does searching my notes send anything to your servers?",
       "a": [
-        "No. Search runs against a full-text index built and stored on your device. Queries never leave it, results appear even with no connection at all, and nothing about what you search for is ever transmitted.",
-        "This is not a policy choice we could quietly reverse, it is forced by the architecture: the server only holds ciphertext, so there is nothing readable on our side to index or search. A server that cannot read your notes cannot search them either."
+        "No. Search runs against a full-text index built and stored on your device. Queries never leave it, [results appear even with no connection at all](/help/offline/), and nothing about what you search for is ever transmitted. The same goes for [Ninja](/help/ninja/): what you type there is matched on your device.",
+        "This follows from the architecture, not from a policy: [the server holds your notes only as ciphertext](/help/what-can-you-see/) and runs no index over them. Search needs the text, and the text exists only on your devices."
       ]
     },
     "no-ai": {
       "q": "Does PrivacyNotes use AI on my notes?",
       "a": [
-        "No. There are no AI features in the app, no AI processing running in the background, and no model training on your content. Your notes are always encrypted, on your device and on the way to the server, so there is nothing readable on our servers to feed into anything.",
-        "If we ever ship a feature in this direction, it would have to run entirely on your device and be strictly opt-in. Sending plaintext notes to a cloud model would break the zero-knowledge promise, so it is off the table."
+        "No. Ninja, the Cmd+K box that reads your dates and finds your words, is plain code that runs on your device. There are no AI features in the app, no AI processing running in the background, and no model training on your content. [Your notes are always encrypted, on your device and on the way to the server](/help/what-can-you-see/), and nothing in our systems reads note content to feed into anything.",
+        "If we ever ship a feature in this direction, it would have to run entirely on your device and be strictly opt-in. Sending plaintext notes to a cloud model would take them out of the encryption on your device, so it is off the table."
       ]
     },
     "burn-notes": {
       "q": "What are burn notes?",
       "a": [
-        "A burn note is a self-destructing way to share a note with someone who does not use PrivacyNotes. The app encrypts the content with a one-time key and gives you a link. The key travels in the link fragment, which browsers never send to servers, so our server stores ciphertext it cannot read.",
+        "A burn note is a self-destructing way to [share a note with someone who does not use PrivacyNotes](/help/share-with-someone/). The app encrypts the content with a one-time key and gives you a link. The key travels in the link fragment, which browsers never send to servers, so our server stores ciphertext it cannot read.",
         "The first time the link is opened, the server hands over the ciphertext and deletes it in the same step: one read, then it is gone. Unopened links expire on their own after the time the sender picks, from 1 hour to 7 days. Either way, nothing lingers."
       ]
     },
@@ -201,36 +211,36 @@
       "q": "Is PrivacyNotes open source?",
       "a": [
         "Yes. The web, desktop, and mobile apps are published on [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), together with the encryption code that scrambles your notes and the threat model spelling out what each piece protects. It is the same code our releases are built from.",
-        "That is what turns a promise into something you can check. Read the encryption in one sitting, open your browser's network tab and watch your own notes leave as unreadable text, or build the app yourself and compare it against what we ship. You do not have to take our word for any of it."
+        "That is what turns a promise into something you can check. Read the encryption in one sitting, open your browser's network tab and [watch your own notes leave as unreadable text](/help/what-can-you-see/), or build the app yourself and [compare it against what we ship](/help/verify-download/). You do not have to take our word for any of it."
       ]
     },
     "report-vulnerability": {
       "q": "I found a security vulnerability. How do I report it?",
       "a": [
         "Email privacynotes@lifetimelabs.dev. The same address is published in our PGP-signed [security.txt](https://privacynotes.app/.well-known/security.txt), so you can confirm it is genuine before you write, and our [public key](https://privacynotes.app/.well-known/pgp-key.txt) is there if you would rather encrypt the report.",
-        "We reply, and where a fix needs coordinating we agree the disclosure timing with you before anything goes public. Reports reach the people who wrote the code directly, and a reporter who wants credit gets it. Test against the demo at try.privacynotes.app or a throwaway account, never against somebody else's notes."
+        "We reply, and where a fix needs coordinating we agree the disclosure timing with you before anything goes public. Reports reach the people who wrote the code directly, and a reporter who wants credit gets it. [Test against the demo at try.privacynotes.app](/help/try-before-signup/) or a throwaway account, never against somebody else's notes."
       ]
     },
     "lost-phrase": {
       "q": "I lost my recovery phrase. Can you recover my account?",
       "a": [
         "If you are still signed in on any device: yes, you can recover it yourself. Open Settings > Security > Phrase and save it to your password manager right now.",
-        "If you have no signed-in device and no phrase, it depends on who holds the key. If you let us store it when you signed up with Google, Apple, or GitHub, sign in with that login and you are back in. Under self-custody, nobody can: your phrase never reaches our servers, so there is nothing to reset and no support ticket that can help. Any service that can restore your encrypted data after a total loss is holding your keys.",
+        "If you have no signed-in device and no phrase, [it depends on who holds the key](/help/threat-model-levels/). If you let us store it when you signed up with Google, Apple, or GitHub, sign in with that login and you are back in. Under self-custody, nobody can: your phrase never reaches our servers, so there is nothing to reset and no support ticket that can help. Any service that can restore your encrypted data after a total loss is holding your keys.",
         "The fix costs ten seconds: store the phrase in a password manager the day you create your account. If it is already gone and you pay for a storage add-on, Paddle bills you directly and can cancel it without your phrase: see [changing or cancelling an add-on](/help/manage-storage-addon/)."
       ]
     },
     "lost-2fa": {
       "q": "I lost my 2FA codes. How do I get back in?",
       "a": [
-        "Add your 2FA backup key to any authenticator app, then enter the code it shows when PrivacyNotes asks for one. The backup key is the one you saved when you turned on 2FA, and it works every time you need it.",
+        "Add your 2FA backup key to any authenticator app, then enter the code it shows when PrivacyNotes asks for one. The backup key is [the one you saved when you turned on 2FA](/help/enable-2fa/), and it works every time you need it.",
         "If you lost both your phone and the backup key, we do not reset 2FA, and our support cannot help with it. The notes already on your devices stay readable.",
-        "To keep them, go to Settings > Import & Export > Export on a device that still has them. Then create a new vault and import the export there."
+        "To keep them, go to Settings > Import & Export > Export on a device that still has them. Then create a new vault and [import the export there](/help/restore-backup/)."
       ]
     },
     "oauth-recovery": {
       "q": "I sign in with Google, Apple, or GitHub. What if I lose access to that account?",
       "a": [
-        "You still have a 12-word phrase under the hood, and the phrase alone signs you in on any device - no Google, Apple, or GitHub account required. Open Settings > Security > Phrase and save it to your password manager.",
+        "You still have a 12-word phrase under the hood, and [the phrase alone signs you in on any device](/help/add-second-device/) - no Google, Apple, or GitHub account required. Open Settings > Security > Phrase and save it to your password manager.",
         "Do that once and losing that account costs you nothing: just sign in with the phrase instead."
       ]
     },
@@ -238,49 +248,50 @@
       "q": "I forgot my PIN or passcode. How do I get back in?",
       "a": [
         "Nothing is lost, and you can clear the PIN or passcode yourself with your recovery phrase. It is a screen gate rather than an encryption key: your notes are encrypted with keys derived from the phrase, so the phrase is what opens them. Tying encryption to the PIN would mean a forgotten PIN destroyed data, and it never does here.",
-        "Wherever the app asks for it, choose **Forgot your PIN?** or **Forgot your passcode?** and type your 12 words. It is on the lock screen, on a protected note, and in **Settings > Security > PIN**. It clears on every device, and you can set a new one straight away. Biometric unlock is not affected. A device with an older version of the app asks for 4 digits even after you set a passcode; **Forgot your PIN?** there works the same way."
+        "Wherever the app asks for it, choose **Forgot your PIN?** or **Forgot your passcode?** and type your 12 words. It is on the lock screen, [on a protected note](/help/locked-vs-protected/), and in **Settings > Security > PIN**. It clears on every device, and you can set a new one straight away. [Biometric unlock is not affected](/help/biometric-unlock/). A device with an older version of the app asks for 4 digits even after you set a passcode; **Forgot your PIN?** there works the same way."
       ]
     },
     "delete-account": {
       "q": "How do I delete my account?",
       "a": [
-        "In the app: Settings > Account, then \"Delete account & data\". This permanently removes your synced notes, files, devices, settings, and the account itself from the server. There is no retention window and no backup we could restore afterwards, so export anything you want to keep first (Settings > Import & Export).",
-        "Two details: an active storage subscription must be cancelled before deletion (one already scheduled to cancel does not block it), and because a phrase account never included an email or a name, there is no profile or marketing list left to scrub. Wiping the local data on one device is a separate action and does not touch your account."
+        "You can delete your account in the app or in a browser. In a browser, sign in at [use.privacynotes.app](https://use.privacynotes.app). Then open **Settings > Account**, choose **Delete account & data...**, select **Delete cloud data & account**, type DELETE and choose **Delete permanently**. If 2FA is on, the app asks for a fresh authenticator code. Deletion cannot be undone, so [export anything you want to keep first](/help/export/) (Settings > Import & Export).",
+        "**What is deleted:** your synced notes, tasks, journals, vault entries, files and images, note history, settings, devices, connected logins, the custodial copy of your recovery phrase if you chose one, your Pro record, and the account itself. The local data on the device you delete from is wiped too. [An active storage subscription must be cancelled first](/help/manage-storage-addon/) under Settings > Storage; one already scheduled to cancel does not block deletion.",
+        "**What remains:** if you had a storage subscription, its records stay for billing and refunds. A minimal account identifier can also stay, so that old sign-in tokens keep being rejected. Neither contains your notes or files, and neither expires automatically. Our database host keeps logs and daily backups for seven days, so a backup taken before the deletion can hold your encrypted data for up to a week. Paddle, Apple and Google keep their own transaction records under their own policies. The [privacy policy](https://lifetimelabs.dev/privacy/) has the details and explains how to ask us to delete retained personal data."
       ]
     },
     "what-syncs": {
       "q": "What exactly syncs across my devices, and what stays local?",
       "a": [
-        "Everything you would expect, and all of it encrypted on your device: notes, tasks, journal entries, your vault, and the files in it. Your settings follow you too - favorite tags, sort and view preferences, color theme, your PIN (as a salted hash, never the PIN itself), app lock, tracker and medication setup, and trash auto-delete. Set something up once and every device picks it up.",
-        "A few things stay deliberately device-local: light or dark mode (each device follows its own system preference), biometric unlock (tied to the hardware of each device), the space the sidebar shows, and your unlock state (closing the app always re-locks). The server only ever stores encrypted blobs and can read none of it."
+        "Everything you would expect, and all of it encrypted on your device: notes, tasks, journal entries, [your vault](/help/vault/), and the files in it. Your settings follow you too - favorite tags, sort and view preferences, color theme, your PIN (as a salted hash, never the PIN itself), app lock, tracker and medication setup, and [trash auto-delete](/help/trash-auto-delete/). Set something up once and every device picks it up.",
+        "A few things stay deliberately device-local: light or dark mode (each device follows its own system preference), biometric unlock (tied to the hardware of each device), [the space the sidebar shows](/help/spaces/), and your unlock state (closing the app always re-locks). The server only ever stores encrypted blobs and can read none of it."
       ]
     },
     "offline": {
       "q": "Does PrivacyNotes work offline?",
       "a": [
-        "Yes. The app is local-first: your notes live in a database on your device, so reading, writing, and search all work with no connection. Changes sync automatically when you are back online, and a picture or file you add offline waits on this device and uploads then too."
+        "Yes. The app is local-first: [your notes live in a database on your device](/help/data-location/), so reading, writing, and [search all work with no connection](/help/search-local/). Changes sync automatically when you are back online, and [a picture or file you add offline waits on this device](/help/upload-failed/) and uploads then too. [Ninja](/help/ninja/) works offline too; only saving a web page as a note waits for a connection."
       ]
     },
     "sync-conflicts": {
       "q": "What happens if I edit the same note on two devices at once?",
       "a": [
-        "Your devices merge the note detail by detail when they sync again, so a change made on only one of them is kept. If both edited the text while apart (say, one was offline), the device that syncs second shows a conflict dialog: keep the version on this device, keep the other one, or keep both as separate notes. Both versions are kept until you choose. If the other device's version arrives while you are typing in the note, your text is kept as a copy marked \"(conflict)\" and the note shows the other version.",
-        "When both devices changed the same detail while apart, such as a pin, a folder or the title, the detail from the device that edited the note last is kept, without a dialog. A note deleted permanently on one device is deleted everywhere, including an edit another device made to it while apart."
+        "Your devices merge the note detail by detail when they sync again, so a change made on only one of them is kept. If both edited the text while apart (say, [one was offline](/help/offline/)), the device that syncs second shows a conflict dialog: keep the version on this device, keep the other one, or keep both as separate notes. Both versions are kept until you choose. If the other device's version arrives while you are typing in the note, your text is kept as a copy marked \"(conflict)\" and the note shows the other version.",
+        "When both devices changed the same detail while apart, such as a pin, a folder or the title, the detail from the device that edited the note last is kept, without a dialog. [A note deleted permanently on one device](/help/trash-auto-delete/) is deleted everywhere, including an edit another device made to it while apart."
       ]
     },
     "remove-device": {
       "q": "How do I remove a device I no longer use?",
       "a": [
-        "Settings > Account lists every registered device. Remove the one you are retiring: the slot frees up immediately (useful on the free 2-device plan), and the removed device is signed out the next time it tries to sync. It stays visible under \"Recently removed\" for 72 hours so you can confirm it is gone.",
-        "Removal frees the slot and signs that device out; the phrase is what controls access. Anyone holding your 12 words can sign in again, so if a device was lost or stolen, protect the phrase first and keep the app lock (PIN or biometrics) on. That is what keeps a found device from being an open door."
+        "Settings > Account lists every registered device. Remove the one you are retiring: the slot frees up immediately (useful on [the free 2-device plan](/help/device-limit/)), and the removed device is signed out the next time it tries to sync. It stays visible under \"Recently removed\" for 72 hours so you can confirm it is gone.",
+        "Removal frees the slot and signs that device out; the phrase is what controls access. Anyone holding your 12 words can sign in again, so [if a device was lost or stolen](/help/lost-device/), protect the phrase first and keep the app lock (PIN or biometrics) on. That is what keeps a found device from being an open door."
       ]
     },
     "data-location": {
       "q": "Where is my data stored?",
       "a": [
-        "On your device first, and that is the copy you work with: the app is local-first, so your notes open and edit offline. The synced copy lives on servers in Zurich, Switzerland. What sits there is your public key, encrypted blobs of your notes, files and settings, plus the timestamps and sizes a sync needs. No titles, no text, no tags.",
+        "On your device first, and that is the copy you work with: the app is local-first, so [your notes open and edit offline](/help/offline/). The synced copy lives on servers in Zurich, Switzerland. What sits there is your public key, encrypted blobs of your notes, files and settings, plus the timestamps and sizes a sync needs. No titles, no text, no tags.",
         "The country matters less than the encryption does. Everything is always encrypted, on your device and on the way to the server, so that copy would be unreadable wherever it sat: Switzerland is a bonus, not the promise. [What syncs](/help/what-syncs/) lists it item by item.",
-        "The copy on your device is encrypted too. Notes are sealed on disk under a key derived from your recovery phrase when you unlock, so a copy of the app's storage on your device, or a stolen backup of it, carries ciphertext rather than your notes."
+        "The copy on your device is encrypted too. [Notes are sealed on disk](/help/data-on-disk/) under a key derived from your recovery phrase when you unlock, so a copy of the app's storage on your device, or a stolen backup of it, carries ciphertext rather than your notes."
       ]
     },
     "data-on-disk": {
@@ -289,28 +300,28 @@
         "In one folder per install, inside your account's app-data area. Where that folder is depends on the platform:",
         "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, or `app.privacynotes.appimage` for the AppImage, which bundles its own web engine and so keeps its own profile\n- **Android, iOS**: the app's private storage, which no other app can open\n- **Browser**: your browser profile, under `use.privacynotes.app`",
         "What sits there is ciphertext. Each note is one sealed blob holding the title, body and tags, opened by a key derived from your recovery phrase when you unlock, so a copied folder carries nothing readable. Only what the local index needs stays in the clear: ids, timestamps, the kind of item, and flags such as pinned or deleted.",
-        "To move your notes to another device, or to keep a copy of your own, use **Settings > Import & Export > Export** and pick \"Encrypted full backup (.pnbackupz)\". It holds everything, it is encrypted with your phrase key, and it restores with your phrase on any device. [More on backups](/help/backup-strategy/)."
+        "To move your notes to another device, or to keep a copy of your own, use **Settings > Import & Export > Export** and pick \"Encrypted full backup (.pnbackupz)\". It holds everything, it is encrypted with your phrase key, and [it restores with your phrase on any device](/help/restore-backup/). [More on backups](/help/backup-strategy/)."
       ]
     },
     "export": {
       "q": "Can I export my notes, or am I locked in?",
       "a": [
-        "You can export everything at any time, generated entirely on your device: Markdown files in a zip with attachments included, plain JSON, or self-contained HTML - per note or for the whole account. The zip is the \"PrivacyNotes backup (.zip)\", and it restores, as the encrypted backups do; JSON and HTML are for reading and for your next app. Vault items get their own route, \"Vault export (.json)\", which writes Bitwarden's format and carries your usernames, passwords, URLs, card details and 2FA keys into Bitwarden, 1Password or KeePass.",
+        "You can export everything at any time, generated entirely on your device: Markdown files in a zip with attachments included, plain JSON, or self-contained HTML - per note or for the whole account. The zip is the \"PrivacyNotes backup (.zip)\", [and it restores](/help/restore-backup/), as the encrypted backups do; JSON and HTML are for reading and for your next app. [Vault items get their own route](/help/vault/), \"Vault export (.json)\", which writes Bitwarden's format and carries your usernames, passwords, URLs, card details and 2FA keys into Bitwarden, 1Password or KeePass.",
         "It all sits under Settings > Import & Export > Export. Import runs the same way, from Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden and more: the full list is in [moving in from another app](/help/import-from-other-apps/). Lock-in is not part of the business model."
       ]
     },
     "attachment-limits": {
       "q": "What files can I attach, and how big can they be?",
       "a": [
-        "Any file type: images, PDFs, audio, archives, whatever you drop in. Every file is always encrypted, on your device and on the way to the server, exactly like note text, and the Files view collects all attachments in one place.",
-        "The per-file limit is 5 MB on the free plan and 50 MB on Pro. Files count against your total sync storage (50 MB free, 500 MB on Pro, expandable to 5.5 GB with storage add-ons), and the storage bar in Settings > Storage always shows where you stand."
+        "[Any file type: images](/help/image-quality/), PDFs, audio, archives, whatever you drop in. Every file is always encrypted, on your device and on the way to the server, exactly like note text, and the Files view collects all attachments in one place.",
+        "The per-file limit is 5 MB on the free plan and 50 MB on Pro. Files count against your total sync storage (50 MB free, 500 MB on Pro, [expandable to 5.5 GB with storage add-ons](/help/storage-addons/)), and [the storage bar](/help/storage-usage/) in Settings > Storage always shows where you stand."
       ]
     },
     "vault": {
       "q": "What is the Vault?",
       "a": [
         "The Vault is a dedicated section for structured secrets: logins with usernames and passwords, credit and debit cards, and SSH keys. Entries get proper fields instead of free text, logins display a site icon, and everything is encrypted on your device like the rest of your data.",
-        "It gives the handful of credentials that otherwise end up scattered across notes a tidy, protected home. Pair it with the app lock and PIN protection for a second gate on your most sensitive entries. A Bitwarden import lands here automatically."
+        "It gives the handful of credentials that otherwise end up scattered across notes a tidy, protected home. [Pair it with the app lock and PIN protection](/help/locked-vs-protected/) for a second gate on your most sensitive entries. [A Bitwarden import lands here automatically](/help/import/bitwarden/)."
       ]
     },
     "note-size-limit": {
@@ -324,28 +335,28 @@
     "shutdown": {
       "q": "What happens to my notes if PrivacyNotes shuts down?",
       "a": [
-        "You keep them. Your notes, tasks, journal entries and vault items live on your device because the app is local-first, and exporting them to Markdown, JSON, or HTML works offline. A picture or file stays on a device once you add or open it there, and one this device never opened is fetched when you open it, so keep a full backup: it fetches every picture and file this device lacks, and says so if one cannot be fetched.",
+        "You keep them. Your notes, tasks, journal entries and vault items live on your device because the app is local-first, and [exporting them to Markdown, JSON, or HTML works offline](/help/export/). A picture or file stays on a device once you add or open it there, and one this device never opened is fetched when you open it, so [keep a full backup](/help/backup-strategy/): it fetches every picture and file this device lacks, and says so if one cannot be fetched.",
         "The encryption code is [open source](https://github.com/LifetimeLabsDev/PrivacyNotes.app) too, so the format stays independently readable even in a world where our servers vanish overnight."
       ]
     },
     "free-vs-pro": {
       "q": "What is free and what is Pro?",
       "a": [
-        "Free is the full product, not a teaser: notes, tasks, journal, and vault, all encrypted on your device, offline use, import and export - on up to 2 devices with 50 MB of sync storage.",
-        "Pro is a one-time purchase that adds unlimited devices, 500 MB of sync storage (expandable), note version history, larger file attachments, note locking and PIN protection, advanced wellness tracking, zen mode, and all color themes."
+        "Free is the full product, not a teaser: notes, tasks, journal, and vault, all encrypted on your device, offline use, import and export - [on up to 2 devices](/help/device-limit/) with 50 MB of sync storage.",
+        "[Pro is a one-time purchase](/help/one-time-pricing/) that adds unlimited devices, [500 MB of sync storage (expandable)](/help/storage-addons/), [note version history](/help/note-history/), [larger file attachments](/help/attachment-limits/), [note locking and PIN protection](/help/locked-vs-protected/), [advanced wellness tracking](/help/statistics/), [zen mode](/help/zen-mode/), and [all color themes](/help/appearance/)."
       ]
     },
     "one-time-pricing": {
       "q": "How can a one-time payment fund a sync service forever?",
       "a": [
         "Because the service is deliberately cheap to run. The app is local-first and notes are small encrypted blobs, so the server does little more than store them and relay them between your devices. No analytics of what you write, no pixels or third-party trackers, no AI features burning compute, no support department.",
-        "The one cost that does grow over time is storage, and that is priced accordingly: storage beyond the included 500 MB is a small yearly add-on. One-time costs are priced once, recurring costs recur. The model only has to pay for itself, and it does."
+        "The one cost that does grow over time is storage, and that is priced accordingly: storage beyond the included 500 MB is [a small yearly add-on](/help/storage-addons/). One-time costs are priced once, recurring costs recur. The model only has to pay for itself, and it does."
       ]
     },
     "pro-cross-platform": {
       "q": "I bought Pro on one platform. Do I have it everywhere?",
       "a": [
-        "Yes. Pro is attached to your account, not to a device, platform, or store. Buy it once, sign in with the same phrase (or the same Google, Apple, or GitHub login) anywhere, and Pro is active there too.",
+        "Yes. Pro is attached to your account, [not to a device, platform, or store](/help/store-purchases/). Buy it once, sign in with the same phrase (or the same Google, Apple, or GitHub login) anywhere, and Pro is active there too.",
         "That includes platforms that do not exist yet: when a new app ships, your existing Pro comes along at no extra cost."
       ]
     },
@@ -353,37 +364,37 @@
       "q": "How do storage add-ons work?",
       "a": [
         "Pro includes 500 MB of encrypted sync storage. If you need more, add-on packages stack on top: 1 GB for $4.80 per year, 2 GB for $8.40, or 5 GB for $18, up to 5.5 GB in total. Add-ons are the only recurring purchase in the product, because storage is the only thing that costs us money every month you use it.",
-        "Everything is managed under Settings > Storage: switch to a bigger package (you pay only the prorated difference) or cancel anytime and keep the space until the period you paid for ends. Pro itself is yours forever either way."
+        "Everything is managed under Settings > Storage: switch to a bigger package (you pay only the prorated difference) or [cancel anytime](/help/manage-storage-addon/) and keep the space until the period you paid for ends. Pro itself is yours forever either way."
       ]
     },
     "refunds": {
       "q": "What is the refund policy?",
       "a": [
         "30 days, no questions asked. If Pro is not for you, request a full refund within 30 days of purchase and it goes back to the original payment method. Customers in the EU additionally keep their statutory 14-day right of withdrawal.",
-        "Payments are processed by Paddle, our merchant of record, so refunds are handled by Paddle directly: reply to your purchase receipt email or visit [paddle.net](https://paddle.net). The full policy lives in the [terms of service](https://lifetimelabs.dev/terms/#refunds)."
+        "Payments are processed by Paddle, [our merchant of record](/help/paddle-privacy/), so refunds are handled by Paddle directly: reply to your purchase receipt email or visit [paddle.net](https://paddle.net). The full policy lives in the [terms of service](https://lifetimelabs.dev/terms/#refunds)."
       ]
     },
     "paddle-privacy": {
       "q": "What do you learn about me when I pay?",
       "a": [
         "Less than you might expect. Checkout runs through [Paddle](https://www.paddle.com), the merchant of record: your name, card number, and billing address go to Paddle for payment and tax purposes and never touch our servers.",
-        "Paddle holds your billing details; what reaches our database is your public key, the amount and the order id, and for a storage add-on its size and renewal dates. Our Paddle account can see both sides, and we do not look you up. To keep your name off the purchase, pay with an [email alias and a masked card](/help/buy-pro-anonymously/)."
+        "Paddle holds your billing details; what reaches our database is your public key, the amount and the order id, and [for a storage add-on its size and renewal dates](/help/storage-addons/). Our Paddle account can see both sides, and we do not look you up. To keep your name off the purchase, pay with an [email alias and a masked card](/help/buy-pro-anonymously/)."
       ]
     },
     "buy-pro-anonymously": {
       "q": "Can I buy Pro without revealing who I am?",
       "a": [
         "Yes, with two standard tools. For the receipt, use an email alias: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com), or [addy.io](https://addy.io) all forward to your real inbox without exposing it. For the payment, use a masked card: [privacy.com](https://privacy.com) in the US generates virtual cards that work with any name you type, and anywhere else a prepaid card that works online, bought with cash, does the same job with no name on it at all.",
-        "At checkout, Paddle asks for an email, a payment method, and a country (plus a postal code in some regions) to calculate tax. The alias receives the receipt, the masked card carries whatever name you gave it, and the tax location narrows you to a region, nothing more. Keep the alias alive though: the receipt email is your proof of purchase and your channel for a refund.",
-        "Combined with a phrase account, no single party ends up holding the full picture: your bank sees a card top-up, Paddle sees an alias and a masked card, and we see a public key that became Pro, next to that alias in our Paddle account."
+        "[At checkout, Paddle asks](/help/paddle-privacy/) for an email, a payment method, and a country (plus a postal code in some regions) to calculate tax. The alias receives the receipt, the masked card carries whatever name you gave it, and the tax location narrows you to a region, nothing more. Keep the alias alive though: the receipt email is your proof of purchase and [your channel for a refund](/help/refunds/).",
+        "[Combined with a phrase account](/help/signup-options/), no single party ends up holding the full picture: your bank sees a card top-up, Paddle sees an alias and a masked card, and we see a public key that became Pro, next to that alias in our Paddle account."
       ]
     },
     "platforms": {
       "q": "Which platforms does PrivacyNotes run on?",
       "a": [
-        "Web, macOS, Windows, Linux, iOS, and Android. Every app is built from the same core, encrypts your notes on your device the same way, and syncs through the same account. The [downloads section](https://privacynotes.app/en#downloads) always has the latest builds.",
+        "Web, macOS, Windows, Linux, [iOS, and Android](/help/play-vs-apk/). Every app is built from the same core, encrypts your notes on your device the same way, and syncs through the same account. The [downloads section](https://privacynotes.app/en#downloads) always has the latest builds.",
         "The native apps need macOS 13 or newer, Windows 10 or newer, iOS 17.4 or newer, Android 7.0 or newer, or a Linux release with webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+, or equivalent). Below those versions the app will not install or start, so use the web app instead.",
-        "The web app is a first-class citizen, not a fallback: it keeps your notes on your device and works offline, so any modern browser is always a way in."
+        "The web app is a first-class citizen, not a fallback: it keeps your notes on your device and [works offline](/help/offline/), so any modern browser is always a way in."
       ]
     },
     "feature-requests": {
@@ -398,7 +409,7 @@
     "android-updates": {
       "q": "Will the Android app update itself?",
       "a": [
-        "Install it with [Obtainium](/help/obtainium/) and yes: it reads our releases and offers each new version as it ships, which is why we recommend that route on Android. An APK taken straight from our website updates on your say-so instead, because Android auto-updates only apps that came from a store.",
+        "Install it with [Obtainium](/help/obtainium/) and yes: it reads our releases and offers each new version as it ships, which is why we recommend that route on Android. [An APK taken straight from our website](/help/play-vs-apk/) updates on your say-so instead, because Android auto-updates only apps that came from a store.",
         "The website APK tells you instead. The app checks for a newer version and shows an \"Update available\" notice with a \"Download\" button. Tap Download, then open the downloaded file to install it over the old version, with your notes and settings untouched. The check only asks whether a newer version exists, it never touches your notes, which stay encrypted the whole time."
       ]
     },
@@ -410,56 +421,63 @@
         "New to it? Install [Obtainium](https://obtainium.imranr.dev/) first, then add an app and paste this in:",
         "`https://github.com/LifetimeLabsDev/PrivacyNotes.app`",
         "Obtainium reads our releases, picks the APK, and installs every new version as it ships. No Google account is involved at any point.",
-        "Obtainium is not our app, and Android still asks you to confirm each install, so an update arrives as a notification and one tap, not silently. The APK is the same build our download page serves, signed with the same key, so Obtainium adopts an app you already sideloaded: nothing to uninstall, nothing to sign in to again. Without it, the app can only [tell you in-app](/help/android-updates/) that a version is ready."
+        "Obtainium is not our app, and Android still asks you to confirm each install, so an update arrives as a notification and one tap, not silently. The APK is the same build our download page serves, [signed with the same key](/help/verify-download/), so Obtainium adopts an app you already sideloaded: nothing to uninstall, nothing to sign in to again. Without it, the app can only [tell you in-app](/help/android-updates/) that a version is ready."
       ]
     },
     "languages": {
       "q": "Which languages does the app speak?",
       "a": [
         "English, German, French, Italian, Spanish, Dutch, Polish, Czech, Slovak, Catalan, Turkish, Swedish, Ukrainian, Russian, Japanese, Korean, Traditional Chinese, Thai, Arabic, and Portuguese in both European and Brazilian variants. The app follows your system language by default, or you can pin one explicitly under Settings > Language on each device.",
-        "Translations are free for everyone, not a Pro perk. More languages are planned; if yours is missing, tell us on [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) or [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
+        "[Translations are free for everyone](/help/translation-quality/), not a Pro perk. More languages are planned; if yours is missing, tell us on [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) or [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
     "translation-quality": {
       "q": "How are the app's translations made?",
       "a": [
-        "We write the English first. An AI agent then translates each language against a shared glossary, in the register fixed for that language, and a second agent reviews every batch for accuracy, terminology and register before it ships. Native speakers review a sample, starting with the newest languages and the security, sign-in and billing text, and two automated checks fail the build while any translation is missing or out of date. Translations are free on every tier, never a Pro perk.",
+        "We write the English first. [An AI agent then translates each language](/help/languages/) against a shared glossary, in the register fixed for that language, and a second agent reviews every batch for accuracy, terminology and register before it ships. Native speakers review a sample, starting with the newest languages and the security, sign-in and billing text, and two automated checks fail the build while any translation is missing or out of date. Translations are free on every tier, never a Pro perk.",
         "You can improve any of them. If a sentence reads oddly in your language, [report the translation](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues/new?template=translation.yml): your language, the screen it is on, and what it should say instead. Corrections ship in the next release."
       ]
     },
     "markdown-syntax": {
       "q": "Which Markdown syntax does the editor understand?",
       "a": [
-        "Standard Markdown formats live as you type: headings, emphasis, strikethrough and highlight, bulleted and numbered lists, task lists (Tab and Shift+Tab nest any list, checklists included), quotes, dividers, inline code and code blocks with syntax highlighting, inline and block math (KaTeX), and note-links between notes with autocomplete.",
-        "The formatting toolbar and its Insert menu add the rest: tables, callouts that can fold closed, underline, superscript and subscript, text alignment, text and highlight colors, fonts, links, images, and file attachments. Everything round-trips as Markdown: \"Show markdown\" below any note reveals the raw source, and exports are clean .md files, so nothing you write is locked into a proprietary format."
+        "Standard Markdown formats live as you type: headings, emphasis, strikethrough and highlight, bulleted and numbered lists, [task lists](/help/tasks/) (Tab and Shift+Tab nest any list, checklists included), quotes, dividers, inline code and code blocks with syntax highlighting, inline and block math (KaTeX), and [note-links between notes](/help/note-links/) with autocomplete.",
+        "[The formatting toolbar](/help/format-bar/) and its Insert menu add the rest: [tables](/help/table-formulas/), callouts that can fold closed, underline, superscript and subscript, text alignment, text and highlight colors, fonts, links, images, and file attachments. Everything round-trips as Markdown: \"Show markdown\" below any note reveals the raw source, and [exports are clean .md files](/help/export/), so nothing you write is locked into a proprietary format."
       ]
     },
     "tasks": {
       "q": "How do tasks work?",
       "a": [
         "Any line you write as - [ ] in any note becomes a task, and the Tasks view in the sidebar collects them all in one place. Checking a task off there updates the note it lives in, and opening a task jumps to that note. There is no separate task database to maintain: tasks are just lines in your notes, encrypted like everything else.",
-        "The quick-add box at the top of Tasks appends to a note called Quick Tasks (created for you on first use), so capturing a stray to-do takes one keystroke, not a filing decision. The same view offers three layouts (Hybrid, Aggregated, List), a completed-tasks toggle, and task search, and the + button on the All view can start a task note directly."
+        "The quick-add box at the top of Tasks appends to a note called Quick Tasks (created for you on first use), so capturing a stray to-do takes one keystroke, not a filing decision. The same view offers three layouts (Hybrid, Aggregated, List), a completed-tasks toggle, and task search, and the + button on the All view can start a task note directly. From anywhere, type `milk, eggs >> groc` in Ninja to [add tasks to a list without opening it](/help/ninja-add-to-list/)."
       ]
     },
     "journal": {
       "q": "How does the journal work, and what can I track?",
       "a": [
-        "Journals is a dedicated view for dated entries: one tap creates today's entry, and the calendar button next to it backfills a recent day you missed. An entry is a normal note plus optional trackers: mood on a 1-10 scale with 24 emotion tags, sleep, activity, medications, energy, focus, and more. \"Configure trackers\" inside any entry toggles the built-ins, and Pro adds up to 10 custom trackers (scales, numbers, yes/no).",
-        "Statistics (in Settings, or the stats icon in the footer) opens on an Overview of your week, writing and wellness together. The Wellness tab charts every tracker you log, custom trackers included, over a range you pick; Explore takes one tracker and shows how your mood runs on the days with it and without it, the same day or the day after; Patterns ranks every tracker that way; Medication shows adherence as a calendar. Exports are generated on your device: \"Download JSON\" is free, and Pro adds a \"Doctor PDF\" to bring to appointments, a copy-ready AI prompt for the chatbot of your choice, the comparisons, and a week in review. Tracker data lives inside the encrypted entry, so the server can read none of it."
+        "Journals is a dedicated view for dated entries: one tap creates today's entry, and the calendar button next to it [backfills a recent day you missed](/help/log-missed-day/). An entry is a normal note plus optional trackers: mood on a 1-10 scale with 24 emotion tags, sleep, activity, [medications](/help/add-medication/), energy, focus, and more. [\"Configure trackers\" inside any entry toggles the built-ins](/help/choose-trackers/), and Pro adds [up to 20 custom trackers](/help/custom-trackers/) (scales, numbers, yes/no).",
+        "Statistics (in Settings, or the stats icon in the footer) has three tabs. Overview sums up today and your week; Trackers charts every tracker you log, custom trackers included, over a range you pick, [shows what goes with a better or a worse mood](/help/what-moves-mood/) on the same day or the day after, and opens a tracker's own page with a tap; Writing covers your words and notes. A medication opens its adherence calendar. Exports are generated on your device: \"Download JSON\" is free, and Pro adds [a \"Doctor PDF\"](/help/doctor-pdf/) to bring to appointments, [a copy-ready AI prompt](/help/ai-prompt/) for the chatbot of your choice, the comparisons, and [the week in review](/help/week-in-review/). Tracker data lives inside the encrypted entry, so [the server can read none of it](/help/tracker-privacy/)."
       ]
     },
     "bookmarks": {
       "q": "Can I save my browser bookmarks in PrivacyNotes?",
       "a": [
-        "Yes. Bookmarks are a pillar in the sidebar, next to Notes, Tasks and Journals, and they are free on every tier. Paste a link into the quick-add bar to save one. To bring your existing ones across, export a bookmarks .html file from your browser, then drop it into Settings > Import & Export > Import > \"Browser bookmarks\". Chrome, Firefox, Safari, Edge, Opera, Brave and Vivaldi all hold the same file, and your folders and dates come with it. Safari wraps it in a .zip, which you can drop in unopened.",
-        "Your URLs never leave your device: we do not fetch the page behind a link, which is why a bookmark you add by hand carries its domain as the name until you type one. Site icons are the one exception, and you can switch them off. Export writes the same standard .html file, so your bookmarks leave as easily as they arrived ([import guide](/help/import/browser-bookmarks/))."
+        "Yes. Bookmarks are a pillar in the sidebar, next to Notes, Tasks and Journals, and they are free on every tier. Paste a link into the quick-add bar to save one, or after `+` in [Ninja](/help/ninja/), which also offers to save the page as a note or start a login with it. To bring your existing ones across, export a bookmarks .html file from your browser, then drop it into Settings > Import & Export > Import > \"Browser bookmarks\". Chrome, Firefox, Safari, Edge, Opera, Brave and Vivaldi all hold the same file, and your folders and dates come with it. Safari wraps it in a .zip, which you can drop in unopened.",
+        "Your URLs never leave your device: we do not fetch the page behind a link unless you choose Save as note ([save a page](/help/save-page-as-note/)), which is why a bookmark you add by hand carries its domain as the name until you type one. Site icons are the one exception, and you can switch them off. Export writes the same standard .html file, so your bookmarks leave as easily as they arrived ([import guide](/help/import/browser-bookmarks/))."
+      ]
+    },
+    "save-page-as-note": {
+      "q": "Can I save a web page as a note?",
+      "a": [
+        "Yes. [Open a bookmark](/help/bookmarks/) and choose Save as note, or pick Clip page in the + menu and paste a link. The main text of the page becomes an ordinary note in Notes, linked to its bookmark, and up to 20 of its pictures are stored with the note, encrypted like any picture you add yourself, unless you switch off Save pictures in the Clip page window. Saving pages is free on every tier, and [the pictures count toward your storage](/help/storage-usage/).",
+        "The desktop and phone apps download the page and its pictures directly from your device. The web app downloads them through our server, which passes them on and keeps neither the page, the pictures nor their addresses. Pages behind a login and pages built by scripts can come back empty: keep those as a bookmark."
       ]
     },
     "contacts": {
       "q": "Can I keep an address book in PrivacyNotes?",
       "a": [
         "Yes. Contacts is a pillar in the sidebar, next to Notes, Tasks and Journals, and it is free on every tier. A contact holds names, numbers, emails, addresses, websites, dates, a company and a note. Tap a number to dial it, an email address to write one, or any row to copy it. Anything else your phone wrote into the file stays under **Also in this file** and is written back when you export.",
-        "To bring yours across, export a vCard (.vcf) from your phone, your Mac, or Google Contacts, then drop it into Settings > Import & Export > Import > \"Contacts (vCard)\". Import the same file again later and the people already there are matched rather than duplicated. Export writes a standard vCard back out, so your address book leaves as easily as it arrived ([more on importing](/help/import-from-other-apps/))."
+        "To bring yours across, [export a vCard (.vcf)](/help/import/contacts/) from your phone, your Mac, or Google Contacts, then drop it into Settings > Import & Export > Import > \"Contacts (vCard)\". Import the same file again later and the people already there are matched rather than duplicated. Export writes a standard vCard back out, so your address book leaves as easily as it arrived ([more on importing](/help/import-from-other-apps/))."
       ]
     },
     "what-to-keep": {
@@ -473,7 +491,7 @@
     "keyboard-shortcuts": {
       "q": "What keyboard shortcuts are there?",
       "a": [
-        "Press ? anywhere in the app for the built-in cheat sheet, also available under Settings > About. Shortcuts cover navigation, note actions, formatting, and views - and on Windows and Linux, every Cmd reads as Ctrl and Option as Alt.",
+        "Press ? anywhere in the app for the built-in cheat sheet, also available under Settings > About. Press Cmd+K or Ctrl+K for [Ninja](/help/ninja/), which opens anything and runs any command, and Q to add an item in plain words. Shortcuts cover navigation, note actions, formatting, and views - and on Windows and Linux, every Cmd reads as Ctrl and Option as Alt.",
         "The [printable cheat sheet](/help/keyboard-shortcuts/cheat-sheet) lists every shortcut on a single A4 page, for a Mac or for Windows and Linux, and for the browser or the desktop apps. It is built from the same list the app shows, so it always matches the version you run."
       ]
     },
@@ -481,7 +499,7 @@
       "q": "Is there a printable cheat sheet of the shortcuts?",
       "a": [
         "Yes. The [printable cheat sheet](/help/keyboard-shortcuts/cheat-sheet) lays every shortcut out on a single A4 page in two columns, ready to pin next to your screen. It is generated from the same list the app itself shows, so it can never lag behind a release.",
-        "Open it and press the Print button (or Cmd+P / Ctrl+P). To keep a file instead of paper, choose PDF as the destination in the print dialog. The sheet is also linked above and below the in-app shortcut list under Settings > About > Hotkeys, and in the footer of this site."
+        "Open it and press the Print button (or Cmd+P / Ctrl+P). To keep a file instead of paper, choose PDF as the destination in the print dialog. The sheet is also linked above and below [the in-app shortcut list](/help/keyboard-shortcuts/) under Settings > About > Hotkeys, and in the footer of this site."
       ]
     },
     "ask-an-ai": {
@@ -495,14 +513,14 @@
     "locked-vs-protected": {
       "q": "What is the difference between read-only and PIN-protected notes?",
       "a": [
-        "\"Read-only\" (in the note options menu, Pro) locks a note against edits so a finished document cannot be mangled by accident; it hides nothing. \"Protect\" (same menu, Pro) hides a note's contents behind your PIN or biometric unlock, for the things you would rather not have visible on a screen others sometimes see. Its title stays visible in the list, so keep the secret out of the title.",
-        "Both are on-screen gates rather than a second layer of encryption. The flags travel inside the note's own encrypted data, and the note is deliberately not re-encrypted with your PIN, so a forgotten PIN can never destroy data. The phrase stays the real boundary: protect it first, and use these gates for the screen that other people sometimes see."
+        "\"Read-only\" (in the note options menu, Pro) locks a note against edits so a finished document cannot be mangled by accident; it hides nothing. \"Protect\" (same menu, Pro) hides a note's contents behind your PIN or [biometric unlock](/help/biometric-unlock/), for the things you would rather not have visible on a screen others sometimes see. Its title stays visible in the list, so keep the secret out of the title.",
+        "Both are on-screen gates rather than a second layer of encryption. The flags travel inside the note's own encrypted data, and the note is deliberately not re-encrypted with your PIN, so [a forgotten PIN can never destroy data](/help/forgot-pin/). The phrase stays the real boundary: protect it first, and use these gates for the screen that other people sometimes see."
       ]
     },
     "biometric-unlock": {
       "q": "Biometric unlock stopped working. What can I do?",
       "a": [
-        "You are never locked out. The lock screen always offers a fallback: \"Unlock with PIN\" (\"Unlock with passcode\" if you set one), or \"Sign in with recovery phrase\". Biometric unlock only opens the copy of your recovery phrase stored on this device, and your notes are encrypted with keys from the phrase itself, so they are untouched either way.",
+        "You are never locked out. The lock screen always offers a fallback: [the field for your PIN](/help/forgot-pin/) (or your passcode, if you set one) right on the screen, or \"Sign in with recovery phrase\". Biometric unlock only opens the copy of your recovery phrase stored on this device, and your notes are encrypted with keys from the phrase itself, so they are untouched either way.",
         "Then set it up again. If the lock screen says \"Biometric unlock could not open your notes\", unlock another way first. Enrollment is per-device, so a new phone, a fresh browser profile, or a reinstall needs re-enrolling: Settings > Security > \"Lock\", disable, then \"Enable biometric unlock\" again. It also requires \"Trust this device\" (untrusted sessions clear when the tab closes) and hardware with a platform authenticator (Touch ID, Face ID, Windows Hello). If a password manager like Bitwarden or 1Password pops up instead of the system prompt, dismiss it and retry, or turn off its passkey capture for the site - the app requests the built-in authenticator, but some managers intercept anyway."
       ]
     },
@@ -510,21 +528,21 @@
       "q": "My recovery phrase leaked. What do I do?",
       "a": [
         "Treat the vault as burned. A phrase cannot be changed or rotated, because the phrase is the key everything is encrypted under - so the fix is moving to a fresh vault. First, in the old account, export everything: Settings > Import & Export > Export > \"PrivacyNotes backup (.zip)\".",
-        "Sign out, create a new vault (new 12 words), and bring the export back in via Settings > Import & Export > Restore > \"Full backup (.zip)\". Then delete the old account from any device still signed into it: Settings > Account > \"Delete account & data...\". That removes its synced data and shuts out anyone holding the old phrase. If you signed in with Google, Apple, or GitHub, delete the old account first, then sign in with that same login again to start the fresh vault.",
-        "Two things to handle first: cancel any active storage add-on, which deletion requires, and note that Pro stays with the account it was bought on rather than moving to the new vault. Then keep the new phrase in a password manager and nowhere else, which is the whole of the prevention."
+        "Sign out, create a new vault (new 12 words), and bring the export back in via Settings > Import & Export > Restore > \"Full backup (.zip)\". Then [delete the old account](/help/delete-account/) from any device still signed into it: Settings > Account > \"Delete account & data...\". That removes its synced data and shuts out anyone holding the old phrase. If you signed in with Google, Apple, or GitHub, delete the old account first, then sign in with that same login again to start the fresh vault.",
+        "Two things to handle first: [cancel any active storage add-on](/help/manage-storage-addon/), which deletion requires, and note that [Pro stays with the account it was bought on](/help/pro-after-leak/) rather than moving to the new vault. Then keep the new phrase in a password manager and nowhere else, which is the whole of the prevention."
       ]
     },
     "lost-device": {
       "q": "I lost a device. How do I protect my notes?",
       "a": [
-        "From any signed-in device, open Settings > Account > \"Registered devices\" and remove the lost one. The next time that device comes online it is signed out and its local data is wiped, within about a minute of its next use. It stays listed under \"Recently removed\" for 72 hours so you can confirm it is gone.",
+        "From any signed-in device, open Settings > Account > \"Registered devices\" and [remove the lost one](/help/remove-device/). The next time that device comes online it is signed out and its local data is wiped, within about a minute of its next use. It stays listed under \"Recently removed\" for 72 hours so you can confirm it is gone.",
         "Set the app lock (PIN or biometric) on anything portable, and keep your OS screen lock on. A device wipes when it next reconnects, so those local gates are what stand between a lost phone and your notes until then. The phrase is the real key: anyone holding your 12 words can sign in again, so if you suspect the phrase itself leaked, follow the [phrase leak playbook](/help/phrase-compromised/) instead."
       ]
     },
     "device-limit": {
       "q": "What does \"Device limit reached\" mean?",
       "a": [
-        "Free accounts sync on up to 2 devices, and this dialog appears when a third tries to register. Remove a device you no longer use directly in the dialog, or on an existing device under Settings > Account ([how removal works](/help/remove-device/)). The slot frees immediately, and the removed device stays visible under \"Recently removed\" for 72 hours. Pro lifts the cap entirely.",
+        "Free accounts sync on up to 2 devices, and this dialog appears when a third tries to register. Remove a device you no longer use directly in the dialog, or on an existing device under Settings > Account ([how removal works](/help/remove-device/)). The slot frees immediately, and the removed device stays visible under \"Recently removed\" for 72 hours. [Pro lifts the cap entirely](/help/free-vs-pro/).",
         "Several browsers on one computer count as a single device: they are grouped using privacy-preserving hashes of coarse machine signals, computed on your device with a per-account secret. A major browser update, or a hardened browser like Brave or Tor that randomizes those signals, can land the same machine in a new slot. Remove the stale entry and carry on. You are never locked out."
       ]
     },
@@ -532,64 +550,64 @@
       "q": "What happens when I go over my storage limit?",
       "a": [
         "Nothing is ever deleted. When new changes stop fitting, sync says so: \"Storage full. Some notes couldn't sync.\" Existing data keeps syncing, new growth does not. If you stay over the cap, a 90-day countdown starts, shown as an amber banner. Reading, editing things smaller, deleting, and exporting all keep working the entire time.",
-        "After 90 days over cap, sync pauses: the banner turns red (\"Sync paused. You've been over your storage limit for 90+ days.\"). The app still works fully on every device; changes just stay local until you are back under. Recovery is instant and self-serve: [free up space](/help/storage-usage/) - emptying the trash counts - or add storage under Settings > Storage, and sync resumes on its own. This is the deliberate opposite of services that auto-delete over-quota data."
+        "After 90 days over cap, sync pauses: the banner turns red (\"Sync paused. You've been over your storage limit for 90+ days.\"). The app still works fully on every device; changes just stay local until you are back under. Recovery is instant and self-serve: [free up space](/help/storage-usage/) - emptying the trash counts - or [add storage](/help/storage-addons/) under Settings > Storage, and sync resumes on its own. This is the deliberate opposite of services that auto-delete over-quota data."
       ]
     },
     "backup-strategy": {
       "q": "What is the best way to back up my notes?",
       "a": [
-        "Export \"Encrypted full backup (.pnbackupz)\" under Settings > Import & Export > Export. It encrypts everything - notes, journals, vault items, tasks, images, audio, and files - with your phrase key, so it is safe to park on a cloud drive or a USB stick, and it restores with your phrase on any device.",
+        "Export \"Encrypted full backup (.pnbackupz)\" under Settings > Import & Export > Export. It encrypts everything - notes, journals, vault items, tasks, images, audio, and files - with your phrase key, so it is safe to park on a cloud drive or a USB stick, and [it restores with your phrase on any device](/help/restore-backup/).",
         "It opens with the phrase that made it, so keep a \"PrivacyNotes backup (.zip)\" alongside it if you ever [move to a new phrase](/help/phrase-compromised/): same contents, restores into any vault, and readable on disk, so store it somewhere you trust. \"Encrypted backup (.pnbackup)\" covers text and metadata rather than images and files, and \"Text backup (.json)\" and the HTML archive are portability formats rather than restore formats.",
-        "Why keep local backups when everything syncs? Sync is not a backup: it faithfully propagates deletions, including a compromised server dropping data that your devices then mirror. A copy on your own disk is the one no server event can touch. Export before big imports, before leaving, and on a rhythm you will keep."
+        "Why keep local backups when everything syncs? Sync is not a backup: it faithfully propagates deletions, including a compromised server dropping data that your devices then mirror. A copy on your own disk is the one no server event can touch. Export before big imports, [before leaving](/help/leaving/), and on a rhythm you will keep."
       ]
     },
     "restore-backup": {
       "q": "How do I restore a backup?",
       "a": [
-        "Open Settings > Import & Export > Restore and pick the format you have. \"Full backup (.zip)\" takes the complete export: notes, journals, vault items, tasks, images, audio, and files. \"Encrypted backup (.pnbackup, .pnbackupz)\" takes either encrypted export. Your file is read and decrypted on your device, and restoring is free on every tier.",
+        "Open Settings > Import & Export > Restore and pick the format you have. \"Full backup (.zip)\" takes [the complete export](/help/export/): notes, journals, vault items, tasks, images, audio, and files. \"Encrypted backup (.pnbackup, .pnbackupz)\" takes either encrypted export. Your file is read and decrypted on your device, and restoring is free on every tier.",
         "A restore matches notes by id. A note you already have is updated only when the backup's copy is newer, a note in your trash comes back out, a note you lack is added once, and restoring the same file again changes nothing unless you edited a restored note in between, which brings the older copy back beside your edit. A file with no ids of ours, from another app or from a backup made by an older version of this one, adds its notes as new ones every time. Both encrypted formats open only in the account that created them, because they are encrypted with that account's phrase key, while a .zip restores into any vault ([which backup to make](/help/backup-strategy/))."
       ]
     },
     "image-quality": {
       "q": "Does PrivacyNotes change or compress my images?",
       "a": [
-        "Yes. Both settings are on by default because we love our users: we want you to save storage space and keep your privacy. Space saver shrinks a large image to fit 2048 pixels and saves it as JPEG at 85% quality, which keeps all the detail a screen can show. Remove location data strips the EXIF metadata a camera writes into a photo, including the GPS location, before the image is saved. Both apply to every image in the app: pasted into a note, added as a file, or imported.",
-        "Turn either off under **Settings > Images**, where contact photos have a third switch that keeps them at 512 pixels. The settings apply to new images only; files that are not images are stored exactly as they are. HEIC and TIFF images are converted to JPEG, because only Safari can show them. A backup you restore is written back byte for byte."
+        "Yes. Both settings are on by default because we love our users: we want you to [save storage space](/help/storage-usage/) and keep your privacy. Space saver shrinks a large image to fit 2048 pixels and saves it as JPEG at 85% quality, which keeps all the detail a screen can show. Remove location data strips the EXIF metadata a camera writes into a photo, including the GPS location, before the image is saved. Both apply to every image in the app: pasted into a note, added as a file, or imported.",
+        "Turn either off under **Settings > Storage > Images**, where contact photos have a third switch that keeps them at 512 pixels. The settings apply to new images only; files that are not images are stored exactly as they are. HEIC and TIFF images are converted to JPEG, because only Safari can show them. [A backup you restore](/help/restore-backup/) is written back byte for byte."
       ]
     },
     "storage-usage": {
       "q": "What counts against my storage, and how do I free space?",
       "a": [
-        "Everything you sync, at its encrypted size: note text, images, audio recordings, and file attachments. The bar under Settings > Storage shows the total; each note's own footprint is listed in its note options as \"Storage used\". Trashed notes still count until the trash is emptied.",
-        "To free space fast, open Files, sort by Size, and delete the biggest items - attachments dwarf text in almost every account. Then empty the trash: the Trash view shows how much space \"Empty\" will free. Text alone almost never fills a quota; even the free 50 MB holds tens of thousands of plain notes."
+        "Everything you sync, at its encrypted size: note text, images, audio recordings, and file attachments. The bar under Settings > Storage shows the total; each note's own footprint is listed in its note options as \"Storage used\". [Trashed notes still count until the trash is emptied](/help/trash-auto-delete/).",
+        "To free space fast, open Files, sort by Size, and [delete the biggest items](/help/storage-after-delete/) - attachments dwarf text in almost every account. Then empty the trash: the Trash view shows how much space \"Empty\" will free. Text alone almost never fills a quota; even the free 50 MB holds tens of thousands of plain notes."
       ]
     },
     "upload-failed": {
       "q": "Why did my file upload fail?",
       "a": [
-        "The error names which ceiling you hit. Per file: 5 MB on Free, 50 MB on Pro, 100 MB with any storage add-on. In total: everything you sync must fit your account's storage (50 MB Free, 500 MB Pro, more with add-ons), so a full quota fails an upload even when the file itself is small. Any file type is accepted.",
-        "Check the storage bar in the Files view or under Settings > Storage, then pick the cheapest fix: [free up space](/help/storage-usage/), upgrade, or shrink the file (phone photos are often multi-MB originals; a compressed JPEG is a fraction of the size). An upload that fails for want of a connection is kept, not lost: the file stays on this device and goes up by itself once you are back online, and Settings > ID & Sync counts it as waiting until then."
+        "The error names which ceiling you hit. Per file: 5 MB on Free, 50 MB on Pro, [100 MB with any storage add-on](/help/storage-addons/). In total: everything you sync must fit your account's storage (50 MB Free, 500 MB Pro, more with add-ons), so a full quota fails an upload even when the file itself is small. Any file type is accepted.",
+        "Check the storage bar in the Files view or under Settings > Storage, then pick the cheapest fix: [free up space](/help/storage-usage/), upgrade, or shrink the file (phone photos are often multi-MB originals; [a compressed JPEG](/help/image-quality/) is a fraction of the size). An upload that fails for want of a connection is kept, not lost: the file stays on this device and goes up by itself once you are back online, and Settings > ID & Sync counts it as waiting until then."
       ]
     },
     "trash-auto-delete": {
       "q": "Why did notes disappear from my trash?",
       "a": [
-        "Trash is not an archive: by default, anything in it is permanently deleted after 30 days. The switch sits in the Trash view itself, labeled \"Auto-delete after 30 days\" - turn it off there if you want trash kept forever, and the setting syncs to all your devices. The cleanup runs on your device when the app opens, because the server cannot see which encrypted notes are trashed.",
-        "Permanently deleted means gone: no device and nobody on our side can bring it back, only a backup you made earlier. If you use trash as a someday-maybe pile, disable auto-delete or restore notes before day 30. Until then, trashed notes still count toward [your storage](/help/storage-usage/) - \"Empty\" in the same view frees that space immediately."
+        "[Trash is not an archive](/help/archive/): by default, anything in it is permanently deleted after 30 days. The switch sits in the Trash view itself, labeled \"Auto-delete after 30 days\" - turn it off there if you want trash kept forever, and the setting syncs to all your devices. The cleanup runs on your device when the app opens, because the server cannot see which encrypted notes are trashed.",
+        "Permanently deleted means gone: no device and nobody on our side can bring it back, [only a backup you made earlier](/help/backup-strategy/). If you use trash as a someday-maybe pile, disable auto-delete or restore notes before day 30. Until then, trashed notes still count toward [your storage](/help/storage-usage/) - \"Empty\" in the same view frees that space immediately."
       ]
     },
     "leaving": {
       "q": "How do I leave PrivacyNotes completely?",
       "a": [
-        "Export first, delete second - both self-serve. Settings > Import & Export > Export covers every exit route: \"PrivacyNotes backup (.zip)\" for a complete copy, portable Markdown and HTML for your next notes app, and \"Vault export (.json)\" in Bitwarden-compatible format for your next password manager. Exports are generated on your device.",
-        "Then Settings > Account > \"Delete account & data...\": type DELETE, and your synced notes, files, devices, settings, and the account itself are permanently removed with no retention window ([details](/help/delete-account/)). An active storage add-on must be cancelled first under Settings > Storage. A phrase-only account leaves nothing behind to scrub, because we never knew who you were. No dark patterns and no win-back emails - your data is yours, including on the way out."
+        "[Export first](/help/export/), delete second - both self-serve. Settings > Import & Export > Export covers every exit route: \"PrivacyNotes backup (.zip)\" for a complete copy, portable Markdown and HTML for your next notes app, and \"Vault export (.json)\" in Bitwarden-compatible format for your next password manager. Exports are generated on your device.",
+        "Then Settings > Account > \"Delete account & data...\": type DELETE, and your synced notes, files, devices, settings, and the account itself are permanently removed. Records of a storage subscription and a minimal security identifier stay, and backups taken before the deletion expire after seven days ([details](/help/delete-account/)). [An active storage add-on must be cancelled first](/help/manage-storage-addon/) under Settings > Storage. No dark patterns and no win-back emails - your data is yours, including on the way out."
       ]
     },
     "data-rights": {
       "q": "How does PrivacyNotes handle GDPR and my data rights?",
       "a": [
-        "Mostly by holding as little as possible. Sign up with a phrase and there is no name, email, or identity on file to request: your data is ciphertext under a random public key, hosted in Zurich, Switzerland. Sign in with Google, Apple, or GitHub and exactly one identifier exists - the email behind that login, linked to that key. Billing details for Pro live with [Paddle](https://www.paddle.com), the merchant of record, not with us.",
-        "Every right is self-serve and immediate, no request form needed: access and portability are Settings > Import & Export (full export in open formats), erasure is Settings > Account > \"Delete account & data...\" with no retention window, and rectification is editing your notes. The formal version, including how to reach us for anything the app cannot do itself, lives in the [privacy policy](https://lifetimelabs.dev/privacy/)."
+        "Mostly by holding as little as possible. Sign up with a phrase and there is no name, email, or identity on file to request: your data is ciphertext under a random public key, [hosted in Zurich, Switzerland](/help/data-location/). Sign in with Google, Apple, or GitHub and that login's email and account ID are linked to that key. Payment details stay with [Paddle](https://www.paddle.com), Apple or Google; we keep the order and subscription records needed to grant and restore purchases.",
+        "Most rights are self-serve, no request form needed: access and portability are Settings > Import & Export ([full export in open formats](/help/export/)), erasure is Settings > Account > \"Delete account & data...\" (some billing and security records remain, [see what deletion removes](/help/delete-account/)), and rectification is editing your notes. The formal version, including how to reach us for anything the app cannot do itself, lives in the [privacy policy](https://lifetimelabs.dev/privacy/)."
       ]
     },
     "referral-links": {
@@ -603,7 +621,7 @@
     "pro-not-active": {
       "q": "I paid for Pro but it is not active. What now?",
       "a": [
-        "Give it a minute, then reload the app. After checkout the app polls for about 20 seconds and unlocks by itself, and a reload re-checks Pro status on launch. If the payment landed but activation lags, a banner says \"Payment received but Pro activation is taking longer than usual\" - that state resolves itself in nearly all cases. In store builds, a purchase that fails to validate retries when you restart the app, and a purchase that never activates is refunded by the store automatically within 3 days.",
+        "Give it a minute, then reload the app. After checkout the app polls for about 20 seconds and unlocks by itself, and a reload re-checks Pro status on launch. If the payment landed but activation lags, a banner says \"Payment received but Pro activation is taking longer than usual\" - that state resolves itself in nearly all cases. [In store builds](/help/store-purchases/), a purchase that fails to validate retries when you restart the app, and a purchase that never activates is refunded by the store automatically within 3 days.",
         "Still locked? It is almost always an account mismatch: Pro attaches to the account that was signed in at purchase, so a different phrase - or a Google, Apple, or GitHub login instead of your phrase vault - is a different account. Compare the Account ID under Settings > ID & Sync on the device that bought it. If it is genuinely stuck, [report it](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) and include that Account ID: it identifies the purchase and reveals nothing about your notes."
       ]
     },
@@ -612,41 +630,41 @@
       "a": [
         "Settings > Storage is the control panel. Upgrading to a bigger package applies immediately. On the web, the confirmation shows the exact prorated amount charged today before you commit, and the renewal date does not move; in the Play Store and the App Store the store's own sheet shows the charge, and Apple refunds the unused part of your current year and starts a new one. \"Cancel storage\" keeps your extra space until the end of the period you already paid for. To move to a smaller package, cancel the current one and buy the smaller one when the period ends.",
         "If your data still fits the remaining cap after expiry, that is the end of it; if not, nothing is deleted and the [90-day over-quota lifecycle](/help/over-quota/) begins. A failed renewal shows a banner with an \"Update card\" link to fix payment in Paddle.",
-        "Cancelling from outside the app works too, which is the answer when you cannot sign in. Paddle is our merchant of record and bills you directly: use the \"Manage Subscription\" link in your receipt email, or the support chat at [paddle.net](https://paddle.net). A store build is the same idea, so cancel there in the store's own subscription settings."
+        "Cancelling from outside the app works too, which is the answer when you cannot sign in. [Paddle is our merchant of record](/help/paddle-privacy/) and bills you directly: use the \"Manage Subscription\" link in your receipt email, or the support chat at [paddle.net](https://paddle.net). [A store build is the same idea](/help/store-purchases/), so cancel there in the store's own subscription settings."
       ]
     },
     "store-purchases": {
       "q": "Do purchases carry over between the web, Google Play, and the App Store?",
       "a": [
         "Yes. Pro and storage attach to your account, not to a platform or store. Buy on the web and every app you sign into is Pro, including store builds; buy inside a store build and the web and desktop apps unlock the same way. Signing in is the restore, because the entitlement follows the account. A store build carries a **Restore purchases** button under Settings > Account as well, which asks Apple or Google what you own and unlocks it again after a reinstall.",
-        "The one difference is who bills you. Web purchases run through Paddle and are managed in the app under Settings > Storage. Purchases made inside a store build (the App Store today, Google Play once that app ships) are billed by that store: recurring storage is cancelled in the store's subscription settings, and refunds follow the store's process. Either way it is the same account and the same Pro everywhere - including platforms that do not exist yet."
+        "The one difference is who bills you. Web purchases run through Paddle and are [managed in the app](/help/manage-storage-addon/) under Settings > Storage. Purchases made inside a store build (the App Store today, [Google Play once that app ships](/help/play-vs-apk/)) are billed by that store: recurring storage is cancelled in the store's subscription settings, and refunds follow the store's process. Either way it is the same account and the same Pro everywhere - including platforms that do not exist yet."
       ]
     },
     "play-vs-apk": {
       "q": "Obtainium, the direct APK, or Google Play: which Android download?",
       "a": [
-        "Take [Obtainium](/help/obtainium/) if you want the app to stay current on its own, and the direct APK if you would rather not run a second app for it. Google Play is not live yet, so today the choice is between those two. They hand you the same file signed with the same key, so you can move either way at any time: Obtainium adopts an APK you already sideloaded, and the website APK installs over an Obtainium one.",
-        "Either route is easy to change your mind about later. Before any switch that means uninstalling first, confirm the app reads \"Synced\" and have your 12 words or a sign-in QR from another device ready, because uninstalling clears the local copy."
+        "Take [Obtainium](/help/obtainium/) if you want the app to stay current on its own, and [the direct APK](/help/android-updates/) if you would rather not run a second app for it. Google Play is not live yet, so today the choice is between those two. They hand you the same file signed with the same key, so you can move either way at any time: Obtainium adopts an APK you already sideloaded, and the website APK installs over an Obtainium one.",
+        "Either route is easy to change your mind about later. Before any switch that means uninstalling first, confirm the app reads \"Synced\" and have your 12 words or [a sign-in QR from another device](/help/add-second-device/) ready, because uninstalling clears the local copy."
       ]
     },
     "markdown-folder": {
       "q": "Can I edit a folder of Markdown files from my own disk?",
       "a": [
         "Yes. Open the Markdown pillar in the sidebar, pick a folder of .md and .txt files, and edit them in the same editor you use for notes. Subfolders appear on their own, edits save straight back to the file, and nothing is converted, so the same folder keeps working in Obsidian, in a git repo, or in your own scripts. **Save to my notes** copies any file, or a whole selection, into your encrypted notes in one click and leaves the original where it is. All of it is free on every tier.",
-        "Those files stay on your disk exactly as you left them: we never upload them, they never sync to your other devices, and nothing is converted on the way in or out. It works in the desktop app on any computer, and in Chrome, Edge or Opera in the browser, because opening a folder straight from disk is a desktop capability."
+        "Those files stay on your disk exactly as you left them: we never upload them, they never sync to your other devices, and nothing is converted on the way in or out. It works [in the desktop app on any computer](/help/platforms/), and in Chrome, Edge or Opera in the browser, because opening a folder straight from disk is a desktop capability."
       ]
     },
     "markdown-folder-mobile": {
       "q": "Can I open a Markdown folder on my phone?",
       "a": [
         "Not today. [The Markdown folder](/help/markdown-folder/) runs in the desktop app on macOS, Windows and Linux, and in Chrome, Edge or Opera on a computer, because a desktop hands the app a real folder it can read and write directly. Android and iOS hand an app no folder at all: every file reaches an app through the system's own document layer, one grant at a time, so reading a whole tree and saving back into it is separate work on each platform and it is not built yet.",
-        "On a phone you can bring the same files in as copies: Settings > Import & Export > Import > \"Markdown files\" takes .md and .txt one at a time or as a .zip, and a zipped folder keeps its subfolders, images and attachments. They arrive as encrypted notes that sync to your other devices, and Export writes clean .md back out. The originals stay on your disk exactly where they are."
+        "On a phone you can bring the same files in as copies: Settings > Import & Export > Import > \"Markdown files\" takes .md and .txt one at a time or as a .zip, and [a zipped folder keeps its subfolders, images and attachments](/help/import/markdown/). They arrive as encrypted notes that sync to your other devices, and Export writes clean .md back out. The originals stay on your disk exactly where they are."
       ]
     },
     "folders": {
       "q": "How do folders work, and do I need Pro for them?",
       "a": [
-        "Folders nest as deeply as you like and live in the sidebar. Browsing them is free on every tier. Creating one, renaming it, or moving a note into it (\"New folder\" and \"Move to folder\") is where Pro starts, so a free account can always read a structure it imported or built while on Pro. An \"Unfiled\" row lists every note that sits in no folder.",
+        "Folders nest as deeply as you like and live in the sidebar. Browsing them is free on every tier. Creating one, renaming it, or [moving a note into it](/help/drag-to-folder/) (\"New folder\" and \"Move to folder\") is where Pro starts, so a free account can always read a structure it imported or built while on Pro. An \"Unfiled\" row lists every note that sits in no folder.",
         "A note lives in one folder at a time, the way a file does. Reach for [tags](/help/tags/) when something belongs in two places at once. The folder is stored inside the encrypted note, so the server sees your structure no better than it sees your text."
       ]
     },
@@ -654,20 +672,20 @@
       "q": "How do tags work?",
       "a": [
         "Every open note has a tag row under the title. Type a word and press Enter, a comma, or #, and the tag becomes a chip. The sidebar lists the tags used in the section you have open, and clicking one filters the list to those items. You can rename a tag everywhere at once, favorite it so it pins to the top, or delete it, with or without the notes under it.",
-        "Tags and folders solve different problems: a note sits in one folder but carries as many tags as you like, which is what you want when something is both \"work\" and \"invoice\". Imports tag by source, so everything that arrived from another app lands with its own tag and is easy to find, or to clean up later."
+        "[Tags and folders solve different problems](/help/folders/): a note sits in one folder but carries as many tags as you like, which is what you want when something is both \"work\" and \"invoice\". [Imports tag by source](/help/import-from-other-apps/), so everything that arrived from another app lands with its own tag and is easy to find, or to clean up later."
       ]
     },
     "organize": {
       "q": "How do sections, folders, tags and spaces work together?",
       "a": [
-        "Everything you keep lives in one library. The sections in the sidebar, such as Notes, Vault and Journals, are views of that library by type. A folder is a place, so one folder can hold a note and the login that belongs with it, and the folder tree is the same in every section. Its numbers count what the open section holds, and a folder with none of it shows dimmed. A tag is a label, and the sidebar lists only the tags the open section uses.",
+        "Everything you keep lives in one library. The sections in the sidebar, such as Notes, Vault and Journals, are views of that library by type. [A folder is a place](/help/folders/), so one folder can hold a note and the login that belongs with it, and the folder tree is the same in every section. Its numbers count what the open section holds, and a folder with none of it shows dimmed. [A tag is a label](/help/tags/), and the sidebar lists only the tags the open section uses.",
         "Spaces split the library into Personal and Work, and a top-level folder belongs to one space with everything inside it. [How spaces work](/help/spaces/) covers the switch, moving items across and turning spaces off. Tags are free, and folders and spaces need Pro."
       ]
     },
     "spaces": {
       "q": "How do the Personal and Work spaces work?",
       "a": [
-        "Spaces split your library into Personal and Work. The switch beside **Jump** in the sidebar shows **All**, **Personal** or **Work**: All shows every item, and the other two show one space each. Each device keeps its own choice, so your phone can show Personal while your laptop shows Work, and opening an item from the other space switches to it. Spaces only change what the lists show: every item still syncs to every device.",
+        "Spaces [split your library into Personal and Work](/help/organize/). The switch beside **Ninja** in the sidebar shows **All**, **Personal** or **Work**: All shows every item, and the other two show one space each. Each device keeps its own choice, so your phone can show Personal while your laptop shows Work, and opening an item from the other space switches to it. Spaces only change what the lists show: every item still syncs to every device.",
         "A top-level folder belongs to one space, with everything inside it, and **Move to Work** or **Move to Personal** in its menu, or in the menu of any item, moves it across. An item in no folder is Personal, and so is anything you create while All is open. To stop using spaces, switch off Settings > Lists > Spaces: every item shows, nothing moves, and each folder keeps its space for when you switch it back on. Spaces need Pro."
       ]
     },
@@ -675,28 +693,28 @@
       "q": "How do I link one note to another?",
       "a": [
         "Type [[ anywhere in a note and start typing a title. Pick a note from the list and it becomes a note-link you can click. If nothing matches, choose \"Create\" and the new note is made and linked in one step. The toolbar button \"Link to another note\" does the same thing. To open a note at one of its sections, type # after the title and pick the heading. The link icon on a heading in the outline panel copies such a link for you.",
-        "Note-links live inside the note, so they export with it and travel with an import: an Obsidian vault keeps its links, and Evernote note links are converted on the way in. To find what points at a note, search its title: every note linking to it carries those words."
+        "Note-links live inside the note, so they export with it and travel with an import: [an Obsidian vault keeps its links](/help/import/obsidian/), and [Evernote note links are converted on the way in](/help/import/evernote/). To find what points at a note, search its title: every note linking to it carries those words."
       ]
     },
     "appearance": {
       "q": "Can I change how the app looks?",
       "a": [
-        "Yes. Settings > Design holds the look: **Mode** switches between Light, Dark and Auto, which follows your system, and you pick one color theme for light mode and one for dark. Settings > Editor holds how you write: **Text size** has five steps and scales your writing surface only, so the interface around it stays put, and **Editor** decides whether notes open Formatted or as plain Markdown. Settings > Lists lays items out as a List or a Grid. In the desktop apps, **App size** in Settings > Design scales the whole window. The **Design** button in the footer holds the settings you change most, with three favorite themes for each mode.",
-        "Color themes need Pro: the default theme is free and Pro unlocks the rest, in light and dark alike, plus [themes of your own](/help/custom-themes/). Zen mode, which hides everything except your text (Cmd+Shift+F), is Pro too. Moving the [toolbar](/help/format-bar/) to the top or the bottom is free, and arranging its buttons is Pro. Mode, the color themes you pick and your three favorites, text size, List or Grid, and App size stay on the device you set them on. The editor mode, line spacing, note colors and your list settings follow your account to your other devices."
+        "Yes. Settings > Design holds the look: **Mode** switches between Light, Dark and Auto, which follows your system, and you pick one color theme for light mode and one for dark. Settings > Editor holds how you write: **Text size** has five steps and scales your writing surface only, so the interface around it stays put, and **Editor** decides whether notes open Formatted or as plain Markdown. Settings > Lists lays items out as a List or a Grid. In the desktop apps, **App size** in Settings > Design [scales the whole window](/help/window-zoom/). The **Design** button in the footer holds the settings you change most, with three favorite themes for each mode.",
+        "Color themes need Pro: the default theme is free and Pro unlocks the rest, in light and dark alike, plus [themes of your own](/help/custom-themes/). [Zen mode, which hides everything except your text](/help/zen-mode/) (Cmd+Shift+F), is Pro too. Moving the [toolbar](/help/format-bar/) to the top or the bottom is free, and arranging its buttons is Pro. Mode, the color themes you pick and your three favorites, text size, List or Grid, and App size stay on the device you set them on. The editor mode, line spacing, note colors and your list settings follow your account to your other devices."
       ]
     },
     "share-with-someone": {
       "q": "Can I share a note with someone else, or work on one together?",
       "a": [
-        "Send a [burn note](/help/burn-notes/): it turns any note into a one-time encrypted link that is destroyed the moment it is read, which covers handing over a password, an address, or a draft. For something the other person keeps, export the note as Markdown, HTML or PDF and send them the file.",
-        "A note two people edit live is a different product: it would mean the server handing keys between people, and keeping the server out of your keys is the whole design here. One account is one person with one phrase, which is what makes \"we cannot read your notes\" a fact rather than a policy."
+        "Send a [burn note](/help/burn-notes/): it turns any note into a one-time encrypted link that is destroyed the moment it is read, which covers handing over a password, an address, or a draft. For something the other person keeps, [export the note as Markdown, HTML or PDF](/help/export/) and send them the file.",
+        "A note two people edit live is a different product: it would mean the server handing keys between people, and keeping the server out of your keys is the whole design here. One account is one person with one phrase, and [with self-custody](/help/threat-model-levels/) the server holds nothing that opens your notes."
       ]
     },
     "add-second-device": {
       "q": "How do I sign in on a second device?",
       "a": [
         "On the device you already use, open Settings > Security > Phrase. It shows your 12 words and a sign-in QR code. On the new device, choose \"Phrase login\", then scan that QR with the camera, upload a photo of it, or type the words in. Your notes arrive within seconds.",
-        "A free account covers 2 devices and Pro covers as many as you like, and two browsers on one computer count as a single device. Treat the QR exactly like the phrase it carries: show it to nobody, and never let it land in a photo library that syncs to somebody else's cloud."
+        "[A free account covers 2 devices](/help/device-limit/) and Pro covers as many as you like, and two browsers on one computer count as a single device. Treat the QR exactly like the phrase it carries: show it to nobody, and never let it land in a photo library that syncs to somebody else's cloud."
       ]
     },
     "pause-sync": {
@@ -717,14 +735,14 @@
       "q": "What happens if I clear my browser data or cookies?",
       "a": [
         "The web app keeps your notes in your browser's own storage, so clearing site data for PrivacyNotes wipes the local copy and signs you out. Everything that already synced is safe: sign in with your 12-word phrase and it comes back. Anything that had not synced yet is gone, because we never had a copy of it.",
-        "So do two things. Check that the footer says \"Synced\" before you clear anything, and keep your phrase in a password manager, because a cleared browser cannot ask you nicely for it. The desktop and mobile apps are not affected at all: they keep their own storage, which a browser cleanup never touches."
+        "So do two things. Check that the footer says \"Synced\" before you clear anything, and keep your phrase in a password manager, because a cleared browser cannot ask you nicely for it. [The desktop and mobile apps](/help/platforms/) are not affected at all: [they keep their own storage](/help/data-on-disk/), which a browser cleanup never touches."
       ]
     },
     "android-backup": {
       "q": "Are my notes included in my Android phone backup?",
       "a": [
         "No. The Android app keeps its data out of the phone's cloud backup, so none of it reaches Google Drive. The reason is the key, not the notes: where you chose **Trust this device**, your 12 words are held on that device to keep you signed in, and a cloud backup is no place for the key that decrypts your notes.",
-        "A new phone therefore starts empty: install the app, sign in with your 12 words, and everything that synced arrives. Restore waits for that first sync, so a backup you bring is matched to what the account holds rather than added twice. What never synced lives only on the old phone, so check the footer reads \"Synced\" first, or carry a \"PrivacyNotes backup (.zip)\" from Settings > Import & Export > Export ([which backup to make](/help/backup-strategy/)).",
+        "A new phone therefore starts empty: install the app, [sign in with your 12 words](/help/add-second-device/), and everything that synced arrives. Restore waits for that first sync, so a backup you bring is matched to what the account holds rather than added twice. What never synced lives only on the old phone, so check the footer reads \"Synced\" first, or carry a \"PrivacyNotes backup (.zip)\" from Settings > Import & Export > Export ([which backup to make](/help/backup-strategy/)).",
         "A direct phone-to-phone transfer at setup is different: some phones move app data across, and Android gives an app no dependable way to refuse. That copy never leaves your two devices, so wipe the old phone afterwards."
       ]
     },
@@ -732,34 +750,34 @@
       "q": "Can I print a note or save it as a PDF?",
       "a": [
         "Yes. Right-click a note, or open its share menu, and choose \"Print / Save as PDF\". Your system print dialog opens, so you can send it to a printer or save a PDF from there. The page renders clean on white with your formatting intact, whatever theme you use in the app.",
-        "It is generated on your device like every other [export](/help/export/), so nothing is uploaded to produce it. For several notes at once, select them and export as HTML: you get one printable page per note. The \"Doctor PDF\" under Statistics is a separate, purpose-built wellness report and needs Pro."
+        "It is generated on your device like every other [export](/help/export/), so nothing is uploaded to produce it. For several notes at once, select them and export as HTML: you get one printable page per note. [The \"Doctor PDF\" under Statistics](/help/doctor-pdf/) is a separate, purpose-built wellness report and needs Pro."
       ]
     },
     "note-history": {
       "q": "Can I get an older version of a note back?",
       "a": [
-        "Yes, with Pro. Open the note's \"...\" menu and choose \"Note history\" to browse up to 50 earlier versions, compare one with the current note, and restore it. Restoring loses nothing: the current text is saved as a version first, so you can step back and forth. Versions are encrypted like the note itself, so we cannot read them either.",
-        "Each version is the note as it stood before an edit: one is saved at your first edit after a pause of five minutes, one every ten minutes while you keep writing, and one before an edit that removes more than half of a note of 200 characters or more, unless the last version is less than 30 seconds old. Note history is the one Pro feature that runs through the server, which is why the demo keeps its own local copy instead. Every tier has the [trash](/help/trash-auto-delete/) as well, which holds a deleted note for 30 days."
+        "Yes, with Pro. Open the note's \"...\" menu and choose \"Note history\" to browse up to 50 earlier versions, compare one with the current note, and restore it. Restoring loses nothing: the current text is saved as a version first, so you can step back and forth. Versions are encrypted on your device like the note itself.",
+        "Each version is the note as it stood before an edit: one is saved at your first edit after a pause of five minutes, one every ten minutes while you keep writing, and one before an edit that removes more than half of a note of 200 characters or more, unless the last version is less than 30 seconds old. Note history is the one Pro feature that runs through the server, which is why [the demo keeps its own local copy](/help/try-before-signup/) instead. Every tier has the [trash](/help/trash-auto-delete/) as well, which holds a deleted note for 30 days."
       ]
     },
     "vault-totp": {
       "q": "Can the Vault store my 2FA authenticator keys (TOTP / MFA codes)?",
       "a": [
-        "Yes. A Vault login has a \"2FA code\" field that accepts either a base32 secret or a whole otpauth:// link, and a Bitwarden import carries existing keys across. The key is encrypted, saved and synced on every tier, free included. Pro turns it into the live rotating code with its countdown, so you do not need a second app open beside this one.",
-        "A password and its one-time code in the same vault means one unlocked device holds both factors, which is the trade every password manager with built-in codes makes. For most accounts the convenience wins, especially with the app lock or a PIN in front of it. If you would rather keep the two factors apart for your email or your bank, put those codes somewhere else and let the [vault](/help/vault/) carry the rest."
+        "Yes. A Vault login has a \"2FA code\" field that accepts either a base32 secret or a whole otpauth:// link, and [a Bitwarden import carries existing keys across](/help/import/bitwarden/). The key is encrypted, saved and synced on every tier, free included. Pro turns it into the live rotating code with its countdown, so you do not need a second app open beside this one.",
+        "A password and its one-time code in the same vault means one unlocked device holds both factors, which is the trade every password manager with built-in codes makes. For most accounts the convenience wins, especially [with the app lock or a PIN in front of it](/help/locked-vs-protected/). If you would rather keep the two factors apart for your email or your bank, put those codes somewhere else and let the [vault](/help/vault/) carry the rest."
       ]
     },
     "verify-download": {
       "q": "How do I check that the app I downloaded is genuine?",
       "a": [
-        "Every build we ship is signed, and your operating system checks that signature before it runs anything. macOS builds are signed and notarized by Apple. Windows installers carry an Authenticode signature you can read under Properties > Digital Signatures. The Android APK is signed with our own key, which is why Android refuses any update that is not ours. The iPhone and iPad app is signed by Apple and only installs through the App Store. The desktop apps also reject an update that is not signed with our key.",
+        "Every build we ship is signed, and your operating system checks that signature before it runs anything. macOS builds are signed and notarized by Apple. Windows installers carry an Authenticode signature you can read under Properties > Digital Signatures. The Android APK is signed with our own key, which is why Android refuses any update that is not ours. The iPhone and iPad app is signed by Apple and only installs through the App Store. [The desktop apps also reject an update](/help/desktop-updates/) that is not signed with our key.",
         "Download only from PrivacyNotes.app or from our [releases on GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases), which lists every version. The signature is the check that counts, and your system runs it for you: it is verified against a key that lives nowhere on our website, so a swapped file fails that check whatever the page beside it says."
       ]
     },
     "family-sharing": {
       "q": "Can my family share one account or one Pro purchase?",
       "a": [
-        "Two accounts is the answer, and starting a second one costs nothing: each gets 2 devices and 50 MB free. An account is one 12-word phrase, and whoever holds that phrase holds everything in it: every note, every vault entry, on every device. Separate accounts is what gives each person their own private notes. Pro is bought per account.",
+        "Two accounts is the answer, and starting a second one costs nothing: [each gets 2 devices and 50 MB free](/help/free-vs-pro/). An account is one 12-word phrase, and whoever holds that phrase holds everything in it: every note, every vault entry, on every device. Separate accounts is what gives each person their own private notes. Pro is bought per account.",
         "To hand over one specific thing, send a [burn note](/help/burn-notes/) rather than your phrase. A shared household account works fine if that is genuinely what you want: keep the phrase in a shared password-manager entry, and treat anyone who has ever held it as having seen everything in it."
       ]
     },
@@ -774,49 +792,49 @@
       "q": "Can I use PrivacyNotes at work, and is there a team plan?",
       "a": [
         "You can use it at work, and plenty of people do. It is a single-person tool by design: your own account, your own phrase, your own Pro purchase, with each person on a team holding their own key. There is no shared workspace, admin console or central billing.",
-        "Weigh that before you standardize on it. Zero-knowledge encryption means the notes belong to the person who wrote them, which is exactly what a journalist, a lawyer or a consultant wants, and it is why an organization that needs key escrow or audit logs runs those on a system built for them. For an individual professional it is the strongest position available: nobody can be compelled to hand over what nobody can read."
+        "Weigh that before you standardize on it. Encryption on each person's device means the notes belong to the person who wrote them, which is exactly what a journalist, a lawyer or a consultant wants, and it is why an organization that needs key escrow or audit logs runs those on a system built for them. For an individual professional, [self-custody is the strongest position available](/help/threat-model-levels/): the server holds nothing that opens the notes, so there is nothing for anyone to compel."
       ]
     },
     "signup-options": {
       "q": "Which sign-up option should I choose?",
       "a": [
         "Whichever matches your threat level. There are three of them. One: sign in with Google, Apple, or GitHub, with your key stored on our server. Two: the same sign-in, with your key kept on your device only. Three: \"Generate a phrase\", with no email, no name and no login at all. All three keep your notes encrypted on your device, and what separates them is who holds the key and how much we learn about you.",
-        "Signing in with Google, Apple, or GitHub then asks where your key lives, starting on \"Keep it simple & convenient\". That option stores your phrase on our server, encrypted, so a new device can open your notes after provider sign-in and an authenticator code if 2FA is enabled. Save your phrase in case you lose the provider account, and keep your 2FA backup key if you enable two-factor sign-in. \"Maximum security & privacy\" keeps the phrase on your device: we could not read a note under any pressure, and a new device needs your 12 words or a QR scan from one already signed in.",
-        "The phrase-only route has no email or name tying the account to a person. In exchange the phrase is yours alone, so losing it with no unlocked device left means nobody can recover it for you. Settings > Account > Key custody shows your current mode and lets you change it. A phrase account must first connect a provider under Account > Accounts before choosing server custody; connecting alone does not change custody. Every mode can add a PIN or biometric lock and optional two-factor sign-in. The full comparison is in [the threat-level ladder](/help/threat-model-levels/)."
+        "Signing in with Google, Apple, or GitHub then asks where your key lives, starting on \"Keep it simple & convenient\". That option stores your phrase on our server, encrypted, so a new device can open your notes after provider sign-in and an authenticator code if 2FA is enabled. Save your phrase in case you lose the provider account, and keep your 2FA backup key if you enable two-factor sign-in. \"Maximum security & privacy\" keeps the phrase on your device, so the server holds nothing that opens your notes, and a new device needs your 12 words or [a QR scan from one already signed in](/help/add-second-device/).",
+        "The phrase-only route has no email or name tying the account to a person. In exchange the phrase is yours alone, so losing it with no unlocked device left means nobody can recover it for you. Settings > Account > Key custody shows your current mode and lets you change it. [A phrase account must first connect a provider](/help/connected-logins/) under Account > Accounts before choosing server custody; connecting alone does not change custody. Every mode can add a PIN or biometric lock and [optional two-factor sign-in](/help/enable-2fa/). The full comparison is in [the threat-level ladder](/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {
       "q": "I deleted files but my storage did not go down. Why?",
       "a": [
-        "Your space is already free. The moment the delete syncs, those bytes stop counting against your quota, on the server as much as on this device. If the bar still shows the old figure, press the refresh icon beside it: that recounts from the server and leaves out everything queued for deletion. A device that was offline keeps its own last count until it catches up.",
+        "Your space is already free. The moment the delete syncs, those bytes stop counting [against your quota](/help/storage-usage/), on the server as much as on this device. If the bar still shows the old figure, press the refresh icon beside it: that recounts from the server and leaves out everything queued for deletion. A device that was offline keeps its own last count until it catches up.",
         "The \"few days\" the app mentions is about the encrypted file itself, not about your quota, and that wait is deliberate. Deleting a file from storage is permanent, with no trash to fish it back out of. A device that has not finished syncing holds an incomplete picture of your notes, so it could delete an image that another note still shows. A file therefore waits at least 24 hours, and only a device that has completed a clean sync removes it. The patience costs you nothing, because the space was credited the day you deleted."
       ]
     },
     "spoiler-text": {
       "q": "How do I hide spoiler text in a note?",
       "a": [
-        "Select the text and choose **Spoiler** in the + menu of the toolbar, or type it between two pairs of bars: `||spoiler||`. The text blurs at once. While you edit, it shows as soon as your cursor touches it and blurs again when the cursor moves on. In a read-only note, a click shows it.",
+        "Select the text and choose **Spoiler** in [the + menu of the toolbar](/help/format-bar/), or type it between two pairs of bars: `||spoiler||`. The text blurs at once. While you edit, it shows as soon as your cursor touches it and blurs again when the cursor moves on. [In a read-only note](/help/locked-vs-protected/), a click shows it.",
         "The note list and previews show `•••` in its place, so not even the length gives it away. Search still finds the words inside a spoiler, an HTML export keeps them blurred until the reader clicks, and a printout shows them. A Markdown export keeps the bars, which other Markdown apps show as plain characters around the text. Spoilers are free."
       ]
     },
     "copy-box": {
       "q": "How do I make text that copies with one click?",
       "a": [
-        "Add a copy box: choose **Copy box** in the + menu of the toolbar, then type or paste the text inside it, such as a command, an address or a code. The button in its corner puts the whole text on your clipboard and shows **Copied** for a moment. A code block and a copy box turn into each other, so you can switch an existing block too.",
+        "Add a copy box: choose **Copy box** in [the + menu of the toolbar](/help/format-bar/), then type or paste the text inside it, such as a command, an address or a code. The button in its corner puts the whole text on your clipboard and shows **Copied** for a moment. A code block and a copy box turn into each other, so you can switch an existing block too.",
         "Inline code copies as well. In a read-only note, a click or a tap on inline code copies it. While you edit, Cmd-click on a Mac or Ctrl-click on Windows and Linux copies it, so a plain click still places the cursor. A copy box saves as a code block with the language `copy`, which other Markdown apps show as a normal code block. Both are free."
       ]
     },
     "statistics": {
-      "q": "What do the statistics show about my writing and wellness?",
+      "q": "What do the statistics show about my writing and trackers?",
       "a": [
-        "Open Settings > Statistics, or click the note and word count in the footer. **Overview** sums up your week: your writing streak, words written, mood and days logged, plus a grid of the last 26 weeks and the hours you tend to write in. **Writing** counts your notes, words and tags, shows your current and longest streak, and lists your milestones. **Wellness** charts every tracker from your journal over a range you pick, custom trackers included.",
-        "Everything is computed on your device, and nothing about it is sent to us. Words and writing hours count what you write on that device, so each device shows its own numbers. The charts, the streaks, the medication calendar and **Download JSON** are free. Pro adds the week in review, what moves your mood, the Patterns table, the same-day and next-day comparisons, a **Doctor PDF** and a copy-ready AI prompt."
+        "Open Settings > Statistics, or click the note and word count in the footer. **Overview** shows today and this week: words written, items edited and created, what is on your calendar today, your writing and check-in streaks, a grid of the last 26 weeks, the hours you tend to write in, growing tags and your next milestones. **Trackers** turns [the trackers in your journal](/help/journal/) into an overview with your average mood, [what lifts and drags your mood](/help/what-moves-mood/), your week, a card for each tracker and a calendar of your days; [a tap on a tracker opens its own page](/help/explore-next-day/). **Writing** shows words per day, your writing year, when you write, your top tags, note lengths, your longest notes and your milestones.",
+        "Everything is computed on your device. Words and writing hours count what you write on that device, so each device shows its own numbers. The charts, the streaks, the calendar, each tracker's page, the medication page, the year in pixels and both tracker downloads are free; Pro adds [the week in review](/help/week-in-review/), every finding and insight, the comparisons, [the dosage timeline](/help/dose-lens/), the **Doctor PDF** and [the AI prompt](/help/ai-prompt/)."
       ]
     },
     "drag-to-folder": {
       "q": "Can I drag a note onto a folder or a tag?",
       "a": [
-        "Yes. Drag a note from the list onto a folder in the sidebar to move it there, or onto **Unfiled** to take it out of its folder. Drop it on a tag to add that tag, and the note keeps the tags it already had. Tasks, bookmarks, contacts, Vault items and uploaded files in Files drag the same way. Rest a dragged item on a closed folder for a moment and it opens, so you can reach a subfolder.",
+        "Yes. Drag a note from the list onto a folder in the sidebar to move it there, or onto **Unfiled** to take it out of its folder. [Drop it on a tag](/help/tags/) to add that tag, and the note keeps the tags it already had. Tasks, bookmarks, contacts, Vault items and uploaded files in Files drag the same way. Rest a dragged item on a closed folder for a moment and it opens, so you can reach a subfolder.",
         "To move several at once, Cmd-click on a Mac or Ctrl-click on Windows and Linux to select them, Shift-click to add a range, then drag any selected item. Dragging needs a mouse, trackpad or pen and a window wide enough to show the sidebar. On a phone, use **Move to folder** in the \"...\" menu instead. Tags are free, and [folders](/help/folders/) need Pro."
       ]
     },
@@ -824,21 +842,43 @@
       "q": "Can I make my own color theme?",
       "a": [
         "Yes, with Pro. Open Settings > Design and choose **New theme**. Pick six colors (Background, Sidebar, Border, Text, Muted text and Accent) and the app suggests the rest, while the app behind the panel shows your theme as you go. A contrast check flags any text that is hard to read and offers **Fix all**. Save opens once every check passes.",
-        "The menu on each theme card has **Copy code**, which copies the theme as a short text code you can send to anyone, and **Paste theme code** adds one you received. You pick one theme for light mode and one for dark, and **Favorite** in a card's menu puts up to three themes of each mode in the **Design** button in the footer, and the themes you make sync to all your devices. Find more on [the themes page](https://privacynotes.app/themes), where you can also submit your own. The Default theme is free, and every other theme needs Pro."
+        "The menu on each theme card has **Copy code**, which copies the theme as a short text code you can send to anyone, and **Paste theme code** adds one you received. [You pick one theme for light mode and one for dark](/help/appearance/), and **Favorite** in a card's menu puts up to three themes of each mode in the **Design** button in the footer, and the themes you make sync to all your devices. Find more on [the themes page](https://privacynotes.app/themes), where you can also submit your own. Type a theme's name, such as `frost`, in [Ninja](/help/ninja/) to switch to it, or `theme` to see them all. The Default theme is free, and every other theme needs Pro."
       ]
     },
     "format-bar": {
       "q": "Can I choose which buttons show in the toolbar?",
       "a": [
-        "Yes. Click the gear at the end of the toolbar, or open Settings > Toolbar. Every button has three homes: **On the bar**, **In the + menu** or **Hidden**. Drag a button to move it, or click it for its options. A hidden button still works through its keyboard shortcut and its Markdown, so hiding one takes nothing away.",
+        "Yes. Click the gear at the end of the toolbar, or open Settings > Toolbar. Every button has three homes: **On the bar**, **In the + menu** or **Hidden**. Drag a button to move it, or click it for its options. A hidden button still works through [its keyboard shortcut](/help/keyboard-shortcuts/) [and its Markdown](/help/markdown-syntax/), so hiding one takes nothing away.",
         "Moving the bar to the top or the bottom is free on every account. Arranging its buttons is part of Pro: on a free account, Settings > Toolbar works as a preview you can try, and your layout is saved once you have Pro. Your arrangement follows your account to every device, and **Reset to defaults** brings the standard bar back. On a touch screen the bar is a single row that scrolls sideways, on every account, so no button is tucked away behind a second row."
       ]
     },
-    "quick-switcher": {
-      "q": "What is the quick switcher, and what can it find?",
+    "ninja": {
+      "q": "What can I do with Ninja, the Cmd+K box?",
       "a": [
-        "The quick switcher jumps to anything by its title. Press Cmd+K on a Mac or Ctrl+K on Windows and Linux (Cmd+P or Ctrl+P works too), or click **Jump** in the sidebar or the list header. Type part of a title to find notes, tasks, journal entries, Vault items, bookmarks, contacts, attached files and settings. Enter opens the item, and Option+Enter or Alt+Enter opens it in a tab.",
-        "Type > first to run a command instead, such as creating a new note or going to a section. Type # first to see only your tags, or / to see only your folders; picking one filters the list the way a click in the sidebar does. To find words inside your text rather than in titles, pick the **Search everything** row, or press Cmd+Enter or Ctrl+Enter from any row. Matching happens on your device, so nothing you type is sent to us. The quick switcher is free."
+        "Ninja opens any item, adds new ones and runs commands, all from one box. Press Cmd+K on a Mac or Ctrl+K on Windows and Linux, K for Katana (Cmd+P or Ctrl+P works too), or click **Ninja** in the sidebar or the list header. Type part of a title to find notes, tasks, events, journal entries, Vault items, bookmarks, contacts, files, settings, tags and folders. Under the titles, **In the text** shows the line inside a note that holds your words.",
+        "The first sign you type sets the mode: `+` [adds an item in plain words](/help/ninja-quick-add/), `>` runs a command, `#` lists your tags and `/` your folders, and `>>` after some text [adds it to a list you already have](/help/ninja-add-to-list/). Press Tab on a row for that item's menu, Option+Enter or Alt+Enter to open it in a tab, and Q anywhere to open the box with `+` typed. [Matching happens on your device](/help/search-local/), and Ninja is free."
+      ]
+    },
+    "ninja-quick-add": {
+      "q": "How do I add an event or a task by typing a sentence?",
+      "a": [
+        "Press Cmd+K or Ctrl+K, type `+` and the sentence, for example `+Dentist fri 3pm 1h before`, and press Enter. Ninja reads the day, the time, a length, a repeat and an alert, and the rest becomes the title. Each part he read shows as a chip before you press Enter, so you see the result first. Press Q anywhere to open the box with `+` already typed.",
+        "Put `task`, `note` or `journal` first or last to choose the kind; with none, you get an event. `/Travel` puts it in a folder, `#school` adds a tag and `@work` files it in a space. To keep a word as text, put it in quotes (`\"Friday\" party`) or click its chip. See [the dates Ninja understands](/help/ninja-dates/). Ninja and the calendar are free, and [alerts ring with Pro](/help/reminders/)."
+      ]
+    },
+    "ninja-dates": {
+      "q": "Which dates and times can I type in Ninja?",
+      "a": [
+        "Ninja reads dates the way you would say them to a person. Type a date alone, such as `tomorrow` or `oct 31`, and the first row opens the calendar on that day. After `+`, the same words set the day of a new item:",
+        "- Days: `tonight`, `this saturday`, `day after tomorrow`, `in 3 days`, `oct 31`, `2026-12-24`\n- Times and lengths: `noon`, `3pm`, `9-5`, `for 30m`, `for 3 days`\n- Ranges: `fri to sun`, `oct 20-25`\n- Repeats: `every weekday`, `every other friday`, `last friday of every month`, `every friday until dec 20`, `every monday 10 times`\n- Alerts: `1h before`, `alert 1d and 1h`",
+        "A date in digits follows **Date format** in Settings > Date & Time, so `12/24` reads month first or day first as you set it. A year stays a year: `oct 31 2027` is never 8:27 PM. The date words follow the app language, and the word `add` works like `+` in English and in yours. [Ninja is free](/help/ninja/)."
+      ]
+    },
+    "ninja-add-to-list": {
+      "q": "How do I add tasks to a list without opening it?",
+      "a": [
+        "In Ninja, type the tasks, then `>>` and the list's name, and press Enter: `milk, eggs >> groc` adds two tasks to the end of your Groceries list, and you stay where you are. A few letters of the name are enough. A name no list has yet makes that list with the tasks in it. Into a note or a journal entry, the text goes in as a paragraph.",
+        "Commas split the tasks, and quotes keep a comma, so `\"socks, warm\", charger` makes two. A toast confirms what was added, and when that list is open, one Undo takes it back. Ninja never writes into [an item behind your PIN](/help/locked-vs-protected/), a read-only item or a Kanban board. [Tasks](/help/tasks/) and Ninja are free."
       ]
     },
     "screen-capture": {
@@ -852,14 +892,25 @@
       "q": "What does Archive do, and how is it different from Trash?",
       "a": [
         "Archive takes an item out of your lists without deleting it. Choose **Archive** in the item's \"...\" menu or its right-click menu, or in the selection toolbar for several items at once. Archived items leave All, their section, Pinned and the folder and tag counts, and wait in the **Archive** view at the bottom of the sidebar, which appears once something is archived. To keep them in All and in the counts, tick Archive in the **All** column of Settings > Lists. **Unarchive** in the same places brings an item back.",
-        "Trash is for things you want gone: it [deletes them for good after 30 days](/help/trash-auto-delete/) unless you turn that off. Archive never deletes anything, and archived items stay within reach, because a search in All, the quick switcher and note-links still find them. They sync and stay encrypted like everything else, and they still count toward your storage. Archive works on every item type and is free."
+        "Trash is for things you want gone: it [deletes them for good after 30 days](/help/trash-auto-delete/) unless you turn that off. Archive never deletes anything, and archived items stay within reach, because a search in All, [the quick switcher](/help/ninja/) and note-links still find them. They sync and stay encrypted like everything else, and [they still count toward your storage](/help/storage-usage/). Archive works on every item type and is free."
       ]
     },
     "footnotes": {
       "q": "How do I add footnotes to a note?",
       "a": [
-        "Choose **Footnote** in the + menu of the toolbar. The app adds the next number at your cursor, creates an empty footnote below the text and puts your cursor in it. You can also type `[^1]` right after a word, and start a line with `[^1]: ` to write the footnote itself. A label can be a word as well as a number.",
-        "Click a number to jump to its footnote, and the back arrow or Escape takes you back to the text. On a computer, resting the pointer on a number shows the footnote in a small card. Numbers follow the order in the text, and the note saves standard Markdown footnotes, so other Markdown apps read them. An HTML export, a PDF and a burn note keep them as linked footnotes. Footnotes are free."
+        "Choose **Footnote** in [the + menu of the toolbar](/help/format-bar/). The app adds the next number at your cursor, creates an empty footnote below the text and puts your cursor in it. You can also type `[^1]` right after a word, and start a line with `[^1]: ` to write the footnote itself. A label can be a word as well as a number.",
+        "Click a number to jump to its footnote, and the back arrow or Escape takes you back to the text. On a computer, resting the pointer on a number shows the footnote in a small card. Numbers follow the order in the text, and the note saves standard Markdown footnotes, so other Markdown apps read them. An HTML export, a PDF and [a burn note](/help/burn-notes/) keep them as linked footnotes. Footnotes are free."
+      ]
+    },
+    "table-formulas": {
+      "q": "Can tables add up numbers, like a total or an average?",
+      "a": [
+        "Yes. Type `=` in a table cell to pick a function, or write the formula yourself. The cell shows the answer instead of the text, and every answer updates the moment you change a cell it reads. Cells are named by column letter and row number, and the header counts as row 1, so your first row of data is row 2. The answers work on every account; picking from the menu is Pro.",
+        "To try everything at once, download the example note, then open Settings > Import & Export > Import, choose **Markdown files** and pick the file.",
+        "[Example note (.md)](/marketing/table-formulas-examples.md)",
+        "These are the functions, and they combine with `+`, `-`, `*`, `/` and brackets:",
+        "- `SUM`, `PRODUCT`, `AVG`, `MEDIAN`, `MIN`, `MAX` and `COUNT` work across a range, as in `=SUM(B2:B10)`\n- `ABS`, `SQRT`, `SIGN`, `CEIL`, `FLOOR`, `ROUND` and `LOG` work on one value, as in `=ROUND(B7, 2)`\n- `PI`, `E`, `TAU` and `PHI` are constants, and `RAND` gives a random number\n- `=B7-B2` subtracts one cell from another, and `=SUM(B2:B10)*0.2` takes a percentage of a total",
+        "Click a cell that shows an answer and the formula comes back, ready to change. Your note stores the formula itself, never the result, so an export and any other Markdown app show `=SUM(B2:B10)` exactly as you wrote it."
       ]
     },
     "checklists": {
@@ -880,13 +931,13 @@
       "q": "Can I make the whole desktop app bigger or smaller?",
       "a": [
         "Yes, in the desktop apps for Mac, Windows and Linux. Press Cmd and the plus key on a Mac, or Ctrl and the plus key on Windows and Linux, to make the whole window bigger. The minus key makes it smaller, and 0 brings it back to normal. The same control is **App size** in Settings > Design, with steps from 80% to 200%.",
-        "App size scales everything at once: the sidebar, the list, the menus and your text. To change only your writing, use **Text size** in Settings > Editor. App size applies to the device you set it on. In a browser, the browser's own zoom does the same job."
+        "App size scales everything at once: the sidebar, the list, the menus and your text. [To change only your writing](/help/appearance/), use **Text size** in Settings > Editor. App size applies to the device you set it on. In a browser, the browser's own zoom does the same job."
       ]
     },
     "share-into-app": {
       "q": "Can I share text or a link into PrivacyNotes from another app?",
       "a": [
-        "Yes, on iPhone, iPad and Android, as a beta. Tap the share button in any app and pick PrivacyNotes. A web link becomes a bookmark with the page title, text becomes a new note, and pictures and files go to Files. A link you already saved is shown instead of saved twice. Shared items arrive without a folder or a tag, so you sort them when it suits you.",
+        "Yes, on iPhone, iPad and Android, as a beta. Tap the share button in any app and pick PrivacyNotes. [A web link becomes a bookmark](/help/bookmarks/) with the page title, text becomes a new note, and pictures and files go to Files. A link you already saved is shown instead of saved twice. Shared items arrive without a folder or a tag, so you sort them when it suits you.",
         "On Android the app asks first: it lists what arrived and saves it only when you choose **Save all**, or drops it with **Discard**. On iPhone and iPad a card confirms **Saved to PrivacyNotes**. Each file follows your [upload limit](/help/attachment-limits/), and a share waits until you are signed in and the app is unlocked."
       ]
     },
@@ -901,7 +952,7 @@
       "q": "Why does the app say \"Session expired\"?",
       "a": [
         "It means our server no longer accepts this device's sign-in, so syncing stops. A weak connection or a server outage never causes it: the app checks with the server a second time before it shows the message. Your notes are safe on this device.",
-        "Click **Sign in again**. The app first asks whether you saved your recovery phrase, because you need it, or the login you signed up with, to come back in. Notes that have not synced yet stay on the device and sync once you are signed in. The same window warns you if any files have not finished uploading, because those are removed with the sign-out."
+        "Click **Sign in again**. The app first asks [whether you saved your recovery phrase](/help/lost-phrase/), because you need it, or the login you signed up with, to come back in. Notes that have not synced yet stay on the device and sync once you are signed in. The same window warns you [if any files have not finished uploading](/help/upload-failed/), because those are removed with the sign-out."
       ]
     },
     "zen-mode": {
@@ -915,35 +966,189 @@
       "q": "Can I change how dates are shown?",
       "a": [
         "Yes, in Settings > Date & Time. **Date format** offers Automatic, Day first, Month first and Year first (ISO), and **Clock** offers Automatic, 24-hour and 12-hour. Automatic follows the app's language and each device's region, and your choice applies on all your devices.",
-        "Journal entries take their title from the date, and **Journal titles** in the same place offers ready-made formats in your date format, or **Custom pattern** to build your own from tokens such as `YYYY`, `MMMM` and `ddd`, with words in square brackets kept as typed. A new pattern applies to new entries only. To put today's date into any note, press Cmd+; on a Mac or Ctrl+; on Windows and Linux, and add Shift for the time as well. All of it is free."
+        "[Journal entries take their title from the date](/help/journal/), and **Journal titles** in the same place offers ready-made formats in your date format, or **Custom pattern** to build your own from tokens such as `YYYY`, `MMMM` and `ddd`, with words in square brackets kept as typed. A new pattern applies to new entries only. To put today's date into any note, press Cmd+; on a Mac or Ctrl+; on Windows and Linux, and add Shift for the time as well. All of it is free."
       ]
     },
     "connected-logins": {
       "q": "Can I connect more than one login to my account?",
       "a": [
-        "Yes. Open Settings > Account > Accounts and connect Google, Apple or GitHub to add a login that opens the same vault. You can connect several, even two accounts from one provider, and your recovery phrase keeps working alongside them. Connecting or disconnecting an account leaves your notes and your encryption unchanged.",
-        "A login that already belongs to another vault cannot be connected, because vaults are never merged. **Disconnect** asks for your 12 words first. If we keep your phrase for you, the last connected account stays until you connect another one or save your phrase and switch to self-custody. With self-custody, a new device still asks for your 12 words. Connected accounts are in beta."
+        "Yes. Open Settings > Account > Accounts and connect Google, Apple or GitHub to add a login that opens the same vault. You can connect several, even two accounts from one provider, and [your recovery phrase keeps working alongside them](/help/oauth-recovery/). Connecting or disconnecting an account leaves your notes and your encryption unchanged.",
+        "A login that already belongs to another vault cannot be connected, because vaults are never merged. **Disconnect** asks for your 12 words first. If we keep your phrase for you, the last connected account stays until you connect another one or save your phrase and [switch to self-custody](/help/threat-model-levels/). With self-custody, a new device still asks for your 12 words. Connected accounts are in beta."
       ]
     },
     "calendar": {
       "q": "Is there a calendar, and what shows on it?",
       "a": [
-        "Yes. Calendar in the sidebar shows every item with a date in one place: events, journal entries, notes and task lists with a date, and the birthdays of your contacts. The list beside it is the agenda of the coming days, and the large view switches between Day, Week and Month. Click an empty day to add something there, or drag an item to another day.",
-        "An event is its own kind of item: a note with a day, an end day, a time and a repeat. Type a whole line into Quick add, for example \"Dentist fri 3pm 1h before\", and it reads the day, the time and the alert for you. A note or a task list can carry a day, a time and an end day too, from the Schedule row of its \"...\" menu. The calendar is free."
+        "Yes. Calendar in the sidebar shows every item with a date in one place: events, [journal entries](/help/journal/), notes and task lists with a date, and [the birthdays of your contacts](/help/contacts/). The list beside it is the agenda of the coming days, and the large view switches between Day, Week and Month. Click an empty day, or drag over empty hours, and Ninja opens with that day and time set, or drag an item to another day.",
+        "An event is its own kind of item: a note with a day, an end day, a time and a repeat. Type a whole line into [Ninja](/help/ninja-quick-add/) after `+`, for example `+Dentist fri 3pm 1h before`, and he reads the day, the time and [the alert for you](/help/reminders/). Type a day alone, such as `oct 31`, to open the calendar there. A note or a task list can carry a day, a time and an end day too, from the Schedule row of its \"...\" menu. The calendar is free."
       ]
     },
     "reminders": {
       "q": "Do calendar reminders work when the app is closed?",
       "a": [
         "On a phone, yes: up to 64 alerts, up to 400 days ahead, are handed to the phone itself, so they ring while PrivacyNotes is closed; opening and unlocking the app hands over more. In the desktop app a reminder rings while the app runs, and in a browser while PrivacyNotes is open in a tab. Each device plans its reminders from the items it holds, so the server never learns a title, a time or a day.",
-        "Add an alert from the Alert row of an item's Schedule view, up to five per item, and set the defaults under Settings > Date & Time > Calendar, where \"Show titles in reminders\" also lives. An item behind your PIN always rings as \"Reminder\" and the time, and so does every alert scheduled while the app lock is on. One handed over before the lock was on can keep its title until it rings. Reminders are part of Pro; the calendar itself is free."
+        "Add an alert from the Alert row of an item's Schedule view, up to five per item, and set the defaults under Settings > Date & Time > Calendar, where \"Show titles in reminders\" also lives. [An item behind your PIN](/help/locked-vs-protected/) always rings as \"Reminder\" and the time, and so does every alert scheduled while the app lock is on. One handed over before the lock was on can keep its title until it rings. Reminders are part of Pro; [the calendar itself is free](/help/calendar/)."
       ]
     },
     "calendar-time-zones": {
       "q": "What happens to event times when I travel to another time zone?",
       "a": [
-        "A time on the calendar stays the time you typed. An event at 15:00 shows and rings at 15:00 wherever your device is, the way a reminder in a to-do app does, because every time is kept as a local time with no time zone. A phone schedules each alert for an exact moment, so after a time-zone change, open and unlock PrivacyNotes once in the new zone to move its alerts; while it is open and unlocked, it moves them by itself.",
+        "A time on the calendar stays the time you typed. An event at 15:00 shows and rings at 15:00 wherever your device is, the way a reminder in a to-do app does, because every time is kept as a local time with no time zone. [A phone schedules each alert for an exact moment](/help/reminders/), so after a time-zone change, open and unlock PrivacyNotes once in the new zone to move its alerts; while it is open and unlocked, it moves them by itself.",
         "For a call with someone in another time zone, enter the time as it is where you are. If a daylight-saving change skips the hour of an alert, the alert rings at the first minute after the skip."
+      ]
+    },
+    "daily-check-in": {
+      "q": "How does the daily check-in work?",
+      "a": [
+        "The check-in card sits at the top of Journals and asks \"How are you today?\" on a 1 to 10 scale. One tap saves your mood to today's entry, creating the entry if it does not exist yet, and then walks you through your other trackers one at a time: **Next** moves on, **Done** stops. The check-in options on the card let you [log another day](/help/log-missed-day/), skip today, [choose your trackers](/help/choose-trackers/) or hide the card. The check-in is free.",
+        "For a daily nudge, turn on \"Daily check-in reminder\" in Settings > Trackers > General and pick the time. It rings once a day on that device only, and stays quiet on a day you already logged a mood or skipped. In a browser it rings while PrivacyNotes is open in a tab. Days that hold only a check-in stay out of the journal list until you turn on **Show check-ins**."
+      ]
+    },
+    "choose-trackers": {
+      "q": "How do I turn trackers on or off?",
+      "a": [
+        "Open Settings > Trackers > General. The built-in trackers sit in three groups, Mood & mind, Body & health and Lifestyle, and a tap turns one on or off. **Choose trackers** in [the check-in options](/help/daily-check-in/) opens the same switches. A tracker that is on shows as a pill on every journal entry and as a step in the check-in.",
+        "Turning a tracker off hides it from new entries; the values you already logged stay on their days. Every built-in tracker is free. Pro adds trackers you define yourself, see [custom trackers](/help/custom-trackers/)."
+      ]
+    },
+    "habits": {
+      "q": "How do habit questions work?",
+      "a": [
+        "Habits is a built-in tracker of yes or no questions, such as \"Did you meditate?\", sorted into habits to build and habits to watch. Each day the Habits pill asks the questions you switched on and counts how many you answered yes. Pick them in Settings > Trackers > General, under \"Habit questions\". Choosing from the built-in questions is free.",
+        "With Pro you can add up to 30 questions of your own in the same place. Write the question, give it a short name for the chip and the charts, mark it as a habit to build or to watch, and tap **Add habit**. Your own questions sit beside the built-in ones in the pill and [in statistics](/help/what-moves-mood/)."
+      ]
+    },
+    "factors": {
+      "q": "What are factors in the journal?",
+      "a": [
+        "Factors are your own words for what shaped a day, such as work, travel, a deadline or a migraine. Tap the ones that fit in the Factors pill of a journal entry, as many as apply. With Pro, [statistics compare your mood on the days with and without each factor](/help/what-moves-mood/). Factors themselves are free.",
+        "Manage the list in Settings > Trackers > Factors, or tap **Change these factors** in the pill. Add several at once by separating them with commas. The list holds up to 200 factors of up to 40 characters each, and a factor you remove keeps its name on the days that already hold it."
+      ]
+    },
+    "custom-trackers": {
+      "q": "Can I track something the app does not have built in?",
+      "a": [
+        "Yes. With Pro you can create up to 20 custom trackers in Settings > Trackers > Custom. Give each one a name of up to 24 characters, an icon, a color and a type: a scale from 0 to 10, a scale from 0 to 5, a score from 0 to 100, a number, or yes or no. A preview shows the pill before you tap **Create**.",
+        "A number tracker can turn on **Remember last entry**, which starts each day from your previous value: useful for something that rarely changes, like your weight. You can pause a custom tracker and resume it later, and its history stays. Custom trackers appear [in the check-in](/help/daily-check-in/), in statistics and [in the tracker exports](/help/tracker-json-csv/) like the built-in ones."
+      ]
+    },
+    "log-missed-day": {
+      "q": "Can I log a day I missed?",
+      "a": [
+        "Yes. [On the check-in card](/help/daily-check-in/), open the check-in options, choose **Log another day** and pick the day in the calendar. The card then asks how you were on that date, and your answers go into that day's journal entry. **Back to today** returns the card to the current day.",
+        "The calendar marks the days that already have an entry, so the gaps are easy to spot. A day you fill in later [counts in your statistics like any other day](/help/statistics/). In Journals, the calendar button next to the new-entry button starts a written entry for a past day in the same way."
+      ]
+    },
+    "add-medication": {
+      "q": "How do I add a medication with its dose and times?",
+      "a": [
+        "Open Settings > Trackers > Medication and fill in the new medication form: a name, a strength such as 50 mg, a form (tablet, capsule, liquid, injection, inhaler, patch, drops or other) and an optional color. The form sets the medication's icon and the unit of each dose. Choose **On a schedule**, then how often: every day, chosen days of the week, or every few days.",
+        "Under \"Times and amount\", give each dose a time and an amount; **Add a time** adds more, up to 6 doses a day. Set a start day and an optional end day, then tap **Save**. Each dose appears as its own row in the Meds pill on every day it is due, and **Change these medications** in the pill brings you back here. Medication tracking is free."
+      ]
+    },
+    "as-needed-medication": {
+      "q": "Can I track a medication I take only when needed?",
+      "a": [
+        "Yes. In Settings > Trackers > Medication, choose **As needed** [instead of a schedule](/help/add-medication/). The Meds pill then shows **Log a dose** for it rather than asking whether you took it. Each tap records a dose at that moment, and the doses of the day are listed by time, each with a button to remove it.",
+        "Set \"At most a day\" to see a running count such as \"2 of 3 today\". At that number the pill says \"Daily limit reached\" as a note, and you can still log a dose. Statistics count as-needed doses on their own and keep them out of the share of scheduled doses taken."
+      ]
+    },
+    "skip-dose": {
+      "q": "What happens when I skip or miss a dose?",
+      "a": [
+        "Tap **Skip** on the dose in the Meds pill when you leave it out on purpose. The pill then asks why, with optional reasons: forgot, ran out, side effects, doctor's advice or other. Tapping the selected **Taken** or **Skip** again clears it.",
+        "On any day that has a journal entry, a scheduled dose you never mark counts as missed once its time has passed, or at the end of the day when it has no time. Days before your first logged dose do not count. The medication's page in Settings > Statistics > Trackers shows each day as taken, skipped or missed, and its figure counts every scheduled dose on its own, so a day with two doses and one skipped counts as one of two."
+      ]
+    },
+    "medication-reminders": {
+      "q": "Can PrivacyNotes remind me to take my medication?",
+      "a": [
+        "Yes. Give each dose a time in Settings > Trackers > Medication and turn on **Remind me** for that medication. [The reminder rings at each dose time](/help/medication-reminder-privacy/) on the days the dose is due, and stays quiet for a dose you already marked. Medication reminders need Pro; [the daily check-in reminder stays free](/help/daily-check-in/).",
+        "The switch belongs to each device and does not sync, so turn it on on every device you want to hear it on. On a phone the reminder rings while the app is closed. In the desktop app and in a browser it rings while PrivacyNotes is open. A dose without a time, and [an as-needed medication](/help/as-needed-medication/), has no reminder."
+      ]
+    },
+    "medication-reminder-privacy": {
+      "q": "Does a medication reminder show the medication's name?",
+      "a": [
+        "No. Every medication reminder reads \"Medication reminder\" and the time, whatever the medication, so a lock screen or a notification list never shows what you take. This holds even when \"Show titles in reminders\" is on [for your calendar items](/help/reminders/).",
+        "On a phone the reminder times are handed to the phone ahead of time so they ring while the app is closed, and those alerts carry only that text and the time. Tapping one opens the app at today's check-in, where you mark the dose."
+      ]
+    },
+    "medication-supply": {
+      "q": "Can the app tell me when I am running low on a medication?",
+      "a": [
+        "Yes, with Pro. Enter the count you have in the **Supply** field of the medication in Settings > Trackers > Medication. Each dose you mark as taken counts down by its amount, and the medication's row shows how many are left.",
+        "When fewer than 7 days of scheduled doses remain, the Meds pill shows a line such as \"Vitamin D: about 3 days left\". After a refill, open the medication, enter the new count on hand and tap **Save**; counting starts again from there."
+      ]
+    },
+    "change-dose": {
+      "q": "How do I change a dose without losing the history?",
+      "a": [
+        "Open the medication in Settings > Trackers > Medication, change the strength, the times, the amounts or the schedule, and tap **Save**. A schedule change applies from today, so past days keep the doses and times they had, and what you logged on them stays as it was.",
+        "Each strength change goes on the medication's page in Settings > Statistics > Trackers: the day-by-day grid marks it for everyone, and with Pro the **Dosage timeline** lists every change with its date and **Around each dose change** [compares your mood before and after it](/help/dose-lens/)."
+      ]
+    },
+    "week-in-review": {
+      "q": "What is the week in review?",
+      "a": [
+        "The week in review is a Pro summary of one week, near the end of Settings > Statistics > Trackers. It shows each day's mood, names your best and your hardest day, counts the days you logged a mood and the items you created, and marks what changed against the week before. The arrows step back to earlier weeks.",
+        "Under the summary sits a reflection box with a prompt such as \"What made Tuesday good?\". What you write there is [kept in your journal](/help/journal/) and syncs, encrypted, like the rest of it."
+      ]
+    },
+    "what-moves-mood": {
+      "q": "How does the app find what lifts or drags my mood?",
+      "a": [
+        "Settings > Statistics > Trackers compares your mood on the days with and without each [tracker, factor, habit and emotion](/help/factors/), on the same day and on the next. The overview names what lifts your mood and what drags it down, and **What moves your mood** ranks them all, with each finding written out in plain words.",
+        "A comparison needs enough logged days on both sides before it shows, and it says how many more it needs. Each result is an average of your logged days: a lead worth testing, not proof of a cause. The top finding is free; Pro shows every row, the full table and the written insights."
+      ]
+    },
+    "explore-next-day": {
+      "q": "Can I see how sleep tonight affects my mood tomorrow?",
+      "a": [
+        "Yes. In Settings > Statistics > Trackers, tap a tracker to open its page, then switch **Same day** to **Next day**. The page then compares your mood on the day after high or low values, so you see sleep tonight against mood tomorrow. **Compare with** measures the tracker against another outcome than mood, such as energy or focus.",
+        "A tracker's page, with its chart and its values by weekday, is free, and the mood page adds your year in pixels, one square per day, which you can save as an image. The same-day and next-day comparisons are part of Pro."
+      ]
+    },
+    "dose-lens": {
+      "q": "Can I see whether a dose change affected my mood?",
+      "a": [
+        "Yes, with Pro. Open the medication's page from its card in Settings > Statistics > Trackers. **Around each dose change** compares your average mood in the days before each strength change with the days after it, and the **Dosage timeline** lists every change with its date.",
+        "A comparison needs enough logged days on both sides of the change, and it says how many more it needs. Mood moves for many reasons, so treat the result as something to talk through with your doctor. [The Doctor PDF carries the same comparison](/help/doctor-pdf/)."
+      ]
+    },
+    "doctor-pdf": {
+      "q": "What is in the Doctor PDF?",
+      "a": [
+        "The Doctor PDF is a printable Pro report to take to an appointment, made on your device from **Doctor PDF** in Settings > Import & Export > Trackers, for the range you pick. It holds an overview of the period, your mood day by day with a 7-day average, a row for each tracker, your mood on the days with and without each factor, and [the patterns the app found](/help/what-moves-mood/).",
+        "For each medication it lists the scheduled doses taken, such as \"Vitamin D: 10 of 12 scheduled doses taken\", a calendar of the days, and [every dose change with its date and your mood around it](/help/dose-lens/). The file leaves your device only when you save or send it yourself."
+      ]
+    },
+    "tracker-json-csv": {
+      "q": "What is the difference between the JSON and CSV tracker downloads?",
+      "a": [
+        "Both are free, live in Settings > Import & Export > Trackers and cover the range you pick. **Download CSV** gives one row per day and one column per tracker, ready for a spreadsheet; a medication takes one column with the day's status: taken, skipped or missed.",
+        "**Download JSON** carries every tracker value with its date and definition, for another app or your own analysis. It is the complete record: each medication's schedule and its changes, its refills, and every dose with its time and [skip reason](/help/skip-dose/). Both files are made on your device."
+      ]
+    },
+    "ai-prompt": {
+      "q": "How does the tracker AI prompt work, and what does it send?",
+      "a": [
+        "It sends nothing. **Show & copy AI prompt** in Settings > Import & Export > Trackers writes a summary of your trackers for the range you pick, shows it on screen and copies it to your clipboard. You paste it into the chatbot of your choice yourself. It is part of Pro.",
+        "The prompt holds your averages, your mood day by day, medication adherence and dose changes, the patterns the app found, and instructions for the chatbot: lead with the findings that matter most, keep the data apart from guesses, suggest small changes to try, and point out what is worth bringing to a doctor without diagnosing. Read it before you paste it, and remove anything you would rather keep to yourself."
+      ]
+    },
+    "tracker-privacy": {
+      "q": "Who can read my tracker and medication data?",
+      "a": [
+        "Your tracker values live inside your journal entries and your medication list in your settings, and both are encrypted on your device and stay encrypted when they sync. Statistics, [the Doctor PDF](/help/doctor-pdf/), [the AI prompt](/help/ai-prompt/) and both downloads are computed on your device.",
+        "[With self-custody](/help/threat-model-levels/), the server holds nothing that opens them. If you signed up with Google, Apple or GitHub and chose \"Keep it simple & convenient\", your phrase is stored on our server under a key of ours; Settings > Account > Key custody shows your mode and lets you switch. More in [what PrivacyNotes can see](/help/what-can-you-see/)."
+      ]
+    },
+    "trackers-in-backup": {
+      "q": "Are my trackers and medications in my backup?",
+      "a": [
+        "Your journal entries are, with every value you logged on them, and so are your factors and your own habit questions. Your medication list and your custom tracker definitions are not in [the .zip or the encrypted backups](/help/backup-strategy/): they belong to your account's settings, which sync to every device you sign in on.",
+        "[To keep them in a file as well](/help/tracker-json-csv/), use **Download JSON** in Settings > Import & Export > Trackers, which holds every medication with its schedule, refills and dose history, and every custom tracker. A backup restored into a new vault brings back your entries, but the doses and custom values in them stay hidden there, because the medications and trackers they belong to are not in the backup."
       ]
     }
   }

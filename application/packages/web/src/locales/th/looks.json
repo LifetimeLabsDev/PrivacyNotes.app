@@ -1,6 +1,8 @@
 {
   "captionFolder": "โฟลเดอร์",
   "captionTag": "แท็ก",
+  "captionNote": "โน้ต",
+  "captionTracker": "ตัวติดตาม",
   "useDefault": "ใช้ค่าเริ่มต้น",
   "color": "สี",
   "noColor": "ไม่มีสี",

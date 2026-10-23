@@ -326,6 +326,38 @@ export async function updateNoteFrom(
   return written;
 }
 
+/** Restore a split and remove its child in one transaction, only while both
+ * still match the split. Tested in tests/qa-2026-10-20/sync-storage-1.test.ts. */
+export async function undoNoteSplit({
+  noteId, newId, head, tail, original, newUpdatedAt,
+}: {
+  noteId: string;
+  newId: string;
+  head: string;
+  tail: string;
+  original: string;
+  newUpdatedAt: string;
+}): Promise<boolean> {
+  if (noteId === newId) return false;
+  const ledger: LedgerSlot = {};
+  const restored = await db.transaction('rw', db.notes, async () => {
+    const current = await db.notes.get(noteId);
+    const child = await db.notes.get(newId);
+    if (!current || !child || current.body !== head || child.body !== tail || child.updatedAt !== newUpdatedAt ||
+      [current, child].some((n) => n.deleted === 1 || n.trashed === 1 || n.locked === 1 || n.pinProtected === 1)) return false;
+    if (!(await writePatch(current, { body: original }, undefined, undefined, ledger))) return false;
+    await db.notes.update(newId, {
+      trashed: 1, deleted: 1, dirty: 1,
+      updatedAt: nextStamp(child.updatedAt),
+      editedAt: child.editedAt ?? child.updatedAt,
+    });
+    return true;
+  });
+  if (ledger.write) recordLedgerWrite(ledger.write);
+  if (restored) await db.editorDocCache.delete(newId).catch(() => { /* best-effort */ });
+  return restored;
+}
+
 /** Where writePatch leaves the day-ledger count for its caller to record. */
 type LedgerSlot = { write?: LedgerWrite };
 
@@ -346,7 +378,7 @@ async function writePatch(current: LocalNote, patch: NotePatch, updatedAt: strin
   // The day ledger counts writing: a changed title, body or tag set, by the
   // person. A tracker, folder or type change alone is not writing (a pill tap
   // is not), and neither is the app's bookkeeping (an explicit stamp or
-  // `edit: false`). Spec: ops/docs/plans/wellness-statistics.md (section 20)
+  // `edit: false`). Spec: ops/docs/archive/wellness-statistics.md (section 20)
   const writing =
     updatedAt === undefined && opts?.edit !== false &&
     ((patch.title !== undefined && patch.title !== current.title) ||
@@ -489,7 +521,7 @@ export async function duplicateNote(id: string): Promise<LocalNote | null> {
  * after the screen last read it, or between the two writes, is never undone.
  * The copy keeps title, body, tags, folder and PIN protection; never
  * read-only. Null when `build` refuses or the series write does not land.
- * Spec: ops/docs/plans/calendar-pillar-spec.md (step 6)
+ * Spec: ops/docs/archive/calendar-pillar-spec.md (step 6)
  */
 export async function splitOffCopy(
   id: string,
@@ -903,7 +935,7 @@ export async function clearLocalDatabase(opts?: { keepUnsyncedNotes?: boolean })
     // seal middleware would throw on any sealed row. Index reads,
     // primaryKeys() and bulkDelete never touch values. Both dirty
     // values are unsynced data (2 = sealed, invisible to old bundles).
-    // Spec: ops/docs/plans/local-at-rest.md (3.3, the key-free wipe)
+    // Spec: ops/docs/archive/local-at-rest.md (3.3, the key-free wipe)
     const allNoteIds = await db.notes.toCollection().primaryKeys();
     const keepNotes = new Set(await db.notes.where('dirty').anyOf(1, 2).primaryKeys());
     await db.notes.bulkDelete(allNoteIds.filter((id) => !keepNotes.has(id)));

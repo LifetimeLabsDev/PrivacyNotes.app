@@ -14,7 +14,7 @@
  * move while someone types reads that instead of a viewport unit, because
  * `interactive-widget=resizes-content` in index.html resizes the layout
  * viewport itself: on Android every unit, `svh` included, follows the keyboard
- * down. Spec: ops/docs/ui-patterns.md (stable viewport height)
+ * down. Spec: ops/docs/archive/ui-patterns.md (stable viewport height)
  *
  * While the keyboard is open it also publishes `--pn-app-h`, the height
  * left above the keyboard, which the app shell takes as its height. Android
@@ -24,7 +24,7 @@
  * format bar off the screen (GitHub #449). With the shell cut to the visible
  * area the page has nothing to move: it is put back at the top, and the
  * caret is kept in view by scrolling the note instead.
- * Spec: ops/docs/plans/format-bar.md (section 7)
+ * Spec: ops/docs/archive/format-bar.md (section 7)
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -154,13 +154,20 @@ export function useKeyboardOpen(): boolean {
     };
     const onResize = () => { check(); fit(false); };
     const onScroll = () => fit(true);
+    // Focus moving to another field while the keyboard stays up (the next
+    // PIN box, the confirm row) changes no viewport size, so it is asked here.
+    const onFocusIn = () => {
+      if (document.documentElement.style.getPropertyValue('--pn-app-h')) requestAnimationFrame(keepCaretVisible);
+    };
 
     vv.addEventListener('resize', onResize);
     vv.addEventListener('scroll', onScroll);
+    document.addEventListener('focusin', onFocusIn);
     onResize();
     return () => {
       vv.removeEventListener('resize', onResize);
       vv.removeEventListener('scroll', onScroll);
+      document.removeEventListener('focusin', onFocusIn);
     };
   }, []);
 

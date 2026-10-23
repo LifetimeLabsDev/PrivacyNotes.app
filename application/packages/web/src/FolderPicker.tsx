@@ -7,6 +7,7 @@ import { FolderNameInput } from './FolderNameInput';
 import { SIDEBAR_ROW_MENU_BUTTON } from './sidebarUI';
 import { textMatcher } from './textMatch';
 import { FolderGlyph } from './looks/LookGlyph';
+import { CloseButton } from './ui';
 import {
   flattenFolderRows,
   INDENT_PX,
@@ -23,17 +24,7 @@ import {
   type FolderSortDir,
   type FolderSortField,
 } from './folders';
-import {
-  Check,
-  DotsThree,
-  Folder,
-  FolderPlus,
-  MagnifyingGlass,
-  PencilSimple,
-  Prohibit,
-  X,
-  type Icon,
-} from './icons';
+import { Check, DotsThree, Folder, FolderPlus, MagnifyingGlass, PencilSimple, Prohibit, type Icon } from './icons';
 
 /**
  * The shared folder picker (Pro folders feature) - the single "choose a
@@ -385,13 +376,7 @@ export function FolderPicker({
               a second dialog that was quietly missing half this one's
               features, and a folder moves INTO a folder like anything else. */}
           <h2 className="text-[15px] font-semibold m-0">{title ?? t('folders.moveTo')}</h2>
-          <button
-            onClick={onClose}
-            aria-label={t('common:actions.close')}
-            className="p-1 -m-1 rounded text-pn-muted hover:text-pn transition"
-          >
-            <X size={16} />
-          </button>
+          <CloseButton onClick={onClose} />
         </div>
         <div className="px-4 pb-2 shrink-0">
           <div className="flex items-center gap-2 rounded-md bg-surface-1 border border-divider px-2.5">
@@ -498,7 +483,7 @@ export function FolderPicker({
                    go, this is a thing you make. Two buttons that do the same
                    job in the two places that draw the same tree should not
                    look like different controls.
-                   Spec: ops/docs/ui-patterns.md (section 76) */
+                   Spec: ops/docs/archive/ui-patterns.md (section 76) */
                 className="flex-1 inline-flex items-center justify-center gap-2 rounded-md border border-dashed border-divider px-3 py-2 text-[13px] text-pn-muted transition hover:border-accent/50 hover:text-accent"
               >
                 <FolderPlus size={15} className="shrink-0 text-label" />

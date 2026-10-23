@@ -79,7 +79,6 @@ export function parseFolderPath(raw: string | undefined): string[] {
  * a large Obsidian library runs to a few hundred - and refusing the rest
  * leaves an import that is merely incomplete rather than an account that is
  * slow for ever.
- * Spec: ops/docs/audit-adversarial-2026-09-bfg.md (SEC-27)
  */
 export const IMPORT_FOLDER_LIMIT = 2_000;
 

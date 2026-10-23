@@ -11,7 +11,7 @@
  * cheat sheet show them as they are, in English on purpose, so both keep one
  * layout. `i18nKey` is a stable name for a row or a group.
  *
- * Spec: ops/docs/plans/keyboard-shortcuts.md (sections 4.5 and 4.6)
+ * Spec: ops/docs/archive/keyboard-shortcuts.md (sections 4.5 and 4.6)
  */
 
 import { bindingCaps, visibleBindings, type CommandId, type KeyOs } from './commandKeys';
@@ -32,7 +32,7 @@ export const HOTKEY_GROUPS: HotkeyGroup[] = [
     title: 'Navigation',
     i18nKey: 'navigation',
     rows: [
-      { commands: ['quickSwitcher'], label: 'Jump to an item or a setting', i18nKey: 'quickSwitcher' },
+      { commands: ['quickSwitcher'], label: 'Open Ninja: find an item, add anything, run a command', i18nKey: 'quickSwitcher' },
       { commands: ['focusSearch'], label: 'Focus search', i18nKey: 'focusSearch' },
       { commands: ['commandMode'], label: 'Commands (or type > in the search)', i18nKey: 'commandMode' },
       { commands: ['listDown', 'listUp'], label: 'Move down / up in the list', i18nKey: 'moveInList' },
@@ -64,7 +64,7 @@ export const HOTKEY_GROUPS: HotkeyGroup[] = [
   {
     // Mouse gestures on a list row or grid tile. Cmd-click is the platform's
     // multi-select, so opening a tab takes Option-click, the one modifier a
-    // row leaves free. Spec: ops/docs/plans/note-tabs.md (section 2)
+    // row leaves free. Spec: ops/docs/archive/note-tabs.md (section 2)
     title: 'Lists',
     i18nKey: 'lists',
     rows: [
@@ -84,6 +84,7 @@ export const HOTKEY_GROUPS: HotkeyGroup[] = [
       // Never ⌘H on a Mac: macOS takes it for Hide before a page sees it.
       { commands: ['findReplace'], label: 'Find and replace', i18nKey: 'findReplace' },
       { commands: ['outline'], label: 'Toggle outline', i18nKey: 'toggleOutline' },
+      { commands: ['connections'], label: 'Toggle connections', i18nKey: 'toggleConnections' },
       // ⌘⇧K, not ⌘K: plain ⌘K opens the quick switcher everywhere.
       { commands: ['insertLink'], label: 'Insert link (while editing)', i18nKey: 'insertLink' },
       { commands: ['markdownView'], label: 'Markdown view on / off', i18nKey: 'markdownView' },

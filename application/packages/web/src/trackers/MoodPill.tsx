@@ -1,10 +1,14 @@
 import { useTranslation } from 'react-i18next';
-import { BUILTIN_TRACKER_COLORS, MOOD_ANCHORS } from '../trackerTypes';
 import { PillShell } from './PillShell';
 import { TRACKER_ICONS } from './icons';
+import { MoodScale } from '../MoodScale';
+import { PanelQuestion } from './panelUI';
+import { MoodDot, moodAnchor } from '../moodMark';
 
 /**
- * Mood pill - 1..10 scale with anchor word labels (e.g. "7 good").
+ * Mood pill - the 1 to 10 tiles in the band colors (`MoodScale`), the same
+ * picker the check-in card draws; the logged pill carries the number on its
+ * band's chip and the band's word, "7 good".
  */
 export function MoodPill({
   value,
@@ -20,44 +24,21 @@ export function MoodPill({
   readOnly?: boolean;
 }) {
   const { t } = useTranslation('trackers');
-  const anchorWord = value != null && MOOD_ANCHORS[value] != null ? t(`mood.anchor.${value}`) : undefined;
   return (
     <PillShell
       label={t('labels.mood')}
-      color={BUILTIN_TRACKER_COLORS.mood}
       filled={value != null}
       expanded={expanded}
       onToggle={onToggle}
-      filledLabel={value != null ? (anchorWord ? `${value} ${anchorWord}` : `${value}/10`) : undefined}
+      filledLabel={value != null ? `${value} ${t(`mood.anchor.${moodAnchor(value)}`)}` : undefined}
+      ariaLabel={value != null ? `${t('labels.mood')}: ${value} ${t(`mood.anchor.${moodAnchor(value)}`)}` : undefined}
       icon={TRACKER_ICONS.mood}
+      mark={value != null ? <MoodDot mood={value} /> : undefined}
       readOnly={readOnly}
     >
       <div className="flex flex-col gap-2 items-start">
-        <span className="text-xs font-medium text-pn-soft">
-          {t('mood.prompt')}
-        </span>
-        <div className="inline-flex flex-col gap-1">
-          <div className="flex gap-1">
-            {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-              <button
-                key={n}
-                type="button"
-                onClick={() => { onChange(n); onToggle(); }}
-                className={`w-7 h-7 rounded-md text-xs font-semibold transition-colors ${
-                  value === n
-                    ? 'bg-accent-fill text-white'
-                    : 'bg-surface-0 text-pn-soft hover:bg-accent/20'
-                }`}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
-          <div className="flex justify-between text-[10px] text-pn-muted px-0.5">
-            <span>{t('mood.low')}</span>
-            <span>{t('mood.high')}</span>
-          </div>
-        </div>
+        <PanelQuestion>{t('mood.prompt')}</PanelQuestion>
+        <MoodScale value={value} onPick={(n) => { onChange(n); onToggle(); }} label={t('mood.prompt')} className="w-full max-w-[420px]" />
       </div>
     </PillShell>
   );

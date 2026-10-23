@@ -29,7 +29,7 @@
  *     2026-08-22): re-importing elsewhere would nest everything one level
  *     deeper on every round trip.
  *
- * Spec: ops/docs/plans/bookmarks-pillar.md (section 9)
+ * Spec: ops/docs/archive/bookmarks-pillar.md (section 9)
  */
 
 import type { FolderDef } from './folders';

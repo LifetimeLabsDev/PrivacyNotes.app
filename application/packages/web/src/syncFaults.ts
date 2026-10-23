@@ -32,7 +32,7 @@ export type SyncFault = {
   n?: number;
 };
 
-// Spec: ops/docs/plans/sync-diagnostics.md (the fault record)
+// Spec: ops/docs/archive/sync-diagnostics.md (the fault record)
 const STORAGE_KEY = 'privacynotes.syncFaults';
 const MAX_ENTRIES = 20;
 const CODE_MAX = 40;

@@ -32,6 +32,7 @@ import { collectFingerprint, detectDeviceOs, hashFingerprint } from './deviceFin
 import { isDemoMode } from './demo';
 import { recordSyncFault } from './syncFaults';
 import { db } from './db';
+import { VERSION } from './version';
 
 const DEVICE_SECRET_KEY = 'privacynotes.deviceSecret';
 
@@ -47,6 +48,8 @@ export type DeviceRow = {
   revoked_at: string | null;
   /** Groups browser installs on the same physical device. NULL for legacy rows. */
   device_group: string | null;
+  /** App version the device last reported. NULL for builds that send none. */
+  app_version?: string | null;
 };
 
 export type RegisterResult =
@@ -138,7 +141,8 @@ export function buildDeviceName(): string {
   const platform = detectPlatform();
   const os = detectDeviceOs();
   if (platform === 'desktop') return `Desktop app on ${os}`;
-  if (platform === 'ios') return 'iOS app';
+  // The iOS build runs on both, and the device list should tell them apart.
+  if (platform === 'ios') return os === 'iPad' ? 'iPad app' : os === 'iPhone' ? 'iPhone app' : 'iOS app';
   if (platform === 'android') return 'Android app';
   return os;
 }
@@ -290,7 +294,6 @@ export async function readFnErrorBody(err: FnError): Promise<unknown> {
  *
  * This IS a definitive verdict on the token (never on the user's data), so
  * the caller answers it by re-minting a session, not by wiping anything.
- * Spec: ops/docs/auth-session-audit-2026-08.md (the stale cached token at link-pubkey)
  */
 export function isStaleTokenLinkError(
   err: FnError | null | undefined,
@@ -307,7 +310,6 @@ export function isStaleTokenLinkError(
  * not a verdict"). The right response is to retry the SAME token - it was
  * never judged. Exact-match like its sibling above; any other 503 is not
  * this signal.
- * Spec: ops/docs/auth-session-audit-2026-08.md (the stale cached token at link-pubkey)
  */
 /**
  * True when link-pubkey answers that the auth backend rate limited the
@@ -394,6 +396,7 @@ export async function registerDevice(args: RegisterDeviceArgs): Promise<Register
       device_id: deviceId,
       device_name: buildDeviceName(),
       platform: detectPlatform(),
+      app_version: VERSION,
       signature: bytesToHex(signature),
       fingerprint_hashes: fingerprintHashes,
     },
@@ -721,12 +724,16 @@ export async function previewStorageUpgrade(args: {
 // Direct DB helpers
 // ------------------------------------------------------------------
 
-export async function listDevices(supabase: SupabaseClient): Promise<DeviceRow[]> {
+export async function listDevices(supabase: SupabaseClient, pubkey: string): Promise<DeviceRow[]> {
   // Demo mode has no server-side device rows - never query for them.
   if (isDemoMode()) return [];
+  // RLS already scopes the read to the caller; the explicit owner gives the
+  // planner an index condition on `devices(pubkey)` instead of a table scan.
+  // Spec: ops/docs/archive/supabase-performance-2026-09.md (Capacity check, 2026-10-19)
   const { data, error } = await readWithRetry(() => supabase
     .from('devices')
-    .select('device_id, device_name, platform, created_at, last_seen_at, revoked_at, device_group')
+    .select('device_id, device_name, platform, created_at, last_seen_at, revoked_at, device_group, app_version')
+    .eq('pubkey', pubkey)
     .order('last_seen_at', { ascending: false }));
   if (error) {
     console.error('[devices] list failed', error);
@@ -769,6 +776,7 @@ export async function heartbeat(
   lastHeartbeatAt = now;
   const { data, error, status } = await supabase.rpc('device_heartbeat', {
     p_device_id: deviceId,
+    p_app_version: VERSION,
   });
   if (error) {
     recordSyncFault({ step: 'device', status, code: error.code || undefined });

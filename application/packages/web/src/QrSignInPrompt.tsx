@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useEscapeToClose } from './useEscapeToClose';
 import { TurnstileWidget } from './TurnstileWidget';
+import { Modal } from './ui';
 
 /**
  * Confirmation modal shown when the app boots with a `#phrase=…` fragment
@@ -44,7 +44,6 @@ export function QrSignInPrompt({
   onTrustDeviceChange: (v: boolean) => void;
 }) {
   const { t } = useTranslation('auth');
-  useEscapeToClose(onCancel, !busy);
   const [revealed, setRevealed] = useState(false);
   const words = phrase.split(' ');
 
@@ -84,20 +83,10 @@ export function QrSignInPrompt({
   }
 
   return (
-    <div
-      className="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 flex items-center justify-center p-4"
-      onClick={busy ? undefined : onCancel}
-    >
-      <div
-        className="bg-surface-2 border border-divider rounded-lg max-w-md w-full p-5 space-y-4"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div>
-          <h2 className="text-lg font-semibold">{t('qrSignInPrompt.title')}</h2>
-          <p className="mt-1 text-xs text-pn-muted leading-relaxed">
-            {t('qrSignInPrompt.body')}
-          </p>
-        </div>
+    <Modal onClose={onCancel} escape={!busy} closeOnBackdrop={!busy} title={t('qrSignInPrompt.title')} className="max-w-md p-6 space-y-4">
+        <p className="text-xs text-pn-muted leading-relaxed">
+          {t('qrSignInPrompt.body')}
+        </p>
 
         <div className="rounded-lg border border-divider p-3">
           <div className="flex items-center justify-between mb-2">
@@ -191,7 +180,6 @@ export function QrSignInPrompt({
             {busy ? t('signIn.signingIn') : t('qrSignInPrompt.signIn')}
           </button>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

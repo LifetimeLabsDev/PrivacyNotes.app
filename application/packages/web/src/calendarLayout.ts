@@ -6,7 +6,7 @@ import { dayNumber, minutesOf } from './schedule';
  * lanes, the chips of a day under them with a "+N more", and the timed cards of
  * the hour grid side by side when they overlap. Pure, so the layout is a table
  * of numbers in a test.
- * Spec: ops/docs/plans/calendar-pillar-spec.md (steps 1, 4 and 5)
+ * Spec: ops/docs/archive/calendar-pillar-spec.md (steps 1, 4 and 5)
  */
 
 /** The most lanes of bars a week row draws; a further bar goes into "+N more". */

@@ -1,7 +1,9 @@
 {
   "shell": {
     "title": "Instellingen",
-    "allSettings": "Alle instellingen"
+    "allSettings": "Alle instellingen",
+    "fillWindow": "Volledig venster gebruiken",
+    "restoreWindow": "Terug naar normale grootte"
   },
   "account": {
     "title": "Account",
@@ -106,6 +108,11 @@
     "sharedSlot_other": "{{count}} installaties delen één apparaatplek",
     "added": "toegevoegd {{time}}",
     "lastActive": "laatst actief {{time}}",
+    "versionUnknown": "versie onbekend",
+    "idLabel": "ID",
+    "browser": "Browser",
+    "update": "Bijwerken",
+    "updateHint": "Deze versie kan niet meer synchroniseren. Werk de app op dit apparaat bij.",
     "removeAll": "Alles verwijderen",
     "recentlyRemoved": "Onlangs verwijderd",
     "removedAt": "Verwijderd {{time}}"
@@ -191,6 +198,8 @@
     "faviconsProxy": "De iconen lopen via onze proxy. Alleen op dit apparaat.",
     "invisiblesTitle": "Onzichtbare tekens",
     "invisiblesDesc": "Toont spaties, regeleindes en alineamarkeringen terwijl je schrijft.",
+    "listsTabGeneral": "Algemeen",
+    "listsTabSidebar": "Zijbalk en Alles",
     "sidebarTitle": "<sb>Zijbalk</sb> en <all>Alles</all>",
     "sidebarDesc": "Welke weergaven in de zijbalk staan en welke items de lijst Alles bevat.",
     "colInSidebar": "Zijbalk",
@@ -211,14 +220,30 @@
     "contentWidthFull": "Volledig",
     "lineSpacingTitle": "Regelafstand",
     "noteColorsTitle": "Map- en tagkleuren",
+    "noteColorsPickerTitle": "Voor alle mappen en tags",
     "noteColorsDesc": "Hoe een notitie de kleur van haar map of tag toont: de hele notitie, alleen het pictogram of helemaal niet.",
     "noteColorsBackground": "Achtergrond",
     "noteColorsExampleTitle": "Weekend in Lissabon",
     "noteColorsExampleFolder": "Reizen, een groene map",
-    "noteColorsAccent": "Pictogram",
+    "noteColorsAccent": "Alleen pictogram",
     "noteColorsOff": "Uit",
+    "checkboxesTitle": "Selectievakjes",
+    "taskConfettiTitle": "Confetti bij afvinken",
+    "taskConfettiDesc": "Er vliegt wat confetti uit een selectievakje als je het afvinkt.",
     "sinkCheckedTitle": "Afgevinkte items omlaag verplaatsen",
     "sinkCheckedDesc": "Een afgevinkt item schuift onder de niet-afgevinkte items van zijn lijst.",
+    "defaultAppsTitle": "Openen met PrivacyNotes",
+    "defaultAppsMarkdown": "Markdown-bestanden",
+    "defaultAppsText": "Tekstbestanden",
+    "defaultAppsMarkdownHint": ".md-bestanden waarop je dubbelklikt, openen hier.",
+    "defaultAppsTextHint": ".txt- en README-bestanden waarop je dubbelklikt, openen hier.",
+    "defaultAppsTextHintWindows": ".txt-bestanden waarop je dubbelklikt, openen hier.",
+    "defaultAppsTextFinderSteps": "Om dit te wijzigen kies je in Finder \"Toon info\" voor een .txt-bestand, kies je PrivacyNotes onder \"Open met\" en klik je op \"Wijzig alles\".",
+    "defaultAppsMakeDefault": "Als standaard instellen",
+    "defaultAppsIsDefault": "Standaard",
+    "defaultAppsOwnerOther": "Ze worden nu geopend met {{app}}.",
+    "defaultAppsOwnerOtherUnnamed": "Ze worden nu geopend met een andere app.",
+    "defaultAppsOwnerNone": "Ze hebben nog geen standaard-app.",
     "spacesTitle": "Ruimtes",
     "spacesDesc": "Splits je bibliotheek in Persoonlijk en Werk en toon er één tegelijk.",
     "lineSpacingDesc": "De ruimte tussen regels en alinea's tijdens het schrijven.",
@@ -248,7 +273,8 @@
       "none": "Hier zijn nog geen thema's.",
       "sortLabel": "Volgorde",
       "sortVotes": "Meeste stemmen",
-      "sortNewest": "Nieuwste"
+      "sortNewest": "Nieuwste",
+      "more": "Meer thema's"
     },
     "custom": {
       "newTheme": "Nieuw thema",
@@ -449,6 +475,8 @@
     "wifiHoldTooltip": "Bestanden gaan omhoog zodra er wifi is. Notities blijven synchroniseren.",
     "notBackedUp": "Geen back-up",
     "notSynced": "Niet gesynchroniseerd",
+    "firstSyncPending": "Dit apparaat heeft de eerste synchronisatie met de server nog niet afgerond, dus sommige notities kunnen hier nog ontbreken.",
+    "pullFailed": "De laatste synchronisatie kon niets downloaden van de server. Er wordt automatisch opnieuw geprobeerd.",
     "notBackedUpTooltip_one": "{{count}} notitie heeft geen back-up. Klik om te zien waarom.",
     "notBackedUpTooltip_other": "{{count}} notities hebben geen back-up. Klik om te zien waarom.",
     "notBackedUpAria_one": "{{count}} notitie heeft geen back-up",
@@ -531,7 +559,7 @@
     "alertBirthday": "Verjaardagen",
     "alertsHelp": "Nieuwe items beginnen met deze meldingen. Daarna houdt elk item zijn eigen meldingen.",
     "reminderTitles": "Titels tonen in herinneringen",
-    "reminderTitlesHelp": "Uit: een herinnering toont het woord Herinnering en de tijd. Een item achter je PIN doet dat altijd.",
+    "reminderTitlesHelp": "Aan: een herinnering toont de titel van het item. Uit: ze toont alleen \"Herinnering\" en de tijd. Een item achter je PIN toont nooit zijn titel.",
     "whereTitle": "Herinneringen op dit apparaat",
     "reminderHint": {
       "mobile": "Herinneringen gaan af op deze telefoon, ook als PrivacyNotes gesloten is.",
@@ -545,11 +573,14 @@
     "permissionDenied": "Meldingen zijn geblokkeerd voor PrivacyNotes. Sta ze toe in de instellingen van deze browser of dit apparaat.",
     "weekNumbers": "Weeknummers tonen",
     "weekNumbersHelp": "In de maandweergave en de kleine kalenders.",
-    "hours": "Dag en Week openen om",
+    "hours": "Eerste uur in Dag en Week",
+    "checkInReminder": "Herinnering voor de dagelijkse check-in",
+    "checkInReminderHelp": "\"Hoe gaat het vandaag?\" eens per dag, op dit apparaat. Niet op een dag waarop je al een stemming hebt vastgelegd of hebt overgeslagen.",
+    "checkInReminderAt": "Gaat af om",
     "groupView": "Weergave",
     "groupReminders": "Herinneringen",
     "groupDefaults": "Standaardmeldingen",
-    "hoursHelp": "Scrol omhoog voor eerdere uren.",
+    "hoursHelp": "De weergaven Dag en Week openen gescrold naar dit uur. De uren ervoor staan erboven.",
     "to": "tot"
   }
 }

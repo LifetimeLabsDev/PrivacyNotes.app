@@ -10,6 +10,7 @@ import { useBelowVersionFloor } from './versionFloor';
 import { useSyncPaused } from './syncPause';
 import { useFilesWifiOnly } from './wifiOnly';
 import { usePushFailures, usePushHalt } from './pushFailures';
+import { pullStanding, useSyncLog } from './syncLog';
 
 interface SyncStatusProps {
   /** Icon size in px - 14 for mobile header, 13 for footers. */
@@ -29,6 +30,12 @@ interface SyncStatusProps {
    * so its tooltip centres too instead of hanging past the screen's edge.
    */
   tipPosition?: 'above-start' | 'above';
+  /**
+   * Classes for the hover box. The phone bar makes it as tall as its 44px
+   * buttons, so the tip opens above the bar like theirs instead of on its
+   * top edge.
+   */
+  tipHostClassName?: string;
 }
 
 /**
@@ -36,7 +43,8 @@ interface SyncStatusProps {
  * Offline (amber) > Syncing (accent spinner) > Not synced (amber, the
  * last pass could not push a note, or its push stopped before it reached
  * every note; the footer slot fits one short word, so the fuller "not
- * backed up" lives in the tooltip and in ID & Sync) > Uploading (accent
+ * backed up" lives in the tooltip and in ID & Sync) > Not synced (amber,
+ * no clean pull in the log yet, or the newest pull failed) > Uploading (accent
  * spinner, blobs still queued) > Synced (green check).
  *
  * The green check is a promise that nothing is still on its way up, so
@@ -50,7 +58,7 @@ interface SyncStatusProps {
  * what an added "N files waiting to upload" line did. That count now
  * lives in ID & Sync, one click away.
  */
-export function SyncStatus({ size = 13, onOpen, tipPosition = 'above-start' }: SyncStatusProps) {
+export function SyncStatus({ size = 13, onOpen, tipPosition = 'above-start', tipHostClassName }: SyncStatusProps) {
   const { t } = useTranslation('settings');
   const online = useOnlineStatus();
   const pendingUploads = usePendingUploads();
@@ -62,12 +70,13 @@ export function SyncStatus({ size = 13, onOpen, tipPosition = 'above-start' }: S
   const wifi = useFilesWifiOnly();
   const failures = usePushFailures();
   const halt = usePushHalt();
+  const standing = pullStanding(useSyncLog());
 
   // Demo mode never saves anything - don't show a green "Synced" check
   // that implies durability. Say so plainly instead.
   if (isDemoMode()) {
     return (
-      <HoverLabel label={t('syncStatus.demoTooltip')} position={tipPosition} multiline>
+      <HoverLabel label={t('syncStatus.demoTooltip')} position={tipPosition} multiline className={tipHostClassName}>
         <span
           className="inline-flex items-center gap-1.5"
           aria-live="polite"
@@ -165,6 +174,23 @@ export function SyncStatus({ size = 13, onOpen, tipPosition = 'above-start' }: S
               : t('syncStatus.notBackedUpAria', { count: failures.size }),
             needsOpenHint: true,
           }
+      : standing !== 'ok'
+        ? {
+            // No pass on this device has finished a clean pull, or the
+            // newest one could not read the server. The check would claim
+            // this device holds what the server holds while a fresh
+            // browser can still be thousands of notes short of it, which
+            // reads as lost notes.
+            body: (
+              <>
+                <Warning size={size} className="text-warning" />
+                <span className="text-warning">{t('syncStatus.notSynced', exemptOpts('settings:syncStatus.notSynced'))}</span>
+              </>
+            ),
+            tip: standing === 'never' ? t('syncStatus.firstSyncPending') : t('syncStatus.pullFailed'),
+            aria: standing === 'never' ? t('syncStatus.firstSyncPending') : t('syncStatus.pullFailed'),
+            needsOpenHint: true,
+          }
       : pendingUploads.count > 0 && wifi.held
         ? {
             // "Files on wifi only" is holding the queue on cellular. Not an
@@ -223,7 +249,7 @@ export function SyncStatus({ size = 13, onOpen, tipPosition = 'above-start' }: S
     : state.tip;
 
   return (
-    <HoverLabel label={tip} position={tipPosition} multiline={!!onOpen}>
+    <HoverLabel label={tip} position={tipPosition} multiline={!!onOpen} className={tipHostClassName}>
       {onOpen ? (
         <button
           type="button"

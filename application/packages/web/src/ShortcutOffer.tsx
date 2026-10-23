@@ -7,7 +7,7 @@ import { useEscapeToClose } from './useEscapeToClose';
  * The offer to open a shortcut in the desktop app, in a computer browser.
  * Loaded only when a shortcut is waiting, so the boot path does not carry it.
  *
- * Spec: ops/docs/plans/note-shortcuts.md (6)
+ * Spec: ops/docs/archive/note-shortcuts.md (6)
  */
 
 /** The bar over a note a shortcut opened in a computer browser. "Open in

@@ -23,6 +23,7 @@ import {
   Quotes,
   CodeBlock,
   Copy,
+  Kanban,
   Code,
   MathOperations,
   Sigma,
@@ -37,6 +38,8 @@ import {
   Microphone,
   Gear,
   ArticleMedium,
+  ClipboardText,
+  FileMd,
 } from './icons';
 
 /**
@@ -44,7 +47,7 @@ import {
  * label key (editor namespace). The toolbar's own buttons draw richer
  * controls for some of these (the split colour buttons, the heading level);
  * the Settings board and a button promoted from the menu use these.
- * Spec: ops/docs/plans/format-bar.md
+ * Spec: ops/docs/archive/format-bar.md
  */
 export const FORMAT_BAR_LOOK: Record<string, { Icon: Icon; label: string }> = {
   bold: { Icon: TextB, label: 'toolbar.bold' },
@@ -70,6 +73,7 @@ export const FORMAT_BAR_LOOK: Record<string, { Icon: Icon; label: string }> = {
   quote: { Icon: Quotes, label: 'toolbar.quote' },
   codeblock: { Icon: CodeBlock, label: 'toolbar.codeBlock' },
   copybox: { Icon: Copy, label: 'toolbar.copyBox' },
+  kanban: { Icon: Kanban, label: 'callout.types.kanban' },
   inlinecode: { Icon: Code, label: 'toolbar.inlineCode' },
   math: { Icon: MathOperations, label: 'toolbar.math' },
   blockmath: { Icon: Sigma, label: 'toolbar.blockMath' },
@@ -87,4 +91,6 @@ export const FORMAT_BAR_LOOK: Record<string, { Icon: Icon; label: string }> = {
   audio: { Icon: Microphone, label: 'formatBar.items.audio' },
   customize: { Icon: Gear, label: 'toolbar.customize' },
   markdownView: { Icon: ArticleMedium, label: 'formatBar.items.markdownView' },
+  copyAsPlain: { Icon: ClipboardText, label: 'bodyMenu.copyAsPlain' },
+  copyAsMarkdown: { Icon: FileMd, label: 'bodyMenu.copyAsMarkdown' },
 };

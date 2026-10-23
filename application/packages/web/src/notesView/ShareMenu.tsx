@@ -52,7 +52,7 @@ export function ShareMenu({
   // the shell - the demo bar, or an announcement - and the panel then opened
   // ON TOP of the button that had just been pressed. The hook measures the
   // trigger, opens below it, and flips above when there is no room.
-  // Spec: ops/docs/ui-patterns.md (section 15)
+  // Spec: ops/docs/archive/ui-patterns.md (section 15)
   const pos = usePopoverPosition(open, triggerHidden ? fallbackAnchorRef : anchorRef, panelRef, { align: 'end' });
 
   // Close on an outside pointerdown, ignoring the trigger so it can toggle
@@ -94,7 +94,7 @@ export function ShareMenu({
             }`}
           >
           {/* 18px in a 32px box, the size every button in the editor header
-              wears. Spec: ops/docs/ui-patterns.md (section 80) */}
+              wears. Spec: ops/docs/archive/ui-patterns.md (section 80) */}
           <Export size={18} />
           </button>
         </HoverLabel>
@@ -119,7 +119,7 @@ export function ShareMenu({
                   destructive and never decoration. */}
               {/* The shortcut first: it is the one row here that shares
                   nothing, so its line says who can open it.
-                  Spec: ops/docs/plans/note-shortcuts.md (4) */}
+                  Spec: ops/docs/archive/note-shortcuts.md (4) */}
               {isShortcutId(selected.id) && (
                 <button
                   onClick={() => {

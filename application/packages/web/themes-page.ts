@@ -2,7 +2,7 @@ import { transformWithOxc, type Plugin } from 'vite';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss } from './static-page-theme.ts';
+import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss, WASHI_DARK, WASHI_LIGHT } from './static-page-theme.ts';
 import { CHROME_CSS, LIGHTBOX_CSS, OG_IMAGE_TAGS, ogLocaleTag, SITE_FOOTER, siteNav } from './static-page-chrome.ts';
 // Type-only, so they erase at build time and leave the import-free modules
 // that loadThemes() transpiles and imports as data URLs.
@@ -11,7 +11,7 @@ import type { CommunityTheme } from './src/communityThemes.ts';
 import type { TeamTheme } from './src/teamThemes.ts';
 import type { BUILTIN_THEME_CODES } from './src/builtinThemeCodes.ts';
 import type { COMMUNITY_VOTES } from './src/communityVotes.ts';
-import { THEME_SHOT_DIR, themeShotFile } from '../../ops/theme-shots/shotName.mjs';
+import { THEME_SHOT_DIR, themeShotFile } from './themeShotName.mjs';
 
 // Pre-renders /themes: the community themes from src/communityThemes.ts, then
 // the team's own, which the app already ships: the hand-tuned palettes as
@@ -59,7 +59,45 @@ interface ThemeCard {
   newestRank?: number;
   /** Its place when the page lists them by votes. */
   votesRank?: number;
+  /** The card's description: a community author's words in the house
+   *  pattern, or the team's own for a palette or team theme. */
+  description?: string;
+  /** The card's id and the viewer's URL hash: the name in lower case with
+   *  dashes, and the mode after it when a light and a dark theme share it. */
+  slug?: string;
   colors: Record<string, string>;
+}
+
+/** The longest description a card takes. The intake rewrites the author's
+ *  text into one house pattern (ops/docs/community-themes.md, section 3). */
+const DESCRIPTION_MAX = 240;
+
+/** The hand-tuned palettes' descriptions, in the same pattern as every other
+ *  card's, by mode and id in builtinThemeCodes.ts. Only /themes shows them,
+ *  so they live in its build; the build refuses a palette without one. */
+const BUILTIN_DESCRIPTIONS: Record<'light' | 'dark', Record<string, string>> = {
+  light: {
+    'default': 'Clean white paper: near-black text with a deep blue accent.',
+    'warm-cream': 'An old notebook page: warm cream paper with a royal blue accent.',
+    'slate': 'A cool grey desk: slate-tinted surfaces with an indigo accent.',
+    'sage': 'A herb garden: pale sage greens with a deep forest-green accent.',
+  },
+  dark: {
+    'default': 'A warm evening: charcoal grey-brown with a soft sky-blue accent.',
+    'soft-dark': 'Dusk on a screen: muted blue-greys with a gentle light-blue accent.',
+    'navy-depths': 'The deep sea: dark navy surfaces with a periwinkle-blue accent.',
+    'oled': 'True black for OLED screens with a calm blue accent.',
+  },
+};
+
+/** A description is one line of plain text: the page escapes it, and a
+ *  newline or a markup character means a thread body was pasted whole. */
+function checkDescription(text: string | undefined, where: string, required: boolean): string | undefined {
+  if (text === undefined && !required) return undefined;
+  if (text === undefined || text !== text.trim() || !text || text.length > DESCRIPTION_MAX || /[\n<>]/.test(text)) {
+    throw new Error(`themes-page: ${where} needs a description of one line of plain text, at most ${DESCRIPTION_MAX} characters`);
+  }
+  return text;
 }
 
 async function importTs<T>(file: string): Promise<T> {
@@ -118,7 +156,9 @@ async function loadThemes(): Promise<ThemeLists> {
     ids.add(id);
     return read(code, where, credited);
   };
-  const palettes = [...Object.values(builtin.BUILTIN_THEME_CODES.light), ...Object.values(builtin.BUILTIN_THEME_CODES.dark)];
+  const palettes = (['light', 'dark'] as const).flatMap((mode) =>
+    Object.entries(builtin.BUILTIN_THEME_CODES[mode]).map(([id, code]) => ({ code, description: BUILTIN_DESCRIPTIONS[mode][id], where: `the ${mode} palette ${id}` })),
+  );
   // Newest first; a malformed date stops the build.
   const newest = [...COMMUNITY_THEMES]
       .map((t, i) => {
@@ -130,17 +170,41 @@ async function loadThemes(): Promise<ThemeLists> {
         }
         const votes = t.discussion ? (COMMUNITY_VOTES[t.discussion] ?? 0) : 0;
         if (!Number.isInteger(votes) || votes < 0) throw new Error(`themes-page: community entry ${i + 1} has a bad vote count`);
-        return { ...listed(t, `community entry ${i + 1}`, true), added: t.added, votes, ...(t.discussion ? { discussion: t.discussion } : {}) };
+        const description = checkDescription(t.description, `community entry ${i + 1}`, false);
+        return {
+          ...listed(t, `community entry ${i + 1}`, true),
+          added: t.added,
+          votes,
+          ...(t.discussion ? { discussion: t.discussion } : {}),
+          ...(description ? { description } : {}),
+        };
       })
       .sort((a, b) => b.added!.localeCompare(a.added!))
       .map((t, i) => ({ ...t, newestRank: i }));
-  return {
+  const lists = {
     // Most votes first, the app's order under Community; a tie goes to the newer.
     community: [...newest].sort((a, b) => b.votes - a.votes).map((t, i) => ({ ...t, votesRank: i })),
     discussionsUrl: THEME_DISCUSSIONS_URL,
-    team: [...palettes.map((code) => read(code, 'a built-in palette', false)), ...TEAM_THEMES.map((t, i) => listed(t, `team entry ${i + 1}`, false))],
+    team: [
+      ...palettes.map((p) => ({ ...read(p.code, p.where, false), description: checkDescription(p.description, p.where, true) })),
+      ...TEAM_THEMES.map((t, i) => ({ ...listed(t, `team entry ${i + 1}`, false), description: checkDescription(t.description, `team entry ${i + 1}`, true) })),
+    ],
   };
+  const all = [...lists.community, ...lists.team];
+  const base = (t: ThemeCard) => t.name.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'theme';
+  const uses = new Map<string, number>();
+  for (const t of all) uses.set(base(t), (uses.get(base(t)) ?? 0) + 1);
+  const slugs = new Set(PAGE_IDS);
+  for (const t of all) {
+    t.slug = uses.get(base(t))! > 1 ? `${base(t)}-${t.mode}` : base(t);
+    if (slugs.has(t.slug) || /^theme-code-\d+$/.test(t.slug)) throw new Error(`themes-page: two cards would use the address #${t.slug}; rename one theme`);
+    slugs.add(t.slug);
+  }
+  return lists;
 }
+
+/** The page's other ids, which a theme's address must not take. */
+const PAGE_IDS = ['so-votes', 'so-new', 'tf-all', 'tf-light', 'tf-dark', 'mb-all', 'mb-community', 'mb-team'];
 
 function esc(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -201,11 +265,11 @@ function card(t: ThemeCard, i: number, discussionsUrl: string): string {
   const rank = t.newestRank !== undefined && t.discussion
     ? ` data-thread="${t.discussion}" style="--ov:${t.votesRank};--on:${t.newestRank}"`
     : t.newestRank !== undefined ? ` style="--ov:${t.votesRank};--on:${t.newestRank}"` : '';
-  return `<article class="tc" data-mode="${t.mode}"${rank}>
+  return `<article class="tc" id="${t.slug}" data-mode="${t.mode}"${rank}>
 <figure class="shot"><a href="${shotPath(t)}" data-shot data-alt="${esc(t.name)}" aria-label="Show the ${esc(t.name)} screenshot full size"><img src="${shotPath(t)}" width="2560" height="1600" alt="The app in the ${esc(t.name)} theme" loading="${i < 4 ? 'eager' : 'lazy'}" decoding="async" draggable="false"><span class="zoom" aria-hidden="true">${glyph(P_EXPAND, 18)}View full size</span></a><span class="mode">${t.mode === 'dark' ? 'Dark' : 'Light'}</span></figure>
 <div class="tc-body">
 <div class="tc-head"><h2 dir="auto">${esc(t.name)}</h2><ul class="sw" aria-label="Colors">${dots}</ul></div>
-<p class="by">${by}</p>
+${t.description ? `<p class="desc" dir="auto">${esc(t.description)}</p>\n` : ''}<p class="by">${by}</p>
 <button class="cbtn" type="button" data-copy="${id}" data-copy-icon data-label-done="Copied" hidden>${COPY_ICON}${DONE_ICON}<span class="cl">Copy code</span></button>
 <details class="cd"><summary>Show code</summary><code id="${id}" class="code" dir="ltr">${esc(t.code)}</code></details>
 </div>
@@ -217,7 +281,7 @@ const PAGE_CSS = `.hero{display:flex;align-items:flex-end;justify-content:space-
 .lead{color:var(--muted);font-size:16px;margin:0;max-width:640px}
 .hero-cta{flex-shrink:0;display:inline-flex;align-items:center;gap:8px}
 .steps{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 14px;padding:0}
-.steps li{display:flex;flex-direction:column;gap:2px;border-radius:12px;background:var(--rail);border:1px solid var(--line);padding:14px 16px}
+.steps li{display:flex;flex-direction:column;gap:2px;border-radius:12px;background:var(--card);border:1px solid var(--line);padding:14px 16px}
 .steps li.lead-step{background:var(--imp-bg);border-color:transparent}
 .st-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .st-ic{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:9px;background:var(--bg);color:var(--mark-fg);box-shadow:0 0 0 1px var(--line)}
@@ -227,10 +291,10 @@ const PAGE_CSS = `.hero{display:flex;align-items:flex-end;justify-content:space-
 .st-d{display:block;font-size:13px;line-height:1.45;color:var(--muted)}
 @media(max-width:640px){.steps{grid-template-columns:minmax(0,1fr);gap:8px}.steps li{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;padding:10px 12px}.st-top{grid-row:span 2;margin:0}.st-n{display:none}}
 .tfi{position:absolute;opacity:0;pointer-events:none}
-.filters{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px 32px;margin:0 0 22px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--rail)}
+.filters{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px 32px;margin:0 0 22px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
 @media(max-width:560px){.filters{justify-content:flex-start}}
 .filter{display:flex;align-items:center;gap:2px}
-.filter .fl{margin-right:8px}
+.filter .flbl{margin-right:8px;font-size:13px;color:var(--muted)}
 .seg{display:inline-flex;gap:2px;padding:3px;border-radius:10px;background:var(--chip)}
 .filter label{display:inline-flex;align-items:center;gap:5px;border-radius:7px;padding:5px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted)}
 .filter label:hover{color:var(--fg)}
@@ -242,7 +306,6 @@ const PAGE_CSS = `.hero{display:flex;align-items:flex-end;justify-content:space-
 .sec-empty a{font-weight:600}
 #tf-light:checked~.sec-empty[data-empty=light],#tf-dark:checked~.sec-empty[data-empty=dark]{display:block}
 #mb-team:checked~.sec-empty.by-community{display:none}
-.filter .fl{font-size:13px;color:var(--muted);align-self:center;min-width:64px}
 .sec{font-size:18px;margin:26px 0 4px}
 .sec-d{color:var(--muted);font-size:14px;margin:0 0 12px}
 .tgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
@@ -266,6 +329,7 @@ const PAGE_CSS = `.hero{display:flex;align-items:flex-end;justify-content:space-
 .tc-head h2{font-size:17px;font-weight:650;margin:0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sw{display:flex;gap:4px;list-style:none;margin:0;padding:0;flex-shrink:0}
 .sw li{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1px rgb(127 127 127/.35)}
+.desc{margin:-4px 0 0;font-size:13.5px;line-height:1.45;color:var(--fg);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .by{margin:-4px 0 0;font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px}
 .vote{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;font-weight:600;color:var(--muted);text-decoration:none}
@@ -273,7 +337,7 @@ const PAGE_CSS = `.hero{display:flex;align-items:flex-end;justify-content:space-
 .tgrid.by-community .tc{order:var(--ov)}
 #so-new:checked~.tgrid.by-community .tc{order:var(--on)}
 #mb-team:checked~.filters .by-order{display:none}
-.cbtn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--rail);color:var(--accent);font-size:13.5px;font-weight:600;cursor:pointer}
+.cbtn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--accent);font-size:13.5px;font-weight:600;cursor:pointer}
 .cbtn[hidden]{display:none}
 .cbtn:hover{border-color:var(--accent)}
 .cbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -285,12 +349,12 @@ const PAGE_CSS = `.hero{display:flex;align-items:flex-end;justify-content:space-
 .cd summary:hover{color:var(--fg)}
 .cd[open] summary{margin-bottom:6px}
 .code{display:block;font-size:11.5px;background:var(--chip);border-radius:6px;padding:6px 8px;overflow-wrap:anywhere;color:var(--fg)}
-.submit{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 20px;border:1px solid var(--line);border-radius:12px;background:var(--rail);padding:16px 18px;margin-top:28px;font-size:14px}
+.submit{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 20px;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:16px 18px;margin-top:28px;font-size:14px}
 .submit h2{font-size:16px;margin:0 0 4px}
 .submit p{margin:0;color:var(--muted);max-width:620px}
 .submit .btn{flex-shrink:0}
 .tc.tc-more{display:none}
-.more-btn{display:block;width:50%;margin:18px auto 0;padding:9px 18px;border:1px solid var(--line);border-radius:9px;background:var(--rail);color:var(--accent);font-size:13.5px;font-weight:600;cursor:pointer}
+.more-btn{display:block;width:50%;margin:18px auto 0;padding:9px 18px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--accent);font-size:13.5px;font-weight:600;cursor:pointer}
 .more-btn[hidden]{display:none}
 .more-btn:hover{border-color:var(--accent)}
 .more-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -326,8 +390,8 @@ ${OG_IMAGE_TAGS}
 ${THEME_SCRIPT_TAG}
 <style>
 ${themeVarsCss(
-  '--bg:#fff;--fg:#15171a;--muted:#5b6168;--faint:#8a9099;--line:#e7e9ec;--accent:#1E40AF;--imp-bg:#eff6ff;--mark-fg:#1E40AF;--chip:#eceef1;--rail:#f7f8fa;--on-accent:#fff;--ok:#047857',
-  '--bg:#0e1014;--fg:#e7e9ec;--muted:#9aa1aa;--faint:#6b7178;--line:#23262c;--accent:#4A90D9;--imp-bg:#11233a;--mark-fg:#7FB0E4;--chip:#23272e;--rail:#14171d;--on-accent:#03203E;--ok:#34D399'
+  `${WASHI_LIGHT};--accent:#1E40AF;--mark-fg:#1E40AF;--on-accent:#fff;--ok:#047857`,
+  `${WASHI_DARK};--accent:#4A90D9;--mark-fg:#7FB0E4;--on-accent:#03203E;--ok:#34D399`
 )}
 ${THEME_TOGGLE_CSS}
 ${CHROME_CSS}
@@ -356,9 +420,9 @@ ${community.length > 0 ? `<input class="tfi" type="radio" name="mb" id="mb-all" 
 <input class="tfi" type="radio" name="so" id="so-votes" checked>
 <input class="tfi" type="radio" name="so" id="so-new">
 <div class="filters">
-<div class="filter" role="group" aria-label="Made by"><span class="fl" aria-hidden="true">Made by</span><span class="seg"><label for="mb-all">All</label><label for="mb-community">Community</label><label for="mb-team">Team</label></span></div>
-<div class="filter" role="group" aria-label="Mode"><span class="fl" aria-hidden="true">Mode</span><span class="seg"><label for="tf-all">All</label><label for="tf-light">${glyph(P_SUN, 14)}Light</label><label for="tf-dark">${glyph(P_MOON, 14)}Dark</label></span></div>
-<div class="filter by-order" role="group" aria-label="Order"><span class="fl" aria-hidden="true">Order</span><span class="seg"><label for="so-votes">Most votes</label><label for="so-new">Newest</label></span></div>
+<div class="filter" role="group" aria-label="Made by"><span class="flbl" aria-hidden="true">Made by</span><span class="seg"><label for="mb-all">All</label><label for="mb-community">Community</label><label for="mb-team">Team</label></span></div>
+<div class="filter" role="group" aria-label="Mode"><span class="flbl" aria-hidden="true">Mode</span><span class="seg"><label for="tf-all">All</label><label for="tf-light">${glyph(P_SUN, 14)}Light</label><label for="tf-dark">${glyph(P_MOON, 14)}Dark</label></span></div>
+<div class="filter by-order" role="group" aria-label="Order"><span class="flbl" aria-hidden="true">Order</span><span class="seg"><label for="so-votes">Most votes</label><label for="so-new">Newest</label></span></div>
 </div>
 <h2 class="sec by-community">Community themes</h2>
 <p class="sec-d by-community">Made by people who use the app. Vote for the ones you like on their GitHub thread; the counts update once a day.</p>

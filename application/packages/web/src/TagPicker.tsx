@@ -4,8 +4,9 @@ import { normalizeTag } from './notesRepo';
 import { textMatcher } from './textMatch';
 import { isImeComposing } from './imeComposing';
 import { useEscapeToClose } from './useEscapeToClose';
-import { MagnifyingGlass, X } from './icons';
+import { MagnifyingGlass } from './icons';
 import { TagMark } from './looks/LookGlyph';
+import { CloseButton } from './ui';
 
 /**
  * Pick a tag for one item or for a selection: filter the existing tags,
@@ -17,7 +18,7 @@ import { TagMark } from './looks/LookGlyph';
  * It was an anchored popover once, which meant the window's position had
  * to be solved against whatever opened it, and a trigger far from the
  * right edge threw it backwards across the pane.
- * Spec: ops/docs/ui-patterns.md
+ * Spec: ops/docs/archive/ui-patterns.md
  */
 export function TagPicker({
   allTags,
@@ -69,13 +70,7 @@ export function TagPicker({
       >
         <div className="flex items-center justify-between gap-2 px-4 pt-4 pb-2">
           <h2 className="text-[15px] font-semibold m-0">{t('selectionToolbar.tag')}</h2>
-          <button
-            onClick={onClose}
-            aria-label={t('common:actions.close')}
-            className="p-1 -m-1 rounded text-pn-muted hover:text-pn transition"
-          >
-            <X size={16} />
-          </button>
+          <CloseButton onClick={onClose} />
         </div>
 
         <div className="px-4 pb-2 shrink-0">

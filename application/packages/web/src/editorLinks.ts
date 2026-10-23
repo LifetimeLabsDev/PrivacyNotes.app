@@ -2,23 +2,17 @@
  * What a URL link does inside a note: which click opens it, what the link
  * button makes of a selection, and which text counts as an address.
  *
- * Inside a note the caret comes first. A mouse click on a link puts the
- * cursor in the link, the way a click on any other word does, and opens
- * nothing; Cmd (Ctrl off a Mac) with the click is how the reader asks for
- * the URL instead, which is the modifier every browser already uses for
- * that job. A finger keeps the plain tap, because it carries no modifier
- * and has no hover to offer one.
- *
- * That rule is what makes a link removable. The toolbar's Remove button
- * acts on the link the caret sits in, so as long as reaching the link
- * hands the reader to their browser, the caret never lands in it and the
- * button never offers Remove (GitHub #293). The link menu in `Editor.tsx`
- * is the other half of the answer.
+ * A click or a tap on a link opens it, in a note being edited too. The
+ * actions that need the link to stay put - Copy, Edit, Remove - live in
+ * the link menu in `Editor.tsx`, which a right click or a long press opens,
+ * so reaching them never depends on landing the caret in the link
+ * (GitHub #293).
  *
  * One click has three possible openers, so each one states the case it
- * does NOT take: the anchor interceptor in `App.tsx` opens every anchor a
- * native build still hands it, this plugin opens the rest, and the Link
- * extension's own `openOnClick` is off so it opens nothing.
+ * does NOT take: the anchor interceptor in `App.tsx` opens a tap on a
+ * native build and every native anchor outside a note being edited, this
+ * plugin opens the rest, and the Link extension's own `openOnClick` is off
+ * so it opens nothing.
  */
 
 import { Extension, InputRule, getMarkRange } from '@tiptap/core';
@@ -61,17 +55,16 @@ export function linkHrefAt(state: EditorState, pos: number): string | null {
 }
 
 /**
- * Whether this click opens the URL. Read `view.editable` and the pointer at
- * click time rather than at construction: the editor is built once per note
- * and then told to go read-only in place when the note is locked.
+ * Whether this plugin opens the URL, or leaves it to the interceptor. Read
+ * `view.editable` and the pointer at click time rather than at construction:
+ * the editor is built once per note and then told to go read-only in place
+ * when the note is locked.
  */
-function clickOpensLink(editable: boolean, event: { metaKey: boolean; ctrlKey: boolean }): boolean {
-  if (isOpenLinkModifier(event)) return true;
-  // A native build leaves a plain click to the interceptor, which is still
-  // the opener for every anchor outside a note being edited. Opening here
-  // too would open the URL twice.
-  if (IS_NATIVE) return false;
-  return !editable || isTouchPointer();
+function clickOpensLink(editable: boolean): boolean {
+  // A native build hands a tap, and any anchor outside a note being edited,
+  // to the interceptor. Opening here too would open the URL twice.
+  if (IS_NATIVE) return editable && !isTouchPointer();
+  return true;
 }
 
 /**
@@ -117,12 +110,10 @@ export const LinkModifierOpen = Extension.create<object, LinkOpenStorage>({
             if (event.button !== 0) return false;
             const href = linkHrefAt(view.state, pos);
             if (!href) return false;
-            // A file link follows the same caret-first rule as an address,
-            // minus the native hand-off: the anchor interceptor only takes
-            // addresses, so nothing else would open it on a native build.
-            const follow = isOpenLinkModifier(event) || !view.editable || isTouchPointer();
-            if (follow && storage.openLocal?.(href)) return true;
-            if (!clickOpensLink(view.editable, event)) return false;
+            // A file link skips the native hand-off: the anchor interceptor
+            // only takes addresses, so nothing else would open it.
+            if (storage.openLocal?.(href)) return true;
+            if (!clickOpensLink(view.editable)) return false;
             openExternal(href);
             return true;
           },

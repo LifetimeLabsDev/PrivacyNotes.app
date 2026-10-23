@@ -19,8 +19,13 @@
  */
 
 import { liveVotes, parseShipped, rankThemes } from './themeVotes';
+import { handleClipFetch, type ClipEnv } from './clipFetchRoute';
 
-interface Env {
+// The web clipper's counters live in a Durable Object, which the runtime
+// finds by its export from the main module.
+export { ClipLimits } from './clipFetchRoute';
+
+interface Env extends ClipEnv {
   ASSETS: Fetcher;
   /**
    * Aggregate campaign counter. Server-side by requirement, not by
@@ -57,7 +62,16 @@ interface Fetcher {
 
 /** The module Worker contract: the runtime calls `fetch` for every request. */
 interface ExportedHandler<E> {
-  fetch?(request: Request, env: E): Response | Promise<Response>;
+  fetch?(request: Request, env: E, ctx: ExecutionContext): Response | Promise<Response>;
+}
+
+/**
+ * Work that must outlive the response. The runtime cancels a promise that is
+ * still running when the response is done, so an edge-cache write that is not
+ * handed to `waitUntil` never lands and every request is a miss.
+ */
+interface ExecutionContext {
+  waitUntil(promise: Promise<unknown>): void;
 }
 
 interface RewriterElement {
@@ -162,7 +176,7 @@ const cspFor = (paddle: boolean): string =>
     `script-src 'self' https://challenges.cloudflare.com${paddle ? ' https://cdn.paddle.com https://sandbox-cdn.paddle.com https://public.profitwell.com' : ''}`,
     `style-src 'self' 'unsafe-inline'${paddle ? ' https://cdn.paddle.com https://sandbox-cdn.paddle.com' : ''}`,
     // data: and blob: read bytes already on the device (a picture inside a
-    // paste) and can send nothing out. Spec: ops/docs/plans/paste-pictures.md (section 2)
+    // paste) and can send nothing out. Spec: ops/docs/archive/paste-pictures.md (section 2)
     `connect-src 'self' data: blob: https://sync.privacynotes.app https://releases.privacynotes.app https://challenges.cloudflare.com${paddle ? ' https://*.paddle.com https://*.profitwell.com' : ''}`,
     `img-src 'self' data: blob: https://sync.privacynotes.app${paddle ? ' https://*.paddle.com' : ''}`,
     `frame-src https://challenges.cloudflare.com${paddle ? ' https://*.paddle.com' : ''}`,
@@ -312,6 +326,7 @@ const LANDING_SLUGS = new Set(['/markdown-editor']);
 // new page in one hop. Only ids listed here redirect.
 const HELP_RENAMED: Record<string, string> = {
   'why-no-2fa': 'enable-2fa',
+  'quick-switcher': 'ninja',
 };
 const HELP_ENTRY = /^(\/(?:[a-z]{2}\/)?help\/)([a-z0-9-]+)(\.md)?\/?$/;
 
@@ -353,161 +368,182 @@ Disallow: /
 `;
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    const url = new URL(request.url);
-
-    // ── /favicon?domain=X ────────────────────────────────────────
-    if (url.pathname === '/favicon') {
-      return handleFavicon(request, url);
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    try {
+      return await route(request, env, ctx);
+    } catch (err) {
+      // The path and the error only. The query string stays out: the favicon
+      // proxy carries a domain there.
+      const path = new URL(request.url).pathname;
+      console.error(`unhandled on ${path}: ${err instanceof Error ? `${err.name}: ${err.message}` : 'error'}`);
+      throw err;
     }
-
-    // ── /badge/privacytools.svg ──────────────────────────────────
-    if (url.pathname === '/badge/privacytools.svg') {
-      return handleBadge(request, url);
-    }
-
-    // ── robots.txt (per-hostname: apex vs everything else) ──────
-    if (url.pathname === '/robots.txt') {
-      const body = url.hostname === APEX_HOST ? ROBOTS_APEX : ROBOTS_BLOCKED;
-      return new Response(body, {
-        headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'max-age=3600' },
-      });
-    }
-
-    // ── App host: marketing pages have one home, the apex (301) ──
-    // use.privacynotes.app serves only the app routes. Locale slugs,
-    // the help center, changelog, roadmap and the sitemaps 301 to the
-    // apex so search consolidation is never split across hosts. Assets
-    // and app routes fall through to the shared handling below.
-    // /help/icons/ is exempt: the Import modal reuses those app icons
-    // in-app, and a 301 to the apex gets blocked by the document CSP
-    // (img-src has no apex entry), rendering broken images.
-    //
-    // /checkout goes too, and it is the one app route that does. It is the
-    // only page that loads a payment CDN, and this host is the one that
-    // stores the phrase envelope, so serving it here would put cdn.paddle.com
-    // and public.profitwell.com in script-src beside the phrase. Nothing
-    // legitimately opens it here: billing.ts targets the apex from every
-    // client, desktop binaries have the apex baked in, and Paddle's own
-    // default payment link points there.
-    // Spec: ops/docs/domain-split.md
-    if (url.hostname === APP_HOST) {
-      const p = url.pathname;
-      if (
-        p === CHECKOUT_PATH ||
-        LOCALE_SLUGS.has(p) ||
-        p === '/help' ||
-        (p.startsWith('/help/') && !p.startsWith('/help/icons/')) ||
-        p === '/changelog' ||
-        p === '/changelog/feed.xml' ||
-        p === '/changelog.md' ||
-        p.startsWith('/docs/') ||
-        p === '/roadmap' ||
-        p === '/themes' ||
-        p === '/brand' ||
-        LANDING_SLUGS.has(p) ||
-        p.startsWith('/vs/') ||
-        p.startsWith('/for/') ||
-        p === '/llms.txt' ||
-        p === '/llms-full.txt' ||
-        p === '/llms-index.txt' ||
-        p.startsWith('/sitemap')
-      ) {
-        const target = `${APEX_ORIGIN}${p}${url.search}`;
-        return Response.redirect(p === CHECKOUT_PATH ? withEmptyFragment(target) : target, 301);
-      }
-    }
-
-    // ── /go/<partner>[/<campaign>] and /dl/<platform> ────────────
-    // Partner links and download buttons, counted at the edge and
-    // redirected. Apex only: a partner path on the app host or the demo
-    // host must never count. Both answer 302, never 301 - a permanent
-    // redirect invites Google to fold the path into the target and treat
-    // it as a real URL, and robots.txt plus X-Robots-Tag keep it out of
-    // the index either way.
-    // Spec: ops/docs/plans/partner-attribution.md
-    // The demo host participates: a partner who routes a reader to the
-    // sandbox is invisible otherwise, and the count happens here, before any
-    // demo code runs, so the demo still makes zero server calls of its own.
-    if (url.hostname === APEX_HOST || url.hostname === DEMO_HOST) {
-      const campaign = await handleCampaignRoute(url, request, env);
-      if (campaign) return campaign;
-    }
-
-    // ── Legacy /faq → /help (301) ────────────────────────────────
-    const faqMatch = url.pathname.match(FAQ_TO_HELP);
-    if (faqMatch) {
-      let target = `/${faqMatch[1] ?? ''}help${faqMatch[2] ?? ''}`;
-      // Drop any legacy trailing slash so old /faq/<id>/ links land on the
-      // no-slash canonical in one hop instead of two.
-      if (target.length > 1 && target.endsWith('/')) target = target.slice(0, -1);
-      return Response.redirect(`${url.origin}${target}${url.search}`, 301);
-    }
-
-    // ── Renamed help entries (301) ──────────────────────────────
-    const helpMatch = url.pathname.match(HELP_ENTRY);
-    const renamed = helpMatch?.[2] ? HELP_RENAMED[helpMatch[2]] : undefined;
-    if (helpMatch && renamed) {
-      return Response.redirect(`${url.origin}${helpMatch[1]}${renamed}${helpMatch[3] ?? ''}${url.search}`, 301);
-    }
-
-    // ── Strip trailing slash on every other path (301) ──────────
-    // This has to run in the Worker, and the Worker has to run first
-    // (assets.run_worker_first in wrangler.jsonc). html_handling's own
-    // drop-trailing-slash emits a 307, and Google will not fold a
-    // temporary redirect into its target: it kept every /help/<id>/ as a
-    // separate URL and reported the pair as "Duplicate, Google chose
-    // different canonical than user". A 301 consolidates. Root "/" is
-    // exempt.
-    if (url.pathname.length > 1 && url.pathname.endsWith('/')) {
-      const target = url.pathname.slice(0, -1);
-      return Response.redirect(`${url.origin}${target}${url.search}`, 301);
-    }
-
-    // ── Policy pages moved off-site (301) ───────────────────────
-    const offsite = OFFSITE[url.pathname];
-    if (offsite) return Response.redirect(withEmptyFragment(offsite), 301);
-
-    // ── Client-side app routes: serve the SPA shell ─────────────
-    // Fetched as "/" rather than "/index.html" so html_handling has
-    // nothing to rewrite; the assets layer resolves the root to
-    // dist/index.html. Status is forced to 200 - these are real pages,
-    // they just have no pre-rendered file of their own.
-    if (APP_ROUTES.has(url.pathname)) {
-      const shell = await env.ASSETS.fetch(new Request(new URL('/', url).toString(), request));
-      return withSecurityHeaders(shell, url, 200);
-    }
-
-    // ── Referring-site resolution, server-side ──────────────────
-    // The browser never sees the host map and never sends a raw referrer
-    // anywhere: a reader with the network tab open would otherwise watch
-    // their employer's intranet hostname leave their own browser. The Worker
-    // already has the Referer header, so it resolves here and injects the
-    // result for the page to read on mount.
-    // Spec: ops/docs/plans/partner-attribution.md (section 3b)
-    if (
-      (url.hostname === APEX_HOST || url.hostname === DEMO_HOST) &&
-      !url.searchParams.has('ref') &&
-      request.headers.get('Referer')
-    ) {
-      const slug = resolveReferrer(request.headers.get('Referer') ?? '', await loadSources());
-      if (slug) {
-        const page = APP_ROUTES.has(url.pathname)
-          ? await env.ASSETS.fetch(new Request(new URL('/', url).toString(), request))
-          : await env.ASSETS.fetch(request);
-        return injectSource(withSecurityHeaders(await withThemeVotes(page, url, env), url), slug);
-      }
-    }
-
-    // ── Everything else: a pre-rendered page, a real file, or 404 ──
-    // not_found_handling: "404-page" means the assets layer answers an
-    // unknown path with dist/404.html and a 404 status, so soft 404s are
-    // gone. Nothing here needs to special-case that: the 404 page is HTML
-    // and picks up the same headers.
-    const response = await env.ASSETS.fetch(request);
-    return withSecurityHeaders(await withThemeVotes(response, url, env), url);
   },
 } satisfies ExportedHandler<Env>;
+
+async function route(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+  const url = new URL(request.url);
+
+  // ── /favicon?domain=X ────────────────────────────────────────
+  if (url.pathname === '/favicon') {
+    return handleFavicon(request, url, ctx);
+  }
+
+  // ── /clip-fetch (the web clipper's download) ─────────────────
+  if (url.pathname === '/clip-fetch') {
+    return handleClipFetch(request, url, env);
+  }
+
+  // ── /badge/privacytools.svg ──────────────────────────────────
+  if (url.pathname === '/badge/privacytools.svg') {
+    return handleBadge(request, url, ctx);
+  }
+
+  // ── robots.txt (per-hostname: apex vs everything else) ──────
+  if (url.pathname === '/robots.txt') {
+    const body = url.hostname === APEX_HOST ? ROBOTS_APEX : ROBOTS_BLOCKED;
+    return new Response(body, {
+      headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'max-age=3600' },
+    });
+  }
+
+  // ── App host: marketing pages have one home, the apex (301) ──
+  // use.privacynotes.app serves only the app routes. Locale slugs,
+  // the help center, changelog, roadmap and the sitemaps 301 to the
+  // apex so search consolidation is never split across hosts. Assets
+  // and app routes fall through to the shared handling below.
+  // /help/icons/ is exempt: the Import modal reuses those app icons
+  // in-app, and a 301 to the apex gets blocked by the document CSP
+  // (img-src has no apex entry), rendering broken images.
+  //
+  // /checkout goes too, and it is the one app route that does. It is the
+  // only page that loads a payment CDN, and this host is the one that
+  // stores the phrase envelope, so serving it here would put cdn.paddle.com
+  // and public.profitwell.com in script-src beside the phrase. Nothing
+  // legitimately opens it here: billing.ts targets the apex from every
+  // client, desktop binaries have the apex baked in, and Paddle's own
+  // default payment link points there.
+  // Spec: ops/docs/domain-split.md
+  if (url.hostname === APP_HOST) {
+    const p = url.pathname;
+    if (
+      p === CHECKOUT_PATH ||
+      LOCALE_SLUGS.has(p) ||
+      p === '/help' ||
+      (p.startsWith('/help/') && !p.startsWith('/help/icons/')) ||
+      p === '/changelog' ||
+      p === '/changelog/feed.xml' ||
+      p === '/changelog.md' ||
+      p.startsWith('/docs/') ||
+      p === '/roadmap' ||
+      p === '/themes' ||
+      p === '/brand' ||
+      LANDING_SLUGS.has(p) ||
+      p.startsWith('/vs/') ||
+      p.startsWith('/for/') ||
+      p === '/llms.txt' ||
+      p === '/llms-full.txt' ||
+      p === '/llms-index.txt' ||
+      p.startsWith('/sitemap')
+    ) {
+      const target = `${APEX_ORIGIN}${p}${url.search}`;
+      return Response.redirect(p === CHECKOUT_PATH ? withEmptyFragment(target) : target, 301);
+    }
+  }
+
+  // ── /go/<partner>[/<campaign>] and /dl/<platform> ────────────
+  // Partner links and download buttons, counted at the edge and
+  // redirected. Apex only: a partner path on the app host or the demo
+  // host must never count. Both answer 302, never 301 - a permanent
+  // redirect invites Google to fold the path into the target and treat
+  // it as a real URL, and robots.txt plus X-Robots-Tag keep it out of
+  // the index either way.
+  // Spec: ops/docs/plans/partner-attribution.md
+  // The demo host participates: a partner who routes a reader to the
+  // sandbox is invisible otherwise, and the count happens here, before any
+  // demo code runs, so the demo still makes zero server calls of its own.
+  if (url.hostname === APEX_HOST || url.hostname === DEMO_HOST) {
+    const campaign = await handleCampaignRoute(url, request, env);
+    if (campaign) return campaign;
+  }
+
+  // ── Legacy /faq → /help (301) ────────────────────────────────
+  const faqMatch = url.pathname.match(FAQ_TO_HELP);
+  if (faqMatch) {
+    let target = `/${faqMatch[1] ?? ''}help${faqMatch[2] ?? ''}`;
+    // Drop any legacy trailing slash so old /faq/<id>/ links land on the
+    // no-slash canonical in one hop instead of two.
+    if (target.length > 1 && target.endsWith('/')) target = target.slice(0, -1);
+    return Response.redirect(`${url.origin}${target}${url.search}`, 301);
+  }
+
+  // ── Renamed help entries (301) ──────────────────────────────
+  const helpMatch = url.pathname.match(HELP_ENTRY);
+  const renamed = helpMatch?.[2] ? HELP_RENAMED[helpMatch[2]] : undefined;
+  if (helpMatch && renamed) {
+    return Response.redirect(`${url.origin}${helpMatch[1]}${renamed}${helpMatch[3] ?? ''}${url.search}`, 301);
+  }
+
+  // ── Strip trailing slash on every other path (301) ──────────
+  // This has to run in the Worker, and the Worker has to run first
+  // (assets.run_worker_first in wrangler.jsonc). html_handling's own
+  // drop-trailing-slash emits a 307, and Google will not fold a
+  // temporary redirect into its target: it kept every /help/<id>/ as a
+  // separate URL and reported the pair as "Duplicate, Google chose
+  // different canonical than user". A 301 consolidates. Root "/" is
+  // exempt.
+  if (url.pathname.length > 1 && url.pathname.endsWith('/')) {
+    const target = url.pathname.slice(0, -1);
+    return Response.redirect(`${url.origin}${target}${url.search}`, 301);
+  }
+
+  // ── Policy pages moved off-site (301) ───────────────────────
+  const offsite = OFFSITE[url.pathname];
+  if (offsite) return Response.redirect(withEmptyFragment(offsite), 301);
+
+  // iOS asks for this name when a page is saved to the home screen, before
+  // it reads the page's own apple-touch-icon link.
+  if (url.pathname === '/apple-touch-icon-precomposed.png') {
+    return Response.redirect(`${url.origin}/apple-touch-icon.png`, 301);
+  }
+
+  // ── Client-side app routes: serve the SPA shell ─────────────
+  // Fetched as "/" rather than "/index.html" so html_handling has
+  // nothing to rewrite; the assets layer resolves the root to
+  // dist/index.html. Status is forced to 200 - these are real pages,
+  // they just have no pre-rendered file of their own.
+  if (APP_ROUTES.has(url.pathname)) {
+    const shell = await env.ASSETS.fetch(new Request(new URL('/', url).toString(), request));
+    return withSecurityHeaders(shell, url, 200);
+  }
+
+  // ── Referring-site resolution, server-side ──────────────────
+  // The browser never sees the host map and never sends a raw referrer
+  // anywhere: a reader with the network tab open would otherwise watch
+  // their employer's intranet hostname leave their own browser. The Worker
+  // already has the Referer header, so it resolves here and injects the
+  // result for the page to read on mount.
+  // Spec: ops/docs/plans/partner-attribution.md (section 3b)
+  if (
+    (url.hostname === APEX_HOST || url.hostname === DEMO_HOST) &&
+    !url.searchParams.has('ref') &&
+    request.headers.get('Referer')
+  ) {
+    const slug = resolveReferrer(request.headers.get('Referer') ?? '', await loadSources());
+    if (slug) {
+      const page = await env.ASSETS.fetch(request);
+      return injectSource(withSecurityHeaders(await withThemeVotes(page, url, env, ctx), url), slug);
+    }
+  }
+
+  // ── Everything else: a pre-rendered page, a real file, or 404 ──
+  // not_found_handling: "404-page" means the assets layer answers an
+  // unknown path with dist/404.html and a 404 status, so soft 404s are
+  // gone. Nothing here needs to special-case that: the 404 page is HTML
+  // and picks up the same headers.
+  const response = await env.ASSETS.fetch(request);
+  return withSecurityHeaders(await withThemeVotes(response, url, env, ctx), url);
+}
 
 /**
  * /themes with the current upvotes: the page lists its threads and their
@@ -515,11 +551,11 @@ export default {
  * Rewrites only integers, and leaves the page as built when GitHub does not
  * answer. Spec: ops/docs/community-themes.md
  */
-async function withThemeVotes(response: Response, url: URL, env: Env): Promise<Response> {
+async function withThemeVotes(response: Response, url: URL, env: Env, ctx: ExecutionContext): Promise<Response> {
   if (url.pathname !== '/themes' || !response.ok || !(response.headers.get('content-type') ?? '').includes('text/html')) {
     return response;
   }
-  const live = await liveVotes(env.GITHUB_TOKEN);
+  const live = await liveVotes(env.GITHUB_TOKEN, ctx);
   if (!live) return response;
   let ranks = new Map<number, { votes: number; ov: number }>();
   let thread = 0;
@@ -597,12 +633,15 @@ async function trySource(
       return null;
     }
     return { body, contentType };
-  } catch {
+  } catch (err) {
+    // The source and the error only: the domain is the one thing this proxy
+    // keeps out of every record.
+    console.error(`favicon: ${source} unreachable: ${err instanceof Error ? err.name : 'error'}`);
     return null;
   }
 }
 
-async function handleFavicon(request: Request, url: URL): Promise<Response> {
+async function handleFavicon(request: Request, url: URL, ctx: ExecutionContext): Promise<Response> {
   const domain = url.searchParams.get('domain')?.toLowerCase().trim();
 
   if (!domain || !DOMAIN_RE.test(domain) || domain.length > 253) {
@@ -629,7 +668,7 @@ async function handleFavicon(request: Request, url: URL): Promise<Response> {
     const miss = new Response(null, { status: 404 });
     miss.headers.set('Cache-Control', `public, max-age=${MISS_TTL}`);
     miss.headers.set('Access-Control-Allow-Origin', '*');
-    void cache.put(cacheKey, miss.clone());
+    ctx.waitUntil(cache.put(cacheKey, miss.clone()));
     return miss;
   }
 
@@ -651,8 +690,7 @@ async function handleFavicon(request: Request, url: URL): Promise<Response> {
     },
   });
 
-  // Store in edge cache (fire-and-forget).
-  void cache.put(cacheKey, response.clone());
+  ctx.waitUntil(cache.put(cacheKey, response.clone()));
 
   return response;
 }
@@ -668,7 +706,7 @@ async function handleFavicon(request: Request, url: URL): Promise<Response> {
  * If upstream is unreachable, the answer is an opaque 502 and the
  * homepage falls back to the image's alt text.
  */
-async function handleBadge(request: Request, url: URL): Promise<Response> {
+async function handleBadge(request: Request, url: URL, ctx: ExecutionContext): Promise<Response> {
   const cache = caches.default;
   const cacheKey = new Request(`${url.origin}/badge/privacytools.svg?_cv=${CACHE_VERSION}`, request);
   const cached = await cache.match(cacheKey);
@@ -681,10 +719,12 @@ async function handleBadge(request: Request, url: URL): Promise<Response> {
     });
     const contentType = upstream.headers.get('content-type') || '';
     if (!upstream.ok || !contentType.includes('image/svg')) {
+      console.error(`badge: upstream answered ${upstream.status} ${contentType}`);
       return new Response('Badge unavailable', { status: 502 });
     }
     svg = await upstream.text();
-  } catch {
+  } catch (err) {
+    console.error(`badge: upstream unreachable: ${err instanceof Error ? err.name : 'error'}`);
     return new Response('Badge unavailable', { status: 502 });
   }
 
@@ -698,7 +738,7 @@ async function handleBadge(request: Request, url: URL): Promise<Response> {
     },
   });
 
-  void cache.put(cacheKey, response.clone());
+  ctx.waitUntil(cache.put(cacheKey, response.clone()));
 
   return response;
 }
@@ -738,7 +778,8 @@ async function loadSources(): Promise<SourceRow[]> {
     const rows = Array.isArray(body.sources) ? body.sources : [];
     sourcesCache = { at: now, rows };
     return rows;
-  } catch {
+  } catch (err) {
+    console.error(`campaign-sources: ${err instanceof Error ? err.message : 'error'}`);
     // Serve a stale list rather than nothing: a placement that worked a
     // minute ago should keep working through a blip.
     return sourcesCache?.rows ?? [];

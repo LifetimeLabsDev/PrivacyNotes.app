@@ -16,7 +16,7 @@
  * image link stays broken-but-intact rather than being rewritten into
  * something new.
  *
- * Spec: ops/docs/plans/markdown-folder.md (section 8, media)
+ * Spec: ops/docs/archive/markdown-folder.md (section 8, media)
  */
 import { useEffect, useState } from 'react';
 import type { OpenedDirectoryRef } from './fileAccess';

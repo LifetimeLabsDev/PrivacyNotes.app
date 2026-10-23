@@ -60,8 +60,8 @@ targets:
           - UIInterfaceOrientationPortraitUpsideDown
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
-        CFBundleShortVersionString: 0.654.2
-        CFBundleVersion: "0.654.2"
+        CFBundleShortVersionString: 0.696.1
+        CFBundleVersion: "0.696.1"
     entitlements:
       path: privacynotes_iOS/privacynotes_iOS.entitlements
     scheme:
@@ -100,7 +100,7 @@ targets:
   # The share extension: PrivacyNotes in the system share sheet. Appended by
   # scripts/apply-ios-appearance-icons.sh, because a fresh `tauri ios init`
   # writes a spec without it. Its sources live outside gen/ for the same reason.
-  # Spec: ops/docs/plans/share-into-app.md
+  # Spec: ops/docs/archive/share-into-app.md
   privacynotes_Share:
     type: app-extension
     platform: iOS

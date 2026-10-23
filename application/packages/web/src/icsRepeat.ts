@@ -8,7 +8,7 @@ import { nthOf, type Repeat, weekdayOf } from './schedule';
  * start day is always the first occurrence, as in RFC 5545, so it is never
  * moved. `UNTIL` is returned raw: turning it into a day needs the event's
  * time and zone, which the caller holds.
- * Spec: ops/docs/plans/google-calendar-import.md (section 4.5)
+ * Spec: ops/docs/archive/google-calendar-import.md (section 4.5)
  */
 
 const WEEKDAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'] as const;

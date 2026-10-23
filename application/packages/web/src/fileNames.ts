@@ -17,7 +17,7 @@
 
 /** Longest name a file may carry. Matches the note title cap, because a
  *  single-file note carries its name in both places. */
-// Spec: ops/docs/plans/file-rename-and-audio-seek.md (character rules)
+// Spec: ops/docs/archive/file-rename-and-audio-seek.md (character rules)
 export const FILE_NAME_MAX_LENGTH = 200;
 
 /**

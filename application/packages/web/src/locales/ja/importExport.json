@@ -9,7 +9,8 @@
     "tabExport": "書き出し",
     "tabRestore": "復元",
     "tabVault": "パスワード",
-    "working": "処理中…"
+    "working": "処理中…",
+    "tabWellness": "トラッカー"
   },
   "footer": {
     "exportNote": "書き出しはローカルで実行されます。何もアップロードされません。",
@@ -20,7 +21,9 @@
     "autoTagLabel": "読み込んだノートに提供元のタグを付ける",
     "autoTagDesc": "Google Keepのノートには<keep>#google</keep>、Obsidianには<obsidian>#obsidian</obsidian>、という具合です。",
     "guideAria": "{{app}}の読み込みガイド",
-    "guideLabel": "ガイド"
+    "guideLabel": "ガイド",
+    "groupGeneral": "一般",
+    "groupNotes": "ノート"
   },
   "folderImport": {
     "tagLabel": "フォルダ名のタグも付ける",
@@ -46,6 +49,24 @@
     "timeZone": "タイムゾーン",
     "ends": "終了",
     "repeats": "繰り返し"
+  },
+  "webcal": {
+    "title": "Webcal",
+    "desc": "カレンダーのアドレスです。Proton、iCloud、Outlook、または公開カレンダーの webcal:// リンクなどが使えます。ダウンロードは一度だけです。あとでもう一度貼り付けると、新しい予定だけが追加されます。",
+    "fieldLabel": "カレンダーのアドレス",
+    "import": "読み込み",
+    "downloading": "ダウンロード中…",
+    "errors": {
+      "invalid": "webcal://、webcals:// または https:// で始まるアドレスを貼り付けてください。",
+      "refused": "このアドレスは開けません。",
+      "wrongType": "このアドレスはカレンダーファイルにつながっていません。",
+      "tooLarge": "このカレンダーは 10 MB を超えています。",
+      "timeout": "カレンダーのサーバーが時間内に応答しませんでした。しばらくしてからもう一度お試しください。",
+      "blocked": "カレンダーのサーバーがダウンロードを拒否しました。カレンダーが共有または公開されているか確認してください。",
+      "offline": "オフラインです。接続してからもう一度お試しください。",
+      "limit": "短時間にダウンロードが多すぎます。1 分待ってからもう一度お試しください。",
+      "failed": "カレンダーをダウンロードできませんでした。アドレスを確認して、もう一度お試しください。"
+    }
   },
   "sourceDesc": {
     "googleKeep": "Google Takeoutの.zip(Keepフォルダ)または単一の.jsonノート。チェックリストはネイティブのタスクリストとして読み込まれます。",
@@ -79,7 +100,7 @@
     "intro": "ログイン情報、クレジットカード、SSH鍵を、他のパスワードマネージャーから読み込みます。"
   },
   "restorePick": {
-    "intro": "以前に書き出したPrivacyNotesのバックアップを復元します。ファイルはローカルで読み取り、復号されます。",
+    "intro": "以前に書き出したPrivacyNotesのバックアップを復元します。",
     "fullBackupTitle": "完全バックアップ(.zip)",
     "fullBackupDesc": "ノート、ジャーナル、保管庫のアイテム、タスク、画像、音声、ファイルを復元します。すでにあるノートはそのまま残り、バックアップにより新しい版がある場合だけ更新されます。",
     "encryptedBackupTitle": "暗号化バックアップ(.pnbackup、.pnbackupz)",

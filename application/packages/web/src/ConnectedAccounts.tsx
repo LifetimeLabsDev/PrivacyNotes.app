@@ -1,7 +1,7 @@
 import { SignIn } from './icons';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SETTINGS_HELP, SectionEyebrow, SettingsCallout } from './settingsUI';
+import { SectionEyebrow, SETTINGS_BTN_PRIMARY, SETTINGS_HELP, SettingsCallout } from './settingsUI';
 import { PROVIDER_ICON, PROVIDER_NAME } from './providerIcons';
 
 export type ConnectedAccountProvider = 'google' | 'apple' | 'github';
@@ -204,7 +204,7 @@ export function ConnectedAccounts({
               <p className={SETTINGS_HELP}>{t('connectedAccounts.noMerge')}</p>
               {mfaEnabled && <p className={SETTINGS_HELP}>{t('connectedAccounts.freshMfa')}</p>}
               <div className="flex flex-wrap gap-2">
-                <button type="submit" disabled={blocked} className="rounded-md bg-accent-fill px-3 py-2 text-sm text-white hover:bg-accent-fill-hover disabled:opacity-40 disabled:cursor-not-allowed">
+                <button type="submit" disabled={blocked} className={SETTINGS_BTN_PRIMARY}>
                   {working ? t('connectedAccounts.working') : t('connectedAccounts.continueProvider', { provider: providerName(confirmation.provider) })}
                 </button>
                 <button type="button" disabled={busy || working} onClick={reset} className={BUTTON}>{t('connectedAccounts.cancel')}</button>

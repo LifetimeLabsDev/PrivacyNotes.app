@@ -11,7 +11,7 @@ import { isDemoMode } from '../demo';
  * A pinned tab sits in a group at the start of the strip and cannot be closed,
  * one by one or in bulk, until it is unpinned. Only its item leaving the app
  * (trash, delete) removes it.
- * Spec: ops/docs/plans/note-tabs.md
+ * Spec: ops/docs/archive/note-tabs.md
  */
 
 const KEY = 'privacynotes.openTabs';
@@ -129,7 +129,7 @@ export function useOpenTabs(notes: LocalNote[]) {
  * pinned tab keeps its item, so the next item opens in a new tab. On by
  * default, per device like the tabs. The settings window can be a second window, so the store
  * listens to `storage` as well as to its own change event.
- * Spec: ops/docs/plans/note-tabs.md (section 2)
+ * Spec: ops/docs/archive/note-tabs.md (section 2)
  */
 const OPEN_IN_TABS_KEY = 'privacynotes.ui.openItemsInTabs';
 const OPEN_IN_TABS_EVENT = 'pn:open-items-in-tabs';

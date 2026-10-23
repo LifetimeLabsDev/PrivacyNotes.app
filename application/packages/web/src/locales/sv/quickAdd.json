@@ -1,6 +1,7 @@
 {
   "words": {
-    "every": "varje, var",
+    "add": "skapa",
+    "every": "varje, var, varannan, varannat",
     "weekday": "vardag, vardagar, arbetsdag, arbetsdagar",
     "daily": "dagligen",
     "weekly": "veckovis",
@@ -14,7 +15,7 @@
     "next": "nästa",
     "this": "denna, kommande",
     "last": "sista",
-    "other": "annan, andra",
+    "other": "annan, andra, varannan, varannat",
     "before": "före, innan, tidigare",
     "alert": "påminn, påminnelse, avisering, larm",
     "oclock": "prick",
@@ -37,6 +38,7 @@
     "times": "gånger, gång, ggr, x",
     "ordinal": ":a, :e, .",
     "work": "arbete, jobb, jobbet",
-    "personal": "privat, personligt, hem, hemma"
+    "personal": "privat, personligt, hem, hemma",
+    "in": "om"
   }
 }

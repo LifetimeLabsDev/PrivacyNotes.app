@@ -18,10 +18,8 @@
   "header": {
     "new": "Створити",
     "newNote": "Нова нотатка",
-    "newNoteHover": "Нова нотатка ({{hotkey}})",
     "trash": "Кошик",
-    "newEvent": "Нова подія",
-    "newEventHover": "Нова подія ({{hotkey}})"
+    "newEvent": "Нова подія"
   },
   "folderChip": {
     "clear": "Очистити фільтр папки: {{folder}}",
@@ -35,15 +33,18 @@
     "ariaLabel": "Новий елемент сейфа",
     "login": "Логін",
     "card": "Кредитна картка",
-    "sshKey": "SSH-ключ"
+    "sshKey": "SSH-ключ",
+    "generator": "Пароль"
   },
   "newMenu": {
     "note": "Нотатка",
     "task": "Завдання",
+    "kanban": "Канбан-дошка",
     "journal": "Щоденник",
     "login": "Логін",
     "file": "Файл",
     "bookmark": "Закладка",
+    "clipPage": "Зберегти сторінку",
     "contact": "Контакт",
     "event": "Подія",
     "quickAdd": "Швидке додавання"
@@ -55,8 +56,7 @@
     "keys": "Ключі"
   },
   "journal": {
-    "newEntry": "Новий запис у щоденнику",
-    "newEntryHover": "Новий запис у щоденнику ({{hotkey}})"
+    "newEntry": "Новий запис у щоденнику"
   },
   "tasks": {
     "newTitle": "Завдання на {{date}}"
@@ -70,7 +70,8 @@
   "search": {
     "sortOptions": "Сортування й вигляд",
     "placeholderVault": "Пошук у сейфі…",
-    "placeholderNotes": "Пошук нотаток…"
+    "placeholderNotes": "Пошук нотаток…",
+    "placeholderEvents": "Пошук подій…"
   },
   "selection": {
     "countOf": "Вибрано {{selected}} з {{total}}",
@@ -82,9 +83,16 @@
     "vault": "Сейф порожній.",
     "notes": "Нотаток ще немає.",
     "archive": "Архів порожній.",
+    "trash": "Кошик порожній.",
     "filtered": "Жоден елемент не відповідає фільтрам.",
     "clearFilters": "Очистити фільтри",
-    "filteredAfter": "щоб їх показати."
+    "filteredAfter": "щоб їх показати.",
+    "hiddenInAll_one": "{{count}} елемент приховано фільтром „Показувати в «Усе»“. Відкрийте фільтр біля «Усе», щоб його показати.",
+    "inOtherSpace_one": "{{count}} елемент у вашому просторі «{{space}}». Перейдіть до «{{space}}» на бічній панелі, щоб його побачити.",
+    "inOtherSpace_few": "{{count}} елементи у вашому просторі «{{space}}». Перейдіть до «{{space}}» на бічній панелі, щоб їх побачити.",
+    "inOtherSpace_many": "{{count}} елементів у вашому просторі «{{space}}». Перейдіть до «{{space}}» на бічній панелі, щоб їх побачити.",
+    "hiddenInAll_few": "{{count}} елементи приховано фільтром „Показувати в «Усе»“. Відкрийте фільтр біля «Усе», щоб їх показати.",
+    "hiddenInAll_many": "{{count}} елементів приховано фільтром „Показувати в «Усе»“. Відкрийте фільтр біля «Усе», щоб їх показати."
   },
   "listGroups": {
     "previous7Days": "Останні 7 днів",
@@ -104,12 +112,34 @@
     "calendar": "Календар"
   },
   "footerStats": {
-    "journals": "Щоденників",
-    "items": "Елементів",
-    "trashed": "У кошику",
-    "notes": "Нотаток",
-    "bookmarks": "Закладок",
-    "contacts": "Контактів"
+    "journals_one": "Щоденник",
+    "journals_few": "Щоденники",
+    "journals_many": "Щоденників",
+    "items_one": "Елемент",
+    "items_few": "Елементи",
+    "items_many": "Елементів",
+    "trashed_one": "У кошику",
+    "trashed_few": "У кошику",
+    "trashed_many": "У кошику",
+    "notes_one": "Нотатка",
+    "notes_few": "Нотатки",
+    "notes_many": "Нотаток",
+    "bookmarks_one": "Закладка",
+    "bookmarks_few": "Закладки",
+    "bookmarks_many": "Закладок",
+    "contacts_one": "Контакт",
+    "files_one": "Файл",
+    "lists_one": "Список",
+    "tasks_one": "Завдання",
+    "today": "Сьогодні",
+    "tasks_few": "Завдання",
+    "tasks_many": "Завдань",
+    "lists_few": "Списки",
+    "lists_many": "Списків",
+    "files_few": "Файли",
+    "files_many": "Файлів",
+    "contacts_few": "Контакти",
+    "contacts_many": "Контактів"
   },
   "toast": {
     "imageUploadFailed": "Не вдалося вивантажити зображення: {{error}}",
@@ -169,7 +199,7 @@
   },
   "zen": {
     "exit": "Вийти з дзену",
-    "exitHover": "Вийти з режиму дзен (Esc)",
+    "exitHover": "Вийти з режиму дзен",
     "enterHover": "Увімкнути режим дзен",
     "proHover": "Режим дзен (Pro)",
     "enterAriaShortcut": "Увімкнути режим дзен ({{keys}})"
@@ -246,9 +276,13 @@
     "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Відкрити статистику",
     "journalCalendar": "Календар щоденника",
-    "words": "Слів",
+    "words_one": "Слово",
+    "words_few": "Слова",
+    "words_many": "Слів",
     "zen": "Дзен",
     "appearance": "Вигляд",
+    "lockApp": "Заблокувати застосунок",
+    "lockAppSetUp": "Спершу встановіть PIN-код у розділі Безпека",
     "goToTop": "Перейти на початок",
     "goToEnd": "Перейти в кінець",
     "signOut": "Вийти",
@@ -272,6 +306,7 @@
     "editorLabel": "Редактор",
     "formatBarLabel": "Панель інструментів",
     "listsLabel": "Списки",
+    "trackersLabel": "Трекери",
     "helpLabel": "Довідка",
     "aboutLabel": "Про застосунок",
     "languageLabel": "Мова",
@@ -289,7 +324,7 @@
   },
   "bulkTrash": {
     "title": "Перемістити в кошик",
-    "body_one": "Перемістити <highlight>{{count}} елемент</highlight> у кошик? Пізніше можна буде відновити.",
+    "body_one": "Перемістити <highlight>{{count}} елемент</highlight> у кошик? Пізніше його можна буде відновити.",
     "body_few": "Перемістити <highlight>{{count}} елементи</highlight> у кошик? Пізніше їх можна буде відновити.",
     "body_many": "Перемістити <highlight>{{count}} елементів</highlight> у кошик? Пізніше їх можна буде відновити.",
     "body_other": "Перемістити <highlight>{{count}} елемента</highlight> у кошик? Пізніше їх можна буде відновити.",
@@ -351,5 +386,15 @@
   "ambiguousLink": {
     "title": "Дві нотатки мають таку назву",
     "body": "Назву <highlight>«{{title}}»</highlight> мають кілька нотаток, тому посилання не вказує, яку саме. Перейменуйте одну з них, і посилання вестиме на іншу."
+  },
+  "connections": {
+    "title": "Зв’язки",
+    "hide": "Сховати зв’язки",
+    "linkedFrom": "Посилаються сюди",
+    "linksTo": "Посилається на",
+    "missing": "Ще не створено",
+    "protectedHidden_one": "{{count}} елемент, захищений PIN-кодом, не показано",
+    "protectedHidden_few": "{{count}} елементи, захищені PIN-кодом, не показано",
+    "protectedHidden_many": "{{count}} елементів, захищених PIN-кодом, не показано"
   }
 }

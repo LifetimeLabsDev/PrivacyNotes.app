@@ -1,13 +1,13 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BUILTIN_TRACKER_COLORS } from '../trackerTypes';
-import { PillShell, useCommitOnCollapse } from './PillShell';
+import { PillShell } from './PillShell';
+import { useLastLogged } from '../trackerLastLogged';
 import { TRACKER_ICONS } from './icons';
+import { NumberStepper, PanelQuestion } from './panelUI';
 
-/**
- * Heart Rate pill - numeric input with "bpm" suffix.
- * Accepts 30-250 BPM (reasonable resting + exercise range).
- */
+/** The resting rates the quick picks offer. */
+const QUICK_BPM = [60, 70, 80, 90] as const;
+
+/** Heart Rate pill - a stepper in bpm, 30 to 250 (resting to exercise). */
 export function HeartRatePill({
   value,
   expanded,
@@ -22,64 +22,20 @@ export function HeartRatePill({
   readOnly?: boolean;
 }) {
   const { t } = useTranslation('trackers');
-  const [draft, setDraft] = useState('');
-
-  /** Parse and store the draft; false when it is not a usable reading. */
-  const commitValue = () => {
-    const n = parseInt(draft || String(value ?? ''), 10);
-    if (isNaN(n) || n < 30 || n > 250) return false;
-    onChange(n);
-    return true;
-  };
-
-  const commit = () => {
-    if (commitValue()) onToggle();
-  };
-
-  // Closing the picker saves the reading - see the hook.
-  useCommitOnCollapse(expanded, commitValue);
-
+  const last = useLastLogged((d) => d.heartRate);
   return (
     <PillShell
       label={t('labels.heartRate')}
-      color={BUILTIN_TRACKER_COLORS.heartRate}
       filled={value != null}
       expanded={expanded}
-      onToggle={() => {
-        if (!expanded) setDraft(value != null ? String(value) : '');
-        onToggle();
-      }}
+      onToggle={onToggle}
       filledLabel={value != null ? `${value} ${t('units.bpm')}` : undefined}
       icon={TRACKER_ICONS.heartRate}
       readOnly={readOnly}
     >
-      <div className="flex flex-col gap-3 items-start">
-        <span className="text-xs font-medium text-pn-soft">
-          {t('heartRate.prompt')}
-        </span>
-        <div className="inline-flex items-center gap-2">
-          <input
-            type="number"
-            inputMode="numeric"
-            min={30}
-            max={250}
-            placeholder="72"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter') commit(); }}
-            className="w-20 px-2.5 py-1.5 rounded-md text-sm border border-pn-muted/50 bg-surface-0 text-pn tabular-nums"
-            autoFocus
-          />
-          <span className="text-xs text-pn-muted">{t('units.bpm')}</span>
-          <button
-            type="button"
-            onClick={commit}
-            className="px-3 py-1.5 rounded-md text-xs font-medium text-white transition-colors"
-            style={{ backgroundColor: BUILTIN_TRACKER_COLORS.heartRate }}
-          >
-            {t('common:actions.save')}
-          </button>
-        </div>
+      <div className="max-w-[420px]">
+        <PanelQuestion>{t('heartRate.prompt')}</PanelQuestion>
+        <NumberStepper value={value} onChange={onChange} min={30} max={250} step={1} unit={t('units.bpm')} quick={QUICK_BPM} start={last} placeholder="72" expanded={expanded} />
       </div>
     </PillShell>
   );

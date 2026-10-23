@@ -15,6 +15,7 @@
     "clearSearch": "Rensa sökning",
     "searchAll": "Sök i alla svar efter ”{{q}}”",
     "copyLink": "Kopiera länk till det här svaret",
+    "openAnswer": "Öppna det här svaret",
     "copied": "Länk kopierad",
     "feedbackPrompt": "Fick du inte svar på din fråga här? Hör av dig:",
     "sourcesTitle": "Läs källkoden",
@@ -58,7 +59,8 @@
     "syncDevices": "Synk och enheter",
     "yourData": "Dina data",
     "pricingPro": "Priser och Pro",
-    "appsPlatforms": "Appar och plattformar"
+    "appsPlatforms": "Appar och plattformar",
+    "statsTrackers": "Statistik och mätvärden"
   },
   "entries": {
     "try-before-signup": {
@@ -71,14 +73,14 @@
     "need-email": {
       "q": "Behöver jag en e-postadress för att registrera mig?",
       "a": [
-        "Nej. Ett nytt valv är en nygenererad återställningsfras på 12 ord, inget annat. Ingen e-post, inget användarnamn, inget telefonnummer, inget verifieringssteg. Loggar du in med frasen kan vi inte mejla dig ens om vi ville, eftersom vi aldrig får veta vem du är.",
-        "Vill du hellre ha ett välbekant flöde? Inloggning med Google, Apple eller GitHub fungerar också. Den vägen avslöjar förstås vilken e-postadress som hör till den inloggningen, men dina anteckningar är krypterade på din enhet i båda fallen, och du får fortfarande en fras under huven."
+        "Nej. Ett nytt valv är en nygenererad [återställningsfras på 12 ord](/sv/help/phrase-vs-password/), inget annat. Ingen e-post, inget användarnamn, inget telefonnummer, inget verifieringssteg. Loggar du in med frasen kan vi inte mejla dig ens om vi ville, eftersom vi aldrig får veta vem du är.",
+        "Vill du hellre ha ett välbekant flöde? [Inloggning med Google, Apple eller GitHub fungerar också](/sv/help/signup-options/). Den vägen avslöjar förstås vilken e-postadress som hör till den inloggningen, men dina anteckningar är krypterade på din enhet i båda fallen, och du får fortfarande en fras under huven."
       ]
     },
     "import-from-other-apps": {
       "q": "Hur flyttar jag in mina anteckningar från en annan app?",
       "a": [
-        "Öppna Inställningar > Import & Export och välj din källa. Listan täcker de appar folk kommer från: Apple Notes, Bear, Obsidian, Evernote, Standard Notes, Joplin, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes och Apple Journal. Bitwarden och de lösenord webbläsaren sparat hamnar i Valvet, dina bokmärken kommer in som bokmärken, och en generell Markdown-import tar vilken mapp med .md-filer som helst.",
+        "Öppna Inställningar > Import & Export och välj din källa. Listan täcker de appar folk kommer från: Apple Notes, Bear, Obsidian, Evernote, Standard Notes, Joplin, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes och Apple Journal. Bitwarden och de lösenord webbläsaren sparat hamnar i [Valvet](/sv/help/vault/), dina bokmärken [kommer in som bokmärken](/sv/help/bookmarks/), och [en generell Markdown-import](/sv/help/import/markdown/) tar vilken mapp med .md-filer som helst.",
         "Importen körs helt på din enhet: dina exportfiler tolkas, krypteras och sparas lokalt, ingenting laddas upp för bearbetning. Varje importerad anteckning taggas med sin källa så att du kan gå igenom omgången efteråt, och checklistor från Google Keep blir till och med riktiga uppgiftslistor."
       ]
     },
@@ -86,60 +88,68 @@
       "q": "Hur flyttar jag mina anteckningar från Bear till PrivacyNotes?",
       "a": [
         "Skapa en säkerhetskopia i Bear och importera den. Välj File > Backup Notes... i Bear och spara .bear2bk-filen. Öppna sedan Inställningar > Import & Export, välj Bear och släpp in filen. Säkerhetskopian innehåller hela ditt bibliotek, så arkiverade anteckningar och anteckningar i papperskorgen följer med, och fästa och skrivskyddade anteckningar behåller sitt läge.",
-        "Dina taggar kommer in som taggar, och nästlade taggar som #work/projects byggs också upp som mappar. Markeringar behåller sina Bear-färger, länkar mellan anteckningar blir anteckningslänkar, och bilder och bifogade filer importeras till din lagring. [Importguiden för Bear](/sv/help/import/bear/) visar varje steg."
+        "Dina taggar kommer in som taggar, och nästlade taggar som #work/projects byggs också upp som mappar. Markeringar behåller sina Bear-färger, [länkar mellan anteckningar blir anteckningslänkar](/sv/help/note-links/), och bilder och bifogade filer importeras till din lagring. [Importguiden för Bear](/sv/help/import/bear/) visar varje steg."
       ]
     },
     "import-joplin": {
       "q": "Hur importerar jag mina anteckningar från Joplin?",
       "a": [
         "Exportera en JEX-fil från Joplin och importera den. Välj File > Export all > \"JEX - Joplin Export File\" i Joplin och spara filen. Öppna sedan Inställningar > Import & Export, välj Joplin och släpp in .jex-filen. Den senaste filen från Tools > Create backup fungerar på samma sätt.",
-        "Anteckningsböcker blir mappar, nästlade lika djupt som i Joplin, och varje anteckning behåller sina taggar och sina datum. To-dos blir uppgifter, länkar mellan anteckningar blir anteckningslänkar och bilagor importeras till din lagring. Joplin lämnar sin papperskorg utanför varje export, så återställ de anteckningar du vill ha från papperskorgen innan du exporterar. [Importguiden för Joplin](/sv/help/import/joplin/) visar varje steg."
+        "Anteckningsböcker blir mappar, nästlade lika djupt som i Joplin, och varje anteckning behåller sina taggar och sina datum. [To-dos blir uppgifter](/sv/help/tasks/), [länkar mellan anteckningar blir anteckningslänkar](/sv/help/note-links/) och bilagor importeras till din lagring. Joplin lämnar sin papperskorg utanför varje export, så återställ de anteckningar du vill ha från papperskorgen innan du exporterar. [Importguiden för Joplin](/sv/help/import/joplin/) visar varje steg."
       ]
     },
     "markdown-support": {
       "q": "Är redigeraren Markdown-vänlig?",
       "a": [
-        "Ja. Skriv Markdown så formateras det direkt: # rubriker, **fetstil**, listor, - [ ] uppgiftsrutor, citat och informationsrutor. Anteckningar exporteras också som ren Markdown, så det du skriver förblir portabelt.",
+        "Ja. [Skriv Markdown så formateras det direkt](/sv/help/markdown-syntax/): # rubriker, **fetstil**, listor, - [ ] uppgiftsrutor, citat och informationsrutor. [Anteckningar exporteras också som ren Markdown](/sv/help/export/), så det du skriver förblir portabelt.",
         "Du kan också koppla ihop anteckningar: skriv [[ så föreslår en autokomplettering dina befintliga anteckningar. En anteckningslänk öppnar sitt mål med ett klick, och översiktspanelen plus sök-i-anteckning håller långa dokument navigerbara."
       ]
     },
     "what-can-you-see": {
       "q": "Vad kan PrivacyNotes se om mina anteckningar?",
       "a": [
-        "Anteckningar, titlar, taggar och bilagor är alltid krypterade, på din enhet och på väg till servern. Med egen nyckelförvaring, som varje registrering med fras börjar med, har vi ingen dekrypteringsnyckel. Registrerar du dig med Google, Apple eller GitHub får du välja var din nyckel ska förvaras. Förvalet är ”Håll det enkelt och bekvämt”, som lagrar din fras på vår server, krypterad med en nyckel som vi har. I det läget kan vår server dekryptera frasen och därmed dina anteckningar. Inställningar > Konto > Nyckelförvaring visar ditt aktuella läge och låter dig byta.",
-        "Vi kan se den information som behövs för att driva tjänsten: hur mycket krypterat lagringsutrymme du använder, hur många enheter du har anslutit och tidsstämplar för synkronisering. Om du bara använder din fras och inte har anslutit ett Google-, Apple- eller GitHub-konto känner vi inte till din e-postadress."
+        "Anteckningar, titlar, taggar och bilagor är alltid krypterade, på din enhet och på väg till servern. [Med egen nyckelförvaring](/sv/help/threat-model-levels/), som varje registrering med fras börjar med, har vi ingen dekrypteringsnyckel. Registrerar du dig med Google, Apple eller GitHub får du välja var din nyckel ska förvaras. Förvalet är ”Håll det enkelt och bekvämt”, som lagrar din fras på vår server, krypterad med en nyckel som vi har. I det läget kan vår server dekryptera frasen och därmed dina anteckningar. Inställningar > Konto > Nyckelförvaring visar ditt aktuella läge och låter dig byta.",
+        "Vi kan se den information som behövs för att driva tjänsten: hur mycket krypterat lagringsutrymme du använder, hur många enheter du har anslutit och tidsstämplar för synkronisering. Om du bara använder din fras och inte [har anslutit ett Google-, Apple- eller GitHub-konto](/sv/help/connected-logins/) känner vi inte till din e-postadress."
+      ]
+    },
+    "us-company": {
+      "q": "PrivacyNotes drivs av ett amerikanskt företag. Sätter det mina anteckningar i fara?",
+      "a": [
+        "Dina anteckningar är krypterade på din enhet, och med [egen förvaring](/sv/help/threat-model-levels/) har servern inget som öppnar dem. Det du skriver når den bara som chiffertext, så ett rättsligt beslut i vilket land som helst ger bara chiffertext, oavsett var företaget är registrerat. Kontrollera själv: koden har [öppen källkod på GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), och webbläsarens nätverksflik visar att dina ord bara lämnar enheten som chiffertext.",
+        "Lifetime Labs LLC är ett amerikanskt företag eftersom det var det snabbaste sättet att samla våra projekt under ett namn. Ingen i teamet bor i USA, och dina synkade anteckningar lagras i Zürich i Schweiz.",
+        "Det lagen kan komma åt är de data som tjänsten behöver: din publika nyckel, tidsstämplar för synk, lagringsstorlek, kortlivade serverloggar och, om du kopplar Google, Apple eller GitHub, den e-postadressen. Med ”Håll det enkelt och bekvämt” lagras även din återställningsfras på vår server, och den öppnar dina anteckningar. Inställningar > Konto > Nyckelförvaring byter till egen förvaring. [Vad PrivacyNotes kan se](/sv/help/what-can-you-see/) listar mer."
       ]
     },
     "app-privacy-label": {
       "q": "Varför säger App Store-integritetsetiketten att mina data är länkade till mig?",
       "a": [
         "Eftersom Apple kräver en enda etikett som täcker allt som kan nå vår server, även när det kommer fram krypterat och även när bara vissa konton skickar det. Länkade till dig betyder kopplade till ett konto, och kontot bakom en registrering med fras är en nyckel, inte ett namn. Inget används för spårning, och appen innehåller ingen analys, inga annonser och inga kraschrapporter. Varje rad på etiketten betyder en sak:",
-        "- **Användarinnehåll**: dina anteckningar och filer, krypterade på din enhet. Med egen nyckelförvaring kan vi inte läsa dem.\n- **Identifierare**: en publik nyckel som härleds från din återställningsfras, och en enhetshash som din enhet räknar ut och som bara upprätthåller enhetsgränsen i gratisversionen.\n- **Kontaktinformation**: en e-postadress, bara om du loggar in med Google, Apple eller GitHub.\n- **Köp**: om ditt konto har Pro. Apple hanterar betalningen och vi ser aldrig ditt kort.",
-        "För att hålla listan så kort som möjligt för ditt eget konto, registrera dig med en återställningsfras i stället för en inloggning med Google, Apple eller GitHub, och behåll egen nyckelförvaring. Inställningar > Konto > Nyckelförvaring visar ditt aktuella läge. [Vad PrivacyNotes kan se](/sv/help/what-can-you-see/) förklarar resten."
+        "- **Användarinnehåll**: dina anteckningar och filer, krypterade på din enhet. [Med egen nyckelförvaring](/sv/help/threat-model-levels/) har servern inget som öppnar dem.\n- **Identifierare**: en publik nyckel som härleds från din återställningsfras, och en enhetshash som din enhet räknar ut och som bara upprätthåller [enhetsgränsen i gratisversionen](/sv/help/device-limit/).\n- **Kontaktinformation**: en e-postadress, bara om du loggar in med Google, Apple eller GitHub.\n- **Köp**: om ditt konto har Pro. Apple hanterar betalningen och vi ser aldrig ditt kort.",
+        "För att hålla listan så kort som möjligt för ditt eget konto, [registrera dig med en återställningsfras](/sv/help/signup-options/) i stället för en inloggning med Google, Apple eller GitHub, och behåll egen nyckelförvaring. Inställningar > Konto > Nyckelförvaring visar ditt aktuella läge. [Vad PrivacyNotes kan se](/sv/help/what-can-you-see/) förklarar resten."
       ]
     },
     "phrase-vs-password": {
       "q": "Varför en återställningsfras i stället för användarnamn och lösenord?",
       "a": [
-        "Det kan kännas bakvänt först, men en enda återställningsfras är den starkare konstruktionen. Med användarnamn och lösenord är användarnamnet ingen hemlighet (det dyker upp i varje läcka), så hela säkerheten vilar på lösenordet, och lösenord som människor väljer landar på kanske 30 till 40 bitars entropi. Din fras på 12 ord ger garanterat 128 bitar, genererade av din enhet, aldrig valda av en människa och aldrig återanvända från en annan sajt.",
-        "Det finns inte heller något lösenord för oss att förlora. En lösenordsinloggning innebär att servern lagrar åtminstone en lösenordshash, och den kan läcka, knäckas eller nätfiskas. Med egen förvaring lämnar din fras aldrig din enhet: den härleder dina krypteringsnycklar lokalt, och servern ser bara krypterade data. Det finns ingen hash att stjäla och inget flöde för lösenordsåterställning som en angripare kan utnyttja.",
-        "Känns det klumpigt att skriva 12 ord? Du kan spara frasen i din lösenordshanterare med ett tryck (Inställningar > Säkerhet > Fras), och då känns inloggningen som vilken annan som helst. Vill du hellre ha ett välbekant flöde? Inloggning med Google, Apple eller GitHub fungerar också: du får ändå en fras under huven, och du väljer själv om den stannar på din enhet eller om vi förvarar den åt dig."
+        "Det kan kännas bakvänt först, men en enda återställningsfras är den starkare konstruktionen. Med användarnamn och lösenord är användarnamnet ingen hemlighet (det dyker upp i varje läcka), så hela säkerheten vilar på lösenordet, och lösenord som människor väljer landar på kanske 30 till 40 bitars entropi. [Din fras på 12 ord ger garanterat 128 bitar](/sv/help/twelve-word-phrase/), genererade av din enhet, aldrig valda av en människa och aldrig återanvända från en annan sajt.",
+        "Det finns inte heller något lösenord för oss att förlora. En lösenordsinloggning innebär att servern lagrar åtminstone en lösenordshash, och den kan läcka, knäckas eller nätfiskas. [Med egen förvaring](/sv/help/threat-model-levels/) lämnar din fras aldrig din enhet: den härleder dina krypteringsnycklar lokalt, och servern ser bara krypterade data. Det finns ingen hash att stjäla och inget flöde för lösenordsåterställning som en angripare kan utnyttja.",
+        "Känns det klumpigt att skriva 12 ord? Du kan spara frasen i din lösenordshanterare med ett tryck (Inställningar > Säkerhet > Fras), och då känns inloggningen som vilken annan som helst. Vill du hellre ha ett välbekant flöde? [Inloggning med Google, Apple eller GitHub fungerar också](/sv/help/signup-options/): du får ändå en fras under huven, och du väljer själv om den stannar på din enhet eller om vi förvarar den åt dig."
       ]
     },
     "threat-model-levels": {
       "q": "Kan jag själv välja balansen mellan bekvämlighet och integritet?",
       "a": [
         "Ja, helt medvetet. Alla försvarar sig inte mot samma hot, så kontomodellen är en stege snarare än en enda dogm. Varje steg håller dina anteckningar krypterade på din enhet; det som ändras är vem som har nyckeln och vad vi vet om dig.",
-        "Den bekväma änden: logga in med Google, Apple eller GitHub och låt ”Håll det enkelt och bekvämt” vara valt när du får frågan. Det är förvalet på den skärmen. Vi förvarar din återställningsfras krypterad på vår server, så att en ny enhet kan öppna dina anteckningar efter inloggning hos leverantören och en autentiseringskod om 2FA är aktiverat. I utbyte känner vi till e-postadressen bakom inloggningen och vår server kan dekryptera din fras. Spara din fras ifall du förlorar leverantörskontot och behåll reservnyckeln för 2FA om du aktiverar tvåfaktorsinloggning.",
-        "Mitten: logga in med Google, Apple eller GitHub men välj ”Maximal säkerhet och integritet”. Din fras rör aldrig våra servrar och krypteringen är fullt zero-knowledge; nya enheter behöver frasen eller en QR-skanning från en enhet som redan är inloggad. Vi känner fortfarande oundvikligen till e-postadressen bakom den inloggningen, men vi skulle inte kunna läsa en enda anteckning ens under tvång.",
+        "Den bekväma änden: logga in med Google, Apple eller GitHub och låt ”Håll det enkelt och bekvämt” vara valt när du får frågan. Det är förvalet på den skärmen. Vi förvarar din återställningsfras krypterad på vår server, så att en ny enhet kan öppna dina anteckningar efter inloggning hos leverantören och [en autentiseringskod om 2FA är aktiverat](/sv/help/enable-2fa/). I utbyte känner vi till e-postadressen bakom inloggningen och vår server kan dekryptera din fras. Spara din fras ifall du förlorar leverantörskontot och behåll reservnyckeln för 2FA om du aktiverar tvåfaktorsinloggning.",
+        "Mitten: logga in med Google, Apple eller GitHub men välj ”Maximal säkerhet och integritet”. Din fras rör aldrig våra servrar, så servern har inget som öppnar dina anteckningar; nya enheter behöver frasen eller [en QR-skanning från en enhet som redan är inloggad](/sv/help/add-second-device/). Vi känner fortfarande till e-postadressen bakom den inloggningen, och en rättslig order eller ett intrång i vår server kan nå den e-postadressen, aldrig innehållet i dina anteckningar.",
         "Den privata änden: hoppa över inloggningarna helt och använd bara frasen på 12 ord. Ingen e-post, inget namn, ingen identitet, och i kombination med ett [anonymt Pro-köp](/sv/help/buy-pro-anonymously/) lämnar inte ens betalningen något namn någonstans. I utbyte ligger nyckelansvaret helt hos dig: tappar du frasen utan någon inloggad enhet kvar kan ingen hjälpa dig.",
-        "Inställningar > Konto > Nyckelförvaring visar båda lägena med deras för- och nackdelar och låter dig byta. När du lämnar serverförvaring raderar vi vår kopia efter att du bekräftat tre ord från din sparade fras. Att byta tillbaka laddar upp frasen igen och kräver ett uttryckligt val. Båda ändringarna signeras med din kontonyckel och kräver en ny autentiseringskod om 2FA är aktiverat. Ett fraskonto kan ansluta en leverantör under Konto > Konton och sedan välja serverförvaring separat; anslutningen laddar inte upp frasen. Alla lägen kan också använda PIN-lås för appen, biometrisk upplåsning och skydd per anteckning."
+        "Inställningar > Konto > Nyckelförvaring visar båda lägena med deras för- och nackdelar och låter dig byta. När du lämnar serverförvaring raderar vi vår kopia efter att du bekräftat tre ord från din sparade fras. Att byta tillbaka laddar upp frasen igen och kräver ett uttryckligt val. Båda ändringarna signeras med din kontonyckel och kräver en ny autentiseringskod om 2FA är aktiverat. [Ett fraskonto kan ansluta en leverantör](/sv/help/connected-logins/) under Konto > Konton och sedan välja serverförvaring separat; anslutningen laddar inte upp frasen. Alla lägen kan också använda PIN-lås för appen, biometrisk upplåsning och [skydd per anteckning](/sv/help/locked-vs-protected/)."
       ]
     },
     "twelve-word-phrase": {
       "q": "Är en återställningsfras på 12 ord säker nog? Varför inte 24 ord som i Bitcoin-plånböcker?",
       "a": [
-        "Ja, 12 ord räcker. En BIP-39-fras på 12 ord kodar 128 bitars entropi. Att gissa sig igenom 128 bitar är inte ett problem av typen ”skaffa en större dator”, det är ett problem av typen ”mer energi än mänskligheten producerar”. Det finns ingen realistisk attack som knäcker 128 bitar men misslyckas vid 256.",
+        "Ja, 12 ord räcker. [En BIP-39-fras på 12 ord](/sv/help/bip39-wordlist/) kodar 128 bitars entropi. Att gissa sig igenom 128 bitar är inte ett problem av typen ”skaffa en större dator”, det är ett problem av typen ”mer energi än mänskligheten producerar”. Det finns ingen realistisk attack som knäcker 128 bitar men misslyckas vid 256.",
         "Bitcoin-jämförelsen visar faktiskt varför 24 ord mest är marknadsföring: Bitcoin-nycklar ligger på kurvan secp256k1, som i sig bara ger runt 128 bitars säkerhet. En fras på 24 ord matar in 256 bitars entropi i ett lås som ändå bara kräver runt 128 bitars arbete att bryta. Det är också därför många stora plånböcker fortfarande har 12 ord som standard.",
         "PrivacyNotes siktar på samma 128-bitarsnivå hela vägen: din fras körs genom en nyckelhärledningsfunktion, och krypteringen den skyddar (XChaCha20-Poly1305) använder nycklar som matchar den nivån. Att gå över till 24 ord skulle dubbla vad du måste skriva ner och skriva in utan att ge någon praktisk säkerhet, så vi stannar vid 12.",
         "Det som spelar roll är var du förvarar frasen, inte hur många ord den har. Förvara den i en lösenordshanterare, skriv inte in den någon annanstans, så överlever 12 ord oss alla."
@@ -157,15 +167,15 @@
       "q": "Kan någon annan få samma återställningsfras som jag?",
       "a": [
         "Nej, inte i praktiken. Din enhet väljer din fras slumpmässigt bland ett enormt antal möjliga fraser. Även om varje människa på jorden skapade ett konto vore två likadana fraser mindre sannolikt än att vinna en jackpot med 1 chans på 300 miljoner två gånger i rad. Samma siffror är skälet till att [ingen kan gissa din fras](/sv/help/guess-phrase/).",
-        "Ditt konto-ID kommer från frasen. Om du raderar ett konto och loggar in igen med samma 12 ord får du alltså ett nytt, tomt valv med samma konto-ID. Ingenting från det raderade valvet kommer tillbaka. När du har flyttat till en ny fras, ta bort den gamla ur din lösenordshanterare, så att du aldrig loggar in på det gamla kontot av misstag."
+        "Ditt konto-ID kommer från frasen. Om du [raderar ett konto](/sv/help/delete-account/) och loggar in igen med samma 12 ord får du alltså ett nytt, tomt valv med samma konto-ID. Ingenting från det raderade valvet kommer tillbaka. [När du har flyttat till en ny fras](/sv/help/phrase-compromised/), ta bort den gamla ur din lösenordshanterare, så att du aldrig loggar in på det gamla kontot av misstag."
       ]
     },
     "enable-2fa": {
       "q": "Hur aktiverar jag tvåfaktorsautentisering (2FA)?",
       "a": [
         "Aktivera valfri tvåfaktorsinloggning i Inställningar > Säkerhet > 2FA. Uppdatera först PrivacyNotes på dina andra enheter. Skanna QR-koden med en autentiseringsapp eller ange konfigurationsnyckeln manuellt. Spara reservnyckeln för 2FA utanför PrivacyNotes, bekräfta den sparade kopian och ange en aktuell kod för att slutföra.",
-        "Efter inställningen kräver en ny serversession din fras eller en ansluten leverantör, följt av en autentiseringskod. Med egen förvaring behöver du fortfarande frasen för att dekryptera anteckningar. Hantera leverantörer i Inställningar > Konto > Konton; att ansluta en leverantör ändrar inte nyckelförvaringen.",
-        "Om du förlorar autentiseringsappen kan du lägga till den sparade reservnyckeln för 2FA i en annan autentiseringsapp. Om du förlorar båda kan vi inte återställa åtkomsten till servern. Anteckningar som redan är upplåsta på en enhet går fortfarande att läsa och exportera. Tvåfaktorsinloggning lägger inte till kryptering och skyddar inte en enhet som redan är upplåst."
+        "Efter inställningen kräver en ny serversession din fras eller [en ansluten leverantör](/sv/help/connected-logins/), följt av en autentiseringskod. Med egen förvaring behöver du fortfarande frasen för att dekryptera anteckningar. Hantera leverantörer i Inställningar > Konto > Konton; att ansluta en leverantör [ändrar inte nyckelförvaringen](/sv/help/threat-model-levels/).",
+        "[Om du förlorar autentiseringsappen](/sv/help/lost-2fa/) kan du lägga till den sparade reservnyckeln för 2FA i en annan autentiseringsapp. Om du förlorar båda kan vi inte återställa åtkomsten till servern. Anteckningar som redan är upplåsta på en enhet går fortfarande att läsa och exportera. Tvåfaktorsinloggning lägger inte till kryptering och skyddar inte en enhet som redan är upplåst."
       ]
     },
     "bip39-wordlist": {
@@ -179,21 +189,21 @@
     "search-local": {
       "q": "Skickar en sökning i mina anteckningar något till era servrar?",
       "a": [
-        "Nej. Sökningen körs mot ett fritextindex som byggs och lagras på din enhet. Sökfrågor lämnar den aldrig, resultat dyker upp även helt utan uppkoppling, och ingenting om vad du söker efter skickas någonsin vidare.",
-        "Det här är inget policyval vi tyst skulle kunna riva upp, det följer av arkitekturen: servern har bara chiffertext, så det finns ingenting läsbart hos oss att indexera eller söka i. En server som inte kan läsa dina anteckningar kan inte söka i dem heller."
+        "Nej. Sökningen körs mot ett fritextindex som byggs och lagras på din enhet. Sökfrågor lämnar den aldrig, [resultat dyker upp även helt utan uppkoppling](/sv/help/offline/), och ingenting om vad du söker efter skickas någonsin vidare. Detsamma gäller [Ninja](/sv/help/ninja/): det du skriver där matchas på din enhet.",
+        "Det här följer av arkitekturen, inte av en policy: [servern har dina anteckningar bara som chiffertext](/sv/help/what-can-you-see/) och kör inget index över dem. Sökning behöver texten, och texten finns bara på dina enheter."
       ]
     },
     "no-ai": {
       "q": "Använder PrivacyNotes AI på mina anteckningar?",
       "a": [
-        "Nej. Det finns inga AI-funktioner i appen, ingen AI-bearbetning som går i bakgrunden och ingen modellträning på ditt innehåll. Dina anteckningar är alltid krypterade, på din enhet och på vägen till servern, så det finns ingenting läsbart på våra servrar att mata in i något.",
-        "Om vi någon gång släpper en funktion i den riktningen måste den köras helt på din enhet och vara strikt frivillig. Att skicka anteckningar i klartext till en molnmodell skulle bryta zero-knowledge-löftet, så det är uteslutet."
+        "Nej. Ninja, rutan för Cmd+K som läser dina datum och hittar dina ord, är vanlig kod som körs på din enhet. Det finns inga AI-funktioner i appen, ingen AI-bearbetning som går i bakgrunden och ingen modellträning på ditt innehåll. [Dina anteckningar är alltid krypterade, på din enhet och på vägen till servern](/sv/help/what-can-you-see/), och ingenting i våra system läser anteckningsinnehåll för att mata in det i något.",
+        "Om vi någon gång släpper en funktion i den riktningen måste den köras helt på din enhet och vara strikt frivillig. Att skicka anteckningar i klartext till en molnmodell skulle ta dem ur krypteringen på din enhet, så det är uteslutet."
       ]
     },
     "burn-notes": {
       "q": "Vad är burn notes?",
       "a": [
-        "En burn note är ett självförstörande sätt att dela en anteckning med någon som inte använder PrivacyNotes. Appen krypterar innehållet med en engångsnyckel och ger dig en länk. Nyckeln färdas i länkens fragment, som webbläsare aldrig skickar till servrar, så vår server lagrar chiffertext den inte kan läsa.",
+        "En burn note är ett självförstörande sätt att [dela en anteckning med någon som inte använder PrivacyNotes](/sv/help/share-with-someone/). Appen krypterar innehållet med en engångsnyckel och ger dig en länk. Nyckeln färdas i länkens fragment, som webbläsare aldrig skickar till servrar, så vår server lagrar chiffertext den inte kan läsa.",
         "Första gången länken öppnas lämnar servern ifrån sig chiffertexten och raderar den i samma steg: en läsning, sedan är den borta. Oöppnade länkar går ut av sig själva efter den tid avsändaren väljer, från 1 timme till 7 dagar. Hur som helst blir ingenting kvar."
       ]
     },
@@ -201,36 +211,36 @@
       "q": "Är PrivacyNotes öppen källkod?",
       "a": [
         "Ja. Webb-, dator- och mobilapparna är publicerade på [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), tillsammans med krypteringskoden som gör dina anteckningar oläsbara och hotmodellen som beskriver vad varje del skyddar. Det är samma kod som vi bygger våra utgåvor från.",
-        "Det är det som gör ett löfte till något du kan kontrollera. Läs krypteringen i ett svep, öppna webbläsarens nätverksflik och se dina egna anteckningar lämna datorn som oläslig text, eller bygg appen själv och jämför den med den vi levererar. Du behöver inte ta oss på orden."
+        "Det är det som gör ett löfte till något du kan kontrollera. Läs krypteringen i ett svep, öppna webbläsarens nätverksflik och [se dina egna anteckningar lämna datorn som oläslig text](/sv/help/what-can-you-see/), eller bygg appen själv och [jämför den med den vi levererar](/sv/help/verify-download/). Du behöver inte ta oss på orden."
       ]
     },
     "report-vulnerability": {
       "q": "Jag har hittat en säkerhetsbrist. Hur rapporterar jag den?",
       "a": [
         "Mejla privacynotes@lifetimelabs.dev. Samma adress finns publicerad i vår PGP-signerade [security.txt](https://privacynotes.app/.well-known/security.txt), så du kan bekräfta att den är äkta innan du skriver, och vår [publika nyckel](https://privacynotes.app/.well-known/pgp-key.txt) ligger bredvid om du hellre vill kryptera rapporten.",
-        "Vi svarar, och när en rättning kräver samordning kommer vi överens med dig om tidpunkten för publicering innan något blir offentligt. Rapporter går rakt till de människor som skrev koden, och den som vill ha omnämnande får det. Testa mot demon på try.privacynotes.app eller ett engångskonto, aldrig mot någon annans anteckningar."
+        "Vi svarar, och när en rättning kräver samordning kommer vi överens med dig om tidpunkten för publicering innan något blir offentligt. Rapporter går rakt till de människor som skrev koden, och den som vill ha omnämnande får det. [Testa mot demon på try.privacynotes.app](/sv/help/try-before-signup/) eller ett engångskonto, aldrig mot någon annans anteckningar."
       ]
     },
     "lost-phrase": {
       "q": "Jag har tappat bort min återställningsfras. Kan ni återställa mitt konto?",
       "a": [
         "Är du fortfarande inloggad på någon enhet: ja, då kan du hämta den själv. Öppna Inställningar > Säkerhet > Fras och spara den i din lösenordshanterare på en gång.",
-        "Har du varken en inloggad enhet eller frasen beror det på vem som har nyckeln. Lät du oss förvara den när du registrerade dig med Google, Apple eller GitHub, logga in med den inloggningen så är du inne igen. Med egen förvaring kan ingen: din fras når aldrig våra servrar, så det finns ingenting att återställa och inget supportärende som hjälper. Varje tjänst som kan återskapa dina krypterade data efter en total förlust sitter på dina nycklar.",
+        "Har du varken en inloggad enhet eller frasen [beror det på vem som har nyckeln](/sv/help/threat-model-levels/). Lät du oss förvara den när du registrerade dig med Google, Apple eller GitHub, logga in med den inloggningen så är du inne igen. Med egen förvaring kan ingen: din fras når aldrig våra servrar, så det finns ingenting att återställa och inget supportärende som hjälper. Varje tjänst som kan återskapa dina krypterade data efter en total förlust sitter på dina nycklar.",
         "Åtgärden tar tio sekunder: lägg frasen i en lösenordshanterare samma dag du skapar ditt konto. Är den redan borta och du betalar för ett lagringstillägg fakturerar Paddle dig direkt och kan avsluta det utan din fras: se [ändra eller avsluta ett tillägg](/sv/help/manage-storage-addon/)."
       ]
     },
     "lost-2fa": {
       "q": "Jag har tappat bort mina 2FA-koder. Hur kommer jag in igen?",
       "a": [
-        "Lägg till din reservnyckel för 2FA i valfri autentiseringsapp och ange sedan koden den visar när PrivacyNotes ber om en. Reservnyckeln är den du sparade när du slog på 2FA, och den fungerar varje gång du behöver den.",
+        "Lägg till din reservnyckel för 2FA i valfri autentiseringsapp och ange sedan koden den visar när PrivacyNotes ber om en. Reservnyckeln är [den du sparade när du slog på 2FA](/sv/help/enable-2fa/), och den fungerar varje gång du behöver den.",
         "Om du har förlorat både telefonen och reservnyckeln återställer vi inte 2FA, och vår support kan inte hjälpa till med det. Anteckningarna som redan finns på dina enheter går fortfarande att läsa.",
-        "För att behålla dem går du till Inställningar > Import & Export > Exportera på en enhet som fortfarande har dem. Skapa sedan ett nytt valv och importera exporten där."
+        "För att behålla dem går du till Inställningar > Import & Export > Exportera på en enhet som fortfarande har dem. Skapa sedan ett nytt valv och [importera exporten där](/sv/help/restore-backup/)."
       ]
     },
     "oauth-recovery": {
       "q": "Jag loggar in med Google, Apple eller GitHub. Vad händer om jag förlorar tillgången till det kontot?",
       "a": [
-        "Du har fortfarande en fras på 12 ord under huven, och frasen ensam loggar in dig på vilken enhet som helst - varken Google, Apple eller GitHub behövs. Öppna Inställningar > Säkerhet > Fras och spara den i din lösenordshanterare.",
+        "Du har fortfarande en fras på 12 ord under huven, och [frasen ensam loggar in dig på vilken enhet som helst](/sv/help/add-second-device/) - varken Google, Apple eller GitHub behövs. Öppna Inställningar > Säkerhet > Fras och spara den i din lösenordshanterare.",
         "Gör det en gång så kostar det dig ingenting att förlora Google-, Apple- eller GitHub-kontot: logga bara in med frasen i stället."
       ]
     },
@@ -238,49 +248,50 @@
       "q": "Jag har glömt min PIN eller lösenkod. Hur kommer jag in igen?",
       "a": [
         "Inget går förlorat, och du kan ta bort PIN-koden eller lösenkoden själv med din återställningsfras. Det är ett lås på skärmen, inte en krypteringsnyckel: dina anteckningar krypteras med nycklar som härleds ur frasen, så det är frasen som öppnar dem. Att binda krypteringen till PIN-koden skulle betyda att en glömd PIN-kod förstör data. Här sker det aldrig.",
-        "Överallt där appen frågar efter den väljer du **Glömt din PIN?** eller **Glömt din lösenkod?** och skriver dina 12 ord. Den finns på låsskärmen, på en skyddad anteckning och under **Inställningar > Säkerhet > PIN**. Den tas bort på alla dina enheter och du kan ange en ny direkt. Biometrisk upplåsning påverkas inte. En enhet med en äldre version av appen frågar efter 4 siffror även när du har skapat en lösenkod. **Glömt din PIN?** fungerar på samma sätt där."
+        "Överallt där appen frågar efter den väljer du **Glömt din PIN?** eller **Glömt din lösenkod?** och skriver dina 12 ord. Den finns på låsskärmen, [på en skyddad anteckning](/sv/help/locked-vs-protected/) och under **Inställningar > Säkerhet > PIN**. Den tas bort på alla dina enheter och du kan ange en ny direkt. [Biometrisk upplåsning påverkas inte](/sv/help/biometric-unlock/). En enhet med en äldre version av appen frågar efter 4 siffror även när du har skapat en lösenkod. **Glömt din PIN?** fungerar på samma sätt där."
       ]
     },
     "delete-account": {
       "q": "Hur raderar jag mitt konto?",
       "a": [
-        "I appen: Inställningar > Konto, sedan ”Radera konto och data”. Det tar permanent bort dina synkade anteckningar, filer, enheter, inställningar och själva kontot från servern. Det finns ingen karenstid och ingen säkerhetskopia vi kan återställa efteråt, så exportera först det du vill behålla (Inställningar > Import & Export).",
-        "Två detaljer: en aktiv lagringsprenumeration måste avslutas före raderingen (en som redan är inställd på att avslutas hindrar inget), och eftersom ett fraskonto aldrig innehöll någon e-postadress eller något namn finns det ingen profil eller utskickslista kvar att rensa. Att radera lokala data på en enhet är en separat åtgärd och rör inte ditt konto."
+        "Du kan radera ditt konto i appen eller i en webbläsare. I en webbläsare loggar du in på [use.privacynotes.app](https://use.privacynotes.app). Öppna sedan **Inställningar > Konto**, välj **Radera konto och data...**, välj **Radera molndata och konto**, skriv DELETE och välj **Radera permanent**. Om 2FA är på ber appen om en ny kod från din autentiseringsapp. Raderingen kan inte ångras, så [exportera först det du vill behålla](/sv/help/export/) (Inställningar > Import & Export).",
+        "**Det här raderas:** dina synkade anteckningar, uppgifter, dagböcker, valvposter, filer och bilder, anteckningshistorik, inställningar, enheter, anslutna inloggningar, den förvarade kopian av din återställningsfras om du valde en, din Pro-post och själva kontot. De lokala data som finns på enheten du raderar från rensas också. [En aktiv lagringsprenumeration måste avslutas först](/sv/help/manage-storage-addon/) under Inställningar > Lagring; en som redan är inställd på att avslutas hindrar inte raderingen.",
+        "**Det här finns kvar:** om du hade en lagringsprenumeration finns dess poster kvar för fakturering och återbetalningar. En minimal kontoidentifierare kan också finnas kvar, så att gamla inloggningstoken fortsätter att avvisas. Ingen av dem innehåller dina anteckningar eller filer, och ingen av dem löper ut automatiskt. Vår databasleverantör sparar loggar och dagliga säkerhetskopior i sju dagar, så en säkerhetskopia som togs före raderingen kan innehålla dina krypterade data i upp till en vecka. Paddle, Apple och Google behåller sina egna transaktionsposter enligt sina egna villkor. [Integritetspolicyn](https://lifetimelabs.dev/privacy/) har detaljerna och förklarar hur du ber oss radera personuppgifter som sparats."
       ]
     },
     "what-syncs": {
       "q": "Vad exakt synkas mellan mina enheter, och vad stannar lokalt?",
       "a": [
-        "Allt du skulle förvänta dig, och allt krypterat på din enhet: anteckningar, uppgifter, dagboksinlägg, ditt valv och filerna i det. Dina inställningar följer också med - favorittaggar, sorterings- och vyval, färgtema, din PIN (som en saltad hash, aldrig själva PIN-koden), applås, uppsättning av mätvärden och mediciner samt automatisk tömning av papperskorgen. Ställ in något en gång så plockar varje enhet upp det.",
-        "Några saker stannar medvetet på enheten: ljust eller mörkt läge (varje enhet följer sin egen systeminställning), biometrisk upplåsning (bunden till varje enhets hårdvara), vilket utrymme sidofältet visar och ditt upplåsta läge (stänger du appen låses den alltid igen). Servern lagrar bara krypterade block och kan inte läsa något av dem."
+        "Allt du skulle förvänta dig, och allt krypterat på din enhet: anteckningar, uppgifter, dagboksinlägg, [ditt valv](/sv/help/vault/) och filerna i det. Dina inställningar följer också med - favorittaggar, sorterings- och vyval, färgtema, din PIN (som en saltad hash, aldrig själva PIN-koden), applås, uppsättning av mätvärden och mediciner samt [automatisk tömning av papperskorgen](/sv/help/trash-auto-delete/). Ställ in något en gång så plockar varje enhet upp det.",
+        "Några saker stannar medvetet på enheten: ljust eller mörkt läge (varje enhet följer sin egen systeminställning), biometrisk upplåsning (bunden till varje enhets hårdvara), [vilket utrymme sidofältet visar](/sv/help/spaces/) och ditt upplåsta läge (stänger du appen låses den alltid igen). Servern lagrar bara krypterade block och kan inte läsa något av dem."
       ]
     },
     "offline": {
       "q": "Fungerar PrivacyNotes offline?",
       "a": [
-        "Ja. Appen är lokal först: dina anteckningar bor i en databas på din enhet, så att läsa, skriva och söka fungerar helt utan uppkoppling. Ändringar synkas automatiskt när du är online igen, och en bild eller fil du lägger till offline väntar på den här enheten och laddas upp då också."
+        "Ja. Appen är lokal först: [dina anteckningar bor i en databas på din enhet](/sv/help/data-location/), så att läsa, skriva och [söka fungerar helt utan uppkoppling](/sv/help/search-local/). Ändringar synkas automatiskt när du är online igen, och [en bild eller fil du lägger till offline väntar på den här enheten](/sv/help/upload-failed/) och laddas upp då också. [Ninja](/sv/help/ninja/) fungerar också offline; det är bara att spara en webbsida som anteckning som väntar på uppkoppling."
       ]
     },
     "sync-conflicts": {
       "q": "Vad händer om jag redigerar samma anteckning på två enheter samtidigt?",
       "a": [
-        "Dina enheter slår ihop anteckningen detalj för detalj när de synkar igen, så en ändring som bara gjorts på en av dem behålls. Om båda har redigerat texten medan de var åtskilda (till exempel om en var offline) visar den enhet som synkar som nummer två en konfliktdialog: behåll versionen på den här enheten, behåll den andra eller behåll båda som separata anteckningar. Båda versionerna behålls tills du väljer. Om den andra enhetens version kommer in medan du skriver i anteckningen behålls din text som en kopia markerad med \"(conflict)\", och anteckningen visar den andra versionen.",
-        "När båda enheterna har ändrat samma detalj medan de var åtskilda, till exempel om anteckningen är fäst, mappen eller titeln, behålls detaljen från den enhet som senast redigerade anteckningen, utan någon dialog. En anteckning som raderas permanent på en enhet raderas överallt, inklusive en ändring som en annan enhet gjorde i den medan de var åtskilda."
+        "Dina enheter slår ihop anteckningen detalj för detalj när de synkar igen, så en ändring som bara gjorts på en av dem behålls. Om båda har redigerat texten medan de var åtskilda (till exempel om [en var offline](/sv/help/offline/)) visar den enhet som synkar som nummer två en konfliktdialog: behåll versionen på den här enheten, behåll den andra eller behåll båda som separata anteckningar. Båda versionerna behålls tills du väljer. Om den andra enhetens version kommer in medan du skriver i anteckningen behålls din text som en kopia markerad med \"(conflict)\", och anteckningen visar den andra versionen.",
+        "När båda enheterna har ändrat samma detalj medan de var åtskilda, till exempel om anteckningen är fäst, mappen eller titeln, behålls detaljen från den enhet som senast redigerade anteckningen, utan någon dialog. [En anteckning som raderas permanent på en enhet](/sv/help/trash-auto-delete/) raderas överallt, inklusive en ändring som en annan enhet gjorde i den medan de var åtskilda."
       ]
     },
     "remove-device": {
       "q": "Hur tar jag bort en enhet som jag inte använder längre?",
       "a": [
-        "Inställningar > Konto listar alla registrerade enheter. Ta bort den du pensionerar: platsen frigörs direkt (praktiskt på gratisplanens 2 enheter), och den borttagna enheten loggas ut nästa gång den försöker synka. Den syns kvar under ”Nyligen borttagna” i 72 timmar så att du kan bekräfta att den är borta.",
-        "Borttagningen frigör platsen och loggar ut den enheten; det är frasen som styr åtkomsten. Den som har dina 12 ord kan logga in igen, så om en enhet tappats bort eller stulits skyddar du frasen först och låter applåset (PIN eller biometri) vara på. Det är det som hindrar en upphittad enhet från att stå på vid gavel."
+        "Inställningar > Konto listar alla registrerade enheter. Ta bort den du pensionerar: platsen frigörs direkt (praktiskt på [gratisplanens 2 enheter](/sv/help/device-limit/)), och den borttagna enheten loggas ut nästa gång den försöker synka. Den syns kvar under ”Nyligen borttagna” i 72 timmar så att du kan bekräfta att den är borta.",
+        "Borttagningen frigör platsen och loggar ut den enheten; det är frasen som styr åtkomsten. Den som har dina 12 ord kan logga in igen, så [om en enhet tappats bort eller stulits](/sv/help/lost-device/) skyddar du frasen först och låter applåset (PIN eller biometri) vara på. Det är det som hindrar en upphittad enhet från att stå på vid gavel."
       ]
     },
     "data-location": {
       "q": "Var lagras mina data?",
       "a": [
-        "På din enhet först, och det är den kopian du arbetar med: appen är lokal först, så dina anteckningar öppnas och redigeras offline. Synkkopian ligger på servrar i Zürich i Schweiz. Där finns din publika nyckel, krypterade blobbar av dina anteckningar, filer och inställningar, plus tidsstämplarna och storlekarna som en synk behöver. Inga titlar, ingen text, inga taggar.",
+        "På din enhet först, och det är den kopian du arbetar med: appen är lokal först, så [dina anteckningar öppnas och redigeras offline](/sv/help/offline/). Synkkopian ligger på servrar i Zürich i Schweiz. Där finns din publika nyckel, krypterade blobbar av dina anteckningar, filer och inställningar, plus tidsstämplarna och storlekarna som en synk behöver. Inga titlar, ingen text, inga taggar.",
         "Landet betyder mindre än krypteringen. Allt är alltid krypterat, på din enhet och på vägen till servern, så den kopian vore oläsbar var den än låg: Schweiz är en bonus, inte löftet. [Vad som synkas](/sv/help/what-syncs/) räknar upp det punkt för punkt.",
-        "Kopian på din enhet är krypterad den också. Anteckningarna förseglas på disken med en nyckel som härleds ur din återställningsfras när du låser upp, så en kopia av appens lagring på din enhet, eller en stulen säkerhetskopia av den, bär krypterad data i stället för dina anteckningar."
+        "Kopian på din enhet är krypterad den också. [Anteckningarna förseglas på disken](/sv/help/data-on-disk/) med en nyckel som härleds ur din återställningsfras när du låser upp, så en kopia av appens lagring på din enhet, eller en stulen säkerhetskopia av den, bär krypterad data i stället för dina anteckningar."
       ]
     },
     "data-on-disk": {
@@ -289,28 +300,28 @@
         "I en mapp per installation, i ditt kontos område för appdata. Var mappen ligger beror på plattformen:",
         "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, eller `app.privacynotes.appimage` för AppImage, som har med sig sin egen webbmotor och därför håller en egen profil\n- **Android, iOS**: appens privata lagring, som ingen annan app kommer åt\n- **Webbläsare**: din webbläsarprofil, under `use.privacynotes.app`",
         "Det som ligger där är krypterad data. Varje anteckning är ett förseglat block med titeln, texten och taggarna inuti, som öppnas av en nyckel som härleds ur din återställningsfras när du låser upp, så en kopierad mapp innehåller inget läsbart. I klartext blir bara det kvar som det lokala indexet behöver: id:n, tidsstämplar, typen av objekt och flaggor som fäst eller raderad.",
-        "Vill du flytta anteckningarna till en annan enhet, eller ha en egen kopia, använd **Inställningar > Import & Export > Exportera** och välj ”Krypterad fullständig säkerhetskopia (.pnbackupz)”. Den innehåller allt, är krypterad med din frasnyckel och återställs med din fras på vilken enhet som helst. [Mer om säkerhetskopior](/sv/help/backup-strategy/)."
+        "Vill du flytta anteckningarna till en annan enhet, eller ha en egen kopia, använd **Inställningar > Import & Export > Exportera** och välj ”Krypterad fullständig säkerhetskopia (.pnbackupz)”. Den innehåller allt, är krypterad med din frasnyckel och [återställs med din fras på vilken enhet som helst](/sv/help/restore-backup/). [Mer om säkerhetskopior](/sv/help/backup-strategy/)."
       ]
     },
     "export": {
       "q": "Kan jag exportera mina anteckningar, eller är jag inlåst?",
       "a": [
-        "Du kan exportera allt när som helst, och allt genereras på din enhet: Markdown-filer i en zip med bilagorna inkluderade, vanlig JSON eller fristående HTML - per anteckning eller för hela kontot. Zip-filen är ”PrivacyNotes-säkerhetskopia (.zip)”, och den går att återställa, precis som de krypterade säkerhetskopiorna; JSON och HTML är till för att läsa och för din nästa app. Valvets poster har en egen väg ut, ”Valvexport (.json)”, som skriver Bitwardens format och tar med dina användarnamn, lösenord, webbadresser, kortuppgifter och 2FA-nycklar till Bitwarden, 1Password eller KeePass.",
+        "Du kan exportera allt när som helst, och allt genereras på din enhet: Markdown-filer i en zip med bilagorna inkluderade, vanlig JSON eller fristående HTML - per anteckning eller för hela kontot. Zip-filen är ”PrivacyNotes-säkerhetskopia (.zip)”, [och den går att återställa](/sv/help/restore-backup/), precis som de krypterade säkerhetskopiorna; JSON och HTML är till för att läsa och för din nästa app. [Valvets poster har en egen väg ut](/sv/help/vault/), ”Valvexport (.json)”, som skriver Bitwardens format och tar med dina användarnamn, lösenord, webbadresser, kortuppgifter och 2FA-nycklar till Bitwarden, 1Password eller KeePass.",
         "Allt ligger under Inställningar > Import & Export > Exportera. Import fungerar likadant, från Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden och fler: hela listan finns i [flytta in från en annan app](/sv/help/import-from-other-apps/). Inlåsning ingår inte i affärsmodellen."
       ]
     },
     "attachment-limits": {
       "q": "Vilka filer kan jag bifoga, och hur stora får de vara?",
       "a": [
-        "Vilken filtyp som helst: bilder, PDF:er, ljud, arkiv, vad du än släpper in. Varje fil är alltid krypterad, på din enhet och på vägen till servern, precis som anteckningstext, och vyn Filer samlar alla bilagor på ett ställe.",
-        "Gränsen per fil är 5 MB på gratisplanen och 50 MB med Pro. Filer räknas mot ditt totala synkutrymme (50 MB gratis, 500 MB med Pro, utbyggbart till 5,5 GB med lagringstillägg), och lagringsmätaren under Inställningar > Lagring visar alltid var du står."
+        "[Vilken filtyp som helst: bilder](/sv/help/image-quality/), PDF:er, ljud, arkiv, vad du än släpper in. Varje fil är alltid krypterad, på din enhet och på vägen till servern, precis som anteckningstext, och vyn Filer samlar alla bilagor på ett ställe.",
+        "Gränsen per fil är 5 MB på gratisplanen och 50 MB med Pro. Filer räknas mot ditt totala synkutrymme (50 MB gratis, 500 MB med Pro, [utbyggbart till 5,5 GB med lagringstillägg](/sv/help/storage-addons/)), och [lagringsmätaren](/sv/help/storage-usage/) under Inställningar > Lagring visar alltid var du står."
       ]
     },
     "vault": {
       "q": "Vad är Valvet?",
       "a": [
         "Valvet är en egen avdelning för strukturerade hemligheter: inloggningar med användarnamn och lösenord, kredit- och betalkort samt SSH-nycklar. Poster får riktiga fält i stället för fritext, inloggningar visar sajtens ikon, och allt är krypterat på din enhet som resten av dina data.",
-        "Det ger den handfull inloggningsuppgifter som annars hamnar utspridda i anteckningar ett prydligt och skyddat hem. Kombinera det med applåset och PIN-skydd för en andra grind framför dina känsligaste poster. En Bitwarden-import hamnar här automatiskt."
+        "Det ger den handfull inloggningsuppgifter som annars hamnar utspridda i anteckningar ett prydligt och skyddat hem. [Kombinera det med applåset och PIN-skydd](/sv/help/locked-vs-protected/) för en andra grind framför dina känsligaste poster. [En Bitwarden-import hamnar här automatiskt](/sv/help/import/bitwarden/)."
       ]
     },
     "note-size-limit": {
@@ -324,28 +335,28 @@
     "shutdown": {
       "q": "Vad händer med mina anteckningar om PrivacyNotes läggs ner?",
       "a": [
-        "Du behåller dem. Dina anteckningar, uppgifter, dagboksinlägg och valvposter finns på din enhet eftersom appen är lokal först, och att exportera dem till Markdown, JSON eller HTML fungerar offline. En bild eller fil stannar på en enhet när du har lagt till eller öppnat den där, och en som den här enheten aldrig har öppnat hämtas när du öppnar den, så ta en fullständig säkerhetskopia: den hämtar varje bild och fil som den här enheten saknar, och säger till om någon inte går att hämta.",
+        "Du behåller dem. Dina anteckningar, uppgifter, dagboksinlägg och valvposter finns på din enhet eftersom appen är lokal först, och [att exportera dem till Markdown, JSON eller HTML fungerar offline](/sv/help/export/). En bild eller fil stannar på en enhet när du har lagt till eller öppnat den där, och en som den här enheten aldrig har öppnat hämtas när du öppnar den, så [ta en fullständig säkerhetskopia](/sv/help/backup-strategy/): den hämtar varje bild och fil som den här enheten saknar, och säger till om någon inte går att hämta.",
         "Krypteringskoden har dessutom [öppen källkod](https://github.com/LifetimeLabsDev/PrivacyNotes.app), så formatet går att läsa oberoende av oss även i en värld där våra servrar försvinner över en natt."
       ]
     },
     "free-vs-pro": {
       "q": "Vad är gratis och vad är Pro?",
       "a": [
-        "Gratis är hela produkten, inte ett smakprov: anteckningar, uppgifter, dagbok och valv, allt krypterat på din enhet, offlineanvändning, import och export - på upp till 2 enheter med 50 MB synkutrymme.",
-        "Pro är ett engångsköp som lägger till obegränsat antal enheter, 500 MB synkutrymme (utbyggbart), anteckningshistorik, större bilagor, låsning och PIN-skydd av anteckningar, avancerad uppföljning av välmående, zenläge och alla färgteman."
+        "Gratis är hela produkten, inte ett smakprov: anteckningar, uppgifter, dagbok och valv, allt krypterat på din enhet, offlineanvändning, import och export - [på upp till 2 enheter](/sv/help/device-limit/) med 50 MB synkutrymme.",
+        "[Pro är ett engångsköp](/sv/help/one-time-pricing/) som lägger till obegränsat antal enheter, [500 MB synkutrymme (utbyggbart)](/sv/help/storage-addons/), [anteckningshistorik](/sv/help/note-history/), [större bilagor](/sv/help/attachment-limits/), [låsning och PIN-skydd av anteckningar](/sv/help/locked-vs-protected/), [avancerad uppföljning av välmående](/sv/help/statistics/), [zenläge](/sv/help/zen-mode/) och [alla färgteman](/sv/help/appearance/)."
       ]
     },
     "one-time-pricing": {
       "q": "Hur kan en engångsbetalning finansiera en synktjänst för alltid?",
       "a": [
         "För att tjänsten är medvetet billig att driva. Appen är lokal först och anteckningar är små krypterade block, så servern gör knappt mer än att lagra dem och skicka dem vidare mellan dina enheter. Ingen analys av det du skriver, inga pixlar eller spårare från tredje part, inga AI-funktioner som bränner beräkningskraft, ingen supportavdelning.",
-        "Den enda kostnaden som växer över tid är lagring, och den är prissatt därefter: lagring utöver de 500 MB som ingår är ett litet årligt tillägg. Engångskostnader prissätts en gång, återkommande kostnader återkommer. Modellen behöver bara betala för sig själv, och det gör den."
+        "Den enda kostnaden som växer över tid är lagring, och den är prissatt därefter: lagring utöver de 500 MB som ingår är [ett litet årligt tillägg](/sv/help/storage-addons/). Engångskostnader prissätts en gång, återkommande kostnader återkommer. Modellen behöver bara betala för sig själv, och det gör den."
       ]
     },
     "pro-cross-platform": {
       "q": "Jag köpte Pro på en plattform. Har jag det överallt?",
       "a": [
-        "Ja. Pro är knutet till ditt konto, inte till en enhet, en plattform eller en butik. Köp det en gång, logga in med samma fras (eller samma inloggning med Google, Apple eller GitHub) var som helst, så är Pro aktivt där också.",
+        "Ja. Pro är knutet till ditt konto, [inte till en enhet, en plattform eller en butik](/sv/help/store-purchases/). Köp det en gång, logga in med samma fras (eller samma inloggning med Google, Apple eller GitHub) var som helst, så är Pro aktivt där också.",
         "Det gäller även plattformar som inte finns än: när en ny app lanseras följer ditt befintliga Pro med utan extra kostnad."
       ]
     },
@@ -353,37 +364,37 @@
       "q": "Hur fungerar lagringstilläggen?",
       "a": [
         "I Pro ingår 500 MB krypterat synkutrymme. Behöver du mer staplas tilläggspaket ovanpå: 1 GB för 4,80 USD per år, 2 GB för 8,40 USD eller 5 GB för 18 USD, upp till 5,5 GB totalt. Tilläggen är det enda återkommande köpet i produkten, eftersom lagring är det enda som kostar oss pengar varje månad du använder den.",
-        "Allt sköts under Inställningar > Lagring: byt till ett större paket (du betalar bara mellanskillnaden proportionellt) eller avsluta prenumerationen när som helst och behåll utrymmet tills perioden du betalat för tar slut. Pro i sig är ditt för alltid oavsett."
+        "Allt sköts under Inställningar > Lagring: byt till ett större paket (du betalar bara mellanskillnaden proportionellt) eller [avsluta prenumerationen när som helst](/sv/help/manage-storage-addon/) och behåll utrymmet tills perioden du betalat för tar slut. Pro i sig är ditt för alltid oavsett."
       ]
     },
     "refunds": {
       "q": "Vad gäller för återbetalning?",
       "a": [
         "30 dagar, inga frågor. Om Pro inte är något för dig begär du full återbetalning inom 30 dagar från köpet, så går pengarna tillbaka till samma betalsätt. Kunder i EU har dessutom kvar sin lagstadgade ångerrätt på 14 dagar.",
-        "Betalningar hanteras av Paddle, vår merchant of record, så återbetalningar sköts direkt av Paddle: svara på ditt kvittomejl eller besök [paddle.net](https://paddle.net). Hela policyn finns i [användarvillkoren](https://lifetimelabs.dev/terms/#refunds)."
+        "Betalningar hanteras av Paddle, [vår merchant of record](/sv/help/paddle-privacy/), så återbetalningar sköts direkt av Paddle: svara på ditt kvittomejl eller besök [paddle.net](https://paddle.net). Hela policyn finns i [användarvillkoren](https://lifetimelabs.dev/terms/#refunds)."
       ]
     },
     "paddle-privacy": {
       "q": "Vad får ni veta om mig när jag betalar?",
       "a": [
         "Mindre än du kanske tror. Kassan går via [Paddle](https://www.paddle.com), vår merchant of record: ditt namn, kortnummer och fakturaadress går till Paddle av betalnings- och skatteskäl och rör aldrig våra servrar.",
-        "Paddle har dina betalningsuppgifter; det som når vår databas är din publika nyckel, beloppet och order-id:t, och för ett lagringstillägg även dess storlek och förnyelsedatum. Vårt Paddle-konto kan se båda sidor, och vi slår inte upp dig. Vill du hålla ditt namn borta från köpet, betala med ett [e-postalias och ett maskerat kort](/sv/help/buy-pro-anonymously/)."
+        "Paddle har dina betalningsuppgifter; det som når vår databas är din publika nyckel, beloppet och order-id:t, och [för ett lagringstillägg även dess storlek och förnyelsedatum](/sv/help/storage-addons/). Vårt Paddle-konto kan se båda sidor, och vi slår inte upp dig. Vill du hålla ditt namn borta från köpet, betala med ett [e-postalias och ett maskerat kort](/sv/help/buy-pro-anonymously/)."
       ]
     },
     "buy-pro-anonymously": {
       "q": "Kan jag köpa Pro utan att avslöja vem jag är?",
       "a": [
         "Ja, med två standardverktyg. För kvittot, använd ett e-postalias: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) och [addy.io](https://addy.io) vidarebefordrar alla till din riktiga inkorg utan att avslöja den. För betalningen, använd ett maskerat kort: [privacy.com](https://privacy.com) i USA skapar virtuella kort som fungerar med vilket namn du än skriver, och på andra håll gör ett förbetalt kort som fungerar online, köpt med kontanter, samma jobb helt utan namn på.",
-        "I kassan ber Paddle om en e-postadress, ett betalsätt och ett land (plus postnummer i vissa regioner) för att räkna ut skatten. Aliaset tar emot kvittot, det maskerade kortet bär vilket namn du än gav det, och skatteuppgiften placerar dig i en region, inte mer. Men håll aliaset vid liv: kvittomejlet är ditt köpbevis och din väg till en återbetalning.",
-        "Kombinerat med ett fraskonto är det ingen enskild part som sitter med hela bilden: din bank ser en kortpåfyllning, Paddle ser ett alias och ett maskerat kort, och vi ser en publik nyckel som blev Pro, bredvid det aliaset i vårt Paddle-konto."
+        "[I kassan ber Paddle](/sv/help/paddle-privacy/) om en e-postadress, ett betalsätt och ett land (plus postnummer i vissa regioner) för att räkna ut skatten. Aliaset tar emot kvittot, det maskerade kortet bär vilket namn du än gav det, och skatteuppgiften placerar dig i en region, inte mer. Men håll aliaset vid liv: kvittomejlet är ditt köpbevis och [din väg till en återbetalning](/sv/help/refunds/).",
+        "[Kombinerat med ett fraskonto](/sv/help/signup-options/) är det ingen enskild part som sitter med hela bilden: din bank ser en kortpåfyllning, Paddle ser ett alias och ett maskerat kort, och vi ser en publik nyckel som blev Pro, bredvid det aliaset i vårt Paddle-konto."
       ]
     },
     "platforms": {
       "q": "Vilka plattformar kör PrivacyNotes på?",
       "a": [
-        "Webb, macOS, Windows, Linux, iOS och Android. Varje app är byggd från samma kärna, krypterar dina anteckningar på din enhet på samma sätt och synkar via samma konto. [Nedladdningsavsnittet](https://privacynotes.app/sv#downloads) har alltid de senaste versionerna.",
+        "Webb, macOS, Windows, Linux, [iOS och Android](/sv/help/play-vs-apk/). Varje app är byggd från samma kärna, krypterar dina anteckningar på din enhet på samma sätt och synkar via samma konto. [Nedladdningsavsnittet](https://privacynotes.app/sv#downloads) har alltid de senaste versionerna.",
         "De nativa apparna kräver macOS 13 eller senare, Windows 10 eller senare, iOS 17.4 eller senare, Android 7.0 eller senare, eller en Linux-utgåva med webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ eller motsvarande). Under de versionerna går appen inte att installera eller starta, så använd webbappen i stället.",
-        "Webbappen är fullvärdig, inte en reservlösning: den håller dina anteckningar på din enhet och fungerar offline, så vilken modern webbläsare som helst är alltid en väg in."
+        "Webbappen är fullvärdig, inte en reservlösning: den håller dina anteckningar på din enhet och [fungerar offline](/sv/help/offline/), så vilken modern webbläsare som helst är alltid en väg in."
       ]
     },
     "feature-requests": {
@@ -398,7 +409,7 @@
     "android-updates": {
       "q": "Uppdaterar Android-appen sig själv?",
       "a": [
-        "Installera den med [Obtainium](/sv/help/obtainium/), så ja: det läser våra släpp och erbjuder varje ny version så fort den kommer, och det är just därför vi rekommenderar den vägen på Android. En APK-fil tagen direkt från vår webbplats uppdateras när du säger till, för Android uppdaterar bara appar från en butik automatiskt.",
+        "Installera den med [Obtainium](/sv/help/obtainium/), så ja: det läser våra släpp och erbjuder varje ny version så fort den kommer, och det är just därför vi rekommenderar den vägen på Android. [En APK-fil tagen direkt från vår webbplats](/sv/help/play-vs-apk/) uppdateras när du säger till, för Android uppdaterar bara appar från en butik automatiskt.",
         "Webbplatsens APK säger till i stället. Appen kollar om det finns en nyare version och visar aviseringen \"Uppdatering tillgänglig\" med en knapp som heter \"Ladda ner\". Tryck på Ladda ner och öppna sedan den nedladdade filen för att installera den över den gamla versionen, med dina anteckningar och inställningar orörda. Kontrollen frågar bara om det finns en nyare version, den rör aldrig dina anteckningar, som förblir krypterade hela tiden."
       ]
     },
@@ -410,56 +421,63 @@
         "Inte än? Installera [Obtainium](https://obtainium.imranr.dev/) först, lägg till en app och klistra in det här:",
         "`https://github.com/LifetimeLabsDev/PrivacyNotes.app`",
         "Obtainium läser våra släpp, väljer ut APK-filen och installerar varje ny version så fort den kommer. Inget Google-konto är inblandat i något led.",
-        "Obtainium är inte vår app, och Android ber dig fortfarande bekräfta varje installation, så en uppdatering kommer som en avisering och en tryckning, inte tyst. APK-filen är samma bygge som vår nedladdningssida levererar, signerad med samma nyckel, så Obtainium tar över en app du redan har sidoladdat: inget att avinstallera, inget att logga in i igen. Utan Obtainium kan appen bara [säga till inne i appen](/sv/help/android-updates/) att en version är klar."
+        "Obtainium är inte vår app, och Android ber dig fortfarande bekräfta varje installation, så en uppdatering kommer som en avisering och en tryckning, inte tyst. APK-filen är samma bygge som vår nedladdningssida levererar, [signerad med samma nyckel](/sv/help/verify-download/), så Obtainium tar över en app du redan har sidoladdat: inget att avinstallera, inget att logga in i igen. Utan Obtainium kan appen bara [säga till inne i appen](/sv/help/android-updates/) att en version är klar."
       ]
     },
     "languages": {
       "q": "Vilka språk talar appen?",
       "a": [
         "Engelska, tyska, franska, italienska, spanska, nederländska, polska, tjeckiska, slovakiska, katalanska, turkiska, svenska, ukrainska, ryska, japanska, koreanska, traditionell kinesiska, thailändska, arabiska och portugisiska i både europeisk och brasiliansk variant. Appen följer ditt systemspråk som standard, eller så låser du ett språk uttryckligen under Inställningar > Språk på varje enhet.",
-        "Översättningar är gratis för alla, ingen Pro-förmån. Fler språk är på gång; saknas ditt, säg till på [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) eller [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
+        "[Översättningar är gratis för alla](/sv/help/translation-quality/), ingen Pro-förmån. Fler språk är på gång; saknas ditt, säg till på [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) eller [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
     "translation-quality": {
       "q": "Hur görs appens översättningar?",
       "a": [
-        "Vi skriver engelskan först. En AI-agent översätter sedan varje språk utifrån en gemensam ordlista, i det tilltal som bestämts för just det språket, och en andra agent granskar varje omgång för korrekthet, terminologi och tilltal innan den släpps. Personer med språket som modersmål granskar ett urval, med de nyaste språken och texterna om säkerhet, inloggning och betalning först, och två automatiska kontroller stoppar bygget så länge någon översättning saknas eller är inaktuell. Översättningar ingår i varje plan, aldrig som ett Pro-tillägg.",
+        "Vi skriver engelskan först. [En AI-agent översätter sedan varje språk](/sv/help/languages/) utifrån en gemensam ordlista, i det tilltal som bestämts för just det språket, och en andra agent granskar varje omgång för korrekthet, terminologi och tilltal innan den släpps. Personer med språket som modersmål granskar ett urval, med de nyaste språken och texterna om säkerhet, inloggning och betalning först, och två automatiska kontroller stoppar bygget så länge någon översättning saknas eller är inaktuell. Översättningar ingår i varje plan, aldrig som ett Pro-tillägg.",
         "Du kan förbättra vilken som helst av dem. Låter en mening skev på ditt språk, [rapportera översättningen](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues/new?template=translation.yml): ditt språk, skärmen den står på och vad det borde stå i stället. Rättelser kommer i nästa version."
       ]
     },
     "markdown-syntax": {
       "q": "Vilken Markdown-syntax förstår redigeraren?",
       "a": [
-        "Vanlig Markdown formateras direkt medan du skriver: rubriker, betoning, genomstruken text och överstrykning, punktlistor och numrerade listor, uppgiftslistor (Tab och Skift+Tab nästlar alla listor, även checklistor), citat, avdelare, infogad kod och kodblock med syntaxfärgning, matematik i löptext och som block (KaTeX) och anteckningslänkar mellan anteckningar med autokomplettering.",
-        "Formateringsverktygsfältet och dess Infoga-meny lägger till resten: tabeller, informationsrutor som kan fällas ihop, understrykning, upphöjd och nedsänkt text, textjustering, text- och överstrykningsfärger, typsnitt, länkar, bilder och filbilagor. Allt överlever resan till Markdown och tillbaka: ”Visa markdown” under varje anteckning visar råkällan, och exporterna är rena .md-filer, så ingenting du skriver låses in i ett proprietärt format."
+        "Vanlig Markdown formateras direkt medan du skriver: rubriker, betoning, genomstruken text och överstrykning, punktlistor och numrerade listor, [uppgiftslistor](/sv/help/tasks/) (Tab och Skift+Tab nästlar alla listor, även checklistor), citat, avdelare, infogad kod och kodblock med syntaxfärgning, matematik i löptext och som block (KaTeX) och [anteckningslänkar mellan anteckningar](/sv/help/note-links/) med autokomplettering.",
+        "[Formateringsverktygsfältet](/sv/help/format-bar/) och dess Infoga-meny lägger till resten: [tabeller](/sv/help/table-formulas/), informationsrutor som kan fällas ihop, understrykning, upphöjd och nedsänkt text, textjustering, text- och överstrykningsfärger, typsnitt, länkar, bilder och filbilagor. Allt överlever resan till Markdown och tillbaka: ”Visa markdown” under varje anteckning visar råkällan, och [exporterna är rena .md-filer](/sv/help/export/), så ingenting du skriver låses in i ett proprietärt format."
       ]
     },
     "tasks": {
       "q": "Hur fungerar uppgifter?",
       "a": [
         "Varje rad du skriver som - [ ] i en anteckning blir en uppgift, och vyn Uppgifter i sidofältet samlar dem alla på ett ställe. Bockar du av en uppgift där uppdateras anteckningen den bor i, och öppnar du en uppgift hoppar du till den anteckningen. Det finns ingen separat uppgiftsdatabas att underhålla: uppgifter är bara rader i dina anteckningar, krypterade som allt annat.",
-        "Snabbfältet högst upp i Uppgifter lägger till i en anteckning som heter Quick Tasks (skapas åt dig första gången), så det tar ett tangenttryck att fånga en lös att göra-punkt, inte ett arkiveringsbeslut. Samma vy erbjuder tre layouter (Blandad, Samlad, Lista), en växel för slutförda uppgifter och sökning bland uppgifter, och knappen + i vyn Alla kan starta en uppgiftsanteckning direkt."
+        "Snabbfältet högst upp i Uppgifter lägger till i en anteckning som heter Quick Tasks (skapas åt dig första gången), så det tar ett tangenttryck att fånga en lös att göra-punkt, inte ett arkiveringsbeslut. Samma vy erbjuder tre layouter (Blandad, Samlad, Lista), en växel för slutförda uppgifter och sökning bland uppgifter, och knappen + i vyn Alla kan starta en uppgiftsanteckning direkt. Var du än är kan du skriva `mjölk, ägg >> mat` i Ninja för att [lägga till uppgifter i en lista utan att öppna den](/sv/help/ninja-add-to-list/)."
       ]
     },
     "journal": {
       "q": "Hur fungerar dagboken, och vad kan jag följa?",
       "a": [
-        "Dagböcker är en egen vy för daterade inlägg: ett tryck skapar dagens inlägg, och kalenderknappen bredvid fyller i en dag du nyligen missat. Ett inlägg är en vanlig anteckning plus valfria mätvärden: humör på en skala 1-10 med 24 känslotaggar, sömn, aktivitet, mediciner, energi, fokus och mer. ”Ställ in mätvärden” inne i ett inlägg slår på och av de inbyggda, och Pro lägger till upp till 10 egna mätvärden (skalor, siffror, ja/nej).",
-        "Statistik (i Inställningar, eller statistikikonen i sidfoten) öppnas på en Översikt över din vecka, skrivande och mående tillsammans. Fliken Välmående ritar upp varje mätvärde du loggar, egna mätvärden inräknade, över en period du väljer; Utforska tar ett mätvärde och visar hur ditt humör ligger de dagar du har det och de dagar du inte har det, samma dag eller dagen efter; Mönster rangordnar varje mätvärde på det sättet; Medicin visar följsamheten som en kalender. Exporterna skapas på din enhet: ”Ladda ner JSON” är gratis, och Pro lägger till en ”Läkar-PDF” att ta med till besöket, en färdig AI-prompt att kopiera in i chatboten du föredrar, jämförelserna och Veckan i återblick. Mätvärdena ligger inuti det krypterade inlägget, så servern kan inte läsa något av dem."
+        "Dagböcker är en egen vy för daterade inlägg: ett tryck skapar dagens inlägg, och kalenderknappen bredvid [fyller i en dag du nyligen missat](/sv/help/log-missed-day/). Ett inlägg är en vanlig anteckning plus valfria mätvärden: humör på en skala 1-10 med 24 känslotaggar, sömn, aktivitet, [mediciner](/sv/help/add-medication/), energi, fokus och mer. [”Ställ in mätvärden” inne i ett inlägg slår på och av de inbyggda](/sv/help/choose-trackers/), och Pro lägger till [upp till 20 egna mätvärden](/sv/help/custom-trackers/) (skalor, siffror, ja/nej).",
+        "Statistik (i Inställningar, eller statistikikonen i sidfoten) har tre flikar. Översikt sammanfattar i dag och din vecka; Mätvärden visar varje mätvärde du loggar i diagram, egna mätvärden inräknade, över en period du väljer, [visar vad som hänger ihop med ett bättre eller sämre humör](/sv/help/what-moves-mood/) samma dag eller dagen efter, och öppnar ett mätvärdes egen sida med ett tryck; Skrivande handlar om dina ord och anteckningar. En medicin öppnar sin kalender för följsamhet. Exporterna skapas på din enhet: ”Ladda ner JSON” är gratis, och Pro lägger till [en ”Läkar-PDF”](/sv/help/doctor-pdf/) att ta med till besöket, [en färdig AI-prompt att kopiera in](/sv/help/ai-prompt/) i chatboten du föredrar, jämförelserna och [Veckan i återblick](/sv/help/week-in-review/). Mätvärdena ligger inuti det krypterade inlägget, så [servern kan inte läsa något av dem](/sv/help/tracker-privacy/)."
       ]
     },
     "bookmarks": {
       "q": "Kan jag spara mina webbläsarbokmärken i PrivacyNotes?",
       "a": [
-        "Ja. Bokmärken är en egen pelare i sidofältet, bredvid Anteckningar, Uppgifter och Dagböcker, och de är gratis i alla planer. Klistra in en länk i snabbfältet så sparas den. Ta med dina befintliga: exportera en bokmärkesfil (.html) från din webbläsare och släpp den i Inställningar > Import & Export > Importera > \"Webbläsarbokmärken\". Chrome, Firefox, Safari, Edge, Opera, Brave och Vivaldi innehåller samma fil, och mappar och datum följer med. Safari lägger den i en .zip, som du kan släppa utan att öppna.",
-        "Dina adresser lämnar aldrig din enhet: vi hämtar inte sidan bakom en länk, och därför bär ett bokmärke du lägger till själv sin domän som namn tills du skriver ett. Webbplatsikoner är det enda undantaget, och dem kan du stänga av. Exporten skriver samma standardfil, så dina bokmärken lämnar lika lätt som de kom ([importguide](/sv/help/import/browser-bookmarks/))."
+        "Ja. Bokmärken är en egen pelare i sidofältet, bredvid Anteckningar, Uppgifter och Dagböcker, och de är gratis i alla planer. Klistra in en länk i snabbfältet så sparas den, eller efter `+` i [Ninja](/sv/help/ninja/), som också erbjuder att spara sidan som anteckning eller starta en inloggning med den. Ta med dina befintliga: exportera en bokmärkesfil (.html) från din webbläsare och släpp den i Inställningar > Import & Export > Importera > \"Webbläsarbokmärken\". Chrome, Firefox, Safari, Edge, Opera, Brave och Vivaldi innehåller samma fil, och mappar och datum följer med. Safari lägger den i en .zip, som du kan släppa utan att öppna.",
+        "Dina adresser lämnar aldrig din enhet: vi hämtar inte sidan bakom en länk om du inte väljer Spara som anteckning ([spara en sida](/sv/help/save-page-as-note/)), och därför bär ett bokmärke du lägger till själv sin domän som namn tills du skriver ett. Webbplatsikoner är det enda undantaget, och dem kan du stänga av. Exporten skriver samma standardfil (.html), så dina bokmärken lämnar lika lätt som de kom ([importguide](/sv/help/import/browser-bookmarks/))."
+      ]
+    },
+    "save-page-as-note": {
+      "q": "Kan jag spara en webbsida som anteckning?",
+      "a": [
+        "Ja. [Öppna ett bokmärke](/sv/help/bookmarks/) och välj Spara som anteckning, eller välj Klipp webbsida i +-menyn och klistra in en länk. Sidans huvudtext blir en vanlig anteckning i Anteckningar, länkad till sitt bokmärke, och upp till 20 av sidans bilder lagras med anteckningen, krypterade som alla bilder du lägger till själv, om du inte stänger av Spara bilder i fönstret Klipp webbsida. Att spara sidor är gratis i alla planer, och [bilderna räknas mot din lagring](/sv/help/storage-usage/).",
+        "Skrivbords- och mobilapparna laddar ner sidan och dess bilder direkt från din enhet. Webbappen laddar ner dem via vår server, som skickar dem vidare och varken behåller sidan, bilderna eller deras adresser. Sidor bakom en inloggning och sidor som byggs av skript kan komma tillbaka tomma: behåll dem som bokmärke."
       ]
     },
     "contacts": {
       "q": "Kan jag ha en adressbok i PrivacyNotes?",
       "a": [
         "Ja. Kontakter är en egen pelare i sidofältet, bredvid Anteckningar, Uppgifter och Dagböcker, och de är gratis i alla planer. En kontakt rymmer namn, nummer, e-postadresser, adresser, webbplatser, datum, ett företag och en anteckning. Tryck på ett nummer för att ringa, på en e-postadress för att skriva, eller på vilken rad som helst för att kopiera den. Allt annat som din telefon skrev in i filen ligger kvar under **Också i den här filen** och skrivs tillbaka när du exporterar.",
-        "Ta med dina befintliga: exportera ett vCard (.vcf) från telefonen, din Mac eller Google Kontakter och släpp det i Inställningar > Import & Export > Importera > \"Kontakter (vCard)\". Släpper du samma fil igen senare känns personerna som redan finns igen i stället för att dubbleras. Exporten skriver ett vanligt vCard, så adressboken kommer ut lika lätt som den kom in ([mer om att importera](/sv/help/import-from-other-apps/))."
+        "Ta med dina befintliga: [exportera ett vCard (.vcf)](/sv/help/import/contacts/) från telefonen, din Mac eller Google Kontakter och släpp det i Inställningar > Import & Export > Importera > \"Kontakter (vCard)\". Släpper du samma fil igen senare känns personerna som redan finns igen i stället för att dubbleras. Exporten skriver ett vanligt vCard, så adressboken kommer ut lika lätt som den kom in ([mer om att importera](/sv/help/import-from-other-apps/))."
       ]
     },
     "what-to-keep": {
@@ -473,7 +491,7 @@
     "keyboard-shortcuts": {
       "q": "Vilka kortkommandon finns det?",
       "a": [
-        "Tryck på ? var som helst i appen för den inbyggda fusklappen, som också finns under Inställningar > Om. Kortkommandona täcker navigering, anteckningsåtgärder, formatering och vyer - och på Windows och Linux läses varje Cmd som Ctrl och Option som Alt.",
+        "Tryck på ? var som helst i appen för den inbyggda fusklappen, som också finns under Inställningar > Om. Tryck på Cmd+K eller Ctrl+K för [Ninja](/sv/help/ninja/), som öppnar vad som helst och kör vilket kommando som helst, och på Q för att lägga till ett objekt med vanliga ord. Kortkommandona täcker navigering, anteckningsåtgärder, formatering och vyer - och på Windows och Linux läses varje Cmd som Ctrl och Option som Alt.",
         "Den [utskrivbara fusklappen](/help/keyboard-shortcuts/cheat-sheet) listar alla kortkommandon på en enda A4-sida, för Mac eller för Windows och Linux, och för webbläsaren eller skrivbordsapparna. Den byggs från samma lista som appen visar, så den stämmer alltid med versionen du kör."
       ]
     },
@@ -481,7 +499,7 @@
       "q": "Finns det en utskrivbar fusklapp med kortkommandona?",
       "a": [
         "Ja. Den [utskrivbara fusklappen](/help/keyboard-shortcuts/cheat-sheet) samlar alla kortkommandon på en enda A4-sida i två kolumner, redo att hängas upp bredvid skärmen. Den genereras från samma lista som appen visar, så den kan aldrig hamna efter en release.",
-        "Öppna den och tryck på knappen Skriv ut (eller Cmd+P / Ctrl+P). Vill du ha en fil i stället för papper väljer du PDF som mål i utskriftsdialogen. Fusklappen är också länkad ovanför och under kortkommandolistan i appen (Inställningar > Om > Kortkommandon) och i sidfoten på den här webbplatsen."
+        "Öppna den och tryck på knappen Skriv ut (eller Cmd+P / Ctrl+P). Vill du ha en fil i stället för papper väljer du PDF som mål i utskriftsdialogen. Fusklappen är också länkad ovanför och under [kortkommandolistan i appen](/sv/help/keyboard-shortcuts/) (Inställningar > Om > Kortkommandon) och i sidfoten på den här webbplatsen."
       ]
     },
     "ask-an-ai": {
@@ -495,14 +513,14 @@
     "locked-vs-protected": {
       "q": "Vad är skillnaden mellan skrivskyddade och PIN-skyddade anteckningar?",
       "a": [
-        "”Skrivskyddad” (i anteckningens alternativmeny, Pro) låser en anteckning mot redigering så att ett färdigt dokument inte kan förstöras av misstag; den döljer ingenting. ”Skydda” (samma meny, Pro) döljer anteckningens innehåll bakom din PIN-kod eller biometriska upplåsning, för sådant du helst inte har synligt på en skärm som andra ibland ser. Titeln syns fortfarande i listan, så håll hemligheten utanför titeln.",
-        "Båda är grindar för skärmen, inte ett andra lager kryptering. Flaggorna färdas inuti anteckningens krypterade data, och anteckningen krypteras medvetet inte om med din PIN: på så sätt kan en glömd PIN aldrig förstöra data. Frasen förblir den verkliga gränsen: skydda den först, och använd de här grindarna för skärmen som andra ibland ser."
+        "”Skrivskyddad” (i anteckningens alternativmeny, Pro) låser en anteckning mot redigering så att ett färdigt dokument inte kan förstöras av misstag; den döljer ingenting. ”Skydda” (samma meny, Pro) döljer anteckningens innehåll bakom din PIN-kod eller [biometriska upplåsning](/sv/help/biometric-unlock/), för sådant du helst inte har synligt på en skärm som andra ibland ser. Titeln syns fortfarande i listan, så håll hemligheten utanför titeln.",
+        "Båda är grindar för skärmen, inte ett andra lager kryptering. Flaggorna färdas inuti anteckningens krypterade data, och anteckningen krypteras medvetet inte om med din PIN: [på så sätt kan en glömd PIN aldrig förstöra data](/sv/help/forgot-pin/). Frasen förblir den verkliga gränsen: skydda den först, och använd de här grindarna för skärmen som andra ibland ser."
       ]
     },
     "biometric-unlock": {
       "q": "Biometrisk upplåsning slutade fungera. Vad kan jag göra?",
       "a": [
-        "Du blir aldrig utelåst. Låsskärmen erbjuder alltid en reservväg: ”Lås upp med PIN” (”Lås upp med lösenkod” om du har ställt in en) eller ”Logga in med återställningsfras”. Biometrisk upplåsning öppnar bara kopian av din återställningsfras som är lagrad på den här enheten, och dina anteckningar är krypterade med nycklar från själva frasen, så de är orörda i vilket fall.",
+        "Du blir aldrig utelåst. Låsskärmen erbjuder alltid en reservväg: [fältet för din PIN](/sv/help/forgot-pin/) (eller din lösenkod, om du har ställt in en) direkt på skärmen, eller ”Logga in med återställningsfras”. Biometrisk upplåsning öppnar bara kopian av din återställningsfras som är lagrad på den här enheten, och dina anteckningar är krypterade med nycklar från själva frasen, så de är orörda i vilket fall.",
         "Ställ sedan in den igen. Om låsskärmen säger ”Biometrisk upplåsning kunde inte öppna dina anteckningar”, lås först upp på ett annat sätt. Registreringen sker per enhet, så en ny telefon, en ny webbläsarprofil eller en ominstallation kräver ny registrering: Inställningar > Säkerhet > ”Lås”, stäng av, sedan ”Aktivera biometrisk upplåsning” igen. Det kräver också ”Lita på den här enheten” (sessioner på enheter du inte litar på rensas när fliken stängs) och hårdvara med en plattformsautentiserare (Touch ID, Face ID, Windows Hello). Om en lösenordshanterare som Bitwarden eller 1Password dyker upp i stället för systemdialogen, stäng den och försök igen, eller stäng av dess passkey-hantering för sajten - appen ber om den inbyggda autentiseraren, men vissa hanterare lägger sig i ändå."
       ]
     },
@@ -510,21 +528,21 @@
       "q": "Min återställningsfras har läckt. Vad gör jag?",
       "a": [
         "Betrakta valvet som bränt. En fras kan inte ändras eller roteras, eftersom frasen är nyckeln som allt är krypterat under - lösningen är alltså att flytta till ett nytt valv. Exportera först allt i det gamla kontot: Inställningar > Import & Export > Exportera > ”PrivacyNotes-säkerhetskopia (.zip)”.",
-        "Logga ut, skapa ett nytt valv (12 nya ord) och ta in exporten igen via Inställningar > Import & Export > Återställ > ”Fullständig säkerhetskopia (.zip)”. Radera sedan det gamla kontot från valfri enhet som fortfarande är inloggad på det: Inställningar > Konto > ”Radera konto och data...”. Det tar bort dess synkade data och stänger ute alla som har den gamla frasen. Loggade du in med Google, Apple eller GitHub, radera det gamla kontot först och logga sedan in med samma Google-, Apple- eller GitHub-konto igen för att starta det nya valvet.",
-        "Två saker först: avsluta ett aktivt lagringstillägg, eftersom raderingen kräver det, och räkna med att Pro stannar på kontot det köptes på i stället för att följa med till det nya valvet. Håll sedan den nya frasen i en lösenordshanterare och ingen annanstans, för det är hela förebyggandet."
+        "Logga ut, skapa ett nytt valv (12 nya ord) och ta in exporten igen via Inställningar > Import & Export > Återställ > ”Fullständig säkerhetskopia (.zip)”. Radera sedan det gamla kontot från valfri enhet som fortfarande är inloggad på det: Inställningar > Konto > ”Radera konto och data...”. Det tar bort dess synkade data och stänger ute alla som har den gamla frasen. Loggade du in med Google, Apple eller GitHub, [radera det gamla kontot](/sv/help/delete-account/) först och logga sedan in med samma Google-, Apple- eller GitHub-konto igen för att starta det nya valvet.",
+        "Två saker först: [avsluta ett aktivt lagringstillägg](/sv/help/manage-storage-addon/), eftersom raderingen kräver det, och räkna med att [Pro stannar på kontot det köptes på](/sv/help/pro-after-leak/) i stället för att följa med till det nya valvet. Håll sedan den nya frasen i en lösenordshanterare och ingen annanstans, för det är hela förebyggandet."
       ]
     },
     "lost-device": {
       "q": "Jag har tappat bort en enhet. Hur skyddar jag mina anteckningar?",
       "a": [
-        "Öppna Inställningar > Konto > ”Registrerade enheter” från valfri inloggad enhet och ta bort den borttappade. Nästa gång den enheten kommer online loggas den ut och dess lokala data raderas, inom ungefär en minut efter att den används igen. Den ligger kvar under ”Nyligen borttagna” i 72 timmar så att du kan bekräfta att den är borta.",
+        "Öppna Inställningar > Konto > ”Registrerade enheter” från valfri inloggad enhet och [ta bort den borttappade](/sv/help/remove-device/). Nästa gång den enheten kommer online loggas den ut och dess lokala data raderas, inom ungefär en minut efter att den används igen. Den ligger kvar under ”Nyligen borttagna” i 72 timmar så att du kan bekräfta att den är borta.",
         "Slå på applåset (PIN eller biometri) på allt som är bärbart och låt operativsystemets skärmlås vara på. En enhet raderas så fort den kopplar upp sig nästa gång, så fram till dess är det de lokala grindarna som står mellan en borttappad telefon och dina anteckningar. Den verkliga nyckeln är frasen: den som har dina 12 ord kan logga in igen. Misstänker du att själva frasen läckt, följ [handboken för läckt fras](/sv/help/phrase-compromised/) i stället."
       ]
     },
     "device-limit": {
       "q": "Vad betyder ”Enhetsgränsen är nådd”?",
       "a": [
-        "Gratiskonton synkar på upp till 2 enheter, och den här dialogen dyker upp när en tredje försöker registrera sig. Ta bort en enhet du inte använder längre direkt i dialogen, eller på en befintlig enhet under Inställningar > Konto ([så fungerar borttagning](/sv/help/remove-device/)). Platsen frigörs direkt, och den borttagna enheten syns kvar under ”Nyligen borttagna” i 72 timmar. Pro tar bort taket helt.",
+        "Gratiskonton synkar på upp till 2 enheter, och den här dialogen dyker upp när en tredje försöker registrera sig. Ta bort en enhet du inte använder längre direkt i dialogen, eller på en befintlig enhet under Inställningar > Konto ([så fungerar borttagning](/sv/help/remove-device/)). Platsen frigörs direkt, och den borttagna enheten syns kvar under ”Nyligen borttagna” i 72 timmar. [Pro tar bort taket helt](/sv/help/free-vs-pro/).",
         "Flera webbläsare på samma dator räknas som en enda enhet: de grupperas med integritetsbevarande hashar av grova maskinsignaler, uträknade på din enhet med en hemlighet per konto. En större webbläsaruppdatering, eller en härdad webbläsare som Brave eller Tor som slumpar de signalerna, kan göra att samma dator hamnar på en ny plats. Ta bort den inaktuella posten och kör vidare. Du blir aldrig utelåst."
       ]
     },
@@ -532,64 +550,64 @@
       "q": "Vad händer när jag går över min lagringsgräns?",
       "a": [
         "Ingenting raderas någonsin. När nya ändringar slutar få plats säger synken ifrån: ”Lagringen är full. Vissa anteckningar kunde inte synkas.” Befintliga data fortsätter synka, ny tillväxt gör det inte. Ligger du kvar över lagringsgränsen startar en nedräkning på 90 dagar, visad som en orange banner. Att läsa, göra saker mindre, radera och exportera fungerar hela tiden.",
-        "Efter 90 dagar över lagringsgränsen pausas synken: bannern blir röd (”Synken är pausad. Du har legat över din lagringsgräns i 90+ dagar.”). Appen fungerar fortfarande fullt ut på varje enhet; ändringar stannar bara lokalt tills du är under igen. Du löser det direkt och helt själv: [frigör utrymme](/sv/help/storage-usage/) - att tömma papperskorgen räknas - eller lägg till lagring under Inställningar > Lagring, så återupptas synken av sig själv. Det här är den medvetna motsatsen till tjänster som automatiskt raderar data över lagringsgränsen."
+        "Efter 90 dagar över lagringsgränsen pausas synken: bannern blir röd (”Synken är pausad. Du har legat över din lagringsgräns i 90+ dagar.”). Appen fungerar fortfarande fullt ut på varje enhet; ändringar stannar bara lokalt tills du är under igen. Du löser det direkt och helt själv: [frigör utrymme](/sv/help/storage-usage/) - att tömma papperskorgen räknas - eller [lägg till lagring](/sv/help/storage-addons/) under Inställningar > Lagring, så återupptas synken av sig själv. Det här är den medvetna motsatsen till tjänster som automatiskt raderar data över lagringsgränsen."
       ]
     },
     "backup-strategy": {
       "q": "Vad är bästa sättet att säkerhetskopiera mina anteckningar?",
       "a": [
-        "Exportera ”Krypterad fullständig säkerhetskopia (.pnbackupz)” under Inställningar > Import & Export > Exportera. Den krypterar allt - anteckningar, dagböcker, valvposter, uppgifter, bilder, ljud och filer - med din frasnyckel, så du kan parkera den i molnet eller på ett USB-minne, och den återställs med din fras på vilken enhet som helst.",
+        "Exportera ”Krypterad fullständig säkerhetskopia (.pnbackupz)” under Inställningar > Import & Export > Exportera. Den krypterar allt - anteckningar, dagböcker, valvposter, uppgifter, bilder, ljud och filer - med din frasnyckel, så du kan parkera den i molnet eller på ett USB-minne, och [den återställs med din fras på vilken enhet som helst](/sv/help/restore-backup/).",
         "Den öppnas med frasen som skapade den, så spara en ”PrivacyNotes-säkerhetskopia (.zip)” bredvid ifall du någon gång [byter till en ny fras](/sv/help/phrase-compromised/): samma innehåll, återställs till vilket valv som helst och läsbar på disken, så förvara den någonstans du litar på. ”Krypterad säkerhetskopia (.pnbackup)” täcker text och metadata snarare än bilder och filer, och ”Textsäkerhetskopia (.json)” och HTML-arkivet är portabilitetsformat snarare än återställningsformat.",
-        "Varför ha lokala säkerhetskopior när allt synkas? För att synk inte är en säkerhetskopia: den sprider troget även raderingar, inklusive dem från en kapad server som dina enheter sedan speglar. En kopia på din egen disk är den enda som ingen serverhändelse kan röra. Exportera före stora importer, före ett avhopp, och i en takt du håller."
+        "Varför ha lokala säkerhetskopior när allt synkas? För att synk inte är en säkerhetskopia: den sprider troget även raderingar, inklusive dem från en kapad server som dina enheter sedan speglar. En kopia på din egen disk är den enda som ingen serverhändelse kan röra. Exportera före stora importer, [före ett avhopp](/sv/help/leaving/), och i en takt du håller."
       ]
     },
     "restore-backup": {
       "q": "Hur återställer jag en säkerhetskopia?",
       "a": [
-        "Öppna Inställningar > Import & Export > Återställ och välj det format du har. \"Fullständig säkerhetskopia (.zip)\" tar hela exporten: anteckningar, dagböcker, valvposter, uppgifter, bilder, ljud och filer. \"Krypterad säkerhetskopia (.pnbackup, .pnbackupz)\" tar båda de krypterade exporterna. Filen läses och dekrypteras på din enhet, och att återställa är gratis i alla planer.",
+        "Öppna Inställningar > Import & Export > Återställ och välj det format du har. \"Fullständig säkerhetskopia (.zip)\" tar [hela exporten](/sv/help/export/): anteckningar, dagböcker, valvposter, uppgifter, bilder, ljud och filer. \"Krypterad säkerhetskopia (.pnbackup, .pnbackupz)\" tar båda de krypterade exporterna. Filen läses och dekrypteras på din enhet, och att återställa är gratis i alla planer.",
         "En återställning matchar anteckningar på id. En anteckning du redan har uppdateras bara när säkerhetskopians version är nyare, en anteckning i papperskorgen tas ut ur den, en anteckning du saknar läggs till en gång, och att återställa samma fil igen ändrar ingenting, om du inte har redigerat en återställd anteckning emellan, vilket tar tillbaka den äldre versionen bredvid din ändring. En fil utan våra id:n, från en annan app eller från en säkerhetskopia gjord av en äldre version av den här, lägger till sina anteckningar som nya varje gång. Båda de krypterade formaten öppnas bara i kontot som skapade dem, eftersom de är krypterade med det kontots frasnyckel; en .zip går in i vilket valv som helst ([vilken säkerhetskopia du ska ta](/sv/help/backup-strategy/))."
       ]
     },
     "image-quality": {
       "q": "Ändrar eller komprimerar PrivacyNotes mina bilder?",
       "a": [
-        "Ja. Båda inställningarna är på som standard eftersom vi älskar våra användare: vi vill att du sparar lagringsutrymme och behåller din integritet. Utrymmessparare krymper en stor bild till 2048 pixlar och sparar den som JPEG med 85 % kvalitet, vilket behåller alla detaljer som en skärm kan visa. Ta bort platsdata rensar EXIF-metadata som en kamera skriver in i ett foto, inklusive GPS-positionen, innan bilden sparas. Båda gäller varje bild i appen: inklistrad i en anteckning, tillagd som fil eller importerad.",
-        "Stäng av endera under **Inställningar > Bilder**, där kontaktfoton har en tredje brytare som håller dem på 512 pixlar. Inställningarna gäller bara nya bilder; filer som inte är bilder sparas exakt som de är. HEIC- och TIFF-bilder konverteras till JPEG, eftersom bara Safari kan visa dem. En säkerhetskopia du återställer skrivs tillbaka byte för byte."
+        "Ja. Båda inställningarna är på som standard eftersom vi älskar våra användare: vi vill att du [sparar lagringsutrymme](/sv/help/storage-usage/) och behåller din integritet. Utrymmessparare krymper en stor bild till 2048 pixlar och sparar den som JPEG med 85 % kvalitet, vilket behåller alla detaljer som en skärm kan visa. Ta bort platsdata rensar EXIF-metadata som en kamera skriver in i ett foto, inklusive GPS-positionen, innan bilden sparas. Båda gäller varje bild i appen: inklistrad i en anteckning, tillagd som fil eller importerad.",
+        "Stäng av endera under **Inställningar > Lagring > Bilder**, där kontaktfoton har en tredje brytare som håller dem på 512 pixlar. Inställningarna gäller bara nya bilder; filer som inte är bilder sparas exakt som de är. HEIC- och TIFF-bilder konverteras till JPEG, eftersom bara Safari kan visa dem. [En säkerhetskopia du återställer](/sv/help/restore-backup/) skrivs tillbaka byte för byte."
       ]
     },
     "storage-usage": {
       "q": "Vad räknas mot min lagring, och hur frigör jag utrymme?",
       "a": [
-        "Allt du synkar, i sin krypterade storlek: anteckningstext, bilder, ljudinspelningar och filbilagor. Mätaren under Inställningar > Lagring visar totalen; varje antecknings eget avtryck står i dess alternativmeny som ”Använt utrymme”. Anteckningar i papperskorgen räknas tills den töms.",
-        "För att frigöra utrymme snabbt: öppna Filer, sortera efter Storlek och radera de största posterna - bilagor är vida större än texten i nästan varje konto. Töm sedan papperskorgen: vyn Papperskorgen visar hur mycket ”Töm” frigör. Text ensam når nästan aldrig lagringsgränsen; till och med de 50 MB som ingår gratis rymmer tiotusentals vanliga anteckningar."
+        "Allt du synkar, i sin krypterade storlek: anteckningstext, bilder, ljudinspelningar och filbilagor. Mätaren under Inställningar > Lagring visar totalen; varje antecknings eget avtryck står i dess alternativmeny som ”Använt utrymme”. [Anteckningar i papperskorgen räknas tills den töms](/sv/help/trash-auto-delete/).",
+        "För att frigöra utrymme snabbt: öppna Filer, sortera efter Storlek och [radera de största posterna](/sv/help/storage-after-delete/) - bilagor är vida större än texten i nästan varje konto. Töm sedan papperskorgen: vyn Papperskorgen visar hur mycket ”Töm” frigör. Text ensam når nästan aldrig lagringsgränsen; till och med de 50 MB som ingår gratis rymmer tiotusentals vanliga anteckningar."
       ]
     },
     "upload-failed": {
       "q": "Varför misslyckades min filuppladdning?",
       "a": [
-        "Felmeddelandet säger vilken gräns du nådde. Per fil: 5 MB på Gratis, 50 MB med Pro, 100 MB med valfritt lagringstillägg. Totalt: allt du synkar måste rymmas i kontots lagring (50 MB Gratis, 500 MB Pro, mer med tillägg), så fullt lagringsutrymme får en uppladdning att misslyckas även när filen är liten. Alla filtyper accepteras.",
-        "Kolla lagringsmätaren i vyn Filer eller under Inställningar > Lagring och välj sedan den billigaste lösningen: [frigör utrymme](/sv/help/storage-usage/), uppgradera, eller krymp filen (mobilfoton är ofta original på flera MB; en komprimerad JPEG är en bråkdel så stor). En uppladdning som misslyckas i brist på uppkoppling sparas i stället för att gå förlorad: filen stannar på den här enheten och laddas upp av sig själv när du är online igen, och till dess räknar Inställningar > ID & Sync den som väntande."
+        "Felmeddelandet säger vilken gräns du nådde. Per fil: 5 MB på Gratis, 50 MB med Pro, [100 MB med valfritt lagringstillägg](/sv/help/storage-addons/). Totalt: allt du synkar måste rymmas i kontots lagring (50 MB Gratis, 500 MB Pro, mer med tillägg), så fullt lagringsutrymme får en uppladdning att misslyckas även när filen är liten. Alla filtyper accepteras.",
+        "Kolla lagringsmätaren i vyn Filer eller under Inställningar > Lagring och välj sedan den billigaste lösningen: [frigör utrymme](/sv/help/storage-usage/), uppgradera, eller krymp filen (mobilfoton är ofta original på flera MB; [en komprimerad JPEG](/sv/help/image-quality/) är en bråkdel så stor). En uppladdning som misslyckas i brist på uppkoppling sparas i stället för att gå förlorad: filen stannar på den här enheten och laddas upp av sig själv när du är online igen, och till dess räknar Inställningar > ID & Sync den som väntande."
       ]
     },
     "trash-auto-delete": {
       "q": "Varför försvann anteckningar ur min papperskorg?",
       "a": [
-        "Papperskorgen är inget arkiv: som standard raderas allt i den permanent efter 30 dagar. Reglaget sitter i vyn Papperskorgen själv, märkt ”Radera automatiskt efter 30 dagar” - stäng av det där om du vill behålla innehållet för alltid, och inställningen synkas till alla dina enheter. Rensningen körs på din enhet när appen öppnas, eftersom servern inte kan se vilka krypterade anteckningar som ligger i papperskorgen.",
-        "Permanent raderad betyder borta: ingen enhet och ingen hos oss kan ta tillbaka den, bara en säkerhetskopia du gjort tidigare. Använder du papperskorgen som en kanske-någon-gång-hög, stäng av den automatiska raderingen eller återställ anteckningar före dag 30. Fram till dess räknas anteckningar i papperskorgen fortfarande mot [din lagring](/sv/help/storage-usage/) - ”Töm” i samma vy frigör det utrymmet direkt."
+        "[Papperskorgen är inget arkiv](/sv/help/archive/): som standard raderas allt i den permanent efter 30 dagar. Reglaget sitter i vyn Papperskorgen själv, märkt ”Radera automatiskt efter 30 dagar” - stäng av det där om du vill behålla innehållet för alltid, och inställningen synkas till alla dina enheter. Rensningen körs på din enhet när appen öppnas, eftersom servern inte kan se vilka krypterade anteckningar som ligger i papperskorgen.",
+        "Permanent raderad betyder borta: ingen enhet och ingen hos oss kan ta tillbaka den, [bara en säkerhetskopia du gjort tidigare](/sv/help/backup-strategy/). Använder du papperskorgen som en kanske-någon-gång-hög, stäng av den automatiska raderingen eller återställ anteckningar före dag 30. Fram till dess räknas anteckningar i papperskorgen fortfarande mot [din lagring](/sv/help/storage-usage/) - ”Töm” i samma vy frigör det utrymmet direkt."
       ]
     },
     "leaving": {
       "q": "Hur lämnar jag PrivacyNotes helt?",
       "a": [
-        "Exportera först, radera sedan - båda sköter du själv. Inställningar > Import & Export > Exportera täcker varje väg ut: ”PrivacyNotes-säkerhetskopia (.zip)” för en komplett kopia, portabel Markdown och HTML till din nästa anteckningsapp, och ”Valvexport (.json)” i Bitwarden-kompatibelt format till din nästa lösenordshanterare. Exporterna skapas på din enhet.",
-        "Sedan Inställningar > Konto > ”Radera konto och data...”: skriv DELETE, så tas dina synkade anteckningar, filer, enheter, inställningar och själva kontot bort permanent utan karenstid ([detaljer](/sv/help/delete-account/)). Ett aktivt lagringstillägg måste avslutas först under Inställningar > Lagring. Ett rent fraskonto lämnar ingenting efter sig att rensa, eftersom vi aldrig visste vem du var. Inga mörka mönster och inga vinn-tillbaka-mejl, dina data är dina, även på vägen ut."
+        "[Exportera först](/sv/help/export/), radera sedan - båda sköter du själv. Inställningar > Import & Export > Exportera täcker varje väg ut: ”PrivacyNotes-säkerhetskopia (.zip)” för en komplett kopia, portabel Markdown och HTML till din nästa anteckningsapp, och ”Valvexport (.json)” i Bitwarden-kompatibelt format till din nästa lösenordshanterare. Exporterna skapas på din enhet.",
+        "Sedan Inställningar > Konto > ”Radera konto och data...”: skriv DELETE, så tas dina synkade anteckningar, filer, enheter, inställningar och själva kontot bort permanent. Poster om en lagringsprenumeration och en minimal säkerhetsidentifierare finns kvar, och säkerhetskopior som togs före raderingen löper ut efter sju dagar ([detaljer](/sv/help/delete-account/)). [Ett aktivt lagringstillägg måste avslutas först](/sv/help/manage-storage-addon/) under Inställningar > Lagring. Inga mörka mönster och inga vinn-tillbaka-mejl, dina data är dina, även på vägen ut."
       ]
     },
     "data-rights": {
       "q": "Hur hanterar PrivacyNotes GDPR och mina datarättigheter?",
       "a": [
-        "Mest genom att hålla så lite som möjligt. Registrera dig med en fras så finns det inget namn, ingen e-postadress och ingen identitet att begära ut: dina data är chiffertext under en slumpmässig publik nyckel, lagrad i Zürich i Schweiz. Loggar du in med Google, Apple eller GitHub finns exakt en identifierare - e-postadressen bakom den inloggningen, kopplad till den nyckeln. Faktureringsuppgifter för Pro ligger hos [Paddle](https://www.paddle.com), vår merchant of record, inte hos oss.",
-        "Varje rättighet sköter du själv och direkt, utan blankett: tillgång och dataportabilitet är Inställningar > Import & Export (fullständig export i öppna format), radering är Inställningar > Konto > ”Radera konto och data...” utan karenstid, och rättelse är att redigera dina anteckningar. Den formella versionen, inklusive hur du når oss för sådant appen inte kan göra själv, finns i [integritetspolicyn](https://lifetimelabs.dev/privacy/)."
+        "Mest genom att hålla så lite som möjligt. Registrera dig med en fras så finns det inget namn, ingen e-postadress och ingen identitet att begära ut: dina data är chiffertext under en slumpmässig publik nyckel, [lagrad i Zürich i Schweiz](/sv/help/data-location/). Loggar du in med Google, Apple eller GitHub kopplas den inloggningens e-postadress och konto-ID till den nyckeln. Betaluppgifter stannar hos [Paddle](https://www.paddle.com), Apple eller Google; vi sparar de order- och prenumerationsposter som behövs för att bevilja och återställa köp.",
+        "De flesta rättigheter sköter du själv, utan blankett: tillgång och dataportabilitet är Inställningar > Import & Export ([fullständig export i öppna format](/sv/help/export/)), radering är Inställningar > Konto > ”Radera konto och data...” (vissa fakturerings- och säkerhetsposter finns kvar, [se vad raderingen tar bort](/sv/help/delete-account/)), och rättelse är att redigera dina anteckningar. Den formella versionen, inklusive hur du når oss för sådant appen inte kan göra själv, finns i [integritetspolicyn](https://lifetimelabs.dev/privacy/)."
       ]
     },
     "referral-links": {
@@ -603,7 +621,7 @@
     "pro-not-active": {
       "q": "Jag har betalat för Pro men det är inte aktivt. Vad gör jag nu?",
       "a": [
-        "Ge det en minut och ladda sedan om appen. Efter kassan pollar appen i ungefär 20 sekunder och låser upp av sig själv, och en omladdning kontrollerar Pro-statusen på nytt vid start. Om betalningen gick igenom men aktiveringen släpar efter visas en banner: ”Betalningen är mottagen, men Pro-aktiveringen tar längre tid än vanligt” - det läget löser sig självt i nästan alla fall. I butiksversioner görs ett nytt försök när du startar om appen om ett köp inte kunde valideras, och ett köp som aldrig aktiveras återbetalas automatiskt av butiken inom 3 dagar.",
+        "Ge det en minut och ladda sedan om appen. Efter kassan pollar appen i ungefär 20 sekunder och låser upp av sig själv, och en omladdning kontrollerar Pro-statusen på nytt vid start. Om betalningen gick igenom men aktiveringen släpar efter visas en banner: ”Betalningen är mottagen, men Pro-aktiveringen tar längre tid än vanligt” - det läget löser sig självt i nästan alla fall. [I butiksversioner](/sv/help/store-purchases/) görs ett nytt försök när du startar om appen om ett köp inte kunde valideras, och ett köp som aldrig aktiveras återbetalas automatiskt av butiken inom 3 dagar.",
         "Fortfarande låst? Det handlar nästan alltid om fel konto: Pro knyts till kontot som var inloggat vid köpet, så en annan fras - eller en Google-, Apple- eller GitHub-inloggning i stället för ditt frasvalv - är ett annat konto. Jämför konto-ID under Inställningar > ID & Sync på enheten där köpet gjordes. Har det verkligen fastnat, [rapportera det](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) och ta med det konto-ID:t: det identifierar köpet och avslöjar ingenting om dina anteckningar."
       ]
     },
@@ -612,41 +630,41 @@
       "a": [
         "Inställningar > Lagring är kontrollpanelen. En uppgradering till ett större paket gäller direkt. På webben visar bekräftelsen exakt vilket proportionerligt belopp som dras i dag innan du godkänner, och förnyelsedatumet flyttas inte; i Play Store och App Store är det butikens eget betalningsblad som visar beloppet, och Apple återbetalar den oanvända delen av ditt pågående år och startar ett nytt. ”Avsluta lagringen” låter dig behålla det extra utrymmet till slutet av perioden du redan betalat för. Vill du till ett mindre paket avslutar du det nuvarande och köper det mindre när perioden tar slut.",
         "Om dina data fortfarande får plats inom den kvarvarande lagringsgränsen när perioden gått ut är saken utagerad; annars raderas ingenting och [90-dagarsförloppet vid överskriden lagringsgräns](/sv/help/over-quota/) startar. En misslyckad förnyelse visar en banner med länken ”Uppdatera kort” för att fixa betalningen i Paddle.",
-        "Att avsluta prenumerationen utanför appen fungerar också, och det är svaret när du inte kan logga in. Paddle är vår återförsäljare och fakturerar dig direkt: använd länken ”Hantera prenumeration” i kvittomejlet, eller supportchatten på [paddle.net](https://paddle.net). En butiksversion är samma sak, så avsluta prenumerationen där, i butikens egna prenumerationsinställningar."
+        "Att avsluta prenumerationen utanför appen fungerar också, och det är svaret när du inte kan logga in. [Paddle är vår återförsäljare](/sv/help/paddle-privacy/) och fakturerar dig direkt: använd länken ”Hantera prenumeration” i kvittomejlet, eller supportchatten på [paddle.net](https://paddle.net). [En butiksversion är samma sak](/sv/help/store-purchases/), så avsluta prenumerationen där, i butikens egna prenumerationsinställningar."
       ]
     },
     "store-purchases": {
       "q": "Följer köp med mellan webben, Google Play och App Store?",
       "a": [
         "Ja. Pro och lagring är knutna till ditt konto, inte till en plattform eller en butik. Köp på webben så är varje app du loggar in i Pro, inklusive butiksversionerna; köp inne i en butiksversion så låses webb- och datorapparna upp på samma sätt. Inloggningen är återställningen, eftersom rättigheten följer kontot. En butiksversion har dessutom en knapp **Återställ köp** under Inställningar > Konto, som frågar Apple eller Google vad du äger och låser upp det igen efter en ominstallation.",
-        "Den enda skillnaden är vem som fakturerar dig. Webbköp går via Paddle och hanteras i appen under Inställningar > Lagring. Köp som görs inne i en butiksversion (App Store i dag, Google Play när den appen lanseras) faktureras av den butiken: återkommande lagring avslutas i butikens prenumerationsinställningar, och återbetalningar följer butikens process. Hur som helst är det samma konto och samma Pro överallt - inklusive plattformar som inte finns än."
+        "Den enda skillnaden är vem som fakturerar dig. Webbköp går via Paddle och [hanteras i appen](/sv/help/manage-storage-addon/) under Inställningar > Lagring. Köp som görs inne i en butiksversion (App Store i dag, [Google Play när den appen lanseras](/sv/help/play-vs-apk/)) faktureras av den butiken: återkommande lagring avslutas i butikens prenumerationsinställningar, och återbetalningar följer butikens process. Hur som helst är det samma konto och samma Pro överallt - inklusive plattformar som inte finns än."
       ]
     },
     "play-vs-apk": {
       "q": "Obtainium, direkt APK eller Google Play: vilken Android-nedladdning?",
       "a": [
-        "Ta [Obtainium](/sv/help/obtainium/) om du vill att appen ska hålla sig aktuell av sig själv, och den direkta APK-filen om du hellre slipper köra en andra app för det. Google Play är inte igång än, så i dag står valet mellan de två. De ger dig samma fil signerad med samma nyckel, så du kan byta åt båda hållen när som helst: Obtainium tar över en APK du redan sidoladdat, och webbplatsens APK installeras över en från Obtainium.",
-        "Du kan ändra dig senare utan krångel. Före varje byte som kräver att du avinstallerar först, bekräfta att appen visar \"Synced\" och ha dina 12 ord eller en inloggnings-QR från en annan enhet redo, för avinstallationen rensar den lokala kopian."
+        "Ta [Obtainium](/sv/help/obtainium/) om du vill att appen ska hålla sig aktuell av sig själv, och [den direkta APK-filen](/sv/help/android-updates/) om du hellre slipper köra en andra app för det. Google Play är inte igång än, så i dag står valet mellan de två. De ger dig samma fil signerad med samma nyckel, så du kan byta åt båda hållen när som helst: Obtainium tar över en APK du redan sidoladdat, och webbplatsens APK installeras över en från Obtainium.",
+        "Du kan ändra dig senare utan krångel. Före varje byte som kräver att du avinstallerar först, bekräfta att appen visar \"Synced\" och ha dina 12 ord eller [en inloggnings-QR från en annan enhet](/sv/help/add-second-device/) redo, för avinstallationen rensar den lokala kopian."
       ]
     },
     "markdown-folder": {
       "q": "Kan jag redigera en mapp med Markdown-filer från min egen disk?",
       "a": [
         "Ja. Öppna Markdown-pelaren i sidofältet, välj en mapp med .md- och .txt-filer och redigera dem i samma redigerare som du använder för anteckningar. Undermappar dyker upp av sig själva, ändringar sparas rakt in i filen och inget konverteras, så samma mapp fortsätter fungera i Obsidian, i ett git-repo eller i dina egna skript. **Spara i mina anteckningar** kopierar en fil, eller ett helt urval, till dina krypterade anteckningar med ett klick och lämnar originalet där det ligger. Allt detta är gratis i alla planer.",
-        "Filerna ligger kvar på din disk precis som du lämnade dem: vi laddar aldrig upp dem, de synkas aldrig till dina andra enheter, och ingenting konverteras på vägen. Det fungerar i skrivbordsappen på vilken dator som helst, och i Chrome, Edge eller Opera i webbläsaren, eftersom det krävs en dator för att öppna en mapp direkt från disk."
+        "Filerna ligger kvar på din disk precis som du lämnade dem: vi laddar aldrig upp dem, de synkas aldrig till dina andra enheter, och ingenting konverteras på vägen. Det fungerar [i skrivbordsappen på vilken dator som helst](/sv/help/platforms/), och i Chrome, Edge eller Opera i webbläsaren, eftersom det krävs en dator för att öppna en mapp direkt från disk."
       ]
     },
     "markdown-folder-mobile": {
       "q": "Kan jag öppna en Markdown-mapp på telefonen?",
       "a": [
         "Inte i dag. [Markdown-mappen](/sv/help/markdown-folder/) fungerar i skrivbordsappen på macOS, Windows och Linux, och i Chrome, Edge eller Opera på en dator, för en dator lämnar över en riktig mapp till appen som den kan läsa och skriva direkt i. Android och iOS lämnar inte över någon mapp alls: varje fil når appen genom systemets eget dokumentlager, en behörighet i taget. Att läsa ett helt träd och skriva tillbaka i det är därför ett eget arbete på varje plattform, och det är inte byggt än.",
-        "På telefonen kan du ta in samma filer som kopior: Inställningar > Import & Export > Importera > ”Markdown-filer” tar .md och .txt var för sig eller som en .zip, och en zippad mapp behåller sina undermappar, bilder och bilagor. De kommer in som krypterade anteckningar som synkas till dina andra enheter, och Exportera skriver ut ren .md igen. Originalen ligger kvar på din disk precis där de är."
+        "På telefonen kan du ta in samma filer som kopior: Inställningar > Import & Export > Importera > ”Markdown-filer” tar .md och .txt var för sig eller som en .zip, och [en zippad mapp behåller sina undermappar, bilder och bilagor](/sv/help/import/markdown/). De kommer in som krypterade anteckningar som synkas till dina andra enheter, och Exportera skriver ut ren .md igen. Originalen ligger kvar på din disk precis där de är."
       ]
     },
     "folders": {
       "q": "Hur fungerar mappar, och behöver jag Pro för dem?",
       "a": [
-        "Mappar kan ligga hur djupt nästlade som helst och bor i sidofältet. Att bläddra i dem är gratis i alla planer. Att skapa en, byta namn eller flytta in en anteckning (\"Ny mapp\" och \"Flytta till mapp\") är där Pro börjar, så att ett gratiskonto alltid kan läsa en struktur det importerat eller byggt medan Pro gällde. Raden \"Osorterade\" listar varje anteckning som inte ligger i någon mapp.",
+        "Mappar kan ligga hur djupt nästlade som helst och bor i sidofältet. Att bläddra i dem är gratis i alla planer. Att skapa en, byta namn eller [flytta in en anteckning](/sv/help/drag-to-folder/) (\"Ny mapp\" och \"Flytta till mapp\") är där Pro börjar, så att ett gratiskonto alltid kan läsa en struktur det importerat eller byggt medan Pro gällde. Raden \"Osorterade\" listar varje anteckning som inte ligger i någon mapp.",
         "En anteckning ligger i en mapp i taget, precis som en fil. Använd [taggar](/sv/help/tags/) när något hör hemma på två ställen samtidigt. Mappen ligger inuti den krypterade anteckningen, så servern ser din struktur lika lite som den ser din text."
       ]
     },
@@ -654,20 +672,20 @@
       "q": "Hur fungerar taggar?",
       "a": [
         "Varje öppnad anteckning har en taggrad under rubriken. Skriv ett ord och tryck Enter, komma eller #, så blir taggen en bricka. Sidofältet listar taggarna som det öppna avsnittet använder, och ett klick filtrerar listan till de objekten. Du kan byta namn på en tagg överallt på en gång, favoritmarkera den så att den fastnar högst upp, eller radera den, med eller utan anteckningarna under.",
-        "Taggar och mappar löser olika problem: en anteckning ligger i en mapp men bär hur många taggar du vill, vilket är precis vad du behöver när något är både \"jobb\" och \"faktura\". Importer taggar efter källa, så allt som kom från en annan app landar med sin egen tagg och är lätt att hitta, eller städa bort senare."
+        "[Taggar och mappar löser olika problem](/sv/help/folders/): en anteckning ligger i en mapp men bär hur många taggar du vill, vilket är precis vad du behöver när något är både \"jobb\" och \"faktura\". [Importer taggar efter källa](/sv/help/import-from-other-apps/), så allt som kom från en annan app landar med sin egen tagg och är lätt att hitta, eller städa bort senare."
       ]
     },
     "organize": {
       "q": "Hur hänger avsnitt, mappar, taggar och utrymmen ihop?",
       "a": [
-        "Allt du sparar finns i ett enda bibliotek. Avsnitten i sidofältet, som Anteckningar, Valv och Dagböcker, är vyer av biblioteket efter typ. En mapp är en plats, så en mapp kan rymma en anteckning och inloggningen som hör till den, och mappträdet är detsamma i varje avsnitt. Siffrorna räknar det som det öppna avsnittet innehåller, och en mapp utan något därifrån visas nedtonad. En tagg är en etikett, och sidofältet listar bara de taggar som det öppna avsnittet använder.",
+        "Allt du sparar finns i ett enda bibliotek. Avsnitten i sidofältet, som Anteckningar, Valv och Dagböcker, är vyer av biblioteket efter typ. [En mapp är en plats](/sv/help/folders/), så en mapp kan rymma en anteckning och inloggningen som hör till den, och mappträdet är detsamma i varje avsnitt. Siffrorna räknar det som det öppna avsnittet innehåller, och en mapp utan något därifrån visas nedtonad. [En tagg är en etikett](/sv/help/tags/), och sidofältet listar bara de taggar som det öppna avsnittet använder.",
         "Utrymmen delar biblioteket i Privat och Arbete, och en mapp på översta nivån hör till ett utrymme, med allt innehåll. [Så fungerar utrymmen](/sv/help/spaces/) går igenom växlaren, hur du flyttar objekt mellan utrymmen och hur du stänger av utrymmen. Taggar är gratis, mappar och utrymmen kräver Pro."
       ]
     },
     "spaces": {
       "q": "Hur fungerar utrymmena Privat och Arbete?",
       "a": [
-        "Utrymmen delar ditt bibliotek i Privat och Arbete. Växlaren bredvid **Gå till** i sidofältet visar **Alla**, **Privat** eller **Arbete**: Alla visar varje objekt, och de andra två visar ett utrymme var. Varje enhet behåller sitt eget val, så din telefon kan visa Privat medan din dator visar Arbete, och när du öppnar ett objekt från det andra utrymmet byter vyn till det. Utrymmen ändrar bara vad listorna visar: varje objekt synkas fortfarande till alla enheter.",
+        "Utrymmen [delar ditt bibliotek i Privat och Arbete](/sv/help/organize/). Växlaren bredvid **Ninja** i sidofältet visar **Alla**, **Privat** eller **Arbete**: Alla visar varje objekt, och de andra två visar ett utrymme var. Varje enhet behåller sitt eget val, så din telefon kan visa Privat medan din dator visar Arbete, och när du öppnar ett objekt från det andra utrymmet byter vyn till det. Utrymmen ändrar bara vad listorna visar: varje objekt synkas fortfarande till alla enheter.",
         "En mapp på översta nivån hör till ett utrymme, med allt innehåll, och **Flytta till Arbete** eller **Flytta till Privat** i dess meny, eller i menyn för vilket objekt som helst, flyttar över den. Ett objekt utan mapp hör till Privat, och det gör också allt du skapar medan Alla är öppet. För att sluta använda utrymmen stänger du av Inställningar > Listor > Utrymmen: alla objekt visas, inget flyttas, och varje mapp behåller sitt utrymme till den dag du slår på det igen. Utrymmen kräver Pro."
       ]
     },
@@ -675,28 +693,28 @@
       "q": "Hur länkar jag en anteckning till en annan?",
       "a": [
         "Skriv [[ var som helst i en anteckning och börja skriva en titel. Välj en anteckning ur listan så blir det en klickbar anteckningslänk. Passar inget, välj \"Skapa\" så skapas och länkas den nya anteckningen i ett steg. Verktygsknappen \"Länka till en annan anteckning\" gör samma sak. Vill du öppna en anteckning vid ett av dess avsnitt, skriv # efter titeln och välj rubriken. Länkikonen vid en rubrik i översikten kopierar en sådan länk åt dig.",
-        "Anteckningslänkar bor inuti anteckningen, så de följer med i en export och överlever en import: ett Obsidian-valv behåller sina länkar och Evernotes anteckningslänkar konverteras på vägen in. För att hitta vad som pekar på en anteckning, sök på dess titel: varje anteckning som länkar till den innehåller de orden."
+        "Anteckningslänkar bor inuti anteckningen, så de följer med i en export och överlever en import: [ett Obsidian-valv behåller sina länkar](/sv/help/import/obsidian/) och [Evernotes anteckningslänkar konverteras på vägen in](/sv/help/import/evernote/). För att hitta vad som pekar på en anteckning, sök på dess titel: varje anteckning som länkar till den innehåller de orden."
       ]
     },
     "appearance": {
       "q": "Kan jag ändra hur appen ser ut?",
       "a": [
-        "Ja. Inställningar > Utseende styr hur appen ser ut: **Läge** växlar mellan Ljust, Mörkt och Auto, som följer systemet, och du väljer ett färgtema för ljust läge och ett för mörkt. Inställningar > Redigerare styr hur du skriver: **Textstorlek** har fem steg och skalar bara din skrivyta, så gränssnittet runt omkring står stilla, och **Redigerare** avgör om anteckningar öppnas i läget Formaterad eller som ren Markdown. Inställningar > Listor visar objekt som Lista eller Rutnät. I skrivbordsapparna skalar **Appstorlek** under Inställningar > Utseende hela fönstret. Knappen **Utseende** i sidfoten samlar de inställningar du ändrar oftast, med tre favoritteman för varje läge.",
-        "Färgteman kräver Pro: standardtemat är gratis och Pro låser upp resten, både ljust och mörkt, plus [egna teman](/sv/help/custom-themes/). Zenläget, som gömmer allt utom din text (Cmd+Shift+F), är också Pro. Att flytta [formatfältet](/sv/help/format-bar/) till toppen eller botten är gratis, och att ordna dess knappar är Pro. Läge, de färgteman du väljer och dina tre favoriter, textstorlek, Lista eller Rutnät och appstorlek stannar på enheten där du ställer in dem. Redigerarläget, radavståndet, anteckningsfärgerna och dina listinställningar följer ditt konto till dina andra enheter."
+        "Ja. Inställningar > Utseende styr hur appen ser ut: **Läge** växlar mellan Ljust, Mörkt och Auto, som följer systemet, och du väljer ett färgtema för ljust läge och ett för mörkt. Inställningar > Redigerare styr hur du skriver: **Textstorlek** har fem steg och skalar bara din skrivyta, så gränssnittet runt omkring står stilla, och **Redigerare** avgör om anteckningar öppnas i läget Formaterad eller som ren Markdown. Inställningar > Listor visar objekt som Lista eller Rutnät. I skrivbordsapparna finns **Appstorlek** under Inställningar > Utseende, som [skalar hela fönstret](/sv/help/window-zoom/). Knappen **Utseende** i sidfoten samlar de inställningar du ändrar oftast, med tre favoritteman för varje läge.",
+        "Färgteman kräver Pro: standardtemat är gratis och Pro låser upp resten, både ljust och mörkt, plus [egna teman](/sv/help/custom-themes/). [Zenläget, som gömmer allt utom din text](/sv/help/zen-mode/) (Cmd+Shift+F), är också Pro. Att flytta [formatfältet](/sv/help/format-bar/) till toppen eller botten är gratis, och att ordna dess knappar är Pro. Läge, de färgteman du väljer och dina tre favoriter, textstorlek, Lista eller Rutnät och appstorlek stannar på enheten där du ställer in dem. Redigerarläget, radavståndet, anteckningsfärgerna och dina listinställningar följer ditt konto till dina andra enheter."
       ]
     },
     "share-with-someone": {
       "q": "Kan jag dela en anteckning med någon, eller jobba i den tillsammans?",
       "a": [
-        "Skicka en [burn note](/sv/help/burn-notes/): den gör vilken anteckning som helst till en krypterad engångslänk som förstörs i samma stund den läses, vilket räcker för ett lösenord, en adress eller ett utkast. Ska den andra behålla något, exportera anteckningen som Markdown, HTML eller PDF och skicka filen.",
-        "En anteckning som två personer redigerar i realtid vore en annan produkt: den skulle kräva att servern räcker nycklar mellan människor, och att hålla servern borta från dina nycklar är här hela konstruktionen. Ett konto är en person med en fras, och det är det som gör ”vi kan inte läsa dina anteckningar” till ett faktum i stället för en policy."
+        "Skicka en [burn note](/sv/help/burn-notes/): den gör vilken anteckning som helst till en krypterad engångslänk som förstörs i samma stund den läses, vilket räcker för ett lösenord, en adress eller ett utkast. Ska den andra behålla något, [exportera anteckningen som Markdown, HTML eller PDF](/sv/help/export/) och skicka filen.",
+        "En anteckning som två personer redigerar i realtid vore en annan produkt: den skulle kräva att servern räcker nycklar mellan människor, och att hålla servern borta från dina nycklar är här hela konstruktionen. Ett konto är en person med en fras, och [med egen förvaring](/sv/help/threat-model-levels/) har servern inget som öppnar dina anteckningar."
       ]
     },
     "add-second-device": {
       "q": "Hur loggar jag in på en andra enhet?",
       "a": [
         "På enheten du redan använder, öppna Inställningar > Säkerhet > Fras. Där står dina 12 ord och en QR-kod för inloggning. På den nya enheten väljer du \"Logga in med fras\" och skannar QR-koden med kameran, laddar upp ett foto av den, eller skriver in orden. Dina anteckningar är på plats inom sekunder.",
-        "Ett gratiskonto täcker 2 enheter och Pro hur många du vill, och två webbläsare på samma dator räknas som en enda enhet. Behandla QR-koden precis som frasen den bär: visa den inte för någon, och låt den aldrig hamna i ett fotobibliotek som synkar till någon annans moln."
+        "[Ett gratiskonto täcker 2 enheter](/sv/help/device-limit/) och Pro hur många du vill, och två webbläsare på samma dator räknas som en enda enhet. Behandla QR-koden precis som frasen den bär: visa den inte för någon, och låt den aldrig hamna i ett fotobibliotek som synkar till någon annans moln."
       ]
     },
     "pause-sync": {
@@ -717,14 +735,14 @@
       "q": "Vad händer om jag rensar webbläsardata eller kakor?",
       "a": [
         "Webbappen håller dina anteckningar i webbläsarens eget lagringsutrymme, så att rensa webbplatsdata för PrivacyNotes sopar bort den lokala kopian och loggar ut dig. Allt som redan synkat är i säkerhet: logga in med din fras på 12 ord så kommer det tillbaka. Det som inte hunnit synka är borta, för vi hade aldrig någon kopia av det.",
-        "Gör därför två saker. Kolla att sidfoten säger \"Synced\" innan du rensar något, och håll frasen i en lösenordshanterare, för en tömd webbläsare kan inte be dig snällt om den. Skrivbords- och mobilapparna berörs inte alls: de har eget lagringsutrymme, som en webbläsarstädning aldrig rör."
+        "Gör därför två saker. Kolla att sidfoten säger \"Synced\" innan du rensar något, och håll frasen i en lösenordshanterare, för en tömd webbläsare kan inte be dig snällt om den. [Skrivbords- och mobilapparna](/sv/help/platforms/) berörs inte alls: [de har eget lagringsutrymme](/sv/help/data-on-disk/), som en webbläsarstädning aldrig rör."
       ]
     },
     "android-backup": {
       "q": "Ingår mina anteckningar i säkerhetskopian av min Android-telefon?",
       "a": [
         "Nej. Android-appen håller sina data utanför telefonens molnsäkerhetskopia, så inget av det hamnar i Google Drive. Skälet är nyckeln, inte anteckningarna: där du valde **Lita på den här enheten** ligger dina 12 ord kvar på den enheten för att hålla dig inloggad, och en molnsäkerhetskopia är ingen plats för nyckeln som dekrypterar dina anteckningar.",
-        "En ny telefon börjar därför tom: installera appen, logga in med dina 12 ord, och allt som synkats kommer in. Återställningen väntar på den första synkningen, så en säkerhetskopia du tar med matchas mot det kontot redan har i stället för att läggas till två gånger. Det som aldrig synkats finns bara på den gamla telefonen, så kolla först att sidfoten säger \"Synced\", eller ta med en ”PrivacyNotes-säkerhetskopia (.zip)” från Inställningar > Import & Export > Exportera ([vilken säkerhetskopia du ska ta](/sv/help/backup-strategy/)).",
+        "En ny telefon börjar därför tom: installera appen, [logga in med dina 12 ord](/sv/help/add-second-device/), och allt som synkats kommer in. Återställningen väntar på den första synkningen, så en säkerhetskopia du tar med matchas mot det kontot redan har i stället för att läggas till två gånger. Det som aldrig synkats finns bara på den gamla telefonen, så kolla först att sidfoten säger \"Synced\", eller ta med en ”PrivacyNotes-säkerhetskopia (.zip)” från Inställningar > Import & Export > Exportera ([vilken säkerhetskopia du ska ta](/sv/help/backup-strategy/)).",
         "En direkt överföring från telefon till telefon under installationen är något annat: vissa telefoner flyttar appdata då, och Android ger ingen app något pålitligt sätt att tacka nej. Den kopian lämnar aldrig dina två enheter, så radera den gamla telefonen efteråt."
       ]
     },
@@ -732,34 +750,34 @@
       "q": "Kan jag skriva ut en anteckning eller spara den som PDF?",
       "a": [
         "Ja. Högerklicka på en anteckning, eller öppna dess delningsmeny, och välj \"Skriv ut / spara som PDF\". Systemets utskriftsdialog öppnas, så du kan skicka till en skrivare eller spara en PDF därifrån. Sidan sätts rent på vitt med formateringen intakt, vilket tema du än använder i appen.",
-        "Den skapas på din enhet som varje annan [export](/sv/help/export/), så inget laddas upp för att göra den. För flera anteckningar på en gång: markera dem och exportera som HTML, då får du en utskrivbar sida per anteckning. \"Läkar-PDF\" under Statistik är en separat välmåenderapport byggd för just det, och kräver Pro."
+        "Den skapas på din enhet som varje annan [export](/sv/help/export/), så inget laddas upp för att göra den. För flera anteckningar på en gång: markera dem och exportera som HTML, då får du en utskrivbar sida per anteckning. [\"Läkar-PDF\" under Statistik](/sv/help/doctor-pdf/) är en separat välmåenderapport byggd för just det, och kräver Pro."
       ]
     },
     "note-history": {
       "q": "Kan jag få tillbaka en äldre version av en anteckning?",
       "a": [
-        "Ja, med Pro. Öppna anteckningens \"...\"-meny och välj \"Historik\" för att bläddra bland upp till 50 tidigare versioner, jämföra en av dem med den nuvarande anteckningen och återställa den. Att återställa förlorar inget: den nuvarande texten sparas först som en version, så du kan kliva fram och tillbaka. Versionerna är krypterade som anteckningen själv, så vi kan inte läsa dem heller.",
-        "Varje version är anteckningen så som den såg ut före en ändring: en sparas vid din första ändring efter en paus på fem minuter, en var tionde minut medan du fortsätter skriva, och en före en ändring som tar bort mer än hälften av en anteckning på 200 tecken eller fler, om inte den senaste versionen är yngre än 30 sekunder. Historiken är den enda Pro-funktionen som går via servern, och därför håller demon en egen lokal kopia i stället. Alla planer har dessutom [papperskorgen](/sv/help/trash-auto-delete/), som håller en raderad anteckning i 30 dagar."
+        "Ja, med Pro. Öppna anteckningens \"...\"-meny och välj \"Historik\" för att bläddra bland upp till 50 tidigare versioner, jämföra en av dem med den nuvarande anteckningen och återställa den. Att återställa förlorar inget: den nuvarande texten sparas först som en version, så du kan kliva fram och tillbaka. Versionerna är krypterade på din enhet som själva anteckningen.",
+        "Varje version är anteckningen så som den såg ut före en ändring: en sparas vid din första ändring efter en paus på fem minuter, en var tionde minut medan du fortsätter skriva, och en före en ändring som tar bort mer än hälften av en anteckning på 200 tecken eller fler, om inte den senaste versionen är yngre än 30 sekunder. Historiken är den enda Pro-funktionen som går via servern, och därför [håller demon en egen lokal kopia](/sv/help/try-before-signup/) i stället. Alla planer har dessutom [papperskorgen](/sv/help/trash-auto-delete/), som håller en raderad anteckning i 30 dagar."
       ]
     },
     "vault-totp": {
       "q": "Kan valvet lagra mina 2FA-nycklar (TOTP / MFA-koder)?",
       "a": [
-        "Ja. En inloggning i valvet har ett fält \"2FA-kod\" som tar antingen en base32-hemlighet eller en hel otpauth://-länk, och en Bitwarden-import tar med befintliga nycklar. Nyckeln krypteras, sparas och synkas i alla planer, gratisplanen inräknad. Pro gör den till den rullande koden med sin nedräkning, så du behöver ingen andra app öppen bredvid.",
-        "Ett lösenord och dess engångskod i samma valv betyder att en upplåst enhet bär båda faktorerna, samma avvägning som varje lösenordshanterare med inbyggda koder gör. För de flesta konton vinner bekvämligheten, särskilt med applåset eller en PIN-kod framför. Vill du hellre hålla de två faktorerna isär för e-posten eller banken, lägg de koderna någon annanstans och låt [valvet](/sv/help/vault/) bära resten."
+        "Ja. En inloggning i valvet har ett fält \"2FA-kod\" som tar antingen en base32-hemlighet eller en hel otpauth://-länk, och [en Bitwarden-import tar med befintliga nycklar](/sv/help/import/bitwarden/). Nyckeln krypteras, sparas och synkas i alla planer, gratisplanen inräknad. Pro gör den till den rullande koden med sin nedräkning, så du behöver ingen andra app öppen bredvid.",
+        "Ett lösenord och dess engångskod i samma valv betyder att en upplåst enhet bär båda faktorerna, samma avvägning som varje lösenordshanterare med inbyggda koder gör. För de flesta konton vinner bekvämligheten, särskilt [med applåset eller en PIN-kod framför](/sv/help/locked-vs-protected/). Vill du hellre hålla de två faktorerna isär för e-posten eller banken, lägg de koderna någon annanstans och låt [valvet](/sv/help/vault/) bära resten."
       ]
     },
     "verify-download": {
       "q": "Hur kontrollerar jag att appen jag laddade ner är äkta?",
       "a": [
-        "Varje bygge vi släpper är signerat, och ditt operativsystem kontrollerar signaturen innan det kör något. macOS-byggen är signerade och notariserade av Apple. Windows-installerare bär en Authenticode-signatur som du kan läsa under Egenskaper > Digitala signaturer. Android-APK:n är signerad med vår egen nyckel, vilket är varför Android vägrar varje uppdatering som inte kommer från oss. Appen för iPhone och iPad är signerad av Apple och installeras bara via App Store. Skrivbordsapparna avvisar också en uppdatering som inte är signerad med vår nyckel.",
+        "Varje bygge vi släpper är signerat, och ditt operativsystem kontrollerar signaturen innan det kör något. macOS-byggen är signerade och notariserade av Apple. Windows-installerare bär en Authenticode-signatur som du kan läsa under Egenskaper > Digitala signaturer. Android-APK:n är signerad med vår egen nyckel, vilket är varför Android vägrar varje uppdatering som inte kommer från oss. Appen för iPhone och iPad är signerad av Apple och installeras bara via App Store. [Skrivbordsapparna avvisar också en uppdatering](/sv/help/desktop-updates/) som inte är signerad med vår nyckel.",
         "Ladda bara ner från PrivacyNotes.app eller från våra [utgåvor på GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases), där varje version finns. Signaturen är kontrollen som räknas, och ditt system gör den åt dig: den prövas mot en nyckel som inte finns någonstans på vår webbplats, så en utbytt fil faller på den kontrollen oavsett vad sidan bredvid påstår."
       ]
     },
     "family-sharing": {
       "q": "Kan min familj dela ett konto eller ett Pro-köp?",
       "a": [
-        "Svaret är två konton, och att starta ett andra kostar ingenting: vart och ett får 2 enheter och 50 MB gratis. Ett konto är en fras på 12 ord, och den som har frasen har allt i den: varje anteckning, varje valvpost, på varje enhet. Det är separata konton som ger varje person egna privata anteckningar. Pro köps per konto.",
+        "Svaret är två konton, och att starta ett andra kostar ingenting: [vart och ett får 2 enheter och 50 MB gratis](/sv/help/free-vs-pro/). Ett konto är en fras på 12 ord, och den som har frasen har allt i den: varje anteckning, varje valvpost, på varje enhet. Det är separata konton som ger varje person egna privata anteckningar. Pro köps per konto.",
         "Ska du lämna över en enda specifik sak, skicka en [burn note](/sv/help/burn-notes/) i stället för din fras. Ett delat hushållskonto fungerar bra om det verkligen är det du vill ha: håll frasen i en delad post i lösenordshanteraren, och utgå från att var och en som någon gång haft den har sett allt i den."
       ]
     },
@@ -774,56 +792,67 @@
       "q": "Kan jag använda PrivacyNotes på jobbet, och finns det en teamplan?",
       "a": [
         "Du kan använda det på jobbet, och många gör det. Det är utformat som ett verktyg för en person: ditt eget konto, din egen fras, ditt eget Pro-köp, och var och en i ett team håller sin egen nyckel. Det finns ingen delad arbetsyta, ingen adminkonsol och ingen central fakturering.",
-        "Väg det innan ni standardiserar på det. Zero-knowledge-kryptering betyder att anteckningarna tillhör den som skrev dem, precis vad en journalist, en jurist eller en konsult vill ha, och det är därför en organisation som behöver nyckeldeponering eller granskningsloggar kör dem i ett system byggt för det. För en enskild yrkesperson är det den starkaste position som finns: ingen kan tvingas lämna ifrån sig det ingen kan läsa."
+        "Väg det innan ni standardiserar på det. Kryptering på varje persons enhet betyder att anteckningarna tillhör den som skrev dem, precis vad en journalist, en jurist eller en konsult vill ha, och det är därför en organisation som behöver nyckeldeponering eller granskningsloggar kör dem i ett system byggt för det. För en enskild yrkesperson är [egen förvaring den starkaste position som finns](/sv/help/threat-model-levels/): servern har inget som öppnar anteckningarna, så det finns inget för någon att tvinga fram."
       ]
     },
     "signup-options": {
       "q": "Vilket registreringsalternativ ska jag välja?",
       "a": [
         "Det som matchar din hotnivå. Det finns tre. Ett: logga in med Google, Apple eller GitHub, med din nyckel lagrad på vår server. Två: samma inloggning, men nyckeln stannar bara på din enhet. Tre: \"Skapa en fras\", utan e-post, utan namn och helt utan inloggning. Alla tre håller dina anteckningar krypterade på din enhet, och det som skiljer dem åt är vem som håller nyckeln och hur mycket vi får veta om dig.",
-        "När du loggar in med Google, Apple eller GitHub får du sedan välja var din nyckel ska förvaras, med ”Håll det enkelt och bekvämt” som förval. Det alternativet lagrar din fras krypterad på vår server, så att en ny enhet kan öppna dina anteckningar efter inloggning hos leverantören och en autentiseringskod om 2FA är aktiverat. Spara din fras ifall du förlorar leverantörskontot och behåll reservnyckeln för 2FA om du aktiverar tvåfaktorsinloggning. ”Maximal säkerhet och integritet” håller frasen på din enhet: vi skulle inte kunna läsa en anteckning under någon press. En ny enhet behöver dina 12 ord eller en QR-skanning från en redan inloggad enhet.",
-        "Med enbart frasen finns ingen e-postadress eller något namn som kopplar kontot till en person. I utbyte ansvarar du själv för frasen, så om du förlorar den utan någon upplåst enhet kvar kan ingen återställa den åt dig. Inställningar > Konto > Nyckelförvaring visar ditt aktuella läge och låter dig ändra det. Ett fraskonto måste först ansluta en leverantör under Konto > Konton innan du kan välja serverförvaring; anslutningen i sig ändrar inte förvaringen. Alla lägen kan lägga till PIN-lås eller biometriskt lås och valfri tvåfaktorsinloggning. Hela jämförelsen finns i [stegen över hotnivåer](/sv/help/threat-model-levels/)."
+        "När du loggar in med Google, Apple eller GitHub får du sedan välja var din nyckel ska förvaras, med ”Håll det enkelt och bekvämt” som förval. Det alternativet lagrar din fras krypterad på vår server, så att en ny enhet kan öppna dina anteckningar efter inloggning hos leverantören och en autentiseringskod om 2FA är aktiverat. Spara din fras ifall du förlorar leverantörskontot och behåll reservnyckeln för 2FA om du aktiverar tvåfaktorsinloggning. ”Maximal säkerhet och integritet” håller frasen på din enhet, så servern har inget som öppnar dina anteckningar, och en ny enhet behöver dina 12 ord eller [en QR-skanning från en redan inloggad enhet](/sv/help/add-second-device/).",
+        "Med enbart frasen finns ingen e-postadress eller något namn som kopplar kontot till en person. I utbyte ansvarar du själv för frasen, så om du förlorar den utan någon upplåst enhet kvar kan ingen återställa den åt dig. Inställningar > Konto > Nyckelförvaring visar ditt aktuella läge och låter dig ändra det. [Ett fraskonto måste först ansluta en leverantör](/sv/help/connected-logins/) under Konto > Konton innan du kan välja serverförvaring; anslutningen i sig ändrar inte förvaringen. Alla lägen kan lägga till PIN-lås eller biometriskt lås och [valfri tvåfaktorsinloggning](/sv/help/enable-2fa/). Hela jämförelsen finns i [stegen över hotnivåer](/sv/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {
       "q": "Jag raderade filer men lagringen sjönk inte. Varför?",
       "a": [
-        "Ditt utrymme är redan ledigt. I samma stund raderingen synkar slutar dessa byte räknas mot din lagring, på servern lika väl som på den här enheten. Visar mätaren fortfarande den gamla siffran, tryck på uppdateringsikonen bredvid: den räknar om från servern och utelämnar allt som redan står i kö för radering. En enhet som varit offline håller kvar sin egen senaste räkning tills den kommit ikapp.",
+        "Ditt utrymme är redan ledigt. I samma stund raderingen synkar slutar dessa byte räknas [mot din lagring](/sv/help/storage-usage/), på servern lika väl som på den här enheten. Visar mätaren fortfarande den gamla siffran, tryck på uppdateringsikonen bredvid: den räknar om från servern och utelämnar allt som redan står i kö för radering. En enhet som varit offline håller kvar sin egen senaste räkning tills den kommit ikapp.",
         "De \"några dagar\" appen nämner handlar om själva den krypterade filen, inte om ditt lagringsutrymme, och den väntan är avsiktlig. Att radera en fil ur lagringen är oåterkalleligt, det finns ingen papperskorg att fiska upp den ur. En enhet som inte synkat klart har en ofullständig bild av dina anteckningar och skulle kunna radera en bild som en annan anteckning fortfarande visar. Därför väntar en fil minst 24 timmar, och bara en enhet med en rent avslutad synkning tar bort den. Det tålamodet kostar dig inget, eftersom utrymmet krediterades den dag du raderade."
       ]
     },
     "spoiler-text": {
       "q": "Hur döljer jag spoilertext i en anteckning?",
       "a": [
-        "Markera texten och välj **Spoiler** i +-menyn i formatfältet, eller skriv den mellan två par lodstreck: `||spoiler||`. Texten blir suddig direkt. Medan du redigerar syns den så snart markören rör vid den och blir suddig igen när markören går vidare. I en skrivskyddad anteckning visas den med ett klick.",
+        "Markera texten och välj **Spoiler** i [+-menyn i formatfältet](/sv/help/format-bar/), eller skriv den mellan två par lodstreck: `||spoiler||`. Texten blir suddig direkt. Medan du redigerar syns den så snart markören rör vid den och blir suddig igen när markören går vidare. [I en skrivskyddad anteckning](/sv/help/locked-vs-protected/) visas den med ett klick.",
         "Anteckningslistan och förhandsvisningarna visar `•••` i stället, så inte ens längden avslöjar något. Sökningen hittar ändå orden i en spoiler, en HTML-export håller dem suddiga tills läsaren klickar, och en utskrift visar dem. En Markdown-export behåller strecken, som andra Markdown-appar visar som vanliga tecken runt texten. Spoilers är gratis."
       ]
     },
     "copy-box": {
       "q": "Hur gör jag text som kopieras med ett klick?",
       "a": [
-        "Lägg till en kopieringsruta: välj **Kopieringsruta** i +-menyn i formatfältet och skriv eller klistra in texten i den, till exempel ett kommando, en adress eller en kod. Knappen i hörnet lägger hela texten i urklipp och visar **Kopierad** en kort stund. Ett kodblock och en kopieringsruta kan göras om till varandra, så du kan också byta typ på ett befintligt block.",
+        "Lägg till en kopieringsruta: välj **Kopieringsruta** i [+-menyn i formatfältet](/sv/help/format-bar/) och skriv eller klistra in texten i den, till exempel ett kommando, en adress eller en kod. Knappen i hörnet lägger hela texten i urklipp och visar **Kopierad** en kort stund. Ett kodblock och en kopieringsruta kan göras om till varandra, så du kan också byta typ på ett befintligt block.",
         "Infogad kod går också att kopiera. I en skrivskyddad anteckning kopierar du den med ett klick eller tryck. Medan du redigerar kopierar du den med Cmd-klick på en Mac eller Ctrl-klick på Windows och Linux, så att ett vanligt klick fortfarande placerar markören. En kopieringsruta sparas som ett kodblock med språket `copy`, som andra Markdown-appar visar som ett vanligt kodblock. Båda är gratis."
       ]
     },
     "footnotes": {
       "q": "Hur lägger jag till fotnoter i en anteckning?",
       "a": [
-        "Välj **Fotnot** i +-menyn i formatfältet. Appen lägger in nästa nummer vid markören, skapar en tom fotnot under texten och placerar markören i den. Du kan också skriva `[^1]` direkt efter ett ord och börja en rad med `[^1]: ` för att skriva själva fotnoten. Beteckningen kan vara ett ord lika gärna som ett nummer.",
-        "Klicka på ett nummer för att hoppa till dess fotnot, och bakåtpilen eller Escape tar dig tillbaka till texten. På en dator visas fotnoten i ett litet kort när pekaren vilar på ett nummer. Numren följer ordningen i texten, och anteckningen sparar vanliga Markdown-fotnoter, så att andra Markdown-appar kan läsa dem. En HTML-export, en PDF och en burn note behåller dem som länkade fotnoter. Fotnoter är gratis."
+        "Välj **Fotnot** i [+-menyn i formatfältet](/sv/help/format-bar/). Appen lägger in nästa nummer vid markören, skapar en tom fotnot under texten och placerar markören i den. Du kan också skriva `[^1]` direkt efter ett ord och börja en rad med `[^1]: ` för att skriva själva fotnoten. Beteckningen kan vara ett ord lika gärna som ett nummer.",
+        "Klicka på ett nummer för att hoppa till dess fotnot, och bakåtpilen eller Escape tar dig tillbaka till texten. På en dator visas fotnoten i ett litet kort när pekaren vilar på ett nummer. Numren följer ordningen i texten, och anteckningen sparar vanliga Markdown-fotnoter, så att andra Markdown-appar kan läsa dem. En HTML-export, en PDF och [en burn note](/sv/help/burn-notes/) behåller dem som länkade fotnoter. Fotnoter är gratis."
+      ]
+    },
+    "table-formulas": {
+      "q": "Kan tabeller räkna ihop tal, som en summa eller ett medelvärde?",
+      "a": [
+        "Ja. Skriv `=` i en tabellcell för att välja en funktion, eller skriv formeln själv. Cellen visar svaret i stället för texten, och varje svar uppdateras i samma stund som du ändrar en cell som det läser. Celler namnges med kolumnbokstav och radnummer, och rubriken räknas som rad 1, så din första rad med data är rad 2. Svaren fungerar på alla konton; att välja från menyn är Pro.",
+        "Om du vill prova allt på en gång laddar du ner exempelanteckningen, öppnar sedan Inställningar > Import & Export > Importera, väljer **Markdown-filer** och pekar ut filen.",
+        "[Exempelanteckning (.md)](/marketing/table-formulas-examples.md)",
+        "Det här är funktionerna, och de kan kombineras med `+`, `-`, `*`, `/` och parenteser:",
+        "- `SUM`, `PRODUCT`, `AVG`, `MEDIAN`, `MIN`, `MAX` och `COUNT` fungerar över ett område, som i `=SUM(B2:B10)`\n- `ABS`, `SQRT`, `SIGN`, `CEIL`, `FLOOR`, `ROUND` och `LOG` fungerar på ett enskilt värde, som i `=ROUND(B7, 2)`\n- `PI`, `E`, `TAU` och `PHI` är konstanter, och `RAND` ger ett slumptal\n- `=B7-B2` drar en cell från en annan, och `=SUM(B2:B10)*0.2` tar en procentandel av en summa",
+        "Klicka på en cell som visar ett svar så kommer formeln tillbaka, redo att ändras. Din anteckning lagrar själva formeln, aldrig resultatet, så en export och vilken annan Markdown-app som helst visar `=SUM(B2:B10)` precis som du skrev den."
       ]
     },
     "statistics": {
-      "q": "Vad visar statistiken om mitt skrivande och mitt välmående?",
+      "q": "Vad visar statistiken om mitt skrivande och mina mätvärden?",
       "a": [
-        "Öppna Inställningar > Statistik, eller klicka på antalet anteckningar och ord i sidfoten. **Översikt** sammanfattar din vecka: din skrivsvit, skrivna ord, humör och loggade dagar, plus ett rutnät över de senaste 26 veckorna och de timmar du brukar skriva. **Skrivande** räknar dina anteckningar, ord och taggar, visar din nuvarande och längsta svit och listar dina milstolpar. **Välmående** visar varje mätvärde från din dagbok i diagram över en period du väljer, egna mätvärden inräknade.",
-        "Allt räknas ut på din enhet, och inget av det skickas till oss. Ord och skrivtimmar räknar det du skriver på den enheten, så varje enhet visar sina egna siffror. Diagrammen, sviterna, medicinkalendern och **Ladda ner JSON** är gratis. Pro lägger till Veckan i återblick, vad som påverkar ditt humör, tabellen Mönster, jämförelserna för samma dag och dagen efter, en **Läkar-PDF** och en AI-prompt som är klar att kopiera."
+        "Öppna Inställningar > Statistik, eller klicka på antalet anteckningar och ord i sidfoten. **Översikt** visar i dag och den här veckan: skrivna ord, ändrade och skapade objekt, vad som finns i din kalender i dag, dina sviter för skrivande och incheckning, ett rutnät över de senaste 26 veckorna, de timmar du brukar skriva, växande taggar och dina nästa milstolpar. **Mätvärden** gör om [mätvärdena i din dagbok](/sv/help/journal/) till en översikt med ditt snitthumör, [vad som lyfter och drar ner ditt humör](/sv/help/what-moves-mood/), din vecka, ett kort för varje mätvärde och en kalender över dina dagar; [ett tryck på ett mätvärde öppnar dess egen sida](/sv/help/explore-next-day/). **Skrivande** visar ord per dag, ditt skrivår, när du skriver, dina vanligaste taggar, anteckningarnas längd, dina längsta anteckningar och dina milstolpar.",
+        "Allt räknas ut på din enhet. Ord och skrivtimmar räknar det du skriver på den enheten, så varje enhet visar sina egna siffror. Diagrammen, sviterna, kalendern, varje mätvärdes egen sida, medicinsidan, året i pixlar och båda nedladdningarna av mätvärden är gratis. Pro lägger till [Veckan i återblick](/sv/help/week-in-review/), varje fynd och insikt, jämförelserna, [doseringen över tid](/sv/help/dose-lens/), **Läkar-PDF** och [AI-prompten](/sv/help/ai-prompt/)."
       ]
     },
     "drag-to-folder": {
       "q": "Kan jag dra en anteckning till en mapp eller en tagg?",
       "a": [
-        "Ja. Dra en anteckning från listan till en mapp i sidofältet för att flytta den dit, eller till **Osorterade** för att ta ut den ur sin mapp. Släpp den på en tagg för att lägga till taggen, och anteckningen behåller de taggar den redan hade. Uppgifter, bokmärken, kontakter, objekt i Valv och uppladdade filer i Filer dras på samma sätt. Håll ett draget objekt stilla över en stängd mapp en stund så öppnas den, och du når en undermapp.",
+        "Ja. Dra en anteckning från listan till en mapp i sidofältet för att flytta den dit, eller till **Osorterade** för att ta ut den ur sin mapp. [Släpp den på en tagg](/sv/help/tags/) för att lägga till taggen, och anteckningen behåller de taggar den redan hade. Uppgifter, bokmärken, kontakter, objekt i Valv och uppladdade filer i Filer dras på samma sätt. Håll ett draget objekt stilla över en stängd mapp en stund så öppnas den, och du når en undermapp.",
         "För att flytta flera på en gång markerar du dem med Cmd-klick på en Mac eller Ctrl-klick på Windows och Linux, lägger till ett intervall med Shift-klick och drar sedan valfritt markerat objekt. Att dra kräver en mus, styrplatta eller penna och ett fönster som är brett nog att visa sidofältet. På en telefon använder du **Flytta till mapp** i \"...\"-menyn i stället. Taggar är gratis, och [mappar](/sv/help/folders/) kräver Pro."
       ]
     },
@@ -831,21 +860,50 @@
       "q": "Kan jag skapa ett eget färgtema?",
       "a": [
         "Ja, med Pro. Öppna Inställningar > Utseende och välj **Nytt tema**. Välj sex färger (Bakgrund, Sidofält, Kantlinje, Text, Dämpad text och Accentfärg) så föreslår appen resten, medan appen bakom panelen visar ditt tema medan du arbetar. En kontrastkontroll flaggar text som är svår att läsa och erbjuder **Åtgärda alla**. Spara blir tillgängligt när alla kontroller går igenom.",
-        "Menyn på varje temakort har **Kopiera kod**, som kopierar temat som en kort textkod du kan skicka till vem som helst, och med **Klistra in temakod** lägger du till en kod du har fått. Du väljer ett tema för ljust läge och ett för mörkt, **Favorit** i ett temakorts meny lägger upp till tre teman för varje läge i knappen **Utseende** i sidfoten, och temana du skapar synkas till alla dina enheter. Fler hittar du på [temasidan](https://privacynotes.app/themes), där du också kan skicka in ditt eget. Temat Default är gratis, och alla andra teman kräver Pro."
+        "Menyn på varje temakort har **Kopiera kod**, som kopierar temat som en kort textkod du kan skicka till vem som helst, och med **Klistra in temakod** lägger du till en kod du har fått. [Du väljer ett tema för ljust läge och ett för mörkt](/sv/help/appearance/), **Favorit** i ett temakorts meny lägger upp till tre teman för varje läge i knappen **Utseende** i sidfoten, och temana du skapar synkas till alla dina enheter. Fler hittar du på [temasidan](https://privacynotes.app/themes), där du också kan skicka in ditt eget. Skriv ett temas namn, till exempel `frost`, i [Ninja](/sv/help/ninja/) för att byta till det, eller `tema` för att se alla. Temat Default är gratis, och alla andra teman kräver Pro."
       ]
     },
     "format-bar": {
       "q": "Kan jag välja vilka knappar som visas i formatfältet?",
       "a": [
-        "Ja. Klicka på kugghjulet i slutet av formatfältet, eller öppna Inställningar > Formatfält. Varje knapp har tre platser: **I fältet**, **I +-menyn** eller **Dolda**. Dra en knapp för att flytta den, eller klicka på den för att se dess alternativ. En dold knapp fungerar fortfarande via sitt kortkommando och sin Markdown, så du förlorar inget på att dölja en.",
+        "Ja. Klicka på kugghjulet i slutet av formatfältet, eller öppna Inställningar > Formatfält. Varje knapp har tre platser: **I fältet**, **I +-menyn** eller **Dolda**. Dra en knapp för att flytta den, eller klicka på den för att se dess alternativ. En dold knapp fungerar fortfarande via [sitt kortkommando](/sv/help/keyboard-shortcuts/) [och sin Markdown](/sv/help/markdown-syntax/), så du förlorar inget på att dölja en.",
         "Att flytta fältet till toppen eller botten är gratis på alla konton. Att ordna dess knappar ingår i Pro: på ett gratiskonto fungerar Inställningar > Formatfält som en förhandsvisning du kan prova, och din uppställning sparas när du har Pro. Din uppställning följer ditt konto till varje enhet, och **Återställ standard** tar tillbaka standardfältet. På en pekskärm är fältet en enda rad som scrollar i sidled, på alla konton, så ingen knapp göms undan på en andra rad."
+      ]
+    },
+    "ninja": {
+      "q": "Vad kan jag göra med Ninja, rutan för Cmd+K?",
+      "a": [
+        "Ninja öppnar vilket objekt som helst, lägger till nya och kör kommandon, allt från en enda ruta. Tryck på Cmd+K på en Mac eller Ctrl+K på Windows och Linux, K som i Katana (Cmd+P eller Ctrl+P fungerar också), eller klicka på **Ninja** i sidofältet eller i listhuvudet. Skriv en del av en titel för att hitta anteckningar, uppgifter, händelser, dagboksinlägg, objekt i Valvet, bokmärken, kontakter, filer, inställningar, taggar och mappar. Under titlarna visar **I texten** raden i en anteckning som innehåller dina ord.",
+        "Det första tecknet du skriver avgör läget: `+` [lägger till ett objekt med vanliga ord](/sv/help/ninja-quick-add/), `>` kör ett kommando, `#` listar dina taggar och `/` dina mappar, och `>>` efter en text [lägger till den i en lista du redan har](/sv/help/ninja-add-to-list/). Tryck på Tab på en rad för objektets meny, Option+Enter eller Alt+Enter för att öppna det i en flik, och Q var som helst för att öppna rutan med `+` redan skrivet. [Matchningen sker på din enhet](/sv/help/search-local/), och Ninja är gratis."
+      ]
+    },
+    "ninja-quick-add": {
+      "q": "Hur lägger jag till en händelse eller en uppgift genom att skriva en mening?",
+      "a": [
+        "Tryck på Cmd+K eller Ctrl+K, skriv `+` och meningen, till exempel `+Tandläkare fre kl 15 1 tim före`, och tryck på Enter. Ninja läser ut dagen, tiden, en längd, en upprepning och en avisering, och resten blir titeln. Varje del som lästs ut visas som en chip innan du trycker på Enter, så du ser resultatet först. Tryck på Q var som helst för att öppna rutan med `+` redan skrivet.",
+        "Skriv `uppgift`, `anteckning` eller `dagbok` först eller sist för att välja sort; utan något av dem får du en händelse. `/Resor` lägger objektet i en mapp, `#skola` lägger till en tagg och `@arbete` lägger det i ett utrymme. Vill du behålla ett ord som text, sätt det inom citationstecken (`\"fredag\" fest`) eller klicka på dess chip. Se [datumen som Ninja förstår](/sv/help/ninja-dates/). Ninja och kalendern är gratis, och [aviseringar ringer med Pro](/sv/help/reminders/)."
+      ]
+    },
+    "ninja-dates": {
+      "q": "Vilka datum och tider kan jag skriva i Ninja?",
+      "a": [
+        "Ninja läser datum så som du skulle säga dem till en person. Skriv ett datum ensamt, till exempel `i morgon` eller `31 okt`, så öppnar första raden kalendern på den dagen. Efter `+` anger samma ord dagen för ett nytt objekt:",
+        "- Dagar: `i kväll`, `på lördag`, `i övermorgon`, `om 3 dagar`, `31 okt`, `2026-12-24`\n- Tider och längder: `klockan 12`, `kl 15`, `9-17`, `i 30 min`, `i 3 dagar`\n- Intervall: `fre till sön`, `20-25 okt`\n- Upprepningar: `varje vardag`, `varje fredag till 20 dec`, `varje måndag 10 gånger`\n- Aviseringar: `1 tim före`, `påminn 1 d och 1 tim`",
+        "Ett datum i siffror följer **Datumformat** i Inställningar > Datum och tid, så `3/4` läses med månaden först eller dagen först beroende på vad du har ställt in. Ett år förblir ett år: `31 okt 2027` blir aldrig 20:27. Datumorden följer appens språk, och ordet `skapa` fungerar som `+`, liksom `add` på engelska. [Ninja är gratis](/sv/help/ninja/)."
+      ]
+    },
+    "ninja-add-to-list": {
+      "q": "Hur lägger jag till uppgifter i en lista utan att öppna den?",
+      "a": [
+        "Skriv uppgifterna i Ninja, sedan `>>` och listans namn, och tryck på Enter: `mjölk, ägg >> mat` lägger två uppgifter sist i din lista Matvaror, och du stannar där du är. Några bokstäver av namnet räcker. Ett namn som ingen lista har ännu skapar den listan med uppgifterna i. I en anteckning eller ett dagboksinlägg läggs texten in som ett stycke.",
+        "Kommatecken delar upp uppgifterna, och citationstecken behåller ett komma, så `\"strumpor, varma\", laddare` blir två. Ett meddelande bekräftar vad som lades till, och när listan är öppen tar ett enda Ångra tillbaka det. Ninja skriver aldrig i [ett objekt bakom din PIN](/sv/help/locked-vs-protected/), ett skrivskyddat objekt eller en Kanban-tavla. [Uppgifter](/sv/help/tasks/) och Ninja är gratis."
       ]
     },
     "window-zoom": {
       "q": "Kan jag göra hela skrivbordsappen större eller mindre?",
       "a": [
         "Ja, i skrivbordsapparna för Mac, Windows och Linux. Tryck på Cmd och plustangenten på en Mac, eller Ctrl och plustangenten på Windows och Linux, för att göra hela fönstret större. Minustangenten gör det mindre, och 0 återställer det till normal storlek. Samma inställning heter **Appstorlek** under Inställningar > Utseende, med steg från 80% till 200%.",
-        "Appstorlek skalar allt på en gång: sidofältet, listan, menyerna och din text. Vill du bara ändra din skrivtext använder du **Textstorlek** under Inställningar > Redigerare. Appstorlek gäller den enhet du ställer in den på. I en webbläsare gör webbläsarens egen zoom samma jobb."
+        "Appstorlek skalar allt på en gång: sidofältet, listan, menyerna och din text. [Vill du bara ändra din skrivtext](/sv/help/appearance/) använder du **Textstorlek** under Inställningar > Redigerare. Appstorlek gäller den enhet du ställer in den på. I en webbläsare gör webbläsarens egen zoom samma jobb."
       ]
     },
     "zen-mode": {
@@ -859,7 +917,7 @@
       "q": "Kan jag ändra hur datum visas?",
       "a": [
         "Ja, under Inställningar > Datum och tid. **Datumformat** erbjuder Automatiskt, Dag först, Månad först och År först (ISO), och **Tidsformat** erbjuder Automatiskt, 24 timmar och 12 timmar. Automatiskt följer appens språk och varje enhets region, och ditt val gäller på alla dina enheter.",
-        "Dagboksinlägg får sin titel från datumet, och **Dagbokstitlar** på samma ställe erbjuder färdiga format i ditt datumformat, eller **Eget mönster** för att bygga ditt eget av tokener som `YYYY`, `MMMM` och `ddd`, där ord inom hakparenteser behålls precis som du skriver dem. Ett nytt mönster gäller bara nya inlägg. För att infoga dagens datum i en anteckning trycker du på Cmd+; på en Mac eller Ctrl+; på Windows och Linux, och lägger till Shift för att få med tiden också. Allt detta är gratis."
+        "[Dagboksinlägg får sin titel från datumet](/sv/help/journal/), och **Dagbokstitlar** på samma ställe erbjuder färdiga format i ditt datumformat, eller **Eget mönster** för att bygga ditt eget av tokener som `YYYY`, `MMMM` och `ddd`, där ord inom hakparenteser behålls precis som du skriver dem. Ett nytt mönster gäller bara nya inlägg. För att infoga dagens datum i en anteckning trycker du på Cmd+; på en Mac eller Ctrl+; på Windows och Linux, och lägger till Shift för att få med tiden också. Allt detta är gratis."
       ]
     },
     "checklists": {
@@ -867,13 +925,6 @@
       "a": [
         "Ja. Anteckningens \"...\"-meny har **Avmarkera alla punkter** för att återanvända en lista, **Radera markerade punkter** för att rensa bort de klara, och **Sortera punkter efter status** för att flytta markerade punkter under resten. Varje alternativ visas bara när det skulle ändra något. Radera frågar först, och sortering och avmarkering kan ångras med Cmd+Z eller Ctrl+Z. Längst ner i anteckningen visas hur långt du har kommit, till exempel \"3 av 6 markerade\".",
         "För att ordna om för hand drar du i greppet i slutet av en punkt. Indragna punkter följer med, och Escape avbryter dragningen. Greppet visas när du hovrar på en dator och syns svagt hela tiden på en pekskärm. En markerad punkt flyttas som standard under de omarkerade i sin lista; stäng av det med **Flytta markerade punkter nedåt** under Inställningar > Listor. Allt detta är gratis."
-      ]
-    },
-    "quick-switcher": {
-      "q": "Vad är funktionen Gå till, och vad kan den hitta?",
-      "a": [
-        "Funktionen Gå till hoppar till vad som helst via titeln. Tryck på Cmd+K på en Mac eller Ctrl+K på Windows och Linux (Cmd+P eller Ctrl+P fungerar också), eller klicka på **Gå till** i sidofältet eller i listans rubrik. Skriv en del av en titel för att hitta anteckningar, uppgifter, dagboksinlägg, objekt i Valv, bokmärken, kontakter, bifogade filer och inställningar. Enter öppnar objektet, och Option+Enter eller Alt+Enter öppnar det i en flik.",
-        "Skriv > först för att köra ett kommando i stället, till exempel skapa en ny anteckning eller gå till en sektion. Skriv # först för att bara se dina taggar, eller / för att bara se dina mappar; när du väljer en filtreras listan på samma sätt som när du klickar i sidofältet. För att hitta ord i din text i stället för i titlar väljer du raden **Sök överallt**, eller trycker på Cmd+Enter eller Ctrl+Enter från valfri rad. Matchningen sker på din enhet, så inget du skriver skickas till oss. Funktionen Gå till är gratis."
       ]
     },
     "find-in-note": {
@@ -893,49 +944,203 @@
     "connected-logins": {
       "q": "Kan jag ansluta fler än ett inloggningssätt till mitt konto?",
       "a": [
-        "Ja. Öppna Inställningar > Konto > Konton och anslut Google, Apple eller GitHub för att lägga till ett inloggningssätt som öppnar samma valv. Du kan ansluta flera, till och med två konton från samma leverantör, och din återställningsfras fungerar fortfarande vid sidan av dem. Att ansluta eller koppla bort ett konto lämnar dina anteckningar och din kryptering orörda.",
-        "Ett inloggningssätt som redan hör till ett annat valv kan inte anslutas, eftersom valv aldrig slås ihop. **Koppla bort** ber först om dina 12 ord. Om vi förvarar din fras åt dig stannar det sista anslutna kontot kvar tills du ansluter ett annat eller sparar din fras och byter till egen förvaring. Med egen förvaring ber en ny enhet fortfarande om dina 12 ord. Anslutna konton är i beta."
+        "Ja. Öppna Inställningar > Konto > Konton och anslut Google, Apple eller GitHub för att lägga till ett inloggningssätt som öppnar samma valv. Du kan ansluta flera, till och med två konton från samma leverantör, och [din återställningsfras fungerar fortfarande vid sidan av dem](/sv/help/oauth-recovery/). Att ansluta eller koppla bort ett konto lämnar dina anteckningar och din kryptering orörda.",
+        "Ett inloggningssätt som redan hör till ett annat valv kan inte anslutas, eftersom valv aldrig slås ihop. **Koppla bort** ber först om dina 12 ord. Om vi förvarar din fras åt dig stannar det sista anslutna kontot kvar tills du ansluter ett annat eller sparar din fras och [byter till egen förvaring](/sv/help/threat-model-levels/). Med egen förvaring ber en ny enhet fortfarande om dina 12 ord. Anslutna konton är i beta."
       ]
     },
     "calendar": {
       "q": "Finns det en kalender, och vad visas i den?",
       "a": [
-        "Ja. Kalender i sidofältet visar alla objekt med ett datum på ett ställe: händelser, dagboksinlägg, anteckningar och uppgiftslistor med ett datum, och dina kontakters födelsedagar. Listan bredvid är agendan för de kommande dagarna, och den stora vyn växlar mellan Dag, Vecka och Månad. Klicka på en tom dag för att lägga till något där, eller dra ett objekt till en annan dag.",
-        "En händelse är en egen sorts objekt: en anteckning med en dag, en slutdag, en tid och en upprepning. Skriv en hel rad i Snabbtillägg, till exempel ”Tandläkare fre 15:00 1 tim före”, så läser den ut dagen, tiden och aviseringen åt dig. En anteckning eller en uppgiftslista kan också ha en dag, en tid och en slutdag, via raden Schema i dess ”...”-meny. Kalendern är gratis."
+        "Ja. Kalender i sidofältet visar alla objekt med ett datum på ett ställe: händelser, [dagboksinlägg](/sv/help/journal/), anteckningar och uppgiftslistor med ett datum, och [dina kontakters födelsedagar](/sv/help/contacts/). Listan bredvid är agendan för de kommande dagarna, och den stora vyn växlar mellan Dag, Vecka och Månad. Klicka på en tom dag, eller dra över tomma timmar, så öppnas Ninja med den dagen och tiden inställda, eller dra ett objekt till en annan dag.",
+        "En händelse är en egen sorts objekt: en anteckning med en dag, en slutdag, en tid och en upprepning. Skriv en hel rad i [Ninja](/sv/help/ninja-quick-add/) efter `+`, till exempel `+Tandläkare fre kl 15 1 tim före`, så läser Ninja ut dagen, tiden och [aviseringen åt dig](/sv/help/reminders/). Skriv en dag ensam, till exempel `31 okt`, för att öppna kalendern där. En anteckning eller en uppgiftslista kan också ha en dag, en tid och en slutdag, via raden Schema i dess \"...\"-meny. Kalendern är gratis."
       ]
     },
     "reminders": {
       "q": "Fungerar kalenderpåminnelser när appen är stängd?",
       "a": [
         "På en telefon, ja: upp till 64 aviseringar, upp till 400 dagar framåt, lämnas över till själva telefonen, så de ringer även när PrivacyNotes är stängt; när du öppnar och låser upp appen lämnas fler över. I skrivbordsappen ringer en påminnelse medan appen körs, och i en webbläsare medan PrivacyNotes är öppet i en flik. Varje enhet planerar sina påminnelser utifrån de objekt den har, så servern får aldrig veta en titel, en tid eller en dag.",
-        "Lägg till en avisering från raden Avisering i ett objekts Schema-vy, upp till fem per objekt, och ställ in standardvärdena under Inställningar > Datum och tid > Kalender, där även ”Visa titlar i påminnelser” finns. Ett objekt bakom din PIN ringer alltid som ”Påminnelse” och tiden, och det gör även varje avisering som schemaläggs medan applåset är på. En avisering som lämnades över innan låset var på kan behålla sin titel tills den ringer. Påminnelser ingår i Pro; själva kalendern är gratis."
+        "Lägg till en avisering från raden Avisering i ett objekts Schema-vy, upp till fem per objekt, och ställ in standardvärdena under Inställningar > Datum och tid > Kalender, där även ”Visa titlar i påminnelser” finns. [Ett objekt bakom din PIN](/sv/help/locked-vs-protected/) ringer alltid som ”Påminnelse” och tiden, och det gör även varje avisering som schemaläggs medan applåset är på. En avisering som lämnades över innan låset var på kan behålla sin titel tills den ringer. Påminnelser ingår i Pro; [själva kalendern är gratis](/sv/help/calendar/)."
       ]
     },
     "calendar-time-zones": {
       "q": "Vad händer med tiderna för händelser när jag reser till en annan tidszon?",
       "a": [
-        "En tid i kalendern förblir den tid du skrev. En händelse kl. 15:00 visas och ringer kl. 15:00 var din enhet än befinner sig, på samma sätt som en påminnelse i en att göra-app, eftersom varje tid sparas som lokal tid utan tidszon. En telefon schemalägger varje avisering för ett exakt ögonblick, så efter ett byte av tidszon öppnar och låser du upp PrivacyNotes en gång i den nya zonen för att flytta dess aviseringar; medan appen är öppen och upplåst flyttar den dem själv.",
+        "En tid i kalendern förblir den tid du skrev. En händelse kl. 15:00 visas och ringer kl. 15:00 var din enhet än befinner sig, på samma sätt som en påminnelse i en att göra-app, eftersom varje tid sparas som lokal tid utan tidszon. [En telefon schemalägger varje avisering för ett exakt ögonblick](/sv/help/reminders/), så efter ett byte av tidszon öppnar och låser du upp PrivacyNotes en gång i den nya zonen för att flytta dess aviseringar; medan appen är öppen och upplåst flyttar den dem själv.",
         "För ett samtal med någon i en annan tidszon anger du tiden som den är där du befinner dig. Om ett byte till sommartid hoppar över timmen för en avisering ringer aviseringen den första minuten efter hoppet."
+      ]
+    },
+    "daily-check-in": {
+      "q": "Hur fungerar den dagliga incheckningen?",
+      "a": [
+        "Incheckningskortet ligger överst i Dagböcker och frågar ”Hur mår du i dag?” på en skala från 1 till 10. Ett tryck sparar ditt humör i dagens inlägg, och skapar inlägget om det inte finns än. Sedan går kortet igenom dina andra mätvärden ett i taget: **Nästa** går vidare, **Klar** avslutar. Med alternativen för incheckning på kortet kan du [logga en annan dag](/sv/help/log-missed-day/), hoppa över i dag, [välja dina mätvärden](/sv/help/choose-trackers/) eller dölja kortet. Incheckningen är gratis.",
+        "Vill du ha en daglig knuff, slå på ”Påminnelse om daglig incheckning” i Inställningar > Mätvärden > Allmänt och välj tid. Den ringer en gång om dagen, bara på den enheten, och är tyst en dag då du redan har loggat humör eller hoppat över. I en webbläsare ringer den medan PrivacyNotes är öppet i en flik. Dagar som bara innehåller en incheckning ligger utanför dagbokslistan tills du slår på **Visa incheckningar**."
+      ]
+    },
+    "choose-trackers": {
+      "q": "Hur slår jag på eller av mätvärden?",
+      "a": [
+        "Öppna Inställningar > Mätvärden > Allmänt. De inbyggda mätvärdena ligger i tre grupper, Humör och sinne, Kropp och hälsa och Livsstil, och ett tryck slår på eller av ett. **Välj mätvärden** i [alternativen för incheckning](/sv/help/daily-check-in/) öppnar samma reglage. Ett mätvärde som är på visas som en knapp i varje dagboksinlägg och som ett steg i incheckningen.",
+        "Att stänga av ett mätvärde döljer det i nya inlägg; de värden du redan loggat ligger kvar på sina dagar. Alla inbyggda mätvärden är gratis. Pro lägger till mätvärden som du definierar själv, se [egna mätvärden](/sv/help/custom-trackers/)."
+      ]
+    },
+    "habits": {
+      "q": "Hur fungerar vanefrågor?",
+      "a": [
+        "Vanor är ett inbyggt mätvärde med ja/nej-frågor, till exempel ”Mediterade du?”, sorterade i vanor att bygga och vanor att hålla koll på. Varje dag ställer knappen Vanor de frågor du har slagit på och räknar hur många du svarade ja på. Välj dem i Inställningar > Mätvärden > Allmänt, under ”Vanefrågor”. Att välja bland de inbyggda frågorna är gratis.",
+        "Med Pro kan du lägga till upp till 30 egna frågor på samma ställe. Skriv frågan, ge den ett kort namn för knappen och diagrammen, markera den som en vana att bygga eller att hålla koll på, och tryck på **Lägg till vana**. Dina egna frågor ligger bredvid de inbyggda i knappen och [i statistiken](/sv/help/what-moves-mood/)."
+      ]
+    },
+    "factors": {
+      "q": "Vad är faktorer i dagboken?",
+      "a": [
+        "Faktorer är dina egna ord för det som påverkade en dag, till exempel jobb, resa, en deadline eller en migrän. Tryck på de som passar i knappen Faktorer i ett dagboksinlägg, så många som stämmer. Med Pro [jämför statistiken ditt humör de dagar med och utan varje faktor](/sv/help/what-moves-mood/). Själva faktorerna är gratis.",
+        "Hantera listan i Inställningar > Mätvärden > Faktorer, eller tryck på **Ändra de här faktorerna** i knappen. Lägg till flera på en gång genom att skilja dem åt med kommatecken. Listan rymmer upp till 200 faktorer på högst 40 tecken vardera, och en faktor du tar bort behåller sitt namn de dagar som redan har den."
+      ]
+    },
+    "custom-trackers": {
+      "q": "Kan jag följa något som appen inte har inbyggt?",
+      "a": [
+        "Ja. Med Pro kan du skapa upp till 20 egna mätvärden i Inställningar > Mätvärden > Egna. Ge varje ett namn på högst 24 tecken, en ikon, en färg och en typ: en skala från 0 till 10, en skala från 0 till 5, en poäng från 0 till 100, ett tal eller ja eller nej. En förhandsvisning visar knappen innan du trycker på **Skapa**.",
+        "Ett mätvärde av typen tal kan slå på **Kom ihåg senaste värdet**, som startar varje dag från ditt förra värde: bra för något som sällan ändras, som din vikt. Du kan pausa ett eget mätvärde och återuppta det senare, och dess historik finns kvar. Egna mätvärden syns [i incheckningen](/sv/help/daily-check-in/), i statistiken och [i exporterna av mätvärden](/sv/help/tracker-json-csv/) som de inbyggda."
+      ]
+    },
+    "log-missed-day": {
+      "q": "Kan jag logga en dag jag missade?",
+      "a": [
+        "Ja. [På incheckningskortet](/sv/help/daily-check-in/) öppnar du alternativen för incheckning, väljer **Logga en annan dag** och väljer dag i kalendern. Kortet frågar sedan hur du mådde det datumet, och dina svar hamnar i den dagens dagboksinlägg. **Tillbaka till i dag** tar kortet tillbaka till den aktuella dagen.",
+        "Kalendern markerar dagarna som redan har ett inlägg, så luckorna är lätta att se. En dag du fyller i senare [räknas i din statistik som vilken annan dag som helst](/sv/help/statistics/). I Dagböcker startar kalenderknappen bredvid knappen för nytt inlägg ett skrivet inlägg för en dag i det förflutna på samma sätt."
+      ]
+    },
+    "add-medication": {
+      "q": "Hur lägger jag till en medicin med dos och tider?",
+      "a": [
+        "Öppna Inställningar > Mätvärden > Medicin och fyll i formuläret för ny medicin: ett namn, en styrka som 50 mg, en form (tablett, kapsel, flytande, injektion, inhalator, plåster, droppar eller annat) och en valfri färg. Formen bestämmer medicinens ikon och enheten för varje dos. Välj **Enligt schema** och sedan hur ofta: varje dag, valda veckodagar eller med några dagars mellanrum.",
+        "Under ”Tider och mängd” anger du en tid och en mängd för varje dos; **Lägg till en tid** lägger till fler, upp till 6 doser om dagen. Ange en startdag och en valfri slutdag och tryck sedan på **Spara**. Varje dos visas som en egen rad i knappen Mediciner varje dag den ska tas, och **Ändra de här medicinerna** i knappen tar dig tillbaka hit. Att följa medicin är gratis."
+      ]
+    },
+    "as-needed-medication": {
+      "q": "Kan jag följa en medicin som jag bara tar vid behov?",
+      "a": [
+        "Ja. Välj **Vid behov** [i stället för ett schema](/sv/help/add-medication/) i Inställningar > Mätvärden > Medicin. Knappen Mediciner visar då **Logga en dos** för den i stället för att fråga om du tog den. Varje tryck registrerar en dos i det ögonblicket, och dagens doser listas efter tid, var och en med en knapp för att ta bort den.",
+        "Ange ”Högst per dag” för att se ett löpande antal som ”2 av 3 i dag”. Vid det antalet säger knappen ”Dagsgränsen är nådd” som en notering, och du kan fortfarande logga en dos. Statistiken räknar doser vid behov för sig och håller dem utanför andelen tagna schemalagda doser."
+      ]
+    },
+    "skip-dose": {
+      "q": "Vad händer när jag hoppar över eller missar en dos?",
+      "a": [
+        "Tryck på **Hoppa över** på dosen i knappen Mediciner när du avstår med avsikt. Knappen frågar då varför, med valfria skäl: glömde, tog slut, biverkningar, läkarens råd eller annat. Att trycka på den valda **Tagen** eller **Hoppa över** igen rensar valet.",
+        "På en dag som har ett dagboksinlägg räknas en schemalagd dos som missad när dess tid har passerat, eller vid dagens slut om den saknar tid, om du aldrig har markerat den. Dagar före din första loggade dos räknas inte. Medicinens sida i Inställningar > Statistik > Mätvärden visar varje dag som tagen, överhoppad eller missad, och dess siffra räknar varje schemalagd dos för sig, så en dag med två doser där en hoppades över räknas som en av två."
+      ]
+    },
+    "medication-reminders": {
+      "q": "Kan PrivacyNotes påminna mig om att ta min medicin?",
+      "a": [
+        "Ja. Ge varje dos en tid i Inställningar > Mätvärden > Medicin och slå på **Påminn mig** för den medicinen. [Påminnelsen ringer vid varje dostid](/sv/help/medication-reminder-privacy/) de dagar dosen ska tas, och är tyst för en dos du redan har markerat. Medicinpåminnelser kräver Pro; [den dagliga påminnelsen om incheckning är fortfarande gratis](/sv/help/daily-check-in/).",
+        "Reglaget hör till varje enhet och synkas inte, så slå på det på varje enhet där du vill höra det. På en telefon ringer påminnelsen medan appen är stängd. I skrivbordsappen och i en webbläsare ringer den medan PrivacyNotes är öppet. En dos utan tid, och [en medicin vid behov](/sv/help/as-needed-medication/), har ingen påminnelse."
+      ]
+    },
+    "medication-reminder-privacy": {
+      "q": "Visar en medicinpåminnelse medicinens namn?",
+      "a": [
+        "Nej. Varje medicinpåminnelse lyder ”Medicinpåminnelse” och tiden, oavsett medicin, så en låsskärm eller en lista med aviseringar visar aldrig vad du tar. Det gäller även när ”Visa titlar i påminnelser” är på [för dina kalenderobjekt](/sv/help/reminders/).",
+        "På en telefon lämnas påminnelsetiderna till telefonen i förväg så att de ringer medan appen är stängd, och de aviseringarna innehåller bara den texten och tiden. Ett tryck på en öppnar appen vid dagens incheckning, där du markerar dosen."
+      ]
+    },
+    "medication-supply": {
+      "q": "Kan appen tala om när en medicin håller på att ta slut?",
+      "a": [
+        "Ja, med Pro. Ange antalet du har i fältet **Förråd** för medicinen i Inställningar > Mätvärden > Medicin. Varje dos du markerar som tagen räknas av med sin mängd, och medicinens rad visar hur många som är kvar.",
+        "När det återstår färre än 7 dagars schemalagda doser visar knappen Mediciner en rad som ”Vitamin D: cirka 3 dagar kvar”. Efter en påfyllning öppnar du medicinen, anger det nya antalet i lager och trycker på **Spara**; räkningen börjar om därifrån."
+      ]
+    },
+    "change-dose": {
+      "q": "Hur ändrar jag en dos utan att förlora historiken?",
+      "a": [
+        "Öppna medicinen i Inställningar > Mätvärden > Medicin, ändra styrkan, tiderna, mängderna eller schemat och tryck på **Spara**. En schemaändring gäller från i dag, så tidigare dagar behåller de doser och tider de hade, och det du loggade på dem ligger kvar som det var.",
+        "Varje ändring av styrkan hamnar på medicinens sida i Inställningar > Statistik > Mätvärden: rutnätet dag för dag markerar den för alla, och med Pro listar **Dosering över tid** varje ändring med datum och **Kring varje dosändring** [jämför ditt humör före och efter den](/sv/help/dose-lens/)."
+      ]
+    },
+    "week-in-review": {
+      "q": "Vad är Veckan i återblick?",
+      "a": [
+        "Veckan i återblick är en sammanfattning av en vecka i Pro, nära slutet av Inställningar > Statistik > Mätvärden. Den visar varje dags humör, nämner din bästa och din tyngsta dag, räknar de dagar du loggade humör och de objekt du skapade, och markerar vad som ändrats mot veckan innan. Pilarna går tillbaka till tidigare veckor.",
+        "Under sammanfattningen finns en reflektionsruta med en uppmaning som ”Vad gjorde tisdag bra?”. Det du skriver där [sparas i din dagbok](/sv/help/journal/) och synkas, krypterat, som resten av den."
+      ]
+    },
+    "what-moves-mood": {
+      "q": "Hur hittar appen vad som lyfter eller drar ner mitt humör?",
+      "a": [
+        "Inställningar > Statistik > Mätvärden jämför ditt humör de dagar med och utan varje [mätvärde, faktor, vana och känsla](/sv/help/factors/), samma dag och dagen efter. Översikten nämner vad som lyfter ditt humör och vad som drar ner det, och **Vad som påverkar ditt humör** rangordnar alla, med varje fynd utskrivet med vanliga ord.",
+        "En jämförelse behöver tillräckligt många loggade dagar på båda sidor innan den visas, och den säger hur många fler den behöver. Varje resultat är ett medelvärde av dina loggade dagar: ett spår att testa, inte ett bevis på orsak. Det främsta fyndet är gratis; Pro visar varje rad, hela tabellen och de skrivna insikterna."
+      ]
+    },
+    "explore-next-day": {
+      "q": "Kan jag se hur sömnen i natt påverkar mitt humör i morgon?",
+      "a": [
+        "Ja. I Inställningar > Statistik > Mätvärden trycker du på ett mätvärde för att öppna dess sida och byter sedan **Samma dag** till **Nästa dag**. Sidan jämför då ditt humör dagen efter höga eller låga värden, så du ser sömnen i natt mot humöret i morgon. **Jämför med** mäter mätvärdet mot ett annat utfall än humör, till exempel energi eller fokus.",
+        "Ett mätvärdes sida, med sitt diagram och sina värden per veckodag, är gratis, och humörsidan lägger till ditt år i pixlar, en ruta per dag, som du kan spara som bild. Jämförelserna samma dag och nästa dag ingår i Pro."
+      ]
+    },
+    "dose-lens": {
+      "q": "Kan jag se om en dosändring påverkade mitt humör?",
+      "a": [
+        "Ja, med Pro. Öppna medicinens sida från dess kort i Inställningar > Statistik > Mätvärden. **Kring varje dosändring** jämför ditt genomsnittliga humör under dagarna före varje ändring av styrkan med dagarna efter den, och **Dosering över tid** listar varje ändring med datum.",
+        "En jämförelse behöver tillräckligt många loggade dagar på båda sidor av ändringen, och den säger hur många fler den behöver. Humöret rör sig av många skäl, så se resultatet som något att prata igenom med din läkare. [Läkar-PDF:en innehåller samma jämförelse](/sv/help/doctor-pdf/)."
+      ]
+    },
+    "doctor-pdf": {
+      "q": "Vad finns i Läkar-PDF:en?",
+      "a": [
+        "Läkar-PDF:en är en utskrivbar rapport i Pro att ta med till ett besök, skapad på din enhet från **Läkar-PDF** i Inställningar > Import & Export > Mätvärden, för den period du väljer. Den innehåller en översikt över perioden, ditt humör dag för dag med ett 7-dagarssnitt, en rad för varje mätvärde, ditt humör de dagar med och utan varje faktor, och [de mönster appen hittade](/sv/help/what-moves-mood/).",
+        "För varje medicin listar den de schemalagda doser som tagits, till exempel ”Vitamin D: 10 av 12 schemalagda doser tagna”, en kalender över dagarna och [varje dosändring med datum och ditt humör runt den](/sv/help/dose-lens/). Filen lämnar din enhet först när du själv sparar eller skickar den."
+      ]
+    },
+    "tracker-json-csv": {
+      "q": "Vad är skillnaden mellan nedladdningarna av mätvärden som JSON och CSV?",
+      "a": [
+        "Båda är gratis, finns i Inställningar > Import & Export > Mätvärden och gäller den period du väljer. **Ladda ner CSV** ger en rad per dag och en kolumn per mätvärde, redo för ett kalkylblad; en medicin får en kolumn med dagens status: tagen, överhoppad eller missad.",
+        "**Ladda ner JSON** innehåller varje mätvärde med datum och definition, för en annan app eller din egen analys. Det är den fullständiga uppgiften: varje medicins schema och dess ändringar, dess påfyllningar och varje dos med tid och [skäl till att den hoppades över](/sv/help/skip-dose/). Båda filerna skapas på din enhet."
+      ]
+    },
+    "ai-prompt": {
+      "q": "Hur fungerar AI-prompten för mätvärden, och vad skickar den?",
+      "a": [
+        "Den skickar ingenting. **Visa & kopiera AI-prompt** i Inställningar > Import & Export > Mätvärden skriver en sammanfattning av dina mätvärden för den period du väljer, visar den på skärmen och kopierar den till urklipp. Du klistrar in den i den chatbot du föredrar. Den ingår i Pro.",
+        "Prompten innehåller dina medelvärden, ditt humör dag för dag, följsamhet till medicinering och dosändringar, de mönster appen hittade och instruktioner till chatboten: börja med de fynd som betyder mest, håll data åtskilda från gissningar, föreslå små förändringar att pröva och peka ut vad som är värt att ta med till en läkare utan att ställa diagnos. Läs den innan du klistrar in den och ta bort allt du hellre behåller för dig själv."
+      ]
+    },
+    "tracker-privacy": {
+      "q": "Vem kan läsa mina mätvärden och min medicindata?",
+      "a": [
+        "Dina mätvärden ligger inuti dina dagboksinlägg och din medicinlista i dina inställningar, och båda är krypterade på din enhet och förblir krypterade när de synkas. Statistiken, [Läkar-PDF:en](/sv/help/doctor-pdf/), [AI-prompten](/sv/help/ai-prompt/) och båda nedladdningarna räknas ut på din enhet.",
+        "[Med egen förvaring](/sv/help/threat-model-levels/) har servern inget som öppnar dem. Om du registrerade dig med Google, Apple eller GitHub och valde ”Håll det enkelt och bekvämt” lagras din fras på vår server under en nyckel som vi har; Inställningar > Konto > Nyckelförvaring visar ditt läge och låter dig byta. Mer i [vad PrivacyNotes kan se](/sv/help/what-can-you-see/)."
+      ]
+    },
+    "trackers-in-backup": {
+      "q": "Finns mina mätvärden och mediciner i min säkerhetskopia?",
+      "a": [
+        "Dina dagboksinlägg gör det, med varje värde du loggade på dem, och det gör även dina faktorer och dina egna vanefrågor. Din medicinlista och dina definitioner av egna mätvärden finns inte i [.zip-filen eller de krypterade säkerhetskopiorna](/sv/help/backup-strategy/): de hör till ditt kontos inställningar, som synkas till varje enhet du loggar in på.",
+        "[Vill du behålla dem i en fil också](/sv/help/tracker-json-csv/), använd **Ladda ner JSON** i Inställningar > Import & Export > Mätvärden, som innehåller varje medicin med schema, påfyllningar och doshistorik, och varje eget mätvärde. En säkerhetskopia som återställs i ett nytt valv ger tillbaka dina inlägg, men doserna och de egna värdena i dem förblir dolda där, eftersom de mediciner och mätvärden de hör till inte finns i säkerhetskopian."
       ]
     },
     "session-expired": {
       "q": "Varför säger appen \"Sessionen har gått ut\"?",
       "a": [
         "Det betyder att vår server inte längre godkänner den här enhetens inloggning, så synkningen stoppas. En svag anslutning eller ett serveravbrott orsakar det aldrig: appen kontrollerar med servern en andra gång innan meddelandet visas. Dina anteckningar är säkra på den här enheten.",
-        "Klicka på **Logga in igen**. Appen frågar först om du har sparat din återställningsfras, eftersom du behöver den, eller inloggningssättet du registrerade dig med, för att komma in igen. Anteckningar som inte har synkats ännu stannar på enheten och synkas när du är inloggad. Samma fönster varnar dig om några filer inte är färdiguppladdade, eftersom de tas bort vid utloggningen."
+        "Klicka på **Logga in igen**. Appen frågar först [om du har sparat din återställningsfras](/sv/help/lost-phrase/), eftersom du behöver den, eller inloggningssättet du registrerade dig med, för att komma in igen. Anteckningar som inte har synkats ännu stannar på enheten och synkas när du är inloggad. Samma fönster varnar dig [om några filer inte är färdiguppladdade](/sv/help/upload-failed/), eftersom de tas bort vid utloggningen."
       ]
     },
     "archive": {
       "q": "Vad gör Arkivera, och hur skiljer det sig från papperskorgen?",
       "a": [
         "Arkivera tar bort ett objekt från dina listor utan att radera det. Välj **Arkivera** i objektets \"...\"-meny eller högerklicksmeny, eller i markeringsfältet för flera objekt på en gång. Arkiverade objekt försvinner från Alla, sin sektion, Fästa och räknarna för mappar och taggar, och väntar i vyn **Arkiv** längst ner i sidofältet, som visas så fort något är arkiverat. Vill du ha kvar dem i Alla och i antalen, kryssa i Arkiv i kolumnen **Alla** under Inställningar > Listor. **Ta ur arkivet** på samma ställen tar tillbaka ett objekt.",
-        "Papperskorgen är för sådant du vill bli av med: den [raderar det för alltid efter 30 dagar](/sv/help/trash-auto-delete/) om du inte stänger av det. Arkivet raderar aldrig något, och arkiverade objekt finns kvar inom räckhåll, eftersom en sökning i Alla, funktionen Gå till och anteckningslänkar fortfarande hittar dem. De synkas och förblir krypterade som allt annat, och de räknas fortfarande mot din lagring. Arkivera fungerar på alla typer av objekt och är gratis."
+        "Papperskorgen är för sådant du vill bli av med: den [raderar det för alltid efter 30 dagar](/sv/help/trash-auto-delete/) om du inte stänger av det. Arkivet raderar aldrig något, och arkiverade objekt finns kvar inom räckhåll, eftersom en sökning i Alla, [funktionen Gå till](/sv/help/ninja/) och anteckningslänkar fortfarande hittar dem. De synkas och förblir krypterade som allt annat, och [de räknas fortfarande mot din lagring](/sv/help/storage-usage/). Arkivera fungerar på alla typer av objekt och är gratis."
       ]
     },
     "share-into-app": {
       "q": "Kan jag dela text eller en länk till PrivacyNotes från en annan app?",
       "a": [
-        "Ja, på iPhone, iPad och Android, som beta. Tryck på delningsknappen i valfri app och välj PrivacyNotes. En webblänk blir ett bokmärke med sidans titel, text blir en ny anteckning, och bilder och filer hamnar i Filer. En länk du redan har sparat visas i stället för att sparas två gånger. Delade objekt kommer utan mapp eller tagg, så du sorterar dem när det passar dig.",
+        "Ja, på iPhone, iPad och Android, som beta. Tryck på delningsknappen i valfri app och välj PrivacyNotes. [En webblänk blir ett bokmärke](/sv/help/bookmarks/) med sidans titel, text blir en ny anteckning, och bilder och filer hamnar i Filer. En länk du redan har sparat visas i stället för att sparas två gånger. Delade objekt kommer utan mapp eller tagg, så du sorterar dem när det passar dig.",
         "På Android frågar appen först: den listar det som kom in och sparar det först när du väljer **Spara alla**, eller kastar det med **Släng**. På iPhone och iPad bekräftar ett kort **Sparat i PrivacyNotes**. Varje fil följer din [uppladdningsgräns](/sv/help/attachment-limits/), och en delning väntar tills du är inloggad och appen är upplåst."
       ]
     },

@@ -1,6 +1,8 @@
 {
   "captionFolder": "폴더",
   "captionTag": "태그",
+  "captionNote": "노트",
+  "captionTracker": "트래커",
   "useDefault": "기본값 사용",
   "color": "색상",
   "noColor": "색상 없음",

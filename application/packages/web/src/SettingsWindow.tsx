@@ -5,15 +5,26 @@ import { isImeComposing } from './imeComposing';
 import { APP_KEYS, keyText, matchesKey } from './shortcutMatch';
 import { useEscapeToClose } from './useEscapeToClose';
 import { useIsMobile } from './useIsMobile';
-import { ArrowLeft, ArrowSquareOut, CaretRight, X } from './icons';
+import { detectPlatform } from './devices';
+import { ArrowLeft, ArrowSquareOut, ArrowsIn, ArrowsOut, CaretRight, X } from './icons';
 import { AccentBar, HeadlineRule, SETTINGS_EYEBROW } from './settingsUI';
+import { PaneTabMemory } from './settingsPaneTab';
 import type { SettingsShellProps as Props } from './SettingsShell';
+import { Button, CloseButton, IconButton } from './ui';
+
+/** Whether the desktop Settings window fills the app (device-local). */
+const WIDE_KEY = 'privacynotes.settings.wide';
 
 type SearchModule = typeof import('./settingsSearch/SettingsSearchResults');
 type Hit = import('./settingsSearch/SettingsSearchResults').SettingHit;
 
 /** A search result that has been opened: its row, and the tab it lives on. */
 type Landing = { id: string; tab?: string; flash: boolean };
+
+/** Android resizes the page for the keyboard (the app, and Chrome with `interactive-widget=resizes-content`). */
+/** The iOS and Android apps show Settings on the whole screen already. */
+const NATIVE_PHONE = detectPlatform() === 'ios' || detectPlatform() === 'android';
+const ANDROID_LIKE = detectPlatform() === 'android' || (typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent));
 
 /** Open a link the way a click on it would, so the desktop opener sees it. */
 function openLink(href: string) {
@@ -43,7 +54,7 @@ function openLink(href: string) {
  * section with no hit and counts the hits of the others. A result opens its
  * section on the result's tab and flashes the row; "Back to results" keeps
  * the query. Escape clears the query before it closes anything.
- * Spec: ops/docs/ui-patterns.md (section 114, settings search)
+ * Spec: ops/docs/archive/ui-patterns.md (section 114, settings search)
  *
  * The frame is intentionally dumb - it knows nothing about individual
  * panes. Callers pass a `categories` array whose `render()` returns the
@@ -52,6 +63,26 @@ function openLink(href: string) {
 export function SettingsWindow({ categories, initialCategory, initialSetting, defaultCategory, footer, onClose, solo = false }: Props) {
   const { t } = useTranslation('settings');
   const [alone, setAlone] = useState(solo);
+  // The window can fill the app instead of its fixed size, for the wide
+  // panes (statistics, the theme galleries, the format bar board). Kept on
+  // this device only, like the other window and pane sizes.
+  const [wide, setWide] = useState(() => {
+    try {
+      return localStorage.getItem(WIDE_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+  const toggleWide = () => {
+    setWide((w) => {
+      try {
+        localStorage.setItem(WIDE_KEY, w ? '0' : '1');
+      } catch {
+        /* the size still changes for this visit */
+      }
+      return !w;
+    });
+  };
   const isMobile = useIsMobile();
   // Desktop landing: deep-link wins, else the configured default, else the
   // first real pane (link rows have no pane to land on).
@@ -68,6 +99,9 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
   const [landing, setLanding] = useState<Landing | null>(initialSetting ? { ...initialSetting, flash: initialSetting.flash ?? true } : null);
   // Bumped on every landing, so the pane remounts on the result's tab.
   const [paneKey, setPaneKey] = useState(0);
+  // Each pane's open tab, so a resize that swaps the phone and desktop
+  // layouts (and remounts the pane) keeps it. A navigation starts fresh.
+  const [paneTabs] = useState(() => new Map<string, string>());
   const fieldRef = useRef<HTMLInputElement | null>(null);
   const paneRef = useRef<HTMLDivElement | null>(null);
 
@@ -99,6 +133,7 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
 
   function openCategory(id: string, tab?: string) {
     if (query) clearSearch();
+    paneTabs.clear();
     setLanding(tab ? { id, tab, flash: false } : null);
     setActiveId(id);
     // A landing on a tab remounts the pane, which opens on it.
@@ -112,6 +147,7 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
       openLink(category.href);
       return;
     }
+    paneTabs.clear();
     setActiveId(category.id);
     setLanding({ id: hit.entry.id, ...(hit.entry.tab ? { tab: hit.entry.tab } : {}), flash: !hit.entry.isSection });
     setPaneKey((k) => k + 1);
@@ -273,7 +309,9 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
 
   const paneBody = (
     <div key={paneKey} ref={paneRef} className="flex-1 flex flex-col min-h-0 min-w-0">
-      {active?.render?.({ navigate: openCategory, ...(landing?.tab ? { initialTab: landing.tab } : {}) })}
+      <PaneTabMemory value={paneTabs}>
+        {active?.render?.({ navigate: openCategory, ...(landing?.tab ? { initialTab: landing.tab } : {}) })}
+      </PaneTabMemory>
     </div>
   );
 
@@ -286,7 +324,7 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
         role="dialog"
         aria-modal="true"
         aria-label={t('shell.title')}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/20 p-4 sm:p-6"
+        className={`fixed inset-0 z-50 flex justify-center bg-black/20 dark:bg-black/20 ${isMobile ? 'items-stretch sm:items-center sm:p-4' : 'items-center p-4 sm:p-6'}`}
         onPointerDown={(e) => {
           if (mountReady && e.target === e.currentTarget) onClose();
         }}
@@ -297,20 +335,24 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
   }
 
   const closeButton = (
-    <button
-      onClick={onClose}
-      aria-label={t('common:actions.close')}
-      className="text-pn-muted hover:text-pn transition p-1 -m-1"
-    >
-      <X size={18} />
-    </button>
+    <CloseButton onClick={onClose} />
   );
 
   // ---- Mobile: push stack ------------------------------------------------
+  // A phone gets the whole screen, inside the safe areas, pinned to the top;
+  // a tablet below lg keeps the floating card. On iOS the keyboard covers the
+  // page without resizing it, so the panel takes the height above the
+  // keyboard (`--pn-app-h`) and the focused field scrolls into view inside it;
+  // otherwise iOS scrolls the whole page to the field at each PIN digit. On
+  // Android the page itself shrinks for the keyboard, and a panel that also
+  // took `--pn-app-h` made the keyboard close after every digit, so it fills
+  // the overlay there.
+  const phoneHeight = ANDROID_LIKE ? 'h-full' : 'h-[var(--pn-app-h,100%)]';
+  const phoneFill = `w-full flex flex-col text-pn bg-surface-2 ${phoneHeight} pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] sm:pt-0 sm:pb-0 sm:max-w-md sm:max-h-[85vh] sm:rounded-lg sm:border sm:border-divider`;
   if (isMobile) {
     if (active) {
       return backdrop(
-        <div className="bg-surface-2 border border-divider rounded-lg w-full max-w-md h-[600px] max-h-[85vh] flex flex-col text-pn">
+        <div className={`${phoneFill} sm:h-[600px]`}>
           <div className="flex items-center gap-2 px-4 py-3 border-b border-divider">
             <button
               onClick={() => {
@@ -331,7 +373,7 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
       );
     }
     return backdrop(
-      <div className="bg-surface-2 border border-divider rounded-lg w-full max-w-md max-h-[85vh] flex flex-col text-pn">
+      <div className={`${phoneFill} sm:h-auto`}>
         <div className="flex items-center justify-between px-4 py-3 border-b border-divider">
           <h2 className="text-lg font-semibold">{t('shell.title')}</h2>
           {closeButton}
@@ -377,7 +419,13 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
           </nav>
         )}
         {footer && !searching && (
-          <div className="border-t border-divider p-3">{footer}</div>
+          // A phone has no corner to reach for: Sign out and Close share the foot.
+          <div className="border-t border-divider p-3 grid grid-cols-2 gap-2">
+            {footer}
+            <Button icon={<X size={15} aria-hidden="true" />} className="w-full justify-center" onClick={onClose}>
+              {t('common:actions.close')}
+            </Button>
+          </div>
         )}
       </div>,
     );
@@ -394,14 +442,17 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
   // from a 1280px window, and 780px tall from a 920px screen, still under
   // the 85vh cap.
   return backdrop(
-    <div className={`bg-surface-2 border border-divider rounded-lg w-full max-h-[85vh] flex flex-col text-pn ${
+    <div className={`bg-surface-2 border border-divider rounded-lg w-full flex flex-col text-pn ${
+      wide && !NATIVE_PHONE
+        ? 'h-full max-h-full'
       // Alone, the window fits its one pane: as tall as the pane and narrower,
-      // except the format bar board, which needs the width.
-      alone && activeId !== 'formatBar'
-        ? 'max-w-2xl'
+      // except the format bar board, which needs the width. A pane taller
+      // than the screen scrolls inside the cap, so the header stays on screen.
+      : alone && activeId !== 'formatBar'
+        ? 'max-w-2xl max-h-[85vh]'
         : alone
-          ? 'max-w-4xl xl:max-w-5xl'
-          : 'max-w-4xl xl:max-w-5xl h-[656px] [@media(min-height:800px)]:h-[720px] [@media(min-height:920px)]:h-[780px]'
+          ? 'max-w-4xl xl:max-w-5xl max-h-[85vh]'
+          : 'max-w-4xl xl:max-w-5xl max-h-[85vh] h-[656px] [@media(min-height:800px)]:h-[720px] [@media(min-height:920px)]:h-[780px]'
     }`}>
       <div className="flex items-center gap-4 px-5 py-3 border-b border-divider">
         {alone ? (
@@ -419,7 +470,14 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
             <div className="flex flex-1 max-w-xs">{field}</div>
           </>
         )}
-        <div className="ms-auto flex">{closeButton}</div>
+        <div className="ms-auto flex items-center gap-1">
+          {!NATIVE_PHONE && (
+            <IconButton label={wide ? t('shell.restoreWindow') : t('shell.fillWindow')} position="start" onClick={toggleWide} aria-pressed={wide}>
+              {wide ? <ArrowsIn size={18} aria-hidden="true" /> : <ArrowsOut size={18} aria-hidden="true" />}
+            </IconButton>
+          )}
+          {closeButton}
+        </div>
       </div>
       <div className="flex flex-1 min-h-0">
         <nav className={`${alone ? 'hidden' : 'flex'} w-56 shrink-0 border-e border-divider flex-col p-2`}>
@@ -428,7 +486,7 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
               const on = !searching && c.id === activeId;
               const count = counts.get(c.id) ?? 0;
               // A rail is not a result set: a section with no hit dims and
-              // stays. Spec: ops/docs/ui-patterns.md section 52
+              // stays. Spec: ops/docs/archive/ui-patterns.md section 52
               const dim = searching && hits !== null && count === 0;
               const showHeader = c.group && c.group !== categories[i - 1]?.group;
               const badge = searching && count > 0 && (
@@ -468,7 +526,7 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
                     >
                       {/* Category icons are always accent, active or not, so the
                           rail reads as one family and matches the sidebar.
-                          Spec: ops/docs/ui-patterns.md section 36 */}
+                          Spec: ops/docs/archive/ui-patterns.md section 36 */}
                       <span className="shrink-0 text-accent">{c.icon}</span>
                       <span className="flex-1">{c.label}</span>
                       {badge}
@@ -487,7 +545,7 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
             results
           ) : (
             <>
-              {active && (!active.ownHeading || (landing && query)) && (
+              {active && (
                 <div className="px-6 pt-4 pb-1 shrink-0">
                   {landing && query && (
                     <button
@@ -499,13 +557,11 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
                       {t('settingsSearch:backToResults')}
                     </button>
                   )}
-                  {!active.ownHeading && (
-                    <div className="flex items-center gap-2.5">
-                      <AccentBar />
-                      <h3 className="text-base font-semibold">{active.label}</h3>
-                      <HeadlineRule />
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2.5">
+                    <AccentBar />
+                    <h3 className="text-base font-semibold">{active.label}</h3>
+                    <HeadlineRule />
+                  </div>
                 </div>
               )}
               {paneBody}

@@ -1,6 +1,6 @@
 import type { PointerEvent, ReactNode } from 'react';
 
-// Spec: ops/docs/ui-patterns.md (section 18 - instant CSS hover labels)
+// Spec: ops/docs/archive/ui-patterns.md (section 18 - instant CSS hover labels)
 
 /*
  * `position` names say WHERE THE TIP LANDS. `above` puts it above the element,
@@ -21,7 +21,7 @@ import type { PointerEvent, ReactNode } from 'react';
  *
  * Adding a new entry here is for a genuinely new geometry only.
  *
- * Full decision order: ops/docs/ui-patterns.md section 18.
+ * Full decision order: ops/docs/archive/ui-patterns.md section 18.
  */
 export const positionClasses = {
   end: 'start-full top-1/2 -translate-y-1/2 ms-2',
@@ -165,6 +165,7 @@ function placeTip(e: PointerEvent<HTMLElement>) {
 /** CSS-only instant hover label. Replaces native title="" attributes. */
 export function HoverLabel({
   label,
+  keys,
   count,
   pro = false,
   position = 'end',
@@ -177,6 +178,10 @@ export function HoverLabel({
   children,
 }: {
   label: string;
+  /** The shortcut that does the same, shown after the label in the one
+   *  tooltip key format (`keyText` in shortcutMatch.ts). Empty shows none,
+   *  so a key this app or OS lacks needs no branch at the call site. */
+  keys?: string;
   count?: number;
   /** Adds a gold "· Pro" after the label, for a control that opens the
    *  upgrade window. */
@@ -220,6 +225,8 @@ export function HoverLabel({
         className={`${TIP_PILL}${hiddenAtXl ? ' xl:hidden' : ''}${hiddenAtSm ? ' sm:hidden' : ''} ${positionClasses[position]} ${multiline ? 'block w-[260px] whitespace-normal text-center' : 'flex items-center gap-2 whitespace-nowrap'}`}
       >
         <span>{label}</span>
+        {/* rtl-ok: a key sequence never reorders */}
+        {keys && <span dir="ltr" /* theme-ok: on the dark tooltip pill */ className={`text-neutral-400${multiline ? ' ms-2' : ''}`}>{keys}</span>}
         {count != null && <span /* theme-ok: on the dark tooltip pill */ className="text-neutral-400 tabular-nums">{count}</span>}
         {/* Gold in every theme: the pill is dark in every theme, and the
             theme's own Pro colour is bronze on a light one. */}

@@ -18,11 +18,12 @@ import { useFolderExpansion } from './folderTreeState';
 import { useRailItemDrop } from './useRailItemDrop';
 import type { FolderSortDir, FolderSortField } from './folders';
 import { ProGlyph, ProMark } from './UpgradeModal';
-import { Star, Hash, DotsThree, PencilSimple, Palette, Trash, X, CaretDown, PushPin, File, NotePencil, CheckFat, Shield, Key, Folder, Book, Notebook, FunnelSimple, ArrowsInLineVertical, ArrowsOutLineVertical, Eye, Download, Plus, Prohibit, Chat, Devices, Question, FileMd, Bookmarks, Lightning, BellSimple, type Icon, PILLAR_GLYPHS } from './icons';
+import { Star, Hash, DotsThree, PencilSimple, Palette, Trash, X, CaretDown, PushPin, File, NotePencil, CheckFat, Shield, Key, Folder, Book, Notebook, FunnelSimple, ArrowsInLineVertical, ArrowsOutLineVertical, Eye, Download, Plus, Prohibit, Chat, Devices, Question, FileMd, Bookmarks, BellSimple, type Icon, PILLAR_GLYPHS } from './icons';
+import { KATANA_LINE, NinjaIcon } from './NinjaIcon';
 import { useUnseenAlerts } from './reminders';
 import { SPACE_ICONS, SpaceMoveLabel, SpaceSwitch } from './SpaceSwitch';
 import type { Space, SpaceView } from './spaces';
-import { keyText } from './shortcutMatch';
+import { keyText, sectionKeyText } from './shortcutMatch';
 import { isViewShown, type View } from './views';
 import { exemptOpts } from './i18nExempt';
 import { SIDEBAR_ACTIVE, SIDEBAR_DROP_INSIDE, SIDEBAR_ROW_MENU_BUTTON } from './sidebarUI';
@@ -115,7 +116,7 @@ export interface TagsRailProps {
    *  count at all, which is not the same as a zero: the Markdown pillar scans
    *  nothing until a folder is chosen, and a "0" there would read as an empty
    *  folder rather than an unconfigured one.
-   *  Spec: ops/docs/plans/start-view.md (one counts object) */
+   *  Spec: ops/docs/archive/start-view.md (one counts object) */
   viewCounts: Partial<Record<View, number>>;
   trashedCount: number;
 
@@ -204,7 +205,7 @@ export interface TagsRailProps {
   /** Owned by NotesView, because switching off the OPEN view also leaves it -
    *  a decision the rail cannot make on its own. Shared with the Appearance
    *  table so the two surfaces cannot drift.
-   *  Spec: ops/docs/plans/sidebar-views.md (moves the user to All first, so the row leaves at once) */
+   *  Spec: ops/docs/archive/sidebar-views.md (moves the user to All first, so the row leaves at once) */
   onToggleHidden: (field: 'hiddenViews' | 'hiddenInAll', key: View) => void;
   setImportExportModal: (v: { open: false } | { open: true; tab: 'import' | 'export' | 'restore' | 'vault' }) => void;
 
@@ -235,7 +236,7 @@ function viewBtnClass(active: boolean) {
 // touch devices get icons only - five labels do not fit the drawer cells
 // (tried as 10px captions, truncated even in English) - so the aria-label
 // carries the name. Pill-width i18n exemptions: i18nExempt.ts.
-// Spec: ops/docs/ui-patterns.md section 46 (4 collapsed icons plus widest expanded pill must fit 216px).
+// Spec: ops/docs/archive/ui-patterns.md section 46 (4 collapsed icons plus widest expanded pill must fit 216px).
 function FooterAction({
   icon: ActionIcon,
   label,
@@ -487,7 +488,7 @@ export function TagsRail(props: TagsRailProps) {
   // The two sidebar option menus: the gear beside the Views caption (which
   // rows the rail draws) and the funnel in the All row (which item types the
   // All list holds). One at a time - opening either closes the other.
-  // Spec: ops/docs/plans/sidebar-views.md
+  // Spec: ops/docs/archive/sidebar-views.md
   const [viewsMenuOpen, setViewsMenuOpen] = useState(false);
   const [allMenuOpen, setAllMenuOpen] = useState(false);
   const viewsMenuBtnRef = useRef<HTMLButtonElement>(null);
@@ -775,13 +776,19 @@ export function TagsRail(props: TagsRailProps) {
 
   const sortLabel = browseMode === 'tags' ? t('tagsRail.sortTags') : t('folders.sortFolders');
 
+  // The rows Mod+1 to 9 count, after All (goToSection in NotesView): the
+  // shown section rows, in the order drawn below.
+  const sectionRows = sidebarViewRows(t)
+    .filter((r) => showRow(r.key) && !hiddenAtZero(r.key, viewCounts[r.key], view))
+    .map((r) => r.key);
+
   return (
     <div className="h-full flex flex-col min-h-0">
       {renderTagMenu()}
       {/* Brand row */}
       <div className="group shrink-0 min-h-[3.5rem] lg:min-h-0 lg:h-14 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] lg:pt-0 border-b border-divider flex items-center gap-2">
         <h1 className="text-lg tracking-tight truncate m-0">
-          <HoverLabel label={t('tagsRail.showAllItems')} position="end">
+          <HoverLabel label={t('tagsRail.showAllItems')} keys={sectionKeyText(1)} position="end">
           <button
             type="button"
             onClick={() => handleSelectView('home')}
@@ -823,27 +830,27 @@ export function TagsRail(props: TagsRailProps) {
       )}
       {/* The quick switcher's button, from lg up. Below lg the list header
           carries it (ListNav), so the drawer does not repeat it.
-          Spec: ops/docs/plans/keyboard-shortcuts.md (decision D15) */}
+          Spec: ops/docs/archive/keyboard-shortcuts.md (decision D15) */}
       <div className="pn-jump-row hidden lg:flex items-center gap-1.5 shrink-0 px-3 pt-3">
         {/* The tint of the "+ New" button, so the app's two main actions
-            read as one family. A lightning bolt, not a magnifier: the list
+            read as one family. The Ninja mark, not a magnifier: the list
             search, find in note and the settings search already draw one,
             and this button also runs commands. */}
         {spaces ? (
           <>
-            {/* Beside the space switch, Jump is the bolt, the same height
+            {/* Beside the space switch, Ninja is the mark alone, the same height
                 and tint as the switch, so the row reads as one bar. Its name
                 and key slide in on hover, as a closed segment's name does,
                 and a sidebar too narrow for them gets the tip instead. */}
-            <HoverLabel label={`${t('common:quickSwitcher.jumpTo')} ${keyText('quickSwitcher')}`} position="below" className="pn-sb-tip flex shrink-0">
+            <HoverLabel label={t('common:quickSwitcher.jumpTo')} keys={`${keyText('quickSwitcher')} · ${KATANA_LINE}`} position="below" className="pn-sb-tip flex shrink-0">
               <button
                 type="button"
                 onClick={onJump}
                 aria-label={t('common:quickSwitcher.jumpTo')}
-                className="group pn-jump min-w-8 h-8 px-2 flex items-center justify-center rounded-md bg-accent/10 text-accent-strong transition focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/40"
+                className="group pn-jump min-w-8 h-8 px-1 flex items-center justify-center rounded-md bg-accent/10 text-accent-strong transition focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/40"
               >
                 <span className="pn-jump-charge" aria-hidden="true" />
-                <Lightning size={16} weight="fill" className="shrink-0" />
+                <NinjaIcon size={24} className="shrink-0" />
                 <span aria-hidden="true" className="pn-sb-wide grid grid-cols-[0fr] transition-[grid-template-columns] duration-200 group-hover:grid-cols-[1fr] group-focus-visible:grid-cols-[1fr] [@media(hover:none)]:hidden">
                   <span className="flex items-center gap-1.5 overflow-hidden whitespace-nowrap text-[13px] font-semibold opacity-0 transition-[opacity,padding] duration-200 group-hover:opacity-100 group-hover:ps-1.5 group-focus-visible:opacity-100 group-focus-visible:ps-1.5">
                     {t('common:quickSwitcher.jumpTo')}
@@ -861,7 +868,7 @@ export function TagsRail(props: TagsRailProps) {
             className="pn-jump flex-1 min-w-0 h-8 flex items-center gap-2 rounded-md bg-accent/10 ps-2.5 pe-1.5 text-[14px] font-semibold text-accent-strong transition focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           >
             <span className="pn-jump-charge" aria-hidden="true" />
-            <Lightning size={16} weight="fill" className="shrink-0" />
+            <NinjaIcon size={24} className="shrink-0" />
             <span className="flex-1 truncate text-start">{t('common:quickSwitcher.jumpTo')}</span>
             <kbd dir="ltr" className="pn-sb-wide shrink-0 rounded border border-accent/30 px-1.5 font-sans text-[11px] font-normal leading-5">
               {keyText('quickSwitcher')}
@@ -876,7 +883,7 @@ export function TagsRail(props: TagsRailProps) {
           Markdown row inside opens its tip upwards). Inside the box the tip
           survived while the list was long and was cut the moment the list
           folded, because the box then shrank to the caption itself (reported
-          2026-08-22). Spec: ops/docs/plans/sidebar-views.md */}
+          2026-08-22). Spec: ops/docs/archive/sidebar-views.md */}
       <div
         ref={contentSectionRef}
         className={`min-h-0 flex flex-col py-3 ${keyboardUp ? 'hidden' : ''} ${markdownRail ? 'shrink border-b border-divider' : split.folded ? 'flex-1' : 'shrink'}`}
@@ -887,7 +894,7 @@ export function TagsRail(props: TagsRailProps) {
             list) and a button cannot contain another one. The gear sits outside
             the fold below, so the one control that brings a hidden row back
             never disappears together with the rows.
-            Spec: ops/docs/plans/sidebar-views.md */}
+            Spec: ops/docs/archive/sidebar-views.md */}
         <HoverLabel label={t('tagsRail.sidebarOptions')} position="below-end" disabled={viewsMenuOpen} className="w-full flex items-center gap-1 px-2 mb-1">
           <button
             type="button"
@@ -901,7 +908,7 @@ export function TagsRail(props: TagsRailProps) {
           {/* The tip belongs to the WHOLE caption row, not to this 18px glyph:
               hovering anywhere from the caret to the eye names the control, so
               a person who never aims at the icon still learns it is there.
-              Spec: ops/docs/plans/sidebar-views.md */}
+              Spec: ops/docs/archive/sidebar-views.md */}
           <button
             ref={viewsMenuBtnRef}
             type="button"
@@ -935,14 +942,14 @@ export function TagsRail(props: TagsRailProps) {
         {/* Source of truth for creatable-pillar ORDER. The two "New" menus
             (NotesList.tsx allNewOptions + contextMenus.tsx buildGlobalMenu) MUST
             list types in this same order. Reorder all three together, never one.
-            Spec: ops/docs/ui-patterns.md section 45 (New-menu order invariant) */}
+            Spec: ops/docs/archive/ui-patterns.md section 45 (New-menu order invariant) */}
         {/* All is the one row with no count, which is what makes room for the
             funnel: it filters this list, and it is the same glyph the list
             panes already use for their options button. The funnel is a SIBLING
             of the row button (a button cannot nest), absolutely placed in the
             slot every other row spends on its count, and it takes the accent
             colour whenever the row is hovered rather than only the glyph
-            itself. Spec: ops/docs/plans/sidebar-views.md (this filter never runs in a single-type pillar or Trash) */}
+            itself. Spec: ops/docs/archive/sidebar-views.md (this filter never runs in a single-type pillar or Trash) */}
         <div className="relative group">
           <button
             onClick={() => handleSelectView('home')}
@@ -997,17 +1004,18 @@ export function TagsRail(props: TagsRailProps) {
             and count. All is not here at all - it sits above with the funnel,
             and the shared list leaves it out because it cannot be hidden from
             itself.
-            Spec: ops/docs/plans/start-view.md (one row list, one label namespace) */}
+            Spec: ops/docs/archive/start-view.md (one row list, one label namespace) */}
         {sidebarViewRows(t).map((r) => {
           if (!showRow(r.key)) return null;
           // Pinned and Archive hide at zero (same rule as Untagged further
           // down), and stay while they are the open view.
           if (hiddenAtZero(r.key, viewCounts[r.key], view)) return null;
           const count = viewCounts[r.key];
+          const sectionKey = sectionKeyText(sectionRows.indexOf(r.key) + 2);
           const row = (
             <button
               onClick={() => handleSelectView(r.key)}
-              className={viewBtnClass(view === r.key)}
+              className={`group/sec ${viewBtnClass(view === r.key)}`}
             >
               <span className="flex items-center gap-2">
                 <span className="text-accent inline-flex">
@@ -1015,6 +1023,13 @@ export function TagsRail(props: TagsRailProps) {
                 </span>
                 {r.label}
               </span>
+              {/* rtl-ok: a key sequence never reorders. The section key shows
+                  on hover only, as a menu shows a shortcut. */}
+              {sectionKey && (
+                <span dir="ltr" className="hidden [@media(hover:hover)]:group-hover/sec:inline ms-auto me-2 text-xs text-pn-muted">
+                  {sectionKey}
+                </span>
+              )}
               {r.key === 'calendar' && calendarBell ? (
                 // A reminder fired and its item is not opened yet: the count
                 // takes the accent fill and the bell until it is.
@@ -1370,7 +1385,7 @@ export function TagsRail(props: TagsRailProps) {
                rows above are places you go, this is a thing you make, and a
                plain row reads as one more tag. The two rails share one slot
                behind one toggle, so they share this button too.
-               Spec: ops/docs/ui-patterns.md (section 76) */
+               Spec: ops/docs/archive/ui-patterns.md (section 76) */
             className="w-full mt-2 rounded-md border border-dashed border-divider hover:border-accent/50 text-[15px] font-medium transition flex items-center justify-start gap-2 ps-[7px] pe-2 py-2 text-pn-muted hover:text-accent"
           >
             <Plus size={16} className="shrink-0 text-label" />
@@ -1393,7 +1408,7 @@ export function TagsRail(props: TagsRailProps) {
           footer) so the primary nav keeps room. The row inset plus the
           button's own px-1 puts the first and last glyph 20px from the
           sidebar edges, the inset of the sidebar rows and of the app
-          footer's Settings zone below. Spec: ops/docs/ui-patterns.md section 46 (legacy guard, predates the height-tier scale) */}
+          footer's Settings zone below. Spec: ops/docs/archive/ui-patterns.md section 46 (legacy guard, predates the height-tier scale) */}
       <div className="shrink-0 border-t border-divider px-4 py-1 flex items-stretch justify-between gap-0.5 [@media(max-height:450px)]:hidden">
         <FooterAction
           icon={Question}

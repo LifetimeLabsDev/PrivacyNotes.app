@@ -1,7 +1,9 @@
 {
   "shell": {
     "title": "Einstellungen",
-    "allSettings": "Alle Einstellungen"
+    "allSettings": "Alle Einstellungen",
+    "fillWindow": "Ganzes Fenster nutzen",
+    "restoreWindow": "Zurück zur normalen Größe"
   },
   "account": {
     "title": "Konto",
@@ -106,6 +108,11 @@
     "sharedSlot_other": "{{count}} Installationen teilen sich einen Geräteplatz",
     "added": "hinzugefügt {{time}}",
     "lastActive": "zuletzt aktiv {{time}}",
+    "versionUnknown": "Version unbekannt",
+    "idLabel": "ID",
+    "browser": "Browser",
+    "update": "Update",
+    "updateHint": "Diese Version kann nicht mehr synchronisieren. Aktualisiere die App auf diesem Gerät.",
     "removeAll": "Alle entfernen",
     "recentlyRemoved": "Kürzlich entfernt",
     "removedAt": "Entfernt {{time}}"
@@ -191,6 +198,8 @@
     "faviconsProxy": "Wird über unseren Proxy geladen. Gilt nur auf diesem Gerät.",
     "invisiblesTitle": "Unsichtbare Zeichen",
     "invisiblesDesc": "Leerzeichen, Zeilenumbrüche und Absatzmarken beim Schreiben anzeigen.",
+    "listsTabGeneral": "Allgemein",
+    "listsTabSidebar": "Seitenleiste und Alle",
     "sidebarTitle": "<sb>Seitenleiste</sb> und <all>Alle</all>",
     "sidebarDesc": "Welche Ansichten in der Seitenleiste erscheinen und welche Einträge die Liste „Alle“ enthält.",
     "colInSidebar": "Seitenleiste",
@@ -211,14 +220,30 @@
     "contentWidthFull": "Voll",
     "lineSpacingTitle": "Zeilenabstand",
     "noteColorsTitle": "Ordner- und Tag-Farben",
+    "noteColorsPickerTitle": "Für alle Ordner und Tags",
     "noteColorsDesc": "Wie eine Notiz die Farbe ihres Ordners oder Tags zeigt: die ganze Notiz, nur ihr Symbol oder gar nicht.",
     "noteColorsBackground": "Hintergrund",
     "noteColorsExampleTitle": "Wochenende in Lissabon",
     "noteColorsExampleFolder": "Reisen, ein grüner Ordner",
-    "noteColorsAccent": "Symbol",
+    "noteColorsAccent": "Nur Symbol",
     "noteColorsOff": "Aus",
+    "checkboxesTitle": "Checkboxen",
+    "taskConfettiTitle": "Konfetti beim Abhaken",
+    "taskConfettiDesc": "Hakst du eine Checkbox ab, fliegt ein wenig Konfetti heraus.",
     "sinkCheckedTitle": "Abgehakte Einträge nach unten verschieben",
     "sinkCheckedDesc": "Ein abgehakter Eintrag wandert unter die nicht abgehakten Einträge seiner Liste.",
+    "defaultAppsTitle": "Mit PrivacyNotes öffnen",
+    "defaultAppsMarkdown": "Markdown-Dateien",
+    "defaultAppsText": "Textdateien",
+    "defaultAppsMarkdownHint": ".md-Dateien, die du doppelklickst, öffnen sich hier.",
+    "defaultAppsTextHint": ".txt- und README-Dateien, die du doppelklickst, öffnen sich hier.",
+    "defaultAppsTextHintWindows": ".txt-Dateien, die du doppelklickst, öffnen sich hier.",
+    "defaultAppsTextFinderSteps": "Zum Ändern wählst du im Finder bei einer .txt-Datei „Informationen“, wählst unter „Öffnen mit“ PrivacyNotes und klickst auf „Alle ändern“.",
+    "defaultAppsMakeDefault": "Als Standard festlegen",
+    "defaultAppsIsDefault": "Standard",
+    "defaultAppsOwnerOther": "Sie werden derzeit mit {{app}} geöffnet.",
+    "defaultAppsOwnerOtherUnnamed": "Sie werden derzeit mit einer anderen App geöffnet.",
+    "defaultAppsOwnerNone": "Sie haben noch keine Standard-App.",
     "spacesTitle": "Bereiche",
     "spacesDesc": "Teile deine Bibliothek in Privat und Arbeit auf und zeig jeweils einen Bereich an.",
     "lineSpacingDesc": "Der Abstand zwischen Zeilen und Absätzen beim Schreiben.",
@@ -248,7 +273,8 @@
       "none": "Hier gibt es noch keine Designs.",
       "sortLabel": "Reihenfolge",
       "sortVotes": "Meiste Stimmen",
-      "sortNewest": "Neueste"
+      "sortNewest": "Neueste",
+      "more": "Weitere Designs"
     },
     "custom": {
       "newTheme": "Neues Design",
@@ -449,6 +475,8 @@
     "wifiHoldTooltip": "Dateien werden hochgeladen, sobald WLAN da ist. Notizen synchronisieren weiter.",
     "notBackedUp": "Nicht gesichert",
     "notSynced": "Nicht synchronisiert",
+    "firstSyncPending": "Dieses Gerät hat die erste Synchronisierung mit dem Server noch nicht abgeschlossen, daher können hier noch einige Notizen fehlen.",
+    "pullFailed": "Die letzte Synchronisierung konnte nichts vom Server herunterladen. Sie versucht es automatisch erneut.",
     "notBackedUpTooltip_one": "{{count}} Notiz ist nicht gesichert. Klicke, um zu sehen, warum.",
     "notBackedUpTooltip_other": "{{count}} Notizen sind nicht gesichert. Klicke, um zu sehen, warum.",
     "notBackedUpAria_one": "{{count}} Notiz ist nicht gesichert",
@@ -531,7 +559,7 @@
     "alertBirthday": "Geburtstage",
     "alertsHelp": "Neue Einträge beginnen mit diesen Erinnerungen. Danach behält jeder Eintrag seine eigenen Erinnerungen.",
     "reminderTitles": "Titel in Erinnerungen anzeigen",
-    "reminderTitlesHelp": "Ist das aus, zeigt eine Erinnerung nur das Wort Erinnerung und die Uhrzeit. Bei einem Eintrag hinter deiner PIN ist das immer so.",
+    "reminderTitlesHelp": "Ist das an, zeigt eine Erinnerung den Titel des Eintrags. Ist das aus, zeigt sie nur „Erinnerung“ und die Uhrzeit. Ein Eintrag hinter deiner PIN zeigt nie seinen Titel.",
     "whereTitle": "Erinnerungen auf diesem Gerät",
     "reminderHint": {
       "mobile": "Erinnerungen melden sich auf diesem Handy, auch wenn PrivacyNotes geschlossen ist.",
@@ -545,11 +573,14 @@
     "permissionDenied": "Mitteilungen sind für PrivacyNotes blockiert. Erlaube sie in den Einstellungen dieses Browsers oder Geräts.",
     "weekNumbers": "Kalenderwochen anzeigen",
     "weekNumbersHelp": "In der Monatsansicht und in den kleinen Kalendern.",
-    "hours": "Tag und Woche öffnen um",
+    "hours": "Erste Stunde in Tag und Woche",
+    "checkInReminder": "Erinnerung an den täglichen Check-in",
+    "checkInReminderHelp": "„Wie geht es dir heute?“ einmal am Tag, auf diesem Gerät. Nicht an einem Tag, an dem du schon eine Stimmung erfasst oder den Check-in übersprungen hast.",
+    "checkInReminderAt": "Erinnert um",
     "groupView": "Ansicht",
     "groupReminders": "Erinnerungen",
     "groupDefaults": "Standard-Erinnerungen",
-    "hoursHelp": "Scrolle nach oben für frühere Stunden.",
+    "hoursHelp": "Die Ansichten Tag und Woche öffnen bei dieser Stunde. Die Stunden davor liegen darüber.",
     "to": "bis"
   }
 }

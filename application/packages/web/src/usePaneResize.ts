@@ -42,10 +42,10 @@
  * keeps its session-only xl reseed; the stored width simply applies
  * whenever the pane is expanded.
  *
- * Spec: ops/docs/design-decisions.md (pane resize), ops/docs/ui-patterns.md section 56
+ * Spec: ops/docs/design-decisions.md (pane resize), ops/docs/archive/ui-patterns.md section 56
  */
 import { useEffect, useRef, type RefObject } from 'react';
-import { hasOpenOverlay, closeTopOverlay } from './useEscapeToClose';
+import { closeTopAnchoredOverlay } from './useEscapeToClose';
 
 // Clamps. The sidebar narrows to 200: below 230 the `pn-sb-wide` extras (the
 // version badge, the Jump to shortcut, the tab icons) leave through a
@@ -104,7 +104,7 @@ export const DOCK_GRID_RESERVE = SIDEBAR_WIDTH_MIN + STRIPS_W + EDITOR_DOCK_MIN;
 const DRAG_THRESHOLD_PX = 4;
 const KEY_STEP_PX = 16;
 // How far past the limit the pointer travels before a release collapses.
-// Spec: ops/docs/ui-patterns.md section 56
+// Spec: ops/docs/archive/ui-patterns.md section 56
 const SNAP_PX = 56;
 
 type DragState = {
@@ -276,7 +276,7 @@ export function usePaneResize(cfg: {
       drag.moved = true;
       // Anchored popovers only reposition on window resize, which a pane
       // drag never fires - close them instead of letting them float.
-      if (hasOpenOverlay()) closeTopOverlay();
+      closeTopAnchoredOverlay();
       cfg.rootRef.current?.classList.add('pn-col-dragging');
       drag.el.dataset.dragging = '1';
     }
@@ -322,7 +322,7 @@ export function usePaneResize(cfg: {
  * past the snap distance, released. The pane is not mounted, so there is no
  * width to show during the drag; the strip's accent line says "let go and it
  * opens", and the pane opens at its stored width.
- * Spec: ops/docs/ui-patterns.md section 56
+ * Spec: ops/docs/archive/ui-patterns.md section 56
  */
 export function useExpandDrag(onExpand: () => void, direction: 1 | -1) {
   const drag = useRef<{ pointerId: number; startX: number; el: HTMLElement; ready: boolean } | null>(null);

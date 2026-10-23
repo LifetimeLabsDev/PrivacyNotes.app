@@ -11,6 +11,7 @@
       "storage": "More space is a Pro feature: 500 MB of storage, 50 MB per file, and up to 5 GB more as an add-on when you need it.",
       "folders": "Folders are a Pro feature. Organize your notes into nested folders, as deep as you need, and keep every project separate.",
       "looks": "Icons and colors for folders and tags are a Pro feature. Give each one a look you spot at a glance.",
+      "noteIcon": "Note icons are a Pro feature. Give a note its own icon, so you spot it at a glance in the list and in your tabs.",
       "spaces": "Spaces is a Pro feature. {{desc}}",
       "formatBar": "Arranging the toolbar is a Pro feature. Put the buttons you use on the bar, hide the rest, and order the + menu your way.",
       "lock": "Locking a note is a Pro feature. Upgrade to protect any note from accidental edits.",

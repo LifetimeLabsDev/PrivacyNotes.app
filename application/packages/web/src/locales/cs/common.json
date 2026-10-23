@@ -10,6 +10,8 @@
     "back": "Zpět",
     "next": "Další",
     "remove": "Odebrat",
+    "deleteConfirm": "Smazat?",
+    "removeConfirm": "Odebrat?",
     "copy": "Kopírovat",
     "rename": "Přejmenovat",
     "create": "Vytvořit",
@@ -61,15 +63,17 @@
   },
   "palette": {
     "label": "Příkazy",
-    "open": "Příkazy (>)",
+    "open": "Příkazy",
     "empty": "Žádný odpovídající příkaz",
     "groups": {
+      "features": "Funkce",
       "commands": "Příkazy",
       "new": "Nové",
-      "goTo": "Přejít na"
+      "goTo": "Přejít na",
+      "themes": "Témata"
     },
     "commands": {
-      "quickSwitcher": "Přejít na položku nebo nastavení",
+      "quickSwitcher": "Otevřít Ninja: najdi položku, přidej cokoli, spusť příkaz",
       "historyBack": "Přejít zpět",
       "historyForward": "Přejít vpřed",
       "toggleSidebar": "Zobrazit nebo skrýt boční panel",
@@ -95,9 +99,9 @@
     }
   },
   "quickSwitcher": {
-    "label": "Přejít na položku nebo nastavení",
-    "jumpTo": "Přejít",
-    "placeholder": "Napiš název položky nebo nastavení, nebo > pro příkazy",
+    "label": "Ninja: najdi položku nebo nastavení, přidej cokoli, spusť příkaz",
+    "jumpTo": "Ninja",
+    "placeholder": "Ninja k službám: název, + pro přidání, > pro příkazy",
     "recent": "Nedávné",
     "empty": "Žádná položka ani nastavení s tímto názvem",
     "searchAll": "Hledat všude: „{{query}}“",
@@ -117,6 +121,7 @@
     "tagItems_other": "{{count}} položek",
     "emptyTags": "Žádná značka s tímto názvem",
     "emptyFolders": "Žádná složka s tímto názvem",
+    "emptyVault": "Zatím tu nic není. Napiš + a přidej první položku.",
     "onlyTags": "značky",
     "onlyFolders": "složky",
     "showOnlyTags": "Jen značky",
@@ -127,7 +132,13 @@
     "createTag": "Vytvořit značku #{{name}}",
     "createFolder": "Vytvořit složku „{{name}}“",
     "newTag": "Nová značka",
-    "newFolder": "Nová složka"
+    "newFolder": "Nová složka",
+    "goToDay": "Přejít na den",
+    "inText": "V textu",
+    "actions": "akce",
+    "back": "zpět",
+    "actionsPlaceholder": "Filtrovat akce",
+    "onlyCreate": "přidat"
   },
   "cardForm": {
     "cardholderName": "Jméno držitele karty",
@@ -187,46 +198,48 @@
     "removeTag": "Odebrat {{tag}}"
   },
   "loading": {
+    "pause": "Pozastavit hlášky",
+    "play": "Spustit hlášky",
     "lines": [
-      "načítáme tvoje zašifrované hloubání…",
-      "chvilku, právě zklamáváme inzerenty.",
-      "tak zašifrováno, že už je to jedno.",
-      "vnášíme do psaní poznámek energii švýcarských bank.",
-      "chráníme tvoje myšlenky ze sprchy.",
-      "tvoje tajemství přežila další restart.",
-      "nic neopouští zařízení nahé.",
-      "potichu otevíráme trezor…",
-      "chladné úložiště na teplé myšlenky.",
-      "tahle poznámka si na svoje soukromí potrpí.",
-      "čtení nemožné. synchronizace možná.",
-      "lokálně dešifrováno. globálně ignorováno.",
-      "tvoje poznámky drží rozestupy.",
-      "šifra dovnitř, šifra ven.",
-      "další krásný den na šifrování.",
-      "nudná tajemství od prvního dne.",
-      "ty to napíšeš. nikdo to nečte.",
-      "soukromí bez přednášky na ted.",
-      "dešifrujeme, protože je to jen tvoje věc.",
-      "cloud z toho má pořád zmatek.",
-      "server neví nic. serveru to tak vyhovuje.",
-      "méně sledování. více poznámek.",
-      "zašifrované nesmysly, jak se čekalo.",
-      "matematicky nedostupné.",
-      "zero knowledge. maximum drzosti.",
-      "sledování vypnuté emočně i technicky.",
-      "všechny drby zůstávají v tvém zařízení.",
-      "otevřený text z lokálních zdrojů.",
-      "měníme myšlenky na nečitelnou polévku.",
-      "jen ty a klíče.",
-      "soukromé myšlenky vstupují do soukromého režimu.",
-      "tvoje budoucí úniky zůstávají fikcí.",
-      "další poznámka schovaná před kapitalismem.",
-      "soukromí tu není za příplatek.",
-      "bezpečnost díky skutečné bezpečnosti.",
-      "potichu vzdorujeme obchodníkům s daty.",
-      "nenalezen žádný materiál pro trénink ai.",
-      "zašifrováno víc, než je nutné.",
-      "soukromí: načítání.",
+      "vnášíme do psaní poznámek energii švýcarských bank",
+      "chráníme tvoje myšlenky ze sprchy",
+      "tvoje poznámky jsou šifrované na tvém zařízení",
+      "chladné úložiště na teplé myšlenky",
+      "další krásný den na šifrování",
+      "nudná tajemství od prvního dne",
+      "soukromí bez přednášky na ted",
+      "cloud z toho má pořád zmatek",
+      "server ukládá šifrový text. připadá mu nudný",
+      "méně sledování. více poznámek",
+      "zašifrované nesmysly, jak se čekalo",
+      "sledování vypnuté emočně i technicky",
+      "všechny drby zůstávají v tvém zařízení",
+      "soukromé myšlenky vstupují do soukromého režimu",
+      "další poznámka schovaná před kapitalismem",
+      "soukromí tu není za příplatek",
+      "bezpečnost díky skutečné bezpečnosti",
+      "potichu vzdorujeme obchodníkům s daty",
+      "nenalezen žádný materiál pro trénink ai",
+      "zašifrováno víc, než je nutné",
+      "samý signál. žádné sledování",
+      "převádíme problémy s důvěrou na software",
+      "tvoje myšlenky zůstávají mimo trh",
+      "dataminery tu čekal jen smutek",
+      "tvůj trezor zůstává agresivně zašifrovaný",
+      "švýcarská neutralita, ale pro poznámky",
+      "žádné reklamy. žádné sledovací prvky. žádný zvrat",
+      "open source, takže si matematiku můžeš ověřit",
+      "šifrový text je náš jazyk lásky",
+      "děláme tvoje poznámky pro cizí lidi nudnými",
+      "volal tvůj deník. chce soukromí",
+      "tvoje sledované hodnoty se po tobě stýskaly",
+      "tvoje nápady, bez publika",
+      "tvůj deník přes noc udržel tvoje tajemství",
+      "jedno soukromé místo pro všechno, co nikdy nepůjde na sítě",
+      "co tu uvidíš, nerozhoduje žádný algoritmus",
+      "tvůj myšlenkový výsyp je v bezpečí",
+      "psaní je přemýšlení. přemýšlení je soukromé",
+      "žádný influencer nebyl konzultován",
       "načítáme tajemství odpovědně.",
       "jen signál. žádné sledování.",
       "přichází další zašifrované mistrovské dílo.",
@@ -241,6 +254,27 @@
       "lokálně dešifrujeme existenciální myšlenky…",
       "tvůj trezor zůstává agresivně nečitelný.",
       "švýcarská neutralita, ale pro poznámky."
+    ],
+    "loadingOnly": [
+      "načítáme tvoje zašifrované hloubání",
+      "chvilku, právě zklamáváme inzerenty",
+      "tvoje tajemství přežila další restart",
+      "potichu otevíráme trezor",
+      "lokálně dešifrováno. globálně ignorováno",
+      "dešifrujeme, protože je to jen tvoje věc",
+      "otevřený text z lokálních zdrojů",
+      "měníme myšlenky na nečitelnou polévku",
+      "další zašifrované mistrovské dílo na cestě",
+      "děláme pořádek v zašifrovaném chaosu",
+      "lokálně dešifrujeme existenciální myšlenky",
+      "zahříváme klíče",
+      "hledáme, kde ti utekla myšlenka",
+      "počítáme tvoje nesplněné úkoly. bez odsuzování",
+      "během načítání se nezobrazila žádná reklama",
+      "vracíme tvoje poznámky tam, kde zůstaly",
+      "rozmotáváme včerejší myšlenky",
+      "skládáme bity do hezkého pořádku",
+      "pamatujeme si, co si zapomínáš pamatovat"
     ]
   },
   "neverBackedUp": {
@@ -254,5 +288,57 @@
     "changesSome_few": "{{count}} z těchto poznámek mají nezálohované změny, které by se ztratily.",
     "changesSome_many": "{{count}} z těchto poznámek má nezálohované změny, které by se ztratily.",
     "changesSome_other": "{{count}} z těchto poznámek má nezálohované změny, které by se ztratily."
+  },
+  "ninja": {
+    "recent": "Nedávné",
+    "topHit": "Nejlepší shoda",
+    "trashEmpty": "Koš je prázdný",
+    "allThemes": "Všechna témata",
+    "features": {
+      "stats": {
+        "label": "Statistiky",
+        "detail": "Tvoje psaní, série a sledované hodnoty v čase"
+      },
+      "trackers": {
+        "label": "Sledované hodnoty",
+        "detail": "Nálada, návyky, faktory a léky"
+      },
+      "medication": {
+        "label": "Léky",
+        "detail": "Dávky, časy a připomínky"
+      },
+      "yearInPixels": {
+        "label": "Rok v pixelech",
+        "detail": "Každý den roku jako jeden barevný čtvereček"
+      },
+      "importExport": {
+        "label": "Import & Export",
+        "detail": "Přenes si poznámky sem, odnes si zálohu ven"
+      },
+      "generator": {
+        "label": "Generátor hesel",
+        "detail": "Silné heslo nebo přístupová fráze, připravené ke zkopírování"
+      },
+      "themes": {
+        "label": "Témata",
+        "detail": "Barevná témata pro světlý i tmavý režim"
+      }
+    },
+    "new": {
+      "medication": "Nový lék",
+      "customTracker": "Nová vlastní sledovaná hodnota"
+    },
+    "commands": {
+      "syncResume": "Obnovit synchronizaci",
+      "changelog": "Co je nového",
+      "help": "Nápověda",
+      "themesPage": "Témata komunity",
+      "website": "Web PrivacyNotes"
+    },
+    "themes": {
+      "word": "Téma",
+      "light": "Světlé téma",
+      "dark": "Tmavé téma"
+    }
   }
 }

@@ -24,7 +24,7 @@
  *     puts it back on every save - byte for byte, fences and line endings
  *     included.
  *
- * Spec: ops/docs/plans/markdown-folder.md (section 6, data model)
+ * Spec: ops/docs/archive/markdown-folder.md (section 6, data model)
  */
 import { extractInlineTags, normalizeTag, parseYamlTags } from '../notesRepo';
 import type { LocalNote } from '../db';

@@ -150,6 +150,17 @@ export function optsOutOfAppMenu(target: EventTarget | null): boolean {
   return !!target.closest('[data-no-app-menu]');
 }
 
+/** The press that last closed a menu from outside it. A button that opens a
+ *  menu reads it on click: the press on that button already closed its own
+ *  menu, and opening it again would make the button unable to close it. */
+let lastDismiss: { target: Node; at: number } | null = null;
+
+export function closedMenuJustNow(button: Element): boolean {
+  const hit = !!lastDismiss && performance.now() - lastDismiss.at < 1000 && button.contains(lastDismiss.target);
+  if (hit) lastDismiss = null;
+  return hit;
+}
+
 export function useContextMenu() {
   const [state, setState] = useState<ContextMenuState>(null);
   const open = (
@@ -230,7 +241,10 @@ export function ContextMenu({
     if (!state) return;
 
     const onPointerDown = (e: PointerEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) onClose();
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        lastDismiss = { target: e.target as Node, at: performance.now() };
+        onClose();
+      }
     };
     // The long press that opened the menu fires again on Android.
     const onCtx = (e: MouseEvent) => {

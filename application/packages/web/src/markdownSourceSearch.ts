@@ -3,7 +3,7 @@
  * editor's engine (editorSearch.ts) is a ProseMirror plugin and has nothing to
  * act on in a textarea; this is the same match rule on a plain string: the
  * query taken literally, case-insensitive unless asked, no regex.
- * Spec: ops/docs/plans/find-and-replace.md (section 14, the Markdown view)
+ * Spec: ops/docs/archive/find-and-replace.md (section 14, the Markdown view)
  */
 
 export type TextMatch = { from: number; to: number };

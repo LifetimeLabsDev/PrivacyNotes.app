@@ -16,13 +16,20 @@ type Props = {
   iconOnly?: boolean;
   /** Smaller icon-only trigger, matching the sticky header's hamburger. */
   compact?: boolean;
+  /** Flag-only ghost trigger for the homepage header rail (LandingNav.tsx),
+   * like the static-page rail's flag-only menu. 'tight' drops the caret for
+   * the narrowest phones. */
+  rail?: boolean | 'tight';
+  /** Flag and caret only below sm, the name from sm up: the footer, where
+   * the picker shares the legal line's row on a phone. */
+  shortOnPhone?: boolean;
 };
 
 /**
  * Compact language switcher: the current flag + name opens a dropdown of flags.
  * No forced redirect; the visitor picks.
  */
-export function LanguageMenu({ dropUp = false, dark = false, navigate = false, iconOnly = false, compact = false }: Props) {
+export function LanguageMenu({ dropUp = false, dark = false, navigate = false, iconOnly = false, compact = false, rail = false, shortOnPhone = false }: Props) {
   const { t } = useTranslation('settings');
   const [open, setOpen] = useState(false);
   const [choice, setChoice] = useState<string>(() => currentLanguageChoice());
@@ -83,16 +90,23 @@ export function LanguageMenu({ dropUp = false, dark = false, navigate = false, i
         aria-label={`${t('appearance.language')}: ${LANGUAGE_META[current]?.native ?? current}`}
         aria-haspopup="menu"
         aria-expanded={open}
-        className={iconOnly
+        className={rail
+          ? `inline-flex h-[29px] items-center gap-1 rounded-lg ${rail === 'tight' ? 'px-1' : 'px-2'} text-[var(--wl-ink)] transition hover:text-accent`
+          : iconOnly
           ? `inline-flex items-center justify-center rounded-full border-[1.5px] border-[var(--wl-ink)] text-[var(--wl-ink)] hover:bg-[var(--wl-ink)]/10 transition ${compact ? 'h-9 w-9' : 'h-10 w-10'}`
           : `inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-sm font-medium transition ${buttonClass}`}
       >
-        {iconOnly ? (
+        {rail ? (
+          <>
+            <Flag code={current} />
+            {rail !== 'tight' && <Caret size={11} aria-hidden="true" />}
+          </>
+        ) : iconOnly ? (
           <Translate size={compact ? 18 : 20} />
         ) : (
           <>
             <Flag code={current} />
-            <span>{LANGUAGE_META[current]?.native ?? current}</span>
+            <span className={shortOnPhone ? 'hidden sm:inline' : undefined}>{LANGUAGE_META[current]?.native ?? current}</span>
             <Caret size={12} aria-hidden="true" />
           </>
         )}
@@ -100,7 +114,7 @@ export function LanguageMenu({ dropUp = false, dark = false, navigate = false, i
       {open && (
         <div
           role="menu"
-          className={`absolute end-0 z-50 w-48 rounded-xl border border-[var(--wl-line)] bg-[var(--wl-card)] shadow-lg py-1 ${dropUp ? 'bottom-full mb-2' : 'mt-2'}`}
+          className={`absolute end-0 z-50 w-48 max-h-[min(28rem,70vh)] overflow-y-auto overscroll-contain rounded-xl border border-[var(--wl-line)] bg-[var(--wl-card)] shadow-lg py-1 ${dropUp ? 'bottom-full mb-2' : 'mt-2'}`}
         >
           {options.map((opt) => {
             const active = choice === opt.value;

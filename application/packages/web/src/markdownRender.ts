@@ -22,7 +22,8 @@ import { tableWidthFromMarker } from './tableDelimiterRow';
 import { noteLinkDisplayText } from './noteLinks';
 import { orderFootnotes, replaceMarkers, scanFootnotes } from './footnoteScan';
 import { isSameOriginPath } from './sameOriginPath';
-import { CALLOUT_COLORS, canonicalCalloutType, type CalloutType } from './calloutKeywords';
+import { calloutColorOf, canonicalCalloutType, type CalloutType } from './calloutKeywords';
+import { evaluateTable, formatFormulaValue, isFormulaText } from './tableFormula';
 
 // ─── Callout types ──────────────────────────────────────────────────────
 //
@@ -37,7 +38,12 @@ const CALLOUT_LABELS: Record<CalloutType, string> = {
   warning: 'Warning', caution: 'Caution', danger: 'Danger', success: 'Success', failure: 'Failure',
   bug: 'Bug', todo: 'Todo', goal: 'Goal', decision: 'Decision', time: 'Time', steps: 'Steps', place: 'Place', quote: 'Quote', example: 'Example',
   abstract: 'Abstract', question: 'Question', definition: 'Definition', seealso: 'See also',
+  kanban: 'Kanban board', column: 'Column',
 };
+
+// A Kanban board lays its columns side by side and wraps them on a narrow
+// page; each column is a callout of its own inside the board.
+const KANBAN_BODY_STYLE = 'padding:0.15em 0.85em 0.7em;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0 0.7em;align-items:start';
 
 // Phosphor caret-down / caret-right (bold weight, 256 viewBox): the fold
 // control at the start of the exported summary, as in the editor. The
@@ -167,8 +173,8 @@ function domainFromHref(href: string): string | null {
  *
  * The editor stores math as `$..$` / `$$..$$` LaTeX, and this renderer had
  * no case for either, so every formula exported as its literal source - the
- * same class of bug the 2026-08-11 audit found for underline and alignment,
- * missed then because math had shipped as a node type rather than a mark.
+ * same class of bug underline and alignment once had, missed then because
+ * math had shipped as a node type rather than a mark.
  *
  * KaTeX is asked for MATHML rather than its usual HTML. That output needs no
  * stylesheet and no fonts, which is the whole reason it works here: an
@@ -1017,7 +1023,7 @@ export function renderMarkdown(md: string): string {
  * links both ways. Each marker becomes a sentinel before the blocks render,
  * because renderInline escapes everything it does not know. The ids carry a
  * per-render prefix, so two notes in one HTML export never share `#fn-1`.
- * Spec: ops/docs/plans/footnotes.md (section 8)
+ * Spec: ops/docs/archive/footnotes.md (section 8)
  */
 function renderWithFootnotes(text: string): string {
   const scan = scanFootnotes(text);
@@ -1225,12 +1231,12 @@ function renderBlocks(text: string): string {
         buf.push(cur.replace(/^>\s?/, ''));
         i++;
       }
-      const callout = buf[0]?.match(/^\[!([\w-]+)\]([+-]?)\s?(.*)$/);
+      const callout = buf[0]?.match(/^\[!([\w-]+)(?:\|([\w-]+))?\]([+-]?)\s?(.*)$/);
       if (callout) {
         const canon = canonicalCalloutType(callout[1]!);
-        const { color, rgb } = CALLOUT_COLORS[canon];
+        const { color, rgb } = calloutColorOf(canon, callout[2]);
         const tint = rgb.replace(/ /g, ',');
-        const title = callout[3]!.trim();
+        const title = callout[4]!.trim();
         const titleHtml = title ? renderInline(title) : escapeHtml(CALLOUT_LABELS[canon]);
         const bodyMd = buf.slice(1).join('\n');
         const bodyHtml = bodyMd.trim() === '' ? '' : renderMarkdown(bodyMd);
@@ -1243,7 +1249,7 @@ function renderBlocks(text: string): string {
           ? 'margin:1em 0'
           : canon === 'box'
             ? frame
-            : canon === 'panel'
+            : canon === 'panel' || canon === 'kanban'
               ? `${frame};background:rgba(128,128,128,0.06)`
               : `margin:1em 0;border:1px solid rgba(${tint},0.35);border-inline-start:3px solid ${color};border-radius:6px;background:rgba(${tint},0.09);overflow:hidden`;
         const summaryStrip = canon === 'box' ? ';background:rgba(128,128,128,0.09)' : '';
@@ -1255,11 +1261,11 @@ function renderBlocks(text: string): string {
         // Print is the exception and handles itself in CSS: the export
         // stylesheet's print block force-shows every callout body, because
         // paper cannot be clicked.
-        const folded = callout[2] === '-';
+        const folded = callout[3] === '-';
         out.push(
           `<details class="pn-callout pn-callout-${canon}"${folded ? '' : ' open'} style="${detailsStyle}">` +
             `<summary class="pn-callout-summary" style="${summaryStyle}">${caret}<span>${titleHtml}</span></summary>` +
-            `<div class="pn-callout-body" style="${canon === 'fold' ? 'padding-inline-start:1.4em' : canon === 'box' ? 'padding:0.5em 0.85em 0.55em;border-top:1px solid rgba(128,128,128,0.25)' : 'padding:0.15em 0.85em 0.55em'}">${bodyHtml}</div>` +
+            `<div class="pn-callout-body" style="${canon === 'fold' ? 'padding-inline-start:1.4em' : canon === 'box' ? 'padding:0.5em 0.85em 0.55em;border-top:1px solid rgba(128,128,128,0.25)' : canon === 'kanban' ? KANBAN_BODY_STYLE : 'padding:0.15em 0.85em 0.55em'}">${bodyHtml}</div>` +
           `</details>`
         );
         continue;
@@ -1369,15 +1375,32 @@ function renderBlocks(text: string): string {
       }
       tableHtml.push('<tbody>');
       const startRows = hasSep ? bodyRows : rows;
-      for (const row of startRows) {
-        const cells = parseCells(row);
+      // Formulas. The editor paints the number over the formula with a
+      // decoration, and this file never loads TipTap, so it has to ask the
+      // same engine the same question or an exported note would read
+      // `=SUM(B2:B7)` where the app reads `1,575`. The grid is every row
+      // INCLUDING the header, because a reference counts the header as row 1.
+      const bodyCells = startRows.map(parseCells);
+      const grid = hasSep ? [headerRow, ...bodyCells] : bodyCells;
+      const computed = grid.some((row) => row.some(isFormulaText)) ? evaluateTable(grid) : null;
+      const headerOffset = hasSep ? 1 : 0;
+      startRows.forEach((row, rowIdx) => {
+        const cells = bodyCells[rowIdx] ?? [];
         tableHtml.push('<tr>');
         cells.forEach((cell, idx) => {
           const align = aligns[idx] ? `;text-align:${aligns[idx]}` : '';
-          tableHtml.push(`<td style="border:1px solid #d4d4d4;padding:6px 10px${align}">${renderInline(cell)}</td>`);
+          const result = computed?.[rowIdx + headerOffset]?.[idx];
+          // A formula with no number shows its own text, exactly as it does
+          // in the editor and exactly as a free account sees it.
+          // No locale argument on purpose: this file holds no i18n import,
+          // and the number is grouped for whichever browser renders it. The
+          // editor passes the app language; an export is read wherever it
+          // lands.
+          const body = result && 'value' in result ? escapeHtml(formatFormulaValue(result.value)) : renderInline(cell);
+          tableHtml.push(`<td style="border:1px solid #d4d4d4;padding:6px 10px${align}">${body}</td>`);
         });
         tableHtml.push('</tr>');
-      }
+      });
       tableHtml.push('</tbody></table>');
       out.push(tableHtml.join(''));
       continue;

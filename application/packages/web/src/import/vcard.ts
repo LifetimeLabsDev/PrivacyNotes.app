@@ -48,7 +48,7 @@
  *   - `PRODID` is dropped. Writing it back would claim another app wrote
  *     our file.
  *
- * Spec: ops/docs/plans/contacts-pillar.md (section 7)
+ * Spec: ops/docs/archive/contacts-pillar.md (section 7)
  */
 
 import { base64ToBytes } from '@notes/shared';

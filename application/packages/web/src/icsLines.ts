@@ -11,7 +11,7 @@
  *
  * A file is untrusted input, so the parse is linear and bounded: the limits
  * below refuse a file before it can stall the page.
- * Spec: ops/docs/plans/google-calendar-import.md (sections 3 and 4.1)
+ * Spec: ops/docs/archive/google-calendar-import.md (sections 3 and 4.1)
  */
 
 export type IcsProp = {

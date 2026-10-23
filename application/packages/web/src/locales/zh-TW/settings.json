@@ -1,7 +1,9 @@
 {
   "shell": {
     "title": "設定",
-    "allSettings": "所有設定"
+    "allSettings": "所有設定",
+    "fillWindow": "填滿整個視窗",
+    "restoreWindow": "還原為一般大小"
   },
   "account": {
     "title": "帳號",
@@ -104,6 +106,11 @@
     "sharedSlot_other": "{{count}} 個安裝共用一個裝置名額",
     "added": "加入 {{time}}",
     "lastActive": "最近活動 {{time}}",
+    "versionUnknown": "版本不明",
+    "idLabel": "ID",
+    "browser": "瀏覽器",
+    "update": "需要更新",
+    "updateHint": "這個版本已無法同步。請在這台裝置上更新應用程式。",
     "removeAll": "全部移除",
     "recentlyRemoved": "最近移除",
     "removedAt": "已於 {{time}} 移除"
@@ -181,6 +188,8 @@
     "faviconsProxy": "圖示會透過我們的代理伺服器載入。僅套用於這台裝置。",
     "invisiblesTitle": "不可見字元",
     "invisiblesDesc": "書寫時顯示空格、換行和段落標記。",
+    "listsTabGeneral": "一般",
+    "listsTabSidebar": "側邊欄與全部",
     "sidebarTitle": "<sb>側邊欄</sb>與<all>全部</all>",
     "sidebarDesc": "側邊欄要顯示哪些檢視，以及「全部」清單包含哪些項目。",
     "colInSidebar": "側邊欄",
@@ -201,14 +210,30 @@
     "contentWidthFull": "全寬",
     "lineSpacingTitle": "行距",
     "noteColorsTitle": "資料夾與標籤顏色",
+    "noteColorsPickerTitle": "套用至所有資料夾與標籤",
     "noteColorsDesc": "筆記如何顯示所屬資料夾或標籤的顏色：整則筆記、僅圖示，或不顯示。",
     "noteColorsBackground": "背景",
     "noteColorsExampleTitle": "里斯本的週末",
     "noteColorsExampleFolder": "旅行，綠色資料夾",
-    "noteColorsAccent": "圖示",
+    "noteColorsAccent": "僅圖示",
     "noteColorsOff": "關閉",
+    "checkboxesTitle": "核取方塊",
+    "taskConfettiTitle": "勾選時灑彩帶",
+    "taskConfettiDesc": "勾選核取方塊時，會有一點彩帶從方塊飛出來。",
     "sinkCheckedTitle": "將已勾選的項目移到下方",
     "sinkCheckedDesc": "勾選的項目會移到清單中未勾選項目的下方。",
+    "defaultAppsTitle": "用 PrivacyNotes 開啟",
+    "defaultAppsMarkdown": "Markdown 檔",
+    "defaultAppsText": "文字檔",
+    "defaultAppsMarkdownHint": "雙擊 .md 檔，就會在這裡開啟。",
+    "defaultAppsTextHint": "雙擊 .txt 檔和 README 檔，就會在這裡開啟。",
+    "defaultAppsTextHintWindows": "雙擊 .txt 檔，就會在這裡開啟。",
+    "defaultAppsTextFinderSteps": "若要更改，請在 Finder 裡對 .txt 檔選擇「取得資訊」，在「打開檔案的應用程式」中選取 PrivacyNotes，再按一下「全部更改」。",
+    "defaultAppsMakeDefault": "設為預設",
+    "defaultAppsIsDefault": "預設",
+    "defaultAppsOwnerOther": "目前用 {{app}} 開啟。",
+    "defaultAppsOwnerOtherUnnamed": "目前用其他應用程式開啟。",
+    "defaultAppsOwnerNone": "還沒有預設的應用程式。",
     "spacesTitle": "空間",
     "spacesDesc": "把所有內容分成「個人」和「工作」，一次只顯示其中一個。",
     "lineSpacingDesc": "寫作時行與段落之間的間距。",
@@ -238,7 +263,8 @@
       "none": "這裡還沒有佈景主題。",
       "sortLabel": "排序",
       "sortVotes": "最多票",
-      "sortNewest": "最新"
+      "sortNewest": "最新",
+      "more": "更多佈景主題"
     },
     "custom": {
       "newTheme": "新增佈景主題",
@@ -433,6 +459,8 @@
     "wifiHoldTooltip": "Wi-Fi 回來後就會上傳檔案。筆記仍照常同步。",
     "notBackedUp": "未備份",
     "notSynced": "未同步",
+    "firstSyncPending": "這台裝置尚未完成與伺服器的首次同步，因此這裡可能還缺少部分筆記。",
+    "pullFailed": "上次同步無法從伺服器下載。系統會自動重試。",
     "notBackedUpTooltip_other": "{{count}} 則筆記尚未備份。點一下查看原因。",
     "notBackedUpAria_other": "{{count}} 則筆記尚未備份",
     "haltedTooltip_other": "同步已停止，{{count}} 則筆記尚未備份。點一下查看原因。",
@@ -503,7 +531,7 @@
     "alertBirthday": "生日",
     "alertsHelp": "新項目會從這些提醒開始。之後每個項目各自保留自己的提醒。",
     "reminderTitles": "在提醒中顯示標題",
-    "reminderTitlesHelp": "關閉時，提醒只會顯示「提醒」兩個字和時間。受 PIN 碼保護的項目一律如此。",
+    "reminderTitlesHelp": "開啟時，提醒會顯示項目的標題。關閉時，只顯示「提醒」和時間。受 PIN 碼保護的項目一律不顯示標題。",
     "whereTitle": "這台裝置上的提醒",
     "reminderHint": {
       "mobile": "提醒會在這支手機上響起，PrivacyNotes 關閉時也一樣。",
@@ -517,11 +545,14 @@
     "permissionDenied": "PrivacyNotes 的通知已被封鎖。請在這個瀏覽器或裝置的設定中允許通知。",
     "weekNumbers": "顯示週數",
     "weekNumbersHelp": "顯示在月檢視和小日曆中。",
-    "hours": "日檢視和週檢視開始於",
+    "hours": "日檢視和週檢視的起始時段",
+    "checkInReminder": "每日打卡提醒",
+    "checkInReminderHelp": "每天在這台裝置上問一次「你今天好嗎？」。當天已記錄心情或已略過時不會提醒。",
+    "checkInReminderAt": "提醒時間",
     "groupView": "檢視",
     "groupReminders": "提醒",
     "groupDefaults": "預設提醒",
-    "hoursHelp": "往上捲動可查看較早的時段。",
+    "hoursHelp": "日檢視和週檢視開啟時會捲動到這個時段，較早的時段在上方。",
     "to": "到"
   }
 }

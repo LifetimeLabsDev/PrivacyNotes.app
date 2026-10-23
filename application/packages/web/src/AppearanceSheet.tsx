@@ -31,13 +31,16 @@ import {
   peekThemeMode,
   customIdOf,
   paintedSlot,
+  themeSwatch,
   type LineSpacing,
 } from './theme';
 import { APP_ZOOM_LEVELS, DEFAULT_APP_ZOOM, appZoomSupported, useAppZoom } from './appZoom';
 import { intlLocale } from './languages';
 import { IconUpgrade, ProMark, type UpgradeTrigger } from './UpgradeModal';
 import { proUnlocked } from './demo';
-import { ArrowCounterClockwise, Folder, NotePencil, X, List, ListBullets, Palette, Star, Toolbox, ClockClockwise, SquaresFour, Sparkle, DotsThreeOutlineVertical, CaretDown, CaretRight, Globe, Plus, ClipboardText, ArrowSquareOut, PencilSimple, Copy, UserSwitch, TextT, TextAlignJustify, FrameCorners, PencilLine, HouseLine, Layout, MagnifyingGlassPlus, Tabs, Paragraph, ListChecks, CircleHalf, PaintBucket, Sun, Moon, PILLAR_GLYPHS, type Icon } from './icons';
+import { ArrowCounterClockwise, Folder, X, List, ListBullets, Palette, Star, Toolbox, SquaresFour, Sparkle, DotsThreeOutlineVertical, CaretDown, CaretRight, Globe, Plus, ClipboardText, ArrowSquareOut, PencilSimple, Copy, UserSwitch, TextT, TextAlignJustify, FrameCorners, PencilLine, HouseLine, Layout, MagnifyingGlassPlus, Tabs, Paragraph, ListChecks, CheckSquare, Confetti, CircleHalf, PaintBucket, Sun, Moon, Files, PILLAR_GLYPHS, type Icon } from './icons';
+import { DefaultAppSettingsRow } from './markdownFolder/MarkdownDefaultApp';
+import { markdownDefaultAppSupported } from './markdownFolder/defaultApp';
 import type { BUILTIN_THEME_CODES } from './builtinThemeCodes';
 import type { CustomThemes } from './customThemes';
 import type { ThemeGalleryCtx } from './customThemeUI';
@@ -55,7 +58,7 @@ const ExtraThemeCards = lazyPart(() => import('./customThemeUI').then((m) => m.E
 const ThemePasteField = lazyPart(() => import('./customThemeUI').then((m) => m.ThemePasteField));
 const FormatBarBoard = lazyPart(() => import('./FormatBarBoard').then((m) => m.FormatBarBoard));
 import { exemptOpts } from './i18nExempt';
-import { AccentBar, HeadlineRule, ROW_TITLE, RowTitle, SETTINGS_EYEBROW, SETTINGS_HELP } from './settingsUI';
+import { AccentBar, EYEBROW_ICON_ROW, EyebrowGlyph, HeadlineRule, ROW_TITLE, ResetDefaultsButton, RowTitle, SectionEyebrow, SETTINGS_BTN, SETTINGS_EYEBROW, SETTINGS_HELP, SettingsTabStrip, settingsTabClass, SETTINGS_TRACK } from './settingsUI';
 import { Switch } from './Switch';
 import { useOpenItemsInTabs, useTabsFit } from './notesView/useOpenTabs';
 import { faviconUrl } from './favicon';
@@ -65,6 +68,9 @@ import { ViewMenu } from './ViewMenu';
 import type { View } from './views';
 import { defaultSettings, isShownInAll } from './userSettings';
 import { NOTE_COLOR_CHOICES, NOTE_COLOR_LABEL, noteColorChoice, type NoteColorChoice } from './itemStyles';
+import { CloseButton } from './ui';
+import { NoteColorExample } from './looks/NoteColorExample';
+import { usePaneTab } from './settingsPaneTab';
 
 type Props = {
   isPro: boolean;
@@ -86,32 +92,38 @@ type Props = {
   onLineSpacingChange: (next: LineSpacing) => void;
   /** Views switched off in the sidebar, and item types switched out of the
    *  All list. Both also live behind the rail's own two icons - this is the
-   *  same field shown twice, like View. Spec: ops/docs/plans/sidebar-views.md */
+   *  same field shown twice, like View. Spec: ops/docs/archive/sidebar-views.md */
   hiddenViews: View[];
   hiddenInAll: View[];
   archivedInAll: boolean;
   onToggleHidden: (field: 'hiddenViews' | 'hiddenInAll', key: View) => void;
   /** The view the app opens on at a cold start, and its setter.
-   *  Spec: ops/docs/plans/start-view.md */
+   *  Spec: ops/docs/archive/start-view.md */
   startView: View;
   onStartViewChange: (next: View) => void;
   /** How a note shows its folder, tag or own color: a background, an accent
    *  on its icon, or off. The same control the look picker shows.
-   *  Spec: ops/docs/plans/note-color-style.md (section 3) */
+   *  Spec: ops/docs/archive/note-color-style.md (section 3) */
   noteColors: NoteColorChoice;
   onNoteColorsChange: (next: NoteColorChoice) => void;
   /** Whether a ticked task moves below the open tasks of its list, in the
    *  editor and in the Tasks view. */
   sinkCheckedTasks: boolean;
   onSinkCheckedTasksChange: (on: boolean) => void;
+  taskConfetti: boolean;
+  onTaskConfettiChange: (on: boolean) => void;
+  /** Lists only: which of its two tabs opens. */
+  initialTab?: string;
   /** Personal and Work. Spec: ops/docs/plans/spaces.md */
   spaces: boolean;
   onSpacesChange: (on: boolean) => void;
   /** Embedded only: which Settings entry this is. Design is the look,
    *  Editor is writing, Format bar is its board, Lists is finding things. */
   pane?: AppearancePane;
-  /** Popover only: open Settings on one of the three panes. */
-  onOpenAll?: (pane: AppearancePane) => void;
+  /** Popover only: open Settings on one of the three panes, and on one row of
+   *  it when `row` names a settings search id ("All themes" lands on the
+   *  themes). */
+  onOpenAll?: (pane: AppearancePane, row?: string) => void;
   /** The color themes a person made, from the settings blob.
    *  Spec: ops/docs/color-themes.md (section 6) */
   customThemes: CustomThemes;
@@ -156,30 +168,6 @@ const TEXT_SIZE_GLYPH: Record<TextSize, string> = {
   xl: 'text-[17px]',
 };
 
-/** Swatch colors per theme - 3 vertical stripes: sidebar tone, accent,
-    text. Stripe one is the sidebar (`--pn-surface-0`), never the list or
-    the editor tone: it is the widest spread the palettes have, so it is
-    what makes one chip read as a different theme from the next.
-    Spec: ops/docs/color-themes.md (section 4, adding a theme) */
-const SWATCH: Record<ColorTheme, [string, string, string]> = {
-  'default': ['#F5F5F5', '#1E40AF', '#0A0A0A'],
-  'warm-cream': ['#E1D8C4', '#1840B1', '#2D2416'],
-  'slate': ['#DDE1E8', '#4338CA', '#121524'],
-  'soft-dark': ['#1C1F26', '#89B7E6', '#CDD3DE'],
-  'navy-depths': ['#0D1321', '#83A4F8', '#D4DAE7'],
-  'sage': ['#E1E7DE', '#2B6A4D', '#17201A'],
-  'oled': ['#000000', '#4A90D9', '#E8E8E8'],
-};
-
-/** The Default card stands for whichever palette the painted mode uses, so
-    unlike a named theme it has one set of stripes per mode. The table above
-    holds the light one. */
-const SWATCH_DEFAULT_DARK: [string, string, string] = ['#171514', '#4A90D9', '#D9D4CC'];
-
-function swatchFor(ct: ColorTheme, dark: boolean): [string, string, string] {
-  return ct === 'default' && dark ? SWATCH_DEFAULT_DARK : SWATCH[ct];
-}
-
 /** A glyph welded to the word it labels, for a heading that names a column.
     Trans clones this and replaces only the children, so `icon` survives. */
 function IconWord({ icon: Glyph, children }: { icon: Icon; children?: ReactNode }) {
@@ -188,46 +176,6 @@ function IconWord({ icon: Glyph, children }: { icon: Icon; children?: ReactNode 
       <Glyph size={14} className="text-accent shrink-0" aria-hidden="true" />
       {children}
     </span>
-  );
-}
-
-/**
- * "Reset to defaults" at the foot of a tab. Armed, not immediate: the first
- * click turns it into a confirm for three seconds, because one stray click
- * would otherwise undo every choice on the tab at once.
- */
-function ResetDefaultsButton({ onReset }: { onReset: () => void }) {
-  const { t } = useTranslation('settings');
-  const [armed, setArmed] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
-
-  function click() {
-    if (timer.current) clearTimeout(timer.current);
-    if (armed) {
-      setArmed(false);
-      onReset();
-      return;
-    }
-    setArmed(true);
-    timer.current = setTimeout(() => setArmed(false), 3000);
-  }
-
-  return (
-    <div className="pt-4">
-      <button
-        type="button"
-        onClick={click}
-        className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-medium transition ${
-          armed
-            ? 'border-red-500/40 text-danger'
-            : 'border-divider text-pn-soft hover:text-pn'
-        }`}
-      >
-        <ClockClockwise size={15} aria-hidden="true" />
-        {armed ? t('appearance.resetDefaultsConfirm') : t('appearance.resetDefaults')}
-      </button>
-    </div>
   );
 }
 
@@ -243,7 +191,7 @@ const SEG_FILL = 'flex-1 px-3 lg:flex-none';
 
 export type AppearancePane = 'design' | 'editor' | 'formatBar' | 'lists';
 
-export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = false, viewMode, onViewModeChange, editorMode, onEditorModeChange, formatBar, lineSpacing, onLineSpacingChange, hiddenViews, hiddenInAll, archivedInAll, onToggleHidden, startView, onStartViewChange, noteColors, onNoteColorsChange, sinkCheckedTasks, onSinkCheckedTasksChange, spaces, onSpacesChange, pane = 'design', onOpenAll, customThemes, onCustomThemesChange, onOpenThemeBuilder }: Props) {
+export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = false, viewMode, onViewModeChange, editorMode, onEditorModeChange, formatBar, lineSpacing, onLineSpacingChange, hiddenViews, hiddenInAll, archivedInAll, onToggleHidden, startView, onStartViewChange, noteColors, onNoteColorsChange, sinkCheckedTasks, onSinkCheckedTasksChange, taskConfetti, onTaskConfettiChange, initialTab, spaces, onSpacesChange, pane = 'design', onOpenAll, customThemes, onCustomThemesChange, onOpenThemeBuilder }: Props) {
   const { t } = useTranslation('settings');
   // The table's row labels are the sidebar's own strings, so the pane and the
   // rail can never disagree in any language.
@@ -251,9 +199,11 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   // Which part of the embedded pane shows: Themes is the palette pair and the
   // mode, Text and layout (id `style`) is how text and panes are set, Lists
   // is what the lists hold. The footer popover has no tab strip - it renders
-  // a subset of the first two. Spec: ops/docs/ui-patterns.md section 36
+  // a subset of the first two. Spec: ops/docs/archive/ui-patterns.md section 36
 
   const [startMenuOpen, setStartMenuOpen] = useState(false);
+  // Lists has two tabs: General, and the Sidebar and All table.
+  const [listsTab, setListsTab] = usePaneTab<'general' | 'sidebar'>('lists', initialTab === 'sidebar' ? 'sidebar' : 'general');
   // The example starts closed: the pane already runs a long column of rows,
   // and a sample that is always open makes one group several times the height
   // of every other for a reader who never asked to see it. The first click on
@@ -282,7 +232,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   const triggerRect = trigger?.getBoundingClientRect();
   const centred = !!triggerRect && triggerRect.left + triggerRect.width / 2 < window.innerWidth / 2;
   const popPos = usePopoverPosition(!!trigger, triggerRef, panelRef, { gap: 8, align: 'end', shrink: true });
-  const { theme, themeMode, setThemeMode, colorTheme, lightTheme, darkTheme, setColorTheme, setCustomTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, favicons, setFavicons, invisibles, setInvisibles, copyFormat, setCopyFormat, pasteFormat, setPasteFormat } = useTheme();
+  const { theme, themeMode, setThemeMode, colorTheme, lightTheme, darkTheme, setColorTheme, pickTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, favicons, setFavicons, invisibles, setInvisibles, copyFormat, setCopyFormat, pasteFormat, setPasteFormat } = useTheme();
   // Its own store rather than an axis of useTheme(): a level is handed to the
   // webview under the page, not to a CSS variable on <html>, and keeping it
   // out of theme.ts keeps that module free of a native import on the boot
@@ -404,28 +354,19 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   }
 
   function handleThemeClick(mode: Theme, t: ThemeChoice, snapshot?: CustomSnapshot) {
-    // A click always shows the pick. A card of the other mode switches a
-    // pinned mode to it; under Auto, and for a free account's preview, it is
-    // shown until Settings closes, so a preview never changes the stored mode.
+    // A click always shows the pick. A kept pick moves the screen to its
+    // mode for good, Auto included (pickTheme); a free account's preview of
+    // a Pro theme only peeks, so a preview never changes the stored mode.
     const keeps = themesUnlocked || isFreeTheme(t);
-    // A pinned mode is read from storage, not from what is painted: a pasted
-    // code shows its theme by peeking at its mode, and its Save still has to
-    // move the pin.
-    if (keeps && themeMode !== 'auto') {
-      if (themeMode !== mode) setThemeMode(mode);
-    } else if (mode !== theme) {
-      peekThemeMode(mode);
-    }
     if (keeps) {
-      // Pro user or free theme: persist normally
-      if (snapshot) setCustomTheme(snapshot);
-      else setColorTheme(mode, t);
+      pickTheme(mode, snapshot ?? t);
       savedThemesRef.current = { ...savedThemesRef.current, [mode]: t };
       return;
     }
 
     // Free user clicked a pro theme: preview visually (no localStorage
     // write) so the user sees it live but it won't survive a reload.
+    if (mode !== theme) peekThemeMode(mode);
     if (snapshot) previewCustomTheme(mode, snapshot);
     else previewColor(mode, t);
   }
@@ -499,7 +440,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     // Badge only - keyed off isPro, not themesUnlocked, so the demo still
     // shows which palettes are Pro while using them.
     const locked = !isPro && !FREE_THEMES.has(ct);
-    const [c1, c2, c3] = swatchFor(ct, mode === 'dark');
+    const [c1, c2, c3] = themeSwatch(ct, mode === 'dark');
     const card = (
       <button
         key={`${mode}-${ct}`}
@@ -555,6 +496,8 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     resetStyleAxes();
     onLineSpacingChange(d.lineSpacing);
     onEditorModeChange(d.editorMode);
+    onSinkCheckedTasksChange(d.sinkCheckedTasks);
+    onTaskConfettiChange(d.taskConfetti);
   }
 
   function resetThemes() {
@@ -570,7 +513,6 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     setFavicons(true);
     onStartViewChange(d.startView);
     onViewModeChange(d.viewMode);
-    onSinkCheckedTasksChange(d.sinkCheckedTasks);
     setOpenItemsInTabs(true);
     for (const v of hiddenViews) onToggleHidden('hiddenViews', v);
     for (const v of hiddenInAll) onToggleHidden('hiddenInAll', v);
@@ -692,7 +634,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   // control right-aligned; below lg every row stacks instead. Row labels
   // replace section eyebrows here; the footer popover below keeps its own
   // stacked layout because w-80 has no room for a label column.
-  // Spec: ops/docs/ui-patterns.md section 36 (compact setting rows)
+  // Spec: ops/docs/archive/ui-patterns.md section 36 (compact setting rows)
   if (embedded) {
     // Below lg (where the shell is the push stack) every row stacks: label
     // and helper, then the control full-width beneath. Above lg it is one
@@ -703,7 +645,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     const rowLayout =
       'flex flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between lg:gap-x-5 lg:gap-y-2';
     const row = `${rowLayout} py-3`;
-    const track = 'flex gap-1 rounded-md p-1 bg-track';
+    const track = SETTINGS_TRACK;
     // A helper that only EXPLAINS its control (what Auto does, what the two
     // editor modes mean) is desktop-only: the options largely carry it, and
     // at the push-stack width these were what pushed the pane into a scroll.
@@ -800,7 +742,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           {/* Made by, as on /themes: the built-in palettes count as the team's. */}
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             {/* Wraps, so a long word in any language never clips the last chip. */}
-            <div role="group" aria-label={t('appearance.madeBy.label')} className="flex flex-wrap max-w-full gap-1 rounded-md p-1 bg-track">
+            <div role="group" aria-label={t('appearance.madeBy.label')} className={`flex-wrap max-w-full ${SETTINGS_TRACK}`}>
               {(['all', 'community', 'team', 'yours'] as const).map((m) => (
                 <button
                   key={m}
@@ -813,21 +755,38 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
                 </button>
               ))}
             </div>
-            {madeBy === 'community' && (
-              <div role="group" aria-label={t('appearance.madeBy.sortLabel')} className="ms-auto flex flex-wrap max-w-full gap-1 rounded-md p-1 bg-track">
-                {(['newest', 'votes'] as const).map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setCommunitySort(s)}
-                    aria-pressed={communitySort === s}
-                    className={`inline-flex items-center justify-center px-3 py-1 rounded text-xs transition ${communitySort === s ? SEG_ACTIVE : SEG_IDLE}`}
-                  >
-                    {t(s === 'votes' ? 'appearance.madeBy.sortVotes' : 'appearance.madeBy.sortNewest')}
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* The order toggle applies to the community themes, so it shows
+                where they do; the website link sits at the end in every tab.
+                The group grows to the row's end, so on a narrow pane it takes
+                a line of its own: the toggle at the start, the link at the end.
+                On a phone the link wraps under the toggle and stays at the
+                start, like New theme and Paste theme code above it. */}
+            <div className="flex max-w-full grow flex-wrap items-center gap-2">
+              {(madeBy === 'all' || madeBy === 'community') && (
+                <div role="group" aria-label={t('appearance.madeBy.sortLabel')} className={`flex-wrap max-w-full ${SETTINGS_TRACK}`}>
+                  {(['newest', 'votes'] as const).map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setCommunitySort(s)}
+                      aria-pressed={communitySort === s}
+                      className={`inline-flex items-center justify-center px-3 py-1 rounded text-xs transition ${communitySort === s ? SEG_ACTIVE : SEG_IDLE}`}
+                    >
+                      {t(s === 'votes' ? 'appearance.madeBy.sortVotes' : 'appearance.madeBy.sortNewest')}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <a
+                href={siteHref('/themes')}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`sm:ms-auto ${SETTINGS_BTN.replace('py-1.5 text-sm', 'h-8 text-[13px]')}`}
+              >
+                {t('appearance.madeBy.more')}
+                <ArrowSquareOut size={12} aria-hidden="true" />
+              </a>
+            </div>
           </div>
           {(['light', 'dark'] as const).map((mode) => (
             <div key={mode}>
@@ -919,25 +878,17 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           </button>
           {noteExampleOpen && (
             <div className="mt-2 rounded-md bg-track p-2">
-              <div
-                className="flex items-center gap-3 rounded-md bg-surface-1 px-2.5 py-2"
-                style={noteColors === 'background' ? { backgroundImage: 'linear-gradient(var(--pn-label-green-tint), var(--pn-label-green-tint))' } : undefined}
-              >
-                <span
-                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md ${noteColors === 'off' ? 'bg-pn/5 text-accent' : ''}`}
-                  style={noteColors === 'off' ? undefined : { background: 'var(--pn-label-green-tint)', color: 'var(--pn-label-green-ink)' }}
-                  aria-hidden="true"
-                >
-                  <NotePencil size={15} />
-                </span>
-                <div className="min-w-0">
-                  <p className="truncate text-[13px] font-semibold text-pn">{t('appearance.noteColorsExampleTitle')}</p>
-                  <p className="flex items-center gap-1 text-[11px] text-pn-muted">
+              <NoteColorExample
+                choice={noteColors}
+                color="green"
+                title={t('appearance.noteColorsExampleTitle')}
+                source={
+                  <>
                     <Folder size={11} weight="fill" style={{ color: 'var(--pn-label-green-ink)' }} aria-hidden="true" />
                     {t('appearance.noteColorsExampleFolder')}
-                  </p>
-                </div>
-              </div>
+                  </>
+                }
+              />
             </div>
           )}
         </div>
@@ -1039,7 +990,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
         {/* Copied text - what the plain-text part of a copy holds. Markdown
             keeps today's copy; Plain text drops the `- [ ]` and every other
             formatting character for targets that print them as they are.
-            Device-local. Spec: ops/docs/plans/paste-pictures.md (section 3.6) */}
+            Device-local. Spec: ops/docs/archive/paste-pictures.md (section 3.6) */}
         <div data-setting="appearance.copyFormat" className={row}>
           <div className="min-w-0">
             <RowTitle icon={Copy}>{t('appearance.copyFormatTitle')}</RowTitle>
@@ -1104,17 +1055,56 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           className="gap-x-5 py-3"
         />
 
+        {/* Checkboxes - what a tick does, in a note and in the Tasks view
+            alike. Both sync. */}
+        <div className="pt-4">
+          <SectionEyebrow icon={CheckSquare}>{t('appearance.checkboxesTitle')}</SectionEyebrow>
+          <div className="divide-y divide-divider">
+            <Switch
+              setting="appearance.taskConfetti"
+              icon={<Confetti size={14} className="text-accent" />}
+              labelClassName={ROW_TITLE}
+              label={t('appearance.taskConfettiTitle')}
+              description={t('appearance.taskConfettiDesc')}
+              checked={taskConfetti}
+              onChange={onTaskConfettiChange}
+              className="gap-x-5 py-3"
+            />
+            <Switch
+              setting="appearance.sinkChecked"
+              icon={<ListChecks size={14} className="text-accent" />}
+              labelClassName={ROW_TITLE}
+              label={t('appearance.sinkCheckedTitle')}
+              description={t('appearance.sinkCheckedDesc')}
+              checked={sinkCheckedTasks}
+              onChange={onSinkCheckedTasksChange}
+              className="gap-x-5 py-3"
+            />
+          </div>
+        </div>
+
+        {/* Open with PrivacyNotes - which app the OS opens a double-clicked
+            file with. Desktop app only. It stores nothing, so Reset to
+            defaults leaves it alone.
+            Spec: ops/docs/plans/default-app-settings.md */}
+        {markdownDefaultAppSupported() && (
+          <div data-setting="appearance.defaultApps" className="pt-4">
+            <SectionEyebrow icon={Files}>{t('appearance.defaultAppsTitle')}</SectionEyebrow>
+            <DefaultAppSettingsRow kind="text" />
+            <DefaultAppSettingsRow kind="markdown" />
+          </div>
+        )}
       </>
     );
 
-    const listRows = (
+    const generalRows = (
       <>
         {/* Start in - which view the app opens on. First on the tab because
             it answers the question a person arrives with, and because a menu
             here has the whole pane below it to open into. The menu is the one
             the phone pillar switcher uses, so a pillar added later appears in
             both without a second list.
-            Spec: ops/docs/plans/start-view.md */}
+            Spec: ops/docs/archive/start-view.md */}
         <div data-setting="appearance.startView" className={row}>
           <div className="min-w-0">
             <RowTitle icon={HouseLine}>{t('appearance.startViewTitle')}</RowTitle>
@@ -1194,7 +1184,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
 
         {/* Open items in tabs - a row click opens a tab, so it changes what a
             click in a list does. Device-local, like the tabs themselves.
-            Spec: ops/docs/plans/note-tabs.md */}
+            Spec: ops/docs/archive/note-tabs.md */}
         {tabsFit && (
           <Switch
             setting="appearance.openInTabs"
@@ -1207,19 +1197,6 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             className="gap-x-5 py-3"
           />
         )}
-
-        {/* Checked tasks - where a ticked task goes, in a note and in the
-            Tasks view alike. */}
-        <Switch
-          setting="appearance.sinkChecked"
-          icon={<ListChecks size={14} className="text-accent" />}
-          labelClassName={ROW_TITLE}
-          label={t('appearance.sinkCheckedTitle')}
-          description={t('appearance.sinkCheckedDesc')}
-          checked={sinkCheckedTasks}
-          onChange={onSinkCheckedTasksChange}
-          className="gap-x-5 py-3"
-        />
 
         {/* Website icons - the site logo on links and vault logins. The one
             thing they cost is a request per new domain to our proxy, so the
@@ -1266,7 +1243,10 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           onChange={setFavicons}
           className="gap-x-5 py-3"
         />
-
+      </>
+    );
+    const sidebarRows = (
+      <>
         {/* Sidebar - two settings in one table. "In sidebar" decides which
             rows the rail draws; "In All" decides which item types the All
             list holds. They look like one setting and are not: seeing Vault
@@ -1275,7 +1255,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             in the rail itself (the eye on the Content caption, the funnel in
             the All row) - the same field shown twice, exactly as the
             List/Grid choice already is.
-            Spec: ops/docs/plans/sidebar-views.md */}
+            Spec: ops/docs/archive/sidebar-views.md */}
         <div data-setting="appearance.sidebar" className="py-3">
           {/* The heading names the two columns using the two glyphs the column
               headers carry, so the words below are already recognisable. Each
@@ -1391,17 +1371,24 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
                     // only the arranging. Keyed on the plan, not on the
                     // unlock, so the demo still labels it.
                     heading={
-                      <>
-                        <div className="flex items-center gap-2.5 pt-3">
-                          <AccentBar />
-                          <h3 className="text-base font-semibold">{t('notes:settings.formatBarLabel')}</h3>
-                          {!isPro && <ProMark />}
-                          <HeadlineRule />
+                      // Two columns: the heading and its note, and the
+                      // reset for the arrangement it heads. A free draft
+                      // shows Discard at the foot instead.
+                      <div className="pt-1 flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                          <div className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW}`}>
+                            <EyebrowGlyph icon={Toolbox} />
+                            {t('editor:formatBar.arrangeTitle')}
+                            {!isPro && <ProMark />}
+                          </div>
+                          {/* The Markdown view draws a fixed bar this board
+                              does not arrange (GitHub #493). */}
+                          <p className={`${SETTINGS_HELP} mt-1`}>{t('editor:formatBar.markdownViewNote')}</p>
                         </div>
-                        {/* The Markdown view draws a fixed bar this board
-                            does not arrange (GitHub #493). */}
-                        <p className={`${SETTINGS_HELP} mt-1`}>{t('editor:formatBar.markdownViewNote')}</p>
-                      </>
+                        {!formatBar.previewing && (
+                          <ResetDefaultsButton key="formatBar" className="shrink-0" onReset={() => formatBar.onUpdate(() => null)} />
+                        )}
+                      </div>
                     }
                   />
                 </Suspense>
@@ -1409,7 +1396,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
               {/* A free account's draft: Discard takes the place of Reset, and
                   the upgrade door sits in the same row, so the tab does not
                   grow. At rest the row carries one quiet invitation.
-                  Spec: ops/docs/plans/format-bar.md (section 5) */}
+                  Spec: ops/docs/archive/format-bar.md (section 5) */}
               <div className="px-6 pb-4">
                 {formatBar.previewing ? (
                   <div className="pt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -1433,10 +1420,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
                     </button>
                   </div>
                 ) : (
-                  <div className="flex flex-wrap items-end gap-x-3 gap-y-2">
-                    <ResetDefaultsButton key="formatBar" onReset={() => formatBar.onUpdate(() => null)} />
-                    {formatBar.locked && <p className="pb-2 text-xs text-pn-muted">{t('editor:formatBar.tryIt')}</p>}
-                  </div>
+                  formatBar.locked && <p className="pt-3 text-xs text-pn-muted">{t('editor:formatBar.tryIt')}</p>
                 )}
               </div>
             </>
@@ -1444,9 +1428,24 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
         </div>
       );
     }
-    const rows = pane === 'design' ? themeRows : pane === 'editor' ? styleRows : listRows;
+    const rows = pane === 'design' ? themeRows : pane === 'editor' ? styleRows : listsTab === 'sidebar' ? sidebarRows : generalRows;
+    const listsTabs = [
+      { id: 'general' as const, label: t('appearance.listsTabGeneral'), icon: <ListBullets aria-hidden="true" /> },
+      { id: 'sidebar' as const, label: t('appearance.listsTabSidebar'), icon: <DotsThreeOutlineVertical aria-hidden="true" /> },
+    ];
     return (
       <div className="flex-1 min-h-0 flex flex-col text-pn">
+        {pane === 'lists' && (
+          <SettingsTabStrip role="tablist" aria-label={t('notes:settings.listsLabel')} className="shrink-0 px-4 sm:px-6">
+            {listsTabs.map((tb) => (
+              <button key={tb.id} type="button" data-setting={`lists.${tb.id}`} role="tab" aria-selected={listsTab === tb.id}
+                onClick={() => setListsTab(tb.id)} className={settingsTabClass(listsTab === tb.id)}>
+                {tb.icon}
+                <span>{tb.label}</span>
+              </button>
+            ))}
+          </SettingsTabStrip>
+        )}
         <div className="flex-1 min-h-0 overflow-y-auto">
           <div className="px-6 divide-y divide-divider">{rows}</div>
           <div className="px-6 pb-4">
@@ -1464,7 +1463,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   const quickRow = (glyph: Icon, title: string, buttons: ReactNode) => (
     <div className="px-4 py-2">
       <RowTitle icon={glyph}>{title}</RowTitle>
-      <div className="mt-1.5 flex gap-1 rounded-md p-1 bg-track">{buttons}</div>
+      <div className={`mt-1.5 ${SETTINGS_TRACK}`}>{buttons}</div>
     </div>
   );
   const painted: Theme = theme;
@@ -1490,13 +1489,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
         <AccentBar />
         <h2 className="text-sm font-semibold">{t('notes:settings.appearanceLabel')}</h2>
         <HeadlineRule />
-        <button
-          onClick={handleClose}
-          className="text-pn-muted hover:text-pn transition p-1 -m-1"
-          aria-label={t('common:actions.close')}
-        >
-          <X />
-        </button>
+        <CloseButton onClick={handleClose} />
       </div>
 
       {/* The rows scroll between the pinned header and the pinned doors: the
@@ -1515,7 +1508,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             {onOpenAll && (
               <button
                 type="button"
-                onClick={() => onOpenAll('design')}
+                onClick={() => onOpenAll('design', 'appearance.theme')}
                 className="ms-auto inline-flex items-center gap-0.5 text-xs font-medium text-accent hover:underline"
               >
                 {t('appearance.allThemes')}
@@ -1538,7 +1531,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
               <button
                 key={`empty-${i}`}
                 type="button"
-                onClick={() => onOpenAll?.('design')}
+                onClick={() => onOpenAll?.('design', 'appearance.theme')}
                 disabled={!onOpenAll}
                 className="flex min-h-[3.25rem] flex-col items-center justify-center gap-0.5 rounded-lg border border-dashed border-divider text-[10px] font-medium text-pn-muted hover:border-pn-muted hover:text-pn-soft transition"
               >

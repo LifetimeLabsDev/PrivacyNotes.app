@@ -12,7 +12,7 @@ import { foldText } from './textFold';
  * first child), the WAI-ARIA tree pattern, mirrored in a right-to-left
  * language. A key used here is cancelled, so the app's own J and K wait.
  *
- * Spec: ops/docs/plans/keyboard-shortcuts.md (section 6)
+ * Spec: ops/docs/archive/keyboard-shortcuts.md (section 6)
  */
 export function onRowListKeyDown(e: ReactKeyboardEvent<HTMLElement>): void {
   if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || isImeComposing(e)) return;

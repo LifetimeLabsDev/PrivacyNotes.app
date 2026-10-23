@@ -1,15 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import {
-  ACTIVITY_LEVELS,
-  BUILTIN_TRACKER_COLORS,
-  type ActivityLevel,
-} from '../trackerTypes';
+import { ACTIVITY_LEVELS, type ActivityLevel } from '../trackerTypes';
 import { PillShell } from './PillShell';
 import { TRACKER_ICONS } from './icons';
+import { ChoiceGrid, PanelQuestion } from './panelUI';
 
-/**
- * Activity pill - single-select activity level.
- */
+/** Activity pill - one activity level; the tap commits and closes. */
 export function ActivityPill({
   value,
   expanded,
@@ -27,7 +22,6 @@ export function ActivityPill({
   return (
     <PillShell
       label={t('labels.activity')}
-      color={BUILTIN_TRACKER_COLORS.activity}
       filled={value != null}
       expanded={expanded}
       onToggle={onToggle}
@@ -35,37 +29,13 @@ export function ActivityPill({
       icon={TRACKER_ICONS.activity}
       readOnly={readOnly}
     >
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-medium text-pn-soft">
-          {t('activity.prompt')}
-        </span>
-        <div className="flex gap-1">
-          {ACTIVITY_LEVELS.map((level) => (
-            <button
-              key={level}
-              type="button"
-              onClick={() => { onChange(level); onToggle(); }}
-              className={`flex-1 px-1 py-1.5 rounded-md text-[11px] font-medium text-center transition-colors ${
-                value === level
-                  ? 'text-white'
-                  : 'bg-surface-0 text-pn-soft'
-              }`}
-              style={
-                value === level
-                  ? { backgroundColor: BUILTIN_TRACKER_COLORS.activity }
-                  : undefined
-              }
-              onMouseEnter={(e) => {
-                if (value !== level) e.currentTarget.style.backgroundColor = `${BUILTIN_TRACKER_COLORS.activity}33`;
-              }}
-              onMouseLeave={(e) => {
-                if (value !== level) e.currentTarget.style.backgroundColor = '';
-              }}
-            >
-              {t(`activity.level.${level}`)}
-            </button>
-          ))}
-        </div>
+      <div className="max-w-[420px]">
+        <PanelQuestion>{t('activity.prompt')}</PanelQuestion>
+        <ChoiceGrid
+          options={ACTIVITY_LEVELS.map((level) => ({ key: level, label: t(`activity.level.${level}`) }))}
+          value={value}
+          onPick={(level) => { onChange(level); onToggle(); }}
+        />
       </div>
     </PillShell>
   );

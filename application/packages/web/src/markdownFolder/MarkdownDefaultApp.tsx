@@ -1,7 +1,7 @@
 /**
- * The "open .md files with PrivacyNotes" control, in its three homes.
+ * The "open .md files with PrivacyNotes" control, in its four homes.
  *
- * One body, three frames, because the same handful of facts has to fit three
+ * One status, four frames, because the same handful of facts has to fit four
  * very different amounts of room:
  *
  *   - `MarkdownDefaultAppPopover` - behind the folder toolbar's Markdown button.
@@ -13,25 +13,32 @@
  *     left to tell them.
  *   - `MarkdownDefaultAppRow` - the last row of `MarkdownPitch`, so the explainer
  *     modal and the no-folder empty state both carry it for free.
+ *   - `DefaultAppSettingsRow` - a row in Settings > Editor, so the control can
+ *     be found without opening a Markdown folder. It also serves `.txt`.
  *
- * Every frame renders NOTHING off the desktop app, and nothing until the first
- * status has come back - a control that flickers from "make this the default" to
- * "already the default" on mount is worse than one that appears a beat late.
+ * Every frame renders NOTHING off the desktop app. The first three also render
+ * nothing until the first status has come back - a control that flickers from
+ * "make this the default" to "already the default" on mount is worse than one
+ * that appears a beat late. The settings row is the exception: a search result
+ * must have a row to scroll to, so it says it is checking instead.
  *
  * It is a button, not a toggle, and `defaultApp.ts` explains why: no
  * platform has an API to stop being the default handler.
  *
- * Spec: ops/docs/plans/markdown-folder.md (section 11)
+ * Spec: ops/docs/archive/markdown-folder.md (section 11)
  */
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowSquareOut, CheckCircle, FileMd } from '../icons';
+import { ArrowSquareOut, CheckCircle, FileMd, FileText } from '../icons';
 import { useEscapeToClose } from '../useEscapeToClose';
+import { Badge, Button, RowTitle, SETTINGS_HELP, SETTINGS_ROW, StatusLine } from '../ui';
 import {
-  claimMarkdownDefaultApp,
-  markMarkdownDefaultAppOurs,
+  claimDefaultApp,
+  markDefaultAppOurs,
   openOsDefaultAppSettings,
-  useMarkdownDefaultApp,
+  useDefaultApp,
+  watchClaim,
+  type AssocKind,
   type MarkdownAssoc,
 } from './defaultApp';
 
@@ -53,8 +60,8 @@ const HINT_KEY: Record<MarkdownAssoc['platform'], string> = {
  * decided by `settable` rather than by the platform string, so the day a
  * platform changes its mind only the native side moves.
  */
-function useDefaultAppAction() {
-  const assoc = useMarkdownDefaultApp();
+function useDefaultAppAction(kind: AssocKind = 'markdown') {
+  const assoc = useDefaultApp(kind);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
 
@@ -72,16 +79,12 @@ function useDefaultAppAction() {
     setFailed(false);
     try {
       if (assoc.settable) {
-        await claimMarkdownDefaultApp();
-        // Publish the outcome locally instead of reading the OS back. The
-        // read-back used to be here and was wrong twice over: LaunchServices
-        // answers an in-process read from a cache that has not caught up with the
-        // write, so it could report the handler we just replaced, and resolving a
-        // bundle id can take tens of seconds on a machine carrying a lot of stale
-        // registrations - the disabled button and the unchanged status came from
-        // exactly that pair. The OS already said the write succeeded; the next
-        // window focus reconciles against reality.
-        markMarkdownDefaultAppOurs();
+        await claimDefaultApp(kind);
+        // macOS asks the person in a system dialog and the call returns before
+        // they answer, so the status waits for a read that sees the change.
+        // Linux has written the association by now.
+        if (assoc.platform === 'linux') markDefaultAppOurs(kind);
+        else void watchClaim(kind);
       } else {
         // Windows. Nothing to re-read yet - the user has not chosen anything
         // yet, and the window's own focus listener picks up whatever they do.
@@ -203,6 +206,10 @@ function DefaultAppBody({
       {isOurs ? (
         <p className="mt-2 text-[11.5px] text-pn-muted leading-snug">
           {t('markdown.assocChangeHint')}
+        </p>
+      ) : assoc.finderOnly ? (
+        <p className="mt-2 text-[11px] text-pn-muted leading-snug">
+          {t('markdown.assocFinderSteps')}
         </p>
       ) : (
         <div className="mt-2.5">
@@ -359,6 +366,106 @@ export function MarkdownDefaultAppPopover({
         // than "not supported".
         <p className="text-[12px] text-pn-muted">{t('markdown.assocReading')}</p>
       )}
+    </div>
+  );
+}
+
+/** What differs between the two settings rows. The Text row names the
+ *  extensionless files the plain-text claim also takes, on macOS only: on
+ *  Windows a default belongs to one extension. */
+const ROW: Record<AssocKind, {
+  icon: typeof FileMd;
+  title: string;
+  hint: (p: MarkdownAssoc['platform']) => [ns: 'shell' | 'settings', key: string];
+  finderSteps: [ns: 'shell' | 'settings', key: string];
+}> = {
+  markdown: {
+    icon: FileMd,
+    title: 'appearance.defaultAppsMarkdown',
+    hint: () => ['settings', 'appearance.defaultAppsMarkdownHint'],
+    finderSteps: ['shell', 'markdown.assocFinderSteps'],
+  },
+  text: {
+    icon: FileText,
+    title: 'appearance.defaultAppsText',
+    hint: (p) => ['settings', p === 'windows' ? 'appearance.defaultAppsTextHintWindows' : 'appearance.defaultAppsTextHint'],
+    finderSteps: ['settings', 'appearance.defaultAppsTextFinderSteps'],
+  },
+};
+
+/**
+ * A row in Settings > Editor, under "Open with PrivacyNotes": Markdown files,
+ * or Text files (`.txt`).
+ *
+ * Same status and action as the other frames, in the settings row layout: the
+ * status sits in the helper line and stays visible at every width, because it
+ * is a fact the control cannot show. The finished state is a badge, not a
+ * button, for the reason the module header gives. The Text row is not drawn
+ * on Linux, where the native side offers no plain-text claim.
+ *
+ * Spec: ops/docs/plans/default-app-settings.md (sections 4 and 6)
+ */
+export function DefaultAppSettingsRow({ kind }: { kind: AssocKind }) {
+  const { t } = useTranslation('settings');
+  const { t: tShell } = useTranslation('shell');
+  const { assoc, busy, failed, run } = useDefaultAppAction(kind);
+  const markdown = useDefaultApp('markdown');
+  if (kind === 'text' && markdown?.platform === 'linux') return null;
+  const row = ROW[kind];
+  const tr = ([ns, key]: [ns: 'shell' | 'settings', key: string], opts?: Record<string, string>) =>
+    ns === 'shell' ? tShell(key, opts) : t(key, opts);
+  const isOurs = assoc?.owner === 'ours';
+
+  let status: string;
+  if (!assoc) {
+    status = tShell('markdown.assocReading');
+  } else {
+    const parts = [tr(row.hint(assoc.platform))];
+    if (!isOurs && assoc.owner === 'other') {
+      parts.push(
+        assoc.otherName
+          ? t('appearance.defaultAppsOwnerOther', { app: assoc.otherName })
+          : t('appearance.defaultAppsOwnerOtherUnnamed'),
+      );
+    } else if (!isOurs && assoc.owner === 'none') parts.push(t('appearance.defaultAppsOwnerNone'));
+    if (!isOurs && !assoc.settable) parts.push(tShell('markdown.assocWindowsManual'));
+    if (!isOurs && assoc.finderOnly) parts.push(tr(row.finderSteps));
+    status = parts.join(' ');
+  }
+
+  return (
+    <div className={SETTINGS_ROW}>
+      {/* `lg:flex-1` lets the status line wrap beside the button: it is longer
+          than any other helper in the pane, and without it the row wraps the
+          button onto a line of its own. */}
+      <div className="min-w-0 lg:flex-1">
+        <RowTitle icon={row.icon}>{t(row.title)}</RowTitle>
+        <p className={`${SETTINGS_HELP} mt-0.5`}>{status}</p>
+        {failed && (
+          <div className="mt-1">
+            <StatusLine tone="danger">{tShell('markdown.assocFailed')}</StatusLine>
+          </div>
+        )}
+      </div>
+      {assoc && !(!isOurs && assoc.finderOnly) && (isOurs ? (
+        <div>
+          <Badge tone="success" icon={<CheckCircle size={12} weight="fill" aria-hidden="true" />}>
+            {t('appearance.defaultAppsIsDefault')}
+          </Badge>
+        </div>
+      ) : (
+        <Button
+          icon={assoc.settable
+            ? <CheckCircle size={15} aria-hidden="true" className="shrink-0" />
+            : <ArrowSquareOut size={15} aria-hidden="true" className="shrink-0" />}
+          onClick={() => void run()}
+          disabled={busy}
+        >
+          {busy
+            ? tShell('markdown.assocWorking')
+            : assoc.settable ? t('appearance.defaultAppsMakeDefault') : tShell('markdown.assocWindowsOpen')}
+        </Button>
+      ))}
     </div>
   );
 }

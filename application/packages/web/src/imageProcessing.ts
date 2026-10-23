@@ -4,7 +4,7 @@
  * Every image door in the app (paste, drop, the image button, the attach
  * button, the Files pillar, every importer) hands its file to
  * `processImage` with the options from `currentImageOptions()`, which
- * mirror the two app-wide switches in Settings > Images:
+ * mirror the two app-wide switches in Settings > Storage > Images:
  *
  *   fitBox set   -> decode, fit inside the box, encode JPEG at
  *                   IMAGE_JPEG_QUALITY (PNG when the source carries
@@ -33,7 +33,7 @@
  * All processing happens in the browser via canvas. No unprocessed image
  * data ever leaves the client.
  *
- * Spec: ops/docs/plans/image-quality-handoff.md
+ * Spec: ops/docs/archive/image-quality-handoff.md
  */
 
 import type { ImageFormat } from './imageMetadata';
@@ -95,17 +95,17 @@ function canvasHasAlpha(
 }
 
 /** The longest edge a space-saved image fits inside, in pixels. */
-// Spec: ops/docs/plans/image-quality-handoff.md (section 3, space saver)
+// Spec: ops/docs/archive/image-quality-handoff.md (section 3, space saver)
 export const IMAGE_FIT_PX = 2048;
 
 /** JPEG quality (0-1). 0.85 is roughly Google Photos "Storage saver". */
-// Spec: ops/docs/plans/image-quality-handoff.md (section 3, space saver)
+// Spec: ops/docs/archive/image-quality-handoff.md (section 3, space saver)
 export const IMAGE_JPEG_QUALITY = 0.85;
 
 /** The box a contact photo fits inside while "Keep contact photos small"
  *  is on: a ceiling, never a target, and never an upscale. The largest
  *  size the app draws a contact photo. */
-// Spec: ops/docs/plans/contacts-pillar.md (section 7.4, one photo per contact)
+// Spec: ops/docs/archive/contacts-pillar.md (section 7.4, one photo per contact)
 export const CONTACT_PHOTO_PX = 512;
 
 /**
@@ -198,7 +198,7 @@ export function currentImageOptions(overrides: Partial<ImageOptions> = {}): Imag
  * The options a contact photo passes: the space-saver options with the box
  * pulled in to CONTACT_PHOTO_PX while "Keep contact photos small" is on.
  * Off, a contact photo is any other image.
- * Spec: ops/docs/plans/image-quality-handoff.md (section 7)
+ * Spec: ops/docs/archive/image-quality-handoff.md (section 7)
  */
 export function contactPhotoOptions(): ImageOptions {
   const base = currentImageOptions();

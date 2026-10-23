@@ -38,7 +38,7 @@ export function UpdateToast({
   required?: boolean;
   sizeBytes?: number;
   /** The calendar reminder's variant: its own title, glyph and meta line,
-   *  and Snooze beside Open. Spec: ops/docs/plans/calendar-pillar-spec.md (step 7) */
+   *  and Snooze beside Open. Spec: ops/docs/archive/calendar-pillar-spec.md (step 7) */
   title?: string;
   icon?: ReactNode;
   meta?: string;
@@ -52,7 +52,9 @@ export function UpdateToast({
     <div
       role="status"
       aria-live="polite"
-      className="fixed z-[100] start-4 end-4 sm:start-auto sm:end-4 sm:max-w-sm pn-toast-in"
+      // A second button leaves a narrow toast no room for its title, so the
+      // reminder's variant is wider: a question or an item title stays on one line.
+      className={`fixed z-[100] start-4 end-4 sm:start-auto sm:end-4 ${secondary ? 'sm:max-w-lg' : 'sm:max-w-sm'} pn-toast-in`}
       // Account for the iPhone home-indicator stripe (and any other bottom
       // safe-area inset). On platforms without a safe area env() returns 0,
       // so this collapses to a plain 1rem.

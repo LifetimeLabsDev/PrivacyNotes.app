@@ -113,14 +113,16 @@ function findMatches(doc: PMNode, query: string, caseSensitive: boolean): Search
   return matches;
 }
 
+function matchDecoration(m: SearchMatch, active: boolean): Decoration {
+  const cls = active ? HIT_CURRENT_CLASS : HIT_CLASS;
+  return m.node
+    ? Decoration.node(m.from, m.to, { class: cls })
+    : Decoration.inline(m.from, m.to, { class: cls });
+}
+
 function buildDecorations(doc: PMNode, matches: SearchMatch[], active: number): DecorationSet {
   if (matches.length === 0) return DecorationSet.empty;
-  const decos = matches.map((m, i) => {
-    const cls = i === active ? HIT_CURRENT_CLASS : HIT_CLASS;
-    return m.node
-      ? Decoration.node(m.from, m.to, { class: cls })
-      : Decoration.inline(m.from, m.to, { class: cls });
-  });
+  const decos = matches.map((m, i) => matchDecoration(m, i === active));
   return DecorationSet.create(doc, decos);
 }
 
@@ -164,7 +166,16 @@ const searchPlugin = new Plugin<PluginState>({
           const n = value.matches.length;
           if (n === 0) return value;
           const active = ((meta.active % n) + n) % n; // wrap past either end
-          return { ...value, active, decorations: buildDecorations(newState.doc, value.matches, active) };
+          if (active === value.active) return value;
+          // Moving between hits changes two decorations, regardless of note size.
+          const changed = [value.active, active].filter((i) => i >= 0);
+          const old = changed.flatMap((i) => {
+            const m = value.matches[i]!;
+            return value.decorations.find(m.from, m.to).filter((d) => d.from === m.from && d.to === m.to);
+          });
+          const decorations = value.decorations.remove(old).add(newState.doc,
+            changed.map((i) => matchDecoration(value.matches[i]!, i === active)));
+          return { ...value, active, decorations };
         }
         if (meta.kind === 'afterReplace') {
           // Land on the first match at or after the replacement, wrapping to

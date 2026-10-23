@@ -24,7 +24,7 @@ import {
  *
  * Google refuses a file over 1 MB, so the export made for other apps can be
  * cut into parts of whole events; the copy inside a backup is one file.
- * Spec: ops/docs/plans/google-calendar-import.md (section 5)
+ * Spec: ops/docs/archive/google-calendar-import.md (section 5)
  */
 
 /** Google's import limit, in bytes. */

@@ -1,11 +1,16 @@
+import { askedHabits, customHabitsNow, type HabitQuestion } from './habitList';
+import { adherenceOn, asNeededOn, logsOf, medicationDayStatus } from './medicationDoses';
 import {
   ACTIVITY_LEVELS,
   BUILTIN_TRACKER_COLORS,
   EMOTION_TAGS,
   SLEEP_QUALITIES,
   customTrackerColor,
+  caffeineToDisplay,
+  waterToDisplay,
   weightToDisplay,
   type CustomTrackerTemplate,
+  type FactorDef,
   type JournalTrackerData,
   type MedicationTemplate,
   type TrackerSettings,
@@ -18,7 +23,7 @@ import type { TrackerDescriptor, TrackerValue } from './wellnessTypes';
  * custom template (stopped and deleted included, so an old value always
  * resolves to a name), and every medication template. The engine never
  * filters; the UI does, through `visibleInUi`.
- * Spec: ops/docs/plans/wellness-statistics.md (section 4)
+ * Spec: ops/docs/archive/wellness-statistics.md (section 4)
  */
 
 type NumericField =
@@ -47,8 +52,43 @@ function measure(id: NumericField, unit: TrackerDescriptor['unit']): TrackerDesc
   };
 }
 
-function builtins(settings: TrackerSettings): Record<string, TrackerDescriptor[]> {
+/** The Factors set: the person's own tags, deleted ones included, so a day
+ *  that holds one keeps its name in the charts. */
+function factorsDescriptor(factors: FactorDef[]): TrackerDescriptor {
+  const known = new Set(factors.map((f) => f.id));
+  return {
+    id: 'factors', source: 'builtin', labelKey: 'trackers:labels.factors',
+    color: BUILTIN_TRACKER_COLORS.factors, kind: 'set', aggregate: 'share',
+    levels: factors.map((f) => f.id),
+    levelNames: Object.fromEntries(factors.map((f) => [f.id, f.name])),
+    read: (d) => {
+      const ids = Array.isArray(d.factors) ? d.factors.filter((id) => known.has(id)) : [];
+      return ids.length > 0 ? ids : undefined;
+    },
+  };
+}
+
+/** One yes or no tracker per Habits question that is on, so Patterns and
+ *  Explore show the mood with and without each one. The id is prefixed, so
+ *  it never meets a built-in or a custom id. */
+function habitDescriptor(q: HabitQuestion): TrackerDescriptor {
+  const id = q.id;
+  return {
+    id: `habit-${id}`, source: 'builtin',
+    // A person's own habit carries its name; a built-in one its catalog key.
+    ...(q.custom ? { name: q.label } : { labelKey: `trackers:habits.short.${id}` }),
+    color: BUILTIN_TRACKER_COLORS.habits, kind: 'yesno', aggregate: 'share',
+    read: (d) => {
+      const v = d.habits?.[id];
+      return typeof v === 'boolean' ? v : undefined;
+    },
+  };
+}
+
+function builtins(settings: TrackerSettings, factors: FactorDef[]): Record<string, TrackerDescriptor[]> {
   const unit = settings.weightUnit;
+  const waterUnit = settings.waterUnit;
+  const caffeineUnit = settings.caffeineUnit;
   return {
     mood: [scale('mood', 1, 10)],
     emotions: [{
@@ -57,6 +97,8 @@ function builtins(settings: TrackerSettings): Record<string, TrackerDescriptor[]
       levels: EMOTION_TAGS.map((e) => e.key),
       read: (d) => (Array.isArray(d.emotions) && d.emotions.length > 0 ? d.emotions : undefined),
     }],
+    factors: [factorsDescriptor(factors)],
+    habits: askedHabits(settings.habits, customHabitsNow()).map(habitDescriptor),
     focus: [scale('focus', 0, 10)],
     pain: [scale('pain', 0, 10)],
     social: [scale('social', 0, 5)],
@@ -89,17 +131,31 @@ function builtins(settings: TrackerSettings): Record<string, TrackerDescriptor[]
     }],
     energy: [scale('energy', 0, 10)],
     steps: [measure('steps', 'steps')],
-    water: [scale('water', 0, 10, 'glasses')],
-    caffeine: [scale('caffeine', 0, 5, 'cups')],
+    water: [{
+      id: 'water', source: 'builtin', labelKey: 'trackers:labels.water',
+      color: BUILTIN_TRACKER_COLORS.water, kind: 'measure', unit: waterUnit, aggregate: 'avg',
+      read: (d) => {
+        const glasses = num(d.water);
+        return glasses === undefined ? undefined : waterToDisplay(glasses, waterUnit);
+      },
+    }],
+    caffeine: [{
+      id: 'caffeine', source: 'builtin', labelKey: 'trackers:labels.caffeine',
+      color: BUILTIN_TRACKER_COLORS.caffeine, kind: 'measure', unit: caffeineUnit, aggregate: 'avg',
+      read: (d) => {
+        const cups = num(d.caffeine);
+        return cups === undefined ? undefined : caffeineToDisplay(cups, caffeineUnit);
+      },
+    }],
     screenTime: [measure('screenTime', 'h')],
   };
 }
 
 /** The built-in order of the tracker settings dialog; medication is listed per template, last. */
 const BUILTIN_ORDER = [
-  'mood', 'emotions', 'focus', 'pain', 'social',
+  'mood', 'emotions', 'factors', 'focus', 'pain', 'social',
   'sleep', 'sleepScore', 'heartRate', 'activity', 'weight',
-  'energy', 'steps', 'water', 'caffeine', 'screenTime',
+  'habits', 'energy', 'steps', 'water', 'caffeine', 'screenTime',
 ] as const;
 
 const CUSTOM_RANGE: Partial<Record<CustomTrackerTemplate['type'], [number, number]>> = {
@@ -142,7 +198,14 @@ function medicationDescriptor(m: MedicationTemplate): TrackerDescriptor {
   return {
     id: m.id, source: 'medication', name: m.name, color: BUILTIN_TRACKER_COLORS.medication,
     kind: 'medication', aggregate: 'share', deletedAt: m.deletedAt,
-    read: (d) => d.medications?.find((x) => x.medicationId === m.id)?.status,
+    // One status for the day over all its doses (section 6.7); the day comes
+    // from the entry's own stamp, absent only on entries that predate it.
+    read: (d) => medicationDayStatus(m, d.medications, typeof d.journalDate === 'string' ? d.journalDate : undefined),
+    doses: (d, day) => {
+      const owed = adherenceOn(m, d.medications, day);
+      const asNeeded = asNeededOn(m, day) ? logsOf(d.medications, m.id).filter((l) => l.status === 'taken').length : 0;
+      return { ...owed, asNeeded };
+    },
   };
 }
 
@@ -159,8 +222,9 @@ export function buildRegistry(
   settings: TrackerSettings,
   medications: MedicationTemplate[],
   entries?: JournalEntry[],
+  factors: FactorDef[] = [],
 ): TrackerDescriptor[] {
-  const table = builtins(settings);
+  const table = builtins(settings, factors);
   const out: TrackerDescriptor[] = BUILTIN_ORDER.flatMap((id) => table[id] ?? []);
   const customs = [...settings.customTrackers].sort((a, b) =>
     a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0,

@@ -3,7 +3,7 @@
  * once at its largest size and shown through one transform, so a pinch frame
  * changes no layout and no scroll position; iOS shows those a frame late,
  * which made the scroll-based zoom jitter under the fingers.
- * Spec: ops/docs/plans/viewer-pinch-zoom.md
+ * Spec: ops/docs/archive/viewer-pinch-zoom.md
  */
 
 /** Where the picture sits: its zoom, and the stage pixel of its top left corner. */

@@ -40,7 +40,7 @@
           "h": "What comes along",
           "p": [
             "Every event arrives with its day, its time and how long it lasts, including events over several days. Repeating events keep their rule, and an occurrence you moved or deleted in Google stays moved or deleted. Each calendar becomes a folder.",
-            "Reminders you set on an event arrive too, e-mail reminders included: they become app reminders, which need PrivacyNotes Pro to ring. An event that used your calendar's default reminders arrives without one, because Google does not write defaults into the file. The place, the video call link, the guests and the description go into the event's text. Times show as they did on this device when you imported.",
+            "Reminders you set on an event arrive too, e-mail reminders included: [they become app reminders](/help/reminders/), which need PrivacyNotes Pro to ring. An event that used your calendar's default reminders arrives without one, because Google does not write defaults into the file. The place, the video call link, the guests and the description go into the event's text. [Times show as they did on this device when you imported](/help/calendar-time-zones/).",
             "A single .ics file from any calendar app works too, Apple Calendar and Outlook included.",
             "Import the same file again later and the events that are already here are skipped, so only new ones are added."
           ]
@@ -66,7 +66,7 @@
         {
           "h": "What comes along",
           "p": [
-            "Titles, note text, and formatting arrive intact. Keep checklists convert to native PrivacyNotes task lists, and your Keep labels arrive as tags.",
+            "Titles, note text, and formatting arrive intact. Keep checklists convert to [native PrivacyNotes task lists](/help/tasks/), and your Keep labels arrive as tags.",
             "Drop the whole Takeout .zip into the importer. If you already unzipped it, a single .json note file from the Takeout/Keep folder works too."
           ]
         }
@@ -95,7 +95,7 @@
         {
           "h": "What comes along",
           "p": [
-            "Folder structure, note text, and embedded images survive the trip. Notes keep their titles, and attachments land in the encrypted file storage alongside their note."
+            "Folder structure, note text, and embedded images survive the trip. Notes keep their titles, and attachments land in [the encrypted file storage](/help/attachment-limits/) alongside their note."
           ]
         }
       ]
@@ -126,9 +126,9 @@
         {
           "h": "What comes along",
           "p": [
-            "Your tags come along as tags. Nested tags such as #work/projects are also rebuilt as folders, and each note lands in the folder of its deepest tag. Links between notes become note-links, and a link to a heading points at that heading.",
+            "Your tags come along as tags. Nested tags such as #work/projects are also rebuilt as folders, and each note lands in the folder of its deepest tag. [Links between notes become note-links](/help/note-links/), and a link to a heading points at that heading.",
             "Formatting survives: headings, bold, italic, underline, strikethrough, highlights in their Bear colors, task lists, tables, code blocks, quotes, callouts, math and footnotes. Images open at full width, and folded headings arrive open.",
-            "Pinned notes stay pinned, archived notes land in the archive, trashed notes land in the trash, read-only notes stay read-only, and every note keeps its original dates.",
+            "Pinned notes stay pinned, [archived notes land in the archive](/help/archive/), trashed notes land in the trash, read-only notes stay read-only, and every note keeps its original dates.",
             "Images and files attached to your notes are imported into your storage. A note that points at a file the backup does not hold still imports, and the import preview tells you how many links that affects."
           ]
         }
@@ -152,9 +152,9 @@
           "h": "What comes along",
           "p": [
             "Your folder structure is rebuilt as real folders, not flattened into tags, no matter how deep it nests. A note in Work/Projects lands in a Work > Projects folder. Re-importing the same vault reuses the folders it already created instead of duplicating them.",
-            "On the free plan you can browse these folders straight away; creating, renaming, and moving folders is a Pro feature, so an Obsidian import is a good way to try it before you upgrade.",
+            "On the free plan you can browse these folders straight away; [creating, renaming, and moving folders is a Pro feature](/help/folders/), so an Obsidian import is a good way to try it before you upgrade.",
             "YAML frontmatter is understood: tags, aliases, and created dates are honored, and inline #tags in the body are merged into the tag field. You can also tick \"Also tag notes by folder\" during import to add each folder name as a tag too, handy if you also like filtering by tag.",
-            "Your [[...]] links keep working: PrivacyNotes renders them as note-links, so the connections between notes survive the move. The .obsidian config folder and .trash are skipped automatically."
+            "Your [[...]] links keep working: [PrivacyNotes renders them as note-links](/help/note-links/), so the connections between notes survive the move. The .obsidian config folder and .trash are skipped automatically."
           ]
         }
       ]
@@ -177,7 +177,7 @@
         {
           "h": "Super notes, checklists and 2FA codes keep their shape",
           "p": [
-            "Super notes keep their formatting: headings, lists, checklists, tables, code blocks, highlights, colors, text alignment and collapsible sections. A link to another note becomes a note-link, and a #hashtag in the text becomes a tag on the note. Checklists land in Tasks, spreadsheets become tables, and authenticator entries become logins in the Vault with their 2FA key. Nested tags become folders, and each note keeps its tags as well.",
+            "Super notes keep their formatting: headings, lists, checklists, tables, code blocks, highlights, colors, text alignment and collapsible sections. [A link to another note becomes a note-link](/help/note-links/), and a #hashtag in the text becomes a tag on the note. Checklists land in Tasks, spreadsheets become tables, and authenticator entries become [logins in the Vault with their 2FA key](/help/vault-totp/). Nested tags become folders, and each note keeps its tags as well.",
             "Files you uploaded to Standard Notes stay on their server, so the backup holds only their names. Each imported note marks where a file was. Download those files from Standard Notes and add them to the note again."
           ]
         },
@@ -230,7 +230,7 @@
         {
           "h": "What comes along",
           "p": [
-            "From .docx exports: bold, italic, underline, strikethrough, bullet and numbered lists, and checkboxes (which become native task lists) all survive. From .txt exports: the text, nothing else.",
+            "From .docx exports: bold, italic, underline, strikethrough, bullet and numbered lists, and checkboxes (which become [native task lists](/help/tasks/)) all survive. From .txt exports: the text, nothing else.",
             "Images embedded in a Samsung note come across by hand: the importer flags every note that had one, so you know exactly where to drop the pictures back in. The note text, titles and dates all arrive in the same pass."
           ]
         }
@@ -254,7 +254,7 @@
         {
           "h": "Where things land",
           "p": [
-            "Logins become Vault login entries (with their site icons), cards become card entries, SSH keys become SSH key entries, and secure notes plus identities arrive as readable notes. Bitwarden folders map to tags, and favorites arrive starred. Authenticator keys (TOTP) come along too, so your 2FA codes keep working.",
+            "Logins become [Vault login entries](/help/vault/) (with their site icons), cards become card entries, SSH keys become SSH key entries, and secure notes plus identities arrive as readable notes. Bitwarden folders map to tags, and favorites arrive starred. Authenticator keys (TOTP) come along too, so [your 2FA codes keep working](/help/vault-totp/).",
             "The export file holds your passwords in plain text, so import it, verify everything arrived, and then delete the file properly. Inside PrivacyNotes it is all encrypted again, on your device and on the way to the server."
           ]
         }
@@ -305,7 +305,7 @@
         {
           "h": "What comes across, and what does not",
           "p": [
-            "Tables, code blocks, highlights, underline, text color, and formulas all survive. Checklists become task lists, note reminders become a task at the top of the note, attachments and images are re-encrypted into your storage, web clips keep their source URL, and voice notes keep their transcript. Internal links become note-links, matched on the linked note's title, since Evernote exports no note ids.",
+            "Tables, code blocks, highlights, underline, text color, and formulas all survive. [Checklists become task lists](/help/tasks/), note reminders become a task at the top of the note, attachments and images are re-encrypted into your storage, web clips keep their source URL, and voice notes keep their transcript. [Internal links become note-links](/help/note-links/), matched on the linked note's title, since Evernote exports no note ids.",
             "Tasks do not come across: the export leaves a \"Content not supported\" placeholder where each task block was, with no titles, due dates, or completion states left to read. Encrypted blocks stay encrypted, so decrypt them in Evernote first. Custom fonts, text alignment, and nested tag hierarchy are dropped."
           ]
         },
@@ -334,7 +334,7 @@
         {
           "h": "How files are read",
           "p": [
-            "YAML frontmatter is honored when present: title, created, updated, and tags fields are used directly, which also makes this the restore path for PrivacyNotes' own Markdown exports. Tags written as #hashtags in the prose are read too. Plain files without frontmatter use the filename as the title and the content as the body. The parser is deliberately lenient: .md, .markdown, .mdown, .mkd and .txt are all accepted.",
+            "YAML frontmatter is honored when present: title, created, updated, and tags fields are used directly, which also makes this [the restore path for PrivacyNotes' own Markdown exports](/help/export/). Tags written as #hashtags in the prose are read too. Plain files without frontmatter use the filename as the title and the content as the body. The parser is deliberately lenient: .md, .markdown, .mdown, .mkd and .txt are all accepted.",
             "Zip the whole folder and the structure comes with it. Subfolders are rebuilt as real folders at any depth, and the images and files your notes link to are imported alongside them. Anything nothing links to is left behind and counted, so a folder full of stale screenshots does not eat your storage."
           ]
         }
@@ -374,9 +374,9 @@
         {
           "h": "What comes along",
           "p": [
-            "Your notebooks are rebuilt as real folders, not flattened into tags, at whatever depth Notesnook nested them. A note in Work > Projects lands in a Work > Projects folder.",
+            "[Your notebooks are rebuilt as real folders](/help/folders/), not flattened into tags, at whatever depth Notesnook nested them. A note in Work > Projects lands in a Work > Projects folder.",
             "Pinned and favorited notes stay marked. Notesnook keeps Pin and Favorite as two separate properties; PrivacyNotes has a single Pinned list, so a note that was either one lands there.",
-            "Highlights, math, and text alignment come across as themselves: highlighted text stays highlighted, formulas render again as math, and centered or right-aligned blocks keep their alignment. Custom fonts, font sizes, and text colors have no equivalent here, so that styling is dropped and the text is kept."
+            "Highlights, text colors, font sizes, superscript, subscript, math, and text alignment come across as themselves: each color moves to the nearest color in our palette, a font size you picked becomes Small, Large, or Huge, formulas render again as math, and centered or right-aligned blocks keep their alignment. Custom fonts have no equivalent here, so the font is dropped and the text is kept."
           ]
         },
         {
@@ -414,15 +414,15 @@
         {
           "h": "What comes across",
           "p": [
-            "Every entry lands in Journals rather than Notes, dated the day Journal shows above it, so your history keeps its shape.",
-            "Photos and Live Photos import as pictures, videos and voice memos as attachments. Apple ships photos as HEIC, which most browsers cannot display, so PrivacyNotes converts each one to JPEG on the way in. That is the slow part of a big import: a few hundred photos can take several minutes, and the progress line counts them for you.",
+            "[Every entry lands in Journals](/help/journal/) rather than Notes, dated the day Journal shows above it, so your history keeps its shape.",
+            "Photos and Live Photos import as pictures, videos and voice memos as attachments. Apple ships photos as HEIC, which most browsers cannot display, so PrivacyNotes [converts each one to JPEG on the way in](/help/image-quality/). That is the slow part of a big import: a few hundred photos can take several minutes, and the progress line counts them for you.",
             "Bold, italic, underline, strikethrough, text colors, bulleted and numbered lists, and block quotes all survive."
           ]
         },
         {
           "h": "Photos, videos and your storage",
           "p": [
-            "A journal full of photos is far bigger than a journal full of text, and it counts against your storage the same way anything else does. The import preview totals it up before you commit, and refuses to start if it would not fit."
+            "A journal full of photos is far bigger than a journal full of text, and [it counts against your storage the same way anything else does](/help/storage-usage/). The import preview totals it up before you commit, and refuses to start if it would not fit."
           ]
         },
         {
@@ -435,7 +435,7 @@
         {
           "h": "State of Mind",
           "p": [
-            "If you logged a State of Mind, PrivacyNotes fills in the mood and emotion trackers on that entry wherever Apple's wording matches one of ours. Anything it cannot match, and the life areas you tagged, are kept as a line of text so nothing is lost."
+            "If you logged a State of Mind, PrivacyNotes [fills in the mood and emotion trackers](/help/choose-trackers/) on that entry wherever Apple's wording matches one of ours. Anything it cannot match, and the life areas you tagged, are kept as a line of text so nothing is lost."
           ]
         },
         {
@@ -507,7 +507,7 @@
           "h": "What comes along",
           "p": [
             "Your notebooks are rebuilt as real folders, nested as deep as UpNote nested them. A note that lived in several notebooks lands in the first one and carries the others as tags.",
-            "Pinned and Quick Access notes arrive as Pinned. Trashed notes land in the trash, templates import as notes tagged #template, links between notes become note-links, and every note keeps its original dates.",
+            "Pinned and Quick Access notes arrive as Pinned. Trashed notes land in the trash, templates import as notes tagged #template, [links between notes become note-links](/help/note-links/), and every note keeps its original dates.",
             "Formatting survives: checklists, tables, code blocks, math, underline, sub- and superscript, text alignment, and highlights. Collapsible sections become foldable callouts and keep their open or closed state. Text colors and highlight colors are both matched to the editor's own palette, so a yellow highlight stays yellow and a green one stays green. Each note imports as it stands, at the version UpNote last saved."
           ]
         },
@@ -554,7 +554,7 @@
           "h": "What comes along",
           "p": [
             "Your notebooks are rebuilt as real folders, nested as deep as Joplin nested them, and every note keeps its tags and the created and updated dates Joplin showed you.",
-            "To-dos become task notes with a checkbox you can tick off, already ticked when the to-do was done, and a due date stays written beside the title. Links between notes become note-links. Images and attachments are imported into your storage and stay in place in the note. Notes saved as HTML, such as many web clips, are converted with their formatting.",
+            "[To-dos become task notes](/help/tasks/) with a checkbox you can tick off, already ticked when the to-do was done, and a due date stays written beside the title. [Links between notes become note-links](/help/note-links/). Images and attachments are imported into your storage and stay in place in the note. Notes saved as HTML, such as many web clips, are converted with their formatting.",
             "Notes from Joplin's Conflicts notebook arrive tagged \"conflict\", so you can find and sort them. If you use Joplin's encryption, let it finish decrypting before you export: an item that is still encrypted is skipped, and the import preview tells you how many."
           ]
         }
@@ -612,7 +612,7 @@
         {
           "h": "What comes across",
           "p": [
-            "Every row becomes a login with its site, username and password, plus the note the browser stored with it. Firefox is the only one of the three that writes dates, so its logins keep the day you first saved them and the others arrive dated today. Safari is the only one that exports an authenticator key, and only when you kept your verification codes in Safari; when it does, the code keeps working here.",
+            "Every row becomes a login with its site, username and password, plus the note the browser stored with it. Firefox is the only one of the three that writes dates, so its logins keep the day you first saved them and the others arrive dated today. Safari is the only one that exports an authenticator key, and only when you kept your verification codes in Safari; when it does, [the code keeps working here](/help/vault-totp/).",
             "Browsers save a separate entry per sign-in page, so a big export often holds several rows for one company. They all import, and you can merge or delete them afterwards.",
             "A browser keeps passwords in one flat list, so there is no folder structure to rebuild. Every login arrives tagged instead, which pulls the whole batch up in one click."
           ]
@@ -680,7 +680,7 @@
             "Every folder you had comes across, nested the way you left it, inside one new folder called Bookmarks. The bookmarks bar is the exception: its contents move up a level instead of becoming a folder, because each browser calls that bar something different in every language. Safari marks nothing, so its Favorites does arrive as a folder.",
             "The day you saved each bookmark comes along. Safari is the one browser that writes no dates at all, so a Safari export arrives dated today.",
             "Firefox is also the only browser that stores tags and an address-bar keyword with a bookmark. When your file carries them, the preview offers a checkbox to keep them, and both arrive as tags here.",
-            "Three things are left behind on purpose. Browser-only shortcuts like Most Visited are not real links, so they are counted and skipped. Website icons are not read out of the file either, because the copy saved inside it goes stale; PrivacyNotes fetches a fresh one instead. And a folder that held no bookmarks is not recreated.",
+            "Three things are left behind on purpose. Browser-only shortcuts like Most Visited are not real links, so they are counted and skipped. Website icons are not read out of the file either, because the copy saved inside it goes stale; [PrivacyNotes fetches a fresh one instead](/help/bookmarks/). And a folder that held no bookmarks is not recreated.",
             "Importing the same file twice is safe. A bookmark whose address you already saved is skipped rather than added again, and the preview tells you how many."
           ]
         },
@@ -774,7 +774,7 @@
         {
           "h": "Zettelkasten links keep their text, not their target",
           "p": [
-            "Zettlr links notes by ID, so a link reads [[20260823120000]]. We keep note links exactly as they are written, which means an ID link only resolves here if a note is actually titled with that ID. Links written with the file name resolve normally, so switch your internal link format to the file name before you export if you rely on them.",
+            "Zettlr links notes by ID, so a link reads [[20260823120000]]. [We keep note links exactly as they are written](/help/note-links/), which means an ID link only resolves here if a note is actually titled with that ID. Links written with the file name resolve normally, so switch your internal link format to the file name before you export if you rely on them.",
             "Citation keys like [@doe2026] are text to us. They come across unchanged and stop being clickable."
           ]
         },
@@ -812,6 +812,57 @@
           "h": "Either file extension works",
           "p": [
             "Notes writes .txt out of the box and .md when you or your administrator change the setting. Both are read here, along with .markdown, .mdown and .mkd, so you do not have to rename anything or touch the server before you export."
+          ]
+        }
+      ]
+    },
+    "contacts": {
+      "app": "Contacts (vCard)",
+      "title": "Export your contacts",
+      "metaTitle": "How to export your contacts as a vCard - PrivacyNotes",
+      "lead": "Every phone and address book can export your contacts as one .vcf file, and PrivacyNotes reads that file directly, photos included.",
+      "sections": [
+        {
+          "h": "Export from your iPhone",
+          "steps": [
+            "Open Contacts and tap \"Lists\" in the top-left corner.",
+            "Touch and hold \"All Contacts\", then choose Export.",
+            "Save the .vcf to Files, or AirDrop it to the device you import on."
+          ]
+        },
+        {
+          "h": "Export from your Mac or iCloud",
+          "steps": [
+            "In Contacts, select \"All Contacts\" and press Command-A.",
+            "Choose File > Export > Export vCard.",
+            "On [icloud.com/contacts](https://www.icloud.com/contacts), select all, then open the \"...\" menu and choose \"Export vCard\"."
+          ]
+        },
+        {
+          "h": "Export from Android or Google Contacts",
+          "steps": [
+            "In the Google Contacts app, tap \"Fix & manage\" > \"Export to file\".",
+            "On [contacts.google.com](https://contacts.google.com), choose Export, then pick \"vCard (for iOS Contacts)\".",
+            "On a Samsung phone, open Contacts > Manage contacts > Import or export contacts > Export."
+          ]
+        },
+        {
+          "h": "Pick vCard, not CSV",
+          "p": [
+            "Google offers two CSV formats next to vCard. The importer reads only .vcf files, so a CSV does not show up in the file picker. Export again and pick vCard."
+          ]
+        },
+        {
+          "h": "What comes across",
+          "p": [
+            "Every card in the file comes across: names, phones, email addresses, postal addresses, birthdays and other dates, websites, social profiles and notes. Your own labels stay as you typed them, so \"Mum's work line\" stays \"Mum's work line\".",
+            "A photo inside the file comes across. A photo that is only a web link stays a link, and nothing is downloaded. [When the photos do not fit in your storage](/help/storage-usage/), the contacts still import and the photos stay out."
+          ]
+        },
+        {
+          "h": "Import the same file again at any time",
+          "p": [
+            "A second import skips the people you already have. It matches each card by its ID, then by name plus a shared phone number, then by a shared email address. Contacts you already saved are not changed, so your edits here stay safe."
           ]
         }
       ]

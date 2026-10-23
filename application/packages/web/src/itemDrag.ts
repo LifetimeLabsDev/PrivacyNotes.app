@@ -12,7 +12,7 @@
  *
  * Every target takes the drop as a copy, so the cursor shows the same plus
  * over an editor, a tag and a folder.
- * Spec: ops/docs/plans/drag-to-folder-and-tag.md (section 6)
+ * Spec: ops/docs/archive/drag-to-folder-and-tag.md (section 6)
  */
 
 export const ITEM_TYPE = 'application/x-privacynotes-items';

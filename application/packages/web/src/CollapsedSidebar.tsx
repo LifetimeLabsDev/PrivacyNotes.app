@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { LogoIcon } from './LogoIcon';
 import { HoverLabel } from './HoverLabel';
 import { ProGlyph } from './UpgradeModal';
-import { Lightning, Plus, PushPin, File, CheckSquare, Shield, Folder, Book, Hash, Trash, Question, CaretRight, Devices, FileMd, BookmarkSimple, NotePencil, CheckFat, Notebook, Bookmarks, Key } from './icons';
+import { Plus, PushPin, File, CheckSquare, Shield, Folder, Book, Hash, Trash, Question, CaretRight, Devices, FileMd, BookmarkSimple, NotePencil, CheckFat, Notebook, Bookmarks, Key } from './icons';
+import { KATANA_LINE, NinjaIcon } from './NinjaIcon';
 import { isViewShown, type View } from './views';
 import { hiddenAtZero, viewRows } from './viewRows';
 import { exemptOpts } from './i18nExempt';
@@ -13,7 +14,7 @@ import { UpdateDot } from './UpdateDot';
 import { marketingHomeHref, siteHref } from './siteLinks';
 import { helpPath } from './localeRoutes';
 import { activeLocale } from './languages';
-import { keyText } from './shortcutMatch';
+import { keyText, sectionKeyText } from './shortcutMatch';
 import { SpaceSwitch } from './SpaceSwitch';
 import type { SpaceView } from './spaces';
 
@@ -37,11 +38,11 @@ interface CollapsedSidebarProps {
   /** Item count per pillar row, for the hover labels. An absent entry draws
    *  no count, which is not a zero: the Markdown pillar scans nothing until a
    *  folder is chosen.
-   *  Spec: ops/docs/plans/start-view.md (one counts object) */
+   *  Spec: ops/docs/archive/start-view.md (one counts object) */
   viewCounts: Partial<Record<View, number>>;
   trashedCount: number;
   /** Views switched off in the sidebar options menu; the wide rail hides the
-   *  same rows. Spec: ops/docs/plans/sidebar-views.md */
+   *  same rows. Spec: ops/docs/archive/sidebar-views.md */
   hiddenViews: View[];
 }
 
@@ -52,7 +53,7 @@ interface CollapsedSidebarProps {
  * `.pn-rail-optional` items, `compact` shrinks the buttons and the gaps, and
  * `scroll` is the floor - a scrolling rail cannot paint over the footer below
  * it, whatever it holds. `index.css` carries what each tier does.
- * Spec: ops/docs/ui-patterns.md section 40 (rail fit tiers)
+ * Spec: ops/docs/archive/ui-patterns.md section 40 (rail fit tiers)
  */
 const RAIL_FIT_TIERS = ['full', 'shed', 'compact', 'scroll'] as const;
 
@@ -151,8 +152,8 @@ export function CollapsedSidebar({
       </div>
 
       {/* The quick switcher, as the wide rail's "Jump to" row.
-          Spec: ops/docs/plans/keyboard-shortcuts.md (decision D15) */}
-      <HoverLabel label={`${t('common:quickSwitcher.jumpTo')} ${keyText('quickSwitcher')}`}>
+          Spec: ops/docs/archive/keyboard-shortcuts.md (decision D15) */}
+      <HoverLabel label={t('common:quickSwitcher.jumpTo')} keys={`${keyText('quickSwitcher')} · ${KATANA_LINE}`}>
         <button
           type="button"
           onClick={onJump}
@@ -160,14 +161,14 @@ export function CollapsedSidebar({
           className="pn-jump w-9 h-9 flex items-center justify-center rounded-lg bg-accent/10 text-accent-strong transition"
         >
           <span className="pn-jump-charge" aria-hidden="true" />
-          <Lightning size={18} weight="fill" />
+          <NinjaIcon size={28} />
         </button>
       </HoverLabel>
 
       {spaces && <SpaceSwitch active={spaces.active} onChange={spaces.onChange} locked={spaces.locked} noAll={spaces.noAll} vertical />}
 
       {/* New note */}
-      <HoverLabel label={t('collapsedSidebar.newNote')}>
+      <HoverLabel label={t('collapsedSidebar.newNote')} keys={keyText('newNote')}>
         <button
           type="button"
           onClick={onNew}
@@ -183,20 +184,20 @@ export function CollapsedSidebar({
       {/* Views, from the same shared list the wide rail draws. Collapsing the
           sidebar must not change which rows exist or what they are called, so
           neither surface keeps a list of its own.
-          Spec: ops/docs/plans/start-view.md (one row list, one label namespace) */}
-      {viewRows(t).map((r) => {
-        // All is never hideable - the logo above goes there too.
-        if (r.key !== 'home' && !showRow(r.key)) return null;
-        // Pinned and Archive hide at zero, the same rule as the expanded rail.
-        if (hiddenAtZero(r.key, viewCounts[r.key], view)) return null;
-        return (
-          <HoverLabel key={r.key} label={r.label} count={viewCounts[r.key]}>
+          Spec: ops/docs/archive/start-view.md (one row list, one label namespace) */}
+      {viewRows(t)
+        // All is never hideable - the logo above goes there too. Pinned and
+        // Archive hide at zero, the same rule as the expanded rail.
+        .filter((r) => (r.key === 'home' || showRow(r.key)) && !hiddenAtZero(r.key, viewCounts[r.key], view))
+        // Mod+1 to 9 count these rows in this order (goToSection in
+        // NotesView), so the tip numbers them the same way.
+        .map((r, i) => (
+          <HoverLabel key={r.key} label={r.label} keys={sectionKeyText(i + 1)} count={viewCounts[r.key]}>
             <button type="button" onClick={() => handleSelectView(r.key)} className={iconBtn(view === r.key)} aria-label={r.label}>
               <r.icon size={18} />
             </button>
           </HoverLabel>
-        );
-      })}
+        ))}
 
       <div className="w-7 border-t border-divider my-1" />
 
@@ -273,7 +274,7 @@ export function CollapsedSidebar({
 
       {/* Expand toggle - pn-rail-optional: shed on short rails (the edge
           handle beside the rail is the permanent expand affordance). */}
-      <HoverLabel label={t('collapsedSidebar.expandSidebar')} className="pn-rail-optional">
+      <HoverLabel label={t('collapsedSidebar.expandSidebar')} keys={keyText('toggleSidebar')} className="pn-rail-optional">
         <button
           type="button"
           onClick={onExpand}

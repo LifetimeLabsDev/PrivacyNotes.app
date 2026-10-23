@@ -1,7 +1,9 @@
 {
   "shell": {
     "title": "Nastavenia",
-    "allSettings": "Všetky nastavenia"
+    "allSettings": "Všetky nastavenia",
+    "fillWindow": "Použiť celé okno",
+    "restoreWindow": "Späť na normálnu veľkosť"
   },
   "account": {
     "title": "Účet",
@@ -110,6 +112,11 @@
     "sharedSlot_other": "{{count}} inštalácií zdieľa jedno miesto pre zariadenie",
     "added": "pridané {{time}}",
     "lastActive": "naposledy aktívne {{time}}",
+    "versionUnknown": "verzia neznáma",
+    "idLabel": "ID",
+    "browser": "Prehliadač",
+    "update": "Aktualizovať",
+    "updateHint": "Táto verzia sa už nedokáže synchronizovať. Aktualizuj aplikáciu na tomto zariadení.",
     "removeAll": "Odobrať všetky",
     "recentlyRemoved": "Nedávno odobraté",
     "removedAt": "Odobraté {{time}}"
@@ -211,6 +218,8 @@
     "faviconsProxy": "Načítava sa cez náš proxy server. Iba toto zariadenie.",
     "invisiblesTitle": "Neviditeľné znaky",
     "invisiblesDesc": "Pri písaní zobrazovať medzery, zalomenia riadkov a znaky odsekov.",
+    "listsTabGeneral": "Všeobecné",
+    "listsTabSidebar": "Bočný panel a Všetko",
     "sidebarTitle": "<sb>Bočný panel</sb> a <all>Všetko</all>",
     "sidebarDesc": "Ktoré zobrazenia sa objavia na bočnom paneli a ktoré položky obsahuje zoznam Všetko.",
     "colInSidebar": "Bočný panel",
@@ -231,14 +240,30 @@
     "contentWidthFull": "Plná",
     "lineSpacingTitle": "Riadkovanie",
     "noteColorsTitle": "Farby priečinkov a značiek",
+    "noteColorsPickerTitle": "Pre všetky priečinky a značky",
     "noteColorsDesc": "Ako poznámka ukazuje farbu svojho priečinka alebo značky: celá poznámka, iba jej ikona, alebo vôbec.",
     "noteColorsBackground": "Pozadie",
     "noteColorsExampleTitle": "Víkend v Lisabone",
     "noteColorsExampleFolder": "Cestovanie, zelený priečinok",
-    "noteColorsAccent": "Ikona",
+    "noteColorsAccent": "Iba ikona",
     "noteColorsOff": "Vypnuté",
+    "checkboxesTitle": "Zaškrtávacie políčka",
+    "taskConfettiTitle": "Konfety po zaškrtnutí",
+    "taskConfettiDesc": "Keď zaškrtneš políčko, vyletí z neho trochu konfiet.",
     "sinkCheckedTitle": "Presúvať zaškrtnuté položky nadol",
     "sinkCheckedDesc": "Zaškrtnutá položka sa presunie pod nezaškrtnuté položky vo svojom zozname.",
+    "defaultAppsTitle": "Otváranie v PrivacyNotes",
+    "defaultAppsMarkdown": "Súbory Markdown",
+    "defaultAppsText": "Textové súbory",
+    "defaultAppsMarkdownHint": "Súbory .md, na ktoré dvakrát klikneš, sa otvoria tu.",
+    "defaultAppsTextHint": "Súbory .txt a README, na ktoré dvakrát klikneš, sa otvoria tu.",
+    "defaultAppsTextHintWindows": "Súbory .txt, na ktoré dvakrát klikneš, sa otvoria tu.",
+    "defaultAppsTextFinderSteps": "Ak to chceš zmeniť, vo Finderi vyber pri súbore .txt položku „Informácie“, v časti „Otvoriť v aplikácii“ zvoľ PrivacyNotes a klikni na „Zmeniť všetko“.",
+    "defaultAppsMakeDefault": "Nastaviť ako predvolenú",
+    "defaultAppsIsDefault": "Predvolená",
+    "defaultAppsOwnerOther": "Momentálne sa otvárajú v aplikácii {{app}}.",
+    "defaultAppsOwnerOtherUnnamed": "Momentálne sa otvárajú v inej aplikácii.",
+    "defaultAppsOwnerNone": "Zatiaľ nemajú predvolenú aplikáciu.",
     "spacesTitle": "Priestory",
     "spacesDesc": "Rozdeľ svoju knižnicu na priestory Osobné a Práca a zobrazuj vždy iba jeden z nich.",
     "lineSpacingDesc": "Medzera medzi riadkami a odsekmi pri písaní.",
@@ -268,7 +293,8 @@
       "none": "Zatiaľ tu nie sú žiadne motívy.",
       "sortLabel": "Poradie",
       "sortVotes": "Najviac hlasov",
-      "sortNewest": "Najnovšie"
+      "sortNewest": "Najnovšie",
+      "more": "Ďalšie motívy"
     },
     "custom": {
       "newTheme": "Nový motív",
@@ -481,6 +507,8 @@
     "wifiHoldTooltip": "Súbory sa nahrajú, keď sa Wi-Fi vráti. Poznámky sa synchronizujú ďalej.",
     "notBackedUp": "Bez zálohy",
     "notSynced": "Nesynchronizované",
+    "firstSyncPending": "Toto zariadenie ešte nedokončilo prvú synchronizáciu so serverom, takže tu niektoré poznámky ešte môžu chýbať.",
+    "pullFailed": "Poslednej synchronizácii sa nepodarilo stiahnuť údaje zo servera. Skúsi to znova automaticky.",
     "notBackedUpTooltip_one": "{{count}} poznámka nie je zálohovaná. Kliknutím zistíš prečo.",
     "notBackedUpTooltip_few": "{{count}} poznámky nie sú zálohované. Kliknutím zistíš prečo.",
     "notBackedUpTooltip_many": "{{count}} poznámky nie je zálohované. Kliknutím zistíš prečo.",
@@ -587,7 +615,7 @@
     "alertBirthday": "Narodeniny",
     "alertsHelp": "Nové položky začnú s týmito upozorneniami. Potom si každá položka ponechá vlastné upozornenia.",
     "reminderTitles": "Zobrazovať názvy v pripomienkach",
-    "reminderTitlesHelp": "Keď je to vypnuté, pripomienka ukáže iba slovo Pripomienka a čas. Položka za tvojím PIN-om to tak robí vždy.",
+    "reminderTitlesHelp": "Keď je to zapnuté, pripomienka ukáže názov položky. Keď je to vypnuté, ukáže iba „Pripomienka“ a čas. Položka za tvojím PIN-om svoj názov nikdy neukáže.",
     "whereTitle": "Pripomienky na tomto zariadení",
     "reminderHint": {
       "mobile": "Pripomienky zvonia na tomto telefóne, aj keď je PrivacyNotes zatvorené.",
@@ -601,11 +629,14 @@
     "permissionDenied": "Upozornenia sú pre PrivacyNotes zablokované. Povoľ ich v nastaveniach tohto prehliadača alebo zariadenia.",
     "weekNumbers": "Zobrazovať čísla týždňov",
     "weekNumbersHelp": "V mesačnom zobrazení a v malých kalendároch.",
-    "hours": "Deň a týždeň sa otvoria o",
+    "hours": "Prvá hodina v zobrazení Deň a Týždeň",
+    "checkInReminder": "Pripomienka denného záznamu nálady",
+    "checkInReminderHelp": "„Ako sa dnes máš?“ raz denne, na tomto zariadení. Nie v deň, keď je nálada už zapísaná alebo preskočená.",
+    "checkInReminderAt": "Zazvoní o",
     "groupView": "Zobrazenie",
     "groupReminders": "Pripomienky",
     "groupDefaults": "Predvolené upozornenia",
-    "hoursHelp": "Skoršie hodiny nájdeš posunutím nahor.",
+    "hoursHelp": "Zobrazenia Deň a Týždeň sa otvoria posunuté na túto hodinu. Skoršie hodiny sú nad ňou.",
     "to": "až"
   }
 }

@@ -1,7 +1,8 @@
 {
   "words": {
-    "every": "cada",
-    "weekday": "feiner, feiners, laborable, laborables",
+    "add": "afegeix",
+    "every": "cada, cada dos",
+    "weekday": "feiner, feiners, laborable, laborables, dia feiner, dies feiners, dia laborable, dies laborables",
     "daily": "diàriament",
     "weekly": "setmanalment",
     "monthly": "mensualment",
@@ -10,11 +11,11 @@
     "for": "per, durant",
     "at": "a, les",
     "from": "de",
-    "to": "a, fins",
-    "next": "proper, propera, pròxim, pròxima",
+    "to": "a, fins, al",
+    "next": "proper, propera, pròxim, pròxima, vinent, que ve",
     "this": "aquest, aquesta",
-    "last": "últim, última, darrer, darrera",
-    "other": "segon, segona, altre, altra",
+    "last": "últim, última, darrer, darrera, l'últim, l'última",
+    "other": "segon, segona, altre, altra, cada dos",
     "before": "abans",
     "alert": "avís, avisa, alerta, recorda, recordatori",
     "oclock": "h",
@@ -37,6 +38,7 @@
     "times": "vegades, vegada, cops, cop, x",
     "ordinal": "r, n, t, a, er, º, .",
     "work": "feina, treball",
-    "personal": "personal, casa"
+    "personal": "personal, casa",
+    "in": "d'aquí a, en"
   }
 }

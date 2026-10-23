@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { LocalNote } from '../db';
 import type { ContextMenuItem } from '../ContextMenu';
 import { ArrowsInLineHorizontal, CaretDown, PushPin, X, XSquare } from '../icons';
-import { LooksContext } from '../looks/LookGlyph';
+import { LooksContext, PathGlyph, useNoteIconPaths } from '../looks/LookGlyph';
 import { resolveNoteLook, type NoteLook } from '../itemStyles';
 import { noteFaviconDomain, typeGlyph } from '../NoteRow';
 import { Favicon } from '../VaultItem';
@@ -21,7 +21,7 @@ const PINNED_WIDTH = 40;
  * out of view and opens a list of them. In zen mode the strip is quiet
  * (titles only, on the editor surface, the active tab marked by its text and a
  * thin underline), with the same widths, count and list: only the look changes.
- * Spec: ops/docs/plans/note-tabs.md (section 3)
+ * Spec: ops/docs/archive/note-tabs.md (section 3)
  */
 export default function TabStrip({
   tabs,
@@ -280,7 +280,10 @@ function Tab({
   onDragOverSide: ((side: 'before' | 'after') => void) | null;
 }) {
   const { Icon, color: glyphColor } = typeGlyph(n.type);
-  const domain = gated ? '' : noteFaviconDomain(n);
+  // The note's own icon wins over its site icon, so a pinned tab can be told
+  // apart from the next one.
+  const iconPaths = useNoteIconPaths(n.id);
+  const domain = gated || iconPaths ? '' : noteFaviconDomain(n);
   // While a site has no icon to show, the tab draws its type glyph, as a
   // list row draws its themed placeholder; the Favicon stays mounted
   // (hidden) so it can still load and report back.
@@ -307,7 +310,14 @@ function Tab({
           <Favicon domain={domain} size={14} onMissing={onMissing} />
         </span>
       )}
-      {(!domain || noIcon) && (
+      {iconPaths ? (
+        <PathGlyph
+          paths={iconPaths}
+          size={14}
+          className={`shrink-0 ${plainGlyph ? '' : color ? '' : active ? glyphColor : 'opacity-80'}`}
+          style={!plainGlyph && color ? { color: ink } : undefined}
+        />
+      ) : (!domain || noIcon) && (
         <Icon
           size={14}
           aria-hidden="true"

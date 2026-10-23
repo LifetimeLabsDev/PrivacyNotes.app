@@ -29,7 +29,7 @@ import { Backspace, Folder, Folders, FunnelSimple, Hash, Prohibit, X } from './i
  * Renders nothing when no filter is active, so callers can mount it
  * unconditionally.
  *
- * Spec: ops/docs/ui-patterns.md (section 41)
+ * Spec: ops/docs/archive/ui-patterns.md (section 41)
  */
 
 /**
@@ -37,7 +37,7 @@ import { Backspace, Folder, Folders, FunnelSimple, Hash, Prohibit, X } from './i
  * has no subfolder (and while no folder is open). A context rather than a
  * prop, because every scoped pillar draws this band and none of them reads
  * the switch itself. `NotesView` provides it around the list panes.
- * Spec: ops/docs/plans/folder-subfolders.md (D3)
+ * Spec: ops/docs/archive/folder-subfolders.md (D3)
  */
 export const SubfoldersSwitchContext = createContext<{ on: boolean; onToggle: () => void } | null>(null);
 
@@ -136,7 +136,7 @@ export function ListFilterChips({
  * empty search - "No matches." already names its own cause, and the chips
  * above stay visible either way.
  *
- * Spec: ops/docs/ui-patterns.md (section 41)
+ * Spec: ops/docs/archive/ui-patterns.md (section 41)
  */
 export function FilteredEmpty({
   folderName,
@@ -203,7 +203,7 @@ export function FilteredEmpty({
  * Renders nothing when no filter is active, so a caller can hand it the same
  * props it hands the chips and let it decide.
  *
- * Spec: ops/docs/ui-patterns.md (section 41)
+ * Spec: ops/docs/archive/ui-patterns.md (section 41)
  */
 export function ActiveFilterEntry({
   folderName,
@@ -258,7 +258,7 @@ export function ActiveFilterEntry({
  *
  * Renders nothing when the search box is empty.
  *
- * Spec: ops/docs/ui-patterns.md (section 41)
+ * Spec: ops/docs/archive/ui-patterns.md (section 41)
  */
 export function ActiveSearchEntry({
   search,

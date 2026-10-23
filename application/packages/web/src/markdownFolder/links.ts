@@ -18,7 +18,7 @@
  * link is never rewritten: it is read at click time and the file keeps saying
  * what it said.
  *
- * Spec: ops/docs/plans/markdown-folder.md (section 3, note-links)
+ * Spec: ops/docs/archive/markdown-folder.md (section 3, note-links)
  */
 import { SUPPORTED_EXTENSIONS } from './adapter';
 

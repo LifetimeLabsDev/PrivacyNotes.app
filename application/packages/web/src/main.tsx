@@ -15,6 +15,7 @@ import { detectPlatform, isLinuxNative } from './devices';
 import { IconDefaults } from './icons';
 import { installAndroidBackBridge } from './androidBack';
 import { installStrayDropGuard } from './strayDropGuard';
+import { installCheckboxConfetti } from './checkboxConfetti';
 import { i18nReady } from './i18n';
 import { initWriterGenListener, announceSealedWriter } from './writerGen';
 import { SEALED_WRITES_IN_PRODUCTION, setSealedWrites } from './localSeal';
@@ -47,12 +48,15 @@ installAndroidBackBridge();
 // The desktop webviews depend on it - see strayDropGuard.ts.
 installStrayDropGuard();
 
+// A ticked task checkbox throws a little confetti. Experimental.
+installCheckboxConfetti();
+
 // Off-screen grid tiles skip layout and paint wherever a grid track reads a
 // skipped item's intrinsic size. The Linux app's web engine does not read it
 // and crushes the grid into slivers, so it never gets the attribute. Set
 // before React mounts, so the first grid drawn is already the right one, and
 // absent by default, because the plain grid is the state that always works.
-// Spec: ops/docs/ui-patterns.md (section 64)
+// Spec: ops/docs/archive/ui-patterns.md (section 64)
 if (!isLinuxNative()) document.documentElement.dataset.lazyTiles = 'on';
 
 // Keep the public demo subdomain out of search results so it doesn't
@@ -77,13 +81,13 @@ if (NATIVE_MOBILE && hasReminderLeftovers()) {
   void import('./notesView/useReminders').then((m) => m.cancelLeftoverReminders()).catch(() => {});
 }
 // A reader-release tab reloads once when a sealed-writer tab appears.
-// Spec: ops/docs/plans/local-at-rest.md (5.2, mechanism 2)
+// Spec: ops/docs/archive/local-at-rest.md (5.2, mechanism 2)
 initWriterGenListener();
 // THE writer switch: with it on, every note-content write is sealed at
 // rest and this tab announces itself to retire reader-mode tabs. The
 // constant is false in exactly the reader release (read sealed rows,
 // write plaintext) - the rollout's release A ships that way.
-// Spec: ops/docs/plans/local-at-rest.md (5.1, the two releases)
+// Spec: ops/docs/archive/local-at-rest.md (5.1, the two releases)
 setSealedWrites(SEALED_WRITES_IN_PRODUCTION);
 announceSealedWriter();
 
@@ -102,7 +106,7 @@ const leavingApex = dropApexPhraseFragment();
 
 // A shortcut (`/note#<id>`) waits in this tab for the vault to open, and the
 // address goes back to `/` before anything reads the path below.
-// Spec: ops/docs/plans/note-shortcuts.md
+// Spec: ops/docs/archive/note-shortcuts.md
 captureShortcutFromLocation();
 
 // A chunk that fails to load: one reload per tab session picks up a new
@@ -119,13 +123,17 @@ window.addEventListener('vite:preloadError', onPreloadError);
 //
 // The admin console is deliberately not among them. It is its own app
 // on its own host, so no operator code ships to a user.
-// Spec: ops/docs/plans/admin-split-handoff.md (admin panel: dash.privacynotes.app, gated by Cloudflare Access)
+// Spec: ops/docs/archive/admin-split-handoff.md (admin panel: dash.privacynotes.app, gated by Cloudflare Access)
 const BurnNote = lazy(() => import('./BurnNote'));
 const CheckoutLauncher = lazy(() => import('./CheckoutLauncher'));
 const AboutWindow = lazy(() => import('./AboutWindow'));
+const UiCatalog = lazy(() => import('./ui/Catalog'));
 const pathname = window.location.pathname.replace(/\/+$/, '');
 const isBurnRoute = pathname === '/burn';
 const isCheckoutRoute = pathname === '/checkout';
+// The UI catalog (every standard part in every state) for sessions and
+// reviews, in the demo and in a dev build only. Spec: ops/docs/archive/design-system.md
+const isUiCatalog = window.location.hash === '#ui-catalog' && (isDemoMode() || import.meta.env.DEV);
 
 // The desktop About menu opens a small dedicated window that loads this same
 // bundle with ?about-window=1 - render just the About panel there, no auth,
@@ -315,7 +323,11 @@ const tree = (
   <React.StrictMode>
     <BootErrorBoundary>
       <IconDefaults>
-        {isAboutWindow ? (
+        {isUiCatalog ? (
+          <Suspense fallback={null}>
+            <UiCatalog />
+          </Suspense>
+        ) : isAboutWindow ? (
           <Suspense fallback={null}>
             <AboutWindow />
           </Suspense>

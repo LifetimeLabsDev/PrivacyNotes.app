@@ -31,7 +31,7 @@
  * have reached the accounting call, and nothing on the client records which,
  * so re-posting the same delta is as likely to double-charge as to correct the
  * books. A server-side recount replaces the guess with the ground truth.
- * Spec: ops/docs/plans/supabase-performance-2026-09.md (batch 4)
+ * Spec: ops/docs/archive/supabase-performance-2026-09.md (batch 4)
  */
 import type { Table } from 'dexie';
 

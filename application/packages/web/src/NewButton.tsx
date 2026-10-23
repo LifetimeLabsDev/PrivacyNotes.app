@@ -1,6 +1,8 @@
-import { createContext, useContext, type ReactNode, type Ref } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode, type Ref } from 'react';
 import { createPortal } from 'react-dom';
 import { HoverLabel } from './HoverLabel';
+import { keyText } from './shortcutMatch';
+import { Kbd } from './ui/misc';
 import { CaretDown, PlusCircle } from './icons';
 
 /**
@@ -8,7 +10,7 @@ import { CaretDown, PlusCircle } from './icons';
  * the end of the bottom bar, where a thumb reaches it; `slot` is the bar's
  * empty box for it, and null while the bar holds no New (an item is open, the
  * keyboard is up). Wider screens keep the button in the header.
- * Spec: ops/docs/ui-patterns.md section 137
+ * Spec: ops/docs/archive/ui-patterns.md section 137
  */
 export const NewButtonDock = createContext<{ docked: boolean; slot: HTMLElement | null }>({ docked: false, slot: null });
 
@@ -24,7 +26,7 @@ const DOCKED_LOOK = 'inline-flex h-11 w-11 items-center justify-center rounded-l
 /** The New button of every list pane. `label` names it for screen readers and the tip. */
 export function NewButton({
   label,
-  hover,
+  keys,
   onClick,
   buttonRef,
   wrapRef,
@@ -34,8 +36,8 @@ export function NewButton({
   children,
 }: {
   label: string;
-  /** A longer tip, such as one that carries the hotkey. */
-  hover?: string;
+  /** The shortcut that does the same, for the tip. */
+  keys?: string;
   onClick: () => void;
   buttonRef?: Ref<HTMLButtonElement>;
   /** The box that holds the button and its menu, for an outside-click test. */
@@ -50,7 +52,7 @@ export function NewButton({
   if (docked && !slot) return null;
   const body = (
     <div ref={wrapRef} className="relative shrink-0">
-      <HoverLabel label={hover ?? label} position={docked ? 'above-end' : 'below-end'}>
+      <HoverLabel label={label} keys={keys} position={docked ? 'above-end' : 'below-end'}>
         <button
           ref={buttonRef}
           type="button"
@@ -72,4 +74,92 @@ export function NewButton({
     </div>
   );
   return docked && slot ? createPortal(body, slot) : body;
+}
+
+/** One entry in a "New" dropdown menu. */
+export type NewMenuOption = {
+  key: string;
+  label: string;
+  icon: React.ReactNode;
+  onSelect: () => void;
+  /** The key that runs it, drawn at the row's end. */
+  keys?: string;
+};
+
+/* ── Shared "New" dropdown ──────────────────────────────────────────
+ * One menu, reused by the Vault view (login / card / ssh-key), the All
+ * view (every type) and the Tasks view (task list / Kanban board) so they can't drift in
+ * style or behaviour. Callers pass fully-built, already-translated options;
+ * the button label ("New") is the only string this component owns. */
+export function NewDropdown({ options, label }: { options: NewMenuOption[]; label: string }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const { docked, slot } = useContext(NewButtonDock);
+  // The bar's slot comes and goes with an open item; a menu left open would
+  // greet the person on the way back.
+  useEffect(() => setOpen(false), [slot]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: PointerEvent | MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    // Use pointerdown for reliable mobile touch support; fall back to
+    // mousedown for environments where PointerEvent isn't available.
+    const evt = typeof PointerEvent !== 'undefined' ? 'pointerdown' : 'mousedown';
+    document.addEventListener(evt, handler as EventListener);
+    return () => document.removeEventListener(evt, handler as EventListener);
+  }, [open]);
+
+  return (
+    // Spec: ops/docs/archive/ui-patterns.md section 45 (z-index tier system - the
+    // NewButton wrapper must not create a z-20 stacking context, or it traps the
+    // MobileHeader's z-50 pillar dropdown beneath it in the Vault view).
+    <NewButton
+      wrapRef={ref}
+      onClick={() => setOpen(!open)}
+      label={label}
+      keys={keyText('newMenu')}
+      popup="menu"
+      expanded={open}
+    >
+      {/*
+        `w-max` on the menu below is load-bearing, not decoration. The menu is
+        absolutely positioned inside a `relative` wrapper that is only as wide as
+        the "New" button, and an auto-width absolute box with `end-0` and no
+        `start` shrink-to-fits against its CONTAINING BLOCK, not the viewport. So
+        the menu was capped at the button's ~110px and every label longer than
+        that wrapped onto two lines. English never showed it ("Credit Card", 11
+        chars, fits); es "Tarjeta de credito" (18), pt "Cartao de Credito" (17),
+        ca (17), it (16), pl (15), fr (14) and cs (18) all wrapped, and had done
+        since each locale shipped. `w-max` opts out of the containing-block cap;
+        `max-w` keeps a pathological string from running off a narrow viewport;
+        `whitespace-nowrap` on the rows stops a two-word label breaking anyway.
+        Spec: ops/docs/archive/ui-patterns.md section 45.
+      */}
+      {open && (
+        <div role="menu" className={`absolute end-0 ${docked ? 'bottom-full mb-2' : 'top-full mt-1'} z-50 w-max max-w-[calc(100vw-1.5rem)] bg-surface-2 border border-divider rounded-lg shadow-lg py-1`}>
+          {options.map(({ key, label, icon, onSelect, keys }) => (
+            <button
+              key={key}
+              type="button"
+              role="menuitem"
+              onClick={() => { onSelect(); setOpen(false); }}
+              className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-start whitespace-nowrap text-pn-soft hover:bg-pn/5 transition cursor-pointer"
+            >
+              {/* Accent, like every other menu that lists things to go to or
+                  make: the rail rows, the sidebar option menus and the view
+                  picker. Grey here made this the one menu whose glyphs read as
+                  decoration. The colour lives on the row rather than in
+                  NEW_GLYPHS, because the same glyphs are also drawn inside the
+                  New button itself, where they sit on an accent-tinted pill. */}
+              <span className="text-accent">{icon}</span>
+              {label}
+              {keys && <span className="ms-auto ps-4"><Kbd>{keys}</Kbd></span>}
+            </button>
+          ))}
+        </div>
+      )}
+    </NewButton>
+  );
 }

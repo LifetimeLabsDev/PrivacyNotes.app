@@ -10,15 +10,21 @@
 // footer's structure and content in plain HTML+CSS, and is the single
 // source feeding every static page.
 //
-// The footer is a fixed dark slab in both themes, exactly like the
-// homepage footer (which is always black regardless of light/dark).
+// The footer is a dark slab in both themes, in the homepage footer's warm
+// ink (`--footer` from static-page-theme.ts, `--wl-footer` on the homepage).
 
+import fs from 'node:fs';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { ArrowUpRight, SignIn } from '@phosphor-icons/react';
 import { VERSION } from './src/version.ts';
 import { THEME_TOGGLE_BUTTON } from './static-page-theme.ts';
-import { FOOTER_COLUMNS, type FooterIcon } from './src/footerData.ts';
+import { DEMO_HREF, FOOTER_COLUMNS, NAV_SECTIONS, type FooterIcon } from './src/footerData.ts';
 import { APP_ORIGIN, APEX_ORIGIN } from './src/hosts.ts';
 import { LOCALE_TO_SLUG, helpPath } from './src/localeRoutes.ts';
 import { ogLocale } from './src/marketingMeta.ts';
+import { FOOTER_LINES_CSS, FOOTER_LINES_SCRIPT_TAG, footerLinesHtml, type FooterLinesText } from './src/footerLines.ts';
+import { Flag, LANGUAGE_META, sortByNative } from './src/languageData.tsx';
 
 // Phosphor icon paths (viewBox 0 0 256 256). Weights chosen to match the
 // homepage footer: brand/social use "fill", utility icons use "bold".
@@ -63,13 +69,16 @@ const CH_FLAG =
 // Spec: ops/docs/domain-split.md
 const HOME_EN = '/en';
 
-// The two header destinations, as a matched pair of 24-box stroke icons.
-// Home stays on this origin, so it gets a house, not an external-link arrow.
-// App leaves for the app host, so it gets the sign-in door.
+// The 24-box stroke family of the rail rows below.
 const ICON =
   '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
-const HOME_ICON = `${ICON}<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
-const APP_ICON = `${ICON}<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>`;
+
+// The homepage rail's own Phosphor glyphs (bold, the app-wide weight), so the
+// demo pill and the App button draw the same marks on both headers.
+const phosphor = (icon: typeof SignIn, size: number) =>
+  renderToStaticMarkup(createElement(icon, { size, weight: 'bold', 'aria-hidden': true }));
+const APP_ICON = phosphor(SignIn, 15);
+const DEMO_ICON = phosphor(ArrowUpRight, 13);
 
 /**
  * Bug glyph for the /changelog rail's report row, drawn in the same 24-box
@@ -87,6 +96,13 @@ export const BUG_ICON = `${ICON}<path d="M8 9a4 4 0 0 1 8 0"/><rect x="7" y="9" 
  */
 export const LINK_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`;
 
+/**
+ * GitHub mark for the /changelog rail's closed-issues row. The Phosphor fill
+ * shape the footer and the Help feedback row use, at rail size: a brand mark
+ * reads as "this leaves for GitHub" in a way a stroke glyph cannot.
+ */
+export const GITHUB_ICON = ph(P.github, 15);
+
 /** RSS glyph for the /changelog rail's feed row. Same stroke family. */
 export const RSS_ICON = `${ICON}<path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.5"/></svg>`;
 
@@ -98,14 +114,90 @@ export const RSS_ICON = `${ICON}<path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 
 export const TEXT_ICON = `${ICON}<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>`;
 
 /**
- * Header button labels. The Help pages pass their translated strings for the
- * three keys their catalogs already carry; everything else (and every other
- * page) renders English. The static marketing pages are English-only by the
- * i18n tier policy, so `sections` has no catalog behind it by design - do not
- * add one without reading ops/docs/i18n-spec.md first.
+ * The header's words come from the homepage's own catalog (`landing.json`,
+ * `header.*` and `hero.tryDemo`), so a Help page in any language reads exactly
+ * like the homepage rail in that language. A missing key falls back to
+ * English, like i18next does on the homepage.
  */
-export type NavLabels = { home: string; app: string; changelog?: string };
-const EN_NAV: NavLabels = { home: 'Home', app: 'App' };
+type HeaderText = Record<'downloads' | 'help' | 'changelog' | 'themes' | 'roadmap' | 'sections' | 'tryDemo', string>;
+const headerTextCache = new Map<string, HeaderText>();
+function headerText(locale: string): HeaderText {
+  const hit = headerTextCache.get(locale);
+  if (hit) return hit;
+  const read = (l: string) => {
+    try {
+      return JSON.parse(fs.readFileSync(new URL(`./src/locales/${l}/landing.json`, import.meta.url), 'utf8'));
+    } catch {
+      return {};
+    }
+  };
+  const en = read('en');
+  const own = locale === 'en' ? en : read(locale);
+  const pick = (group: string, key: string): string => esc(own[group]?.[key] ?? en[group]?.[key] ?? key);
+  const text: HeaderText = {
+    downloads: pick('header', 'downloads'),
+    help: pick('header', 'help'),
+    changelog: pick('header', 'changelog'),
+    themes: pick('header', 'themes'),
+    roadmap: pick('header', 'roadmap'),
+    sections: pick('header', 'sections'),
+    tryDemo: pick('hero', 'tryDemo'),
+  };
+  headerTextCache.set(locale, text);
+  return text;
+}
+
+const CARET_ICON =
+  '<svg class="lm-caret" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+const CHECK_ICON =
+  '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+const SYSTEM_ICON =
+  '<svg width="26" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="padding:2px 6px"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>';
+
+function flagSvg(code: string): string {
+  return renderToStaticMarkup(createElement(Flag, { code }));
+}
+
+/**
+ * Language switcher mirroring the homepage LanguageMenu (flag + endonym +
+ * caret pill, dropdown with a System row, flags, and a check on the
+ * current choice). Same data sources (languageData.tsx, localeRoutes.ts)
+ * rendered to static HTML; static-pages.js adds outside-click close,
+ * persists choices under the app's own language keys, and follows the link.
+ *
+ * Rendered twice per Help page - header rail and footer - the way the
+ * homepage carries LanguageMenu in the nav and again at the end of
+ * SiteFooter. `id` tells the two apart. `pathOf` maps a locale to the page
+ * a pick lands on. `systemHref` is where System goes; without one the
+ * menu routes System to the reader's own homepage, as the homepage does
+ * (static-pages.js, `data-system-home`). Placement styling lives in CHROME_CSS.
+ */
+export function languageMenu(opts: {
+  current: string;
+  label: string;
+  pathOf: (l: string) => string;
+  locales?: readonly string[];
+  id?: string;
+  systemHref?: string;
+}): string {
+  const { current, label, pathOf, locales = Object.keys(LOCALE_TO_SLUG), id = 'lang-menu', systemHref } = opts;
+  const rows = sortByNative([...locales]).map((l) => {
+    const on = l === current;
+    return `<a${on ? ' class="on"' : ''} href="${pathOf(l)}" hreflang="${l}" data-lang="${l}">${flagSvg(l)}<span>${esc(LANGUAGE_META[l].native)}</span>${on ? CHECK_ICON : ''}</a>`;
+  }).join('\n');
+  const prefixes: Record<string, string> = {};
+  for (const l of locales) prefixes[l] = l === 'en' ? '' : LOCALE_TO_SLUG[l];
+  const system = systemHref
+    ? `<a href="${systemHref}" data-lang="system">`
+    : `<a href="${HOME_EN}" data-lang="system" data-system-home>`;
+  return `<details class="langmenu" id="${id}" data-locales="${esc(JSON.stringify(prefixes))}">
+<summary aria-label="${esc(label)}">${flagSvg(current)}<span class="lm-name">${esc(LANGUAGE_META[current].native)}</span>${CARET_ICON}</summary>
+<div class="langlist">
+${system}${SYSTEM_ICON}<span>System</span></a>
+${rows}
+</div>
+</details>`;
+}
 
 /** Which section owns the page, so its nav row can render active. */
 export type NavSection = 'faq' | 'changelog' | 'themes' | 'roadmap';
@@ -135,43 +227,46 @@ export function ogLocaleTag(locale = 'en'): string {
 }
 
 /**
- * The one header for every static page: brand on the left, a single recessed
- * rail on the right, and the page title rendered by the page inside its own
- * content column - never sharing a row with these controls.
+ * The one header for every static page, and the static twin of the homepage
+ * header (LandingPage.tsx + HeaderRail in src/LandingNav.tsx): the same brand,
+ * the same rail of Downloads plus NAV_SECTIONS, the same words from the
+ * homepage catalog, then the language flag, theme toggle, Try the demo and
+ * App. The page title sits in the page's own content column, never in this row.
  *
- * The section links come from the footer's Help column (src/footerData.ts),
- * so the header and the footer cannot list different sections; a new section
- * added there appears in both. `active` marks the current one, `extra` slots
- * a control before the theme toggle (the Help pages' language menu), `home`
- * is the marketing homepage in the page's own language.
+ * `active` marks the page's own section, the one thing the homepage rail has
+ * no use for. `language` is the rail's language menu; pages that pass none get
+ * one that lands on the homepage in the picked language, like the homepage
+ * menu. `helpLocale` is the page's locale, when it has one.
  *
- * Spec: ops/docs/ui-patterns.md section 50.
+ * Spec: ops/docs/archive/ui-patterns.md section 50.
  */
 export function siteNav(opts: {
   active?: NavSection;
-  extra?: string;
-  home?: string;
-  labels?: NavLabels;
-  /** Locale of THIS page, when it has one. Points the Help link at it. */
+  language?: string;
   helpLocale?: string;
 } = {}): string {
-  const { active, extra = '', home = HOME_EN, labels = EN_NAV, helpLocale } = opts;
-  // `short` is the nav label; a Help-column link without one (the hotkey
-  // cheat sheet) is footer-only and never becomes a nav pill.
-  const sections = (FOOTER_COLUMNS.find((c) => c.heading === 'Help')?.links ?? []).filter(
-    (l) => l.short != null
-  );
+  const { active, helpLocale } = opts;
+  const locale = helpLocale ?? 'en';
+  const home = LOCALE_TO_SLUG[locale] ?? HOME_EN;
+  const text = headerText(locale);
+  const language = opts.language ?? languageMenu({ current: locale, label: 'Language', pathOf: (l) => LOCALE_TO_SLUG[l] });
+  const labelOf: Partial<Record<FooterIcon, string>> = {
+    faq: text.help,
+    changelog: text.changelog,
+    themes: text.themes,
+    roadmap: text.roadmap,
+  };
   // The Help center is the one destination that exists in every language, so
   // its nav link carries a locale. Translated pages know theirs at build time
   // (helpLocale); the English-only pages cannot, so they ship /help plus the
   // slug table and static-pages.js re-points it at the reader's own language.
-  // Spec: ops/docs/ui-patterns.md section 50.
+  // Spec: ops/docs/archive/ui-patterns.md section 50.
   const helpSlugs = JSON.stringify(
     Object.fromEntries(Object.keys(LOCALE_TO_SLUG).map((l) => [l, helpPath(l)]))
   );
-  const sectionLinks = sections
+  const sectionLinks = NAV_SECTIONS
     .map((l) => {
-      const label = l.icon === 'changelog' ? labels.changelog ?? l.short : l.short;
+      const label = labelOf[l.icon] ?? l.short;
       const on = l.icon === active ? ' on' : '';
       const current = l.icon === active ? ' aria-current="page"' : '';
       if (l.icon === 'faq') {
@@ -184,19 +279,20 @@ export function siteNav(opts: {
     .join('\n');
   return `<div class="brand-row">
 <a class="brand" href="${home}">
-<img src="/privacy-notes.webp" width="32" height="32" alt="" aria-hidden="true" draggable="false">
+<img src="/privacy-notes.webp" width="64" height="64" alt="" aria-hidden="true" draggable="false">
 <span class="name">${brandMark()}</span>
 </a>
 <div class="actions">
-<nav class="nav-secs" aria-label="Sections">
-<a class="btn btn-ghost" href="${home}">${HOME_ICON}${labels.home}</a>
+<nav class="nav-secs" aria-label="${text.sections}">
+<a class="btn btn-ghost" href="${home}#downloads">${iconSvg('download', 15)}${text.downloads}</a>
 ${sectionLinks}
 </nav>
 <span class="nav-div" aria-hidden="true"></span>
 <div class="nav-ctl">
-${extra}
+${language}
 ${THEME_TOGGLE_BUTTON}
-<a class="btn btn-primary" href="${APP_ORIGIN}"><span class="btn-lbl">${labels.app}</span>${APP_ICON}</a>
+<a class="btn nav-demo" href="${DEMO_HREF}">${text.tryDemo}${DEMO_ICON}</a>
+<a class="btn nav-app" href="${APP_ORIGIN}"><span class="btn-lbl">App</span>${APP_ICON}</a>
 </div>
 </div>
 </div>`;
@@ -261,7 +357,36 @@ ${links}
 }
 
 /**
- * Editorial black footer with a locale-aware FAQ link + logo. Always dark.
+ * The footer's typewriter words for the page at `home` (a LOCALE_TO_SLUG
+ * value), from the same `common.json` the app reads, English as the fallback.
+ */
+const footerLinesCache = new Map<string, FooterLinesText>();
+function footerLinesText(home: string): FooterLinesText {
+  const hit = footerLinesCache.get(home);
+  if (hit) return hit;
+  const locale = Object.keys(LOCALE_TO_SLUG).find((l) => LOCALE_TO_SLUG[l] === home) ?? 'en';
+  const read = (l: string) => {
+    try {
+      return JSON.parse(fs.readFileSync(new URL(`./src/locales/${l}/common.json`, import.meta.url), 'utf8')).loading ?? {};
+    } catch {
+      return {};
+    }
+  };
+  const en = read('en');
+  const own = locale === 'en' ? en : read(locale);
+  const list = (key: string): string[] => (Array.isArray(own[key]) ? own[key] : Array.isArray(en[key]) ? en[key] : []);
+  const text: FooterLinesText = {
+    lines: list('lines'),
+    loadingOnly: list('loadingOnly'),
+    pause: own.pause ?? en.pause ?? 'Pause the lines',
+    play: own.play ?? en.play ?? 'Play the lines',
+  };
+  footerLinesCache.set(home, text);
+  return text;
+}
+
+/**
+ * Editorial dark footer with a locale-aware FAQ link + logo. Dark in both themes.
  *
  * `lang` slots the page's language menu into the bottom row, right-aligned
  * next to the legal text - the same place and the same control the homepage
@@ -273,6 +398,8 @@ ${links}
  */
 export function siteFooterFor(faqHref: string, home = HOME_EN, lang = ''): string {
   return `<footer class="site-footer">
+<style>${FOOTER_LINES_CSS}</style>
+${footerLinesHtml(footerLinesText(home))}
 <div class="f-inner">
 <div class="f-grid">
 ${footerColumns(faqHref, home)}
@@ -285,6 +412,7 @@ ${footerColumns(faqHref, home)}
 ${lang}
 </div>
 </div>
+${FOOTER_LINES_SCRIPT_TAG}
 </footer>`;
 }
 
@@ -344,20 +472,11 @@ export const BRAND_CSS = `.pn-mark{font-weight:700;color:var(--fg)}
  *
  * The header controls sit in one recessed rail (.actions): everything
  * inside loses its border, so the App button is the only filled control
- * on the page. Spec: ops/docs/ui-patterns.md section 50.
+ * on the page. Spec: ops/docs/archive/ui-patterns.md section 50.
  */
 /** The full-screen screenshot viewer of /changelog and /themes, opened by
  *  the lightbox in static-pages.js. */
-export const LIGHTBOX_CSS = `.cl-lb{position:fixed;inset:0;z-index:100;background:rgba(8,10,14,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px}
-.cl-lb[hidden]{display:none}
-.cl-lb img{max-width:min(100%,1600px);max-height:calc(100dvh - 110px);width:auto;height:auto;border-radius:10px;background:var(--bg)}
-.cl-lb p{margin:0;max-width:760px;text-align:center;color:#e7e9ec;font-size:14px;line-height:1.5}
-.cl-lb button{position:absolute;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:0;border-radius:10px;background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
-.cl-lb button:hover{background:rgba(255,255,255,.2)}
-.cl-lb .lb-x{top:16px;right:16px}
-.cl-lb .lb-p{left:16px;top:50%;margin-top:-22px}
-.cl-lb .lb-n{right:16px;top:50%;margin-top:-22px}
-.cl-lb button[hidden]{display:none}`;
+export { LIGHTBOX_CSS } from './src/lightboxCss.ts';
 
 export const CHROME_CSS = `${BRAND_CSS}
 *{box-sizing:border-box}
@@ -365,12 +484,13 @@ html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;font-size:16px}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
-/* One width for every static page. The header rail needs ~820px before it
-   wraps, so a 720px page would fold its own nav on a desktop monitor. Pages
-   that want a narrower reading measure constrain their CONTENT (see the
+/* One width for every static page: the homepage header row (1216px, its
+   max-w-7xl less padding), so the brand lines up with the rail column below
+   it. The header needs that room for the full rail beside the big brand.
+   Pages that want a narrower reading measure constrain their CONTENT (see the
    roadmap timeline), never the shell. */
-.wrap{max-width:1040px;margin:0 auto;padding:40px 24px 64px}
-.brand-row{display:flex;align-items:center;justify-content:space-between;gap:12px 16px;margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.wrap{max-width:1264px;margin:0 auto;padding:40px 24px 64px}
+.brand-row{display:flex;align-items:center;justify-content:space-between;gap:12px 24px;margin-bottom:36px}
 .brand-row .brand{margin-bottom:0}
 /* Nothing in the rail may shrink. Letting these flex down is what let the
    language menu ride on top of the Brand link instead of forcing the layout
@@ -383,7 +503,8 @@ a:hover{text-decoration:underline}
 .nav-div{width:1px;height:20px;background:var(--line);margin:0 5px;flex:0 0 auto}
 .brand{display:flex;align-items:center;gap:12px;margin-bottom:6px;text-decoration:none;color:var(--fg);width:max-content}
 .brand:hover{text-decoration:none}
-.brand .name{font-size:22px;letter-spacing:-.02em}
+.brand img{width:64px;height:64px}
+.brand .name{font-size:36px;line-height:40px;letter-spacing:-.025em}
 h1{font-size:30px;font-weight:800;margin:10px 0 4px;letter-spacing:-.03em;text-wrap:balance}
 h2,h3{text-wrap:balance}
 p{text-wrap:pretty}
@@ -406,7 +527,7 @@ p{text-wrap:pretty}
 .langlist a svg:first-child{width:22px;height:16px;border-radius:2px;flex:0 0 auto}
 .langlist a span{flex:1}
 .langlist a.on{color:var(--accent);font-weight:600}
-.actions{display:flex;align-items:center;gap:2px;min-width:0;background:var(--rail);border-radius:11px;padding:4px}
+.actions{display:flex;align-items:center;gap:2px;min-width:0;background:var(--rail);border-radius:11px;padding:4px;font-size:13px;line-height:1}
 .btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;line-height:1;padding:8px 14px;border-radius:8px;text-decoration:none;white-space:nowrap}
 .btn:hover{text-decoration:none}
 .btn svg{flex:0 0 auto}
@@ -417,25 +538,39 @@ p{text-wrap:pretty}
 .actions .btn{border:0;padding:7px 11px}
 .actions .btn-ghost{color:var(--fg);background:none}
 .actions .btn-ghost:hover{color:var(--accent)}
-.actions .btn-ghost svg{color:var(--faint)}
-.actions .btn-ghost:hover svg{color:var(--accent)}
+.actions .btn-ghost svg{color:var(--accent)}
 /* The section you are already on. Not a fill - the App button owns the only
    fill on the page - just the same tinted chip the rail rows use. */
 .actions .btn-ghost.on{background:var(--imp-bg);color:var(--accent);font-weight:600}
-.actions .btn-ghost.on svg{color:var(--accent)}
-.actions .btn-primary{padding:7px 13px;border-radius:8px}
-.actions .btn-primary svg{color:var(--on-accent)}
-.actions .btn-primary:hover{color:var(--on-accent)}
-.actions .langmenu summary{border:0;padding:7px 8px;font-weight:400;font-size:13px}
+.actions #theme-toggle{width:30px;height:29px;padding:0;justify-content:center}
+.actions .langmenu summary{border:0;height:29px;padding:0 8px;gap:4px;font-weight:400;font-size:13px}
 .actions .langmenu summary:hover{color:var(--accent)}
+.actions .langmenu summary .lm-caret{color:currentColor}
+/* Try the demo and App, in the homepage rail's amber and ink. The amber pair
+   is the homepage's washi amber in each mode; the ink is the page's own text
+   colour, so App flips with the theme the way the homepage one does. */
+:root{--demo-bg:#F7EAB8;--demo-line:#B45309;--demo-fg:#92400E}
+:root[data-theme=dark]{--demo-bg:#2C230F;--demo-line:rgba(251,191,36,.55);--demo-fg:#FBBF24}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--demo-bg:#2C230F;--demo-line:rgba(251,191,36,.55);--demo-fg:#FBBF24}}
+.actions .nav-demo{margin-left:2px;padding:6px 11px;border:1px solid var(--demo-line);background:var(--demo-bg);color:var(--demo-fg);font-weight:600}
+.actions .nav-demo:hover{color:var(--demo-fg);filter:brightness(.95)}
+@property --pn-spin{syntax:"<angle>";initial-value:0deg;inherits:false}
+@keyframes pn-spin{to{--pn-spin:360deg}}
+.actions .nav-app{margin-left:2px;padding:5px 12px;border:2px solid transparent;font-weight:600;color:var(--bg);background:linear-gradient(var(--fg),var(--fg)) padding-box,linear-gradient(var(--fg),var(--fg)) border-box}
+.actions .nav-app:hover{color:var(--bg);background:linear-gradient(var(--fg),var(--fg)) padding-box,conic-gradient(from var(--pn-spin,0deg),var(--fg) 0 70%,var(--accent) 80%,#f59e0b 90%,var(--fg) 100%) border-box;animation:pn-spin 1.2s linear infinite}
+@media(hover:none),(prefers-reduced-motion:reduce){.actions .nav-app:hover{animation:none}}
 /* Flag only in the HEADER rail; the footer switcher keeps its name. Spelling
    the language out here costs 90-140px depending on the locale, and Portuguese
-   ("Portugues (Brasil)") pushed the rail past even the 1040px wrap - it
+   ("Portugues (Brasil)") pushed the rail past the page width - it
    overlapped the Brand link on a desktop monitor, not just a narrow one. The
    flag names the language, and the list one click away spells every one of
-   them out. Spec: ops/docs/ui-patterns.md section 50. */
+   them out. Spec: ops/docs/archive/ui-patterns.md section 50. */
 .actions .langmenu summary .lm-name{display:none}
-.pcols{display:grid;grid-template-columns:208px minmax(0,1fr);grid-template-rows:auto auto 1fr;grid-template-areas:'rail crumb' 'rail head' 'rail body';column-gap:44px;align-items:start;margin-top:4px}
+/* Two columns that mirror the header row: the rail sits under the brand,
+   and the content column ends under the App button, so it starts about
+   where the nav rail starts. The space between them grows on wide screens,
+   which keeps the text at a reading measure without a gap on the right. */
+.pcols{display:grid;grid-template-columns:minmax(208px,272px) minmax(0,800px);justify-content:space-between;grid-template-rows:auto auto 1fr;grid-template-areas:'rail crumb' 'rail head' 'rail body';column-gap:44px;align-items:start;margin-top:4px}
 .col-head{grid-area:head;min-width:0}
 .col-body{grid-area:body;min-width:0}
 .col-head h1{margin:0 0 6px;text-wrap:pretty}
@@ -487,6 +622,8 @@ mark{background:var(--imp-bg);color:var(--mark-fg);border-radius:3px;padding:0 1
 .noresults{margin:6px 0 0}
 .noresults p{margin:0 0 14px;font-size:15.5px;color:var(--muted)}
 .noresults .btn{background:none;font-family:inherit;cursor:pointer}
+/* Mid widths: the text needs the room more than the rail does. */
+@media(max-width:1099px){.pcols{grid-template-columns:208px minmax(0,1fr)}}
 @media(max-width:860px){
 .pcols{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-template-areas:'head' 'rail' 'body';margin-top:2px}
 /* Un-stick the rail. In one column it is a band between the title and the
@@ -510,22 +647,22 @@ mark{background:var(--imp-bg);color:var(--mark-fg);border-radius:3px;padding:0 1
 .ichip img{width:15px;height:15px}
 }
 .eyebrow{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.16em;color:var(--faint);margin:0}
-.site-footer{background:#0a0a0a;margin-top:64px}
-.f-inner{max-width:1040px;margin:0 auto;padding:44px 24px 40px}
+.site-footer{background:var(--footer,#161210);border-top:1px solid var(--line);margin-top:64px}
+.f-inner{max-width:1264px;margin:0 auto;padding:44px 24px 40px}
 .f-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px 24px}
 .f-col{display:flex;flex-direction:column;align-items:flex-start;gap:9px}
 .f-brand{display:flex;align-items:center;gap:9px;font-weight:700;color:#fff;text-decoration:none;font-size:15px}
 .f-brand:hover{text-decoration:none}
-.f-ver{display:inline-flex;align-items:center;gap:7px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:#a3a3a3;text-decoration:none;border:1px solid #262626;border-radius:999px;padding:4px 10px}
-.f-ver:hover{color:#fff;border-color:#404040;text-decoration:none}
+.f-ver{display:inline-flex;align-items:center;gap:7px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:#A69E8F;text-decoration:none;border:1px solid #2E2820;border-radius:999px;padding:4px 10px}
+.f-ver:hover{color:#fff;border-color:#3D362A;text-decoration:none}
 .f-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 3px rgba(74,222,128,.15);flex:0 0 auto}
-.f-latest{color:#525252}
-.f-head{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.18em;color:#737373;margin:6px 0 2px}
+.f-latest{color:#8F8776}
+.f-head{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.18em;color:#8F8776;margin:6px 0 2px}
 .f-col:first-child .f-head{margin-top:14px}
-.f-link{display:inline-flex;align-items:center;gap:8px;color:#a3a3a3;font-size:14px;text-decoration:none}
+.f-link{display:inline-flex;align-items:center;gap:8px;color:#A69E8F;font-size:14px;text-decoration:none}
 .f-link:hover{color:#fff;text-decoration:none}
 .f-link svg{flex:0 0 auto}
-.f-bottom{margin-top:36px;padding-top:24px;border-top:1px solid #262626;font-size:13px;color:#737373;display:flex;flex-direction:column;gap:16px}
+.f-bottom{margin-top:36px;padding-top:24px;border-top:1px solid #2E2820;font-size:13px;color:#A69E8F;display:flex;flex-direction:column;gap:16px}
 .f-bottom p{margin:0 0 4px}
 .f-bottom p:last-child{margin-bottom:0}
 /* Scoped to .f-legal, NOT .f-bottom: the row now also holds the language
@@ -533,9 +670,9 @@ mark{background:var(--imp-bg);color:var(--mark-fg);border-radius:3px;padding:0 1
    its rows white-on-pale-blue, i.e. invisible. They only ever meant the
    Lifetime Labs + Contact links. NOTE: no backticks in this comment - it
    lives inside a template literal. */
-.f-legal a{color:#737373}
+.f-legal a{color:#A69E8F}
 .f-legal a:hover{color:#fff;text-decoration:none}
-/* Footer placement of the language menu. The slab is black in BOTH themes,
+/* Footer placement of the language menu. The slab is dark in BOTH themes,
    so the pill takes the homepage footer's dark-surface treatment (white/10
    on white/15) instead of the page's theme vars, and the list drops UP -
    it sits at the very bottom of the document. The list keeps the page
@@ -544,26 +681,32 @@ mark{background:var(--imp-bg);color:var(--mark-fg);border-radius:3px;padding:0 1
 .site-footer .langmenu{flex:0 0 auto}
 .site-footer .langmenu summary{padding:5px 11px 5px 8px;font-weight:500;color:#e5e5e5;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15)}
 .site-footer .langmenu summary:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.15)}
-.site-footer .lm-caret{color:#a3a3a3}
+.site-footer .lm-caret{color:#A69E8F}
 .site-footer .langlist{top:auto;bottom:calc(100% + 8px);box-shadow:0 10px 30px rgba(0,0,0,.4)}
 @media(min-width:601px){
 .f-bottom{flex-direction:row;align-items:center;justify-content:space-between;gap:24px}
 }
-/* Below ~900px the five section links no longer fit beside the brand and the
-   controls, so they drop to their own full-width strip that scrolls
-   horizontally, and the rail shrinks to wrap only the controls.
+/* Below lg the brand steps down a size, as the homepage brand does. */
+@media(max-width:1023px){
+.brand{gap:8px}
+.brand img{width:32px;height:32px}
+.brand .name{font-size:18px;line-height:28px}
+}
+/* Once the sections no longer fit beside the brand and the controls, they
+   drop to their own full-width strip that scrolls horizontally, and the rail
+   shrinks to wrap only the controls. The homepage folds into Explore here;
+   these pages ship no menu script, so they take the strip.
    Setting display:contents on .actions is what makes that possible without a
    second markup tree: its three children (strip, divider, controls) become
    grid items of .brand-row and can be placed on separate rows. Nothing is
    duplicated and there is no disclosure to open.
-   The breakpoint is measured, not guessed: the widest header is the
-   French Help page (brand 176 + sections 467 + controls 176 + gaps),
-   and it must switch BEFORE the pieces meet. Re-measure it if a section is
-   added - the nav-secs element's scrollWidth is the number.
+   The breakpoint is measured, not guessed: the widest header is a translated
+   Help page, and it must switch BEFORE the pieces meet. Re-measure it if a
+   section is added - the brand-row element's scrollWidth is the number.
    NOTE: no backticks in this comment - it lives inside a template literal,
    and a stray one closes it and breaks the whole config load.
-   Spec: ops/docs/ui-patterns.md section 50. */
-@media(max-width:940px){
+   Spec: ops/docs/archive/ui-patterns.md section 50. */
+@media(max-width:1279px){
 .brand-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px 12px}
 .actions{display:contents}
 .brand{grid-column:1;grid-row:1}
@@ -578,12 +721,14 @@ mark{background:var(--imp-bg);color:var(--mark-fg);border-radius:3px;padding:0 1
 .nav-secs .btn-ghost.on{background:var(--imp-bg);color:var(--accent);border-color:transparent;font-weight:600}
 .nav-secs .btn-ghost.on svg{color:var(--accent)}
 }
-/* Phone widths. The brand and the controls have to share one line, and at
-   390px they wanted 422px between them, so both give something up: the beta
-   pill goes (it is decoration, and the footer still carries the version) and
-   the App button falls back to its glyph. The min-width:0 + ellipsis on the
-   wordmark is the guarantee, not the plan - below ~330px the name truncates
+/* Phone widths. The brand and the controls have to share one line, so the
+   demo pill goes first, as it does on the homepage, and below 430px App falls
+   back to its glyph. The min-width:0 + ellipsis on the wordmark is the
+   guarantee, not the plan - at the narrowest widths the name truncates
    instead of sliding under the controls, so no width can produce an overlap. */
+@media(max-width:640px){
+.nav-ctl .nav-demo{display:none}
+}
 @media(max-width:600px){
 .wrap{padding:28px 18px 56px}
 h1{font-size:26px}
@@ -593,11 +738,7 @@ h1{font-size:26px}
 .brand{min-width:0;width:auto;gap:9px}
 .brand .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 }
-/* Only the narrowest phones. With the beta badge gone the brand and the full
-   control rail fit together down to ~430px, so the App label survives much
-   further than it used to; below this it goes and the wordmark steps down. */
 @media(max-width:430px){
-.brand .name{font-size:19px}
-.nav-ctl .btn-primary .btn-lbl{display:none}
-.nav-ctl .btn-primary{padding:7px 10px}
+.nav-ctl .nav-app .btn-lbl{display:none}
+.nav-ctl .nav-app{padding:5px 9px}
 }`;

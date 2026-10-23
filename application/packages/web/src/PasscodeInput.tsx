@@ -79,15 +79,18 @@ export const PasscodeInput = forwardRef<PinInputHandle, Props>(function Passcode
         disabled={disabled}
         style={mask ? HIDDEN_TEXT : undefined}
         aria-label={ariaLabel ?? t('passcodeInput.ariaLabel')}
-        className={`w-full rounded-md bg-track text-pn border border-divider focus:border-accent dark:focus:border-accent font-mono focus:outline-none disabled:cursor-not-allowed ps-3 pe-11 ${compact ? 'h-12' : 'h-14'} ${textSize}`}
+        className={`peer w-full rounded-md bg-track text-pn border border-divider focus:border-accent dark:focus:border-accent font-mono focus:outline-none disabled:cursor-not-allowed ps-3 pe-11 ${compact ? 'h-12' : 'h-14'} ${textSize}`}
       />
-      {mask && value && (
-        // The bullets the field no longer draws, one per character.
+      {mask && (
+        // The bullets the field no longer draws, one per character, and the
+        // caret after them while the field has focus: its own is transparent
+        // with the text, as in the PIN boxes.
         <span
           aria-hidden="true"
-          className={`pointer-events-none absolute inset-y-0 start-0 end-11 flex items-center ps-3 overflow-hidden whitespace-nowrap text-pn font-mono ${textSize}`}
+          className={`pointer-events-none absolute inset-y-0 start-0 end-11 flex items-center ps-3 overflow-hidden whitespace-nowrap text-pn font-mono peer-focus:[&>.pn-caret-blink]:inline-block ${textSize}`}
         >
           {'•'.repeat([...value].length)}
+          <span className={`pn-caret-blink hidden w-0.5 shrink-0 rounded-full bg-accent ${compact ? 'h-5' : 'h-6'}`} />
         </span>
       )}
       <button

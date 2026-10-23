@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { logAuthEvent } from '../authDiag';
 import { WarningCircle } from '../icons';
+import { Modal } from '../ui';
 
 /**
  * Hard-block modal shown when the Supabase session has expired or the
@@ -23,12 +24,7 @@ export function SessionExpiredModal({ onSignOut }: { onSignOut: () => void }) {
     logAuthEvent('ui:session-expired-modal');
   }, []);
   return (
-    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-[70]">
-      <div className="bg-surface-2 border border-divider text-pn rounded-lg max-w-sm w-full p-6 space-y-4">
-        <div className="flex items-center gap-2.5">
-          <WarningCircle size={20} className="text-amber-500 shrink-0" />
-          <h2 className="text-lg font-semibold">{t('sessionExpired.title')}</h2>
-        </div>
+    <Modal title={t('sessionExpired.title')} icon={<WarningCircle size={16} />} layer="z-[70]" className="max-w-sm p-6 space-y-4">
         <p className="text-sm text-pn-muted leading-relaxed">
           {t('sessionExpired.body')}
         </p>
@@ -39,7 +35,6 @@ export function SessionExpiredModal({ onSignOut }: { onSignOut: () => void }) {
         >
           {t('sessionExpired.signInAgain')}
         </button>
-      </div>
-    </div>
+    </Modal>
   );
 }

@@ -1,8 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { VERSION } from './version';
-import { useEscapeToClose } from './useEscapeToClose';
-import { ArrowSquareOut, Bug, ChatCircle, Code, Database, GithubLogo, Globe, Info, Keyboard, Link, MapTrifold, Printer, Scales, Sparkle, Star, Tag, X } from './icons';
+import { ArrowSquareOut, Bug, ChatCircle, Code, Database, GithubLogo, Globe, Info, Keyboard, Link, MapTrifold, Printer, Scales, Sparkle, Star, Tag } from './icons';
 import { bugReportUrl } from './bugReportUrl';
 import { FOLLOW_LINKS, GITHUB_NEW_ISSUE } from './followLinks';
 import { HelpChip } from './HelpChip';
@@ -13,12 +12,14 @@ import { DESKTOP_MORE_NOTE, HOTKEY_GROUPS, rowCaps, rowText } from './hotkeysDat
 import { DESKTOP_APP, KEY_OS } from './shortcutMatch';
 import { setSingleKeys, useSingleKeys } from './singleKeys';
 import { Switch } from './Switch';
-import { EYEBROW_ICON_ROW, EyebrowGlyph, SETTINGS_EYEBROW, SETTINGS_HELP, SettingsTabStrip, settingsTabClass } from './settingsUI';
+import { EYEBROW_ICON_ROW, EyebrowGlyph, ROW_TITLE, SETTINGS_EYEBROW, SETTINGS_HELP, SettingsTabStrip, settingsTabClass } from './settingsUI';
+import { Modal } from './ui';
 import { isTouchOnly } from './touchOnly';
 import { Brand } from './Brand';
 import { SwissFlag } from './SwissFlag';
 import { formatDay } from './intlFormat';
 import { LATEST_RELEASE, latestChangelogHref } from './latestRelease';
+import { usePaneTab } from './settingsPaneTab';
 
 type Tab = 'about' | 'hotkeys' | 'rating';
 
@@ -239,7 +240,7 @@ function RatingTab() {
   const links = useRateLinks();
   return (
     <div>
-      <p className="text-sm text-pn-muted mb-3">{t('rate.intro')}</p>
+      <p className={`${SETTINGS_HELP} mb-3`}>{t('rate.intro')}</p>
       <LinksList links={links} grid />
       <p className="mt-3 pt-3 border-t border-divider text-xs leading-relaxed text-pn-muted">
         <RateOutro />
@@ -279,6 +280,8 @@ function HotkeysTab() {
       <Switch
         setting="about.singleKeys"
         label={t('about.singleKeysTitle')}
+        icon={<Keyboard size={14} className="text-accent" />}
+        labelClassName={ROW_TITLE}
         description={t('about.singleKeysDesc')}
         checked={singleKeys}
         onChange={setSingleKeys}
@@ -288,7 +291,8 @@ function HotkeysTab() {
         if (rows.length === 0) return null;
         return (
           <section key={g.title}>
-            <h3 className={`${SETTINGS_EYEBROW} mb-2`}>
+            <h3 className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW} mb-2`}>
+              <EyebrowGlyph icon={Keyboard} />
               {g.title}
             </h3>
             <div className="divide-y divide-divider">
@@ -339,41 +343,22 @@ function HotkeysTab() {
 
 export function AboutModal({ onClose, initialTab, embedded = false }: Props) {
   const { t } = useTranslation('landing');
-  useEscapeToClose(onClose, !embedded);
   const tabs = isTouchOnly() ? ALL_TABS.filter((tab) => tab.id !== 'hotkeys') : ALL_TABS;
   const safeInitial = tabs.some((tab) => tab.id === initialTab) ? initialTab! : 'about';
-  const [tab, setTab] = useState<Tab>(safeInitial);
+  const [tab, setTab] = usePaneTab<Tab>('about', safeInitial);
 
   return (
-    <div
+    <Modal
       // Same opt-out as SettingsShell (which hosts the embedded copy):
       // this screen is text people copy from. Spec: issue #208.
       data-no-app-menu
-      className={embedded ? 'contents' : 'fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 sm:p-6 z-50'}
-      onClick={embedded ? undefined : onClose}
+      embedded={embedded}
+      embeddedClassName="flex-1 min-h-0 overflow-hidden flex flex-col text-pn"
+      onClose={onClose}
+      title={t('about.modalTitle')}
+      header="bar"
+      className="max-w-lg max-h-[90vh] overflow-hidden flex flex-col"
     >
-      <div
-        className={
-          embedded
-            ? 'flex-1 min-h-0 overflow-hidden flex flex-col text-pn'
-            : 'bg-surface-2 border border-divider text-pn rounded-lg max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col'
-        }
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        {!embedded && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-divider">
-            <h2 className="text-lg font-semibold">{t('about.modalTitle')}</h2>
-            <button
-              onClick={onClose}
-              className="text-pn-muted hover:text-pn transition p-1 -m-1"
-              aria-label={t('common:actions.close')}
-            >
-              <X size={18} />
-            </button>
-          </div>
-        )}
-
         <SettingsTabStrip className="shrink-0 px-4 sm:px-6">
           {tabs.map((tabItem) => (
             <button
@@ -396,18 +381,6 @@ export function AboutModal({ onClose, initialTab, embedded = false }: Props) {
           {tab === 'rating' && <RatingTab />}
         </div>
 
-        {/* Footer */}
-        {!embedded && (
-          <div className="flex justify-end px-6 py-3 border-t border-divider">
-            <button
-              onClick={onClose}
-              className="rounded-md border border-divider px-4 py-2 text-sm transition hover:bg-surface-1"
-            >
-              {t('common:actions.close')}
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
+    </Modal>
   );
 }

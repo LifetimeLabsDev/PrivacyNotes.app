@@ -1,13 +1,15 @@
 {
   "placeholder": "Zacznij pisać…",
+  "eventPlaceholder": "Dodaj plan spotkania, adres lub notatki…",
   "toolbar": {
     "bold": "Pogrubienie",
+    "hideKeyboard": "Ukryj klawiaturę",
     "italic": "Kursywa",
     "underline": "Podkreślenie",
     "heading": "Nagłówek",
     "taskList": "Lista zadań",
     "bulletList": "Lista punktowana",
-    "addLink": "Dodaj link ({{keys}})",
+    "addLink": "Dodaj link",
     "noteLink": "Link do innej notatki (lub wpisz [[)",
     "numberedList": "Lista numerowana",
     "textColor": "Kolor tekstu",
@@ -40,7 +42,6 @@
     "footnote": "Przypis",
     "spoiler": "Spoiler",
     "copyBox": "Pole do kopiowania",
-    "withHint": "{{label}} ({{hint}})",
     "customize": "Dostosuj pasek formatowania"
   },
   "align": {
@@ -98,7 +99,9 @@
       "update": "Aktualizacja",
       "time": "Czas",
       "steps": "Kroki",
-      "place": "Miejsce"
+      "place": "Miejsce",
+      "kanban": "Tablica kanban",
+      "column": "Kolumna"
     }
   },
   "color": {
@@ -132,27 +135,51 @@
     "resizeHint": "Przytrzymaj {{shift}}, aby zmienić tylko tę kolumnę, lub {{alt}}, aby zmieniać dokładniej",
     "deleteRow": "Usuń wiersz",
     "deleteColumn": "Usuń kolumnę",
-    "deleteTable": "Usuń tabelę"
+    "deleteTable": "Usuń tabelę",
+    "insertFormula": "Wstaw formułę",
+    "formulaNoMatch": "Brak pasującej formuły",
+    "formula": {
+      "SUM": "Dodaje wartości",
+      "PRODUCT": "Mnoży wartości",
+      "AVG": "Wartość przeciętna",
+      "AVERAGE": "Wartość przeciętna",
+      "MEDIAN": "Wartość środkowa",
+      "MIN": "Najmniejsza wartość",
+      "MAX": "Największa wartość",
+      "COUNT": "Ile jest liczb",
+      "ABS": "Wartość bez znaku",
+      "SQRT": "Pierwiastek kwadratowy",
+      "SIGN": "Czy wartość jest dodatnia, czy ujemna",
+      "CEIL": "Zaokrągla w górę do liczby całkowitej",
+      "FLOOR": "Zaokrągla w dół do liczby całkowitej",
+      "ROUND": "Zaokrągla do liczby całkowitej",
+      "LOG": "Logarytm",
+      "RAND": "Liczba losowa",
+      "PI": "Stała pi",
+      "E": "Liczba Eulera",
+      "TAU": "Stała tau",
+      "PHI": "Złoty podział"
+    }
   },
   "find": {
     "placeholder": "Znajdź w notatce",
     "label": "Znajdź w notatce",
-    "previous": "Poprzednie dopasowanie (Shift+Enter)",
-    "previousTitle": "Poprzednie (Shift+Enter)",
-    "next": "Następne dopasowanie (Enter)",
-    "nextTitle": "Następne (Enter)",
+    "previous": "Poprzednie dopasowanie",
+    "previousTitle": "Poprzednie",
+    "next": "Następne dopasowanie",
+    "nextTitle": "Następne",
     "close": "Zamknij wyszukiwanie",
-    "closeTitle": "Zamknij ({{keys}})",
+    "closeTitle": "Zamknij",
     "replacePlaceholder": "Zamień na",
     "replaceLabel": "Zamień na",
     "replace": "Zamień",
-    "replaceTitle": "Zamień to wystąpienie (Enter)",
+    "replaceTitle": "Zamień to wystąpienie",
     "replaceAll": "Wszystkie",
     "replaceAllTitle": "Zamień wszystkie wystąpienia",
     "caseSensitive": "Uwzględniaj wielkość liter",
     "caseSensitiveTitle": "Uwzględniaj wielkość liter",
     "closeReplace": "Zamknij znajdź i zamień",
-    "closeReplaceTitle": "Zamknij ({{keys}})",
+    "closeReplaceTitle": "Zamknij",
     "showReplace": "Znajdź i zamień",
     "hideReplace": "Ukryj zamianę",
     "replacedCount_one": "Zamieniono {{count}}",
@@ -166,7 +193,6 @@
     "title": "Konspekt",
     "ariaLabel": "Konspekt notatki",
     "hide": "Ukryj konspekt",
-    "hideTitle": "Ukryj konspekt ({{keys}})",
     "copyHeadingLink": "Kopiuj link do nagłówka",
     "copyNoteLink": "Kopiuj link do notatki",
     "copyHeadingShortcut": "Kopiuj skrót do nagłówka",
@@ -174,6 +200,8 @@
   },
   "bodyMenu": {
     "cut": "Wytnij",
+    "copyAsPlain": "Kopiuj jako zwykły tekst",
+    "copyAsMarkdown": "Kopiuj jako Markdown",
     "sortAsc": "Sortuj wiersze od A do Z",
     "sortDesc": "Sortuj wiersze od Z do A"
   },
@@ -295,6 +323,7 @@
     "hidden": "Ukryte",
     "hiddenNote": "Nadal działają przez skrót i Markdown.",
     "hiddenDrop": "Upuść tu przycisk, aby go ukryć.",
+    "arrangeTitle": "Przyciski",
     "markdownViewNote": "Widok Markdown ma własny, stały zestaw przycisków.",
     "hiddenEmpty": "Nic nie jest ukryte.",
     "alwaysVisible": "Zawsze widoczne",
@@ -329,5 +358,22 @@
     "positionNote": "Wybierz, gdzie w edytorze ma być pasek formatowania.",
     "positionTop": "Góra",
     "positionBottom": "Dół"
+  },
+  "kanban": {
+    "todo": "Do zrobienia",
+    "inProgress": "W toku",
+    "review": "Do sprawdzenia",
+    "done": "Ukończone",
+    "color": "Kolor",
+    "columns": "Kolumny",
+    "columnCount_one": "{{count}} kolumna",
+    "cardCount_one": "{{count}} karta",
+    "addColumn": "Dodaj kolumnę",
+    "removeBoard": "Usuń tablicę",
+    "moveTo": "Przenieś do",
+    "cardCount_few": "{{count}} karty",
+    "cardCount_many": "{{count}} kart",
+    "columnCount_few": "{{count}} kolumny",
+    "columnCount_many": "{{count}} kolumn"
   }
 }

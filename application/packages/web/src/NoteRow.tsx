@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { activeLocale } from './languages';
 import type { LocalNote } from './db';
 import type { ListPrefs } from './listPrefs';
-import { deriveDisplayTitle, deriveExcerpt, editedAtOf, emptyExcerptLabel, entryDayOf, journalDateOf, rowSizeLabel, fileCount, noteLinkName } from './notesViewUtils';
+import { deriveDisplayTitle, deriveExcerpt, editedAtOf, emptyExcerptLabel, entryDayOf, journalDateOf, rowSizeLabel, fileCount, isCheckIn, noteLinkName } from './notesViewUtils';
+import { CheckInUnitsContext, checkInParts, moodWord } from './checkIn';
+import { CheckInGlyph, CheckInRowIcon } from './moodMark';
+import type { JournalTrackerData, TrackerSettings } from './trackerTypes';
 import { formatDay, formatInstant, useDateFormatKey } from './intlFormat';
 import { noteLinkTarget } from './noteLinks';
 import { setItemDragImage, writeItemDrag, type ItemDragPayload } from './itemDrag';
@@ -18,13 +21,14 @@ import { useFolderName } from './folderNames';
 import { ChipFilterContext } from './chipFilter';
 import { sortTags } from './notesRepo';
 import { usePushFailure } from './pushFailures';
-import { FolderGlyph, TagMark, noteLookStyle, useNoteLook } from './looks/LookGlyph';
+import { FolderGlyph, PathGlyph, TagMark, itemLookDraw, useNoteIconPaths, useNoteLook } from './looks/LookGlyph';
 import { ItemRow, applyCompactRows, type ItemFlag, type ItemRootProps, type ItemState, type ListItem } from './listItem';
 import { isSameOriginPath } from './sameOriginPath';
 import { useCompactRows } from './viewMode';
 
 
 export interface NoteRowProps {
+  rootRef?: React.RefCallback<HTMLElement>;
   note: LocalNote;
   isOpen: boolean;
   listPrefs: ListPrefs;
@@ -75,6 +79,18 @@ export interface NoteRowProps {
   dragSelection?: () => ItemDragPayload;
 }
 
+/** What a check-in row lists after its mood. The units come from the
+ *  person's settings through CheckInUnitsContext. */
+const ROW_TRACKERS: TrackerSettings = {
+  activeBuiltins: ['emotions', 'factors', 'habits', 'sleep', 'activity', 'energy', 'focus', 'pain', 'medication', 'steps', 'water'],
+  customTrackers: [],
+  archivedMedications: [],
+  habits: [],
+  weightUnit: 'kg',
+  waterUnit: 'glasses',
+  caffeineUnit: 'cups',
+};
+
 /**
  * The adapter from a note to a `ListItem`, shared by `NoteRow` and `NoteCard`,
  * so the row and the tile of one note are built once. Every derivation is
@@ -104,10 +120,24 @@ export function useNoteItem(p: NoteRowProps): ListItem {
   // The tag or folder color; never in the trash, which keeps its own look.
   const noteLook = useNoteLook(n.id, n.tags, n.folderId);
   const look = trashTint ? null : noteLook;
+  // The icon set on the note wins over its type icon, its site icon and its
+  // photo, in every layout; the trash keeps its amber type icons.
+  const iconPaths = useNoteIconPaths(n.id);
+  const ownIcon = trashTint ? null : iconPaths;
   const isVault = n.type === 'login' || n.type === 'card' || n.type === 'ssh-key';
   const locale = activeLocale();
   const displayTitle = useMemo(() => deriveDisplayTitle(n, locked), [n, locked, locale]);
   const excerpt = useMemo(() => deriveExcerpt(n, listPrefs.longPreview), [n, listPrefs.longPreview, locale]);
+  // A check-in (values, no text) shows its mood face and what was logged,
+  // never behind the PIN. Spec: ops/issues/0439.md (Spec)
+  const units = useContext(CheckInUnitsContext);
+  const checkIn = useMemo(() => {
+    if (locked || trashTint || !isCheckIn(n)) return null;
+    const data = (n.trackers ?? {}) as JournalTrackerData;
+    const mood = typeof data.mood === 'number' ? data.mood : null;
+    const parts = checkInParts(data, { ...ROW_TRACKERS, ...units }, []);
+    return { mood, text: [mood !== null ? moodWord(mood) : null, ...parts].filter(Boolean).join(' · ') };
+  }, [n, locked, trashTint, locale, units]);
   /** One rule for when a size appears. `noteSizeBytes` memoizes per note, so
    *  this is a map lookup after the first call. */
   const sizeText = rowSizeLabel(n, listPrefs.sortField) || null;
@@ -120,7 +150,7 @@ export function useNoteItem(p: NoteRowProps): ListItem {
   const created = sortAwareDate && listPrefs.sortField === 'created';
   const entryDay = entryDays && created && n.type === 'journal';
   // A note or a task list attached to a day names that day in place of the stamp.
-  // Spec: ops/docs/plans/note-date.md
+  // Spec: ops/docs/archive/note-date.md
   const noteDay = n.type === 'note' || n.type === 'task' ? journalDateOf(n) : null;
   const dateLabel = noteDay ? t('noteRow.date') : entryDay ? t('noteRow.entryDate') : created ? t('noteRow.created') : t('noteRow.modified');
   // A new date setting or language formats the date again without a remount.
@@ -143,19 +173,29 @@ export function useNoteItem(p: NoteRowProps): ListItem {
 
   return applyCompactRows({
     id: n.id,
-    icon: <RowIcon note={n} isVault={isVault} isFile={n.type === 'file'} isJournal={n.type === 'journal'} hasTasks={n.type === 'task'} trashTint={trashTint} locked={locked} />,
-    glyph: <CardGlyph type={n.type} domain={faviconDomain} />,
-    compactIcon: <CompactPicture note={n} domain={faviconDomain} hidden={trashTint || locked} />,
+    icon: ownIcon
+      ? <NoteIconBox type={n.type} paths={ownIcon} />
+      : checkIn?.mood != null
+      ? <CheckInRowIcon mood={checkIn.mood} />
+      : <RowIcon note={n} isVault={isVault} isFile={n.type === 'file'} isJournal={n.type === 'journal'} hasTasks={n.type === 'task'} trashTint={trashTint} locked={locked} />,
+    glyph: ownIcon
+      ? <CardGlyph type={n.type} paths={ownIcon} />
+      : checkIn?.mood != null
+      ? <CheckInGlyph mood={checkIn.mood} />
+      : <CardGlyph type={n.type} domain={faviconDomain} />,
+    compactIcon: ownIcon
+      ? <span className={`shrink-0 inline-flex rounded-[4px] ${typeGlyph(n.type).color}`} aria-hidden="true"><PathGlyph paths={ownIcon} size={COMPACT_PICTURE_PX} /></span>
+      : <CompactPicture note={n} domain={faviconDomain} hidden={trashTint || locked} />,
     title: displayTitle,
     preview: listPrefs.showPreview && !locked
-      ? { text: excerpt || emptyExcerptLabel(n), long: listPrefs.longPreview, dir: 'auto' }
+      ? { text: checkIn?.text || excerpt || emptyExcerptLabel(n), long: listPrefs.longPreview, dir: 'auto' }
       : null,
     date: listPrefs.showDate ? { label: dateLabel, ...dates } : null,
     size: sizeText,
     flags,
     chips: listPrefs.showTags ? <TagChips tags={n.tags} folderId={n.folderId} /> : null,
     ribbon: n.type === 'link',
-    look: look ? { color: look.color, style: look.style, css: noteLookStyle(look) } : null,
+    look: look ? { color: look.color, style: look.style, css: itemLookDraw(look).row } : null,
   }, compactRows);
 }
 
@@ -163,6 +203,8 @@ export function useNoteItem(p: NoteRowProps): ListItem {
  *  the drag. */
 export function noteRootProps(p: NoteRowProps): ItemRootProps {
   return {
+    ref: p.rootRef,
+    'data-window-item': p.rootRef ? true : undefined,
     onClick: p.onClick,
     onContextMenu: p.onContextMenu,
     onTouchStart: p.onTouchStart,
@@ -321,30 +363,45 @@ function RowIcon({ note, isVault, isFile, isJournal, hasTasks, trashTint, locked
   // Files share one boxed icon with the Files view - see FileTileIcon.
   if (isFile) return <FileTileIcon mime={locked ? '' : fileMimeFromBody(note.body)} />;
 
-  // Determine color classes (non-file types)
+  const { bg, text } = trashTint
+    ? { bg: 'bg-amber-100/80 dark:bg-amber-900/30', text: 'text-warning' }
+    : typeBox(note.type);
+
+  return (
+    <span className={`shrink-0 w-7 h-7 rounded-md ${bg} flex items-center justify-center ${text} mt-px`}>
+      {isJournal ? <Book size={ROW_ICON_PX} /> : note.type === 'event' ? <CalendarDots size={ROW_ICON_PX} /> : hasTasks ? <CheckSquare size={ROW_ICON_PX} /> : <File size={ROW_ICON_PX} />}
+    </span>
+  );
+}
+
+/** The tint and ink of a type's boxed row icon. A type with a picture of its
+ *  own (a site icon, a photo, a file) takes the note's accent. */
+function typeBox(type: LocalNote['type']): { bg: string; text: string } {
   let bg: string;
   let text: string;
-  if (trashTint) {
-    bg = 'bg-amber-100/80 dark:bg-amber-900/30';
-    text = 'text-warning';
-  } else if (isJournal) {
+  if (type === 'journal') {
     bg = 'bg-purple-100/80 dark:bg-purple-900/30';
     text = 'text-purple-600 dark:text-purple-400';
-  } else if (note.type === 'event') {
+  } else if (type === 'event') {
     // theme-ok: the event teal, a fixed hue like the journal purple
     bg = 'bg-teal-100/80 dark:bg-teal-900/30';
     text = typeGlyph('event').color;
-  } else if (hasTasks) {
+  } else if (type === 'task') {
     bg = 'bg-emerald-100/80 dark:bg-emerald-900/30';
     text = 'text-success';
   } else {
     bg = 'bg-accent/10 dark:bg-accent/15';
     text = 'text-accent';
   }
+  return { bg, text };
+}
 
+/** The boxed row icon of a note that carries an icon of its own. */
+function NoteIconBox({ type, paths }: { type: LocalNote['type']; paths: readonly string[] }) {
+  const { bg, text } = typeBox(type);
   return (
     <span className={`shrink-0 w-7 h-7 rounded-md ${bg} flex items-center justify-center ${text} mt-px`}>
-      {isJournal ? <Book size={ROW_ICON_PX} /> : note.type === 'event' ? <CalendarDots size={ROW_ICON_PX} /> : hasTasks ? <CheckSquare size={ROW_ICON_PX} /> : <File size={ROW_ICON_PX} />}
+      <PathGlyph paths={paths} size={ROW_ICON_PX} />
     </span>
   );
 }
@@ -383,7 +440,7 @@ const FAVICON_TILE = 'bg-[#f0efec] border border-black/[0.06] dark:border-white/
  * rendering read as a dot in a frame. Fallback, also while a site's icon is
  * missing: Globe for bookmarks, Lock for logins, on the accent tint; amber in
  * trash.
- * Spec: ops/docs/plans/bookmarks-pillar.md (row chip)
+ * Spec: ops/docs/archive/bookmarks-pillar.md (row chip)
  */
 export function SiteChip({ domain, tall, trashTint, fallback }: {
   domain: string;
@@ -438,7 +495,7 @@ const CONTACT_HUE_CLASSES = [
  * the square icon chips every other row wears is the convention every address
  * book shares, and it is what lets the eye pick people out of the All list.
  * The circle is CSS over the stored image, which is never cropped in storage.
- * Spec: ops/docs/plans/contacts-pillar.md (section 4, the one new primitive)
+ * Spec: ops/docs/archive/contacts-pillar.md (section 4, the one new primitive)
  */
 export function ContactChip({ name, initials: given, photo, size, trashTint = false, tile = false }: {
   /** The display name; it picks the hue. */
@@ -527,7 +584,7 @@ function VaultRowIcon({ note, trashTint, locked, tall = false }: { note: LocalNo
  * here, and accent means tag. Neither is a raw Tailwind neutral any more -
  * the tags used neutral-200, a COOL grey, so on the warm-cream and slate
  * themes they sat on a warm or blue surface at almost the same lightness and
- * read as disabled chrome. Spec: ops/docs/ui-patterns.md (section 82, the
+ * read as disabled chrome. Spec: ops/docs/archive/ui-patterns.md (section 82, the
  * same pair in the editor tag row)
  *
  * The folder chip is omitted entirely for an unfiled item rather than drawn
@@ -600,7 +657,7 @@ export function TagChips({ tags, folderId }: { tags: string[]; folderId?: string
  * bookmark glyphs names none of them. Omit it (or pass '') anywhere the box
  * shows no favicon either, and the type glyph is drawn as before.
  */
-export function CardGlyph({ type, override, domain }: { type: LocalNote['type']; override?: Icon; domain?: string }) {
+export function CardGlyph({ type, override, domain, paths }: { type: LocalNote['type']; override?: Icon; domain?: string; paths?: readonly string[] }) {
   // A row adapted from something that is not a note (a Markdown file) carries
   // type 'note' and would draw the note glyph. The caller names the glyph; the
   // size and class contract stays here, where the mini CSS can find it. Returns
@@ -614,6 +671,7 @@ export function CardGlyph({ type, override, domain }: { type: LocalNote['type'];
   // positions the favicon exactly where it positions a type glyph. The chip's
   // own favicon sits in a `display: none` box while this one shows (and the
   // reverse on a wide tile), so a card still fetches exactly one icon.
+  if (paths) return <PathGlyph paths={paths} size={13} className={`pn-card-glyph shrink-0 ${typeGlyph(type).color}`} />;
   if (domain) return <CardFavGlyph type={type} domain={domain} />;
   const { Icon, color } = typeGlyph(type);
   return <Icon size={13} className={`pn-card-glyph shrink-0 ${color}`} aria-hidden="true" />;

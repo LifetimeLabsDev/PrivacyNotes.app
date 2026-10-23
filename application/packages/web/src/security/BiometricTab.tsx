@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, Fingerprint, LockKey } from '../icons';
+import { Check, Fingerprint, LockKey, ShieldSlash } from '../icons';
 import { ConfirmModal } from '../ConfirmModal';
+import { Button } from '../ui';
 import {
   answerBindingOffer,
   buildPinWrap,
@@ -15,8 +16,10 @@ import {
   removeBiometricCredential,
   removeStoredPhrase,
   setUpBiometricAgain,
+  noPrfHere,
   shouldOfferBinding,
   storeBuiltPinWrap,
+  unlockWithBiometricDetailed,
 } from '../biometric';
 import {
   clearPinFailures,
@@ -32,7 +35,7 @@ import { signInStamp } from '../liveSignIn';
 import type { PinInputHandle } from '../PinInput';
 import { SecretInput } from '../PasscodeInput';
 import { secretReady } from '../secretKind';
-import { SectionEyebrow, SETTINGS_HELP, SettingsCallout, ROW_TITLE } from '../settingsUI';
+import { ROW_TITLE, SectionEyebrow, SETTINGS_BTN_PRIMARY, SETTINGS_HELP, SETTINGS_SELECT, SettingsCallout } from '../settingsUI';
 import { Switch } from '../Switch';
 import { isTrustedDevice } from '../trustStorage';
 import { isDemoMode } from '../demo';
@@ -79,16 +82,20 @@ export function BiometricTab({
   const captureBlocked = useCaptureBlock();
   const [deviceSupported, setDeviceSupported] = useState<boolean | null>(null);
   const [enrolled, setEnrolled] = useState(() => hasBiometricCredential());
-  // Bound: the passkey's PRF gives the key and nothing beside the wrap opens
-  // it. An unbound browser enrollment is offered a set-up-again.
-  // Spec: ops/docs/plans/app-lock-passcode.md (section 4.6)
+  // Bound: the passkey's PRF (in a browser) or the device's secure hardware
+  // (in the apps) gives the key, and nothing beside the wrap opens it. An
+  // unbound browser enrollment is offered a set-up-again; an unbound app
+  // enrollment converts on its next unlock.
+  // Spec: ops/docs/plans/app-lock-passcode.md (section 4.6),
+  // ops/docs/plans/biometric-key-binding.md (section 8.2)
   const [bound, setBound] = useState(() => isBiometricKeyBound());
   const [canAgain, setCanAgain] = useState(() => canSetUpBiometricAgain());
   const [againBusy, setAgainBusy] = useState(false);
-  const [cannotBind, setCannotBind] = useState(false);
+  // Shown for good once this browser's passkey gave no PRF, in place of a
+  // Set up again that could only fail the same way.
+  const [cannotBind, setCannotBind] = useState(() => noPrfHere());
   // An unbound enrollment in a browser whose passkeys have PRF is asked once,
   // with the reason, to set up again; the plain button stays after an answer.
-  // Spec: ops/docs/audit-release-qa-2026-10-15.md (QA-2)
   const [offerBind, setOfferBind] = useState(false);
   useEffect(() => {
     if (!canAgain) {
@@ -106,6 +113,7 @@ export function BiometricTab({
   function readBinding() {
     setBound(isBiometricKeyBound());
     setCanAgain(canSetUpBiometricAgain());
+    setCannotBind(noPrfHere());
   }
   // Another tab can enroll, set up again or remove; this one follows.
   useEffect(() => onWrappedBlobChange(() => {
@@ -168,7 +176,6 @@ export function BiometricTab({
   async function handleSetUpAgain() {
     setAgainBusy(true);
     setError(null);
-    setCannotBind(false);
     const result = await setUpBiometricAgain(phrase);
     // A success needs no flash: the bound status line replaces the button. A
     // cancel, or a change another tab made meanwhile, says nothing. A passkey
@@ -189,6 +196,16 @@ export function BiometricTab({
     // the store refused leaves both where they were.
     const lastDoor = !hasPinWrappedPhrase();
     setError(null);
+    // The fingerprint that turned the lock on turns it off. An open app alone
+    // is not enough: removing the last door puts the phrase back at rest, and
+    // every later start opens without a prompt. A hardware key the OS
+    // destroyed has nothing left to ask, so it goes without one.
+    // Spec: ops/docs/biometric-unlock.md (Disabling biometric)
+    const proof = await unlockWithBiometricDetailed(t('biometricTab.disable'), t('common:actions.cancel'));
+    if (!proof.phrase && proof.failure !== 'gone') {
+      setError(t('lockScreen.biometricFailed'));
+      return;
+    }
     if (lastDoor && !(await persistStoredPhrase(phrase))) {
       setError(t('appLock.phraseNotSaved'));
       return;
@@ -322,7 +339,7 @@ export function BiometricTab({
 
   return (
     <div className="space-y-5">
-      <p className="text-sm text-pn-soft leading-relaxed">
+      <p className={SETTINGS_HELP}>
         {t('biometricTab.description')}
       </p>
 
@@ -356,7 +373,9 @@ export function BiometricTab({
             </div>
 
             {bound && (
-              <p className={`${SETTINGS_HELP} leading-relaxed`}>{t('biometricTab.boundStatus')}</p>
+              <p className={`${SETTINGS_HELP} leading-relaxed`}>
+                {t(detectPlatform() === 'web' ? 'biometricTab.boundStatus' : 'biometricTab.boundStatusNative')}
+              </p>
             )}
             {canAgain && (
               <div data-setting="security.biometricSetUpAgain">
@@ -367,7 +386,7 @@ export function BiometricTab({
                       <button
                         onClick={() => void handleSetUpAgain()}
                         disabled={againBusy}
-                        className="inline-flex items-center gap-1.5 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-1.5 text-xs font-medium transition disabled:opacity-50"
+                        className={SETTINGS_BTN_PRIMARY}
                       >
                         <Fingerprint size={14} />
                         {againBusy ? t('biometricTab.settingUp') : t('biometricTab.setUpAgain')}
@@ -397,12 +416,10 @@ export function BiometricTab({
               <SettingsCallout>{t('biometricTab.cannotBind')}</SettingsCallout>
             )}
 
-            <button
-              onClick={() => setShowDisableConfirm(true)}
-              className="w-full rounded-md border border-divider text-pn-muted hover:text-danger hover:border-red-300 dark:hover:border-red-800 px-3 py-2 text-sm transition"
-            >
+            {/* The quiet look: it only opens the confirm, which carries the danger. */}
+            <Button icon={<ShieldSlash size={15} aria-hidden="true" className="shrink-0" />} className="w-full justify-center" onClick={() => setShowDisableConfirm(true)}>
               {t('biometricTab.disable')}
-            </button>
+            </Button>
           </div>
         ) : (
           <div className="space-y-2">
@@ -410,7 +427,7 @@ export function BiometricTab({
               data-setting="security.enableBiometric"
               onClick={() => void handleEnroll()}
               disabled={busy}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-4 py-2.5 text-sm font-medium transition disabled:opacity-50"
+              className={`w-full ${SETTINGS_BTN_PRIMARY}`}
             >
               <Fingerprint size={16} />
               {busy ? t('biometricTab.settingUp') : t('biometricTab.enable')}
@@ -442,7 +459,7 @@ export function BiometricTab({
                 {/* Phone only. The desktop apps and the browser show no stored
                     picture of a backgrounded app, so there is nothing to cover
                     and the sentence would be untrue on three platforms.
-                    Spec: ops/docs/plans/app-switcher-privacy-screen.md */}
+                    Spec: ops/docs/archive/app-switcher-privacy-screen.md */}
                 {COVERS_ON_SWITCH && (
                   <span className="block mt-0.5">{t('biometricTab.lockHidesOnSwitch')}</span>
                 )}
@@ -506,7 +523,7 @@ export function BiometricTab({
               type="button"
               onClick={() => void confirmPinForAppLock(pinConfirmValue)}
               disabled={!secretReady(pinConfirmKind, pinConfirmValue) || pinConfirmBusy}
-              className="flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+              className={`flex-1 ${SETTINGS_BTN_PRIMARY}`}
             >
               {pinConfirmBusy ? t('pinTab.checking') : t('pinTab.verify')}
             </button>
@@ -534,7 +551,7 @@ export function BiometricTab({
             <select
               value={String(timeoutMinutes)}
               onChange={(e) => onTimeoutChange(Number(e.target.value))}
-              className="w-full rounded-md bg-surface-1 border border-divider px-3 py-2 text-sm focus:outline-none focus:border-accent"
+              className={`w-full ${SETTINGS_SELECT}`}
             >
               {TIMEOUT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -553,7 +570,7 @@ export function BiometricTab({
           is offered only where the platform can honour it. One text for every
           platform, so it promises no more than the weakest of them, iOS, whose
           screenshot block rests on an undocumented layer an update can end.
-          Spec: ops/docs/plans/app-switcher-privacy-screen.md (section 14) */}
+          Spec: ops/docs/archive/app-switcher-privacy-screen.md (section 14) */}
       {CAPTURE_BLOCK_SUPPORTED && (
         <div className="pt-4 border-t border-divider">
           <Switch

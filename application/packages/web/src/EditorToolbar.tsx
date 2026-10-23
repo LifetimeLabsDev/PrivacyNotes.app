@@ -29,6 +29,7 @@ import {
   TextHSix,
   TextT as FontIcon,
   CaretDown as ChevronDownIcon,
+  CaretLineDown as HideKeyboardIcon,
   ListChecks as ListChecksIcon,
   Link as LinkIcon,
   BracketsSquare as BracketsIcon,
@@ -44,6 +45,7 @@ import {
 import { useEditorState, type Editor as TipTapEditor } from '@tiptap/react';
 import { triggerAttachmentUpload } from './EncryptedAttachment';
 import { insertFootnote } from './footnotes';
+import { copySelectionAs } from './clipboardSpacing';
 import { openPicturePicker } from './mediaRefs';
 import { HoverLabel } from './HoverLabel';
 import { AudioRecorder, type AudioRecordingState } from './AudioRecorder';
@@ -56,12 +58,14 @@ import { toggleCodeBlockSmart, ALIGNMENT_VALUES, COPY_BOX_LANGUAGE } from './edi
 import { useEscapeToClose } from './useEscapeToClose';
 import { keyText } from './shortcutMatch';
 import { insertDateText } from './editorCommands';
+import { insertKanbanBoard } from './KanbanBoard';
 import { FormatBarContext } from './formatBarContext';
 import { formatBarItem } from './formatBar';
 import { FORMAT_BAR_LOOK } from './formatBarItems';
 
 const AttachIcon = FORMAT_BAR_LOOK.attachMenu!.Icon;
 import { useIsMobile, useIsTouchDevice } from './useIsMobile';
+import { useKeyboardOpen } from './useKeyboardOpen';
 import {
   ColorBar,
   MORE_TOGGLE_W,
@@ -106,7 +110,7 @@ type ToolbarProps = {
    * Markdown folder - the file would be unreadable in Obsidian, in git, and in
    * the folder itself. The Markdown pillar writes real files next to the note
    * instead, so it turns this group off rather than letting it corrupt a vault.
-   * Spec: ops/docs/plans/markdown-folder.md (section 8, media)
+   * Spec: ops/docs/archive/markdown-folder.md (section 8, media)
    */
   hideEncryptedMedia?: boolean;
   /**
@@ -131,11 +135,15 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
   const fileInputRef = useRef<HTMLInputElement>(null);
   const attachmentInputRef = useRef<HTMLInputElement>(null);
   // The person's arrangement of the bar and the + menu, and the gear's door
-  // to Settings > Toolbar. Spec: ops/docs/plans/format-bar.md
+  // to Settings > Toolbar. Spec: ops/docs/archive/format-bar.md
   const { layout, onCustomize, position } = useContext(FormatBarContext);
   // A touch screen gets one strip that scrolls sideways; a pointer gets the
   // measured row with the ••• overflow. The swipe decides it, not the width.
   const strip = useIsTouchDevice();
+  // The iOS app removes the system Done bar above the keyboard (GitHub #533),
+  // so the strip carries the only control that closes it. It sits outside
+  // the arrangeable items: a person who could hide it could lose the way out.
+  const keyboardUp = useKeyboardOpen();
   // The gear needs room the phone bar does not have; there the door is the
   // Settings row.
   const wide = !useIsMobile();
@@ -561,12 +569,12 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
   // Format buttons in priority order. They fill the bar; whatever doesn't
   // fit wraps below and is clipped (max-h) until ••• expands it.
   const bold = (
-    <ToolbarBtn key="bold" onClick={() => editor.chain().focus().toggleBold().run()} active={isActive('bold')} label={t('toolbar.bold')} tabIndex={mobileTabIndex}>
+    <ToolbarBtn key="bold" onClick={() => editor.chain().focus().toggleBold().run()} active={isActive('bold')} label={t('toolbar.bold')} keys={keyText('bold')} tabIndex={mobileTabIndex}>
       <BoldIcon size={TB_ICON} />
     </ToolbarBtn>
   );
   const italic = (
-    <ToolbarBtn key="italic" onClick={() => editor.chain().focus().toggleItalic().run()} active={isActive('italic')} label={t('toolbar.italic')} tabIndex={mobileTabIndex}>
+    <ToolbarBtn key="italic" onClick={() => editor.chain().focus().toggleItalic().run()} active={isActive('italic')} label={t('toolbar.italic')} keys={keyText('italic')} tabIndex={mobileTabIndex}>
       <ItalicIcon size={TB_ICON} />
     </ToolbarBtn>
   );
@@ -574,7 +582,7 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
   // where every other editor puts it, and priority order is also clipping
   // order, so parking it at the end would drop it into the ••• row first.
   const underline = (
-    <ToolbarBtn key="underline" onClick={() => editor.chain().focus().toggleUnderline().run()} active={isActive('underline')} label={t('toolbar.underline')} tabIndex={mobileTabIndex}>
+    <ToolbarBtn key="underline" onClick={() => editor.chain().focus().toggleUnderline().run()} active={isActive('underline')} label={t('toolbar.underline')} keys={keyText('underline')} tabIndex={mobileTabIndex}>
       <UnderlineIcon size={TB_ICON} />
     </ToolbarBtn>
   );
@@ -592,7 +600,7 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
           {/* A plain button box with no caret: its one press opens the level
               list, as alignment, font and callout do. The glyph names the
               level the caret is in, so the box never changes width.
-              Spec: ops/docs/ui-patterns.md (section 23 - editor toolbar fit) */}
+              Spec: ops/docs/archive/ui-patterns.md (section 23 - editor toolbar fit) */}
           <HeadingIcon size={TB_ICON} />
         </button>
       </HoverLabel>
@@ -608,12 +616,12 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
     </div>
   );
   const tasks = (
-    <ToolbarBtn key="tasks" onClick={() => editor.chain().focus().toggleTaskList().run()} active={isActive('taskList')} label={t('toolbar.taskList')} tabIndex={mobileTabIndex}>
+    <ToolbarBtn key="tasks" onClick={() => editor.chain().focus().toggleTaskList().run()} active={isActive('taskList')} label={t('toolbar.taskList')} keys={keyText('taskList')} tabIndex={mobileTabIndex}>
       <ListChecksIcon size={TB_ICON} />
     </ToolbarBtn>
   );
   const link = (
-    <ToolbarBtn key="link" onClick={onOpenLinkPopover} active={isActive('link')} label={t('toolbar.addLink', { keys: keyText('insertLink') })} tabIndex={mobileTabIndex} btnRef={linkBtnRef}>
+    <ToolbarBtn key="link" onClick={onOpenLinkPopover} active={isActive('link')} label={t('toolbar.addLink')} keys={keyText('insertLink')} tabIndex={mobileTabIndex} btnRef={linkBtnRef}>
       <LinkIcon size={TB_ICON} />
     </ToolbarBtn>
   );
@@ -832,7 +840,7 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
     </div>
   );
   const strike = (
-    <ToolbarBtn key="strike" onClick={() => editor.chain().focus().toggleStrike().run()} active={isActive('strike')} label={t('toolbar.strikethrough')} tabIndex={mobileTabIndex}>
+    <ToolbarBtn key="strike" onClick={() => editor.chain().focus().toggleStrike().run()} active={isActive('strike')} label={t('toolbar.strikethrough')} keys={keyText('strikethrough')} tabIndex={mobileTabIndex}>
       <StrikethroughIcon size={TB_ICON} />
     </ToolbarBtn>
   );
@@ -845,7 +853,7 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
   const actions: Record<string, MenuAction> = {
     bold: { hint: '**x**', active: isActive('bold'), run: () => editor.chain().focus().toggleBold().run() },
     italic: { hint: '*x*', active: isActive('italic'), run: () => editor.chain().focus().toggleItalic().run() },
-    underline: { hint: null, active: isActive('underline'), run: () => editor.chain().focus().toggleUnderline().run() },
+    underline: { hint: keyText('underline'), active: isActive('underline'), run: () => editor.chain().focus().toggleUnderline().run() },
     tasks: { hint: '[]', active: isActive('taskList'), run: () => editor.chain().focus().toggleTaskList().run() },
     notelink: { hint: '[[', active: false, run: () => { editor.chain().focus().insertContent('[[').run(); } },
     customize: { hint: null, active: false, run: () => onCustomize?.() },
@@ -875,6 +883,7 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
       active: isActive('codeBlock', { language: COPY_BOX_LANGUAGE }),
       run: () => toggleCodeBlockSmart(editor, COPY_BOX_LANGUAGE),
     },
+    kanban: { hint: null, active: false, run: () => insertKanbanBoard(editor, t) },
     inlinecode: { hint: '`x`', active: isActive('code'), run: () => editor.chain().focus().toggleCode().run() },
     // The selected text becomes the formula. The insert commands do not
     // replace a selection, so it is deleted first.
@@ -902,6 +911,9 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
     subscript: { hint: null, active: isActive('subscript'), run: () => editor.chain().focus().toggleSubscript().run() },
     spoiler: { hint: '||x||', active: isActive('spoiler'), run: () => editor.chain().focus().toggleSpoiler().run() },
     footnote: { hint: '[^1]', active: false, run: () => insertFootnote(editor) },
+    // The touch home of the selection menu's "Copy as ..." entries (#546).
+    copyAsPlain: { hint: null, active: false, run: () => copySelectionAs(editor, 'plain') },
+    copyAsMarkdown: { hint: null, active: false, run: () => copySelectionAs(editor, 'markdown') },
   };
   // A picture already in Files, shown without a copy (#330). A modal, so the
   // menu closing under the press cannot close it. Absent where the media
@@ -961,15 +973,14 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
     actions.audio = { hint: null, active: false, run: () => audioStartRef.current?.() };
   }
 
-  // A menu item the person moved onto the bar: a plain button whose label
+  // A menu item the person moved onto the bar: a plain button whose tip
   // carries the shortcut the menu row showed.
   const promoted = (key: string) => {
     const action = actions[key];
     if (!action) return null;
     const { Icon } = FORMAT_BAR_LOOK[key]!;
-    const label = action.hint ? t('toolbar.withHint', { label: lookLabel(key), hint: action.hint }) : lookLabel(key);
     return (
-      <ToolbarBtn key={key} onClick={action.run} active={action.active} label={label} tabIndex={mobileTabIndex}>
+      <ToolbarBtn key={key} onClick={action.run} active={action.active} label={lookLabel(key)} keys={action.hint ?? undefined} tabIndex={mobileTabIndex}>
         <Icon size={TB_ICON} />
       </ToolbarBtn>
     );
@@ -1120,8 +1131,8 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
                 tabIndex={mobileTabIndex}
                 onMouseDown={(e) => e.preventDefault()}
                 // On touch the menu opens on the click after the tap. Opened
-                // on pointerdown, a menu placed over the button took the same
-                // tap's release and ran the entry under the finger.
+                // on pointerdown, a menu placed over the button took the release
+                // of the same tap and ran the entry under the finger.
                 {...press(() => setInsertOpen((prev) => !prev))}
                 aria-label={t('toolbar.insert')}
                 className={`${TB_BTN_BASE} ${insertOpen ? TB_BTN_ACTIVE : TB_BTN_REST} shrink-0`}
@@ -1186,12 +1197,20 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
           {/* Hairline, not a tinted box. An accent fill here would be the only
               filled container in the editor's three control rows, reading as a
               different kind of control rather than the last group in a row.
-              Spec: ops/docs/ui-patterns.md (section 80) */}
+              Spec: ops/docs/archive/ui-patterns.md (section 80) */}
           <span aria-hidden="true" className="shrink-0 mx-0.5 h-4 w-px bg-pn-muted/35" />
           <div className="flex items-center gap-0.5">
             {endButtons}
           </div>
           </>
+          )}
+          {strip && keyboardUp && (
+            <>
+              <span aria-hidden="true" className="shrink-0 mx-0.5 h-4 w-px bg-pn-muted/35" />
+              <ToolbarBtn onClick={() => editor.commands.blur()} label={t('toolbar.hideKeyboard')} tabIndex={mobileTabIndex}>
+                <HideKeyboardIcon size={TB_ICON} />
+              </ToolbarBtn>
+            </>
           )}
         </div>
       </div>

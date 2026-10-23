@@ -10,6 +10,8 @@
     "back": "Geri",
     "next": "İleri",
     "remove": "Kaldır",
+    "deleteConfirm": "Silinsin mi?",
+    "removeConfirm": "Kaldırılsın mı?",
     "copy": "Kopyala",
     "rename": "Yeniden adlandır",
     "create": "Oluştur",
@@ -59,15 +61,17 @@
   },
   "palette": {
     "label": "Komutlar",
-    "open": "Komutlar (>)",
+    "open": "Komutlar",
     "empty": "Eşleşen komut yok",
     "groups": {
+      "features": "Özellikler",
       "commands": "Komutlar",
       "new": "Yeni",
-      "goTo": "Şuraya git"
+      "goTo": "Şuraya git",
+      "themes": "Temalar"
     },
     "commands": {
-      "quickSwitcher": "Bir öğeye veya ayara git",
+      "quickSwitcher": "Ninja'yı aç: bir öğe bulun, her şeyi ekleyin, bir komut çalıştırın",
       "historyBack": "Geri git",
       "historyForward": "İleri git",
       "toggleSidebar": "Kenar çubuğunu göster veya gizle",
@@ -93,9 +97,9 @@
     }
   },
   "quickSwitcher": {
-    "label": "Bir öğeye veya ayara git",
-    "jumpTo": "Git",
-    "placeholder": "Bir başlık veya ayar yazın ya da komutlar için >",
+    "label": "Ninja: bir öğe veya ayar bulun, her şeyi ekleyin, bir komut çalıştırın",
+    "jumpTo": "Ninja",
+    "placeholder": "Ninja hizmetinizde: bir başlık, eklemek için +, komutlar için >",
     "recent": "Son kullanılanlar",
     "empty": "Bu adda öğe veya ayar yok",
     "searchAll": "Her yerde ara: “{{query}}”",
@@ -114,6 +118,7 @@
     "tagItems_other": "{{count}} öğe",
     "emptyTags": "Bu adda etiket yok",
     "emptyFolders": "Bu adda klasör yok",
+    "emptyVault": "Burada henüz bir şey yok. İlk öğenizi eklemek için + yazın.",
     "onlyTags": "etiketler",
     "onlyFolders": "klasörler",
     "showOnlyTags": "Yalnızca etiketler",
@@ -124,7 +129,13 @@
     "createTag": "#{{name}} etiketini oluştur",
     "createFolder": "“{{name}}” klasörünü oluştur",
     "newTag": "Yeni etiket",
-    "newFolder": "Yeni klasör"
+    "newFolder": "Yeni klasör",
+    "goToDay": "Güne git",
+    "inText": "Metnin içinde",
+    "actions": "eylemler",
+    "back": "geri",
+    "actionsPlaceholder": "Eylemleri süzün",
+    "onlyCreate": "ekle"
   },
   "cardForm": {
     "cardholderName": "Kart sahibinin adı",
@@ -182,46 +193,48 @@
     "removeTag": "{{tag}} etiketini kaldır"
   },
   "loading": {
+    "pause": "Satırları duraklat",
+    "play": "Satırları oynat",
     "lines": [
-      "şifrelenmiş aşırı düşünceleriniz yükleniyor…",
-      "bir saniye, reklamcıları hayal kırıklığına uğratıyoruz.",
-      "umursayamayacak kadar şifreli.",
-      "not tutmaya isviçre bankası havası katıyoruz.",
-      "duşta aklınıza gelenleri koruyoruz.",
-      "sırlarınız bir yeniden başlatmayı daha atlattı.",
-      "hiçbir şey bu cihazdan çıplak çıkmaz.",
-      "kasayı sessizce açıyoruz…",
-      "sıcak düşünceler için soğuk depolama.",
-      "bu not gizliliğine saygı duyuyor.",
-      "okumak imkânsız. eşitlemek mümkün.",
-      "yerelde çözüldü. küresel olarak umursanmadı.",
-      "notlarınız sosyal mesafesini koruyor.",
-      "şifreli girdi, şifreli çıktı.",
-      "şifreleme için güzel bir gün daha.",
-      "ilk günden beri sırları sıkıcı tutuyoruz.",
-      "siz yazarsınız. kimse okumaz.",
-      "ted konuşması olmadan gizlilik.",
-      "kimseyi ilgilendirmeyecek şekilde çözülüyor.",
-      "bulutu kafası karışık tutuyoruz.",
-      "sunucu hiçbir şey bilmiyor. sunucu bundan memnun.",
-      "daha az gözetim. daha çok not.",
-      "beklendiği gibi, şifreli saçmalık.",
-      "matematiksel olarak ulaşılamaz.",
-      "sıfır bilgi. maksimum cüret.",
-      "takip hem duygusal hem teknik olarak kapalı.",
-      "dedikodu cihazınızda kalıyor.",
-      "yerel üretim düz metin.",
-      "düşünceleri okunmaz çorbaya çeviriyoruz.",
-      "yalnızca siz ve anahtarlar.",
-      "özel düşünceler özel moda geçiyor.",
-      "gelecekteki sızıntılarınız kurgu olarak kalıyor.",
-      "kapitalizmden gizlenmiş bir not daha.",
-      "burada gizlilik ek ücrete tabi değil.",
-      "gerçek güvenlik yoluyla güvenlik.",
-      "veri simsarlarına sessizce direniyoruz.",
-      "yapay zekâ eğitim malzemesi bulunamadı.",
-      "gereğinden fazla şifrelendi.",
-      "gizlilik: yükleniyor.",
+      "not tutmaya isviçre bankası havası katıyoruz",
+      "duşta aklınıza gelenleri koruyoruz",
+      "notlarınız cihazınızda şifrelenir",
+      "sıcak düşünceler için soğuk depolama",
+      "şifreleme için güzel bir gün daha",
+      "ilk günden beri sırları sıkıcı tutuyoruz",
+      "ted konuşması olmadan gizlilik",
+      "bulutun kafasını karıştırıyoruz",
+      "sunucu şifreli metin saklıyor. onu sıkıcı buluyor",
+      "daha az gözetim. daha çok not",
+      "beklendiği gibi, şifreli saçmalık",
+      "takip hem duygusal hem teknik olarak kapalı",
+      "dedikodu cihazınızda kalıyor",
+      "özel düşünceler özel moda geçiyor",
+      "kapitalizmden gizlenmiş bir not daha",
+      "burada gizlilik ek ücrete tabi değil",
+      "gerçek güvenlik yoluyla güvenlik",
+      "veri simsarlarına sessizce direniyoruz",
+      "yapay zekâ eğitim malzemesi bulunamadı",
+      "gereğinden fazla şifrelendi",
+      "hep sinyal. hiç gözetim yok",
+      "güven sorunlarını yazılıma dönüştürüyoruz",
+      "düşünceleriniz piyasaya çıkmıyor",
+      "veri madencileri hüzünden başka bir şey bulamadı",
+      "kasanız inatla şifreli kalıyor",
+      "isviçre tarafsızlığı, ama notlar için",
+      "reklam yok. izleyici yok. sürpriz son yok",
+      "açık kaynak, matematiği kendiniz kontrol edin",
+      "şifreli metin bizim sevgi dilimiz",
+      "notlarınızı yabancılar için sıkıcı hale getiriyoruz",
+      "günlüğünüz aradı. biraz mahremiyet istiyor",
+      "ruh hali takibiniz sizi özledi",
+      "fikirleriniz, seyircisiz",
+      "günlüğünüz sırlarınızı gece boyunca sakladı",
+      "asla paylaşmayacağınız her şey için tek bir özel yer",
+      "burada ne göreceğinize hiçbir algoritma karar vermez",
+      "aklınızdan geçenler güvende",
+      "yazmak düşünmektir. düşünmek özeldir",
+      "hiçbir fenomene danışılmadı",
       "sırlar sorumlu bir şekilde yükleniyor.",
       "hep sinyal. sıfır gözetim.",
       "şifreli bir başyapıt daha geliyor.",
@@ -236,6 +249,27 @@
       "varoluşsal düşünceler yerelde çözülüyor…",
       "kasanız agresif biçimde okunamaz kalıyor.",
       "isviçre tarafsızlığı, ama notlar için."
+    ],
+    "loadingOnly": [
+      "şifrelenmiş aşırı düşünceleriniz yükleniyor",
+      "bir saniye, reklamcıları hayal kırıklığına uğratıyoruz",
+      "sırlarınız bir yeniden başlatmayı daha atlattı",
+      "kasayı sessizce açıyoruz",
+      "yerelde çözüldü. küresel olarak umursanmadı",
+      "kimseyi ilgilendirmeyecek şekilde çözülüyor",
+      "yerel üretim düz metin",
+      "düşünceleri okunmaz çorbaya çeviriyoruz",
+      "şifreli bir başyapıt daha geliyor",
+      "şifreli kaostan düzen kuruyoruz",
+      "varoluşsal düşünceler yerelde çözülüyor",
+      "anahtarları ısıtıyoruz",
+      "düşüncenizin ipini buluyoruz",
+      "işaretlenmemiş görevlerinizi sayıyoruz. yargı yok",
+      "bu yükleme sırasında hiç reklam gösterilmedi",
+      "notlarınızı bıraktığınız yere geri koyuyoruz",
+      "dünkü düşünceleri çözüyoruz",
+      "bitleri güzel bir sıraya diziyoruz",
+      "hatırlamayı unuttuğunuz şeyi hatırlıyoruz"
     ]
   },
   "neverBackedUp": {
@@ -245,5 +279,57 @@
     "changesOne": "Son değişiklikleri yedeklenmedi ve kaybolur.",
     "changesSome_one": "Bu notlardan {{count}} tanesinin yedeklenmemiş değişiklikleri var ve kaybolur.",
     "changesSome_other": "Bu notlardan {{count}} tanesinin yedeklenmemiş değişiklikleri var ve kaybolur."
+  },
+  "ninja": {
+    "recent": "Son kullanılanlar",
+    "topHit": "En iyi eşleşme",
+    "trashEmpty": "Çöp kutusu boş",
+    "allThemes": "Tüm temalar",
+    "features": {
+      "stats": {
+        "label": "İstatistikler",
+        "detail": "Zaman içinde yazdıklarınız, serileriniz ve takipleriniz"
+      },
+      "trackers": {
+        "label": "Takipler",
+        "detail": "Ruh hali, alışkanlıklar, etkenler ve ilaçlar"
+      },
+      "medication": {
+        "label": "İlaçlar",
+        "detail": "Dozlar, saatler ve hatırlatıcılar"
+      },
+      "yearInPixels": {
+        "label": "Piksellerle yıl",
+        "detail": "Yılın her günü tek bir renkli kare olarak"
+      },
+      "importExport": {
+        "label": "Import & Export",
+        "detail": "Notları içe aktarın, yedeği dışa aktarın"
+      },
+      "generator": {
+        "label": "Parola üretici",
+        "detail": "Kopyalamaya hazır güçlü bir parola veya parola ifadesi"
+      },
+      "themes": {
+        "label": "Temalar",
+        "detail": "Açık ve koyu renk temaları"
+      }
+    },
+    "new": {
+      "medication": "Yeni ilaç",
+      "customTracker": "Yeni özel takip"
+    },
+    "commands": {
+      "syncResume": "Eşitlemeyi sürdür",
+      "changelog": "Yenilikler",
+      "help": "Yardım",
+      "themesPage": "Topluluk temaları",
+      "website": "PrivacyNotes web sitesi"
+    },
+    "themes": {
+      "word": "Tema",
+      "light": "Açık tema",
+      "dark": "Koyu tema"
+    }
   }
 }

@@ -1,18 +1,16 @@
 import { useEffect, useState, type ComponentType, type ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { BellSimple, CalendarX, CalendarDots, Check, Clock, Repeat as RepeatGlyph, Sun, X, ArrowRight } from './icons';
 import type { LocalNote } from './db';
 import { MonthGrid, firstWeekday } from './MonthGrid';
 import { formatDay, weekdayDate, weekdayLabel } from './intlFormat';
 import { entryDayOf, journalDateOf, type JournalDays } from './notesViewUtils';
 import { pushEscapeHandler } from './useEscapeToClose';
-import { timeLabel } from './JournalCalendar';
 import {
   MAX_ALERTS,
   dayNumber,
   isTime,
   nthOf,
-  parseTimeText,
   scheduleOf,
   shiftDay,
   weekdayOf,
@@ -34,16 +32,18 @@ import {
 } from './scheduleText';
 import { intlLocale } from './languages';
 import { askForRemindersOnce } from './notesView/useReminders';
+import { Button } from './ui';
+import { TimeInput } from './TimeInput';
 
 /**
  * The Schedule view of the "..." menu: the day on the grid, then the rows a
  * type gets. An event: Ends, All day, Starts and Ends at, Repeat, Alert. A
- * note or a task list: the same, with "Make this an event to repeat it" in
+ * note or a task list: the same, with "Convert to Event to repeat it" in
  * place of Repeat, and Remove from calendar. A journal entry: Entry date, All
  * day, the times and Alert. Repeat, Ends and Alert open their own views
  * inside the same menu, as Color does. Every change goes through `onEdit`,
  * which asks "Change this item?" on a repeating event.
- * Spec: ops/docs/plans/calendar-pillar-spec.md (steps 4, 6 and 7, section 4.4)
+ * Spec: ops/docs/archive/calendar-pillar-spec.md (steps 4, 6 and 7, section 4.4)
  */
 
 /** The menu's own row parts, handed in so the view draws exactly like the menu. */
@@ -71,6 +71,8 @@ type Props = {
   showPro: boolean;
   onUpgrade: () => void;
   onBack: () => void;
+  /** The row the view opens on: the event card opens Repeat, Alert or Ends directly. */
+  initialSub?: 'ends' | 'repeat' | 'alerts';
 };
 
 type Sub = 'main' | 'ends' | 'repeat' | 'repeatCustom' | 'alerts';
@@ -79,43 +81,18 @@ const NO_DAYS: ReadonlySet<string> = new Set();
 const FIELD = 'w-[5.5rem] h-8 rounded-md border border-divider bg-surface-1 px-2 text-[13px] text-pn tabular-nums text-center focus:border-accent outline-none';
 const SELECT = 'h-8 rounded-md border border-divider bg-surface-1 px-1.5 text-[13px] text-pn focus:border-accent outline-none';
 
-/** A time field: shows the time as the clock setting writes it, takes it as
- *  typed ("15:00", "3pm"), and commits on Enter or when it loses focus. */
+/** A time field of this view: its box, and a cleared field clears the time. */
 function TimeField({ day, value, onCommit, label }: { day: string; value: string | undefined; onCommit: (time: string | null) => void; label: string }) {
-  const shown = value ? timeLabel(day, value) : '';
-  const [draft, setDraft] = useState<string | null>(null);
-  const commit = () => {
-    if (draft === null) return;
-    const parsed = draft.trim() === '' ? null : parseTimeText(draft);
-    setDraft(null);
-    if (parsed !== null || draft.trim() === '') onCommit(parsed);
-  };
-  return (
-    <input
-      type="text"
-      inputMode="text"
-      aria-label={label}
-      value={draft ?? shown}
-      placeholder="--:--"
-      onChange={(e) => setDraft(e.target.value)}
-      onFocus={(e) => e.currentTarget.select()}
-      onBlur={commit}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter') { e.preventDefault(); commit(); }
-        e.stopPropagation();
-      }}
-      className={FIELD}
-    />
-  );
+  return <TimeInput day={day} value={value} label={label} onCommit={onCommit} className={FIELD} clearable />;
 }
 
 export default function ScheduleView({
   ui, note, occurrence, journalDays, onSetJournalDate, onSetNoteDate, onEdit, onMakeEvent,
-  alertsUnlocked, showPro, onUpgrade, onBack,
+  alertsUnlocked, showPro, onUpgrade, onBack, initialSub,
 }: Props) {
   const { t } = useTranslation('shell');
   const { BackRow, Group, ActionItem, ToggleItem } = ui;
-  const [sub, setSub] = useState<Sub>('main');
+  const [sub, setSub] = useState<Sub>(initialSub ?? 'main');
   useEffect(() => (sub === 'main' ? undefined : pushEscapeHandler(() => setSub(sub === 'repeatCustom' ? 'repeat' : 'main'))), [sub]);
 
   const journal = note.type === 'journal';
@@ -260,7 +237,7 @@ export default function ScheduleView({
           )}
           {(note.type === 'note' || note.type === 'task') && (
             <ActionItem
-              label={t('noteOptionsMenu.makeEvent')}
+              label={<Trans i18nKey="shell:noteOptionsMenu.makeEvent" components={{ b: <b className="font-semibold" /> }} />}
               icon={<RepeatGlyph size={16} aria-hidden="true" />}
               chevron
               onClick={onMakeEvent}
@@ -311,12 +288,15 @@ function AlertsView({ ui, day, timed, alerts, onBack, onChange }: { ui: MenuUi; 
     if (next.length > alerts.length) askForRemindersOnce();
     onChange([...next].sort((a, b) => alertOrder(a) - alertOrder(b)));
   };
+  const n = Math.max(0, Math.min(999, Number(amount) || 0));
+  const candidate: Alert = timed
+    ? { before: n * { minutes: 1, hours: 60, days: 1440, weeks: 10080 }[unit] }
+    : { days: Math.min(28, n * (unit === 'weeks' ? 7 : 1)), at: isTime(at) ? at : '09:00' };
+  // An alert that is already on (a preset with its check, or a custom row)
+  // cannot be added twice, so Add waits for a different amount.
+  const taken = held.has(key(candidate));
   function addCustom() {
-    const n = Math.max(0, Math.min(999, Number(amount) || 0));
-    const a: Alert = timed
-      ? { before: n * { minutes: 1, hours: 60, days: 1440, weeks: 10080 }[unit] }
-      : { days: Math.min(28, n * (unit === 'weeks' ? 7 : 1)), at: isTime(at) ? at : '09:00' };
-    if (!held.has(key(a)) && !full) set([...alerts, a]);
+    if (!taken && !full) set([...alerts, candidate]);
   }
   return (
     <>
@@ -349,24 +329,29 @@ function AlertsView({ ui, day, timed, alerts, onBack, onChange }: { ui: MenuUi; 
           />
         ))}
       </Group>
-      <div className="px-4 py-2.5 flex flex-wrap items-center gap-2 text-[13px] text-pn">
-        <span className="text-pn-muted">{t('alerts.custom')}</span>
-        <input type="number" min={0} max={999} value={amount} onChange={(e) => setAmount(e.target.value)} onKeyDown={(e) => e.stopPropagation()} aria-label={t('alerts.custom')} className={`${FIELD} w-14`} />
-        <select value={unit} onChange={(e) => setUnit(e.target.value as typeof unit)} className={SELECT}>
-          {(timed ? (['minutes', 'hours', 'days', 'weeks'] as const) : (['days', 'weeks'] as const)).map((u) => (
-            <option key={u} value={u}>{t(`alerts.units.${u}`)}</option>
-          ))}
-        </select>
-        {!timed && (
-          <>
-            <span className="text-pn-muted">{t('alerts.at')}</span>
-            <TimeField day={day} value={at} label={t('alerts.at')} onCommit={(v) => v && setAt(v)} />
-          </>
-        )}
-        <button type="button" disabled={full} onClick={addCustom} className="h-8 px-3 rounded-md bg-accent-fill text-white text-[13px] font-medium disabled:opacity-50">
+      {/* The custom alert in three fixed lines: its label, the fields in
+          reading order ("1 days at 10 AM"), and Add across the menu, so
+          nothing wraps into a different order at a narrow width. */}
+      <div className="px-4 py-2.5 flex flex-col gap-2 text-[13px] text-pn">
+        <span className="text-xs text-pn-muted">{t('alerts.custom')}</span>
+        <div className="flex items-center gap-2">
+          <input type="number" min={0} max={999} value={amount} onChange={(e) => setAmount(e.target.value)} onKeyDown={(e) => e.stopPropagation()} aria-label={t('alerts.custom')} className={`${FIELD} w-14 shrink-0`} />
+          <select value={unit} onChange={(e) => setUnit(e.target.value as typeof unit)} className={`${SELECT} min-w-0`}>
+            {(timed ? (['minutes', 'hours', 'days', 'weeks'] as const) : (['days', 'weeks'] as const)).map((u) => (
+              <option key={u} value={u}>{t(`alerts.units.${u}`)}</option>
+            ))}
+          </select>
+          {!timed && (
+            <>
+              <span className="shrink-0 text-pn-muted">{t('alerts.at')}</span>
+              <TimeField day={day} value={at} label={t('alerts.at')} onCommit={(v) => v && setAt(v)} />
+            </>
+          )}
+        </div>
+        <Button action="add" disabled={full || taken} onClick={addCustom} className="w-full justify-center">
           {t('alerts.add')}
-        </button>
-        {full && <span className="w-full text-[12px] text-pn-muted">{t('alerts.max')}</span>}
+        </Button>
+        {full && <span className="text-[12px] text-pn-muted">{t('alerts.max')}</span>}
       </div>
     </>
   );

@@ -1,6 +1,8 @@
 {
   "captionFolder": "Složka",
   "captionTag": "Značka",
+  "captionNote": "Poznámka",
+  "captionTracker": "Sledovaná hodnota",
   "useDefault": "Použít výchozí",
   "color": "Barva",
   "noColor": "Bez barvy",

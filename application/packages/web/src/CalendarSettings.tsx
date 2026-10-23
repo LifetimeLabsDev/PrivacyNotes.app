@@ -1,50 +1,32 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowLineDown, BellRinging, BellSimple, CalendarDots, Cake, Check, Clock, Devices, Hash, Eye, Sun } from './icons';
-import { ROW_TITLE, RowTitle, SectionEyebrow, SETTINGS_HELP, SETTINGS_ROW } from './settingsUI';
+import { ArrowLineDown, BellRinging, BellSimple, CalendarDots, Cake, Clock, Devices, Hash, Eye, Sun } from './icons';
+import { ROW_TITLE, RowTitle, SectionEyebrow, SETTINGS_HELP, SETTINGS_ROW, SETTINGS_SELECT, SettingsCallout, ResetDefaultsButton } from './settingsUI';
 import { Switch } from './Switch';
-import { IconUpgrade } from './UpgradeModal';
+import { ProMark } from './UpgradeModal';
 import { formatDay, toLocalIso } from './intlFormat';
-import { isTime, parseTimeText } from './schedule';
+import { isTime } from './schedule';
+import { TimeInput as TimeField } from './TimeInput';
 import { alertLabel, ALL_DAY_ALERTS, TIMED_ALERTS } from './scheduleText';
-import { timeLabel } from './JournalCalendar';
 import type { CalendarSettings as Settings } from './userSettings';
-import { askReminderPermission, openReminderSettings, useReminderPermission, useRemindersThrough, REMINDER_PLATFORM } from './notesView/useReminders';
+import { defaultCalendarSettings } from './userSettingsShape';
+import { ReminderPermissionControl, useReminderPermission, useRemindersThrough, REMINDER_PLATFORM } from './notesView/useReminders';
 
 /**
  * Settings › Date & Time › Calendar: the default alerts (Pro), whether a reminder shows the
  * title, where reminders ring on this device, the week numbers and the hours
  * the hour grid opens on. Every value syncs; where a reminder rings is this
  * device's own answer.
- * Spec: ops/docs/plans/calendar-pillar-spec.md (decisions 11, 12, 15; step 7)
+ * Spec: ops/docs/archive/calendar-pillar-spec.md (decisions 11, 12, 15; step 7)
  */
 
-const SELECT = 'rounded-md bg-track border border-divider px-2.5 py-1.5 text-sm text-pn focus:border-accent focus:outline-none';
+// The end padding keeps the browser's own arrow off the border.
+const SELECT = SETTINGS_SELECT;
 const FIELD = 'w-24 rounded-md bg-track border border-divider px-2.5 py-1.5 text-sm text-pn text-center tabular-nums focus:border-accent focus:outline-none';
 const NONE = 'none';
 
-/** A time typed into a field, committed on blur or Enter. */
-function TimeInput({ value, onCommit, label }: { value: string; onCommit: (t: string) => void; label: string }) {
-  const today = toLocalIso(new Date());
-  const [draft, setDraft] = useState<string | null>(null);
-  const commit = () => {
-    if (draft === null) return;
-    const parsed = parseTimeText(draft);
-    setDraft(null);
-    if (parsed) onCommit(parsed);
-  };
-  return (
-    <input
-      type="text"
-      aria-label={label}
-      value={draft ?? timeLabel(today, value)}
-      onChange={(e) => setDraft(e.target.value)}
-      onFocus={(e) => e.currentTarget.select()}
-      onBlur={commit}
-      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); commit(); } }}
-      className={FIELD}
-    />
-  );
+/** A time field of a settings row; it cannot be emptied. */
+export function TimeInput({ value, onCommit, label }: { value: string; onCommit: (t: string) => void; label: string }) {
+  return <TimeField value={value} label={label} onCommit={(t) => t && onCommit(t)} className={FIELD} />;
 }
 
 export function CalendarSettings({ value, onChange, alertsUnlocked, showPro, onUpgrade }: {
@@ -60,7 +42,7 @@ export function CalendarSettings({ value, onChange, alertsUnlocked, showPro, onU
   const through = useRemindersThrough();
   const permission = useReminderPermission();
   const set = (patch: Partial<Settings>) => onChange({ ...value, ...patch });
-  const pro = showPro ? <IconUpgrade size={12} /> : null;
+  const pro = showPro ? <ProMark /> : null;
   const guard = (fn: () => void) => () => (alertsUnlocked ? fn() : onUpgrade());
 
   const dayAlertRow = (icon: typeof Sun, title: string, current: { days: number; at: string } | null, write: (v: { days: number; at: string } | null) => void) => (
@@ -115,33 +97,11 @@ export function CalendarSettings({ value, onChange, alertsUnlocked, showPro, onU
             <RowTitle icon={Devices}>{t('calendar.whereTitle')}</RowTitle>
             <p className={`${SETTINGS_HELP} mt-0.5`}>{t(`calendar.reminderHint.${REMINDER_PLATFORM}`)}</p>
             {through && <p className={`${SETTINGS_HELP} mt-0.5`}>{t('calendar.scheduledThrough', { date: formatDay(through, 'date') })}</p>}
-            {permission === 'denied' && <p className={`${SETTINGS_HELP} mt-0.5`}>{t('calendar.permissionDenied')}</p>}
+            {permission === 'denied' && <SettingsCallout className="mt-1.5">{t('calendar.permissionDenied')}</SettingsCallout>}
           </div>
-          {permission === 'prompt' && (
-            <button
-              type="button"
-              onClick={() => void askReminderPermission().catch(() => {})}
-              className="rounded-md bg-accent-fill text-white px-3 py-1.5 text-sm font-medium hover:bg-accent-fill-hover transition"
-            >
-              {t('calendar.permissionAsk')}
-            </button>
-          )}
-          {permission === 'granted' && (
-            <span role="status" className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-track px-3 py-1.5 text-sm text-pn-muted">
-              <Check size={14} aria-hidden="true" />
-              {t('calendar.permissionGranted')}
-            </span>
-          )}
-          {permission === 'denied' && REMINDER_PLATFORM === 'mobile' && (
-            <button
-              type="button"
-              onClick={() => void openReminderSettings().catch(() => {})}
-              className="shrink-0 rounded-md border border-divider px-3 py-1.5 text-sm font-medium text-pn hover:bg-track transition"
-            >
-              {t('calendar.permissionOpenSettings')}
-            </button>
-          )}
+          <ReminderPermissionControl />
         </div>
+        {/* The daily check-in reminder lives in Settings > Trackers > Check-in. */}
         <Switch
           setting="calendar.reminderTitles"
           label={t('calendar.reminderTitles')}
@@ -172,6 +132,10 @@ export function CalendarSettings({ value, onChange, alertsUnlocked, showPro, onU
         </div>
         <div data-setting="calendar.alertAllDay">{dayAlertRow(Sun, t('calendar.alertAllDay'), value.alertAllDay, (v) => set({ alertAllDay: v }))}</div>
         <div data-setting="calendar.alertBirthday">{dayAlertRow(Cake, t('calendar.alertBirthday'), value.alertBirthday, (v) => set({ alertBirthday: v }))}</div>
+      </div>
+      {/* The device's own reminder switch is not a synced setting, so the reset leaves it. */}
+      <div className="px-6 pb-6">
+        <ResetDefaultsButton onReset={() => onChange(defaultCalendarSettings())} />
       </div>
     </div>
   );

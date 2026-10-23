@@ -1,6 +1,6 @@
 // Central icon module - the ONLY file that imports @phosphor-icons/react.
 // Components import icons from here so the sitewide style stays in one place.
-// Style guide: ops/docs/ui-patterns.md (icon weights and sizes).
+// Style guide: ops/docs/archive/ui-patterns.md (icon weights and sizes).
 //
 // - Default UI icons: ICON_WEIGHT (bold) at 14px via IconDefaults provider.
 // - Active/toggled states (starred, pinned, selected): weight "fill".
@@ -23,6 +23,7 @@ import {
   Bookmarks as PhBookmarks,
   BookmarkSimple,
   CheckFat,
+  Kanban,
   FileMd,
   FileText,
   Files as PhFiles,
@@ -30,6 +31,7 @@ import {
   PenNib,
   PencilSimple,
   PlusSquare,
+  Scissors,
   ShieldPlus,
   Browsers,
   SquaresFour,
@@ -60,7 +62,7 @@ import {
   Upload,
 } from '@phosphor-icons/react';
 
-// Spec: ops/docs/ui-patterns.md (sitewide icon style)
+// Spec: ops/docs/archive/ui-patterns.md (sitewide icon style)
 const ICON_WEIGHT = 'bold' as const;
 const ICON_WEIGHT_ACTIVE = 'fill' as const;
 const ICON_SIZE = 14;
@@ -149,12 +151,14 @@ export const NEW_GLYPHS = {
   generic: PlusSquare,
   note: NotePencil,
   task: CheckFat,
+  kanban: Kanban,
   login: ShieldPlus,
   file: Upload,
   journal: PenNib,
   event: CalendarPlus,
   bookmark: PhBookmark,
   contact: UserPlus,
+  clip: Scissors,
 } as const;
 
 /**

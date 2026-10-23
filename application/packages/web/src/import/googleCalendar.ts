@@ -47,7 +47,7 @@ import { ImportTooLargeError, zipEntryBytes } from './zipEntry';
  *
  * A re-import adds nothing: each event carries `ics` ({ uid } or
  * { uid, rid }), and apply.ts skips a series whose UID the vault holds.
- * Spec: ops/docs/plans/google-calendar-import.md (section 4)
+ * Spec: ops/docs/archive/google-calendar-import.md (section 4)
  */
 
 /** The most .ics bytes one import reads in total. */

@@ -1,13 +1,15 @@
 {
   "placeholder": "Začni písať…",
+  "eventPlaceholder": "Pridaj program, adresu alebo poznámky…",
   "toolbar": {
     "bold": "Tučné",
+    "hideKeyboard": "Skryť klávesnicu",
     "italic": "Kurzíva",
     "underline": "Podčiarknuté",
     "heading": "Nadpis",
     "taskList": "Zoznam úloh",
     "bulletList": "Odrážky",
-    "addLink": "Pridať odkaz ({{keys}})",
+    "addLink": "Pridať odkaz",
     "noteLink": "Odkaz na inú poznámku (alebo napíš [[)",
     "numberedList": "Číslovaný zoznam",
     "textColor": "Farba textu",
@@ -40,7 +42,6 @@
     "footnote": "Poznámka pod čiarou",
     "spoiler": "Spoiler",
     "copyBox": "Pole na kopírovanie",
-    "withHint": "{{label}} ({{hint}})",
     "customize": "Prispôsobiť panel nástrojov"
   },
   "align": {
@@ -98,7 +99,9 @@
       "update": "Aktualizácia",
       "time": "Čas",
       "steps": "Kroky",
-      "place": "Miesto"
+      "place": "Miesto",
+      "kanban": "Kanbanová tabuľa",
+      "column": "Stĺpec"
     }
   },
   "color": {
@@ -132,27 +135,51 @@
     "resizeHint": "Podrž {{shift}} a zmeníš len tento stĺpec, {{alt}} pre jemnejšie kroky",
     "deleteRow": "Odstrániť riadok",
     "deleteColumn": "Odstrániť stĺpec",
-    "deleteTable": "Odstrániť tabuľku"
+    "deleteTable": "Odstrániť tabuľku",
+    "insertFormula": "Vložiť vzorec",
+    "formulaNoMatch": "Žiadne zodpovedajúce vzorce",
+    "formula": {
+      "SUM": "Sčíta hodnoty",
+      "PRODUCT": "Vynásobí hodnoty",
+      "AVG": "Priemer hodnôt",
+      "AVERAGE": "Priemer hodnôt",
+      "MEDIAN": "Stredná hodnota",
+      "MIN": "Najmenšia hodnota",
+      "MAX": "Najväčšia hodnota",
+      "COUNT": "Počet čísel",
+      "ABS": "Hodnota bez znamienka",
+      "SQRT": "Druhá odmocnina",
+      "SIGN": "Či je hodnota kladná alebo záporná",
+      "CEIL": "Zaokrúhli nahor na celé číslo",
+      "FLOOR": "Zaokrúhli nadol na celé číslo",
+      "ROUND": "Zaokrúhli na celé číslo",
+      "LOG": "Logaritmus",
+      "RAND": "Náhodné číslo",
+      "PI": "Konštanta pí",
+      "E": "Eulerovo číslo",
+      "TAU": "Konštanta tau",
+      "PHI": "Zlatý rez"
+    }
   },
   "find": {
     "placeholder": "Hľadaj v poznámke",
     "label": "Nájsť v poznámke",
-    "previous": "Predchádzajúci výskyt (Shift+Enter)",
-    "previousTitle": "Predchádzajúci (Shift+Enter)",
-    "next": "Ďalší výskyt (Enter)",
-    "nextTitle": "Ďalší (Enter)",
+    "previous": "Predchádzajúci výskyt",
+    "previousTitle": "Predchádzajúci",
+    "next": "Ďalší výskyt",
+    "nextTitle": "Ďalší",
     "close": "Zavrieť hľadanie",
-    "closeTitle": "Zavrieť ({{keys}})",
+    "closeTitle": "Zavrieť",
     "replacePlaceholder": "Zadaj náhradný text",
     "replaceLabel": "Nahradiť čím",
     "replace": "Nahradiť",
-    "replaceTitle": "Nahradiť tento výskyt (Enter)",
+    "replaceTitle": "Nahradiť tento výskyt",
     "replaceAll": "Všetko",
     "replaceAllTitle": "Nahradiť všetky výskyty",
     "caseSensitive": "Rozlišovať veľké a malé písmená",
     "caseSensitiveTitle": "Rozlišovať veľké a malé písmená",
     "closeReplace": "Zavrieť Nájsť a nahradiť",
-    "closeReplaceTitle": "Zavrieť ({{keys}})",
+    "closeReplaceTitle": "Zavrieť",
     "showReplace": "Nájsť a nahradiť",
     "hideReplace": "Skryť nahradenie",
     "replacedCount_one": "Nahradené: {{count}}",
@@ -166,7 +193,6 @@
     "title": "Osnova",
     "ariaLabel": "Osnova poznámky",
     "hide": "Skryť osnovu",
-    "hideTitle": "Skryť osnovu ({{keys}})",
     "copyHeadingLink": "Kopírovať odkaz na nadpis",
     "copyNoteLink": "Kopírovať odkaz na poznámku",
     "copyHeadingShortcut": "Kopírovať skratku k nadpisu",
@@ -174,6 +200,8 @@
   },
   "bodyMenu": {
     "cut": "Vystrihnúť",
+    "copyAsPlain": "Kopírovať ako obyčajný text",
+    "copyAsMarkdown": "Kopírovať ako Markdown",
     "sortAsc": "Zoradiť riadky od A po Z",
     "sortDesc": "Zoradiť riadky od Z po A"
   },
@@ -295,6 +323,7 @@
     "hidden": "Skryté",
     "hiddenNote": "Naďalej fungujú cez skratku a Markdown.",
     "hiddenDrop": "Potiahni sem tlačidlo a skryješ ho.",
+    "arrangeTitle": "Tlačidlá",
     "markdownViewNote": "Zobrazenie Markdown má vlastnú pevnú sadu tlačidiel.",
     "hiddenEmpty": "Nič nie je skryté.",
     "alwaysVisible": "Vždy viditeľné",
@@ -329,5 +358,22 @@
     "positionNote": "Vyber, kde sa v editore nachádza panel nástrojov.",
     "positionTop": "Hore",
     "positionBottom": "Dole"
+  },
+  "kanban": {
+    "todo": "Na vykonanie",
+    "inProgress": "Prebieha",
+    "review": "Kontrola",
+    "done": "Hotovo",
+    "color": "Farba",
+    "columns": "Stĺpce",
+    "columnCount_one": "{{count}} stĺpec",
+    "columnCount_few": "{{count}} stĺpce",
+    "columnCount_other": "{{count}} stĺpcov",
+    "cardCount_one": "{{count}} karta",
+    "cardCount_few": "{{count}} karty",
+    "cardCount_other": "{{count}} kariet",
+    "addColumn": "Pridať stĺpec",
+    "removeBoard": "Odstrániť tabuľu",
+    "moveTo": "Presunúť do"
   }
 }

@@ -5,7 +5,7 @@ import { MagnifyingGlass, ArrowsLeftRight, TextAa, X } from './icons';
 import { HoverLabel } from './HoverLabel';
 import { isImeComposing } from './imeComposing';
 import { BAR_BTN, BAR_INPUT, MatchNav, ReplaceToggle, TEXT_BTN } from './MatchNav';
-import { keyText } from './shortcutMatch';
+import { bindingKeyText, keyText } from './shortcutMatch';
 import {
   setSearchQuery,
   setActiveMatch,
@@ -199,7 +199,7 @@ export function ReplaceBar({ editor, focusTick, startQuery, onSwap, swapPro = fa
         <MatchNav count={count} noHits={noHits} canStep={info.total > 0} onStep={go} />
         <ReplaceToggle open pro={swapPro} onClick={() => onSwap(query)} />
         <div className="w-px h-5 bg-divider mx-0.5 shrink-0" aria-hidden="true" />
-        <HoverLabel label={t('find.closeReplaceTitle', { keys: keyText('findReplace') })} position="below-end">
+        <HoverLabel label={t('find.closeReplaceTitle')} keys={keyText('findReplace')} position="below-end">
           <button
             type="button"
             onMouseDown={(e) => e.preventDefault()}
@@ -225,7 +225,7 @@ export function ReplaceBar({ editor, focusTick, startQuery, onSwap, swapPro = fa
           autoComplete="off"
           className={BAR_INPUT}
         />
-        <HoverLabel label={t('find.replaceTitle')} position="below">
+        <HoverLabel label={t('find.replaceTitle')} keys={bindingKeyText({ key: 'Enter' })} position="below">
           <button
             type="button"
             onMouseDown={(e) => e.preventDefault()}

@@ -6,12 +6,12 @@ import type { JournalTrackerData } from './trackerTypes';
  * one tracker against an outcome, and the chart geometry. Each module owns
  * its functions; the shapes they exchange live here so none of them imports
  * another for a type.
- * Spec: ops/docs/plans/wellness-statistics.md (sections 4 to 7)
+ * Spec: ops/docs/archive/wellness-statistics.md (sections 4 to 7)
  */
 
 export type TrackerKind = 'scale' | 'measure' | 'yesno' | 'ordinal' | 'set' | 'medication';
 type TrackerSource = 'builtin' | 'custom' | 'medication';
-type TrackerUnit = 'h' | 'bpm' | 'kg' | 'lb' | 'steps' | 'glasses' | 'cups';
+type TrackerUnit = 'h' | 'bpm' | 'kg' | 'lb' | 'steps' | 'glasses' | 'cups' | 'l' | 'oz' | 'mg';
 /** A logged value: a number, a yes or no, a level id, a medication status, or a tag set. */
 export type TrackerValue = number | boolean | string | readonly string[];
 
@@ -31,9 +31,14 @@ export interface TrackerDescriptor {
   unit?: TrackerUnit;
   /** An ordinal's level ids low to high, or a set's tag keys. */
   levels?: readonly string[];
+  /** A set whose tags are the person's own: the name of each tag key. */
+  levelNames?: Readonly<Record<string, string>>;
   /** What the card headline shows. */
   aggregate: 'avg' | 'share' | 'sum';
   read: (d: JournalTrackerData) => TrackerValue | undefined;
+  /** A medication: the doses of one day, owed and taken, and the as-needed
+   *  doses logged, so the card counts doses as the adherence figures do. */
+  doses?: (d: JournalTrackerData, day: string) => DoseCount;
   stoppedAt?: string;
   deletedAt?: string;
   /** A value whose template is missing from the settings: listed, never compared. */
@@ -44,7 +49,8 @@ export type RangeId = '7d' | '14d' | '30d' | '3mo' | '6mo' | '12mo' | 'all';
 /** Local ISO days, both inclusive. */
 export interface RangeBounds { from: string; to: string }
 
-export interface DayPoint { date: string; value: TrackerValue | undefined }
+interface DoseCount { expected: number; taken: number; asNeeded: number }
+export interface DayPoint { date: string; value: TrackerValue | undefined; doses?: DoseCount }
 /** One point per calendar day from `from` to `to`; a missing day carries `undefined`. */
 export interface DaySeries { from: string; to: string; points: DayPoint[] }
 

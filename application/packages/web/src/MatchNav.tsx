@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { CaretUp, CaretDown, Swap } from './icons';
 import { HoverLabel } from './HoverLabel';
+import { bindingKeyText, keyText } from './shortcutMatch';
 import { ProGlyph } from './UpgradeModal';
 
 /**
@@ -48,7 +49,7 @@ export function MatchNav({ count, noHits, canStep, onStep }: Props) {
       >
         {count}
       </span>
-      <HoverLabel label={t('find.previousTitle')} position="below">
+      <HoverLabel label={t('find.previousTitle')} keys={bindingKeyText({ shift: true, key: 'Enter' })} position="below">
         <button
           type="button"
           onMouseDown={(e) => e.preventDefault()}
@@ -60,7 +61,7 @@ export function MatchNav({ count, noHits, canStep, onStep }: Props) {
           <CaretUp size={15} />
         </button>
       </HoverLabel>
-      <HoverLabel label={t('find.nextTitle')} position="below">
+      <HoverLabel label={t('find.nextTitle')} keys={bindingKeyText({ key: 'Enter' })} position="below">
         <button
           type="button"
           onMouseDown={(e) => e.preventDefault()}
@@ -87,7 +88,7 @@ export function ReplaceToggle({ open, pro, onClick }: { open: boolean; pro: bool
   const { t } = useTranslation('editor');
   const label = open ? t('find.hideReplace') : t('find.showReplace');
   return (
-    <HoverLabel label={label} position="below">
+    <HoverLabel label={label} keys={open ? '' : keyText('findReplace')} position="below">
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}

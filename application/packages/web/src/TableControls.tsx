@@ -10,6 +10,8 @@ import {
 import { type Editor as TipTapEditor } from '@tiptap/react';
 import { HoverLabel } from './HoverLabel';
 import { clearTableWidths, tableWidths } from './tableColumnResize';
+import { useProGate } from './ui';
+import { caretCell } from './tableFormulaInsert';
 
 // ------------------------------------------------------------------
 // Table Controls (floating toolbar glued below the active table)
@@ -24,10 +26,29 @@ function activeTablePos(editor: TipTapEditor): number {
   return -1;
 }
 
-export function TableControls({ editor }: { editor: TipTapEditor }) {
+export function TableControls({ editor, formulasUnlocked, onUpgrade }: { editor: TipTapEditor; formulasUnlocked: boolean; onUpgrade?: () => void }) {
   const { t } = useTranslation('editor');
   const toolbarRef = useRef<HTMLDivElement>(null);
   const equalRef = useRef<HTMLSpanElement>(null);
+  const proGate = useProGate(formulasUnlocked, onUpgrade);
+
+  /**
+   * The button types `=` into the cell and lets the suggestion plugin take
+   * over, so the toolbar and the keyboard open the SAME menu with the same
+   * ranked list and the same range guessing. Building a second popover here
+   * would have been a second set of behaviour to keep in step.
+   *
+   * It empties the cell first: a formula has to be the whole cell, and the
+   * menu only opens at the cell's start.
+   */
+  const insertFormula = proGate(() => {
+    const here = caretCell(editor.state);
+    if (!here) return;
+    const { $anchor } = editor.state.selection;
+    const start = $anchor.start();
+    const end = $anchor.end();
+    editor.chain().focus().insertContentAt({ from: start, to: end }, '=').run();
+  });
 
   /**
    * Visibility and position both come from the editor, never from a React
@@ -126,6 +147,16 @@ export function TableControls({ editor }: { editor: TipTapEditor }) {
       <HoverLabel label={t('table.addColumnRight')} position="below">
         <button type="button" className="pn-table-toolbar-btn" onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); editor.chain().focus().addColumnAfter().run(); }}>
           <ArrowRightIcon size={16} />
+        </button>
+      </HoverLabel>
+      <div className="pn-table-toolbar-divider" />
+      {/* Insert formula. Pro, and it stays clickable for a free account:
+          clicking opens the upgrade window rather than doing nothing. The
+          arithmetic itself is free, so a free account can still type
+          `=SUM(B2:B4)` by hand and see the total. */}
+      <HoverLabel label={t('table.insertFormula')} position="below">
+        <button type="button" className="pn-table-toolbar-btn" onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); insertFormula(); }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 5H7l6 7-6 7h11"/></svg>
         </button>
       </HoverLabel>
       <div className="pn-table-toolbar-divider" />

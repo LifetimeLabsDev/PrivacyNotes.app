@@ -158,7 +158,7 @@ export function useOAuthFlows({
     // Must exceed the worst realistic token-validation round-trip: cold
     // connections to the sync API were measured at ~3.5 s, so give the
     // pending validation a generous margin before declaring it dead.
-    // 12s -> 20s at the 2026-08-25 session audit: on high-latency lossy
+    // 20s rather than 12s: on high-latency lossy
     // links (satellite, throttled mobile) a merely slow validation was
     // demoted to the sign-in options mid-flow, which reads as a failed
     // sign-in. A dead token costs 8 more seconds of loading screen; a
@@ -514,8 +514,7 @@ export function useOAuthFlows({
       // {count: null, error: null}. Routing null to the zombie branch
       // contradicted the fail-closed comment above and sent an EXISTING
       // self-custody user to the fresh-account screen - the
-      // data-orphaning footgun this block exists to prevent. Session
-      // audit 2026-08-25.
+      // data-orphaning footgun this block exists to prevent.
       if (!verifiedProvider && !countErr && noteCount === 0) {
         // Zombie account: pubkey on file but no data to unlock.
         // Redirect to custody choice so they can start fresh.

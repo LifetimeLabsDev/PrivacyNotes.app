@@ -1,3 +1,4 @@
+import { Button, Callout } from './ui';
 import { useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ContextMenu, type ContextMenuItem, type ContextMenuState } from './ContextMenu';
@@ -36,7 +37,7 @@ import { isImeComposing } from './imeComposing';
  * one component for every row kind: a button that opens the shared
  * ContextMenu with the suggested vocabulary plus a custom entry.
  *
- * Spec: ops/docs/plans/contacts-pillar.md (section 6) + contacts-mockups.html (sections 4 and 5)
+ * Spec: ops/docs/archive/contacts-pillar.md (section 6) + contacts-mockups.html (sections 4 and 5)
  */
 
 type RowKind = 'phones' | 'emails' | 'urls' | 'profiles' | 'dates' | 'related';
@@ -551,25 +552,12 @@ export function ContactForm({
           <p className="text-[11px] text-pn-muted -mt-3">{t('auth:loginForm.setUpPinFirst')}</p>
         )}
 
-        {saveError && <p className="text-[11px] text-danger">{saveError}</p>}
+        {saveError && <Callout tone="danger">{saveError}</Callout>}
         <div className="flex items-center justify-end gap-2">
           {!isNew && (
-            <button
-              type="button"
-              onClick={onCancel}
-              className="rounded-md border border-divider bg-surface-1 px-3.5 py-2 text-[13px] text-pn-soft hover:bg-pn/10 transition"
-            >
-              {t('common:actions.cancel')}
-            </button>
+            <Button action="cancel" onClick={onCancel} />
           )}
-          <button
-            type="button"
-            onClick={onSave}
-            disabled={locked}
-            className="rounded-md bg-accent-fill px-3.5 py-2 text-[13px] font-medium text-white hover:bg-accent-fill/90 transition disabled:opacity-60"
-          >
-            {t('contacts.done')}
-          </button>
+          <Button action="save" onClick={onSave} disabled={locked} />
         </div>
       </div>
       <ContextMenu state={menu} onClose={() => setMenu(null)} />

@@ -19,7 +19,8 @@ export type FaqGroupKey =
   | 'syncDevices'
   | 'yourData'
   | 'pricingPro'
-  | 'appsPlatforms';
+  | 'appsPlatforms'
+  | 'statsTrackers';
 
 /** Group render order. Labels come from `groups.<key>` in the catalog. */
 export const FAQ_GROUP_ORDER: readonly FaqGroupKey[] = [
@@ -30,6 +31,7 @@ export const FAQ_GROUP_ORDER: readonly FaqGroupKey[] = [
   'yourData',
   'pricingPro',
   'appsPlatforms',
+  'statsTrackers',
 ];
 
 /**
@@ -57,11 +59,14 @@ export const FAQ_STRUCTURE: ReadonlyArray<{ id: string; group: FaqGroupKey }> = 
   { id: 'calendar', group: 'gettingStarted' },
   { id: 'reminders', group: 'gettingStarted' },
   { id: 'calendar-time-zones', group: 'gettingStarted' },
-  { id: 'statistics', group: 'gettingStarted' },
   { id: 'bookmarks', group: 'gettingStarted' },
+  { id: 'save-page-as-note', group: 'gettingStarted' },
   { id: 'contacts', group: 'gettingStarted' },
   { id: 'what-to-keep', group: 'gettingStarted' },
-  { id: 'quick-switcher', group: 'gettingStarted' },
+  { id: 'ninja', group: 'gettingStarted' },
+  { id: 'ninja-quick-add', group: 'gettingStarted' },
+  { id: 'ninja-dates', group: 'gettingStarted' },
+  { id: 'ninja-add-to-list', group: 'gettingStarted' },
   { id: 'find-in-note', group: 'gettingStarted' },
   { id: 'keyboard-shortcuts', group: 'gettingStarted' },
   { id: 'hotkey-cheat-sheet', group: 'gettingStarted' },
@@ -74,10 +79,12 @@ export const FAQ_STRUCTURE: ReadonlyArray<{ id: string; group: FaqGroupKey }> = 
   { id: 'spoiler-text', group: 'gettingStarted' },
   { id: 'copy-box', group: 'gettingStarted' },
   { id: 'footnotes', group: 'gettingStarted' },
+  { id: 'table-formulas', group: 'gettingStarted' },
   { id: 'markdown-folder', group: 'gettingStarted' },
   { id: 'markdown-folder-mobile', group: 'gettingStarted' },
   { id: 'ask-an-ai', group: 'gettingStarted' },
   { id: 'what-can-you-see', group: 'securityPrivacy' },
+  { id: 'us-company', group: 'securityPrivacy' },
   { id: 'app-privacy-label', group: 'securityPrivacy' },
   { id: 'phrase-vs-password', group: 'securityPrivacy' },
   { id: 'open-source', group: 'securityPrivacy' },
@@ -159,6 +166,29 @@ export const FAQ_STRUCTURE: ReadonlyArray<{ id: string; group: FaqGroupKey }> = 
   { id: 'languages', group: 'appsPlatforms' },
   { id: 'translation-quality', group: 'appsPlatforms' },
   { id: 'feature-requests', group: 'appsPlatforms' },
+  { id: 'statistics', group: 'statsTrackers' },
+  { id: 'daily-check-in', group: 'statsTrackers' },
+  { id: 'choose-trackers', group: 'statsTrackers' },
+  { id: 'habits', group: 'statsTrackers' },
+  { id: 'factors', group: 'statsTrackers' },
+  { id: 'custom-trackers', group: 'statsTrackers' },
+  { id: 'log-missed-day', group: 'statsTrackers' },
+  { id: 'add-medication', group: 'statsTrackers' },
+  { id: 'as-needed-medication', group: 'statsTrackers' },
+  { id: 'skip-dose', group: 'statsTrackers' },
+  { id: 'medication-reminders', group: 'statsTrackers' },
+  { id: 'medication-reminder-privacy', group: 'statsTrackers' },
+  { id: 'medication-supply', group: 'statsTrackers' },
+  { id: 'change-dose', group: 'statsTrackers' },
+  { id: 'week-in-review', group: 'statsTrackers' },
+  { id: 'what-moves-mood', group: 'statsTrackers' },
+  { id: 'explore-next-day', group: 'statsTrackers' },
+  { id: 'dose-lens', group: 'statsTrackers' },
+  { id: 'doctor-pdf', group: 'statsTrackers' },
+  { id: 'tracker-json-csv', group: 'statsTrackers' },
+  { id: 'ai-prompt', group: 'statsTrackers' },
+  { id: 'tracker-privacy', group: 'statsTrackers' },
+  { id: 'trackers-in-backup', group: 'statsTrackers' },
 ];
 
 /** A displayed entry, assembled from structure + a language catalog. */

@@ -18,10 +18,8 @@
   "header": {
     "new": "สร้าง",
     "newNote": "โน้ตใหม่",
-    "newNoteHover": "โน้ตใหม่ ({{hotkey}})",
     "trash": "ถังขยะ",
-    "newEvent": "กิจกรรมใหม่",
-    "newEventHover": "กิจกรรมใหม่ ({{hotkey}})"
+    "newEvent": "กิจกรรมใหม่"
   },
   "folderChip": {
     "clear": "ล้างตัวกรองโฟลเดอร์: {{folder}}",
@@ -35,15 +33,18 @@
     "ariaLabel": "รายการใหม่ในตู้นิรภัย",
     "login": "ล็อกอิน",
     "card": "บัตรเครดิต",
-    "sshKey": "คีย์ SSH"
+    "sshKey": "คีย์ SSH",
+    "generator": "รหัสผ่าน"
   },
   "newMenu": {
     "note": "โน้ต",
     "task": "งาน",
+    "kanban": "บอร์ดคัมบัง",
     "journal": "บันทึกประจำวัน",
     "login": "ล็อกอิน",
     "file": "ไฟล์",
     "bookmark": "บุ๊กมาร์ก",
+    "clipPage": "ตัดเก็บหน้าเว็บ",
     "contact": "ผู้ติดต่อ",
     "event": "กิจกรรม",
     "quickAdd": "เพิ่มด่วน"
@@ -55,8 +56,7 @@
     "keys": "คีย์"
   },
   "journal": {
-    "newEntry": "บันทึกประจำวันใหม่",
-    "newEntryHover": "บันทึกประจำวันใหม่ ({{hotkey}})"
+    "newEntry": "บันทึกประจำวันใหม่"
   },
   "tasks": {
     "newTitle": "งานสำหรับ {{date}}"
@@ -70,7 +70,8 @@
   "search": {
     "sortOptions": "ตัวเลือกการเรียงและมุมมอง",
     "placeholderVault": "ค้นหาในตู้นิรภัย…",
-    "placeholderNotes": "ค้นหาโน้ต…"
+    "placeholderNotes": "ค้นหาโน้ต…",
+    "placeholderEvents": "ค้นหากิจกรรม…"
   },
   "selection": {
     "countOf": "เลือกแล้ว {{selected}} จาก {{total}}",
@@ -82,9 +83,12 @@
     "vault": "ตู้นิรภัยว่างเปล่า",
     "notes": "ยังไม่มีโน้ต",
     "archive": "ไม่มีรายการที่เก็บถาวร",
+    "trash": "ถังขยะว่างเปล่า",
     "filtered": "ไม่มีรายการที่ตรงกับตัวกรอง",
     "clearFilters": "ล้างตัวกรอง",
-    "filteredAfter": "เพื่อแสดงรายการ"
+    "filteredAfter": "เพื่อแสดงรายการ",
+    "hiddenInAll_other": "{{count}} รายการถูกซ่อนโดยตัวกรอง “แสดงในทั้งหมด” เปิดตัวกรองข้าง “ทั้งหมด” เพื่อแสดงรายการเหล่านั้น",
+    "inOtherSpace_other": "{{count}} รายการอยู่ในพื้นที่ {{space}} ของคุณ สลับไปที่ {{space}} ในแถบด้านข้างเพื่อดูรายการเหล่านั้น"
   },
   "listGroups": {
     "previous7Days": "7 วันที่ผ่านมา",
@@ -104,12 +108,16 @@
     "calendar": "ปฏิทิน"
   },
   "footerStats": {
-    "journals": "บันทึกประจำวัน",
-    "items": "รายการ",
-    "trashed": "ในถังขยะ",
-    "notes": "โน้ต",
-    "bookmarks": "บุ๊กมาร์ก",
-    "contacts": "ผู้ติดต่อ"
+    "journals_other": "บันทึกประจำวัน",
+    "items_other": "รายการ",
+    "trashed_other": "ในถังขยะ",
+    "notes_other": "โน้ต",
+    "bookmarks_other": "บุ๊กมาร์ก",
+    "contacts_other": "ผู้ติดต่อ",
+    "files_other": "ไฟล์",
+    "lists_other": "รายการงาน",
+    "tasks_other": "งาน",
+    "today": "วันนี้"
   },
   "toast": {
     "imageUploadFailed": "อัปโหลดรูปภาพไม่สำเร็จ: {{error}}",
@@ -163,7 +171,7 @@
   },
   "zen": {
     "exit": "ออกจากเซน",
-    "exitHover": "ออกจากโหมดเซน (Esc)",
+    "exitHover": "ออกจากโหมดเซน",
     "enterHover": "เข้าสู่โหมดเซน",
     "proHover": "โหมดเซน (Pro)",
     "enterAriaShortcut": "เข้าสู่โหมดเซน ({{keys}})"
@@ -240,9 +248,11 @@
     "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "เปิดสถิติ",
     "journalCalendar": "ปฏิทินบันทึกประจำวัน",
-    "words": "คำ",
+    "words_other": "คำ",
     "zen": "เซน",
     "appearance": "รูปลักษณ์",
+    "lockApp": "ล็อกแอป",
+    "lockAppSetUp": "ตั้ง PIN ใน ความปลอดภัย ก่อน",
     "goToTop": "ไปที่ด้านบนสุด",
     "goToEnd": "ไปที่ท้ายสุด",
     "signOut": "ออกจากระบบ",
@@ -266,6 +276,7 @@
     "editorLabel": "ตัวแก้ไข",
     "formatBarLabel": "แถบเครื่องมือ",
     "listsLabel": "รายการ",
+    "trackersLabel": "ตัวติดตาม",
     "helpLabel": "ความช่วยเหลือ",
     "aboutLabel": "เกี่ยวกับ",
     "languageLabel": "ภาษา",
@@ -321,5 +332,13 @@
   "ambiguousLink": {
     "title": "มีโน้ตสองรายการใช้ชื่อนี้",
     "body": "มีโน้ตมากกว่าหนึ่งรายการชื่อ <highlight>“{{title}}”</highlight> ลิงก์นี้จึงไม่รู้ว่าหมายถึงรายการใด เปลี่ยนชื่อรายการหนึ่ง แล้วลิงก์จะชี้ไปที่อีกรายการ"
+  },
+  "connections": {
+    "title": "การเชื่อมโยง",
+    "hide": "ซ่อนการเชื่อมโยง",
+    "linkedFrom": "ลิงก์มาจาก",
+    "linksTo": "ลิงก์ไปยัง",
+    "missing": "ยังไม่ได้สร้าง",
+    "protectedHidden_other": "ไม่แสดงรายการที่ป้องกันด้วย PIN {{count}} รายการ"
   }
 }

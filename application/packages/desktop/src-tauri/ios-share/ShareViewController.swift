@@ -16,7 +16,7 @@ import UniformTypeIdentifiers
 /// system compose sheet was not used because it hides itself on Post, before
 /// a confirmation could show. The three texts come from the web catalogs: the
 /// version script writes them into the .lproj folders beside this file.
-/// Spec: ops/docs/plans/share-into-app.md
+/// Spec: ops/docs/archive/share-into-app.md
 final class ShareViewController: UIViewController {
     private static let appGroup = "group.app.privacynotes"
     /// The largest per-file limit the app grants (the storage add-on); the app's

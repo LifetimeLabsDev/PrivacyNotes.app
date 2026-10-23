@@ -10,6 +10,7 @@ import { helpPagePlugin } from './help-page.ts';
 import { roadmapPagePlugin } from './roadmap-page.ts';
 import { themesPagePlugin } from './themes-page.ts';
 import { searchCoreScriptPlugin } from './search-core-script.ts';
+import { footerLinesScriptPlugin } from './footer-lines-script.ts';
 import { brandPagePlugin } from './brand-page.ts';
 import { marketingShellPlugin } from './marketing-shell.ts';
 import { landingPagesPlugin } from './landing-pages.ts';
@@ -643,7 +644,7 @@ export default defineConfig({
     preloadOnboarding(),
     ...(isAppBuild
       ? []
-      : [changelogPagePlugin(), helpPagePlugin(), roadmapPagePlugin(), themesPagePlugin(), brandPagePlugin(), marketingShellPlugin(), landingPagesPlugin(), authDesktopPagePlugin(), authConnectPagePlugin(), searchCoreScriptPlugin()]),
+      : [changelogPagePlugin(), helpPagePlugin(), roadmapPagePlugin(), themesPagePlugin(), brandPagePlugin(), marketingShellPlugin(), landingPagesPlugin(), authDesktopPagePlugin(), authConnectPagePlugin(), searchCoreScriptPlugin(), footerLinesScriptPlugin()]),
     chunkBudgets(),
     chunkCycles(),
   ],
@@ -731,6 +732,10 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: () => '/badge/privacynotes/rating-light.svg',
       },
+      // The web clipper's download route. Dev runs the Worker on its own
+      // (`wrangler dev --port 8787` from the repo root); without it a clip
+      // fails as offline.
+      '/clip-fetch': { target: 'http://localhost:8787' },
       // Anchored on the query, not the prefix: a bare '/favicon' key also
       // swallows the static /favicon.svg, /favicon.ico and /favicon-32.png
       // that index.html and the app's own rows ask for, and hands back

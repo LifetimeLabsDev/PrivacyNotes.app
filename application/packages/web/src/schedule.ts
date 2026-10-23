@@ -11,7 +11,7 @@ import type { NoteType } from '@notes/shared';
  * task list would share one checklist and a repeating journal entry would move
  * its journal day ("a series is an event"). The index honors what it finds on
  * any type except those two rules.
- * Spec: ops/docs/plans/calendar-pillar-spec.md (section 4)
+ * Spec: ops/docs/archive/calendar-pillar-spec.md (section 4)
  */
 
 export type RepeatUnit = 'day' | 'week' | 'month' | 'year';
@@ -53,9 +53,17 @@ export const SCHEDULE_KEYS = ['journalDate', 'dateEnd', 'time', 'timeEnd', 'repe
  * or `{ uid, rid }`). An import skips a series whose UID the vault holds, and
  * the .ics writer reuses it as the UID, so a copy of an item must never carry
  * it: the copy is another event.
- * Spec: ops/docs/plans/google-calendar-import.md (section 4.10)
+ * Spec: ops/docs/archive/google-calendar-import.md (section 4.10)
  */
 export const SOURCE_IDENTITY_KEY = 'ics';
+
+/**
+ * The tracker key a clipped web page carries: the address of the bookmark it
+ * was saved from, as `normalizeUrl` wrote it. The bookmark finds its note by
+ * this key, because a bookmark's own body drops any field it does not know.
+ * Spec: ops/docs/archive/web-clipper-stage1.md (section 3.4)
+ */
+export const CLIP_SOURCE_KEY = 'clipSource';
 
 /** Tracker values without the source identity, for a copy of an item. */
 export function withoutSourceIdentity(trackers: Record<string, unknown>): Record<string, unknown> {
@@ -205,7 +213,7 @@ export function scheduleOf(trackers: Record<string, unknown> | undefined, type: 
  * Whether an item goes into the .ics export: an event, a note or a task list
  * with a schedule, not deleted and not in the trash. A journal entry is a
  * diary with exports of its own, and a calendar file is made to be uploaded
- * elsewhere. Spec: ops/docs/plans/google-calendar-import.md (section 5.1)
+ * elsewhere. Spec: ops/docs/archive/google-calendar-import.md (section 5.1)
  */
 export function goesToCalendarFile(n: { type?: NoteType; trackers?: Record<string, unknown>; deleted?: number; trashed?: number }): boolean {
   if (n.deleted === 1 || n.trashed === 1) return false;

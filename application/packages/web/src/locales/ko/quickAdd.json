@@ -1,6 +1,7 @@
 {
   "words": {
-    "every": "매, 매주",
+    "add": "추가, 추가하기",
+    "every": "매, 매주, 마다, 격주",
     "weekday": "평일, 주중",
     "daily": "매일, 날마다",
     "weekly": "주마다",
@@ -14,7 +15,7 @@
     "next": "다음, 다음주",
     "this": "이번, 이번주, 오는",
     "last": "마지막",
-    "other": "격, 둘째",
+    "other": "격, 둘째, 격주",
     "before": "전, 미리",
     "alert": "알림, 미리알림, 리마인더",
     "oclock": "시",
@@ -37,6 +38,7 @@
     "times": "회, 번",
     "ordinal": "일, 번째, .",
     "work": "업무, 회사, 직장, work",
-    "personal": "개인, 집, personal"
+    "personal": "개인, 집, personal",
+    "in": "후"
   }
 }

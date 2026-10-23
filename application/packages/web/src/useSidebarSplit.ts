@@ -8,7 +8,7 @@
  *
  * During a drag the height is written to the element and React state commits
  * once, on release, the contract of `usePaneResize.ts`.
- * Spec: ops/docs/ui-patterns.md (sidebar split)
+ * Spec: ops/docs/archive/ui-patterns.md (sidebar split)
  */
 import { useEffect, useRef, useState, type RefObject } from 'react';
 

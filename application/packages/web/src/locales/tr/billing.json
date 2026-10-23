@@ -11,6 +11,7 @@
       "storage": "Daha fazla alan bir Pro özelliğidir: 500 MB depolama, dosya başına 50 MB ve ihtiyaç duyduğunuzda depolama eklentisiyle 5 GB'a kadar ek alan.",
       "folders": "Klasörler bir Pro özelliğidir. Notlarınızı istediğiniz kadar derin iç içe klasörlerde düzenleyin, her projeyi ayrı tutun.",
       "looks": "Klasörler ve etiketler için simgeler ve renkler bir Pro özelliğidir. Her birine ilk bakışta fark edeceğiniz bir görünüm verin.",
+      "noteIcon": "Not simgeleri bir Pro özelliğidir. Bir nota kendi simgesini verin, böylece onu listede ve sekmelerinizde ilk bakışta fark edin.",
       "spaces": "Alanlar bir Pro özelliğidir. {{desc}}",
       "formatBar": "Araç çubuğunu düzenlemek bir Pro özelliğidir. Kullandığınız düğmeleri çubuğa koyun, gerisini gizleyin ve + menüsünü kendi sıranıza göre dizin.",
       "lock": "Bir notu kilitlemek bir Pro özelliğidir. Herhangi bir notu yanlışlıkla yapılan düzenlemelere karşı korumak için yükseltin.",

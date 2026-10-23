@@ -31,7 +31,7 @@ import { useSyncing } from './syncingStore';
 import { useBelowVersionFloor } from './versionFloor';
 import { setSyncPaused, useSyncPaused } from './syncPause';
 import { setFilesWifiOnly, useFilesWifiOnly, wifiOnlyAvailable } from './wifiOnly';
-import { useSyncLog, lastOkSyncAt, type SyncPassEntry } from './syncLog';
+import { useSyncLog, lastOkSyncAt, pullStanding, type SyncPassEntry } from './syncLog';
 import { usePushFailures, usePushHalt, type PushFailure } from './pushFailures';
 import { db } from './db';
 import { readAuthLog } from './authDiag';
@@ -39,7 +39,7 @@ import { readSyncFaults } from './syncFaults';
 import { buildSupportReport } from './supportReport';
 import { deriveDisplayTitle } from './notesViewUtils';
 import { useVerifyStamp } from './verifyStamp';
-import { EYEBROW_ICON_ROW, EyebrowGlyph, SETTINGS_EYEBROW } from './settingsUI';
+import { EYEBROW_ICON_ROW, EyebrowGlyph, SETTINGS_EYEBROW, SETTINGS_BTN_PRIMARY } from './settingsUI';
 import { Switch } from './Switch';
 import { VERSION } from './version';
 import { SwissFlag } from './SwissFlag';
@@ -167,13 +167,17 @@ export function SyncPanel({
   // pill (SyncStatus.tsx), and carries the same words the pill does.
   const demo = isDemoMode();
 
-  const state: 'demo' | 'floor' | 'paused' | 'offline' | 'syncing' | 'notBackedUp' | 'wifiHold' | 'storageFull' | 'uploading' | 'synced' =
+  // Same rule as the pill: no green check before a clean pull is logged.
+  const standing = pullStanding(log);
+
+  const state: 'demo' | 'floor' | 'paused' | 'offline' | 'syncing' | 'notBackedUp' | 'notSynced' | 'wifiHold' | 'storageFull' | 'uploading' | 'synced' =
     demo ? 'demo'
     : belowFloor ? 'floor'
     : paused ? 'paused'
     : !online ? 'offline'
     : syncing ? 'syncing'
     : failures.size > 0 || halt ? 'notBackedUp'
+    : standing !== 'ok' ? 'notSynced'
     : pending.count > 0 && wifi.held ? 'wifiHold'
     : pending.count > 0 && pending.blocked >= pending.count ? 'storageFull'
     : pending.count > 0 ? 'uploading'
@@ -188,6 +192,7 @@ export function SyncPanel({
     offline: { icon: <WifiSlash size={17} />, word: t('syncStatus.offline'), cls: amber },
     syncing: { icon: <CircleNotch size={17} className="animate-spin" />, word: t('syncStatus.syncing'), cls: 'text-accent' },
     notBackedUp: { icon: <Warning size={17} />, word: t('syncStatus.notBackedUp'), cls: amber },
+    notSynced: { icon: <Warning size={17} />, word: t('syncStatus.notSynced'), cls: amber },
     wifiHold: { icon: <CloudArrowUp size={17} />, word: t('syncStatus.wifiHold'), cls: amber },
     storageFull: { icon: <Warning size={17} />, word: t('syncStatus.storageFull'), cls: amber },
     uploading: { icon: <CircleNotch size={17} className="animate-spin" />, word: t('syncStatus.uploading'), cls: 'text-accent' },
@@ -208,6 +213,8 @@ export function SyncPanel({
       ? halt
         ? t('syncStatus.haltedAria', { count: halt.unreached })
         : t('syncStatus.notBackedUpAria', { count: failures.size })
+    : state === 'notSynced'
+      ? standing === 'never' ? t('syncStatus.firstSyncPending') : t('syncStatus.pullFailed')
     : state === 'wifiHold' ? t('syncStatus.wifiHoldTooltip')
     : state === 'storageFull' ? t('syncStatus.pendingBlobsBlocked', { count: pending.blocked })
     : state === 'uploading' ? t('syncStatus.pendingBlobs', { count: pending.count })
@@ -401,7 +408,7 @@ export function SyncPanel({
                 <button
                   type="button"
                   onClick={repair}
-                  className="rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-1.5 text-sm font-medium transition"
+                  className={SETTINGS_BTN_PRIMARY}
                 >
                   {t('sync.verifyRepairAction')}
                 </button>
@@ -466,8 +473,8 @@ export function SyncPanel({
               caveats a settings card has no room for. This card only
               makes the claim the product advertises; THREAT_MODEL.md
               carries the honest detail. */}
-          <p className="mt-2 mb-2.5 text-xs text-pn-muted">{t('syncPanel.sealed')}</p>
-          <p className="mt-auto border-t border-divider pt-2.5 text-xs text-pn-muted">
+          <p className="mt-2 mb-2.5 text-xs text-pn-soft">{t('syncPanel.sealed')}</p>
+          <p className="mt-auto border-t border-divider pt-2.5 text-xs text-pn-soft">
             {t('syncPanel.offlineFact')}
           </p>
         </div>

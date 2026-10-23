@@ -23,14 +23,14 @@
  * per device - a Mac and a Linux box need different ones - so nothing here
  * touches `userSettings` or any other synced store. It also cannot be cached
  * across a session: another installer can take the association while we are
- * running, which is why `useMarkdownDefaultApp` re-reads on window focus.
+ * running, which is why `useDefaultApp` re-reads on window focus.
  *
  * Isolation: this module imports `detectPlatform` and nothing else from outside
  * the pillar. The per-OS wording is chosen from `status.platform`, which the
  * Rust side reports from `cfg!`, rather than sniffed from the user agent - a
  * fact that cannot be wrong, and no new import to get it.
  *
- * Spec: ops/docs/plans/markdown-folder.md (section 11)
+ * Spec: ops/docs/archive/markdown-folder.md (section 11)
  */
 import { useEffect, useState } from 'react';
 import { detectPlatform } from '../devices';
@@ -56,6 +56,10 @@ export type MarkdownAssoc = {
   owner: MarkdownAssocOwner;
   /** Display name of the current owner, when the OS gave one. */
   otherName: string | null;
+  /** macOS: another app opens the file, and only Finder's Change All can fix
+   *  it, because a claim from the app would be skipped. The UI gives the
+   *  steps instead of a button. */
+  finderOnly: boolean;
 };
 
 /** Serialised shape of the Rust command. Mapped rather than used directly so a
@@ -66,6 +70,8 @@ type RawAssoc = {
   settable: boolean;
   owner: string;
   other_name: string | null;
+  /** Absent from a binary older than the field. */
+  finder_only?: boolean;
 };
 
 const OWNERS: MarkdownAssocOwner[] = ['ours', 'other', 'none', 'unknown'];
@@ -76,11 +82,21 @@ export function markdownDefaultAppSupported(): boolean {
   return detectPlatform() === 'desktop';
 }
 
-async function invokeStatus(): Promise<MarkdownAssoc | null> {
+/** Which file type a status or a claim is about. */
+export type AssocKind = 'markdown' | 'text';
+
+const COMMANDS: Record<AssocKind, { status: string; claim: string }> = {
+  markdown: { status: 'markdown_assoc_status', claim: 'markdown_assoc_claim' },
+  text: { status: 'text_assoc_status', claim: 'text_assoc_claim' },
+};
+
+async function invokeStatus(kind: AssocKind): Promise<MarkdownAssoc | null> {
   if (!markdownDefaultAppSupported()) return null;
   try {
     const { invoke } = await import('@tauri-apps/api/core');
-    const raw = await invoke<RawAssoc>('markdown_assoc_status');
+    // Null for `.txt` on Linux, where the row is not offered.
+    const raw = await invoke<RawAssoc | null>(COMMANDS[kind].status);
+    if (!raw) return null;
     return {
       platform:
         raw.platform === 'macos' || raw.platform === 'windows' ? raw.platform : 'linux',
@@ -89,6 +105,7 @@ async function invokeStatus(): Promise<MarkdownAssoc | null> {
         ? (raw.owner as MarkdownAssocOwner)
         : 'unknown',
       otherName: raw.other_name ?? null,
+      finderOnly: raw.finder_only === true,
     };
   } catch {
     // An older binary with a newer bundle: the command is simply absent. Treat
@@ -99,18 +116,19 @@ async function invokeStatus(): Promise<MarkdownAssoc | null> {
 }
 
 /**
- * Point the Markdown association at us. Throws with a message worth showing.
+ * Point the association for `kind` at us. Throws with a message worth showing.
  *
  * Never called on Windows - the UI offers `openOsDefaultAppSettings` there
  * instead - but the native side rejects it anyway rather than trusting the
  * caller.
  */
-export async function claimMarkdownDefaultApp(): Promise<void> {
+export async function claimDefaultApp(kind: AssocKind): Promise<void> {
   const { invoke } = await import('@tauri-apps/api/core');
-  await invoke('markdown_assoc_claim');
+  await invoke(COMMANDS[kind].claim);
 }
 
-/** Windows only: open Settings on our Default apps page. */
+/** Windows only: open Settings on our Default apps page, which lists every
+ *  type we registered. */
 export async function openOsDefaultAppSettings(): Promise<void> {
   const { invoke } = await import('@tauri-apps/api/core');
   await invoke('markdown_assoc_open_os_settings');
@@ -118,79 +136,86 @@ export async function openOsDefaultAppSettings(): Promise<void> {
 
 /* ── shared state ─────────────────────────────────────────────────────────
  *
- * One status for the whole app rather than one per component. Up to three
- * consumers can be mounted at once (the folder toolbar's button, the popover it
- * opens, and either the resting pane's card or the explainer's row), and with a
- * hook-local `useState` each they would each invoke on mount and on every focus
- * and could disagree for a beat afterwards - the toolbar button showing a tick
- * while the card beside it still offers the button. A module-level value with
- * subscribers makes that impossible, and costs one fetch instead of three.
+ * One status per file type for the whole app rather than one per component.
+ * Up to four consumers of the Markdown status can be mounted at once (the
+ * folder toolbar's button, the popover it opens, the resting pane's card or
+ * the explainer's row, and the Settings row), and with a hook-local `useState`
+ * each would invoke on mount and on every focus and could disagree for a beat
+ * afterwards. A module-level value with subscribers makes that impossible.
  */
 
-let cached: MarkdownAssoc | null = null;
-let inFlight: Promise<void> | null = null;
-/** Serialises reads so two can never apply out of order, and so a forced read
- *  always STARTS after whatever is already running has finished. */
-let chain: Promise<void> = Promise.resolve();
-const listeners = new Set<(value: MarkdownAssoc | null) => void>();
+type Store = {
+  cached: MarkdownAssoc | null;
+  inFlight: Promise<void> | null;
+  /** Serialises reads so two can never apply out of order. */
+  chain: Promise<void>;
+  listeners: Set<(value: MarkdownAssoc | null) => void>;
+};
 
-async function readStatus(): Promise<void> {
-  const next = await invokeStatus();
-  cached = next;
-  for (const listener of listeners) listener(next);
-}
+const newStore = (): Store => ({ cached: null, inFlight: null, chain: Promise.resolve(), listeners: new Set() });
+const stores: Record<AssocKind, Store> = { markdown: newStore(), text: newStore() };
 
 /**
  * Re-read from the OS and notify every mounted consumer.
  *
- * Coalesced: three components mounting in the same tick, or a refresh landing on
+ * Coalesced: components mounting in the same tick, or a refresh landing on
  * top of a focus event, share one round trip.
  *
  * There is deliberately NO way to force an uncoalesced read, and no caller takes
- * one straight after a write. That combination was the bug: a read started before
- * the write answers with the state the write just changed, because LaunchServices
- * serves an in-process read from a cache that lags behind. `markMarkdownDefault-
- * AppOurs` publishes the outcome instead, and reconciliation waits for the next
- * focus - by which time the OS has settled.
- *
- * Reads are still serialised through `chain` so two of them can never apply out
- * of order, which two focus events in quick succession can otherwise do.
+ * one straight after a write. On macOS the write returns while the system's
+ * confirmation dialog is still open, so a read then reports the old handler;
+ * the read that counts is the one on the focus that follows the dialog.
  */
-function refreshMarkdownDefaultApp(): Promise<void> {
-  if (inFlight) return inFlight;
+function refreshDefaultApp(kind: AssocKind): Promise<void> {
+  const store = stores[kind];
+  if (store.inFlight) return store.inFlight;
+  const read = async () => {
+    const next = await invokeStatus(kind);
+    store.cached = next;
+    for (const listener of store.listeners) listener(next);
+  };
   // `then(fn, fn)` rather than `then(fn)`: a rejected predecessor must not
-  // poison the chain for every later read. `readStatus` swallows its own errors
-  // through `invokeStatus`, so this is belt and braces.
-  chain = chain.then(readStatus, readStatus);
-  const mine = chain;
-  inFlight = mine;
-  void mine.finally(() => { if (inFlight === mine) inFlight = null; });
+  // poison the chain for every later read.
+  store.chain = store.chain.then(read, read);
+  const mine = store.chain;
+  store.inFlight = mine;
+  void mine.finally(() => { if (store.inFlight === mine) store.inFlight = null; });
   return mine;
 }
 
 /**
- * Publish "we own it" without a round trip, after a claim the OS said succeeded.
- *
- * Two reasons this is not laziness. First, LaunchServices answers a read from the
- * SAME process out of a cache that has not caught up with the write, so an
- * immediate read-back can report the handler we just replaced - which is how a
- * successful claim ended up leaving the old status on screen. Second, resolving a
- * bundle id to a bundle can take tens of seconds on a machine with a lot of stale
- * registrations (a dev box with a hundred mounted-and-gone DMGs is the case), and
- * making the user watch a disabled button for that long to be told something the
- * OSStatus already confirmed is the wrong trade.
- *
- * An `OSStatus` of 0 IS the confirmation. Nothing is invented here: if the write
- * somehow did not stick, the next window focus re-reads and corrects it.
+ * After a macOS claim: read once a second until the owner changes, for a
+ * minute at most. The system dialog does not take focus from the window, so
+ * no focus event follows the person's answer. A declined dialog leaves the
+ * owner as it was, and the reads stop at the minute.
+ * Spec: ops/docs/plans/default-app-settings.md (section 5.1)
  */
-export function markMarkdownDefaultAppOurs(): void {
-  if (!cached) return;
-  cached = { ...cached, owner: 'ours', otherName: null };
-  for (const listener of listeners) listener(cached);
+export async function watchClaim(kind: AssocKind): Promise<void> {
+  const before = stores[kind].cached?.owner;
+  for (let i = 0; i < 60; i++) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await refreshDefaultApp(kind);
+    if (stores[kind].cached?.owner !== before) return;
+  }
 }
 
 /**
- * The status, kept current.
+ * Publish "we own it" without a round trip, after a Linux claim.
+ *
+ * Linux only: `xdg-mime` has written the association when it exits 0. On macOS
+ * the call returns 0 before the person answers the system dialog, and also when
+ * they decline it, so nothing may be published there until a read confirms it.
+ * Spec: ops/docs/plans/default-app-settings.md (section 5.1)
+ */
+export function markDefaultAppOurs(kind: AssocKind): void {
+  const store = stores[kind];
+  if (!store.cached) return;
+  store.cached = { ...store.cached, owner: 'ours', otherName: null };
+  for (const listener of store.listeners) listener(store.cached);
+}
+
+/**
+ * The status for `kind`, kept current.
  *
  * Re-reads on window focus because the association is OS state we do not own:
  * the user can change it in System Settings, and an installer can take it,
@@ -198,20 +223,21 @@ export function markMarkdownDefaultAppOurs(): void {
  * `visibilitychange` - returning from System Settings refocuses the window
  * without ever hiding it.
  */
-export function useMarkdownDefaultApp(): MarkdownAssoc | null {
-  const [state, setState] = useState<MarkdownAssoc | null>(cached);
+export function useDefaultApp(kind: AssocKind): MarkdownAssoc | null {
+  const [state, setState] = useState<MarkdownAssoc | null>(stores[kind].cached);
 
   useEffect(() => {
     if (!markdownDefaultAppSupported()) return;
+    const { listeners } = stores[kind];
     listeners.add(setState);
-    void refreshMarkdownDefaultApp();
-    const onFocus = () => void refreshMarkdownDefaultApp();
+    void refreshDefaultApp(kind);
+    const onFocus = () => void refreshDefaultApp(kind);
     window.addEventListener('focus', onFocus);
     return () => {
       listeners.delete(setState);
       window.removeEventListener('focus', onFocus);
     };
-  }, []);
+  }, [kind]);
 
   return state;
 }

@@ -1,13 +1,15 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { BellSimple, CalendarDot, Columns, Gift, GridNine, List, ListDashes, Repeat } from './icons';
+import { BellSimple, CalendarDot, Columns, Download, Gift, GridNine, List, ListDashes, Repeat } from './icons';
 import { SPACE_ICONS } from './SpaceSwitch';
 import { typeGlyph } from './NoteRow';
 import { Switch } from './Switch';
 import { HoverLabel } from './HoverLabel';
+import { keyText } from './shortcutMatch';
 import { CalendarHeader, MonthGrid, addDays, dayAtNoon, dayKindColor, firstWeekday, monthCells, weekCells } from './MonthGrid';
 import { CalendarGrid } from './CalendarGrid';
-import { DayChooser, timeLabel } from './JournalCalendar';
+import { DayChooser, timeLabel, useEntryLook } from './JournalCalendar';
+import { PathGlyph } from './looks/LookGlyph';
 import { dayChips, entryKey, lanesUsed, weekBars, type TimedBlock } from './calendarLayout';
 import { formatInstant, toLocalIso } from './intlFormat';
 import { intlLocale } from './languages';
@@ -26,7 +28,7 @@ import { dayNumber } from './schedule';
  * opens its item, an empty cell or hour creates, a chip or a bar dragged to
  * another day moves the whole schedule, the grip at a bar's end moves its end
  * day. Loaded on demand, so the boot chunk does not carry it.
- * Spec: ops/docs/plans/calendar-pillar-spec.md (steps 1, 3, 4 and 5)
+ * Spec: ops/docs/archive/calendar-pillar-spec.md (steps 1, 3, 4 and 5)
  */
 
 /** The drag of a chip or a bar inside the calendar: which occurrence, the
@@ -87,19 +89,32 @@ const accepts = (e: React.DragEvent) => isItemDrag(e.dataTransfer);
 
 // ── A chip and a bar ──────────────────────────────────────────────────
 
+/** A box whose current color is the item's own color when it has one, so
+ *  a bar's fill and a timed card's edge and tint take it in place of the
+ *  type color. */
+function InkBox({ entry, className, style, children }: { entry: DayEntry; className: string; style?: React.CSSProperties; children: React.ReactNode }) {
+  const { icon: ink } = useEntryLook(entry);
+  return <div className={className} style={{ ...style, ...ink }}>{children}</div>;
+}
+
+/** The item's own icon, or its type's, in the item's own color when it has one. */
 function EntryGlyph({ entry, size = 12 }: { entry: DayEntry; size?: number }) {
+  const { iconPaths, icon: style } = useEntryLook(entry);
   const { Icon } = typeGlyph(entry.kind);
   const Glyph = entry.kind === 'contact' ? Gift : Icon;
-  return <Glyph size={size} aria-hidden="true" className={`shrink-0 ${dayKindColor(entry.kind)}`} />;
+  const className = `shrink-0 ${dayKindColor(entry.kind)}`;
+  return iconPaths
+    ? <PathGlyph paths={iconPaths} size={size} className={className} style={style} />
+    : <Glyph size={size} aria-hidden="true" className={className} style={style} />;
 }
 
 /** One item in a cell: its type's icon, the time in front of a timed one,
  *  the title, then a bell, the repeat glyph and the briefcase of Work. */
 /** The views, each with the icon its switch shows. */
 const VIEW_MODES = [
-  { mode: 'day', Icon: CalendarDot },
-  { mode: 'week', Icon: Columns },
-  { mode: 'month', Icon: GridNine },
+  { mode: 'day', Icon: CalendarDot, key: 'calendarDay' },
+  { mode: 'week', Icon: Columns, key: 'calendarWeek' },
+  { mode: 'month', Icon: GridNine, key: 'calendarMonth' },
 ] as const;
 
 /** A chip's, a bar's or a card's right-click menu. */
@@ -110,9 +125,11 @@ function Chip({ entry, day, mixed, onOpen, onMenu }: { entry: DayEntry; day: str
   const title = entry.title || t('common:state.untitled');
   const SpaceGlyph = mixed && entry.space === 'work' ? SPACE_ICONS.work : null;
   const when = entry.time ? timeLabel(day, entry.time) : '';
+  const { row } = useEntryLook(entry);
   return (
     <button
       type="button"
+      style={row}
       draggable={entry.kind !== 'contact'}
       onDragStart={(e) => writeCalDrag(e, { id: entry.id, occurrence: entry.occurrence, grab: day })}
       onClick={() => onOpen(entry)}
@@ -152,8 +169,9 @@ function Bars({ days, index, hidden, onOpen, onMenu, top, weekCol }: {
         const span = b.endCol - b.startCol + 1;
         const color = dayKindColor(b.entry.kind);
         return (
-          <div
+          <InkBox
             key={entryKey(b.entry)}
+            entry={b.entry}
             className={`absolute h-4 z-[1] px-0.5 ${color}`}
             style={{
               top: top + b.lane * CHIP_PX,
@@ -198,7 +216,7 @@ function Bars({ days, index, hidden, onOpen, onMenu, top, weekCol }: {
                 </span>
               )}
             </div>
-          </div>
+          </InkBox>
         );
       })}
     </>
@@ -259,9 +277,11 @@ type Props = {
   /** The agenda (the list pane) beside the grid: shown or folded, and the
    *  button that toggles it. Absent where the agenda is the whole screen. */
   agenda?: { open: boolean; toggle: () => void };
+  /** Opens the Import tab, where the calendar file and webcal rows are. */
+  onImport?: () => void;
 };
 
-export default function CalendarPane({ index, pillar, onOpen, onItemMenu, onDayMenu, onAdd, onMove, onResize, onDropItems, otherSpace, weekNumbers, firstHour, onMenu, agenda }: Props) {
+export default function CalendarPane({ index, pillar, onOpen, onItemMenu, onDayMenu, onAdd, onMove, onResize, onDropItems, otherSpace, weekNumbers, firstHour, onMenu, agenda, onImport }: Props) {
   const { t } = useTranslation(['shell', 'notes']);
   const { mode, setMode, focus, setFocus } = pillar;
   const hiddenKinds = useHiddenKinds();
@@ -302,12 +322,12 @@ export default function CalendarPane({ index, pillar, onOpen, onItemMenu, onDayM
   };
 
   // The segmented control of Settings (Auto, Light, Dark): the track, the
-  // raised option, an icon each. A narrow header keeps the icons and names
-  // them on hover.
+  // raised option, an icon each. A narrow header keeps the icons; the tip
+  // names each one and its key at every width.
   const viewSwitch = (
     <div role="group" aria-label={t('calendar.viewLabel')} className="shrink-0 flex gap-1 rounded-md bg-track p-1">
-      {VIEW_MODES.map(({ mode: m, Icon }) => (
-        <HoverLabel key={m} label={t(`calendar.views.${m}`)} position="below" className="@min-[420px]/calhead:[&>:last-child]:hidden">
+      {VIEW_MODES.map(({ mode: m, Icon, key }) => (
+        <HoverLabel key={m} label={t(`calendar.views.${m}`)} keys={keyText(key)} position="below">
           <button
             type="button"
             aria-pressed={mode === m}
@@ -363,7 +383,25 @@ export default function CalendarPane({ index, pillar, onOpen, onItemMenu, onDayM
     </div>
   );
 
-  const headerEnd = viewSwitch;
+  // Import mirrors the agenda button: the toolbar starts and ends with one
+  // square tool. It opens the Import tab, where the calendar rows are. In a
+  // header under 316px the top row has no room for it; Settings is the way in.
+  // Spec: ops/issues/0548.md (Spec, the calendar's door)
+  const headerEnd = onImport ? (
+    <span className="flex items-center gap-2">
+      <HoverLabel label={t('calendar.importLabel')} position="below-end" className="hidden @min-[316px]/calhead:block">
+        <button
+          type="button"
+          onClick={onImport}
+          aria-label={t('calendar.importLabel')}
+          className="shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-md border border-divider text-pn-muted hover:border-accent hover:text-accent transition"
+        >
+          <Download size={15} aria-hidden="true" />
+        </button>
+      </HoverLabel>
+      {viewSwitch}
+    </span>
+  ) : viewSwitch;
   // The agenda button names what it does on hover, and wears the pressed
   // look while the agenda is open, so a folded agenda is never a secret.
   const agendaLabel = agenda ? t(agenda.open ? 'calendar.hideAgenda' : 'calendar.showAgenda') : '';
@@ -510,23 +548,26 @@ function TimedCard({ block, day, onOpen, onMenu }: { block: TimedBlock; day: str
   const title = e.title || t('common:state.untitled');
   const start = block.carried ? '' : e.time ? timeLabel(day, e.time) : '';
   const end = e.timeEnd ? timeLabel(day, e.timeEnd) : '';
+  const { icon: ink } = useEntryLook(e);
   return (
     <button
+      style={ink}
       type="button"
       draggable={!block.carried}
       onDragStart={(ev) => writeCalDrag(ev, { id: e.id, occurrence: e.occurrence, grab: day })}
       onClick={() => onOpen(e)}
       onContextMenu={onMenu ? (ev) => onMenu(ev, e) : undefined}
       aria-label={[title, start && end ? `${start} - ${end}` : start].filter(Boolean).join(', ')}
-      className={`w-full h-full overflow-hidden rounded-md border-s-[3px] border-current bg-current/15 px-1.5 py-0.5 text-start focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${dayKindColor(e.kind)}`}
+      className={`pn-timed-card w-full h-full overflow-hidden rounded-md border-s-[3px] border-current bg-current/15 px-1.5 py-0.5 text-start focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${dayKindColor(e.kind)}`}
     >
       <span className="flex items-center gap-1 text-[11px] font-semibold text-pn">
+        <span data-slot="icon" className="inline-flex shrink-0"><EntryGlyph entry={e} size={11} /></span>
         <span dir="auto" className="min-w-0 truncate">{title}</span>
         {e.alerted && <BellSimple size={10} aria-hidden="true" className="shrink-0 text-pn-muted" />}
         {e.repeating && <Repeat size={10} aria-hidden="true" className="shrink-0 text-pn-muted" />}
         {e.space === 'work' && <SPACE_ICONS.work size={10} aria-hidden="true" className="shrink-0 text-pn-muted" />}
       </span>
-      {start && <span className="block truncate text-[10.5px] text-pn-muted tabular-nums">{end ? `${start} - ${end}` : start}</span>}
+      {start && <span className="pn-timed-time block truncate text-[10.5px] text-pn-muted tabular-nums">{end ? `${start} - ${end}` : start}</span>}
     </button>
   );
 }

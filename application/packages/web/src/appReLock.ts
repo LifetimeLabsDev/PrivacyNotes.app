@@ -22,6 +22,8 @@
  */
 
 import { hasBiometricCredential, hasPinWrappedPhrase } from './biometric';
+import { credentialKey } from './demo';
+import { hasPin } from './pin';
 import { loadLocalSettings } from './userSettings';
 
 /**
@@ -90,6 +92,61 @@ export function lockCurtainIsStale(status: string): boolean {
   return status === 'onboarding' && !hasBiometricCredential() && !hasPinWrappedPhrase();
 }
 
+/**
+ * Whether Lock app has a door back in on this device: a fingerprint, a PIN
+ * wrap, or a PIN or passcode alone. The last one does not need "Lock app on
+ * open": the lock screen then checks the secret against its hash while the
+ * session is live (`onPinVerified` in LockScreen.tsx), the same UI-only gate
+ * as the idle re-lock. A PIN is enough because that is what a person who set
+ * one expects the button to ask for (owner, 2026-10-22).
+ */
+export function canLockNow(): boolean {
+  return hasBiometricCredential() || hasPinWrappedPhrase() || hasPin();
+}
+
+/** Set by the running watch, so the Lock app button can lock through it. */
+let lockNowHandler: (() => void) | null = null;
+
+/**
+ * A lock the person asked for holds across a reload: without this mark, a
+ * device with the app lock off starts unlocked, and a reload would undo the
+ * button. Stored on the device, bucketed like the credentials, and removed by
+ * any unlock (App.tsx).
+ */
+const MANUAL_LOCK = credentialKey('privacynotes.manualLock');
+
+export function manualLockArmed(): boolean {
+  try {
+    return localStorage.getItem(MANUAL_LOCK) !== null;
+  } catch {
+    return false;
+  }
+}
+
+export function clearManualLock(): void {
+  try {
+    localStorage.removeItem(MANUAL_LOCK);
+  } catch {
+    /* nothing armed that could be read back either */
+  }
+}
+
+/**
+ * Lock the app at once, the way an idle window that passed would (GitHub
+ * #594). Answers false, and does nothing, when the device has no door back in
+ * or no watch runs (the app is already locked or not signed in).
+ */
+export function lockAppNow(): boolean {
+  if (!lockNowHandler || !canLockNow()) return false;
+  try {
+    localStorage.setItem(MANUAL_LOCK, '1');
+  } catch {
+    /* the lock still holds until a reload */
+  }
+  lockNowHandler();
+  return true;
+}
+
 /** Should the app take the UI away right now? */
 export function shouldReLock(state: ReLockState): boolean {
   if (!state.appLockEnabled) return false;
@@ -134,10 +191,13 @@ export function startReLockWatch(onLock: () => void): () => void {
     lastActivityAt = Date.now();
   }
 
-  function check(): void {
-    if (!shouldReLock(readState(lastActivityAt))) return;
+  function lock(): void {
     reopenNoteId = openNoteId;
     onLock();
+  }
+
+  function check(): void {
+    if (shouldReLock(readState(lastActivityAt))) lock();
   }
 
   function onVisibility(): void {
@@ -154,8 +214,10 @@ export function startReLockWatch(onLock: () => void): () => void {
   }
   document.addEventListener('visibilitychange', onVisibility);
   const timer = window.setInterval(check, CHECK_INTERVAL_MS);
+  lockNowHandler = lock;
 
   return () => {
+    if (lockNowHandler === lock) lockNowHandler = null;
     window.clearInterval(timer);
     for (const type of ACTIVITY_EVENTS) {
       document.removeEventListener(type, bump, true);

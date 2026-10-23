@@ -1,13 +1,15 @@
 {
   "placeholder": "Yazmaya başlayın…",
+  "eventPlaceholder": "Gündem, adres veya not ekleyin…",
   "toolbar": {
     "bold": "Kalın",
+    "hideKeyboard": "Klavyeyi gizle",
     "italic": "İtalik",
     "underline": "Altı çizili",
     "heading": "Başlık",
     "taskList": "Görev listesi",
     "bulletList": "Madde listesi",
-    "addLink": "Bağlantı ekle ({{keys}})",
+    "addLink": "Bağlantı ekle",
     "noteLink": "Başka bir nota bağlan (veya [[ yazın)",
     "numberedList": "Numaralı liste",
     "textColor": "Metin rengi",
@@ -40,7 +42,6 @@
     "footnote": "Dipnot",
     "spoiler": "Sürprizbozan",
     "copyBox": "Kopyalama kutusu",
-    "withHint": "{{label}} ({{hint}})",
     "customize": "Araç çubuğunu özelleştir"
   },
   "align": {
@@ -98,7 +99,9 @@
       "update": "Güncelleme",
       "time": "Zaman",
       "steps": "Adımlar",
-      "place": "Konum"
+      "place": "Konum",
+      "kanban": "Kanban panosu",
+      "column": "Sütun"
     }
   },
   "color": {
@@ -132,27 +135,51 @@
     "resizeHint": "Yalnızca bu sütunu değiştirmek için {{shift}}, daha ince adımlar için {{alt}} tuşunu basılı tutun",
     "deleteRow": "Satırı sil",
     "deleteColumn": "Sütunu sil",
-    "deleteTable": "Tabloyu sil"
+    "deleteTable": "Tabloyu sil",
+    "insertFormula": "Formül ekle",
+    "formulaNoMatch": "Eşleşen formül yok",
+    "formula": {
+      "SUM": "Değerleri toplar",
+      "PRODUCT": "Değerleri çarpar",
+      "AVG": "Değerlerin ortalaması",
+      "AVERAGE": "Değerlerin ortalaması",
+      "MEDIAN": "Ortadaki değer",
+      "MIN": "En küçük değer",
+      "MAX": "En büyük değer",
+      "COUNT": "Kaç sayı olduğu",
+      "ABS": "İşareti olmadan değer",
+      "SQRT": "Karekök",
+      "SIGN": "Değerin pozitif mi negatif mi olduğu",
+      "CEIL": "Tam sayıya yukarı yuvarlar",
+      "FLOOR": "Tam sayıya aşağı yuvarlar",
+      "ROUND": "Tam sayıya yuvarlar",
+      "LOG": "Logaritma",
+      "RAND": "Rastgele bir sayı",
+      "PI": "Pi sabiti",
+      "E": "Euler sayısı",
+      "TAU": "Tau sabiti",
+      "PHI": "Altın oran"
+    }
   },
   "find": {
     "placeholder": "Notta bulun",
     "label": "Notta bul",
-    "previous": "Önceki eşleşme (Shift+Enter)",
-    "previousTitle": "Önceki (Shift+Enter)",
-    "next": "Sonraki eşleşme (Enter)",
-    "nextTitle": "Sonraki (Enter)",
+    "previous": "Önceki eşleşme",
+    "previousTitle": "Önceki",
+    "next": "Sonraki eşleşme",
+    "nextTitle": "Sonraki",
     "close": "Aramayı kapat",
-    "closeTitle": "Kapat ({{keys}})",
+    "closeTitle": "Kapat",
     "replacePlaceholder": "Şununla değiştir",
     "replaceLabel": "Şununla değiştir",
     "replace": "Değiştir",
-    "replaceTitle": "Bu eşleşmeyi değiştir (Enter)",
+    "replaceTitle": "Bu eşleşmeyi değiştir",
     "replaceAll": "Tümü",
     "replaceAllTitle": "Tüm eşleşmeleri değiştir",
     "caseSensitive": "Büyük/küçük harfe duyarlı",
     "caseSensitiveTitle": "Büyük/küçük harfe duyarlı",
     "closeReplace": "Bul ve değiştir çubuğunu kapat",
-    "closeReplaceTitle": "Kapat ({{keys}})",
+    "closeReplaceTitle": "Kapat",
     "showReplace": "Bul ve değiştir",
     "hideReplace": "Değiştirmeyi gizle",
     "replacedCount_one": "{{count}} değiştirildi",
@@ -164,7 +191,6 @@
     "title": "Ana hat",
     "ariaLabel": "Not ana hattı",
     "hide": "Ana hattı gizle",
-    "hideTitle": "Ana hattı gizle ({{keys}})",
     "copyHeadingLink": "Başlık bağlantısını kopyala",
     "copyNoteLink": "Not bağlantısını kopyala",
     "copyHeadingShortcut": "Başlık kısayolunu kopyala",
@@ -172,6 +198,8 @@
   },
   "bodyMenu": {
     "cut": "Kes",
+    "copyAsPlain": "Düz metin olarak kopyala",
+    "copyAsMarkdown": "Markdown olarak kopyala",
     "sortAsc": "Satırları A'dan Z'ye sırala",
     "sortDesc": "Satırları Z'den A'ya sırala"
   },
@@ -285,6 +313,7 @@
     "hidden": "Gizli",
     "hiddenNote": "Kısayolları ve Markdown ile çalışmaya devam ederler.",
     "hiddenDrop": "Gizlemek için bir düğmeyi buraya bırakın.",
+    "arrangeTitle": "Düğmeler",
     "markdownViewNote": "Markdown görünümü kendi sabit düğme setini korur.",
     "hiddenEmpty": "Gizli bir şey yok.",
     "alwaysVisible": "Her zaman görünür",
@@ -319,5 +348,20 @@
     "positionNote": "Araç çubuğunun düzenleyicide nerede duracağını seçin.",
     "positionTop": "Üst",
     "positionBottom": "Alt"
+  },
+  "kanban": {
+    "todo": "Yapılacak",
+    "inProgress": "Devam ediyor",
+    "review": "İnceleme",
+    "done": "Tamamlandı",
+    "color": "Renk",
+    "columns": "Sütunlar",
+    "columnCount_other": "{{count}} sütun",
+    "cardCount_other": "{{count}} kart",
+    "addColumn": "Sütun ekle",
+    "removeBoard": "Panoyu kaldır",
+    "moveTo": "Şuraya taşı",
+    "cardCount_one": "{{count}} kart",
+    "columnCount_one": "{{count}} sütun"
   }
 }

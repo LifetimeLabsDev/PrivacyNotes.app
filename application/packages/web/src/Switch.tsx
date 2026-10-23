@@ -12,7 +12,7 @@ import { SETTINGS_HELP } from './settingsUI';
  * keeps a description out of the name; the description is read after it.
  * The row is always one line with the switch at its end: a switch belongs
  * beside its label, at every width.
- * Spec: ops/docs/ui-patterns.md section 36
+ * Spec: ops/docs/archive/ui-patterns.md section 36
  */
 export function Switch({
   label,

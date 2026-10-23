@@ -18,10 +18,8 @@
   "header": {
     "new": "Nuova",
     "newNote": "Nuova nota",
-    "newNoteHover": "Nuova nota ({{hotkey}})",
     "trash": "Cestino",
-    "newEvent": "Nuovo evento",
-    "newEventHover": "Nuovo evento ({{hotkey}})"
+    "newEvent": "Nuovo evento"
   },
   "folderChip": {
     "clear": "Rimuovi il filtro cartella: {{folder}}",
@@ -35,15 +33,18 @@
     "ariaLabel": "Nuovo elemento della cassaforte",
     "login": "Accesso",
     "card": "Carta di credito",
-    "sshKey": "Chiave SSH"
+    "sshKey": "Chiave SSH",
+    "generator": "Password"
   },
   "newMenu": {
     "note": "Nota",
     "task": "Attività",
+    "kanban": "Bacheca Kanban",
     "journal": "Diario",
     "login": "Accesso",
     "file": "File",
     "bookmark": "Segnalibro",
+    "clipPage": "Salva pagina web",
     "contact": "Contatto",
     "event": "Evento",
     "quickAdd": "Aggiunta rapida"
@@ -55,8 +56,7 @@
     "keys": "Chiavi"
   },
   "journal": {
-    "newEntry": "Nuova pagina di diario",
-    "newEntryHover": "Nuova pagina di diario ({{hotkey}})"
+    "newEntry": "Nuova pagina di diario"
   },
   "tasks": {
     "newTitle": "Attività del {{date}}"
@@ -70,7 +70,8 @@
   "search": {
     "sortOptions": "Opzioni di ordinamento e visualizzazione",
     "placeholderVault": "Cerca nella cassaforte…",
-    "placeholderNotes": "Cerca tra le note…"
+    "placeholderNotes": "Cerca tra le note…",
+    "placeholderEvents": "Cerca tra gli eventi…"
   },
   "selection": {
     "countOf": "{{selected}} di {{total}} selezionati",
@@ -82,9 +83,14 @@
     "vault": "La cassaforte è vuota.",
     "notes": "Ancora nessuna nota.",
     "archive": "Niente in archivio.",
+    "trash": "Il cestino è vuoto.",
     "filtered": "Nessun elemento corrisponde ai tuoi filtri.",
     "clearFilters": "Rimuovi i filtri",
-    "filteredAfter": "per visualizzarli."
+    "filteredAfter": "per visualizzarli.",
+    "hiddenInAll_other": "{{count}} elementi sono nascosti dal filtro Mostra in «Tutti». Apri il filtro accanto a Tutti per mostrarli.",
+    "inOtherSpace_other": "{{count}} elementi sono nel tuo spazio {{space}}. Passa a {{space}} nella barra laterale per vederli.",
+    "inOtherSpace_one": "{{count}} elemento è nel tuo spazio {{space}}. Passa a {{space}} nella barra laterale per vederlo.",
+    "hiddenInAll_one": "{{count}} elemento è nascosto dal filtro Mostra in «Tutti». Apri il filtro accanto a Tutti per mostrarlo."
   },
   "listGroups": {
     "previous7Days": "Ultimi 7 giorni",
@@ -104,12 +110,25 @@
     "calendar": "Calendario"
   },
   "footerStats": {
-    "journals": "Pagine di diario",
-    "items": "Elementi",
-    "trashed": "Nel cestino",
-    "notes": "Note",
-    "bookmarks": "Segnalibri",
-    "contacts": "Contatti"
+    "journals_one": "Pagina di diario",
+    "journals_other": "Pagine di diario",
+    "items_one": "Elemento",
+    "items_other": "Elementi",
+    "trashed_one": "Nel cestino",
+    "trashed_other": "Nel cestino",
+    "notes_one": "Nota",
+    "notes_other": "Note",
+    "bookmarks_one": "Segnalibro",
+    "bookmarks_other": "Segnalibri",
+    "contacts_one": "Contatto",
+    "contacts_other": "Contatti",
+    "files_one": "File",
+    "files_other": "File",
+    "lists_one": "Elenco",
+    "lists_other": "Elenchi",
+    "tasks_one": "Attività",
+    "tasks_other": "Attività",
+    "today": "Oggi"
   },
   "toast": {
     "imageUploadFailed": "Caricamento immagine non riuscito: {{error}}",
@@ -165,7 +184,7 @@
   },
   "zen": {
     "exit": "Esci da Zen",
-    "exitHover": "Esci dalla modalità Zen (Esc)",
+    "exitHover": "Esci dalla modalità Zen",
     "enterHover": "Entra in modalità Zen",
     "proHover": "Modalità Zen (Pro)",
     "enterAriaShortcut": "Entra in modalità Zen ({{keys}})"
@@ -242,9 +261,12 @@
     "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Apri statistiche",
     "journalCalendar": "Calendario del diario",
-    "words": "Parole",
+    "words_one": "Parola",
+    "words_other": "Parole",
     "zen": "Modalità Zen",
     "appearance": "Aspetto",
+    "lockApp": "Blocca l'app",
+    "lockAppSetUp": "Imposta prima un PIN in Sicurezza",
     "goToTop": "Vai all'inizio",
     "goToEnd": "Vai alla fine",
     "signOut": "Esci",
@@ -268,6 +290,7 @@
     "editorLabel": "Editor",
     "formatBarLabel": "Barra di formattazione",
     "listsLabel": "Elenchi",
+    "trackersLabel": "Tracker",
     "helpLabel": "Aiuto",
     "aboutLabel": "Info",
     "languageLabel": "Lingua",
@@ -285,7 +308,7 @@
   },
   "bulkTrash": {
     "title": "Sposta nel cestino",
-    "body_one": "Spostare <highlight>{{count}} elemento</highlight> nel cestino? Potrai ripristinarlo in seguito.",
+    "body_one": "Spostare <highlight>{{count}} elemento</highlight> nel cestino? Potrai ripristinarlo più tardi.",
     "body_other": "Spostare <highlight>{{count}} elementi</highlight> nel cestino? Potrai ripristinarli in seguito.",
     "readOnlyTitle": "Sola lettura",
     "readOnlyAcknowledge": "Ho capito",
@@ -331,5 +354,14 @@
   "ambiguousLink": {
     "title": "Due note hanno lo stesso titolo",
     "body": "Più di una nota si intitola <highlight>“{{title}}”</highlight>, quindi questo link non dice quale intende. Rinomina una delle due e il link punterà all'altra."
+  },
+  "connections": {
+    "title": "Collegamenti",
+    "hide": "Nascondi collegamenti",
+    "linkedFrom": "Collegamenti in entrata",
+    "linksTo": "Collegamenti in uscita",
+    "missing": "Non ancora creata",
+    "protectedHidden_one": "{{count}} elemento protetto da PIN non mostrato",
+    "protectedHidden_other": "{{count}} elementi protetti da PIN non mostrati"
   }
 }

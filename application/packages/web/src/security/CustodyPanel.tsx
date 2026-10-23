@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { CaretDown, Check, FloppyDisk, Scales, Warning, SignIn, Vault } from '../icons';
 import { PrivacyLadder } from '../PrivacyLadder';
 import { useAuth } from '../auth';
-import { SETTINGS_HELP, SectionEyebrow } from '../settingsUI';
+import { SectionEyebrow, SETTINGS_BTN_PRIMARY, SETTINGS_HELP } from '../settingsUI';
 import { isDemoMode } from '../demo';
 import { MfaCancelledError } from '../mfaStep';
 import { useAccountLogins } from '../accountLogins';
@@ -462,7 +462,7 @@ export function CustodyPanel({ phrase, onReleaseCheckChange, onOpenConnectedAcco
               type="button"
               onClick={() => void handleConfirm()}
               disabled={!canConfirm || busy}
-              className="inline-flex items-center justify-center gap-1.5 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+              className={SETTINGS_BTN_PRIMARY}
             >
               {/* Neutral label until a different option is actually
                   picked. Naming the destructive direction while the

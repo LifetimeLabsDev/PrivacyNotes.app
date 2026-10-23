@@ -82,7 +82,7 @@ export const trustAwareStorage: Storage = {
     // and the device secret - a total credential wipe from one future
     // library-internal call. Nothing calls this today (it exists to
     // satisfy the Storage interface), which is exactly when to defuse
-    // it. Session audit 2026-08-25.
+    // it.
     for (const store of [sessionStorage, localStorage]) {
       try {
         for (let i = store.length - 1; i >= 0; i--) {
@@ -137,7 +137,7 @@ export const trustAwareStorage: Storage = {
     // until GoTrue's reuse detection revoked the whole session family.
     // A dropped write now leaves NO copy (recoverable: the phrase
     // re-mints a session) instead of a stale one (a manufactured
-    // server-side revocation). Session audit 2026-08-25.
+    // server-side revocation).
     const sibling = trusted ? sessionStorage : localStorage;
     try {
       sibling.removeItem(key);

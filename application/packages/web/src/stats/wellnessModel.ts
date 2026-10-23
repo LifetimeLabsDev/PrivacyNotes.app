@@ -1,6 +1,6 @@
 import type { TFunction } from 'i18next';
 import type { LocalNote } from '../db';
-import type { MedicationTemplate, TrackerSettings } from '../trackerTypes';
+import type { FactorDef, MedicationTemplate, TrackerSettings } from '../trackerTypes';
 import { extractEntries, type JournalEntry } from '../trackerStats';
 import { toLocalIso } from '../notesViewUtils';
 import { buildRegistry } from '../trackerRegistry';
@@ -13,7 +13,7 @@ import { intlLocale } from '../languages';
  * predicate, the registry of every tracker, the range, and a series per
  * tracker on the calendar axis. Built once per range change and shared, so
  * the sub-tabs never disagree about a number.
- * Spec: ops/docs/plans/wellness-statistics.md (sections 4, 5)
+ * Spec: ops/docs/archive/wellness-statistics.md (sections 4, 5)
  */
 export interface WellnessModel {
   entries: JournalEntry[];
@@ -34,9 +34,10 @@ export function buildWellnessModel(
   trackerSettings: TrackerSettings,
   medications: MedicationTemplate[],
   rangeId: RangeId,
+  factors: FactorDef[] = [],
 ): WellnessModel {
   const entries = extractEntries(notes, isNoteLocked);
-  const registry = buildRegistry(trackerSettings, medications, entries);
+  const registry = buildRegistry(trackerSettings, medications, entries, factors);
   const firstDay = entries[0]?.date ?? null;
   const range = resolveRange(rangeId, firstDay);
   const inRange = entries.filter((e) => e.date >= range.from && e.date <= range.to);
@@ -82,6 +83,7 @@ export function levelLabel(d: TrackerDescriptor, level: string, t: TFunction): s
   if (d.id === 'sleepQuality') return t(`trackers:sleep.quality.${level}`);
   if (d.id === 'activity') return t(`trackers:activity.level.${level}`);
   if (d.id === 'emotions') return t(`trackers:emotions.tags.${level}`, { defaultValue: level });
+  if (d.levelNames) return d.levelNames[level] ?? level;
   return level;
 }
 
@@ -98,19 +100,16 @@ export function formatValue(d: TrackerDescriptor, v: number, t: TFunction, digit
     case 'bpm': return `${n} ${t('trackers:units.bpm')}`;
     case 'kg': return `${n} ${t('trackers:units.kg')}`;
     case 'lb': return `${n} ${t('trackers:units.lb')}`;
+    case 'l': return `${n} ${t('trackers:units.water.l')}`;
+    case 'oz': return `${n} ${t('trackers:units.water.oz')}`;
+    case 'glasses': return `${n}${t('trackers:units.glasses', { count: v })}`;
+    case 'mg': return `${n} ${t('trackers:units.caffeine.mg')}`;
+    case 'cups': return `${n}${t('trackers:units.cups', { count: v })}`;
     default: return n;
   }
 }
 
-export const MOOD_COLORS = ['#EF4444', '#F97316', '#EAB308', '#22C55E', '#1E40AF'] as const;
-
-export function moodColor(mood: number): string {
-  if (mood <= 2) return MOOD_COLORS[0];
-  if (mood <= 4) return MOOD_COLORS[1];
-  if (mood <= 6) return MOOD_COLORS[2];
-  if (mood <= 8) return MOOD_COLORS[3];
-  return MOOD_COLORS[4];
-}
+export { moodColor } from '../moodColors';
 
 /** The rule of a comparison as one translated phrase. */
 export function ruleLabel(r: CompareResult, tracker: TrackerDescriptor, t: TFunction): string {
@@ -125,6 +124,38 @@ export function ruleLabel(r: CompareResult, tracker: TrackerDescriptor, t: TFunc
   if (k === 'tag') return t('stats:wellness.effects.rule.tag', { tag: levelLabel(tracker, r.tag ?? '', t) });
   const threshold = r.rule.threshold === undefined ? '' : formatValue(tracker, r.rule.threshold, t, 1);
   return t(`stats:wellness.effects.rule.${k}`, { threshold });
+}
+
+/** The names of the two sides of a comparison, for the label beside each bar. */
+export function sideLabels(r: CompareResult, tracker: TrackerDescriptor, t: TFunction): { a: string; b: string } {
+  const k = r.rule.kind;
+  if (k === 'levels') {
+    const levels = tracker.levels ?? [];
+    const half = Math.min(2, Math.floor(levels.length / 2));
+    return {
+      a: levels.slice(-half).map((l) => levelLabel(tracker, l, t)).join(', '),
+      b: levels.slice(0, half).map((l) => levelLabel(tracker, l, t)).join(', '),
+    };
+  }
+  if (k === 'medication') return { a: t('stats:wellness.effects.side.taken'), b: t('stats:wellness.effects.side.missed') };
+  if (k === 'yesno' || k === 'tag') {
+    const name = k === 'tag' ? levelLabel(tracker, r.tag ?? '', t) : trackerName(tracker, t);
+    return { a: t('stats:wellness.effects.side.with', { name }), b: t('stats:wellness.effects.side.without') };
+  }
+  const threshold = r.rule.threshold === undefined ? '' : formatValue(tracker, r.rule.threshold, t, 1);
+  return { a: t('stats:wellness.effects.side.above', { threshold }), b: t('stats:wellness.effects.side.atOrBelow', { threshold }) };
+}
+
+/** The short name of the better-mood side, for a row of "What stands out": "Running", "Sleep hours above 7 h". */
+export function standoutLabel(r: CompareResult, tracker: TrackerDescriptor, t: TFunction): string {
+  const name = trackerName(tracker, t);
+  const k = r.rule.kind;
+  if (k === 'yesno') return name;
+  if (k === 'tag') return levelLabel(tracker, r.tag ?? '', t);
+  if (k === 'medication') return t('stats:home.label.taken', { name });
+  if (k === 'levels') return t('stats:home.label.levels', { name, levels: sideLabels(r, tracker, t).a.toLowerCase() });
+  const threshold = r.rule.threshold === undefined ? '' : formatValue(tracker, r.rule.threshold, t, 1);
+  return t('stats:home.label.above', { name, threshold });
 }
 
 /** The name a comparison row shows: the tracker, or the tag of a set row. */
@@ -165,7 +196,7 @@ export interface DoseLens {
  * The dose lens: for the start and every dose change of a medication inside
  * the range, the mood average of the two weeks before and after, each side
  * cut at the range, at the day before the next change, and at the deletion.
- * Spec: ops/docs/plans/wellness-statistics.md (section 10)
+ * Spec: ops/docs/archive/wellness-statistics.md (section 10)
  */
 export function doseLenses(entries: JournalEntry[], medications: MedicationTemplate[], range: RangeBounds): DoseLens[] {
   const out: DoseLens[] = [];

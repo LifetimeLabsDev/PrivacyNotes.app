@@ -1,4 +1,5 @@
 import type { TFunction } from 'i18next';
+import { PALETTE } from '../editorColors';
 import type { MedicationTemplate } from '../trackerTypes';
 import type { TrackerStats } from '../trackerStats';
 import { insightText } from '../trackerStats';
@@ -28,7 +29,7 @@ import { MIN_PER_SIDE } from '../trackerCompare';
  * The doctor report and the AI prompt, both built from the same model the
  * pane shows, over the same range. The report is HTML written into a
  * same-origin window, so every user-authored string goes through `esc`.
- * Spec: ops/docs/plans/wellness-statistics.md (section 12)
+ * Spec: ops/docs/archive/wellness-statistics.md (section 12)
  */
 
 /** The dose a medication STARTED on; `dosage` is the current one. Templates
@@ -108,7 +109,7 @@ export function generateDoctorReport(stats: TrackerStats, medications: Medicatio
     : '';
   const marks = medications
     .flatMap((m) => m.dosageHistory.filter((h) => h.changedAt >= model.range.from && h.changedAt <= model.range.to).map((h) => ({ m, h })))
-    .map(({ m, h }) => `<span style="position:absolute;left:${(((daysBetween(model.range.from, h.changedAt) + 0.5) / model.rangeDays) * 100).toFixed(2)}%;color:#C2512B">&#9650;</span>`)
+    .map(({ m, h }) => `<span style="position:absolute;left:${(((daysBetween(model.range.from, h.changedAt) + 0.5) / model.rangeDays) * 100).toFixed(2)}%;color:${PALETTE.orange}">&#9650;</span>`)
     .join('');
 
   const lines = trackerLines(model, t, true);
@@ -146,7 +147,7 @@ export function generateDoctorReport(stats: TrackerStats, medications: Medicatio
     .join('');
   const lensLines = doseLenses(model.entries, medications, model.range)
     .filter((l) => l.before.n >= MIN_PER_SIDE && l.after.n >= MIN_PER_SIDE && l.before.mean !== null && l.after.mean !== null)
-    .map((l) => `<li>${esc(`${formatDay(l.date, 'date')}, ${l.name} ${l.dosage}: ${t('wellness.medCalendar.doseLens', { before: formatNumber(l.before.mean!), nBefore: l.before.n, after: formatNumber(l.after.mean!), nAfter: l.after.n })}`)}</li>`)
+    .map((l) => `<li>${esc(`${formatDay(l.date, 'date')}, ${[l.name, l.dosage].filter(Boolean).join(' ')}: ${t('wellness.medCalendar.doseLens', { before: formatNumber(l.before.mean!), nBefore: l.before.n, after: formatNumber(l.after.mean!), nAfter: l.after.n })}`)}</li>`)
     .join('');
 
   const patternItems = stats.patterns.map((p) => `<li>${esc(insightText(p, t))}</li>`).join('');
@@ -213,12 +214,12 @@ export function generateAIPrompt(stats: TrackerStats, medications: MedicationTem
   }
 
   if (moodSeries && hasData(moodSeries)) {
-    lines.push('', `## ${p('moodTrend')}`, `| ${p('columnDate')} | ${p('columnMood')} |`, '|------|------|');
+    lines.push('', `## ${p('moodTrend')}`, `| ${p('columnDate')} | ${p('columnMood')} | ${p('columnAverage')} |`, '|------|------|------|');
     const avg = rollingAverage(moodSeries);
     for (const [i, pt] of moodSeries.points.entries()) {
       if (typeof pt.value !== 'number') continue;
       const a = avg.points[i]?.value;
-      lines.push(`| ${pt.date} | ${pt.value}/10${typeof a === 'number' ? ` (7d ${formatNumber(a)})` : ''} |`);
+      lines.push(`| ${pt.date} | ${pt.value}/10 | ${typeof a === 'number' ? formatNumber(a) : ''} |`);
     }
   }
 
@@ -260,8 +261,9 @@ export function generateAIPrompt(stats: TrackerStats, medications: MedicationTem
   }
 
   lines.push('', `## ${p('questions')}`);
-  lines.push(`1. ${p('question1')}`, `2. ${p('question2')}`, `3. ${p('question3')}`, `4. ${p('question4')}`);
-  customNames.forEach((name, i) => lines.push(`${5 + i}. ${p('customQuestion', { name })}`));
+  const asks = ['question1', 'question2', 'question3', 'question4', 'question5', 'question6'].map((k) => p(k));
+  for (const name of customNames) asks.push(p('customQuestion', { name }));
+  asks.forEach((a, i) => lines.push(`${i + 1}. ${a}`));
   lines.push('', '---', p('footer'));
   return lines.join('\n');
 }

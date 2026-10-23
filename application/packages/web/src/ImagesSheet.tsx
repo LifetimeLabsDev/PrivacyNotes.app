@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { HelpChip } from './HelpChip';
 import { CONTACT_PHOTO_PX, IMAGE_FIT_PX, IMAGE_JPEG_QUALITY } from './imageProcessing';
-import { ROW_TITLE, SETTINGS_HELP } from './settingsUI';
+import { ROW_TITLE, ResetDefaultsButton, SETTINGS_HELP } from './settingsUI';
 import { ArrowsIn, MapPinLine, UserCircle, type Icon } from './icons';
 import { Switch } from './Switch';
 import type { ImageSwitch } from './userSettings';
+import { defaultSettings } from './userSettingsShape';
 
 type Field = 'imageSpaceSaver' | 'imageStripMetadata' | 'imageContactCeiling';
 
@@ -26,7 +27,7 @@ type Props = {
  * to new images only, which the footer states, because a user who turns
  * the space saver on to free space frees nothing.
  *
- * Spec: ops/docs/plans/image-quality-handoff.md (section 9)
+ * Spec: ops/docs/archive/image-quality-handoff.md (section 9)
  */
 export function ImagesSheet({ spaceSaver, stripMetadata, contactCeiling, onChange }: Props) {
   const { t } = useTranslation('settings');
@@ -61,10 +62,9 @@ export function ImagesSheet({ spaceSaver, stripMetadata, contactCeiling, onChang
   return (
     <div className="flex-1 min-h-0 overflow-y-auto text-pn">
       <div className="px-6 pt-2 pb-4">
-        <HelpChip surface="images" className="mb-1" />
         {/* Boolean rows: the whole row is the label, the switch sits beside
             it at every width.
-            Spec: ops/docs/ui-patterns.md section 36 (compact setting rows) */}
+            Spec: ops/docs/archive/ui-patterns.md section 36 (compact setting rows) */}
         <div className="divide-y divide-divider">
           {rows.map((row) => (
             <Switch
@@ -81,6 +81,15 @@ export function ImagesSheet({ spaceSaver, stripMetadata, contactCeiling, onChang
           ))}
         </div>
         <p className={`${SETTINGS_HELP} mt-3`}>{t('images.applyNote')}</p>
+        <ResetDefaultsButton
+          onReset={() => {
+            const d = defaultSettings();
+            onChange('imageSpaceSaver', d.imageSpaceSaver);
+            onChange('imageStripMetadata', d.imageStripMetadata);
+            onChange('imageContactCeiling', d.imageContactCeiling);
+          }}
+        />
+        <HelpChip surface="images" className="mt-4" />
       </div>
     </div>
   );

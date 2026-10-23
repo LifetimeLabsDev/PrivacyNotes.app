@@ -25,7 +25,7 @@ import type { EditorView } from '@tiptap/pm/view';
 import type { Node as ProseMirrorNode, Slice } from '@tiptap/pm/model';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
 import { ArrowsOutSimple, Check, Copy, Download, Trash } from './icons';
-import { currentImageOptions, processImage, type ImageOptions } from './imageProcessing';
+import { IMAGE_FIT_PX, currentImageOptions, processImage, type ImageOptions } from './imageProcessing';
 import { attachmentIdForUrl, cachedAttachmentUrl, loadAttachmentData, loadAttachmentUrl } from './EncryptedAttachment';
 import { FILE_REF_PREFIX, openMediaViewerInDoc, type MediaRef } from './mediaRefs';
 import { validateAttachment } from './attachmentValidation';
@@ -719,22 +719,46 @@ export async function storePicture(
   opts: ImageOptions,
   onAccepted?: () => void,
 ): Promise<{ uuid: string; name: string; bytes: number } | null> {
+  const out = await runPicturePipeline(file, opts, onAccepted);
+  if ('uuid' in out) return out;
+  if (out.failure === 'storage') _uploadContext?.onQuotaExceeded?.();
+  else if (out.message) {
+    console.error('[image]', out.message);
+    _uploadContext?.onError?.(out.message);
+  }
+  return null;
+}
+
+/**
+ * The same pipeline for a clipped page's pictures, which report their own
+ * outcome: no toast, and the reason a picture was not stored comes back. A
+ * stranger's picture is always decoded and drawn again, whatever the space
+ * saver says, so bytes that only claim to be a picture are refused.
+ * `reserved` is what this clip stored already: an upload counts against the
+ * quota only once it reaches the server, so the gate adds it here.
+ */
+export async function storePictureQuietly(
+  file: File,
+  reserved: number,
+): Promise<{ uuid: string; stored: number } | { failure: 'storage' | 'failed' }> {
+  const opts = currentImageOptions();
+  const out = await runPicturePipeline(file, { ...opts, fitBox: opts.fitBox ?? IMAGE_FIT_PX }, undefined, reserved);
+  return 'uuid' in out ? { uuid: out.uuid, stored: estimateBlobBytes(out.bytes) } : { failure: out.failure };
+}
+
+type PipelineOutcome =
+  | { uuid: string; name: string; bytes: number }
+  | { failure: 'storage' | 'failed'; message?: string };
+
+async function runPicturePipeline(file: File, opts: ImageOptions, onAccepted?: () => void, reserved = 0): Promise<PipelineOutcome> {
   if (!_uploadContext) {
     console.error('[image] No upload context - auth not ready?');
-    return null;
+    return { failure: 'failed' };
   }
-
-  const reportError = (msg: string) => {
-    console.error('[image]', msg);
-    _uploadContext?.onError?.(msg);
-  };
 
   // Pre-flight quota check.
   const q0 = _uploadContext.getQuota?.();
-  if (q0 && q0.usedBytes >= q0.maxBytes) {
-    _uploadContext.onQuotaExceeded?.();
-    return null;
-  }
+  if (q0 && q0.usedBytes + reserved >= q0.maxBytes) return { failure: 'storage' };
 
   // The per-file tier cap applies only to a picture stored as it arrived:
   // a space-saved image is a few hundred kilobytes whatever came in, and
@@ -742,19 +766,13 @@ export async function storePicture(
   if (opts.fitBox === null) {
     const maxBytes = _uploadContext.getQuota?.()?.maxBytes ?? 0;
     const v = validateAttachment(file, _uploadContext.isPro, maxBytes > 500 * 1000 * 1000);
-    if (!v.ok) {
-      reportError(v.error);
-      return null;
-    }
+    if (!v.ok) return { failure: 'failed', message: v.error };
   }
 
   onAccepted?.();
 
   const result = await processImage(file, opts);
-  if (!result.ok) {
-    reportError(result.error);
-    return null;
-  }
+  if (!result.ok) return { failure: 'failed', message: result.error };
 
   // Quota gate with the INCOMING file counted, using the exact bytes about
   // to be stored (shrunk, stripped or kept, whichever the switches chose)
@@ -762,22 +780,15 @@ export async function storePicture(
   // of by the server after a wasted upload. The early gate above only
   // catches accounts already at 100%.
   const q1 = _uploadContext.getQuota?.();
-  if (q1 && q1.usedBytes + estimateBlobBytes(result.image.data.length) > q1.maxBytes) {
-    _uploadContext.onQuotaExceeded?.();
-    return null;
-  }
+  if (q1 && q1.usedBytes + reserved + estimateBlobBytes(result.image.data.length) > q1.maxBytes) return { failure: 'storage' };
 
   try {
     const uuid = await _uploadContext.imageStore.uploadImage(result.image.data);
     return { uuid, name: result.image.name, bytes: result.image.data.length };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    if (msg.includes('Quota exceeded')) {
-      _uploadContext.onQuotaExceeded?.();
-    } else {
-      reportError(i18n.t('media:image.uploadFailed', { message: msg }));
-    }
-    return null;
+    if (msg.includes('Quota exceeded')) return { failure: 'storage' };
+    return { failure: 'failed', message: i18n.t('media:image.uploadFailed', { message: msg }) };
   }
 }
 
@@ -788,7 +799,7 @@ async function handleImageUpload(
 ): Promise<void> {
   // A Markdown folder note keeps its pictures as files beside it, never in
   // the encrypted store. The guard sits on the upload itself, so every door
-  // into it is covered. Spec: ops/docs/plans/paste-pictures.md (section 3.3)
+  // into it is covered. Spec: ops/docs/archive/paste-pictures.md (section 3.3)
   if (plaintextViews.has(view)) return;
   // The placeholder tells the user something is happening while the
   // picture is decoded and encrypted, so it is drawn from inside the
@@ -914,7 +925,7 @@ function looksLikeImage(file: File): boolean {
 //
 // `https:` pictures are never fetched: the page policy (`connect-src`) keeps
 // the page on our own hosts, and that wall is the point.
-// Spec: ops/docs/plans/paste-pictures.md (section 3)
+// Spec: ops/docs/archive/paste-pictures.md (section 3)
 
 const PENDING_PREFIX = 'pn:pending/';
 
@@ -944,7 +955,7 @@ let lastReport: PasteReport | null = null;
  * The stored picture an object URL of this tab shows, as a `pn:img/` or
  * `pn:file/` ref, or null. The browser's "Copy image" names that URL in the
  * clipboard HTML, and this turns it back into the picture we already hold
- * instead of a second copy. Spec: ops/docs/plans/picture-copy-reuse.md
+ * instead of a second copy. Spec: ops/docs/archive/picture-copy-reuse.md
  */
 export function refForObjectUrl(url: string): string | null {
   if (!url.startsWith('blob:')) return null;
@@ -1089,7 +1100,7 @@ type SanitizeOptions = {
  * Pastes with no image to sort return the original string untouched, which
  * keeps every other paste byte-identical.
  *
- * Spec: GitHub #67, #204, #239; ops/docs/plans/paste-pictures.md (section 3.2)
+ * Spec: GitHub #67, #204, #239; ops/docs/archive/paste-pictures.md (section 3.2)
  */
 export function sanitizePastedHtml(html: string, opts: SanitizeOptions = {}): string {
   if (opts.report) {

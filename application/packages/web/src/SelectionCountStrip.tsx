@@ -13,7 +13,7 @@
  * clearing a mis-click should not also throw you out of the mode you are in.
  * The toolbar's own X is the one that leaves.
  *
- * Spec: ops/docs/ui-patterns.md section 79 (selection count strip)
+ * Spec: ops/docs/archive/ui-patterns.md section 79 (selection count strip)
  */
 
 import { useTranslation } from 'react-i18next';

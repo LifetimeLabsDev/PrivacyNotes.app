@@ -11,12 +11,14 @@ import { formatDay, formatInstant, weekdayDate, weekdayLabel } from './intlForma
 import { RTL_LOCALES } from './localeRoutes';
 import { journalDateOf, toLocalIso } from './notesViewUtils';
 import { moodStreak } from './trackerCompare';
+import { adherenceOn, logMedicationId } from './medicationDoses';
 import {
-  BOOKKEEPING_KEYS,
+  hasLoggedTrackers,
   mergeTrackers,
   type JournalTrackerData,
   type MedicationTemplate,
   type CustomTrackerTemplate,
+  type FactorDef,
   EMOTION_TAGS,
   SLEEP_LABELS,
   SLEEP_QUALITIES,
@@ -131,10 +133,7 @@ export type JournalEntry = {
 /** True when the user actually logged something (a pill, a reflection),
  *  as opposed to the birth stamp every journal entry carries. */
 function hasTrackerData(data: JournalTrackerData): boolean {
-  const record = data as Record<string, unknown>;
-  return Object.keys(record).some(
-    (key) => !BOOKKEEPING_KEYS.has(key) && record[key] !== undefined,
-  );
+  return hasLoggedTrackers(data as Record<string, unknown>);
 }
 
 /**
@@ -161,7 +160,7 @@ function hasTrackerData(data: JournalTrackerData): boolean {
  * An entry for a day after today waits until that day comes: a plan written
  * ahead is not a tracked day, and counting it would move every average and
  * streak. The JSON export alone keeps every day (`withFuture`).
- * Spec: ops/docs/plans/dates.md (section 3.4)
+ * Spec: ops/docs/archive/dates.md (section 3.4)
  */
 export function extractEntries(
   notes: LocalNote[],
@@ -317,8 +316,11 @@ export function computeTrackerStats(
   const medWindows = new Map<string, { first: string; last: string }>();
   for (const e of entries) {
     for (const log of e.data.medications ?? []) {
-      const w = medWindows.get(log.medicationId);
-      if (!w) medWindows.set(log.medicationId, { first: e.date, last: e.date });
+      // A dose past the first logs as `<id>~<dose>`: the window is the
+      // medication's, whichever dose was recorded (section 6.7).
+      const medId = logMedicationId(log.medicationId);
+      const w = medWindows.get(medId);
+      if (!w) medWindows.set(medId, { first: e.date, last: e.date });
       else if (e.date > w.last) w.last = e.date;
     }
   }
@@ -330,15 +332,16 @@ export function computeTrackerStats(
     const window = medWindows.get(med.id);
     if (!window) continue; // never logged - unknown, not missed
     const from = med.startedAt > window.first ? med.startedAt : window.first;
-    const until = med.deletedAt ? dayKey(med.deletedAt) : null;
     let taken = 0;
     let total = 0;
+    // Each scheduled dose of a day counts once, by the schedule that held
+    // that day; as-needed days and days the repeat skips count neither way.
+    // `dosesOn` also ends the window at `endsOn` and at the deletion day.
     for (const e of entries) {
       if (e.date < from) continue;
-      if (until && e.date > until) continue;
-      total++;
-      const log = e.data.medications?.find((l) => l.medicationId === med.id);
-      if (log?.status === 'taken') taken++;
+      const day = adherenceOn(med, e.data.medications, e.date);
+      total += day.expected;
+      taken += day.taken;
     }
     if (total === 0) continue;
     medMap[med.id] = { name: med.name, taken, total };
@@ -350,7 +353,7 @@ export function computeTrackerStats(
   // dose was recorded, so it still counts.
   for (const e of entries) {
     for (const log of e.data.medications ?? []) {
-      if (medWindows.has(log.medicationId) && !medications.some((m) => m.id === log.medicationId)) {
+      if (medWindows.has(logMedicationId(log.medicationId)) && !medications.some((m) => m.id === logMedicationId(log.medicationId))) {
         totalExpected++;
         if (log.status === 'taken') totalTaken++;
       }
@@ -402,14 +405,11 @@ export function computeTrackerStats(
       const window = medWindows.get(med.id);
       if (!window) continue;
       const from = med.startedAt > window.first ? med.startedAt : window.first;
-      const until = med.deletedAt ? dayKey(med.deletedAt) : null;
       for (const e of thisWeek) {
         if (e.date < from) continue;
-        if (until && e.date > until) continue;
-        wMedTotal++;
-        if (e.data.medications?.find((l) => l.medicationId === med.id)?.status === 'taken') {
-          wMedTaken++;
-        }
+        const day = adherenceOn(med, e.data.medications, e.date);
+        wMedTotal += day.expected;
+        wMedTaken += day.taken;
       }
     }
 
@@ -489,7 +489,7 @@ export function computeTrackerStats(
  * the weekday, the mood streak, the trend. The comparisons, the sleep and
  * activity ones included, come from trackerCompare and are built where they
  * are shown.
- * Spec: ops/docs/plans/wellness-statistics.md (section 7)
+ * Spec: ops/docs/archive/wellness-statistics.md (section 7)
  */
 function computePatterns(
   entries: JournalEntry[],
@@ -582,6 +582,7 @@ export function insightText(p: PatternInsight, t: TFunction): string {
 export type WellnessDefinitions = {
   customTrackers: readonly CustomTrackerTemplate[];
   medications: readonly MedicationTemplate[];
+  factors?: readonly FactorDef[];
 };
 
 /**
@@ -589,7 +590,7 @@ export type WellnessDefinitions = {
  * definitions every id points at, and the raw entries with their ids, so a
  * later import can read them back and a person can read them now. Every
  * day is kept, a day planned ahead included.
- * Spec: ops/docs/plans/wellness-statistics.md (section 12)
+ * Spec: ops/docs/archive/wellness-statistics.md (section 12)
  */
 export function exportTrackerJSON(
   notes: LocalNote[],
@@ -626,7 +627,22 @@ export function exportTrackerJSON(
           dosage: m.dosage,
           startedAt: m.startedAt,
           dosageHistory: m.dosageHistory,
+          // What a dose log means (section 6.7): a log id past the first dose
+          // is `<id>~<dose>`, and the schedule of each day is in its history.
+          form: m.form ?? null,
+          asNeeded: !!m.asNeeded,
+          maxPerDay: m.maxPerDay ?? null,
+          repeat: m.repeat ?? null,
+          doses: m.doses ?? null,
+          endsOn: m.endsOn ?? null,
+          scheduleHistory: m.scheduleHistory ?? [],
+          refills: m.refills ?? [],
           deletedAt: m.deletedAt ?? null,
+        })),
+        factors: (definitions.factors ?? []).map((f) => ({
+          id: f.id,
+          name: f.name,
+          deletedAt: f.deletedAt ?? null,
         })),
       },
       entries: entries.map((e) => ({ date: e.date, ...e.data })),

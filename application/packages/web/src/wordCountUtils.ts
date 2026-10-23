@@ -5,6 +5,10 @@
  *
  * Strips markdown syntax so only visible prose is counted. Covers
  * every format the TipTap toolbar can produce.
+ *
+ * Not `stripToPlainText` (notesViewUtils.ts): a preview masks a spoiler and
+ * names a file in the UI language, but a count must hold every word the
+ * writer typed and stay the same in every language.
  */
 
 import { hasCJK, segmentWords } from './cjkSegment';

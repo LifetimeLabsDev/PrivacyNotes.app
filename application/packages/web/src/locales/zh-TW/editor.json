@@ -1,13 +1,15 @@
 {
   "placeholder": "開始書寫…",
+  "eventPlaceholder": "新增議程、地址或筆記…",
   "toolbar": {
     "bold": "粗體",
+    "hideKeyboard": "隱藏鍵盤",
     "italic": "斜體",
     "underline": "底線",
     "heading": "標題",
     "taskList": "任務清單",
     "bulletList": "項目符號清單",
-    "addLink": "插入連結（{{keys}}）",
+    "addLink": "插入連結",
     "noteLink": "連結到另一篇筆記（或輸入 [[）",
     "numberedList": "編號清單",
     "textColor": "文字顏色",
@@ -40,7 +42,6 @@
     "footnote": "註腳",
     "spoiler": "防雷文字",
     "copyBox": "複製框",
-    "withHint": "{{label}}（{{hint}}）",
     "customize": "自訂工具列"
   },
   "align": {
@@ -98,7 +99,9 @@
       "update": "更新",
       "time": "時間",
       "steps": "步驟",
-      "place": "地點"
+      "place": "地點",
+      "kanban": "看板",
+      "column": "欄"
     }
   },
   "color": {
@@ -132,27 +135,51 @@
     "resizeHint": "按住 {{shift}} 只調整這一欄，按住 {{alt}} 可更精細地調整",
     "deleteRow": "刪除列",
     "deleteColumn": "刪除欄",
-    "deleteTable": "刪除表格"
+    "deleteTable": "刪除表格",
+    "insertFormula": "插入公式",
+    "formulaNoMatch": "沒有符合的公式",
+    "formula": {
+      "SUM": "把數值加總",
+      "PRODUCT": "把數值相乘",
+      "AVG": "數值的平均",
+      "AVERAGE": "數值的平均",
+      "MEDIAN": "位於中間的數值",
+      "MIN": "最小的數值",
+      "MAX": "最大的數值",
+      "COUNT": "有幾個數字",
+      "ABS": "去掉正負號的數值",
+      "SQRT": "平方根",
+      "SIGN": "數值是正是負",
+      "CEIL": "無條件進位到整數",
+      "FLOOR": "無條件捨去到整數",
+      "ROUND": "四捨五入到整數",
+      "LOG": "對數",
+      "RAND": "一個隨機數字",
+      "PI": "圓周率常數",
+      "E": "尤拉數",
+      "TAU": "圓周率的兩倍",
+      "PHI": "黃金比例"
+    }
   },
   "find": {
     "placeholder": "在筆記中尋找",
     "label": "在筆記中尋找",
-    "previous": "上一個符合項目（Shift+Enter）",
-    "previousTitle": "上一個（Shift+Enter）",
-    "next": "下一個符合項目（Enter）",
-    "nextTitle": "下一個（Enter）",
+    "previous": "上一個符合項目",
+    "previousTitle": "上一個",
+    "next": "下一個符合項目",
+    "nextTitle": "下一個",
     "close": "關閉尋找",
-    "closeTitle": "關閉（{{keys}}）",
+    "closeTitle": "關閉",
     "replacePlaceholder": "取代為",
     "replaceLabel": "取代為",
     "replace": "取代",
-    "replaceTitle": "取代此項（Enter）",
+    "replaceTitle": "取代此項",
     "replaceAll": "全部",
     "replaceAllTitle": "取代全部符合項目",
     "caseSensitive": "區分大小寫",
     "caseSensitiveTitle": "區分大小寫",
     "closeReplace": "關閉尋找與取代",
-    "closeReplaceTitle": "關閉（{{keys}}）",
+    "closeReplaceTitle": "關閉",
     "showReplace": "尋找與取代",
     "hideReplace": "隱藏取代",
     "replacedCount_other": "已取代 {{count}} 項"
@@ -163,7 +190,6 @@
     "title": "大綱",
     "ariaLabel": "筆記大綱",
     "hide": "隱藏大綱",
-    "hideTitle": "隱藏大綱（{{keys}}）",
     "copyHeadingLink": "複製標題連結",
     "copyNoteLink": "複製筆記連結",
     "copyHeadingShortcut": "複製標題捷徑",
@@ -171,6 +197,8 @@
   },
   "bodyMenu": {
     "cut": "剪下",
+    "copyAsPlain": "複製為純文字",
+    "copyAsMarkdown": "複製為 Markdown",
     "sortAsc": "將各行從 A 到 Z 排序",
     "sortDesc": "將各行從 Z 到 A 排序"
   },
@@ -280,6 +308,7 @@
     "hidden": "已隱藏",
     "hiddenNote": "仍可透過快速鍵和 Markdown 使用。",
     "hiddenDrop": "把按鈕拖放到這裡即可隱藏。",
+    "arrangeTitle": "按鈕",
     "markdownViewNote": "Markdown 檢視有自己固定的一組按鈕。",
     "hiddenEmpty": "沒有隱藏的項目。",
     "alwaysVisible": "一律顯示",
@@ -314,5 +343,18 @@
     "positionNote": "選擇工具列在編輯器中的位置。",
     "positionTop": "上方",
     "positionBottom": "下方"
+  },
+  "kanban": {
+    "todo": "待處理",
+    "inProgress": "進行中",
+    "review": "審核中",
+    "done": "已完成",
+    "color": "顏色",
+    "columns": "欄",
+    "columnCount_other": "{{count}} 欄",
+    "cardCount_other": "{{count}} 張卡片",
+    "addColumn": "新增欄",
+    "removeBoard": "移除看板",
+    "moveTo": "移至"
   }
 }

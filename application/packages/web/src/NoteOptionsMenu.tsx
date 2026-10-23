@@ -1,17 +1,17 @@
-import { Suspense, lazy, useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { useTranslation } from 'react-i18next';
+import { BackRow } from './ui/BackRow';
+import { ActionItem, Group, OptionsMenu, ProBadge, ToggleItem, TONE_TEXT, type Tone } from './OptionsMenu';
+import { Suspense, lazy, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
-import { useEscapeToClose } from './useEscapeToClose';
 import { proUnlocked } from './demo';
 import { noteActionGuards, type NoteActionGuardDeps } from './noteActionGuards';
-import { usePopoverPosition } from './usePopoverPosition';
 import { formatInstant } from './intlFormat';
 import { prepareBurnPayload } from './burnShare';
-import { ColorSwatch } from './ColorSwatch';
-import { LOOK_COLORS, NOTE_NO_COLOR, type LookColor, type NoteOwnColor } from './itemStyles';
-import { PencilSimpleSlash, Shield, ClockCounterClockwise, PushPin, Export, Trash, Repeat, Copy, Folder, Fire, ArrowCounterClockwise, ArticleMedium, TextAa, Swap, ListChecks, Broom, SortAscending, Palette, Info, CaretLeft, CaretRight, Calendar, Check, iconArchive } from './icons';
+import { ColorSwatchRow } from './ColorSwatch';
+import { NOTE_NO_COLOR, type LookColor, type NoteOwnColor } from './itemStyles';
+import { PencilSimpleSlash, Shield, ClockCounterClockwise, PushPin, Export, Trash, Repeat, Copy, Folder, Fire, ArrowCounterClockwise, ArticleMedium, TextAa, Swap, ListChecks, Broom, SortAscending, Palette, Shapes, Info, CaretLeft, Calendar, Check, iconArchive } from './icons';
 import { typeGlyph } from './NoteRow';
+import { PathGlyph, useNoteIconPaths } from './looks/LookGlyph';
 import { CONVERT_TARGETS, isConvertSource, type ConvertTarget } from './noteTypes';
 
 /**
@@ -43,7 +43,7 @@ import { CONVERT_TARGETS, isConvertSource, type ConvertTarget } from './noteType
  * The Pro rows stay tappable for a free user: the tap opens the
  * UpgradeModal instead of applying the change, so the features are
  * discoverable without the free UI feeling crippled.
- * Spec: ops/docs/ui-patterns.md (section 80)
+ * Spec: ops/docs/archive/ui-patterns.md (section 80)
  */
 export interface NoteColorInfo {
   /** The color set on the note itself; null when it takes its tag's or folder's. */
@@ -82,14 +82,16 @@ type Props = NoteActionGuardDeps & {
   /** The days that hold a journal entry, dotted in the Entry date calendar. */
   journalDays?: JournalDays;
   /** Attach a note or a task list to a day, or take it away (null).
-   *  Spec: ops/docs/plans/note-date.md */
+   *  Spec: ops/docs/archive/note-date.md */
   onSetNoteDate?: (day: string | null) => void;
   /** The Schedule view's edits (end day, time, repeat, alerts) and the
    *  occurrence a repeating event was opened on.
-   *  Spec: ops/docs/plans/calendar-pillar-spec.md (step 4) */
+   *  Spec: ops/docs/archive/calendar-pillar-spec.md (step 4) */
   schedule?: {
     occurrence: string | null;
     onEdit: (edit: ScheduleEdit) => void;
+    /** The row the Schedule view opens on, when the event card asked for one. */
+    sub?: 'ends' | 'repeat' | 'alerts';
   };
   /**
    * Body editor this note is currently showing. Absent wherever there is
@@ -124,6 +126,12 @@ type Props = NoteActionGuardDeps & {
    *  folder's again. Free: one note at a time; coloring a whole tag or
    *  folder is the Pro part. */
   onSetColor?: (color: NoteOwnColor | null) => void;
+  /** Opens Settings at the "Folder and tag colors" row, from the color
+   *  view's hint. */
+  onOpenColorSettings?: () => void;
+  /** Opens the icon picker on this note. Pro: the caller sends a free
+   *  account to the upgrade window. Absent where a note has no color. */
+  onPickIcon?: () => void;
   /** Trash view: the menu carries only the two trash actions. */
   isTrash?: boolean;
   onRestore?: () => void;
@@ -184,6 +192,8 @@ export function NoteOptionsMenu({
   onSortTasksByStatus,
   color,
   onSetColor,
+  onOpenColorSettings,
+  onPickIcon,
   isTrash,
   onRestore,
   onDeleteForever,
@@ -191,9 +201,6 @@ export function NoteOptionsMenu({
   const { t } = useTranslation('shell');
   const { t: tEditor } = useTranslation('editor');
   const [view, setView] = useState<NoteOptionsView>(initialView);
-  // A sub-view steps back first, so Escape never throws away the menu
-  // the user drilled in from.
-  useEscapeToClose(() => (view === 'main' ? onClose() : setView('main')));
 
   // The "Pro" badges below key off isPro, never the demo unlock, so the
   // menu keeps advertising the features the demo hands out for free.
@@ -204,49 +211,6 @@ export function NoteOptionsMenu({
     note, isPro, onClose, onSetLocked, onSetPinProtected, onRequestRemoveProtection,
     onOpenUpgrade, onOpenHistory, onSetPin, onMoveToFolder,
   });
-
-  const ref = useRef<HTMLDivElement | null>(null);
-  // Right-aligned dropdown under the "..." button. The hook measures the menu
-  // (which changes height as items toggle) and keeps it on-screen, flipping
-  // above when there's no room below. Spec: ops/docs/ui-patterns.md section 15.
-  const pos = usePopoverPosition(true, anchorRef, ref, { align: 'end' });
-
-  // Close on outside pointerdown. Anchor clicks are ignored so the
-  // "..." button can toggle without a re-open flicker.
-  useEffect(() => {
-    function handler(e: PointerEvent) {
-      const target = e.target as Node | null;
-      if (!target) return;
-      if (ref.current && ref.current.contains(target)) return;
-      if (anchorRef.current && anchorRef.current.contains(target)) return;
-      onClose();
-    }
-    window.addEventListener('pointerdown', handler, true);
-    return () => window.removeEventListener('pointerdown', handler, true);
-  }, [onClose, anchorRef]);
-
-  // Focus moves into the menu on open and on every view change, so the
-  // arrow keys below have somewhere to start. The container takes it, not
-  // the first row, so a mouse user sees no ring.
-  useEffect(() => {
-    ref.current?.focus({ preventScroll: true });
-  }, [view]);
-
-  function onKeyDown(e: React.KeyboardEvent) {
-    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) return;
-    const items = Array.from(
-      ref.current?.querySelectorAll<HTMLButtonElement>('button:not([disabled])') ?? [],
-    );
-    if (items.length === 0) return;
-    e.preventDefault();
-    const i = items.indexOf(document.activeElement as HTMLButtonElement);
-    const next =
-      e.key === 'Home' ? 0
-        : e.key === 'End' ? items.length - 1
-          : e.key === 'ArrowDown' ? (i + 1) % items.length
-            : i <= 0 ? items.length - 1 : i - 1;
-    items[next]?.focus();
-  }
 
   const showModeRow = !isTrash && !!onToggleEditorMode && !!editorMode;
   const showReplaceRow = !isTrash && !!onFindReplace;
@@ -266,21 +230,17 @@ export function NoteOptionsMenu({
   const burnable = prepareBurnPayload(note) !== null;
 
   const shownColor = color ? (color.own ?? color.inherited?.color ?? NOTE_NO_COLOR) : NOTE_NO_COLOR;
+  const iconPaths = useNoteIconPaths(note.id);
   const colorName = shownColor === NOTE_NO_COLOR ? t('noteOptionsMenu.colorNone') : tEditor(`color.names.${shownColor}`);
 
-  return createPortal(
-    <div
-      ref={ref}
-      role="dialog"
-      tabIndex={-1}
-      aria-label={t('noteOptionsMenu.noteOptions')}
-      onKeyDown={onKeyDown}
-      className={`fixed z-50 ${view === 'convert' ? CONVERT_WIDTH : 'w-80'} max-w-[calc(100vw-16px)] max-h-[calc(100dvh-16px)] overflow-y-auto overscroll-contain rounded-xl border border-divider bg-surface-2 shadow-lg outline-none divide-y divide-divider`}
-      style={{
-        top: pos?.top ?? 0,
-        left: pos?.left ?? 0,
-        visibility: pos ? 'visible' : 'hidden',
-      }}
+  return (
+    <OptionsMenu
+      anchorRef={anchorRef}
+      label={t('noteOptionsMenu.noteOptions')}
+      view={view}
+      onClose={onClose}
+      onEscape={() => (view === 'main' ? onClose() : setView('main'))}
+      className={view === 'convert' ? CONVERT_WIDTH : 'w-80'}
     >
       {/* Find-in-note deliberately does NOT live here: the magnifier sits in
           the editor's corner, on every note long enough to search. Find AND
@@ -310,7 +270,11 @@ export function NoteOptionsMenu({
       ) : view === 'color' && color && onSetColor ? (
         <>
           <BackRow title={t('noteOptionsMenu.color')} onBack={() => setView('main')} />
-          <NoteColorPanel color={color} onSetColor={onSetColor} />
+          <NoteColorPanel
+            color={color}
+            onSetColor={onSetColor}
+            {...(onOpenColorSettings ? { onOpenSettings: () => { onClose(); onOpenColorSettings(); } } : {})}
+          />
         </>
       ) : view === 'schedule' && (onSetJournalDate || onSetNoteDate) && schedule ? (
         <Suspense fallback={null}>
@@ -327,6 +291,7 @@ export function NoteOptionsMenu({
             showPro={!isPro}
             onUpgrade={() => { onClose(); onOpenUpgrade('alerts'); }}
             onBack={() => setView('main')}
+            initialSub={schedule.sub}
           />
         </Suspense>
       ) : view === 'convert' && showConvertRow ? (
@@ -423,6 +388,15 @@ export function NoteOptionsMenu({
                 chevron
                 onClick={() => setView('color')}
               />
+              {onPickIcon && (
+                <ActionItem
+                  label={t('noteOptionsMenu.icon')}
+                  icon={<Shapes size={16} aria-hidden="true" />}
+                  pro={!isPro}
+                  value={iconPaths ? <PathGlyph paths={iconPaths} size={16} className="text-pn-soft" /> : undefined}
+                  onClick={() => { onClose(); onPickIcon(); }}
+                />
+              )}
             </Group>
           )}
 
@@ -473,7 +447,7 @@ export function NoteOptionsMenu({
               <ActionItem
                 label={t('noteOptionsMenu.entryDate')}
                 icon={<Calendar size={16} aria-hidden="true" />}
-                value={scheduleValue(noteSchedule, formatInstant(dayAtNoon(entryDayOf(note)), 'date'))}
+                value={scheduleValue(noteSchedule, formatInstant(dayAtNoon(entryDayOf(note)), 'tile'))}
                 chevron
                 onClick={() => setView('schedule')}
               />
@@ -482,7 +456,7 @@ export function NoteOptionsMenu({
               <ActionItem
                 label={t('noteOptionsMenu.schedule')}
                 icon={<Calendar size={16} aria-hidden="true" />}
-                value={noteDay ? scheduleValue(noteSchedule, formatInstant(dayAtNoon(noteDay), 'date')) : t('noteOptionsMenu.noDate')}
+                value={noteDay ? scheduleValue(noteSchedule, formatInstant(dayAtNoon(noteDay), 'tile')) : t('noteOptionsMenu.noDate')}
                 chevron
                 onClick={() => setView('schedule')}
               />
@@ -568,8 +542,7 @@ export function NoteOptionsMenu({
           )}
         </>
       )}
-    </div>,
-    document.body,
+    </OptionsMenu>
   );
 }
 
@@ -578,120 +551,34 @@ export function NoteOptionsMenu({
  * ──────────────────────────────────────────────────────────────── */
 
 /**
- * Colour of an item's icon. Blue is the standard; burn keeps the amber
- * it wears elsewhere, and anything that destroys keeps its red, so the
- * two actions worth a second thought are the two that stand out.
- */
-type Tone = 'accent' | 'burn' | 'danger' | 'success' | 'muted';
-
-const TONE_TEXT: Record<Tone, string> = {
-  accent: 'text-accent',
-  burn: 'text-orange-800 dark:text-orange-400',
-  danger: 'text-danger',
-  success: 'text-success',
-  muted: 'text-pn-muted',
-};
-
-const ROW_TEXT: Record<Tone, string> = {
-  accent: 'text-pn hover:bg-surface-1 focus-visible:bg-surface-1',
-  burn: 'text-pn hover:bg-surface-1 focus-visible:bg-surface-1',
-  muted: 'text-pn-muted hover:bg-surface-1 focus-visible:bg-surface-1',
-  danger: 'text-danger hover:bg-red-50 dark:hover:bg-red-950/30 focus-visible:bg-red-50 dark:focus-visible:bg-red-950/30',
-  success: 'text-success hover:bg-emerald-50 dark:hover:bg-emerald-950/30 focus-visible:bg-emerald-50 dark:focus-visible:bg-emerald-950/30',
-};
-
-/** Compact with a mouse, a full 44px finger target on a touch screen. */
-const ROW = 'w-full flex items-center gap-3 px-4 min-h-9 py-1.5 [@media(hover:none)]:min-h-11 text-start text-[14px] outline-none transition';
-
-/** One block between two hairlines. The dividers come from the parent. */
-function Group({ children }: { children: React.ReactNode }) {
-  return <div className="py-1">{children}</div>;
-}
-
-/** The quiet Pro marker: grey, no icon, never louder than the label. */
-function ProBadge() {
-  return (
-    <span className="shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-medium leading-none bg-pn/10 text-pn-soft">
-      Pro
-    </span>
-  );
-}
-
-export function BackRow({ title, onBack, wide = false }: { title: string; onBack: () => void; wide?: boolean }) {
-  const { t } = useTranslation('common');
-  // Wide: the whole row is the button, for a Back row at the top of a pane
-  // (the Calendar's), where the title names where it goes.
-  if (wide) {
-    return (
-      <button
-        type="button"
-        onClick={onBack}
-        className="w-full flex items-center gap-1 px-1.5 py-1 text-start rounded-md hover:bg-surface-1 focus-visible:bg-surface-1 outline-none transition"
-      >
-        <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 [@media(hover:none)]:w-11 [@media(hover:none)]:h-11 text-accent">
-          <CaretLeft size={16} aria-hidden="true" />
-        </span>
-        <span className="text-[14px] font-medium text-pn">{title}</span>
-      </button>
-    );
-  }
-  return (
-    <div className="flex items-center gap-1 px-1.5 py-1">
-      <button
-        type="button"
-        onClick={onBack}
-        aria-label={t('actions.back')}
-        className="shrink-0 inline-flex items-center justify-center w-9 h-9 [@media(hover:none)]:w-11 [@media(hover:none)]:h-11 rounded-md text-accent hover:bg-surface-1 focus-visible:bg-surface-1 outline-none transition"
-      >
-        <CaretLeft size={16} aria-hidden="true" />
-      </button>
-      <span className="text-[14px] font-medium text-pn">{title}</span>
-    </div>
-  );
-}
-
-/**
  * The note's color, one tap per swatch. A color the note takes from its
  * tag or folder wears a dashed ring and names its source; a pick of its
  * own wears the solid ring, and "Use default" hands the note back to its
  * tag or folder. The menu stays open, so a pick can be seen on the note
  * before it closes. Free, unlike the folder and tag looks.
- * Spec: ops/docs/plans/folder-tag-icons.md (section 4.9)
+ * Spec: ops/docs/archive/folder-tag-icons.md (section 4.9)
  */
 function NoteColorPanel({
   color,
   onSetColor,
+  onOpenSettings,
 }: {
   color: NoteColorInfo;
   onSetColor: (color: NoteOwnColor | null) => void;
+  onOpenSettings?: () => void;
 }) {
   const { t } = useTranslation('shell');
   const { t: tEditor } = useTranslation('editor');
   const { own, inherited } = color;
-  const shown = own ?? inherited?.color ?? NOTE_NO_COLOR;
   return (
     <div className="px-4 py-3">
-      <div className="flex flex-wrap gap-1 [@media(hover:none)]:gap-0.5">
-        <ColorSwatch
-          label={t('noteOptionsMenu.colorNone')}
-          none
-          labelPosition="above-start"
-          selected={own === NOTE_NO_COLOR || (own === null && !inherited)}
-          className={TOUCH_SWATCH}
-          onClick={() => onSetColor(NOTE_NO_COLOR)}
-        />
-        {LOOK_COLORS.map((c) => (
-          <ColorSwatch
-            key={c}
-            label={tEditor(`color.names.${c}`)}
-            background={`var(--pn-label-${c}-ink)`}
-            selected={own === c}
-            inherited={own === null && shown === c}
-            className={TOUCH_SWATCH}
-            onClick={() => onSetColor(c)}
-          />
-        ))}
-      </div>
+      <ColorSwatchRow
+        selected={own === NOTE_NO_COLOR || (own === null && !inherited) ? 'none' : own}
+        inherited={own === null ? inherited?.color ?? null : null}
+        noneLabel={t('noteOptionsMenu.colorNone')}
+        colorLabel={(c) => tEditor(`color.names.${c}`)}
+        onPick={(c) => onSetColor(c ?? NOTE_NO_COLOR)}
+      />
       {own === null && inherited && (
         <p className="mt-2 text-[12px] text-pn-muted truncate" dir="auto">
           {inherited.kind === 'folder'
@@ -708,12 +595,26 @@ function NoteColorPanel({
           {t('noteOptionsMenu.colorUseDefault')}
         </button>
       )}
+      {/* An own color is a background at every "Folder and tag colors"
+          choice, so the setting that quiets folder and tag colors never
+          reaches it; the hint says so and links to the setting. */}
+      <p className="mt-2 text-xs text-pn-muted">
+        <Trans
+          i18nKey="shell:noteOptionsMenu.colorOwnHint"
+          components={{
+            setting: onOpenSettings ? (
+              <button type="button" onClick={onOpenSettings} className="text-accent underline underline-offset-2 hover:no-underline" />
+            ) : (
+              <span />
+            ),
+          }}
+        />
+      </p>
     </div>
   );
 }
 
 /** The touch floor of the look picker's swatches, which a finger picks from. */
-const TOUCH_SWATCH = '[@media(hover:none)]:w-11 [@media(hover:none)]:h-11';
 
 /** One cell in the strip: a 20px glyph over its own label. */
 function StripButton({
@@ -756,82 +657,6 @@ function StripButton({
   );
 }
 
-function ToggleItem({
-  label,
-  icon,
-  checked,
-  pro,
-  onClick,
-}: {
-  label: string;
-  icon: React.ReactNode;
-  checked: boolean;
-  /** When true, the feature is Pro-gated for this user. Shown as a badge. */
-  pro?: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button type="button" onClick={onClick} aria-pressed={checked} className={`${ROW} ${ROW_TEXT.accent}`}>
-      <span className={`shrink-0 ${TONE_TEXT.accent}`}>{icon}</span>
-      <span className="flex-1 min-w-0 truncate">{label}</span>
-      {pro && <ProBadge />}
-      <span
-        aria-hidden
-        className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition ${
-          checked ? 'bg-accent-fill' : 'bg-pn-muted/35'
-        }`}
-      >
-        <span
-          className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-            checked ? 'translate-x-4 rtl:-translate-x-4' : 'translate-x-0.5 rtl:-translate-x-0.5'
-          }`}
-        />
-      </span>
-    </button>
-  );
-}
-
-function ActionItem({
-  label,
-  icon,
-  onClick,
-  pro,
-  disabled,
-  value,
-  chevron,
-  tone = 'accent',
-}: {
-  label: React.ReactNode;
-  icon: React.ReactNode;
-  onClick: () => void;
-  pro?: boolean;
-  disabled?: boolean;
-  /** A short value at the end of the row: a size, a color. */
-  value?: React.ReactNode;
-  /** The row opens a second view of this menu. */
-  chevron?: boolean;
-  tone?: Tone;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className={`${ROW} ${ROW_TEXT[tone]} disabled:opacity-50 disabled:cursor-not-allowed`}
-    >
-      <span className={`shrink-0 ${TONE_TEXT[tone]}`}>{icon}</span>
-      <span className="flex-1 min-w-0 truncate">{label}</span>
-      {pro && <ProBadge />}
-      {value !== undefined && (
-        <span className="shrink min-w-0 max-w-[45%] text-[13px] text-pn-muted">
-          {value}
-        </span>
-      )}
-      {chevron && <CaretRight size={14} aria-hidden="true" className="shrink-0 text-pn-muted" />}
-    </button>
-  );
-}
-
 import { formatBytes } from './formatBytes';
 import { computeNoteTotalSize, editedAtOf, entryDayOf, journalDateOf } from './notesViewUtils';
 import { dayAtNoon } from './MonthGrid';
@@ -839,7 +664,9 @@ import type { JournalDays } from './notesViewUtils';
 import { scheduleOf, type Schedule, type ScheduleEdit } from './schedule';
 import { timeLabel } from './JournalCalendar';
 
-/** A Date row's value: the day, and the time when the item has one. */
+/** A Date row's value: the day and month (the year only when it is not
+ *  this year), and the time when the item has one, short enough for one
+ *  line of the menu. */
 function scheduleValue(s: Schedule | null, day: string): string {
   return s?.time ? `${day} · ${timeLabel(s.day, s.time)}` : day;
 }

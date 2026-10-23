@@ -343,7 +343,7 @@ export async function parsePrivacyNotesBackup(
   return {
     folders: rebuiltFolders,
     originalFolderIds: originalIds,
-    ...(carried ? { settings: { itemStyles: carried.itemStyles, customThemes: carried.customThemes } } : {}),
+    ...(carried ? { settings: { itemStyles: carried.itemStyles, customThemes: carried.customThemes, factors: carried.factors, customHabits: carried.customHabits } } : {}),
     notes,
     warnings,
     transforms: [],

@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { activeLocale } from './languages';
 import {
-  JOURNAL_TITLE_FORMATS,
+  distinctJournalFormats,
   JOURNAL_SUFFIX_MAX,
   journalTitle,
   type JournalTitleFormat,
@@ -30,7 +30,8 @@ export type JournalTitlesProps = {
  *
  * Every option renders today's date in its own shape, with the suffix
  * applied live, so the picker IS the preview and no shape needs a
- * translated label ("2026-07-29" says ISO in every language). Only new
+ * translated label ("2026-07-29" says ISO in every language). Shapes that
+ * write the same text today share one row. Only new
  * entries are affected - existing titles are free text the user may
  * have edited by hand, so nothing rewrites them.
  *
@@ -43,8 +44,8 @@ export type JournalTitlesProps = {
  * `trackers.journalDate`, which is what the Week in Review card matches
  * on. Nothing infers a date from the title. See notesViewUtils.ts.
  *
- * GitHub #200. Spec: ops/docs/ui-patterns.md section 36 (settings standard),
- * ops/docs/plans/dates.md (section 3.5)
+ * GitHub #200. Spec: ops/docs/archive/ui-patterns.md section 36 (settings standard),
+ * ops/docs/archive/dates.md (section 3.5)
  */
 /** The select's value for the custom pattern, which no preset uses. */
 const CUSTOM = 'custom';
@@ -103,7 +104,7 @@ export function JournalTitles({ format, onFormatChange, suffix, onSuffixChange, 
           aria-label={t('journals.titlesTitle')}
           className="rounded-md bg-track border border-divider px-2.5 py-1.5 text-sm text-pn focus:border-accent focus:outline-none"
         >
-          {JOURNAL_TITLE_FORMATS.map((f) => (
+          {distinctJournalFormats(today, format, locale).map((f) => (
             <option key={f} value={f}>{journalTitle(today, f, '', locale)}</option>
           ))}
           <option value={CUSTOM}>{t('journals.customPattern')}</option>

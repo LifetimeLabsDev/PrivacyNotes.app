@@ -129,7 +129,7 @@ export function ExtraThemeCards({ mode, compact, ctx, madeBy = 'all', sort = 'ne
   compact: boolean;
   ctx: ThemeGalleryCtx;
   madeBy?: MadeBy;
-  /** The order of the community themes under Community. */
+  /** The order of the community themes under All and Community. */
   sort?: CommunitySort;
   /** One theme by id, for the quick menu; it draws nothing when the theme is gone. */
   only?: string;

@@ -26,7 +26,7 @@ import { DotsThreeOutlineVertical, PencilSimple, Trash } from './icons';
  * title (GitHub #339), and a bookmark row cannot be the way in instead:
  * tapping it opens the website.
  *
- * Spec: ops/docs/ui-patterns.md (sections 74 and 104)
+ * Spec: ops/docs/archive/ui-patterns.md (sections 74 and 104)
  */
 export function BookmarkRowActions({
   note,
@@ -87,7 +87,7 @@ export function BookmarkRowActions({
            ON the title - `dark:bg-red-950/30` let the title read straight
            through the armed pill, worst on a mini tile where the two overlap
            almost completely (reported 2026-08-23).
-           Spec: ops/docs/ui-patterns.md (section 74) */
+           Spec: ops/docs/archive/ui-patterns.md (section 74) */
         className="inline-flex items-center gap-1 rounded-full border border-red-200 bg-red-50 px-2.5 py-1 text-xs font-medium text-red-600 transition hover:bg-red-100 dark:border-red-900 dark:bg-red-950 dark:text-red-400 dark:hover:bg-red-900"
       >
         <Trash size={13} />
@@ -117,7 +117,7 @@ export function BookmarkRowActions({
              this cluster leaves the flow and sits ON the row title, so a
              tinted `dark:hover:bg-red-950/30` let the title read straight
              through the button (reported 2026-08-25).
-             Spec: ops/docs/ui-patterns.md (section 74) */
+             Spec: ops/docs/archive/ui-patterns.md (section 74) */
           className="w-7 h-7 rounded-md border border-divider bg-surface-1 text-danger inline-flex items-center justify-center transition hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-950"
         >
           <Trash size={14} />

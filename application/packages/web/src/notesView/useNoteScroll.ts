@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type RefObject } from 'react';
 
-// Spec: ops/docs/ui-patterns.md section 137
+// Spec: ops/docs/archive/ui-patterns.md section 137
 /** Travel that counts as a scroll in one direction; less is a jitter. */
 const STEP_PX = 8;
 /** Near the top of a note the bar is always on screen. */

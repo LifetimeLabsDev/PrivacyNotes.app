@@ -1,13 +1,15 @@
 {
   "placeholder": "쓰기 시작하세요…",
+  "eventPlaceholder": "안건, 주소 또는 메모를 추가하세요…",
   "toolbar": {
     "bold": "굵게",
+    "hideKeyboard": "키보드 숨기기",
     "italic": "기울임",
     "underline": "밑줄",
     "heading": "제목",
     "taskList": "할 일 목록",
     "bulletList": "글머리 기호 목록",
-    "addLink": "링크 추가 ({{keys}})",
+    "addLink": "링크 추가",
     "noteLink": "다른 노트로 연결 ([[ 입력도 가능)",
     "numberedList": "번호 목록",
     "textColor": "글자 색",
@@ -40,7 +42,6 @@
     "footnote": "각주",
     "spoiler": "스포일러",
     "copyBox": "복사 상자",
-    "withHint": "{{label}} ({{hint}})",
     "customize": "도구 모음 사용자화"
   },
   "align": {
@@ -98,7 +99,9 @@
       "update": "업데이트",
       "time": "시간",
       "steps": "단계",
-      "place": "장소"
+      "place": "장소",
+      "kanban": "칸반 보드",
+      "column": "열"
     }
   },
   "color": {
@@ -132,27 +135,51 @@
     "resizeHint": "{{shift}} 키를 누른 채 끌면 이 열만 바뀌고, {{alt}} 키를 누르면 더 세밀하게 조절돼요",
     "deleteRow": "행 삭제",
     "deleteColumn": "열 삭제",
-    "deleteTable": "표 삭제"
+    "deleteTable": "표 삭제",
+    "insertFormula": "수식 삽입",
+    "formulaNoMatch": "일치하는 수식이 없어요",
+    "formula": {
+      "SUM": "값을 모두 더해요",
+      "PRODUCT": "값을 모두 곱해요",
+      "AVG": "값의 평균",
+      "AVERAGE": "값의 평균",
+      "MEDIAN": "가운데 값",
+      "MIN": "가장 작은 값",
+      "MAX": "가장 큰 값",
+      "COUNT": "숫자의 개수",
+      "ABS": "부호를 뺀 값",
+      "SQRT": "제곱근",
+      "SIGN": "값이 양수인지 음수인지",
+      "CEIL": "올림해서 정수로",
+      "FLOOR": "내림해서 정수로",
+      "ROUND": "반올림해서 정수로",
+      "LOG": "로그",
+      "RAND": "임의의 수",
+      "PI": "원주율",
+      "E": "자연로그의 밑",
+      "TAU": "원주율의 두 배",
+      "PHI": "황금비"
+    }
   },
   "find": {
     "placeholder": "노트에서 찾기",
     "label": "노트에서 찾기",
-    "previous": "이전 결과 (Shift+Enter)",
-    "previousTitle": "이전 (Shift+Enter)",
-    "next": "다음 결과 (Enter)",
-    "nextTitle": "다음 (Enter)",
+    "previous": "이전 결과",
+    "previousTitle": "이전",
+    "next": "다음 결과",
+    "nextTitle": "다음",
     "close": "찾기 닫기",
-    "closeTitle": "닫기 ({{keys}})",
+    "closeTitle": "닫기",
     "replacePlaceholder": "바꿀 내용",
     "replaceLabel": "바꿀 내용",
     "replace": "바꾸기",
-    "replaceTitle": "이 항목 바꾸기 (Enter)",
+    "replaceTitle": "이 항목 바꾸기",
     "replaceAll": "모두",
     "replaceAllTitle": "모든 항목 바꾸기",
     "caseSensitive": "대소문자 구분",
     "caseSensitiveTitle": "대소문자 구분",
     "closeReplace": "찾기 및 바꾸기 닫기",
-    "closeReplaceTitle": "닫기 ({{keys}})",
+    "closeReplaceTitle": "닫기",
     "showReplace": "찾기 및 바꾸기",
     "hideReplace": "바꾸기 숨기기",
     "replacedCount_other": "{{count}}개 바꿈"
@@ -163,7 +190,6 @@
     "title": "개요",
     "ariaLabel": "노트 개요",
     "hide": "개요 숨기기",
-    "hideTitle": "개요 숨기기 ({{keys}})",
     "copyHeadingLink": "제목 링크 복사",
     "copyNoteLink": "노트 링크 복사",
     "copyHeadingShortcut": "제목 바로가기 복사",
@@ -171,6 +197,8 @@
   },
   "bodyMenu": {
     "cut": "잘라내기",
+    "copyAsPlain": "일반 텍스트로 복사",
+    "copyAsMarkdown": "Markdown으로 복사",
     "sortAsc": "줄을 오름차순으로 정렬",
     "sortDesc": "줄을 내림차순으로 정렬"
   },
@@ -280,6 +308,7 @@
     "hidden": "숨김",
     "hiddenNote": "단축키와 Markdown으로 계속 쓸 수 있어요.",
     "hiddenDrop": "버튼을 여기에 놓으면 숨겨져요.",
+    "arrangeTitle": "버튼",
     "markdownViewNote": "markdown 보기에는 고정된 버튼 세트가 따로 있어요.",
     "hiddenEmpty": "숨긴 항목이 없어요.",
     "alwaysVisible": "항상 표시",
@@ -314,5 +343,18 @@
     "positionNote": "편집기에서 도구 모음이 놓일 위치를 골라요.",
     "positionTop": "위",
     "positionBottom": "아래"
+  },
+  "kanban": {
+    "todo": "할 일",
+    "inProgress": "진행 중",
+    "review": "검토",
+    "done": "완료",
+    "color": "색상",
+    "columns": "열",
+    "columnCount_other": "{{count}}개 열",
+    "cardCount_other": "카드 {{count}}개",
+    "addColumn": "열 추가",
+    "removeBoard": "보드 제거",
+    "moveTo": "이동할 열"
   }
 }

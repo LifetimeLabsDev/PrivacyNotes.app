@@ -4,7 +4,7 @@
  * out of every boot path. A failed load (a dropped connection on the web)
  * clears the promise, so the next glyph or the picker tries again; until then
  * every glyph draws its default.
- * Spec: ops/docs/plans/folder-tag-icons.md (section 8)
+ * Spec: ops/docs/archive/folder-tag-icons.md (section 8)
  */
 import { useEffect, useState } from 'react';
 

@@ -81,7 +81,7 @@ interface KeepNote {
 /**
  * Keep's note colors, as the colors of a folder or tag look. Keep has a few
  * more: cerulean reads as blue, brown as orange. DEFAULT maps to none.
- * Spec: ops/docs/plans/folder-tag-icons.md (section 4.7)
+ * Spec: ops/docs/archive/folder-tag-icons.md (section 4.7)
  */
 const KEEP_COLORS: Readonly<Record<string, string>> = {
   RED: 'red',

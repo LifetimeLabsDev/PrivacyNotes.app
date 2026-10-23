@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type DragEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, DotsSixVertical, DotsThree, Paperclip, Plus, PushPin } from './icons';
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, DotsSixVertical, DotsThree, Paperclip, Plus, PushPin, Rows } from './icons';
+import { RowTitle, SETTINGS_EYEBROW, SETTINGS_HELP, SETTINGS_TRACK, settingsSegClass } from './settingsUI';
 import { useEscapeToClose } from './useEscapeToClose';
 import { HoverLabel } from './HoverLabel';
 import { useIsTouchDevice } from './useIsMobile';
@@ -62,7 +63,7 @@ const DRAG_TYPE = 'application/x-pn-format-bar';
  * Moves that would break the bar are refused with a line that says why. Every
  * write goes through `onUpdate`, which applies the move to the freshest
  * arrangement in the settings cache, never to the one this render drew.
- * Spec: ops/docs/plans/format-bar.md (section 5)
+ * Spec: ops/docs/archive/format-bar.md (section 5)
  */
 export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionChange, previewing = false, onEnter, onLeave, heading }: FormatBarBoardProps) {
   const { t } = useTranslation('editor');
@@ -200,7 +201,7 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
   // target, never a guess from the element under the pointer.
   // A drop target accepts in dragenter as well as dragover, because Chromium
   // may never send a dragover to a target that did not accept the enter.
-  // Spec: ops/docs/plans/drag-to-folder-and-tag.md (section 3)
+  // Spec: ops/docs/archive/drag-to-folder-and-tag.md (section 3)
   type DropTarget = { part: Part; before: string | null };
   const [target, setTarget] = useState<DropTarget | null>(null);
   const dragFrame = useRef(0);
@@ -322,6 +323,9 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
     // its menu on touch). Only the two menus list names, as the toolbar's do.
     if (part !== 'menu' && part !== 'attachMenu') {
       const thinLine = key.startsWith('separator') && part !== 'hidden';
+      // A hidden separator keeps a frame, so the row shows a grabbable item
+      // and not a loose line.
+      const framedLine = key.startsWith('separator') && part === 'hidden';
       return (
         <li key={key} className="shrink-0" onDragEnter={over(part, key, true)} onDragOver={over(part, key, true)}>
           <HoverLabel label={name} position="below">
@@ -332,7 +336,7 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
               // slot; in the hidden row it is a full button, so it can be seen and grabbed.
               className={`flex items-center justify-center ${thinLine ? 'w-2 [@media(hover:none)]:w-5' : 'w-8 [@media(hover:none)]:w-10'} h-8 [@media(hover:none)]:h-10 rounded-md transition ${
                 open ? 'bg-accent/15 text-accent-strong' : 'text-pn-soft [@media(hover:hover)]:hover:bg-pn/10'
-              } ${canDrag ? 'cursor-grab' : ''} ${dragKey === key ? 'opacity-40' : ''}`}
+              } ${framedLine ? 'border border-divider' : ''} ${canDrag ? 'cursor-grab' : ''} ${dragKey === key ? 'opacity-40' : ''}`}
             >
               {thinLine
                 ? <span aria-hidden="true" className="h-4 w-px bg-pn-muted/35" />
@@ -370,7 +374,7 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
     </ul>
   );
   const subhead = (text: string) => (
-    <div className="px-1 pt-3 pb-1 text-[11px] uppercase tracking-wide text-pn-muted">{text}</div>
+    <div className="px-1 pt-3 pb-1 text-xs text-pn-soft">{text}</div>
   );
 
   // In the menu the end of a list is the end of a group: the line goes at the
@@ -398,7 +402,7 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
       {...dropZone('attachMenu')}
       className={`min-w-0 mt-2 rounded-md transition-colors ${target?.part === 'attachMenu' ? 'bg-accent/10' : ''}`}
     >
-      <div className="flex items-center gap-1.5 px-1 pt-3 pb-1 text-[11px] uppercase tracking-wide text-pn-muted">
+      <div className="flex items-center gap-1.5 px-1 pt-3 pb-1 text-xs text-pn-soft">
         <Paperclip size={12} aria-hidden="true" />{t('formatBar.inAttachMenu')}
       </div>
       {layout.attachMenu.length
@@ -447,15 +451,15 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
     >
       {/* Top or bottom, on every device (per device). */}
       {onPositionChange && (
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3 pb-3 border-b border-divider">
           <div className="min-w-0">
-            <p className="text-sm font-medium">{t('formatBar.positionTitle')}</p>
-            <p className="text-xs text-pn-muted">{t('formatBar.positionNote')}</p>
+            <RowTitle icon={Rows}>{t('formatBar.positionTitle')}</RowTitle>
+            <p className={SETTINGS_HELP}>{t('formatBar.positionNote')}</p>
           </div>
           <div
             role="radiogroup"
             aria-label={t('formatBar.positionTitle')}
-            className="shrink-0 flex gap-1 rounded-md p-1 bg-track"
+            className={`shrink-0 ${SETTINGS_TRACK}`}
             // A radio group is one Tab stop, and an arrow key picks the other
             // choice, as every radio group does.
             onKeyDown={(e) => {
@@ -475,7 +479,7 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
                 aria-checked={position === p}
                 tabIndex={position === p ? 0 : -1}
                 onClick={() => onPositionChange(p)}
-                className={`min-h-[36px] px-3 rounded text-xs transition ${position === p ? 'bg-surface-2 text-pn font-medium shadow-sm' : 'text-pn-muted'}`}
+                className={settingsSegClass(position === p)}
               >
                 {t(p === 'top' ? 'formatBar.positionTop' : 'formatBar.positionBottom')}
               </button>
@@ -499,7 +503,7 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
           {/* Each hint sits where it applies: how to move a button next to
               the heading, and the fixed end of the bar named above it. */}
           <div className="flex items-baseline gap-2 px-1 pb-1.5">
-            <h3 className="shrink-0 text-xs font-semibold text-pn-muted">{t('formatBar.onBar')}</h3>
+            <h3 className={`shrink-0 ${SETTINGS_EYEBROW}`}>{t('formatBar.onBar')}</h3>
             <p className="min-w-0 truncate text-xs text-pn-muted">{touch ? t('formatBar.hintTap') : t('formatBar.hintDrag')}</p>
             {layout.end.length > 0 && <p className="ms-auto shrink-0 text-xs text-pn-muted">{t('formatBar.alwaysVisible')}</p>}
           </div>
@@ -551,7 +555,7 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
             className="mt-3"
           >
             <div className="flex items-baseline gap-2 px-1 pb-1.5">
-              <h3 className="shrink-0 text-xs font-semibold text-pn-muted">{t('formatBar.hidden')}</h3>
+              <h3 className={`shrink-0 ${SETTINGS_EYEBROW}`}>{t('formatBar.hidden')}</h3>
               <p className="min-w-0 truncate text-xs text-pn-muted">{hiddenNote}</p>
             </div>
             <ul className={`flex flex-wrap items-center min-h-[2.625rem] [@media(hover:none)]:min-h-[3.125rem] rounded-lg border border-dashed px-1.5 py-1 transition-colors ${
@@ -579,7 +583,7 @@ export function FormatBarBoard({ layout, onUpdate, position = 'top', onPositionC
             {...dropZone('menu')}
             className={`min-w-0 rounded-lg p-2 transition-colors ${target?.part === 'menu' ? 'bg-accent/10' : 'bg-surface-1'}`}
           >
-            <h3 className="px-1 text-xs font-semibold text-pn-muted">{t('formatBar.inMenu')}</h3>
+            <h3 className={`px-1 ${SETTINGS_EYEBROW}`}>{t('formatBar.inMenu')}</h3>
             <div className="grid gap-x-3 [grid-template-columns:repeat(auto-fit,minmax(11rem,1fr))] items-start">
               {menuWithAttach}
             </div>

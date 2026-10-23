@@ -21,7 +21,7 @@
  * and the cleanest way to guarantee that is for it to keep its state somewhere
  * that store cannot see.
  *
- * Spec: ops/docs/plans/markdown-folder.md (section 5)
+ * Spec: ops/docs/archive/markdown-folder.md (section 5)
  */
 
 import { isDemoMode } from '../demo';

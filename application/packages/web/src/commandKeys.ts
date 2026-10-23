@@ -8,7 +8,7 @@
  * help-page.ts evaluates this file on its own, so it MUST stay free of
  * imports, and nothing at the top level may read a build constant.
  *
- * Spec: ops/docs/plans/keyboard-shortcuts.md (sections 4.1 and 5)
+ * Spec: ops/docs/archive/keyboard-shortcuts.md (sections 4.1 and 5)
  */
 
 export type KeyOs = 'mac' | 'pc';
@@ -146,6 +146,10 @@ export const COMMAND_KEYS = {
     { mod: true, alt: true, key: 'f', os: 'pc', alias: true },
   ],
   outline: [{ mod: true, shift: true, key: 'o' }],
+  // No browser gives Mod+Shift+X to a page meaning (Firefox reads it in its
+  // address bar only), and no editor key or desktop menu item takes it.
+  // Mod+Shift+G is find previous in every browser and Mac app.
+  connections: [{ mod: true, shift: true, key: 'x' }],
   insertLink: [{ mod: true, shift: true, key: 'k' }],
   markdownView: [{ mod: true, shift: true, key: 'm' }],
   // A browser opens its developer tools on Mod+Shift+I.

@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
 import { setPillarPrefs, type ListPrefs, type ListPrefsStore } from './listPrefs';
 import type { View } from './views';
-import NoteRow, { SiteChip, CardGlyph, CompactSiteIcon, itemDragSelection, typeGlyph } from './NoteRow';
-import NoteCard from './NoteCard';
+import { SiteChip, CardGlyph, CompactSiteIcon, itemDragSelection, typeGlyph } from './NoteRow';
+import { WindowedNoteRow as NoteRow, WindowedNoteCard as NoteCard } from './WindowedNoteItem';
 import { ListNav } from './notesView/ListNav';
 import { ListSearchInput } from './ListSearchInput';
 import { Switch } from './Switch';
@@ -31,7 +31,7 @@ import { NewButton } from './NewButton';
  * URL; the pencil, the context menu, and the quick-add bar select into
  * the editor. Rows are the shared NoteRow, so the favicon chip, prefs
  * toggles, and sort rule are the same code the rest of the app runs.
- * Spec: ops/docs/plans/bookmarks-pillar.md + bookmarks-mockups.html
+ * Spec: ops/docs/archive/bookmarks-pillar.md + bookmarks-mockups.html
  */
 
 export type BookmarkDraft = { url: string; name: string; tags: string[]; folderId: string | null };
@@ -72,6 +72,7 @@ function extractBodyLinks(body: string): { url: string; name: string }[] {
 }
 
 export function BookmarksList({
+  place = null,
   bookmarks,
   isNoteLocked,
   bookmarkKeys,
@@ -81,6 +82,7 @@ export function BookmarksList({
   onListPrefsChange,
   onSelectView,
   hiddenViews,
+  otherSpaceLine,
   importOffer,
   onOpenDrawer,
   search,
@@ -124,6 +126,9 @@ export function BookmarksList({
   viewMode,
   focusSignal,
 }: {
+  /** The view and space this list draws, so a return lands where it was;
+   *  null under a search. Spec: ops/docs/archive/keep-my-place.md */
+  place?: string | null;
   /** Active (non-trashed) link notes, already folder/tag scoped by the owner. */
   bookmarks: LocalNote[];
   /** The view's lock predicate: a gated bookmark's row keeps its name and
@@ -144,6 +149,9 @@ export function BookmarksList({
   onSelectView: (v: View) => void;
   /** Passed straight to ListNav; see userSettings.hiddenViews. */
   hiddenViews?: import('./views').View[] | undefined;
+  /** With Spaces on, the empty-list line that says how many of this list's
+   *  items are in the other space; undefined when there are none. */
+  otherSpaceLine?: string;
   /** The synced import-offer dismissal; see ImportPrompt.tsx. */
   importOffer: ImportOffer;
   onOpenDrawer: () => void;
@@ -152,7 +160,7 @@ export function BookmarksList({
    *  query invisible here: it still filtered `bookmarks` upstream while this
    *  box read empty, so the sidebar counted 5 bookmarks and one row showed.
    *  It also put the pane out of reach of Cmd+K and Escape, which act on the
-   *  shared string. Spec: ops/docs/plans/bookmarks-pillar.md */
+   *  shared string. Spec: ops/docs/archive/bookmarks-pillar.md */
   search: string;
   setSearch: (v: string) => void;
   searchInputRef: React.RefObject<HTMLInputElement | null>;
@@ -311,12 +319,12 @@ export function BookmarksList({
      itself, an empty pane does not. The filter entry rides along there, so
      both causes are named. */
   const showSearchEntry = !!q && bookmarks.length === 0 && !selectionMode;
-  // The saved bookmarks arrive in slices; the links found in notes follow them.
-  const list = useItemList([search, activeFolderName, activeTag], bookmarks.length);
+  // Saved bookmarks and links found in notes share one scroll budget.
+  const list = useItemList([search, activeFolderName, activeTag], bookmarks.length + filteredDerived.length, place);
   const compactRows = useCompactRows();
   // The links found in notes wait until every saved bookmark is revealed, or
   // they would sit in the middle of a long list and move down as it grew.
-  const shownDerived = list.reveal.visible >= bookmarks.length ? filteredDerived : [];
+  const shownDerived = filteredDerived.slice(0, Math.max(0, list.reveal.visible - bookmarks.length));
   const showFilterEntry =
     !selectionMode &&
     (activeFolderName !== null || activeTag !== null) &&
@@ -504,7 +512,7 @@ export function BookmarksList({
             {/* States the fact before it pitches, the way every other pillar
                 does ("No notes yet.", "Vault is empty."). The heading under
                 it is the invitation, not the status. */}
-            <p className="text-[13px] text-pn-muted mt-3">{t('bookmarks.emptyNone')}</p>
+            <p className="text-[13px] text-pn-muted mt-3">{otherSpaceLine ?? t('bookmarks.emptyNone')}</p>
             <h3 className="text-[15px] font-semibold mt-1 mb-4">{t('bookmarks.emptyTitle')}</h3>
             {/* The pane is a resizable COLUMN, so the two buttons run out of
                 room long before the viewport does: they wrap onto their own
@@ -543,6 +551,7 @@ export function BookmarksList({
             {bookmarks.slice(0, list.reveal.visible).map((n) => (
               viewMode === 'grid' ? (
               <NoteCard
+                windowed={bookmarks.length > 100}
                 key={n.id}
                 note={n}
                 isOpen={editingNoteId === n.id && !selectionMode}
@@ -569,6 +578,7 @@ export function BookmarksList({
               />
               ) : (
               <NoteRow
+                windowed={bookmarks.length > 100}
                 key={n.id}
                 note={n}
                 isOpen={editingNoteId === n.id && !selectionMode}

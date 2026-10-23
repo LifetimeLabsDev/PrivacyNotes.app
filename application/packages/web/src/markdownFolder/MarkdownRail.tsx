@@ -16,7 +16,7 @@
  *     different feature with a different confirm.
  *   - No Pro gate anywhere near it.
  *
- * Spec: ops/docs/plans/markdown-folder.md (section 9)
+ * Spec: ops/docs/archive/markdown-folder.md (section 9)
  */
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

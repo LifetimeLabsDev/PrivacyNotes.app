@@ -69,7 +69,7 @@
                  through fileAssociations, which would also claim VIEW and open
                  every text file on the phone.
                  Re-add after any `tauri android init` (re-init wipes this file).
-                 Spec: ops/docs/plans/share-into-app.md -->
+                 Spec: ops/docs/archive/share-into-app.md -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />

@@ -1,13 +1,15 @@
 {
   "placeholder": "Begin met schrijven…",
+  "eventPlaceholder": "Voeg agendapunten, een adres of notities toe…",
   "toolbar": {
     "bold": "Vet",
+    "hideKeyboard": "Toetsenbord verbergen",
     "italic": "Cursief",
     "underline": "Onderstrepen",
     "heading": "Kop",
     "taskList": "Takenlijst",
     "bulletList": "Opsomming",
-    "addLink": "Link toevoegen ({{keys}})",
+    "addLink": "Link toevoegen",
     "noteLink": "Naar een andere notitie linken (of typ [[)",
     "numberedList": "Genummerde lijst",
     "textColor": "Tekstkleur",
@@ -40,7 +42,6 @@
     "footnote": "Voetnoot",
     "spoiler": "Spoiler",
     "copyBox": "Kopieervak",
-    "withHint": "{{label}} ({{hint}})",
     "customize": "Opmaakbalk aanpassen"
   },
   "align": {
@@ -98,7 +99,9 @@
       "update": "Update",
       "time": "Tijd",
       "steps": "Stappen",
-      "place": "Plaats"
+      "place": "Plaats",
+      "kanban": "Kanbanbord",
+      "column": "Kolom"
     }
   },
   "color": {
@@ -132,27 +135,51 @@
     "resizeHint": "Houd {{shift}} ingedrukt om alleen deze kolom te wijzigen, {{alt}} voor kleinere stappen",
     "deleteRow": "Rij verwijderen",
     "deleteColumn": "Kolom verwijderen",
-    "deleteTable": "Tabel verwijderen"
+    "deleteTable": "Tabel verwijderen",
+    "insertFormula": "Formule invoegen",
+    "formulaNoMatch": "Geen formule gevonden",
+    "formula": {
+      "SUM": "Waarden optellen",
+      "PRODUCT": "Waarden vermenigvuldigen",
+      "AVG": "Gemiddelde van de waarden",
+      "AVERAGE": "Gemiddelde van de waarden",
+      "MEDIAN": "Middelste waarde",
+      "MIN": "Kleinste waarde",
+      "MAX": "Grootste waarde",
+      "COUNT": "Hoeveel getallen",
+      "ABS": "Waarde zonder teken",
+      "SQRT": "Vierkantswortel",
+      "SIGN": "Of een waarde positief of negatief is",
+      "CEIL": "Naar boven afronden op een heel getal",
+      "FLOOR": "Naar beneden afronden op een heel getal",
+      "ROUND": "Afronden op een heel getal",
+      "LOG": "Logaritme",
+      "RAND": "Een willekeurig getal",
+      "PI": "De constante pi",
+      "E": "Het getal van Euler",
+      "TAU": "De constante tau",
+      "PHI": "De gulden snede"
+    }
   },
   "find": {
     "placeholder": "Zoeken in notitie",
     "label": "Zoeken in notitie",
-    "previous": "Vorige overeenkomst (Shift+Enter)",
-    "previousTitle": "Vorige (Shift+Enter)",
-    "next": "Volgende overeenkomst (Enter)",
-    "nextTitle": "Volgende (Enter)",
+    "previous": "Vorige overeenkomst",
+    "previousTitle": "Vorige",
+    "next": "Volgende overeenkomst",
+    "nextTitle": "Volgende",
     "close": "Zoeken sluiten",
-    "closeTitle": "Sluiten ({{keys}})",
+    "closeTitle": "Sluiten",
     "replacePlaceholder": "Vervangen door",
     "replaceLabel": "Vervangen door",
     "replace": "Vervangen",
-    "replaceTitle": "Deze overeenkomst vervangen (Enter)",
+    "replaceTitle": "Deze overeenkomst vervangen",
     "replaceAll": "Alles",
     "replaceAllTitle": "Alle overeenkomsten vervangen",
     "caseSensitive": "Hoofdlettergevoelig",
     "caseSensitiveTitle": "Hoofdlettergevoelig",
     "closeReplace": "Zoeken en vervangen sluiten",
-    "closeReplaceTitle": "Sluiten ({{keys}})",
+    "closeReplaceTitle": "Sluiten",
     "showReplace": "Zoeken en vervangen",
     "hideReplace": "Vervangen verbergen",
     "replacedCount_one": "{{count}} vervangen",
@@ -164,7 +191,6 @@
     "title": "Overzicht",
     "ariaLabel": "Notitie-overzicht",
     "hide": "Overzicht verbergen",
-    "hideTitle": "Overzicht verbergen ({{keys}})",
     "copyHeadingLink": "Link naar kop kopiëren",
     "copyNoteLink": "Notitielink kopiëren",
     "copyHeadingShortcut": "Snelkoppeling naar kop kopiëren",
@@ -172,6 +198,8 @@
   },
   "bodyMenu": {
     "cut": "Knippen",
+    "copyAsPlain": "Kopiëren als platte tekst",
+    "copyAsMarkdown": "Kopiëren als Markdown",
     "sortAsc": "Regels sorteren van A tot Z",
     "sortDesc": "Regels sorteren van Z tot A"
   },
@@ -285,6 +313,7 @@
     "hidden": "Verborgen",
     "hiddenNote": "Ze werken nog steeds met hun sneltoets en Markdown.",
     "hiddenDrop": "Zet hier een knop neer om hem te verbergen.",
+    "arrangeTitle": "Knoppen",
     "markdownViewNote": "De Markdown-weergave houdt een eigen vaste set knoppen.",
     "hiddenEmpty": "Niets is verborgen.",
     "alwaysVisible": "Altijd zichtbaar",
@@ -319,5 +348,20 @@
     "positionNote": "Kies waar de opmaakbalk in de editor staat.",
     "positionTop": "Boven",
     "positionBottom": "Onder"
+  },
+  "kanban": {
+    "todo": "Te doen",
+    "inProgress": "Bezig",
+    "review": "Controle",
+    "done": "Klaar",
+    "color": "Kleur",
+    "columns": "Kolommen",
+    "columnCount_one": "{{count}} kolom",
+    "columnCount_other": "{{count}} kolommen",
+    "cardCount_one": "{{count}} kaart",
+    "cardCount_other": "{{count}} kaarten",
+    "addColumn": "Kolom toevoegen",
+    "removeBoard": "Bord verwijderen",
+    "moveTo": "Verplaatsen naar"
   }
 }

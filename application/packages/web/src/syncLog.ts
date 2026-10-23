@@ -105,6 +105,20 @@ export function lastOkSyncAt(): number | null {
   return null;
 }
 
+/**
+ * Whether the log lets a status say "Synced". 'never': no pass on this
+ * device has finished a clean pull, so the local vault can be anything
+ * from empty to half a download. 'pullFailed': the newest pass could not
+ * read the server. A pass that only ran tells nothing about what this
+ * device holds; a finished clean pull is the least a green check needs.
+ */
+export function pullStanding(log: readonly SyncPassEntry[]): 'ok' | 'never' | 'pullFailed' {
+  const last = log[log.length - 1];
+  if (!last) return 'never';
+  if (last.ok) return 'ok';
+  return log.some((e) => e.ok) ? 'pullFailed' : 'never';
+}
+
 function subscribe(cb: () => void) {
   listeners.add(cb);
   return () => {

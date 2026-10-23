@@ -40,7 +40,7 @@ interface PopoverPositionOptions {
  *
  * Returns null until the first measurement. Render the popover while `open` is
  * true and give it `visibility: pos ? 'visible' : 'hidden'` so it never flashes
- * at a stale position before it is placed. Spec: ops/docs/ui-patterns.md
+ * at a stale position before it is placed. Spec: ops/docs/archive/ui-patterns.md
  * (scroll listener uses capture phase to catch scrollable ancestors, not just window)
  */
 export function usePopoverPosition<A extends HTMLElement, P extends HTMLElement>(
@@ -130,7 +130,7 @@ export function usePopoverPosition<A extends HTMLElement, P extends HTMLElement>
  * `point` is the desired top-left corner in viewport coordinates (pass null
  * when the menu is closed). Returns null until measured; render the menu and
  * set `visibility: pos ? 'visible' : 'hidden'` to avoid a flash at the raw,
- * pre-clamp point. Spec: ops/docs/ui-patterns.md section 15 (measure the real
+ * pre-clamp point. Spec: ops/docs/archive/ui-patterns.md section 15 (measure the real
  * menu rather than a hardcoded height/width guess)
  */
 export function usePointMenuPosition<P extends HTMLElement>(

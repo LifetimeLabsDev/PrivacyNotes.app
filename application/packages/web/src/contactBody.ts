@@ -20,7 +20,7 @@
  *   - Labels are free strings. The picker suggests a vocabulary; whatever
  *     the source said is kept, including a custom label.
  *
- * Spec: ops/docs/plans/contacts-pillar.md (section 5)
+ * Spec: ops/docs/archive/contacts-pillar.md (section 5)
  */
 
 /** A labelled value: a phone, an email, a website, a profile, a date, a related name. */
@@ -529,7 +529,7 @@ export function formatAddressLines(a: ContactAddress): string[] {
  * (or neither has a number), or when they share an email address. The
  * fallback carries the weight: Apple exports carry a UID, Android and
  * Google exports carry none, and a macOS export can carry only an email.
- * Spec: ops/docs/plans/contacts-pillar.md (section 7.5)
+ * Spec: ops/docs/archive/contacts-pillar.md (section 7.5)
  */
 
 export type ContactMatchIndex = {

@@ -1,13 +1,15 @@
 {
   "placeholder": "เริ่มเขียน…",
+  "eventPlaceholder": "เพิ่มวาระการประชุม ที่อยู่ หรือบันทึก…",
   "toolbar": {
     "bold": "ตัวหนา",
+    "hideKeyboard": "ซ่อนแป้นพิมพ์",
     "italic": "ตัวเอียง",
     "underline": "ขีดเส้นใต้",
     "heading": "หัวเรื่อง",
     "taskList": "รายการงาน",
     "bulletList": "รายการแบบสัญลักษณ์",
-    "addLink": "เพิ่มลิงก์ ({{keys}})",
+    "addLink": "เพิ่มลิงก์",
     "noteLink": "ลิงก์ไปยังโน้ตอื่น (หรือพิมพ์ [[)",
     "numberedList": "รายการแบบตัวเลข",
     "textColor": "สีข้อความ",
@@ -40,7 +42,6 @@
     "footnote": "เชิงอรรถ",
     "spoiler": "สปอยล์",
     "copyBox": "กล่องคัดลอก",
-    "withHint": "{{label}} ({{hint}})",
     "customize": "ปรับแต่งแถบเครื่องมือ"
   },
   "align": {
@@ -98,7 +99,9 @@
       "update": "อัปเดต",
       "time": "เวลา",
       "steps": "ขั้นตอน",
-      "place": "สถานที่"
+      "place": "สถานที่",
+      "kanban": "บอร์ดคัมบัง",
+      "column": "คอลัมน์"
     }
   },
   "color": {
@@ -132,27 +135,51 @@
     "resizeHint": "กด {{shift}} ค้างไว้เพื่อปรับเฉพาะคอลัมน์นี้ หรือกด {{alt}} ค้างไว้เพื่อปรับทีละน้อย",
     "deleteRow": "ลบแถว",
     "deleteColumn": "ลบคอลัมน์",
-    "deleteTable": "ลบตาราง"
+    "deleteTable": "ลบตาราง",
+    "insertFormula": "แทรกสูตร",
+    "formulaNoMatch": "ไม่พบสูตรที่ตรงกัน",
+    "formula": {
+      "SUM": "บวกค่าทั้งหมด",
+      "PRODUCT": "คูณค่าทั้งหมด",
+      "AVG": "ค่าเฉลี่ยของค่าทั้งหมด",
+      "AVERAGE": "ค่าเฉลี่ยของค่าทั้งหมด",
+      "MEDIAN": "ค่าตรงกลาง",
+      "MIN": "ค่าน้อยที่สุด",
+      "MAX": "ค่ามากที่สุด",
+      "COUNT": "มีตัวเลขกี่จำนวน",
+      "ABS": "ค่าโดยไม่คิดเครื่องหมาย",
+      "SQRT": "รากที่สอง",
+      "SIGN": "ค่าเป็นบวกหรือลบ",
+      "CEIL": "ปัดขึ้นเป็นจำนวนเต็ม",
+      "FLOOR": "ปัดลงเป็นจำนวนเต็ม",
+      "ROUND": "ปัดเป็นจำนวนเต็ม",
+      "LOG": "ลอการิทึม",
+      "RAND": "ตัวเลขสุ่ม",
+      "PI": "ค่าคงที่พาย",
+      "E": "จำนวนออยเลอร์",
+      "TAU": "ค่าคงที่เทา",
+      "PHI": "อัตราส่วนทองคำ"
+    }
   },
   "find": {
     "placeholder": "ค้นหาในโน้ต",
     "label": "ค้นหาในโน้ต",
-    "previous": "รายการที่ตรงก่อนหน้า (Shift+Enter)",
-    "previousTitle": "ก่อนหน้า (Shift+Enter)",
-    "next": "รายการที่ตรงถัดไป (Enter)",
-    "nextTitle": "ถัดไป (Enter)",
+    "previous": "รายการที่ตรงก่อนหน้า",
+    "previousTitle": "ก่อนหน้า",
+    "next": "รายการที่ตรงถัดไป",
+    "nextTitle": "ถัดไป",
     "close": "ปิดการค้นหา",
-    "closeTitle": "ปิด ({{keys}})",
+    "closeTitle": "ปิด",
     "replacePlaceholder": "แทนที่ด้วย",
     "replaceLabel": "แทนที่ด้วย",
     "replace": "แทนที่",
-    "replaceTitle": "แทนที่รายการนี้ (Enter)",
+    "replaceTitle": "แทนที่รายการนี้",
     "replaceAll": "ทั้งหมด",
     "replaceAllTitle": "แทนที่ทุกรายการที่ตรง",
     "caseSensitive": "ตรงตามตัวพิมพ์",
     "caseSensitiveTitle": "ตรงตามตัวพิมพ์",
     "closeReplace": "ปิดการค้นหาและแทนที่",
-    "closeReplaceTitle": "ปิด ({{keys}})",
+    "closeReplaceTitle": "ปิด",
     "showReplace": "ค้นหาและแทนที่",
     "hideReplace": "ซ่อนการแทนที่",
     "replacedCount_other": "แทนที่แล้ว {{count}} รายการ"
@@ -163,7 +190,6 @@
     "title": "เค้าโครง",
     "ariaLabel": "เค้าโครงของโน้ต",
     "hide": "ซ่อนเค้าโครง",
-    "hideTitle": "ซ่อนเค้าโครง ({{keys}})",
     "copyHeadingLink": "คัดลอกลิงก์ไปยังหัวเรื่อง",
     "copyNoteLink": "คัดลอกลิงก์ระหว่างโน้ต",
     "copyHeadingShortcut": "คัดลอกทางลัดไปยังหัวเรื่อง",
@@ -171,6 +197,8 @@
   },
   "bodyMenu": {
     "cut": "ตัด",
+    "copyAsPlain": "คัดลอกเป็นข้อความธรรมดา",
+    "copyAsMarkdown": "คัดลอกเป็น Markdown",
     "sortAsc": "เรียงบรรทัดจาก ก ถึง ฮ",
     "sortDesc": "เรียงบรรทัดจาก ฮ ถึง ก"
   },
@@ -280,6 +308,7 @@
     "hidden": "ซ่อนอยู่",
     "hiddenNote": "ยังใช้ได้ด้วยแป้นลัดและ Markdown",
     "hiddenDrop": "วางปุ่มที่นี่เพื่อซ่อน",
+    "arrangeTitle": "ปุ่ม",
     "markdownViewNote": "มุมมอง Markdown มีชุดปุ่มของตัวเองที่คงที่",
     "hiddenEmpty": "ไม่มีอะไรถูกซ่อน",
     "alwaysVisible": "แสดงเสมอ",
@@ -314,5 +343,18 @@
     "positionNote": "เลือกตำแหน่งของแถบเครื่องมือในตัวแก้ไข",
     "positionTop": "ด้านบน",
     "positionBottom": "ด้านล่าง"
+  },
+  "kanban": {
+    "todo": "สิ่งที่ต้องทำ",
+    "inProgress": "กำลังทำ",
+    "review": "ตรวจทาน",
+    "done": "เสร็จแล้ว",
+    "color": "สี",
+    "columns": "คอลัมน์",
+    "columnCount_other": "{{count}} คอลัมน์",
+    "cardCount_other": "{{count}} การ์ด",
+    "addColumn": "เพิ่มคอลัมน์",
+    "removeBoard": "นำบอร์ดออก",
+    "moveTo": "ย้ายไปที่"
   }
 }

@@ -270,7 +270,7 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="w-full rounded-md bg-red-500/10 hover:bg-red-500/20 text-danger text-xs font-medium px-3 py-2.5 transition"
+          className="w-full rounded-md border border-transparent bg-red-500/10 hover:bg-red-500/20 text-danger text-sm font-medium px-3 py-1.5 transition"
         >
           {t('danger.deleteCta')}
         </button>

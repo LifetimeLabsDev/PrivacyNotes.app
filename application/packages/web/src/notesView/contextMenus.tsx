@@ -57,7 +57,7 @@ export type ContextMenuDeps = {
   onResetPaneWidths: () => void;
 
   // Creation + app shell
-  handleNew: (vaultType?: 'login' | 'card' | 'ssh-key', overrideView?: View) => Promise<void> | void;
+  handleNew: (vaultType?: 'login' | 'card' | 'ssh-key', overrideView?: View, overrideFolderId?: string | null, overrideStarred?: boolean, template?: 'kanban') => Promise<void> | void;
   /** Switch to Files and open the OS file picker (upload flow). */
   onNewFile: () => void;
   /** Bookmarks create through the pillar's quick-add bar, not handleNew -
@@ -70,11 +70,15 @@ export type ContextMenuDeps = {
   onCopyBookmarkUrl: (n: LocalNote) => void;
   onCopyShortcut: (n: LocalNote) => void;
   onEditBookmark: (n: LocalNote) => void;
+  /** Save as note, or open the note a bookmark was clipped into. */
+  onSaveBookmarkAsNote: (n: LocalNote) => void;
+  /** The note a bookmark was clipped into, when there is one. */
+  clippedNoteFor: (n: LocalNote) => LocalNote | undefined;
   setShowSettings: Dispatch<SetStateAction<boolean>>;
   handleSignOutClick: () => void;
 
   /** Open these items as tabs above the editor, or show the tab one already
-   *  has. Absent where the strip is not drawn. Spec: ops/docs/plans/note-tabs.md */
+   *  has. Absent where the strip is not drawn. Spec: ops/docs/archive/note-tabs.md */
   onOpenInTab?: (ids: string[]) => void;
 
   // Multi-select (used by buildNoteMenu for Select / Deselect)
@@ -141,7 +145,7 @@ export type ContextMenuDeps = {
  */
 export function createContextMenuBuilders(deps: ContextMenuDeps): {
   buildGlobalMenu: () => ContextMenuItem[];
-  buildNoteMenu: (n: LocalNote) => ContextMenuItem[];
+  buildNoteMenu: (n: LocalNote, opts?: { alone?: boolean }) => ContextMenuItem[];
 } {
   // Each "New X" switches to the matching pillar and then creates the
   // item. handleNew accepts an overrideView so it creates the correct
@@ -156,8 +160,8 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
   // The letter that picks each entry above the first separator when the
   // menu opens from the keyboard (NEW_MENU_PICKS, same order).
   // Order MUST match the sidebar pillar nav (TagsRail.tsx) and the "New" dropdown
-  // (NotesList.tsx allNewOptions): Note, Task, Login, File, Journal, Event, Contact, Bookmark.
-  // Spec: ops/docs/ui-patterns.md section 45 (New-menu order invariant)
+  // (NotesList.tsx allNewOptions): Note, Task, Kanban board, Login, File, Journal, Event, Contact, Bookmark.
+  // Spec: ops/docs/archive/ui-patterns.md section 45 (New-menu order invariant)
   const buildGlobalMenu = (): ContextMenuItem[] => [
     {
       label: i18n.t('shell:contextMenu.quickAdd'),
@@ -174,6 +178,14 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
       label: i18n.t('shell:contextMenu.newTask'),
       icon: iconNewTask(),
       onSelect: createInPillar('tasks'),
+    },
+    {
+      label: i18n.t('shell:contextMenu.newKanban'),
+      icon: <NEW_GLYPHS.kanban size={14} />,
+      onSelect: () => {
+        void deps.handleSelectView('tasks');
+        void deps.handleNew(undefined, 'tasks', undefined, undefined, 'kanban');
+      },
     },
     {
       label: i18n.t('shell:contextMenu.newLogin'),
@@ -393,6 +405,15 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
         one: (n) => deps.onEditBookmark(n),
         many: oneItemOnly('the bookmark editor takes one bookmark'),
       },
+      {
+        label: (s) => s.kind === 'one' && deps.clippedNoteFor(s.note)
+          ? i18n.t('shell:contextMenu.openClippedNote')
+          : i18n.t('shell:contextMenu.saveAsNote'),
+        icon: () => iconNote(),
+        when: isLink,
+        one: (n) => deps.onSaveBookmarkAsNote(n),
+        many: oneItemOnly('one bookmark is saved as one note'),
+      },
     ],
     [
       {
@@ -549,7 +570,17 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
    * the rest sit highlighted beside it, which reads as a bug and is one
    * where the verb is destructive. (GitHub #188)
    */
-  const buildNoteMenu = (n: LocalNote): ContextMenuItem[] => {
+  /**
+   * `alone`: the menu of this one item, wherever it is and whatever the list
+   * has selected, for a surface outside the list (the quick switcher's Tab).
+   * It has no Select row, since it is not opened over a list row, and it
+   * follows the item into or out of the trash, not the open view.
+   */
+  const buildNoteMenu = (n: LocalNote, opts?: { alone?: boolean }): ContextMenuItem[] => {
+    if (opts?.alone) {
+      const groups = (n.trashed === 1 ? TRASH_GROUPS : NOTE_GROUPS).map((g) => g.filter((r) => r !== selectRow));
+      return renderRows(groups, { kind: 'one', note: n, isSelected: false });
+    }
     const groups = deps.view === 'trash' ? TRASH_GROUPS : NOTE_GROUPS;
     const isSelected = deps.selectedIds.has(n.id);
     if (isSelected && deps.selectedIds.size > 1) {
@@ -571,4 +602,4 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
  * Quick add, Note, Task, Login, File, Journal, Event, Contact, Bookmark. English letters on
  * every keyboard, shown on each row.
  */
-export const NEW_MENU_PICKS = ['q', 'n', 't', 'l', 'f', 'j', 'e', 'c', 'b'] as const;
+export const NEW_MENU_PICKS = ['q', 'n', 't', 'k', 'l', 'f', 'j', 'e', 'c', 'b'] as const;

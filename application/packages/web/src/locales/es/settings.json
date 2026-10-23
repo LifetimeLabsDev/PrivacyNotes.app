@@ -1,7 +1,9 @@
 {
   "shell": {
     "title": "Ajustes",
-    "allSettings": "Todos los ajustes"
+    "allSettings": "Todos los ajustes",
+    "fillWindow": "Usar toda la ventana",
+    "restoreWindow": "Volver al tamaño normal"
   },
   "account": {
     "title": "Cuenta",
@@ -106,6 +108,11 @@
     "sharedSlot_other": "{{count}} instalaciones comparten un espacio de dispositivo",
     "added": "añadido {{time}}",
     "lastActive": "activo por última vez {{time}}",
+    "versionUnknown": "versión desconocida",
+    "idLabel": "ID",
+    "browser": "Navegador",
+    "update": "Actualizar",
+    "updateHint": "Esta versión ya no puede sincronizar. Actualiza la app en este dispositivo.",
     "removeAll": "Quitar todas",
     "recentlyRemoved": "Quitados recientemente",
     "removedAt": "Quitado {{time}}"
@@ -191,6 +198,8 @@
     "faviconsProxy": "Los iconos pasan por nuestro proxy. Solo en este dispositivo.",
     "invisiblesTitle": "Caracteres invisibles",
     "invisiblesDesc": "Muestra los espacios, los saltos de línea y las marcas de párrafo mientras escribes.",
+    "listsTabGeneral": "General",
+    "listsTabSidebar": "Barra lateral y Todos",
     "sidebarTitle": "<sb>Barra lateral</sb> y <all>Todos</all>",
     "sidebarDesc": "Qué vistas aparecen en la barra lateral y qué elementos contiene la lista «Todos».",
     "colInSidebar": "Barra lateral",
@@ -211,14 +220,30 @@
     "contentWidthFull": "Completa",
     "lineSpacingTitle": "Interlineado",
     "noteColorsTitle": "Colores de carpetas y etiquetas",
+    "noteColorsPickerTitle": "Para todas las carpetas y etiquetas",
     "noteColorsDesc": "Cómo muestra una nota el color de su carpeta o etiqueta: toda la nota, solo su icono o nada.",
     "noteColorsBackground": "Fondo",
     "noteColorsExampleTitle": "Fin de semana en Lisboa",
     "noteColorsExampleFolder": "Viajes, una carpeta verde",
-    "noteColorsAccent": "Icono",
+    "noteColorsAccent": "Solo el icono",
     "noteColorsOff": "Desactivado",
+    "checkboxesTitle": "Casillas",
+    "taskConfettiTitle": "Confeti al marcar",
+    "taskConfettiDesc": "Sale un poco de confeti de una casilla cuando la marcas.",
     "sinkCheckedTitle": "Mover hacia abajo los elementos marcados",
     "sinkCheckedDesc": "Un elemento marcado pasa debajo de los elementos sin marcar de su lista.",
+    "defaultAppsTitle": "Abrir con PrivacyNotes",
+    "defaultAppsMarkdown": "Archivos Markdown",
+    "defaultAppsText": "Archivos de texto",
+    "defaultAppsMarkdownHint": "Los archivos .md en los que haces doble clic se abren aquí.",
+    "defaultAppsTextHint": "Los archivos .txt y README en los que haces doble clic se abren aquí.",
+    "defaultAppsTextHintWindows": "Los archivos .txt en los que haces doble clic se abren aquí.",
+    "defaultAppsTextFinderSteps": "Para cambiarlo, elige \"Obtener información\" en un archivo .txt en Finder, selecciona PrivacyNotes en \"Abrir con\" y haz clic en \"Cambiar todo\".",
+    "defaultAppsMakeDefault": "Hacer predeterminada",
+    "defaultAppsIsDefault": "Predeterminada",
+    "defaultAppsOwnerOther": "Ahora mismo se abren con {{app}}.",
+    "defaultAppsOwnerOtherUnnamed": "Ahora mismo se abren con otra app.",
+    "defaultAppsOwnerNone": "Aún no tienen una app predeterminada.",
     "spacesTitle": "Espacios",
     "spacesDesc": "Divide tu biblioteca en Personal y Trabajo y muestra uno a la vez.",
     "lineSpacingDesc": "El espacio entre líneas y párrafos mientras escribes.",
@@ -248,7 +273,8 @@
       "none": "Aún no hay temas aquí.",
       "sortLabel": "Orden",
       "sortVotes": "Más votados",
-      "sortNewest": "Más recientes"
+      "sortNewest": "Más recientes",
+      "more": "Más temas"
     },
     "custom": {
       "newTheme": "Nuevo tema",
@@ -449,6 +475,8 @@
     "wifiHoldTooltip": "Los archivos suben cuando vuelva el wifi. Las notas se siguen sincronizando.",
     "notBackedUp": "Sin copia de seguridad",
     "notSynced": "Sin sincronizar",
+    "firstSyncPending": "Este dispositivo aún no ha terminado su primera sincronización con el servidor, así que todavía pueden faltar algunas notas aquí.",
+    "pullFailed": "La última sincronización no pudo descargar nada del servidor. Lo vuelve a intentar automáticamente.",
     "notBackedUpTooltip_one": "{{count}} nota no tiene copia de seguridad. Haz clic para ver por qué.",
     "notBackedUpTooltip_other": "{{count}} notas no tienen copia de seguridad. Haz clic para ver por qué.",
     "notBackedUpAria_one": "{{count}} nota no tiene copia de seguridad",
@@ -531,7 +559,7 @@
     "alertBirthday": "Cumpleaños",
     "alertsHelp": "Los elementos nuevos empiezan con estas alertas. Después, cada elemento conserva sus propias alertas.",
     "reminderTitles": "Mostrar títulos en los recordatorios",
-    "reminderTitlesHelp": "Si está desactivado, un recordatorio muestra la palabra Recordatorio y la hora. Un elemento protegido con tu PIN siempre lo hace.",
+    "reminderTitlesHelp": "Si está activado, un recordatorio muestra el título del elemento. Si está desactivado, solo muestra «Recordatorio» y la hora. Un elemento protegido con tu PIN nunca muestra su título.",
     "whereTitle": "Recordatorios en este dispositivo",
     "reminderHint": {
       "mobile": "Los recordatorios suenan en este teléfono, también con PrivacyNotes cerrado.",
@@ -545,11 +573,14 @@
     "permissionDenied": "Las notificaciones de PrivacyNotes están bloqueadas. Permítelas en los ajustes de este navegador o dispositivo.",
     "weekNumbers": "Mostrar números de semana",
     "weekNumbersHelp": "En la vista de mes y en los calendarios pequeños.",
-    "hours": "Día y Semana se abren a las",
+    "hours": "Primera hora en Día y Semana",
+    "checkInReminder": "Recordatorio del check-in diario",
+    "checkInReminderHelp": "«¿Cómo estás hoy?» una vez al día, en este dispositivo. No suena un día en que ya registraste tu ánimo o lo saltaste.",
+    "checkInReminderAt": "Suena a las",
     "groupView": "Vista",
     "groupReminders": "Recordatorios",
     "groupDefaults": "Alertas predeterminadas",
-    "hoursHelp": "Desplázate hacia arriba para ver las horas anteriores.",
+    "hoursHelp": "Las vistas de Día y Semana se abren desplazadas hasta esta hora. Las horas anteriores quedan arriba.",
     "to": "a"
   }
 }

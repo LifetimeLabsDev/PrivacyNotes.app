@@ -18,7 +18,7 @@ export type ViewRow = { key: View; label: string; icon: Icon };
  *
  * The `t` is bound to the SHELL namespace by the caller. Adding a pillar means
  * one entry here and nowhere else.
- * Spec: ops/docs/plans/start-view.md (one row list, one label namespace)
+ * Spec: ops/docs/archive/start-view.md (one row list, one label namespace)
  */
 export function viewRows(t: TFunction): ViewRow[] {
   return [
@@ -48,7 +48,7 @@ export function viewRows(t: TFunction): ViewRow[] {
  *
  * All is absent because it cannot be hidden from itself: it is the home view
  * and the collapsed rail's logo goes there.
- * Spec: ops/docs/plans/sidebar-views.md
+ * Spec: ops/docs/archive/sidebar-views.md
  */
 export function sidebarViewRows(t: TFunction): ViewRow[] {
   return viewRows(t).filter((r) => r.key !== 'home');
@@ -99,7 +99,7 @@ export function switcherViewRows(t: TFunction): ViewRow[] {
  * Markdown is never a start view: its folder handle is session-only by design,
  * so the app would open on a pillar that can only explain itself. A view the
  * user has hidden is not offered either.
- * Spec: ops/docs/plans/start-view.md (a hidden start view falls back to All)
+ * Spec: ops/docs/archive/start-view.md (a hidden start view falls back to All)
  */
 export function startViewRows(t: TFunction, hidden: View[] | undefined): ViewRow[] {
   return viewRows(t).filter((r) => r.key !== 'markdown' && r.key !== 'archive' && !hidden?.includes(r.key));

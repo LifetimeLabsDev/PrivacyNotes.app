@@ -19,7 +19,7 @@
 //! before it is joined onto a path, and a file is read only when it is a
 //! regular file, never through a link, and never past its cap. An invalid item
 //! is deleted; one that cannot be read right now stays for the next drain.
-//! Spec: ops/docs/plans/share-into-app.md
+//! Spec: ops/docs/archive/share-into-app.md
 #![cfg_attr(not(mobile), allow(dead_code))]
 
 use std::io::Read;

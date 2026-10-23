@@ -2,18 +2,17 @@ import { transformWithOxc, type Plugin } from 'vite';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createElement } from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
-import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss } from './static-page-theme.ts';
-import { BRAND_CSS, brandMark, CHROME_CSS, LINK_ICON, OG_IMAGE_TAGS, ogLocaleTag, siteFooterFor, siteNav, type NavLabels } from './static-page-chrome.ts';
+import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss, WASHI_DARK, WASHI_LIGHT } from './static-page-theme.ts';
+import { BRAND_CSS, brandMark, CHROME_CSS, languageMenu, OG_IMAGE_TAGS, ogLocaleTag, siteFooterFor, siteNav } from './static-page-chrome.ts';
 import { LOCALE_TO_SLUG, RTL_LOCALES, helpPath } from './src/localeRoutes.ts';
 import { FAQ_SOURCES, SOURCE_FILES, sourceUrl } from './src/faqSources.ts';
+import { relatedFaq } from './src/faqRelated.ts';
 import { PUBLISHED_DOCS, REPO_URL, docFiles, docMd, docSize, docSourceUrl, docUrl, docsIndexMd } from './publishedDocs.ts';
 import { VERSION } from './src/version.ts';
 import { foldText } from './src/textFold.ts';
 import { SEARCH_CORE_SCRIPT_TAG } from './search-core-script.ts';
 import { LANDING_PAGES_PUBLIC } from './landing-pages.ts';
-import { Flag, LANGUAGE_META, sortByNative } from './src/languageData.tsx';
+import { LANGUAGE_META } from './src/languageData.tsx';
 
 // Pre-renders the static Help center (formerly /faq; worker.ts 301s the
 // old URLs), once per locale, as a three-layer hybrid:
@@ -77,17 +76,6 @@ function localePrefix(locale: HelpLocale): string {
 /** FAQ leaf path, e.g. /de/help/lost-phrase (no trailing slash: canonical form). */
 function leafPath(locale: HelpLocale, id: string): string {
   return `${helpPath(locale)}/${id}`;
-}
-
-/**
- * Nav labels for this locale (English via the catalog fallback). Only the
- * three keys the catalogs already carry are translated; the other section
- * names (Help, Roadmap, Brand) render English everywhere, because those
- * pages are English-only by the i18n tier policy and a translated label
- * pointing at an English page helps nobody.
- */
-function navLabels(p: Record<string, string>): NavLabels {
-  return { home: esc(p.homeLabel), app: esc(p.appLabel), changelog: esc(p.changelogLabel) };
 }
 
 /** Import-guide path, e.g. /de/help/import/google-keep (no trailing slash). */
@@ -336,6 +324,24 @@ const BADGE_W = 161;
 const BADGE_H = 48;
 
 /**
+ * A whole paragraph that is one link to a FILE is a download button.
+ *
+ * The same idea as the badge above: a reader looking for a file finds a shape
+ * they know faster than they find a sentence, and an example note buried
+ * mid-paragraph reads as a reference rather than as something to fetch. The
+ * `download` attribute matters as much as the look: a `.md` file is served as
+ * text, so a plain link opens it in the tab instead of saving it, and the
+ * reader then has nothing to import.
+ *
+ * The href must name a file, which is what keeps an ordinary one-link
+ * paragraph (a `/help/<id>/` pointer) out of it. Standard markdown on
+ * purpose, like the other rows, so the .md twins and llms-full.txt carry it
+ * through as a link and `stripMd` reduces it to its label.
+ * // Spec: ops/docs/help-center.md (the template)
+ */
+const DOWNLOAD_PARA = /^\[([^\]]+)\]\((\/[^)\s]+\.[a-z0-9]{2,4})\)$/;
+
+/**
  * One answer paragraph: prose, the badge above, or the copy row above.
  * `askCopyShort` and `askCopied` are reused rather than adding a label of its
  * own, so a new copy row never costs a 17-locale batch.
@@ -345,6 +351,11 @@ function renderParagraph(par: string, p: Record<string, string>): string {
   if (badge) {
     const [, alt, src, href] = badge;
     return `<a class="bdg" href="${esc(href)}" target="_blank" rel="noopener noreferrer"><img src="${esc(src)}" alt="${esc(alt)}" width="${BADGE_W}" height="${BADGE_H}" loading="lazy"></a>`;
+  }
+  const file = DOWNLOAD_PARA.exec(par.trim());
+  if (file) {
+    const [, label, href] = file;
+    return `<a class="dlb" href="${esc(href)}" download><span class="ic">${icon(DOWNLOAD_PATH, 14)}</span><span class="lbl">${esc(label)}</span></a>`;
   }
   const lines = par.trim().split('\n');
   if (lines.length > 1 && lines.every((l) => l.startsWith('- '))) {
@@ -547,7 +558,7 @@ function renderSections(
   locale: HelpLocale,
   cat: FaqCatalog
 ): string {
-  const permaLabel = cat.page.copyLink;
+  const openLabel = cat.page.openAnswer;
   return sections
     .map((s) => {
       const entries = s.entries
@@ -559,8 +570,8 @@ function renderSections(
           const hay = entryHaystack(e);
           const leaf = leafPath(locale, e.id);
           return `<details class="entry" id="${esc(e.id)}" data-s="${esc(hay)}" data-leaf="${leaf}">
-<summary><span class="q">${esc(e.q)}</span><a class="perma" href="${leaf}" aria-label="${esc(permaLabel)}: ${esc(e.q)}">${LINK_ICON}</a><span class="chev" aria-hidden="true"></span></summary>
-<div class="a">${paragraphs}${extra}</div>
+<summary><span class="q">${esc(e.q)}</span><span class="chev" aria-hidden="true"></span></summary>
+<div class="a">${paragraphs}${extra}<div class="a-acts"><a class="a-act" href="${leaf}">${OPEN_ICON}<span>${esc(openLabel)}</span></a></div></div>
 </details>`;
         })
         .join('\n');
@@ -582,6 +593,11 @@ const COPY_PATH =
   'M216,28H88A12,12,0,0,0,76,40V76H40A12,12,0,0,0,28,88V216a12,12,0,0,0,12,12H168a12,12,0,0,0,12-12V180h36a12,12,0,0,0,12-12V40A12,12,0,0,0,216,28ZM156,204H52V100H156Zm48-48H180V88a12,12,0,0,0-12-12H100V52H204Z';
 const CHECK_PATH =
   'M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z';
+const DOWNLOAD_PATH =
+  'M228,144v64a12,12,0,0,1-12,12H40a12,12,0,0,1-12-12V144a12,12,0,0,1,24,0v52H204V144a12,12,0,0,1,24,0ZM119.51,152.49a12,12,0,0,0,17,0l40-40a12,12,0,0,0-17-17L140,115V32a12,12,0,0,0-24,0v83L96.49,95.51a12,12,0,0,0-17,17Z';
+
+/** Arrow into the answer's own page, drawn like LINK_ICON (24px grid, 2px stroke). */
+const OPEN_ICON = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>`;
 
 /** One inline glyph, same shape as topicIcon. */
 function icon(d: string, size: number): string {
@@ -862,21 +878,31 @@ function feedbackBlock(prompt: string): string {
  */
 const CONTENT_BASELINE = '2026-08-26';
 const CONTENT_UPDATED: Record<string, string> = {
+  'ninja-quick-add': '2026-10-23',
+  'ninja-dates': '2026-10-23',
+  'ninja-add-to-list': '2026-10-23',
+  'ninja': '2026-10-23',
+  'no-ai': '2026-10-23',
+  'search-local': '2026-10-23',
+  'offline': '2026-10-23',
+  'calendar': '2026-10-23',
+  'tasks': '2026-10-23',
+  'bookmarks': '2026-10-23',
+  'custom-themes': '2026-10-23',
+  'keyboard-shortcuts': '2026-10-23',
+  'us-company': '2026-10-23',
   'app-privacy-label': '2026-10-09',
-  'keyboard-shortcuts': '2026-10-08',
   'appearance': '2026-10-09',
   'spoiler-text': '2026-10-08',
   'copy-box': '2026-10-08',
   'footnotes': '2026-10-08',
   'statistics': '2026-10-08',
   'drag-to-folder': '2026-10-08',
-  'custom-themes': '2026-10-08',
   'format-bar': '2026-10-08',
   'window-zoom': '2026-10-08',
   'zen-mode': '2026-10-08',
   'date-format': '2026-10-08',
   'checklists': '2026-10-08',
-  'quick-switcher': '2026-10-08',
   'find-in-note': '2026-10-08',
   'screen-capture': '2026-10-08',
   'connected-logins': '2026-10-08',
@@ -889,7 +915,6 @@ const CONTENT_UPDATED: Record<string, string> = {
   'need-email': '2026-09-25',
   'phrase-vs-password': '2026-09-25',
   'lost-phrase': '2026-09-25',
-  'offline': '2026-09-25',
   'export': '2026-09-25',
   'vault': '2026-09-25',
   'free-vs-pro': '2026-09-25',
@@ -903,7 +928,6 @@ const CONTENT_UPDATED: Record<string, string> = {
   'signup-options': '2026-09-27',
   'sync-conflicts': '2026-09-25',
   'what-can-you-see': '2026-09-27',
-  'no-ai': '2026-09-23',
   'data-location': '2026-09-24',
   'shutdown': '2026-09-25',
   'attachment-limits': '2026-09-23',
@@ -927,7 +951,6 @@ const CONTENT_UPDATED: Record<string, string> = {
   'feature-requests': '2026-08-31',
   'android-updates': '2026-08-31',
   'translation-quality': '2026-09-25',
-  'bookmarks': '2026-08-31',
   'ask-an-ai': '2026-08-31',
   'locked-vs-protected': '2026-09-25',
   'phrase-compromised': '2026-08-31',
@@ -1070,6 +1093,10 @@ const KEY_BOLD =
 const TOPIC_ICON: Record<string, string> = {
   gettingStarted:
     'M40.14,46.88A12,12,0,0,0,36,56V224a12,12,0,0,0,24,0V181.72c22.84-17.12,42.1-9.12,70.68,5,16.23,8,34.74,17.2,54.8,17.2,14.72,0,30.28-4.94,46.38-18.88A12,12,0,0,0,236,176V56a12,12,0,0,0-19.86-9.07c-24.71,21.41-44.53,13.31-74.82-1.68C113.19,31.27,78.17,13.94,40.14,46.88ZM212,170.26c-22.84,17.13-42.1,9.11-70.68-5C118.16,153.76,90.33,140,60,153.87V61.69c22.84-17.12,42.1-9.12,70.68,5,16.23,8,34.74,17.2,54.8,17.2A63,63,0,0,0,212,78.08Z',
+  /** Phosphor Heartbeat, bold: the Statistics & trackers topic, the icon of
+   *  Settings > Trackers in the app. */
+  statsTrackers:
+    'M71.76,148H31.7a12,12,0,1,1,0-24H65.33l12.45-18.66a12,12,0,0,1,20,0l22,33,6-9a12,12,0,0,1,10-5.34h24a12,12,0,1,1,0,24h-17.6l-12.46,18.66a12,12,0,0,1-20,0l-22-33-6,9A12,12,0,0,1,71.76,148ZM177.91,36c-20.12,0-38,7.93-50.07,21.56C115.74,43.93,97.89,36,77.76,36A66,66,0,0,0,12.07,94.68,12,12,0,0,0,36,97.32,42,42,0,0,1,77.76,60c17.83,0,32.75,9.4,38.95,24.54a12,12,0,0,0,22.25,0C145.16,69.4,160.08,60,177.91,60A42.08,42.08,0,0,1,220,102c0,29.42-25.86,57.77-47.56,76.36a329,329,0,0,1-44.58,31.81c-10.87-6.45-35.37-22-56.51-42.73a12,12,0,1,0-16.84,17.12c30.39,29.81,66.15,49.2,67.66,50a12.06,12.06,0,0,0,11.39,0C138,232.14,244,174.34,244,102A66.12,66.12,0,0,0,177.91,36Z',
   securityPrivacy:
     'M208,36H48A20,20,0,0,0,28,56v56c0,54.29,26.32,87.22,48.4,105.29,23.71,19.39,47.44,26,48.44,26.29a12.1,12.1,0,0,0,6.32,0c1-.28,24.73-6.9,48.44-26.29,22.08-18.07,48.4-51,48.4-105.29V56A20,20,0,0,0,208,36Zm-4,76c0,35.71-13.09,64.69-38.91,86.15A126.28,126.28,0,0,1,128,219.38a126.14,126.14,0,0,1-37.09-21.23C65.09,176.69,52,147.71,52,112V60H204ZM79.51,144.49a12,12,0,1,1,17-17L112,143l47.51-47.52a12,12,0,0,1,17,17l-56,56a12,12,0,0,1-17,0Z',
   accountRecovery: KEY_BOLD,
@@ -1098,6 +1125,9 @@ function topicIcon(key: FaqGroupKey, size = 15): string {
  */
 const GUIDE_GLYPH: Record<string, string> = {
   'browser-passwords': KEY_BOLD,
+  // Phosphor AddressBook, bold: the glyph the contacts importer row wears.
+  contacts:
+    'M208,20H64A20,20,0,0,0,44,40V60H32a12,12,0,0,0,0,24H44v32H32a12,12,0,0,0,0,24H44v32H32a12,12,0,0,0,0,24H44v20a20,20,0,0,0,20,20H208a20,20,0,0,0,20-20V40A20,20,0,0,0,208,20Zm-4,192H68V44H204ZM100.8,171.37a48,48,0,0,1,70.4,0,12,12,0,0,0,17.6-16.32,72,72,0,0,0-19.21-14.68,44,44,0,1,0-67.19,0,72.12,72.12,0,0,0-19.2,14.68,12,12,0,0,0,17.6,16.32ZM116,112a20,20,0,1,1,20,20A20,20,0,0,1,116,112Z',
 };
 
 /** Inline glyph for a guide with no logo asset, or '' when it has one. */
@@ -1120,50 +1150,14 @@ function guideIconHref(id: string): string | null {
   return null;
 }
 
-const CARET_ICON =
-  '<svg class="lm-caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
-const CHECK_ICON =
-  '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
-const SYSTEM_ICON =
-  '<svg width="26" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="padding:2px 6px"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>';
-
-function flagSvg(code: string): string {
-  return renderToStaticMarkup(createElement(Flag, { code }));
-}
-
-/**
- * Language switcher mirroring the homepage LanguageMenu (flag + endonym +
- * caret pill, dropdown with a System row, flags, and a check on the
- * current choice). Same data sources (languageData.tsx, localeRoutes.ts)
- * rendered to static HTML; static-pages.js adds outside-click close,
- * persists choices under the app's own language keys, and swaps to the
- * matching page in the picked language.
- *
- * Rendered twice per page - header rail and footer (helpFooter below) -
- * the way the homepage carries LanguageMenu in the nav and again at the
- * end of SiteFooter. `id` distinguishes the two instances; static-pages.js
- * wires every `.langmenu` on the page, so both persist and navigate
- * identically. Placement styling is CHROME_CSS's job, not this function's.
- */
-function languageMenu(
+/** The shared language menu over the Help locales; System lands on the x-default hub. */
+function helpLanguageMenu(
   current: HelpLocale,
   label: string,
   pathOf: (l: HelpLocale) => string,
   id = 'lang-menu'
 ): string {
-  const rows = (sortByNative(HELP_LOCALES) as HelpLocale[]).map((l) => {
-    const on = l === current;
-    return `<a${on ? ' class="on"' : ''} href="${pathOf(l)}" hreflang="${l}" data-lang="${l}">${flagSvg(l)}<span>${esc(LANGUAGE_META[l].native)}</span>${on ? CHECK_ICON : ''}</a>`;
-  }).join('\n');
-  const locales: Record<string, string> = {};
-  for (const l of HELP_LOCALES) locales[l] = localePrefix(l);
-  return `<details class="langmenu" id="${id}" data-locales="${esc(JSON.stringify(locales))}">
-<summary aria-label="${esc(label)}">${flagSvg(current)}<span class="lm-name">${esc(LANGUAGE_META[current].native)}</span>${CARET_ICON}</summary>
-<div class="langlist">
-<a href="/help" data-lang="system">${SYSTEM_ICON}<span>System</span></a>
-${rows}
-</div>
-</details>`;
+  return languageMenu({ current, label, pathOf: (l) => pathOf(l as HelpLocale), locales: HELP_LOCALES, id, systemHref: '/help' });
 }
 
 /**
@@ -1181,7 +1175,7 @@ function helpFooter(
   return siteFooterFor(
     helpPath(locale),
     LOCALE_TO_SLUG[locale],
-    languageMenu(locale, label, pathOf, 'lang-menu-footer')
+    helpLanguageMenu(locale, label, pathOf, 'lang-menu-footer')
   );
 }
 
@@ -1222,8 +1216,8 @@ ${SEARCH_CORE_SCRIPT_TAG}
 }
 
 const PAGE_VARS = themeVarsCss(
-  '--bg:#fff;--fg:#15171a;--muted:#5b6168;--faint:#8a9099;--line:#e7e9ec;--accent:#1E40AF;--imp-bg:#eff6ff;--mark-fg:#1E40AF;--chip:#eceef1;--rail:#f2f3f5;--on-accent:#fff;--ok:#3b6d11;--ok-bg:#f1f7e8;--ok-line:#d3e3bc',
-  '--bg:#0e1014;--fg:#e7e9ec;--muted:#9aa1aa;--faint:#6b7178;--line:#23262c;--accent:#4A90D9;--imp-bg:#11233a;--mark-fg:#7FB0E4;--chip:#3a4149;--rail:#191d23;--on-accent:#03203E;--ok:#a7cf6f;--ok-bg:#161d0e;--ok-line:#2e3d1d'
+  `${WASHI_LIGHT};--accent:#1E40AF;--mark-fg:#1E40AF;--on-accent:#fff;--ok:#3b6d11;--ok-bg:#f1f7e8;--ok-line:#d3e3bc`,
+  `${WASHI_DARK};--accent:#4A90D9;--mark-fg:#7FB0E4;--on-accent:#03203E;--ok:#a7cf6f;--ok-bg:#161d0e;--ok-line:#2e3d1d`
 );
 
 /** Styles shared by hub, leaves, and guides. */
@@ -1235,18 +1229,18 @@ summary{display:flex;align-items:center;gap:12px;padding:18px 0;cursor:pointer;l
 summary::-webkit-details-marker{display:none}
 summary .q{flex:1;font-size:16px;font-weight:600;letter-spacing:-.01em}
 summary:hover .q{color:var(--accent)}
-.perma{flex:0 0 auto;display:inline-flex;align-items:center;color:var(--faint);text-decoration:none;opacity:0;transition:opacity .12s ease;padding:0 2px}
-.perma:focus-visible{opacity:1}
-summary:hover .perma{opacity:1}
-.perma:hover{color:var(--accent);text-decoration:none}
 .chev{flex:0 0 auto;width:10px;height:10px;border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);transform:rotate(45deg);transition:transform .15s ease;margin-top:-4px}
 details[open] .chev{transform:rotate(-135deg);margin-top:4px}
 .a{padding:0 0 22px}
-.a p{margin:0 0 12px;font-size:15px;color:var(--muted)}\n.cbx{display:flex;flex-wrap:wrap;align-items:center;gap:9px 10px;margin:0 0 12px;padding:9px 10px 9px 13px;border:1px solid var(--line);border-radius:9px;background:var(--rail)}\n.cbx code{flex:1 1 210px;min-width:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.5;color:var(--fg);word-break:break-all}\n.cbx .btn-ok{flex:none;margin-inline-start:auto}\n.lst{margin:0 0 14px;padding-inline-start:19px;list-style:disc}\n.lst li{margin:0 0 7px;font-size:15px;color:var(--muted);line-height:1.65}\n.lst strong{color:var(--fg)}\n.lst code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:var(--fg);word-break:break-all;direction:ltr;unicode-bidi:isolate}\n.bdg{display:block;width:max-content;max-width:100%;margin:0 0 14px;transition:opacity .15s ease}\n.bdg:hover{opacity:.82}\n.bdg img{display:block;height:48px;width:auto}
+.a p{margin:0 0 12px;font-size:15px;color:var(--muted)}\n.cbx{display:flex;flex-wrap:wrap;align-items:center;gap:9px 10px;margin:0 0 12px;padding:9px 10px 9px 13px;border:1px solid var(--line);border-radius:9px;background:var(--rail)}\n.cbx code{flex:1 1 210px;min-width:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.5;color:var(--fg);word-break:break-all}\n.cbx .btn-ok{flex:none;margin-inline-start:auto}\n.lst{margin:0 0 14px;padding-inline-start:19px;list-style:disc}\n.lst li{margin:0 0 7px;font-size:15px;color:var(--muted);line-height:1.65}\n.lst strong{color:var(--fg)}\n.lst code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:var(--fg);word-break:break-all;direction:ltr;unicode-bidi:isolate}\n.bdg{display:block;width:max-content;max-width:100%;margin:0 0 14px;transition:opacity .15s ease}\n.bdg:hover{opacity:.82}\n.bdg img{display:block;height:48px;width:auto}\n.dlb{display:inline-flex;align-items:center;gap:8px;width:max-content;max-width:100%;margin:0 0 14px;padding:9px 14px;border:1px solid var(--line);border-radius:9px;background:var(--rail);color:var(--fg);font-size:14px;font-weight:500;text-decoration:none;transition:border-color .15s ease}\n.dlb:hover{border-color:var(--accent);text-decoration:none}\n.dlb .ic{display:flex;flex:none;color:var(--accent)}
 .a p:last-child{margin-bottom:0}
-.copybtn{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--faint);background:none;border:0;cursor:pointer;padding:0;margin-top:2px;font-family:inherit}
-.copybtn:hover{color:var(--accent)}
-.copybtn svg{flex:0 0 auto}
+/* The answer's own page and its link, always visible under an open answer.
+   Until 2026-10-23 the page link was a chain icon in the question row that
+   only appeared on hover, so most readers never found the leaf pages. */
+.a-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.a-act{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:none;color:var(--muted);font:inherit;font-size:13px;font-weight:500;line-height:1.3;text-decoration:none;cursor:pointer;transition:border-color .15s ease,color .15s ease}
+.a-act:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.a-act svg{flex:0 0 auto;color:var(--accent)}
 /* .langmenu / .langlist moved to CHROME_CSS (static-page-chrome.ts): the
    footer renders one too, and the footer is that module's. Only the
    suggest banner below is Help-specific. */
@@ -1267,7 +1261,7 @@ details[open] .chev{transform:rotate(-135deg);margin-top:4px}
 /* float:right plus a dir=rtl mirror, rather than the logical float:inline-end:
    that value is recent enough that a browser which ignores it drops the float
    altogether, and the pair below costs one line.
-   Spec: ops/docs/ui-patterns.md (section 67, icon mirroring) */
+   Spec: ops/docs/archive/ui-patterns.md (section 67, icon mirroring) */
 .app-tile{float:right;margin-inline-start:24px;margin-block-end:12px;width:96px;height:96px;background:var(--chip);border-radius:22px;display:flex;align-items:center;justify-content:center}
 [dir=rtl] .app-tile{float:left}
 .app-tile img{width:72px;height:72px;object-fit:contain}
@@ -1288,7 +1282,7 @@ details[open] .chev{transform:rotate(-135deg);margin-top:4px}
 .sum-lbl{display:inline-flex;align-items:center;gap:8px;padding:0 14px;height:32px;border:1px solid var(--ok);border-radius:8px;font-size:13px;font-weight:600;color:var(--ok)}
 .sum-lbl:hover{background:var(--bg)}
 .sum-lbl::after{content:'';width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin-block-start:-4px}
-/* The chevrons here use PHYSICAL borders while every other rule in this block is logical, on purpose: a down-pointing arrow means the same thing in both directions, and border-inline-end turns it sideways under dir=rtl. Spec: ops/docs/ui-patterns.md (section 67, icon mirroring) */
+/* The chevrons here use PHYSICAL borders while every other rule in this block is logical, on purpose: a down-pointing arrow means the same thing in both directions, and border-inline-end turns it sideways under dir=rtl. Spec: ops/docs/archive/ui-patterns.md (section 67, icon mirroring) */
 .ask-more[open] .sum-lbl::after{transform:rotate(-135deg);margin-block-start:2px}
 .ask-act{margin:13px 0 0}
 /* One rule for both copy buttons, the compact one on the summary row and the
@@ -1312,7 +1306,7 @@ details[open] .chev{transform:rotate(-135deg);margin-top:4px}
 .ask .askwarn{display:flex;gap:9px;align-items:flex-start;margin:17px 0 0;padding-block-start:14px;border-block-start:1px solid var(--ok-line);font-size:13px;font-weight:600;line-height:1.5;color:var(--fg)}
 .ask .askwarn svg{flex:0 0 auto;color:var(--ok);margin-block-start:1px}
 .fb-links{display:flex;gap:8px;flex-wrap:wrap}
-/* The published-document rows. A monospace file name is the whole point of the block, so it takes the weight the topic labels take and drops a step in size to stay on one line inside the 208px rail: THREAT_MODEL.md is the longest name we ship and it fits at 12.5px. It carries dir="auto" like every other file name the app renders, and therefore must NOT stretch the way a topic label does: a stretched box under dir=rtl aligns its LTR name to the far edge and leaves a hole beside the icon. Shrink-wrapping puts the name against its mark in both directions. Spec: ops/docs/ui-patterns.md (section 67, dir=auto convention) */
+/* The published-document rows. A monospace file name is the whole point of the block, so it takes the weight the topic labels take and drops a step in size to stay on one line inside the 208px rail: THREAT_MODEL.md is the longest name we ship and it fits at 12.5px. It carries dir="auto" like every other file name the app renders, and therefore must NOT stretch the way a topic label does: a stretched box under dir=rtl aligns its LTR name to the far edge and leaves a hole beside the icon. Shrink-wrapping puts the name against its mark in both directions. Spec: ops/docs/archive/ui-patterns.md (section 67, dir=auto convention) */
 .rlbl-mono{flex:0 1 auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;font-weight:600}
 .rail-note{margin:8px 10px 0;font-size:12px;line-height:1.5;color:var(--faint)}
 /* The page shell (.wrap width, .pcols grid, .rail-col, .ritem, .search,
@@ -1652,7 +1646,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,Bli
    (headless Chrome, --print-to-pdf) after a row is added. */
 .s-g{margin:0 0 20px}
 .s-g h2{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#1E40AF;margin:0 0 6px}
-.s-row{display:flex;align-items:center;gap:9px;padding:3px 0;border-top:1px solid #e7e9ec;font-size:12px;color:#3d434a}
+.s-row{display:flex;align-items:center;gap:9px;padding:2px 0;border-top:1px solid #e7e9ec;font-size:12px;color:#3d434a}
 .s-g h2+.s-row{border-top:0}
 .s-lbl{flex:0 1 auto}
 /* Dot leader between label and keys: REAL TEXT (a clipped run of middots),
@@ -1662,7 +1656,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,Bli
 .s-dots{flex:1 1 0;min-width:14px;overflow:hidden;white-space:nowrap;color:#c9ced4;font-size:11px;line-height:1;letter-spacing:5px;text-align:center}
 .s-dots::before{content:"································································································"}
 /* direction:ltr - a key sequence is a forced-LTR island under RTL, so a
-   combined cap like "1 – ⌥⌘6" cannot reorder. Spec: ops/docs/ui-patterns.md
+   combined cap like "1 – ⌥⌘6" cannot reorder. Spec: ops/docs/archive/ui-patterns.md
    (section 67, forced-LTR islands) */
 .s-keys{display:inline-flex;align-items:center;gap:3px;flex:0 0 auto;direction:ltr}
 .s-or{color:#8a9099;font-size:10px;padding:0 1px}
@@ -1829,7 +1823,7 @@ ${MD_SHOWCASE_CSS}
 </head>
 <body data-static-page="help" data-locale="${locale}" data-suggest="${esc(suggest)}">
 <div class="wrap">
-${siteNav({ active: 'faq', helpLocale: locale, extra: languageMenu(locale, p.languageLabel, (l) => helpPath(l)), home: LOCALE_TO_SLUG[locale], labels: navLabels(p) })}
+${siteNav({ active: 'faq', helpLocale: locale, language: helpLanguageMenu(locale, p.languageLabel, (l) => helpPath(l)) })}
 <div class="pcols">
 ${renderSidebar({
   topicsLabel: p.topics,
@@ -1872,16 +1866,16 @@ export function renderLeafHtml(
   guideOrder: string[],
   guides: GuidesCatalog | null,
   id: string,
-  suggest: string
+  suggest: string,
+  relatedIds: readonly string[]
 ): string {
   const p = cat.page;
   const row = rows.find((r) => r.id === id)!;
   const entry = cat.entries[id];
   const groupLabel = cat.groups[row.group] ?? row.group;
   const sections = buildSections(order, rows, cat);
-  const related = rows
-    .filter((r) => r.group === row.group && r.id !== id && cat.entries[r.id]?.q)
-    .slice(0, 5);
+  // Scored from the English catalog, so every locale lists the same pages.
+  const related = relatedIds.filter((r) => cat.entries[r]?.q).map((r) => ({ id: r }));
   const showcase = entryShowcase(id, p);
   const showcaseCss = id === 'markdown-syntax' ? MD_SHOWCASE_CSS : '';
   const paragraphs = entry.a.map((par) => renderParagraph(par, p)).join('\n');
@@ -1926,7 +1920,7 @@ ${showcaseCss}
 </head>
 <body data-static-page="help-leaf" data-locale="${locale}" data-suggest="${esc(suggest)}">
 <div class="wrap">
-${siteNav({ active: 'faq', helpLocale: locale, extra: languageMenu(locale, p.languageLabel, (l) => leafPath(l, id)), home: LOCALE_TO_SLUG[locale], labels: navLabels(p) })}
+${siteNav({ active: 'faq', helpLocale: locale, language: helpLanguageMenu(locale, p.languageLabel, (l) => leafPath(l, id)) })}
 <div class="pcols">
 ${renderSidebar({
   topicsLabel: p.topics,
@@ -1949,12 +1943,12 @@ ${paragraphs}
 </div>
 ${showcase}
 ${sourcesBlock(p, id)}
+${relatedHtml}
 <div class="leaf-hub">
 <p class="lh-title">${esc(p.title)}</p>
 <p class="sub">${esc(p.sub)}</p>
 ${searchBox(p, 'leaf', locale, 0, leafSearchIndex(sections, locale))}
 </div>
-${relatedHtml}
 ${askAiBlock(p, locale, sections)}${feedbackBlock(p.feedbackPrompt)}
 </div>
 </div>
@@ -2031,7 +2025,7 @@ h1{font-size:26px}
 </head>
 <body data-static-page="help-guide" data-locale="${locale}" data-suggest="${esc(suggest)}">
 <div class="wrap">
-${siteNav({ active: 'faq', helpLocale: locale, extra: languageMenu(locale, p.languageLabel, (l) => guidePath(l, id)), home: LOCALE_TO_SLUG[locale], labels: navLabels(p) })}
+${siteNav({ active: 'faq', helpLocale: locale, language: helpLanguageMenu(locale, p.languageLabel, (l) => guidePath(l, id)) })}
 <div class="pcols">
 ${renderSidebar({
   topicsLabel: p.topics,
@@ -2392,6 +2386,7 @@ async function renderAll(): Promise<Rendered[]> {
   const guidesEn = readGuides('en');
   const suggest = JSON.stringify(suggestStrings());
   const guideIds = guidesEn ? guideOrder.filter((id) => guidesEn.guides[id]?.app) : [];
+  const related = relatedFaq(rows, en.entries);
   const out: Rendered[] = [];
   for (const locale of HELP_LOCALES) {
     const cat = loadCatalog(locale, en);
@@ -2410,7 +2405,7 @@ async function renderAll(): Promise<Rendered[]> {
       if (!cat.entries[r.id]?.q) continue;
       out.push({
         fileName: `${base}/${r.id}/index.html`,
-        source: renderLeafHtml(locale, order, rows, cat, guideOrder, guidesCat, r.id, suggest),
+        source: renderLeafHtml(locale, order, rows, cat, guideOrder, guidesCat, r.id, suggest, related.get(r.id) ?? []),
       });
     }
     // The printable cheat sheet: ENGLISH ONLY (see cheatSheetPath), so it
@@ -2572,7 +2567,7 @@ export function helpPagePlugin(): Plugin {
                 next();
               }
             } else if (rows.some((r) => r.id === seg) && cat.entries[seg]?.q) {
-              html(renderLeafHtml(locale, order, rows, cat, guideOrder, guidesCat, seg, suggest));
+              html(renderLeafHtml(locale, order, rows, cat, guideOrder, guidesCat, seg, suggest, relatedFaq(rows, en.entries).get(seg) ?? []));
             } else {
               next();
             }

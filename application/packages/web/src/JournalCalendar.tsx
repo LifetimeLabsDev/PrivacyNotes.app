@@ -7,18 +7,20 @@ import { typeGlyph } from './NoteRow';
 import { HoverLabel } from './HoverLabel';
 import { useEscapeToClose } from './useEscapeToClose';
 import { usePopoverPosition } from './usePopoverPosition';
-import { formatInstant, toLocalIso } from './intlFormat';
+import { formatDay, formatInstant, toLocalIso } from './intlFormat';
+import { Button } from './ui';
 import { MonthGrid, dayAtNoon, dayKindColor } from './MonthGrid';
 import type { DayEntry, DayIndex } from './notesViewUtils';
 import type { Space } from './spaces';
 import { dayNumber } from './schedule';
+import { PathGlyph, useItemLook } from './looks/LookGlyph';
 
 /**
  * Everything the calendar of dated items does, in one module: the pick rule,
  * the two device settings, the popover (Journals New button, footer button)
  * and the card at the top of the Journals, Notes, Tasks and All lists. Every
  * host reads one index of journal entries, notes, task lists and birthdays;
- * what differs is what an empty day creates. How a
+ * what differs is the type its first create button makes. How a
  * calendar looks lives in MonthGrid, and nothing here styles the grid itself.
  * The Entry date view of the entry menu is the one other host, because a pick
  * there moves an entry.
@@ -27,7 +29,7 @@ import { dayNumber } from './schedule';
  * new-entry path inherits the open folder, the active tag and the pinned
  * state of the list the user is standing in, and a dated entry deliberately
  * inherits none of that.
- * Spec: ops/docs/plans/journal-calendar.md, ops/docs/plans/note-date.md (section 4)
+ * Spec: ops/docs/archive/journal-calendar.md, ops/docs/archive/note-date.md (section 4)
  */
 type Props = {
   /** Every dated item, by day. */
@@ -38,6 +40,10 @@ type Props = {
   onPick: (isoDate: string) => void;
   /** Creates the host's type for today. */
   onToday: () => void;
+  /** The host's own type, named on the first create button of a picked day. */
+  creates: 'journal' | 'note' | 'task';
+  /** Opens Quick add for an event on an ISO day. */
+  onEvent: (isoDate: string) => void;
   /** Called when the user clicks outside or presses Escape. */
   onClose: () => void;
   /** The trigger button: the popover hangs off it and ignores clicks on it. */
@@ -49,22 +55,70 @@ type Props = {
   todayRow?: boolean;
 };
 
-type DayHandlers = Pick<Props, 'entries' | 'onOpen' | 'onPick' | 'onToday'>;
+type DayHandlers = Pick<Props, 'entries' | 'onOpen' | 'onPick' | 'onToday' | 'creates' | 'onEvent'>;
 
-/** One rule for every calendar: an empty today is the host's ordinary new
- *  item, any other empty day a dated one, a day with one item opens it, and
- *  a day with several opens nothing and answers 'choose', so the calendar
- *  can unfold them.
- *  Spec: ops/docs/plans/note-date.md (section 4), ops/docs/plans/spaces.md (section 9) */
-export function pickCalendarDay(day: string, { entries, onOpen, onPick, onToday }: DayHandlers): 'done' | 'choose' {
-  const found = entries.entriesOf(day);
-  if (found.length > 1) return 'choose';
-  if (found[0]) onOpen(found[0].id, found[0].occurrence);
-  else if (day === toLocalIso(new Date())) onToday();
+/** What the host's create button does on a day: today is the host's
+ *  ordinary new item, any other day a dated one.
+ *  Spec: ops/docs/archive/note-date.md (section 4), ops/issues/0552.md (Spec) */
+export function createOnDay(day: string, { onPick, onToday }: Pick<DayHandlers, 'onPick' | 'onToday'>): void {
+  if (day === toLocalIso(new Date())) onToday();
   else onPick(day);
-  return 'done';
 }
 
+/**
+ * What a pick on any calendar day unfolds under the grid: the day, a button
+ * for the host's own type and one for an event, then the day's items. Every
+ * day can take a new item, whatever it already holds. Each button wears its
+ * type's icon and color. The first button takes
+ * the focus, so Enter creates; Escape folds the panel.
+ * Spec: ops/issues/0552.md (Spec)
+ */
+function DayPanel({ day, handlers, onDone, onFold, inline = false }: { day: string; handlers: DayHandlers; onDone: () => void; onFold: () => void; inline?: boolean }) {
+  const { t } = useTranslation(['notes', 'shell']);
+  const panel = useRef<HTMLDivElement | null>(null);
+  // After the item list's own focus effect, which runs first as a child's.
+  useEffect(() => {
+    panel.current?.querySelector('button')?.focus();
+  }, [day]);
+  useEscapeToClose(onFold, true, inline);
+  const held = handlers.entries.entriesOf(day).length > 0;
+  return (
+    <div ref={panel} className="mt-2 pt-2 border-t border-divider">
+      <p className="text-[13px] font-medium text-pn">{formatDay(day, 'weekdayDate')}</p>
+      <div className="mt-1.5 grid grid-cols-2 gap-2">
+        {([handlers.creates, 'event'] as const).map((kind) => {
+          const { Icon, color } = typeGlyph(kind);
+          return (
+            <Button
+              key={kind}
+              icon={<Icon size={15} aria-hidden="true" className={`shrink-0 ${color}`} />}
+              aria-label={t(`shell:quickAdd.types.${kind}`)}
+              onClick={() => {
+                if (kind === 'event') handlers.onEvent(day);
+                else createOnDay(day, handlers);
+                onDone();
+              }}
+            >
+              {t(`notes:newMenu.${kind}`)}
+            </Button>
+          );
+        })}
+      </div>
+      {held && (
+        <div className="mt-1.5">
+          <DayChooser
+            bare
+            inline={inline}
+            day={day}
+            entries={handlers.entries}
+            onOpen={(e) => { handlers.onOpen(e.id, e.occurrence); onDone(); }}
+            onFold={onFold}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
 
 /** A time of day ("15:00") as the clock setting writes it. */
 export function timeLabel(day: string, time: string): string {
@@ -93,8 +147,15 @@ function entryWhen(entry: DayEntry, day: string, t: (key: string, opts?: Record<
  * stored title only, so an item behind a PIN shows nothing from inside it,
  * then its time, a bell for alerts, the repeat glyph, and on a day that mixes
  * the spaces its space's icon.
- * Spec: ops/docs/plans/note-date.md (section 4), ops/docs/plans/calendar-pillar-spec.md (section 5)
+ * Spec: ops/docs/archive/note-date.md (section 4), ops/docs/archive/calendar-pillar-spec.md (section 5)
  */
+const NO_TAGS: readonly string[] = [];
+
+/** A calendar item's look (useItemLook), from the tags and folder the entry carries. */
+export function useEntryLook(entry: DayEntry) {
+  return useItemLook(entry.id, entry.tags ?? NO_TAGS, entry.folderId ?? null);
+}
+
 export function CalendarItemRow({ entry, day, mixed, onOpen, onMenu, onKeyDown, rowRef, size = 'small', dragProps }: {
   entry: DayEntry;
   /** The item's right-click menu, as every list row has it. */
@@ -113,8 +174,15 @@ export function CalendarItemRow({ entry, day, mixed, onOpen, onMenu, onKeyDown, 
   const { Icon: TypeGlyph } = typeGlyph(entry.kind);
   const color = dayKindColor(entry.kind);
   const Glyph = entry.kind === 'contact' ? Gift : TypeGlyph;
+  // The item's own color and icon, as its list row shows them: the icon
+  // takes the color, and a background look also tints the row under its hover.
+  const { row, icon: ink, iconPaths } = useEntryLook(entry);
+  const icon = iconPaths
+    ? <PathGlyph paths={iconPaths} size={14} className={color} style={ink} />
+    : <Glyph size={14} aria-hidden="true" className={color} style={ink} />;
   const title = entry.title || t('common:state.untitled');
   const when = entryWhen(entry, day, t);
+  const start = entry.time && !entry.span ? timeLabel(day, entry.time) : when;
   const spaceLabel = entry.space === null ? '' : t(entry.space === 'work' ? 'spaces.work' : 'spaces.personal');
   const SpaceGlyph = mixed && entry.space !== null ? SPACE_ICONS[entry.space] : null;
   const marks = entry.alerted || entry.repeating || SpaceGlyph ? (
@@ -133,8 +201,9 @@ export function CalendarItemRow({ entry, day, mixed, onOpen, onMenu, onKeyDown, 
       onKeyDown={onKeyDown}
       aria-label={[title, when, spaceLabel].filter(Boolean).join(', ')}
       {...dragProps}
+      style={row}
       className={`shrink-0 flex w-full rounded-md px-2 text-pn hover:bg-pn/5 focus-visible:bg-pn/5 outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
-        size === 'agenda' ? 'items-stretch gap-2.5 py-2 text-[14px]' : 'items-center gap-2 py-1.5 text-[13px]'
+        size === 'agenda' ? 'items-stretch gap-2.5 py-2 text-[14px]' : '@container/row items-center gap-2 py-1.5 text-[13px]'
       }`}
     >
       {size === 'agenda' ? (
@@ -158,7 +227,7 @@ export function CalendarItemRow({ entry, day, mixed, onOpen, onMenu, onKeyDown, 
           <span className="min-w-0 flex-1 flex flex-col text-start leading-5">
             <span className="flex items-center gap-1.5 min-w-0">
               <span data-slot="icon" className="shrink-0 inline-flex">
-                <Glyph size={14} aria-hidden="true" className={color} />
+                {icon}
               </span>
               <span data-slot="title" dir="auto" className="min-w-0 truncate font-medium">{title}</span>
               {marks && <span className="hidden @min-[270px]/agenda:inline-flex ms-0.5">{marks}</span>}
@@ -177,11 +246,18 @@ export function CalendarItemRow({ entry, day, mixed, onOpen, onMenu, onKeyDown, 
       ) : (
         <>
           <span data-slot="icon" className="shrink-0 inline-flex">
-            <Glyph size={14} aria-hidden="true" className={color} />
+            {icon}
           </span>
           <span data-slot="title" dir="auto" className="min-w-0 truncate text-start">{title}</span>
           <span className="ms-auto shrink-0 flex items-center gap-1.5 text-pn-muted">
-            {when && <span className="text-[12px] tabular-nums whitespace-nowrap">{when}</span>}
+            {/* A narrow row keeps the start time only, so the title is not
+                the first thing to give way. */}
+            {when && start !== when ? (
+              <>
+                <span className="hidden @min-[300px]/row:inline text-xs tabular-nums whitespace-nowrap">{when}</span>
+                <span className="@min-[300px]/row:hidden text-xs tabular-nums whitespace-nowrap">{start}</span>
+              </>
+            ) : when && <span className="text-[12px] tabular-nums whitespace-nowrap">{when}</span>}
             {marks}
           </span>
         </>
@@ -195,15 +271,17 @@ export function CalendarItemRow({ entry, day, mixed, onOpen, onMenu, onKeyDown, 
  * open space first, the first row focused. A long day scrolls inside its own
  * band, so the card never pushes the list away. Up and Down move, Enter opens,
  * Escape folds it back.
- * Spec: ops/docs/plans/note-date.md (section 4), ops/docs/plans/spaces.md (section 9)
+ * Spec: ops/docs/archive/note-date.md (section 4), ops/docs/plans/spaces.md (section 9)
  */
-export function DayChooser({ day, entries, onOpen, onFold, bare = false }: { day: string; entries: DayIndex; onOpen: (entry: DayEntry) => void; onFold: () => void; bare?: boolean }) {
+export function DayChooser({ day, entries, onOpen, onFold, bare = false, inline = false }: { day: string; entries: DayIndex; onOpen: (entry: DayEntry) => void; onFold: () => void; bare?: boolean; inline?: boolean }) {
   const { t } = useTranslation(['shell', 'common']);
   const rows = useRef<(HTMLButtonElement | null)[]>([]);
   useEffect(() => {
     rows.current[0]?.focus();
   }, [day]);
-  useEscapeToClose(onFold);
+  // In the card the list is part of the page, so a pane drag leaves it open;
+  // in a popover it closes with the popover.
+  useEscapeToClose(onFold, true, inline);
   const found = entries.entriesOf(day);
   // A day that mixes the spaces marks each row with its space's icon.
   const mixed = new Set(found.map((e) => e.space)).size > 1;
@@ -261,6 +339,37 @@ function deviceSwitch(key: string): [() => boolean, (on: boolean) => void] {
  *  default, device-local, switched in the list options (Show calendar). */
 export const [useJournalCalendarShown, setJournalCalendarShown] = deviceSwitch('privacynotes.journalCalendarShown');
 
+/** Whether the Journals calendar shows moods instead of dots. Off by default,
+ *  device-local like the calendar switch above it; nothing turns it on by
+ *  itself. The key holds '1' while it is on. Spec: ops/issues/0439.md (Spec) */
+const moodLook = (() => {
+  const key = 'privacynotes.journalCalendarMood';
+  const listeners = new Set<() => void>();
+  const read = (): boolean => {
+    try {
+      return localStorage.getItem(key) === '1';
+    } catch {
+      return false;
+    }
+  };
+  const subscribe = (l: () => void) => {
+    listeners.add(l);
+    return () => { listeners.delete(l); };
+  };
+  const set = (on: boolean): void => {
+    try {
+      if (on) localStorage.setItem(key, '1');
+      else localStorage.removeItem(key);
+    } catch {
+      // Storage refused (a private window): the switch keeps its default.
+    }
+    listeners.forEach((l) => l());
+  };
+  return { use: () => useSyncExternalStore(subscribe, read), set };
+})();
+export const useJournalCalendarMood = moodLook.use;
+export const setJournalCalendarMood = moodLook.set;
+
 const otherSpaceSwitches: Record<Space, [() => boolean, (on: boolean) => void]> = {
   personal: deviceSwitch('privacynotes.calendarOtherSpace.personal'),
   work: deviceSwitch('privacynotes.calendarOtherSpace.work'),
@@ -271,7 +380,7 @@ const otherSpaceSwitches: Record<Space, [() => boolean, (on: boolean) => void]> 
  *  default: an item in the other space is the one people think lost.
  *  Device-local, switched in the list options ("Show Work items" or "Show
  *  Personal items", named for the space that is not open), shown only with
- *  Spaces on. Spec: ops/docs/plans/note-date.md (section 4) */
+ *  Spaces on. Spec: ops/docs/archive/note-date.md (section 4) */
 export function useCalendarShowsOther(open: Space): boolean {
   const personal = otherSpaceSwitches.personal[0]();
   const work = otherSpaceSwitches.work[0]();
@@ -293,12 +402,58 @@ function readSize(): 1 | 6 {
   return 1;
 }
 
+/** Whether the month fits beside an open check-in card in the same grid row.
+ *  The room is the card's own content height, not the row's, so the
+ *  calendar's own height and span never feed back into the answer. The
+ *  month's height is the week's content plus five more rows, until the month
+ *  has been shown once and its real height is known. */
+function useRoomForMonth(on: boolean): { ref: (el: HTMLLIElement | null) => void; fits: boolean } {
+  const [el, setEl] = useState<HTMLLIElement | null>(null);
+  const [fits, setFits] = useState(false);
+  const monthNeed = useRef(0);
+  useEffect(() => {
+    const list = el?.parentElement;
+    if (!el || !list || !on) { setFits(false); return; }
+    const frameOf = (node: HTMLElement) => {
+      const cs = getComputedStyle(node);
+      return parseFloat(cs.paddingBottom) + parseFloat(cs.borderBottomWidth);
+    };
+    const measure = () => {
+      const content = el.firstElementChild as HTMLElement | null;
+      const days = content?.querySelector('[role="group"]');
+      if (!content || !days) return;
+      const top = el.getBoundingClientRect().top;
+      const frame = content.getBoundingClientRect().top - top + frameOf(el);
+      if (days.children.length > 14) {
+        monthNeed.current = content.offsetHeight + frame;
+      } else {
+        const row = (days.lastElementChild as HTMLElement | null)?.offsetHeight ?? 0;
+        monthNeed.current = Math.max(monthNeed.current, content.offsetHeight + frame + 5 * (row + 2));
+      }
+      const card = list.querySelector<HTMLElement>(':scope > [data-checkin-card]');
+      const last = card?.lastElementChild;
+      const cardTop = card?.getBoundingClientRect().top;
+      const room = card && last && Math.abs((cardTop ?? 0) - top) < 1
+        ? last.getBoundingClientRect().bottom - (cardTop ?? 0) + frameOf(card)
+        : 0;
+      setFits(room >= monthNeed.current);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    const mo = new MutationObserver(measure);
+    mo.observe(list, { childList: true, subtree: true });
+    return () => { ro.disconnect(); mo.disconnect(); };
+  }, [el, on]);
+  return { ref: setEl, fits: on && fits };
+}
+
 /**
  * The calendar at the top of the Journals, Notes, Tasks and All lists. In the list it is a flat
  * first row; in the grid it is the first tile, one cell wide, and the month spans
  * two rows. On a phone it is the one way to the calendar, because the footer
  * there has no room for its button.
- * Spec: ops/docs/plans/journal-calendar.md (section 4b)
+ * Spec: ops/docs/archive/journal-calendar.md (section 4b)
  */
 /** What a card offers beyond its days: the expand button that opens the
  *  Calendar pillar at the card's month, and a list row dropped on a day. */
@@ -307,16 +462,26 @@ export type CalendarCardExtras = {
   drop?: { accepts: (e: React.DragEvent) => boolean; onDrop: (day: string, e: React.DragEvent) => void };
 };
 
-export function JournalCalendarCard({ grid, onExpand, drop, ...handlers }: DayHandlers & CalendarCardExtras & { grid: boolean }) {
+export function JournalCalendarCard({ grid, onExpand, drop, moodOf, ...handlers }: DayHandlers & CalendarCardExtras & { grid: boolean; moodOf?: (day: string) => number | 'written' | undefined }) {
   const { t } = useTranslation('shell');
   const [weeks, setWeeks] = useState<1 | 6>(readSize);
   const [choosing, setChoosing] = useState<string | null>(null);
   const [month, setMonth] = useState(() => toLocalIso(new Date()));
+  // Beside an open check-in card the month shows without a click, in one
+  // row; a click on the title folds it to the week until the card closes.
+  // Elsewhere the month is a choice that spans two rows.
+  const roomy = useRoomForMonth(grid);
+  const [keepWeek, setKeepWeek] = useState(false);
+  useEffect(() => { if (!roomy.fits) setKeepWeek(false); }, [roomy.fits]);
+  const shown = roomy.fits ? (keepWeek ? 1 : 6) : weeks;
   function pick(day: string) {
-    const unfold = pickCalendarDay(day, handlers) === 'choose' && day !== choosing;
-    setChoosing(unfold ? day : null);
+    setChoosing(day === choosing ? null : day);
   }
   function toggle() {
+    if (roomy.fits) {
+      setKeepWeek((k) => !k);
+      return;
+    }
     const next = weeks === 6 ? 1 : 6;
     setWeeks(next);
     try {
@@ -329,9 +494,10 @@ export function JournalCalendarCard({ grid, onExpand, drop, ...handlers }: DayHa
   // in the card's background, with the rows' padding and a divider.
   return (
     <li
+      ref={roomy.ref}
       className={
         grid
-          ? `rounded-xl border border-divider bg-surface-2 p-2 ${weeks === 6 ? 'row-span-2' : ''}`
+          ? `pn-grid-cal rounded-xl border border-divider bg-surface-2 p-2 ${weeks === 6 && !roomy.fits ? 'row-span-2' : ''}`
           : 'px-4 pt-1 pb-1.5 md:pt-2 md:pb-3 bg-surface-2 border-b border-divider'
       }
     >
@@ -339,10 +505,12 @@ export function JournalCalendarCard({ grid, onExpand, drop, ...handlers }: DayHa
         marked={handlers.entries}
         selected={choosing ?? undefined}
         onPick={pick}
-        weeks={weeks}
+        wide={!grid}
+        weeks={shown}
         onToggleWeeks={toggle}
         onFocusChange={setMonth}
         drop={drop}
+        moodOf={moodOf}
         headerEnd={onExpand && (
           <HoverLabel label={t('calendar.open')} position="below-end">
             <button
@@ -357,18 +525,13 @@ export function JournalCalendarCard({ grid, onExpand, drop, ...handlers }: DayHa
         )}
       />
       {choosing && (
-        <DayChooser
-          day={choosing}
-          entries={handlers.entries}
-          onOpen={(e) => { setChoosing(null); handlers.onOpen(e.id, e.occurrence); }}
-          onFold={() => setChoosing(null)}
-        />
+        <DayPanel inline day={choosing} handlers={handlers} onDone={() => setChoosing(null)} onFold={() => setChoosing(null)} />
       )}
     </li>
   );
 }
 
-export function JournalCalendarPopover({ entries, onOpen, onPick, onToday, onClose, anchorRef, align = 'end', todayRow = true }: Props) {
+export function JournalCalendarPopover({ entries, onOpen, onPick, onToday, creates, onEvent, onClose, anchorRef, align = 'end', todayRow = true }: Props) {
   const { t } = useTranslation('shell');
   const popoverRef = useRef<HTMLDivElement | null>(null);
   const pos = usePopoverPosition(true, anchorRef, popoverRef, { align });
@@ -388,11 +551,9 @@ export function JournalCalendarPopover({ entries, onOpen, onPick, onToday, onClo
   useEscapeToClose(onClose);
 
   const [choosing, setChoosing] = useState<string | null>(null);
-  const handlers: DayHandlers = { entries, onOpen, onPick, onToday };
+  const handlers: DayHandlers = { entries, onOpen, onPick, onToday, creates, onEvent };
   function pick(day: string) {
-    if (pickCalendarDay(day, handlers) === 'choose' && day !== choosing) setChoosing(day);
-    else if (choosing === day) setChoosing(null);
-    else onClose();
+    setChoosing(day === choosing ? null : day);
   }
 
   return createPortal(
@@ -406,12 +567,7 @@ export function JournalCalendarPopover({ entries, onOpen, onPick, onToday, onClo
       <div className="w-[240px] max-w-full">
         <MonthGrid marked={entries} selected={choosing ?? undefined} onPick={pick} onToday={todayRow ? () => { onToday(); onClose(); } : undefined} />
         {choosing && (
-          <DayChooser
-            day={choosing}
-            entries={entries}
-            onOpen={(e) => { onOpen(e.id, e.occurrence); onClose(); }}
-            onFold={() => setChoosing(null)}
-          />
+          <DayPanel day={choosing} handlers={handlers} onDone={onClose} onFold={() => setChoosing(null)} />
         )}
       </div>
     </div>,

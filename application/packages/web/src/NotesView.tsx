@@ -1,6 +1,8 @@
+import { setCustomHabitsStore } from './habitList';
+import { setTaskConfetti } from './checkboxConfetti';
 import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState, useCallback, useMemo, useDeferredValue, type CSSProperties } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { CaretRight, Folder, Fire, PILLAR_GLYPHS, Calendar as CalendarIcon, CalendarDot, CalendarPlus, CalendarX, ArrowRight as ArrowRightIcon, Copy, Stack, iconTrash } from './icons';
+import { CaretRight, Folder, Fire, PILLAR_GLYPHS, Calendar as CalendarIcon, CalendarDot, CalendarPlus, CalendarX, ArrowRight as ArrowRightIcon, Copy, Stack, Pause, Play, iconTrash } from './icons';
 import { SPACE_ICONS } from './SpaceSwitch';
 import { useAuth, type AuthState } from './auth';
 import type { SupabaseClient } from '@notes/shared';
@@ -10,6 +12,7 @@ import {
   createNote,
   updateNote,
   updateNoteFrom,
+  undoNoteSplit,
   trashNote,
   trashIfEmpty,
   restoreNote,
@@ -27,12 +30,16 @@ import { FolderPicker } from './FolderPicker';
 import { BookmarksList, type BookmarkDraft } from './BookmarksList';
 import { ContactsList } from './ContactsList';
 import { openExternal } from './openExternal';
+import { marketingHomeHref, siteHref } from './siteLinks';
+import { helpPath } from './localeRoutes';
+import { setSyncPaused, useSyncPaused } from './syncPause';
+import { NINJA_DOORS, type NinjaAction } from './ninjaFeatures';
 import { NeverBackedUpNotice, countOnlyOnThisDevice, listNeverBackedUp, maySkipSignOutConfirm } from './neverBackedUp';
 import { ReadOnlySkipNotice } from './readOnlyNotice';
 import { TagPicker } from './TagPicker';
 import { noteLinkKey, noteLinkTarget, parseNoteLinkTarget, resolveNoteLinkMatches } from './noteLinks';
 import { noteHeadingsFor } from './noteHeadings';
-import { parseLinkBody, buildLinkBody, buildLinkKeyMap, duplicateBookmarkId } from './linkBody';
+import { parseLinkBody, buildLinkBody, buildLinkKeyMap, duplicateBookmarkId, normalizeUrl, linkDomain } from './linkBody';
 import { branchPathLabels, canDeleteFolder, folderCounts as computeFolderCounts, folderScope, subtreeIds, UNFILED_ID } from './folders';
 import { countTags, sectionNotes } from './sidebarScope';
 import { isItemDrag, liveItemIds, readItemDrag } from './itemDrag';
@@ -72,8 +79,10 @@ import { alertDefaults, toggleHiddenView,
   updateLocalSettings,
   withCredentialChanges,
   type UserSettings,
+  isShownInAll,
 } from './userSettings';
 import { iconSignOut } from './icons';
+import { Button } from './ui';
 import { activeLocale, intlLocale } from './languages';
 import { UpgradeModal, type UpgradeTrigger } from './UpgradeModal';
 import { PinGateModal, type PinGatePurpose } from './ProtectedNoteGate';
@@ -81,20 +90,22 @@ import { shouldPromptForPin, markPinUnlocked, hasPin, syncPinCache } from './pin
 import { syncPinWrap } from './pinRecovery';
 import { startPinKeepAlive } from './pinKeepAlive';
 import { hasBiometricCredential, unlockWithBiometric } from './biometric';
-import { rememberOpenNote, takeReopenNote } from './appReLock';
+import { canLockNow, lockAppNow, rememberOpenNote, takeReopenNote } from './appReLock';
+import { readLastOpen, rememberSelection, rememberedSelection, writeLastOpen } from './notesView/listPlace';
 import { createNoteVersion } from './noteVersions';
 import { loginExtrasOf, withLoginExtras } from './loginExtras';
 import { withTrackerContent } from './editStamp';
 import { HoverLabel } from './HoverLabel';
 import { useNoteEditing } from './useNoteEditing';
 import { useSyncOrchestrator } from './useSyncOrchestrator';
-import { useTheme, applyLineSpacing, isFreeTheme } from './theme';
+import { useShellAppearance, applyLineSpacing, isFreeTheme, paintedSlot } from './theme';
 import { formatDay, setDatePrefs } from './intlFormat';
 import { searchNotes, searchBodyTerms, searchSeedCandidates, isPhraseQuery, gatedSearchCopy, notesHolding } from './search';
 import { textMatcher } from './textMatch';
 import { useSearchIndexSync } from './searchIndexSync';
 import { setCalendarShowsOther, useCalendarShowsOther, type CalendarCardExtras } from './JournalCalendar';
-import { BackRow } from './NoteOptionsMenu';
+import { setCheckInCardShown, useCheckInCardShown } from './checkInCardSwitch';
+import { BackRow } from './ui/BackRow';
 import { itemDragSelection } from './NoteRow';
 import { nextCelebration, type NewMilestone } from './milestones';
 import { pendingRatingMilestones } from './ratingPrompt';
@@ -118,6 +129,7 @@ import {
   type ContextMenuItem,
 } from './ContextMenu';
 import { footerCounts } from './stats';
+import { formatBytes } from './formatBytes';
 import { usePinExpiryPoll } from './usePinExpiryPoll';
 import { countWords } from './wordCountUtils';
 import { isDemoMode, proUnlocked } from './demo';
@@ -133,6 +145,8 @@ import { EmptyTrashModal } from './EmptyTrashModal';
 import { DeleteNoteModal } from './DeleteNoteModal';
 import { ConfirmModal } from './ConfirmModal';
 import { setImageStore, setImageUploadContext } from './EncryptedImage';
+import { useClipper } from './notesView/useClipper';
+import type { BookmarkClip } from './BookmarkItem';
 import { setImagePolicy } from './imageProcessing';
 import { AttachmentStore } from './attachmentStore';
 import { setAttachmentStore, setAttachmentUploadContext } from './EncryptedAttachment';
@@ -143,6 +157,8 @@ import {
   selectTaskNotes,
   toggleTaskInNote,
   appendQuickTask,
+  appendToNote,
+  appendLinesToBody,
   canUncheckAllTasks,
   uncheckAllTasksInNote,
   canDeleteCheckedTasks,
@@ -177,6 +193,7 @@ import type { QuickAdd, QuickAddType } from './quickAdd';
 import { dayNumber, liveOccurrence, scheduleOf, shiftDay, withSchedule } from './schedule';
 import { dayAtNoon, firstWeekday } from './MonthGrid';
 import { useTabActions } from './notesView/useTabActions';
+import { keepsEmptyPane, listScopeKey } from './notesView/closedPane';
 import { useSpaceMoves } from './notesView/useSpaceMoves';
 
 import { setAndroidBackHandler } from './androidBack';
@@ -194,21 +211,24 @@ import { useItemHistory } from './itemHistory';
 const loadQuickSwitcher = () => import('./QuickSwitcher');
 const QuickSwitcherLazy = lazy(loadQuickSwitcher);
 // The Calendar pillar's two panes load on first open, so the boot chunk
-// carries neither. Spec: ops/docs/plans/calendar-pillar-spec.md (step 1)
+// carries neither. Spec: ops/docs/archive/calendar-pillar-spec.md (step 1)
 const CalendarPaneLazy = lazy(() => import('./CalendarPane'));
+const NoteIconPicker = lazy(() => import('./looks/NoteIconPicker').then((m) => ({ default: m.NoteIconPicker })));
 const CalendarAgendaLazy = lazy(() => import('./CalendarAgenda'));
-// Spec: ops/docs/plans/note-shortcuts.md (6.1): only a shortcut opened in a
+// Spec: ops/docs/archive/note-shortcuts.md (6.1): only a shortcut opened in a
 // computer browser loads it.
 const ShortcutDesktopBar = lazy(() => import('./ShortcutOffer').then((m) => ({ default: m.ShortcutDesktopBar })));
 let QuickSwitcherLoaded: typeof import('./QuickSwitcher').default | null = null;
 
 import { NEW_MENU_PICKS } from './notesView/contextMenus';
+import { CREATE_PREFIX, asWebAddress } from './switcherQuery';
+import { buildContactBody, emptyContact } from './contactBody';
 import { COMMAND_PREFIX, CommandPaletteContext, type CommandPaletteContextValue, type PaletteEntry } from './commandPalette';
 import { PALETTE_COMMANDS, PALETTE_ICONS, type PaletteCommand } from './useKeyboardShortcuts';
 import { keyText } from './shortcutMatch';
 import type { TFunction } from 'i18next';
 import { CollapsedSidebar } from './CollapsedSidebar';
-import { FilesList, extractFileItems, fileItemMediaRef, isPictureFileItem, type FileType } from './FilesList';
+import { FilesList, extractFileItems, fileItemMediaRef, isPictureFileItem, visibleFileItems, type FileType } from './FilesList';
 import { MediaOverlays } from './notesView/MediaOverlays';
 import type { MediaRef } from './mediaRefs';
 import {
@@ -231,7 +251,6 @@ import {
   getMondayIso,
   journalTitle,
   toLocalIso,
-  hotkeyLabel,
   VAULT_EMPTY_BODIES,
   TASK_LIST_EMPTY_BODY,
   isNoteEmpty,
@@ -248,12 +267,21 @@ import {
   itemsDatedAs,
   journalDaysIndex,
   entryDayOf,
+  isCheckIn,
+  journalDateOf,
   type DayEntry,
 } from './notesViewUtils';
+import i18n from './i18n';
+import { kanbanEmptyBody } from './kanbanLayout';
+import { CheckInCard } from './CheckInCard';
+import { setTrackerHistory, trackerHistoryOf } from './trackerLastLogged';
+import { CHECK_IN_REMINDER_ID, CheckInUnitsContext, checkInEntry, checkInLogged, useCheckInReminder, useCheckInSkipped } from './checkIn';
+import { MEDICATION_REMINDER_PREFIX, medicationReminderItems, useMedicationReminders } from './medicationReminders';
+import { useToday } from './ListGroupHeader';
 import type { NoteConflict } from './sync';
-import { trackersEqual, type JournalTrackerData } from './trackerTypes';
+import { trackersEqual, type JournalTrackerData, type MedicationLogEntry } from './trackerTypes';
 import { BurnShareModal } from './notesView/BurnShareModal';
-import { FullFooter, MiniFooter } from './notesView/AppFooter';
+import { FullFooter, MiniFooter, type FooterStats } from './notesView/AppFooter';
 import { useTagActions } from './notesView/useTagActions';
 import { useFolderActions } from './notesView/useFolderActions';
 import { useFilesUpload } from './notesView/useFilesUpload';
@@ -264,12 +292,15 @@ import {
   FeedbackModal,
   SecurityModal,
   SyncOptionsModal,
+  ClipPageModal,
   NoteHistoryModal,
   ImportModal,
   SettingsShell,
   AppearanceSheet,
   SETTINGS_SECTION_ICONS,
+  PasswordGeneratorModal,
 } from './notesView/settingsCategories';
+import type { TrackerSetupTab } from './TrackerConfig';
 import { ProActivationPendingBanner } from './notesView/ProActivationPendingBanner';
 import { SnapshotForbiddenBanner } from './notesView/SnapshotForbiddenBanner';
 import { StoragePastDueBanner } from './notesView/StoragePastDueBanner';
@@ -342,7 +373,7 @@ type Authed = Extract<AuthState, { status: 'authenticated' }>;
 /** The size toast: a note just passed the sync limit, or a split it can undo. */
 type SizeToast =
   | { kind: 'over'; noteId: string; title: string }
-  | { kind: 'split'; noteId: string; newId: string; title: string; head: string; original: string };
+  | { kind: 'split'; noteId: string; newId: string; title: string; head: string; tail: string; original: string; newUpdatedAt: string };
 
 /** "Split note" runs on a plain note that can be edited and has no PIN gate. */
 function canSplitNote(n: LocalNote): boolean {
@@ -353,7 +384,7 @@ function canSplitNote(n: LocalNote): boolean {
  * How long after an app open the rating ask may appear. Long enough that
  * the app has painted and the first sync has had its say, short enough
  * that the user is still in the same sitting.
- * Spec: ops/docs/plans/rating-prompt-handoff.md
+ * Spec: ops/docs/archive/rating-prompt-handoff.md
  */
 const RATING_ASK_DELAY_MS = 4000;
 // After the rating ask has had its turn, so the toast and the modal never open together.
@@ -385,7 +416,7 @@ const CELEBRATION_DELAY_MS = RATING_ASK_DELAY_MS + 2000;
  * narrow row runs out of first. A desktop pane squeezed that narrow keeps
  * the bracket shortcuts for the pair. Burn, pin and trash live in the "..."
  * menu at every width.
- * Spec: ops/docs/ui-patterns.md (section 80)
+ * Spec: ops/docs/archive/ui-patterns.md (section 80)
  */
 const QUICK_ACTIONS_CORE_PX = 960;
 const QUICK_ACTIONS_ALL_PX = 1280;
@@ -398,6 +429,16 @@ const HEADER_COMPACT_PX = 560;
  */
 const NOTE_OVERFLOW_SLACK_PX = 40;
 
+
+/** The row each door to Settings › Wellness lands on. */
+const TRACKER_SETUP_ROW: Record<TrackerSetupTab, string> = {
+  trackers: 'trackers.setup',
+  questions: 'trackers.habitQuestions',
+  custom: 'trackers.custom',
+  factors: 'trackers.factors',
+  medications: 'trackers.medications',
+  checkIn: 'calendar.checkInReminder',
+};
 export function NotesView() {
   const { auth, supabase, signOut, forceSignOut, refreshProStatus, revalidationExpired } = useAuth();
   if (auth.status !== 'authenticated') return null;
@@ -439,7 +480,7 @@ function AuthenticatedView({
   // The at-rest sweep: one idle-delayed pass per session converts any
   // plaintext backlog. Module-scoped and deliberately not cancelled on
   // unmount - a re-lock keeps keys in memory and the sweep continues.
-  // Spec: ops/docs/plans/local-at-rest.md (section 5.3)
+  // Spec: ops/docs/archive/local-at-rest.md (section 5.3)
   useEffect(() => {
     const timer = window.setTimeout(() => void runAtRestSweep(), 4000);
     return () => window.clearTimeout(timer);
@@ -470,7 +511,7 @@ function AuthenticatedView({
    *  loads from IndexedDB, and the auto-select effect would read the restored
    *  note as a stale selection and clear it before it ever appeared. */
   const linkTargetRef = useRef<string | null>(selectedId);
-  // Items open as tabs above the editor. Spec: ops/docs/plans/note-tabs.md
+  // Items open as tabs above the editor. Spec: ops/docs/archive/note-tabs.md
   const openTabs = useOpenTabs(notes);
   const [openItemsInTabs] = useOpenItemsInTabs();
   /** Set once when an RLS-rejected snapshot insert is detected (Pro
@@ -586,6 +627,10 @@ function AuthenticatedView({
   >({ open: false });
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  // The password generator on its own, from the Vault's New menu and Ninja:
+  // it copies, it fills no field.
+  const [showGenerator, setShowGenerator] = useState(false);
+  const syncPaused = useSyncPaused();
   // Settings opened on one pane without the category rail (SettingsShell `solo`).
   const [settingsSolo, setSettingsSolo] = useState(false);
   // Every way Settings closes ends solo, so the next door opens it whole.
@@ -678,7 +723,7 @@ function AuthenticatedView({
    * looking at one. A choice made elsewhere applies at the next cold start,
    * and anything that navigates on its own - a file association, an OAuth
    * return, a search hit - runs after mount and simply lands on top.
-   * Spec: ops/docs/plans/start-view.md (cold start only)
+   * Spec: ops/docs/archive/start-view.md (cold start only)
    */
   const [view, setView] = useState<View>(() => {
     const stored = loadLocalSettings();
@@ -878,9 +923,12 @@ function AuthenticatedView({
   // Demo conversion banner, dismissable for the session. Owned here rather
   // than in App because it is the first child of this component's h-dvh flex
   // column, so the shell below has to reflow when it closes.
-  // Spec: ops/docs/ui-patterns.md section 39 (persistent chrome sits in the flow, never floating)
+  // Spec: ops/docs/archive/ui-patterns.md section 39 (persistent chrome sits in the flow, never floating)
   const [demoBannerDismissed, setDemoBannerDismissed] = useState(false);
-  const showDemoBanner = isDemoMode() && !demoBannerDismissed;
+  // Hidden on a local dev server: the bar takes a row from every layout under
+  // test, and the "Not saved" status still says the demo holds nothing.
+  const devHost = typeof location !== 'undefined' && (location.hostname === 'localhost' || location.hostname === '127.0.0.1');
+  const showDemoBanner = isDemoMode() && !demoBannerDismissed && !devHost;
   // Formatting toolbar visibility while in Zen. Separate from the persisted
   // `toolbarVisible` so entering Zen starts with a clean surface and the
   // in-Zen markdown toggle flips it without touching the normal pref.
@@ -956,7 +1004,7 @@ function AuthenticatedView({
   const [creatingTag, setCreatingTag] = useState(false);
   const [newTagDraft, setNewTagDraft] = useState('');
 
-  const { toggle: toggleTheme, lightTheme, darkTheme, setColorTheme, spellcheck, invisibles, setInvisibles } = useTheme();
+  const { toggle: toggleTheme, setColorTheme, spellcheck, invisibles, setInvisibles } = useShellAppearance();
   const ctxMenu = useContextMenu();
   // List rows (notes, tasks, files) answer right-click with the row menu.
   // On touch the same event is a long-press, which is how multi-select
@@ -1117,7 +1165,7 @@ function AuthenticatedView({
    * `scrollHeight > clientHeight` test makes the pill blink on and off while
    * somebody types. One comfortable line of slack costs nothing: a note that
    * only just overflows has nothing worth finding in it either.
-   * Spec: ops/docs/ui-patterns.md (section 80)
+   * Spec: ops/docs/archive/ui-patterns.md (section 80)
    */
   const [bodyOverflows, setBodyOverflows] = useState(false);
   const scrollerObserverRef = useRef<ResizeObserver | null>(null);
@@ -1405,7 +1453,7 @@ function AuthenticatedView({
   }, [supabase, auth.encryptionKey, auth.pubkey, auth.isPro]);
 
   // Mirror the two image switches into the module every image door reads.
-  // Spec: ops/docs/plans/image-quality-handoff.md (section 3)
+  // Spec: ops/docs/archive/image-quality-handoff.md (section 3)
   useEffect(() => {
     setImagePolicy({
       spaceSaver: userSettings.imageSpaceSaver !== 'off',
@@ -1491,6 +1539,27 @@ function AuthenticatedView({
     setSettingsSolo(true);
     setShowSettings(true);
   }, []);
+  // Settings > Storage > Images, from the storage dialog and the clipper.
+  const openImageSettings = useCallback(() => {
+    setSettingsCategory('storage');
+    setSettingsRow({ id: 'storage.images', tab: 'images', flash: false });
+    setShowSettings(true);
+  }, []);
+  const openNoteColorSettings = useCallback(() => {
+    setShowAppearance(false);
+    setSettingsCategory('design');
+    setSettingsRow({ id: 'appearance.tintNotes' });
+    setShowSettings(true);
+  }, []);
+  // The note whose icon picker is open. Icons are Pro; a note's color is free.
+  const [noteIconId, setNoteIconId] = useState<string | null>(null);
+  const pickNoteIcon = useCallback(
+    (noteId: string) => {
+      if (proUnlocked(auth.isPro)) setNoteIconId(noteId);
+      else setShowUpgrade({ trigger: 'noteIcon' });
+    },
+    [auth.isPro],
+  );
   const openFormatBarUpgrade = useCallback(() => {
     setShowSettings(false);
     setShowUpgrade({ trigger: 'formatBar' });
@@ -1604,8 +1673,11 @@ function AuthenticatedView({
     const target = pendingFocus.current;
     if (!target || !selectedId) return;
     pendingFocus.current = null;
-    // rAF guarantees the header has been committed to the DOM.
+    // rAF guarantees the header has been committed to the DOM. An overlay
+    // opened in those frames (Mod+K right after a quick add) keeps the
+    // focus: taking it would send the next Enter into the new item.
     requestAnimationFrame(() => {
+      if (hasOpenOverlay()) return;
       if (target === 'title') {
         titleInputRef.current?.focus();
         return;
@@ -1613,15 +1685,17 @@ function AuthenticatedView({
       // Double-rAF: the editor mounts after the header, so the body needs
       // one more frame for TipTap to initialize.
       requestAnimationFrame(() => {
-        focusBody();
+        if (!hasOpenOverlay()) focusBody();
       });
     });
   }, [selectedId, focusBody]);
 
   // Hand the open note to the app lock, which unmounts this whole view when it
   // re-locks and gives the note back on the way in.
+  // The same note is also kept on this device for the next cold start.
   useEffect(() => {
     rememberOpenNote(selectedId);
+    if (selectedId) writeLastOpen(selectedId);
   }, [selectedId]);
 
   // Commit the derived title of an untitled note twice: when it opens, and
@@ -1831,7 +1905,7 @@ function AuthenticatedView({
    * createNote bumps it outside React entirely.
    *
    * Every other reason not to ask lives in ratingPrompt.ts.
-   * Spec: ops/docs/plans/rating-prompt-handoff.md (every met milestone is spent on one ask, never back to back)
+   * Spec: ops/docs/archive/rating-prompt-handoff.md (every met milestone is spent on one ask, never back to back)
    */
   const ratingCheckedRef = useRef(false);
   useEffect(() => {
@@ -1861,7 +1935,7 @@ function AuthenticatedView({
    * count changes, which is when a note was just created. The keys it
    * spends are recorded on the account, so the second device stays quiet.
    * The rating keys are not its business.
-   * Spec: ops/docs/plans/wellness-statistics.md (section 21)
+   * Spec: ops/docs/archive/wellness-statistics.md (section 21)
    */
   useEffect(() => {
     if (auth.status !== 'authenticated' || isDemoMode()) return;
@@ -1966,10 +2040,28 @@ function AuthenticatedView({
   });
 
   // Journal count - derived before tagCounts so the sidebar badge stays live.
+  // Check-ins without text count only while the list shows them, so the badge
+  // and the list agree. Spec: ops/issues/0439.md (Spec)
+  const showTextless = userSettings.checkIn.showTextless;
   const journalCount = useMemo(
-    () => listedNotes.filter((n) => n.type === 'journal').length,
-    [listedNotes]
+    () => listedNotes.filter((n) => n.type === 'journal' && (showTextless || !isCheckIn(n))).length,
+    [listedNotes, showTextless]
   );
+
+  // The person's own habit questions, for the readers not handed the list
+  // (the statistics registry, the check-in line, the exports).
+  useEffect(() => { setCustomHabitsStore(userSettings.customHabits); }, [userSettings.customHabits]);
+
+  // The task checkbox confetti switch, for the listener outside React.
+  useEffect(() => { setTaskConfetti(userSettings.taskConfetti); }, [userSettings.taskConfetti]);
+
+  // The tracker values of the live journal entries, newest day first: what
+  // the number panels learn their quick picks from (`trackerLastLogged.ts`).
+  useEffect(() => {
+    setTrackerHistory(trackerHistoryOf(listedNotes, isNoteLocked));
+    // gatedIdsKey: the lock predicate is a fresh function each render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listedNotes, gatedIdsKey]);
 
   // Vault count - structured types only (logins, cards, ssh keys).
   const vaultCount = useMemo(
@@ -2034,7 +2126,7 @@ function AuthenticatedView({
    * so adding a pillar meant four edits before its number appeared anywhere.
    * Markdown is deliberately absent when no folder is open: the row then shows
    * no count at all, where a 0 would read as an empty folder.
-   * Spec: ops/docs/plans/start-view.md (one counts object)
+   * Spec: ops/docs/archive/start-view.md (one counts object)
    */
   const viewCounts = useMemo<Partial<Record<View, number>>>(() => ({
     starred: starredCount,
@@ -2108,8 +2200,29 @@ function AuthenticatedView({
 
   useEffect(() => {
     if (view !== 'files' && view !== 'trash') return;
-    refreshStorage();
-  }, [view, refreshStorage]);
+    void refreshStorage();
+    let stale = false;
+    let busy = false;
+    const readQuota = () => {
+      if (document.hidden || busy || isDemoMode()) return;
+      busy = true;
+      void fetchQuotaUsage(supabase, auth.isPro ?? false).then((q) => {
+        if (stale) return;
+        quotaRef.current = { usedBytes: q.totalBytes + q.imageBytes, maxBytes: q.maxTotalBytes };
+        setViewQuota(q);
+      }).catch(() => { /* retain the last successful quota */ }).finally(() => { busy = false; });
+    };
+    window.addEventListener('focus', readQuota);
+    document.addEventListener('visibilitychange', readQuota);
+    // Spec: ops/docs/billing-integration.md (billing panel refresh cadence)
+    const timer = window.setInterval(readQuota, 60_000);
+    return () => {
+      stale = true;
+      window.clearInterval(timer);
+      window.removeEventListener('focus', readQuota);
+      document.removeEventListener('visibilitychange', readQuota);
+    };
+  }, [view, refreshStorage, supabase, auth.isPro, auth.pubkey]);
 
   // Every tag in the account. Tag pickers read this one, so a note tag can
   // still go on a login; the sidebar reads railTagCounts below.
@@ -2202,7 +2315,7 @@ function AuthenticatedView({
   // Note types the user switched off in the All options menu (the funnel in
   // the sidebar's All row). Empty for everyone who never opened that menu, so
   // the filter below costs one `.size` check in the common case.
-  // Spec: ops/docs/plans/sidebar-views.md (All row funnel: which note types the All list holds)
+  // Spec: ops/docs/archive/sidebar-views.md (All row funnel: which note types the All list holds)
   const hiddenTypesInAll = useMemo(
     () => new Set(userSettings.hiddenInAll.flatMap((v) => VIEW_NOTE_TYPES[v] ?? [])),
     [userSettings.hiddenInAll],
@@ -2230,6 +2343,60 @@ function AuthenticatedView({
     }
     return inFolder ? inFolder(n.folderId) : true;
   }, [selectedTag, inFolder]);
+
+  /**
+   * The check-ins of the open list: journal entries with tracker values and
+   * no text. Journals and All hide them unless "Show check-ins without text"
+   * is on; a search shows them, as it shows everything. The calendar, the
+   * statistics and the exports read other pools and keep them.
+   * Spec: ops/issues/0439.md (Spec)
+   */
+  const checkInIds = useMemo(() => {
+    if (view !== 'journal' && view !== 'home') return new Set<string>();
+    return new Set(listedNotes.filter(isCheckIn).map((n) => n.id));
+  }, [view, listedNotes]);
+  const hideCheckIns = !showTextless && !deferredSearch.trim() && checkInIds.size > 0;
+  /** The mood each journal day shows in the Journals calendar's mood look:
+   *  the newest entry with a mood, or "written" for a day with text and no
+   *  mood. An entry behind its PIN shows nothing. */
+  const journalMoods = useMemo(() => {
+    const out = new Map<string, number | 'written'>();
+    const from = new Map<string, string>();
+    for (const n of listedNotes) {
+      if (n.type !== 'journal' || isNoteLocked(n)) continue;
+      const day = journalDateOf(n);
+      if (!day) continue;
+      const mood = (n.trackers as JournalTrackerData | undefined)?.mood;
+      if (typeof mood === 'number') {
+        const at = from.get(day);
+        if (at === undefined || n.createdAt > at) {
+          out.set(day, mood);
+          from.set(day, n.createdAt);
+        }
+      } else if (!out.has(day) && (n.body ?? '').trim()) {
+        out.set(day, 'written');
+      }
+    }
+    return out;
+    // gatedIdsKey: the lock predicate is a fresh function each render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listedNotes, gatedIdsKey]);
+  const hiddenCheckInCount = useMemo(() => {
+    if (!hideCheckIns) return 0;
+    let count = 0;
+    for (const n of listedNotes) if (checkInIds.has(n.id) && inScope(n)) count += 1;
+    return count;
+  }, [hideCheckIns, listedNotes, checkInIds, inScope]);
+  // How many items the All options menu hides from the open All list, so an
+  // empty All says the items are filtered out rather than "No notes yet.".
+  // Same pool as the All branch of displayNotes; a search has its own line.
+  const hiddenInAllCount = useMemo(() => {
+    if (view !== 'home' || !hiddenTypesInAll.size || deferredSearch.trim()) return 0;
+    const pool = userSettings.archivedInAll ? activeNotes : listedNotes;
+    let count = 0;
+    for (const n of pool) if (hiddenTypesInAll.has(n.type) && inScope(n)) count += 1;
+    return count;
+  }, [view, hiddenTypesInAll, deferredSearch, userSettings.archivedInAll, activeNotes, listedNotes, inScope]);
 
   const displayNotes = useMemo(() => {
     // Tasks view is not a notes list - the middle column renders its
@@ -2284,6 +2451,7 @@ function AuthenticatedView({
     }
     // Tag + folder scope. Both apply in every view, and to each other.
     if (selectedTag || selectedFolder) list = list.filter(inScope);
+    if (hideCheckIns) list = list.filter((n) => !checkInIds.has(n.id));
     // Hide locked / protected notes per the user's "Other" toggles.
     // Trash bypasses both filters so nothing gets marooned there.
     if (view !== 'trash') {
@@ -2342,7 +2510,28 @@ function AuthenticatedView({
   // searchIndexVersion: searchNotes reads a module-level index that
   // updates AFTER the render a state change triggers - the version bump
   // is what re-runs this memo against the fresh index.
-  }, [activeNotes, listedNotes, archivedNotes, userSettings.archivedInAll, trashedNotes, deferredSearch, inScope, selectedTag, selectedFolder, view, listPrefs, vaultFilter, hiddenTypesInAll, searchIndexVersion, gatedIdsKey]);
+  }, [activeNotes, listedNotes, archivedNotes, userSettings.archivedInAll, trashedNotes, deferredSearch, inScope, selectedTag, selectedFolder, view, listPrefs, vaultFilter, hiddenTypesInAll, searchIndexVersion, gatedIdsKey, hideCheckIns, checkInIds]);
+  // How many items this view would show in the other space, so an empty list
+  // says where they are: a user took items in the other space for lost data.
+  // Only while the list is empty. A folder belongs to one space, and a search
+  // and Trash have their own lines, so those return 0.
+  // Spec: ops/docs/plans/spaces.md (section 6, Empty list names the other space)
+  const otherSpaceCount = useMemo(() => {
+    if (!otherSpace || displayNotes.length > 0 || deferredSearch.trim() || selectedFolder || view === 'trash') return 0;
+    const types = VIEW_NOTE_TYPES[view];
+    let count = 0;
+    for (const n of liveNotes) {
+      if (!inSpace(n, otherSpace, spaceOfFolder)) continue;
+      if (view === 'archive' ? n.archived !== 1 : n.archived === 1) continue;
+      if (view === 'starred' ? n.starred !== 1 : view === 'home' ? hiddenTypesInAll.has(n.type) : !types?.includes(n.type)) continue;
+      if (selectedTag && !inScope(n)) continue;
+      count += 1;
+    }
+    return count;
+  }, [otherSpace, displayNotes.length, deferredSearch, selectedFolder, view, liveNotes, spaceOfFolder, hiddenTypesInAll, selectedTag, inScope]);
+  const otherSpaceLine = otherSpace && otherSpaceCount > 0
+    ? t('empty.inOtherSpace', { count: otherSpaceCount, space: t(`shell:spaces.${otherSpace}`) })
+    : undefined;
 
   // Tag + folder + view compose: when either filter is active, the Tasks and
   // Files pillars (which render from their own data feeds, not displayNotes)
@@ -2448,7 +2637,18 @@ function AuthenticatedView({
   //     are mutually exclusive on small screens; tapping a tag should show
   //     the list, not punch straight through into an editor. We still
   //     clear a stale selection if the selected note left the list.
+  // Closing the last tab empties the pane until the list changes scope.
+  // Spec: ops/issues/0568.md (Spec)
+  const listScope = listScopeKey(view, selectedFolder, selectedTag, filterSpace, search);
+  const closedScopeRef = useRef<string | null>(null);
+  // The same scope without the search, which keeps no place: what a return to
+  // this view, folder, tag and space brings back. Spec: ops/docs/archive/keep-my-place.md
+  const placeScope = search ? null : listScopeKey(view, selectedFolder, selectedTag, filterSpace, '');
+  // The note open at the last quit, offered once the list has loaded. A
+  // re-lock hands its own note back through the first selection instead.
+  const lastOpenRef = useRef<string | null>(selectedId === null ? readLastOpen() : null);
   useEffect(() => {
+    if (selectedId !== null) closedScopeRef.current = null;
     // Tasks view owns its own selection rules: clicking a task opens
     // the source note in the editor while keeping the tasks UI in the
     // middle column. displayNotes is empty for Tasks by design, so
@@ -2459,11 +2659,14 @@ function AuthenticatedView({
       typeof window !== 'undefined' &&
       window.matchMedia('(min-width: 768px)').matches;
     // An item with a tab is a valid selection wherever the strip is drawn,
-    // even when the list's filter hides it. See ops/docs/plans/note-tabs.md
+    // even when the list's filter hides it. See ops/docs/archive/note-tabs.md
     // (section 5).
+    // A check-in the list hides stays open once opened: from the calendar,
+    // from the check-in card, from a note-link. Spec: ops/issues/0439.md (Spec)
     const selectionInList =
       selectedId != null &&
       (displayNotes.some((n) => n.id === selectedId) ||
+        (hideCheckIns && checkInIds.has(selectedId)) ||
         (tabsShown && spaceTabs.tabIds.has(selectedId)));
     // A note-link jump outranks this effect until the list catches up with
     // it. Any other selection retires the jump, and so does the target
@@ -2471,6 +2674,16 @@ function AuthenticatedView({
     if (linkTargetRef.current !== null) {
       if (selectedId === linkTargetRef.current && !selectionInList) return;
       linkTargetRef.current = null;
+    }
+    // A cold start reopens the note that was open at quit, on a phone too,
+    // once the list holds it. Anything that opened an item first wins.
+    const lastOpen = lastOpenRef.current;
+    if (lastOpen !== null && displayNotes.length > 0) {
+      lastOpenRef.current = null;
+      if (selectedId === null && (displayNotes.some((n) => n.id === lastOpen) || (tabsShown && spaceTabs.tabIds.has(lastOpen)))) {
+        setSelectedId(lastOpen);
+        return;
+      }
     }
     if (!isDesktop) {
       if (selectedId && !selectionInList) setSelectedId(null);
@@ -2486,11 +2699,28 @@ function AuthenticatedView({
       if (selectedId) setSelectedId(null);
       return;
     }
+    if (keepsEmptyPane(closedScopeRef.current, listScope, selectedId)) return;
     if (!selectionInList) {
+      // Back in a list visited earlier: its item, or the empty pane it was
+      // left with. A remembered item that has left the list falls through.
+      const back = placeScope === null ? undefined : rememberedSelection(placeScope);
+      if (back === null && selectedId === null) return;
+      if (back && displayNotes.some((n) => n.id === back)) {
+        setSelectedId(back);
+        return;
+      }
       const first = displayNotes[0];
       if (first) setSelectedId(first.id);
     }
-  }, [displayNotes, selectedId, view, gridMode, tabsShown, spaceTabs.tabIds]);
+  }, [displayNotes, selectedId, view, gridMode, tabsShown, spaceTabs.tabIds, hideCheckIns, checkInIds, listScope, placeScope]);
+
+  // What each list had open, read back by the effect above. Only an item the
+  // list holds is kept: a space switch renders the new list before the old
+  // item has left the selection.
+  useEffect(() => {
+    if (placeScope === null || selectedId === null) return;
+    if (displayNotes.some((n) => n.id === selectedId)) rememberSelection(placeScope, selectedId);
+  }, [placeScope, selectedId, displayNotes]);
 
   // "Open items in tabs" works like a browser: the item you open takes the
   // place of the one before it in its tab. Every way of opening an item
@@ -2502,7 +2732,7 @@ function AuthenticatedView({
   // clears the selection before the list picks its first item, so an empty
   // selection keeps the last followed id: that first item takes over the tab
   // you were on instead of opening a new one.
-  // Spec: ops/docs/plans/note-tabs.md (section 2)
+  // Spec: ops/docs/archive/note-tabs.md (section 2)
   const tabFollowRef = useRef<string | null>(null);
   useEffect(() => {
     const prev = tabFollowRef.current;
@@ -2527,7 +2757,7 @@ function AuthenticatedView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId, notes, openItemsInTabs, tabsShown, view, openTabs.tabIds, spaceTabs.tabIds, openTabs.pinnedIds]);
   // Showing, stepping and closing tabs (notesView/useTabActions.ts).
-  const { showTab, openInTab, stepTab, closeTab, closeTabs } = useTabActions({
+  const { showTab, openInTab, stepTab, closeTab, closeAllTabs, closeTabs } = useTabActions({
     view,
     setView,
     selectedId,
@@ -2537,6 +2767,11 @@ function AuthenticatedView({
     discardIfEmpty,
     refresh,
     runSync,
+    onCloseLast: () => {
+      closedScopeRef.current = listScope;
+      if (placeScope !== null) rememberSelection(placeScope, null);
+      setSelectedId(null);
+    },
   });
 
   // The switch acts on the strip at once, so it reads as on or off. Off
@@ -2676,14 +2911,14 @@ function AuthenticatedView({
   const footerVisible = !mobileKeyboard && !(zenMode && selected);
   // On a phone the bar steps aside while a note is read: down sends it away,
   // up, the top and the end bring it back. It never leaves a list, where it
-  // holds New. Spec: ops/docs/ui-patterns.md section 137
+  // holds New. Spec: ops/docs/archive/ui-patterns.md section 137
   const hasPhoneBar = useHasPhoneBar();
   const phoneBarRef = useRef<HTMLDivElement | null>(null);
   const barHideable = hasPhoneBar && !!selected && footerVisible;
   const { away: barAway, spot: noteSpot, scrolling: noteScrolling, keepShown: keepJumpShown, scrollTo: scrollNoteTo } = useNoteScroll(noteScrollerEl, barHideable, selectedId, phoneBarRef);
   // The one jump a long open note offers: to its end while it is read, to its
   // top near the end. In the phone bar, or as a pill at the foot of the text
-  // column where the desktop footer shows. Spec: ops/docs/ui-patterns.md section 137
+  // column where the desktop footer shows. Spec: ops/docs/archive/ui-patterns.md section 137
   const noteJump = useMemo(
     () => (selected && noteSpot !== 'short'
       ? { toTop: noteSpot === 'end', go: scrollNoteTo, scrolling: noteScrolling, keepShown: keepJumpShown }
@@ -2780,7 +3015,7 @@ function AuthenticatedView({
   const calendarShowsOther = useCalendarShowsOther(activeSpace);
   // The Calendar pillar's month, layout and open occurrence. A function
   // declaration is passed for the view switch: it is hoisted, and only runs
-  // on a click. Spec: ops/docs/plans/calendar-pillar-spec.md (step 3)
+  // on a click. Spec: ops/docs/archive/calendar-pillar-spec.md (step 3)
   const calendar = useCalendarPillar({ view, selectedId, setSelectedId, selectView: (v) => handleSelectView(v) });
   // The remembered occurrence as one value for the editor header, the Schedule
   // view and both actions: none once the series no longer holds that day (a
@@ -2789,7 +3024,7 @@ function AuthenticatedView({
     ? liveOccurrence(selected.trackers as Record<string, unknown> | undefined, selected.type, calendar.occurrence)
     : null;
   // One index for every calendar: journal entries, notes and task lists on
-  // their day, contacts on their birthday. Spec: ops/docs/plans/note-date.md (section 4)
+  // their day, contacts on their birthday. Spec: ops/docs/archive/note-date.md (section 4)
   const calendarDays = useMemo(
     () => calendarIndex(notes, {
       titleOf: (n) => noteLinkName(n, isNoteLocked(n)),
@@ -2811,38 +3046,69 @@ function AuthenticatedView({
     [viewCounts, todayCount],
   );
 
-  const footerStats = useMemo(() => {
-    // The Markdown pillar counts FILES ON DISK, not notes. Its displayNotes is
-    // empty by design (nothing encrypted belongs to it), so falling through
-    // would have shown "0 Notes" over a folder of 85 files.
+  const footerStats = useMemo((): FooterStats => {
+    // Each view counts the rows it draws, under the same name its rail row
+    // carries. Words are summed only where text is the content.
     //
-    // Words are a true total, summed from full bodies the tag index already
-    // read. It climbs as that background pass lands, which is honest: it is the
-    // count of what has been read so far, never a truncated count presented as
-    // a whole one.
+    // The Markdown pillar counts FILES ON DISK, not notes. Its displayNotes is
+    // empty by design (nothing encrypted belongs to it). Its words are a true
+    // total, summed from full bodies the tag index already read, and climb as
+    // that background pass lands.
     if (view === 'markdown') {
       const words = [...markdownTags.byPath.values()]
         .reduce((sum, m) => sum + m.words, 0);
+      const files = markdownDir?.entries.length ?? 0;
+      return { count: files, label: t('footerStats.files', { count: files }), words };
+    }
+    // Files counts its rows before the type filter and search, and sums their
+    // real sizes. A row the PIN guards carries no size, so it adds nothing.
+    if (view === 'files') {
+      const rows = visibleFileItems(scopedFileItems, gatedNoteIds(), listPrefs);
+      const bytes = rows.reduce((sum, f) => sum + f.size, 0);
       return {
-        notes: markdownDir?.entries.length ?? 0,
-        words,
-        label: t('shell:markdown.footerFiles'),
+        count: rows.length,
+        label: t('footerStats.files', { count: rows.length }),
+        ...(bytes > 0 ? { size: formatBytes(bytes) } : {}),
       };
     }
-    const pool = (view === 'tasks' || view === 'files') ? listedNotes : displayNotes;
-    const s = footerCounts(pool);
+    // Tasks counts the lists it draws and their open lines, by the rule the
+    // rail's Tasks number follows: a line behind the PIN gate is not counted.
+    if (view === 'tasks') {
+      const byId = new Map(taskContainingNotes.map((n) => [n.id, n]));
+      const open = scopedAllTasks.reduce((n, task) => {
+        if (task.checked) return n;
+        const parent = byId.get(task.noteId);
+        return parent && !isNoteLocked(parent) ? n + 1 : n;
+      }, 0);
+      const lists = taskContainingNotes.length;
+      return {
+        count: lists,
+        label: t('footerStats.lists', { count: lists }),
+        second: { count: open, label: t('footerStats.tasks', { count: open }) },
+      };
+    }
+    // Calendar counts what its rail number counts: the items of today.
+    if (view === 'calendar') {
+      return { count: todayCount, label: t('footerStats.today') };
+    }
+    const s = footerCounts(displayNotes);
+    const n = s.totalNotes;
+    if (view === 'vault') return { count: n, label: t('footerStats.items', { count: n }) };
+    if (view === 'bookmarks') return { count: n, label: t('footerStats.bookmarks', { count: n }) };
+    if (view === 'contacts') return { count: n, label: t('footerStats.contacts', { count: n }) };
     const label =
-      view === 'journal' ? t('footerStats.journals')
-      : view === 'vault' ? t('footerStats.items')
-      : view === 'bookmarks' ? t('footerStats.bookmarks')
-      : view === 'contacts' ? t('footerStats.contacts')
-      : view === 'calendar' ? t('footerStats.items')
-      : view === 'trash' ? t('footerStats.trashed')
-      : t('footerStats.notes');
-    return { notes: s.totalNotes, words: s.totalWords, label };
+      view === 'journal' ? t('footerStats.journals', { count: n })
+      : view === 'trash' ? t('footerStats.trashed', { count: n })
+      : view === 'all' ? t('footerStats.notes', { count: n })
+      // All ('home'), Pinned and Archive hold every type.
+      : t('footerStats.items', { count: n });
+    return { count: n, label, words: s.totalWords };
     // t in the deps: its identity changes on language switch and on lazy
     // catalog load, or the label stays cached in the boot language forever.
-  }, [view, listedNotes, displayNotes, markdownDir, markdownTags, t]);
+    // gatedIdsKey: the lock predicate is a fresh function each render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view, displayNotes, markdownDir, markdownTags, scopedFileItems, listPrefs, taskContainingNotes,
+      scopedAllTasks, todayCount, gatedIdsKey, t]);
 
 
   /**
@@ -2866,7 +3132,7 @@ function AuthenticatedView({
     if (!id) return false;
     // A draft with its own tab is kept on purpose: a person may open a new
     // note and a new journal entry side by side before typing in either. It
-    // goes when its tab closes (closeTabs below). Spec: ops/docs/plans/note-tabs.md
+    // goes when its tab closes (closeTabs below). Spec: ops/docs/archive/note-tabs.md
     if (!evenWithTab && tabsShown && openTabs.tabIds.has(id)) return false;
     // The open editor may still hold the last typing in its save delay.
     // Writing it now queues that save ahead of the trash write below, which
@@ -2976,6 +3242,27 @@ function AuthenticatedView({
     [inScope, search, vaultFilter, isNoteLocked, otherSpace, spaceOfFolder]
   );
 
+  // ── Web clipper: Save as note on a bookmark, Clip page in the + menu ──
+  const clipper = useClipper({
+    supabase,
+    notes: liveNotes,
+    refresh,
+    runSync,
+    folderForNew: spaceFolderForNew,
+    flashToast,
+    revealNote,
+  });
+  const bookmarkClip = (bookmark: LocalNote): BookmarkClip => ({
+    note: clipper.clipNoteFor(bookmark),
+    job: clipper.jobs[bookmark.id],
+    notice: clipper.notices[bookmark.id],
+    onSave: () => void clipper.saveBookmarkAsNote(bookmark),
+    onOpenNote: () => {
+      const note = clipper.clipNoteFor(bookmark);
+      if (note) revealNote(note);
+    },
+  });
+
   // ── Wiki-link navigation ──────────────────────────────────────────
   // Find a note by title and select it. If no match exists, prompt
   // before creating - a stale link whose target was renamed should not
@@ -3046,7 +3333,7 @@ function AuthenticatedView({
   // for the first sync before it calls the item missing, so an item made
   // on another device a moment ago still opens. `fromBoot` marks the one
   // the page loaded with, the only one that offers the desktop app.
-  // Spec: ops/docs/plans/note-shortcuts.md (5)
+  // Spec: ops/docs/archive/note-shortcuts.md (5)
   const [pendingShortcut, setPendingShortcut] = useState<{ target: ShortcutTarget; fromBoot: boolean } | null>(() => {
     const target = peekPendingShortcut();
     return target ? { target, fromBoot: true } : null;
@@ -3160,7 +3447,7 @@ function AuthenticatedView({
     return selectedTag && selectedTag !== '__untagged__' ? [selectedTag] : [];
   }
 
-  async function handleNew(vaultType?: 'login' | 'card' | 'ssh-key', overrideView?: View, overrideFolderId?: string | null, overrideStarred?: boolean) {
+  async function handleNew(vaultType?: 'login' | 'card' | 'ssh-key', overrideView?: View, overrideFolderId?: string | null, overrideStarred?: boolean, template?: 'kanban', titleOverride?: string, loginUrl?: string) {
     // overrideView: when the context menu "New X" fires from a different
     // pillar, the React closure's `view` is stale (re-render hasn't
     // happened yet). The caller passes the intended target so we create
@@ -3251,7 +3538,13 @@ function AuthenticatedView({
     // long date so the two pillars stay recognisably related.
     const today = new Date();
     const locale = activeLocale();
-    const inheritTitle = isTasks
+    // A Kanban task starts as a board, named after it.
+    const kanban = isTasks && template === 'kanban';
+    // A name typed in the quick add wins over every default title.
+    const inheritTitle = titleOverride?.trim() ? titleOverride.trim()
+      : kanban
+      ? t('newMenu.kanban')
+      : isTasks
       ? t('tasks.newTitle', {
           date: journalTitle(today, 'long', '', locale),
         })
@@ -3267,8 +3560,12 @@ function AuthenticatedView({
     const effectiveVaultType = isVault ? (vaultType ?? 'login') : null;
     // A task list opens with one empty checkbox, written now so the untouched
     // list still reads as a draft. Markdown source mode starts it blank.
-    const inheritBody = effectiveVaultType
+    // A login made from a web address in the quick add keeps the address.
+    const inheritBody = effectiveVaultType === 'login' && loginUrl
+      ? JSON.stringify({ ...(JSON.parse(VAULT_EMPTY_BODIES.login!) as Record<string, string>), url: loginUrl })
+      : effectiveVaultType
       ? (VAULT_EMPTY_BODIES[effectiveVaultType] ?? '')
+      : kanban ? kanbanEmptyBody((key) => i18n.t(key))
       : isTasks && userSettings.editorMode === 'formatted' ? TASK_LIST_EMPTY_BODY : '';
     // Vault filter mismatch: if the active filter doesn't include the
     // new item type, switch to "all" so the new item is visible.
@@ -3465,6 +3762,83 @@ function AuthenticatedView({
     await handleTrackersChange(note.id, { journalDate: monday, weekReflection: text });
   }
 
+  /**
+   * The check-in card's write: merge `patch` into the day's entry, creating
+   * the entry when the day has none, as the New button does. Writes run one
+   * after another, so two quick taps never create two entries, and each
+   * merges against the stored row (handleTrackersPatch).
+   * Spec: ops/issues/0439.md (Spec)
+   */
+  const checkInNotesRef = useRef(listedNotes);
+  checkInNotesRef.current = listedNotes;
+  const checkInQueue = useRef<Promise<unknown>>(Promise.resolve());
+  const checkInCreated = useRef(new Map<string, string>());
+  function saveCheckIn(day: string, patch: JournalTrackerData): Promise<void> {
+    const run = async () => {
+      const existing = checkInEntry(checkInNotesRef.current, day);
+      if (existing && (existing.locked === 1 || isNoteLocked(existing))) return;
+      // An entry this session created and the list has not caught up with,
+      // in the open space: the list holds that space only.
+      const key = `${activeSpace}\u0000${day}`;
+      const created = checkInCreated.current.get(key);
+      let id = existing?.id ?? created;
+      if (!id) {
+        const date = new Date(day + 'T12:00:00');
+        const note = await createNote(
+          journalTitle(date, userSettings.journalTitleFormat, userSettings.journalTitleSuffix, activeLocale(), userSettings.journalTitlePattern),
+          '', undefined, undefined, 'journal', spaceFolderForNew(),
+        );
+        const stamp = { journalDate: day, ...(day < toLocalIso(new Date()) ? { backfilled: true } : {}) };
+        // Birth timestamp, as handleBackfillDate: the stamp is ours.
+        await updateNote(note.id, { trackers: stamp }, note.updatedAt);
+        checkInCreated.current.set(key, note.id);
+        await refresh();
+        id = note.id;
+      }
+      const ok = await handleTrackersPatch(id, patch);
+      // The entry this session made is gone (trashed elsewhere): start over.
+      if (!ok && !existing && created) {
+        checkInCreated.current.delete(key);
+      }
+    };
+    const next = checkInQueue.current.then(run, run);
+    checkInQueue.current = next.catch(() => {});
+    return next;
+  }
+
+  /** Open the day's entry in the editor, creating it when there is none. */
+  function openCheckInDay(day: string) {
+    const existing = checkInEntry(checkInNotesRef.current, day);
+    if (existing) openJournalEntry(existing.id);
+    else createJournalEntryFor(day);
+  }
+
+  /** The reminder's tap: Journals with the card in view, nothing narrowing
+   *  the list, so the card is the first thing seen. */
+  function openCheckInHome() {
+    setSearch('');
+    setSelectedTag(null);
+    setSelectedFolder(null);
+    clearSelection();
+    if (view !== 'journal') setView('journal');
+  }
+
+  /** Every door to the tracker setup: Settings › Wellness, alone, on a tab
+   *  or a part of one. There is no second setup dialog. */
+  /** Settings › Trackers at a tab, in the full window with its sidebar, not
+   *  the single pane: the check-in card's menu and a journal's tracker rows. */
+  function openTrackerSettings(tab: TrackerSetupTab) {
+    setSettingsCategory('trackers');
+    setSettingsRow({ id: TRACKER_SETUP_ROW[tab], tab, flash: false });
+    setSettingsSolo(false);
+    setShowSettings(true);
+  }
+
+  /** The card's "Check-in settings": the Check-in tab of Settings › Wellness. */
+  function openCheckInSettings() {
+    openTrackerSettings('checkIn');
+  }
+
   async function handleBackfillDate(isoDate: string) {
     // Noon avoids the DST edge where midnight local does not exist.
     const date = new Date(isoDate + 'T12:00:00');
@@ -3556,7 +3930,7 @@ function AuthenticatedView({
 
   /** A note or a task list for a day, from an empty calendar day. It takes
    *  the birth stamp, as a dated journal entry does, so the date is not an
-   *  edit. Spec: ops/docs/plans/note-date.md (section 4) */
+   *  edit. Spec: ops/docs/archive/note-date.md (section 4) */
   async function createDatedItem(type: 'note' | 'task', day: string) {
     const body = type === 'task' && userSettings.editorMode === 'formatted' ? TASK_LIST_EMPTY_BODY : '';
     // The open folder and tag, as the New button gives them: a note born
@@ -3575,7 +3949,7 @@ function AuthenticatedView({
    * takes the open folder and tag where the words name none, and a new event
    * takes the default alert of Settings › Date & Time › Calendar where alerts are open. It
    * opens in place of the calendar there, and in its own pillar elsewhere.
-   * Spec: ops/docs/plans/calendar-pillar-spec.md (step 8, decision 7)
+   * Spec: ops/docs/archive/calendar-pillar-spec.md (step 8, decision 7)
    */
   async function createFromQuickAdd(q: QuickAdd, type: QuickAddType) {
     const day = q.day ?? toLocalIso(new Date());
@@ -3607,10 +3981,43 @@ function AuthenticatedView({
     setDrawerOpen(false);
   }
 
-  /** The quick add: the switcher in create mode, with a cell's day and time. */
+  /** The quick add: the switcher with "+" typed, and a cell's day and time
+   *  for as long as the "+" stays. Spec: ops/docs/archive/quick-add-prefix.md */
   function openQuickAdd(at: { defaultDay?: string; time?: string; timeEnd?: string } = {}) {
     setQuickAddAt(at);
-    setQuickSwitcherQuery('');
+    setQuickSwitcherQuery(CREATE_PREFIX);
+    // An open switcher starts over with "+": the query it holds is not the
+    // quick add the door asked for.
+    setQuickSwitcherMount((n) => n + 1);
+  }
+
+  /**
+   * The quick add's "text >> name": add the text to an item that exists, as
+   * tasks to a task list and as a paragraph to anything else, and stay where
+   * the user is. Written through the same path as the "..." menu's task
+   * rewrites, so the open note takes it as one Undo step.
+   */
+  async function handleAppendFromQuickAdd(n: LocalNote, lines: string[], asTasks: boolean) {
+    editorRef.current?.flushPendingSave();
+    const title = deriveDisplayTitle(n, isNoteLocked(n));
+    let written = false;
+    await applyTaskRewrite(n, async (id, body, isGated) => {
+      const next = await appendToNote(id, body, lines, asTasks, isGated);
+      written = next != null;
+      return next;
+    });
+    flashToast(t(written ? 'shell:quickAdd.added' : 'shell:quickAdd.notAdded', { title }));
+  }
+
+  /** "milk, eggs >> groceries" with no item of that name: a task list of
+   *  that name with the lines as its tasks, filed where a quick add files,
+   *  and the user stays where they are. */
+  async function handleNewListFromQuickAdd(title: string, lines: string[]) {
+    const empty = userSettings.editorMode === 'formatted' ? TASK_LIST_EMPTY_BODY : '';
+    await createNote(title, appendLinesToBody(empty, lines, true), inheritedTags(), false, 'task', inheritedFolderId());
+    await refresh();
+    scheduleSync();
+    flashToast(t('shell:quickAdd.added', { title }));
   }
 
   async function handleSelectNote(id: string) {
@@ -3632,7 +4039,7 @@ function AuthenticatedView({
     // everywhere except Trash, where selecting is how you inspect and
     // restore, and except behind the PIN, where the address is the content
     // the gate keeps: a guarded bookmark is selected, and its pane asks.
-    // Spec: ops/docs/plans/bookmarks-pillar.md (row click opens).
+    // Spec: ops/docs/archive/bookmarks-pillar.md (row click opens).
     const clicked = notes.find((n) => n.id === id);
     if (clicked && opensBookmarkOnClick(clicked, isNoteLocked(clicked))) {
       openExternal(parseLinkBody(clicked.body).url);
@@ -3716,7 +4123,7 @@ function AuthenticatedView({
    * a search hit opens its pillar), where the user chose no such thing.
    * Unhiding is left alone, so ticking the open view back on does not
    * throw the user out of it.
-   * Spec: ops/docs/plans/sidebar-views.md (hiding the open view bounces to home, an app-opened view stays put)
+   * Spec: ops/docs/archive/sidebar-views.md (hiding the open view bounces to home, an app-opened view stays put)
    */
   function handleToggleHiddenView(field: 'hiddenViews' | 'hiddenInAll', key: View) {
     const hiding = field === 'hiddenViews' && !userSettings.hiddenViews.includes(key);
@@ -4070,9 +4477,9 @@ function AuthenticatedView({
    * write refuses a read-only note and one the PIN guards (toggleTaskInNote).
    */
   async function handleToggleTask(task: TaskItem, checked: boolean) {
-    // Save the open editor's last keystrokes first, so the toggle starts from
-    // them and the remount below leaves no save behind.
-    editorRef.current?.flushPendingSave();
+    // The write starts from the open editor's pending keystrokes.
+    const openEditor = editorRef.current;
+    openEditor?.flushPendingSave();
     const nextBody = await toggleTaskInNote(task, checked, isNoteLocked, userSettings.sinkCheckedTasks);
     if (nextBody == null) {
       // Nothing written: the line shifted out from under us (parallel
@@ -4081,12 +4488,16 @@ function AuthenticatedView({
       return;
     }
     patchLocal(task.noteId, { body: nextBody }, new Date().toISOString());
-    // If this note is open in the editor, force remount so the checkbox
-    // state is reflected immediately. Clear the editing body ref so the
-    // stale buffered body doesn't overwrite the toggled version.
-    if (selectedId === task.noteId) {
-      editingBodyRef.current.delete(task.noteId);
-      setEditorRevision((r) => r + 1);
+    // Keep the formatted editor and its history when it is still the one
+    // that initiated the write. Navigation during the write must not replace
+    // another note's document; a stale editor belongs to its conflict copy.
+    if (latestSelectedIdRef.current === task.noteId) {
+      if (editorRef.current === openEditor && !isEditorStale(task.noteId) && openEditor?.replaceBody(nextBody)) {
+        resetEditorBody(task.noteId, nextBody);
+      } else {
+        editingBodyRef.current.delete(task.noteId);
+        setEditorRevision((r) => r + 1);
+      }
     }
     scheduleSync();
   }
@@ -4166,6 +4577,17 @@ function AuthenticatedView({
     // jarring because their context (the task list) disappeared.
     setSelectedId(task.noteId);
     setDrawerOpen(false);
+  }
+
+  /** The Lock app button: lock at once when the device has a PIN, a passcode
+      or biometric unlock, with or without "Lock app on open"; else open
+      Settings on the PIN tab of Security, at Set a PIN (GitHub #594). */
+  const lockReady = canLockNow();
+  function handleLockClick() {
+    if (lockAppNow()) return;
+    setSettingsCategory('security');
+    setSettingsRow({ id: 'security.setPin', tab: 'pin' });
+    setShowSettings(true);
   }
 
   /** Intercept sign-out to show the phrase-reminder modal, unless the
@@ -4265,7 +4687,9 @@ function AuthenticatedView({
     let title = base;
     for (let i = 2; taken.has(title); i++) title = `${base} ${i}`;
     const created = await createNote(title, parts.tail, n.tags, false, 'note', n.folderId ?? null);
-    const head = `${parts.head.trimEnd()}\n\n${t('split.continuedIn', { link: `[[${title}]]` })}\n`;
+    // Match the editor's serialization: a trailing newline would look like
+    // an edit on its next flush and prevent an otherwise unchanged Undo.
+    const head = `${parts.head.trimEnd()}\n\n${t('split.continuedIn', { link: `[[${title}]]` })}`;
     let written = false;
     await applyTaskRewrite(n, async (id, body) => {
       const ok = await updateNoteFrom(id, (current) => (current.body === body ? { body: head } : null));
@@ -4282,20 +4706,17 @@ function AuthenticatedView({
     sizeToastShown.current.add(n.id);
     await refresh();
     scheduleSync();
-    showSizeToast({ kind: 'split', noteId: n.id, newId: created.id, title, head, original });
+    showSizeToast({ kind: 'split', noteId: n.id, newId: created.id, title, head, tail: parts.tail, original, newUpdatedAt: created.updatedAt });
   }
 
-  /** Undo of a split: the old body back, the new note gone. */
+  /** Undo only an unchanged split; editor buffers count as changes too. */
   async function undoSplit(toast: Extract<SizeToast, { kind: 'split' }>) {
+    editorRef.current?.flushPendingSave();
     const n = notes.find((x) => x.id === toast.noteId);
-    if (n) {
-      await applyTaskRewrite(n, async (id) => {
-        const ok = await updateNoteFrom(id, () => ({ body: toast.original }));
-        return ok ? toast.original : null;
-      });
-    }
-    await trashNote(toast.newId);
-    await permanentlyDelete(toast.newId);
+    const child = notes.find((x) => x.id === toast.newId);
+    if (!n || !child || isEditorStale(n.id) || isEditorStale(child.id) ||
+      withFreshestBody(n).body !== toast.head || withFreshestBody(child).body !== toast.tail) return;
+    await applyTaskRewrite(n, async () => (await undoNoteSplit(toast)) ? toast.original : null);
     await refresh();
     scheduleSync();
   }
@@ -4369,7 +4790,8 @@ function AuthenticatedView({
       else calendar.setMode(key);
       return true;
     },
-    openCommands: () => setQuickSwitcherQuery(COMMAND_PREFIX),
+    // An open switcher starts over in command mode, as the quick add's doors do.
+    openCommands: () => { setQuickSwitcherQuery(COMMAND_PREFIX); setQuickSwitcherMount((n) => n + 1); },
     openQuickSwitcher: () => setQuickSwitcherQuery(''),
     tabCount: tabsShown ? spaceTabs.tabs.length : 0,
     zenMode,
@@ -4468,7 +4890,10 @@ function AuthenticatedView({
     const rows = sidebarViewRows(tShell).filter(
       (r) => isViewShown(r.key, userSettings.hiddenViews, view) && !hiddenAtZero(r.key, railCounts[r.key], view),
     );
-    const sections: PaletteEntry[] = [{ key: 'home' as View, label: t('shell:tagsRail.allItems'), icon: PILLAR_GLYPHS.all }, ...rows].map((r) => ({
+    // The trash has no sidebar row of its own, so it joins the list here:
+    // the switcher is a way to every place.
+    const trashRow = { key: 'trash' as View, label: t('shell:pillars.trash'), icon: PILLAR_GLYPHS.trash };
+    const sections: PaletteEntry[] = [{ key: 'home' as View, label: t('shell:tagsRail.allItems'), icon: PILLAR_GLYPHS.all }, ...rows, trashRow].map((r) => ({
       id: `go:${r.key}`,
       group: 'goTo',
       label: r.label,
@@ -4491,12 +4916,54 @@ function AuthenticatedView({
           run: () => setActiveSpace(r.view),
         }))
       : [];
-    return [...commands, ...created, ...sections, ...spaceRow];
+    // Ninja's doors to the buried features (ninjaFeatures.ts): each action
+    // says here when it is offered and what it runs.
+    // Spec: ops/docs/plans/ninja-features.md
+    const signedIn = auth.status === 'authenticated' && !isDemoMode();
+    const ACTIONS: Record<NinjaAction, { available: boolean; run: () => void }> = {
+      passwordGenerator: { available: true, run: () => setShowGenerator(true) },
+      lock: { available: true, run: handleLockClick },
+      syncNow: { available: signedIn && !syncPaused, run: () => void runSync() },
+      syncPause: { available: signedIn, run: () => setSyncPaused(!syncPaused) },
+      // Always offered, so it is found: an empty trash says so.
+      emptyTrash: { available: true, run: () => (trashedNotes.length ? handleEmptyTrash() : flashToast(t('common:ninja.trashEmpty'))) },
+    };
+    const openPage = (path: string) =>
+      openExternal(path === '/' ? marketingHomeHref() : siteHref(path === '/help' ? helpPath(activeLocale()) : path));
+    const doors: PaletteEntry[] = NINJA_DOORS.flatMap((door): PaletteEntry[] => {
+      const { to } = door;
+      if (to.kind === 'action' && !ACTIONS[to.id].available) return [];
+      const run =
+        to.kind === 'action' ? ACTIONS[to.id].run
+        : to.kind === 'tracker' ? () => openTrackerSettings(to.tab)
+        : to.kind === 'page' ? () => openPage(to.path)
+        // The registry loads on Enter: it is the settings search's, not the boot path's.
+        : () => void import('./settingsSearch/registry').then(({ SETTING_ENTRIES }) => {
+            const entry = SETTING_ENTRIES.find((e) => e.id === to.entry);
+            if (!entry) return;
+            setSettingsCategory(entry.section);
+            setSettingsRow(entry.isSection ? undefined : { id: entry.id, ...(entry.tab ? { tab: entry.tab } : {}) });
+            setSettingsSolo(false);
+            setShowSettings(true);
+          });
+      const resume = to.kind === 'action' && to.id === 'syncPause' && syncPaused;
+      return [{
+        id: door.id,
+        group: door.group,
+        label: resume ? t('common:ninja.commands.syncResume') : t(door.label),
+        ...(door.detail ? { detail: t(door.detail) } : {}),
+        icon: resume ? Play : to.kind === 'action' && to.id === 'syncPause' ? Pause : door.icon,
+        ...(door.pro && !proUnlocked(auth.isPro) ? { pro: true } : {}),
+        ...(door.inCreate ? { inCreate: true } : {}),
+        run,
+      }];
+    });
+    return [...doors.filter((d) => d.group === 'features'), ...commands, ...doors.filter((d) => d.group !== 'features'), ...created, ...sections, ...spaceRow];
   };
   const paletteContext = useMemo<CommandPaletteContextValue>(
     () => ({
       searchInputRef,
-      openCommands: () => setQuickSwitcherQuery(COMMAND_PREFIX),
+      openCommands: () => { setQuickSwitcherQuery(COMMAND_PREFIX); setQuickSwitcherMount((n) => n + 1); },
       openSwitcher: () => setQuickSwitcherQuery(''),
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -4616,7 +5083,7 @@ function AuthenticatedView({
         filesUploadRef.current?.click();
       },
       onNewBookmark: handleNewBookmark,
-      onNewContact: handleNewContact,
+      onNewContact: () => handleNewContact(),
       onOpenBookmark: (n) => behindGate(n, () => openExternal(parseLinkBody(n.body).url)),
       onCopyBookmarkUrl: (n) => behindGate(n, () => {
         void navigator.clipboard.writeText(parseLinkBody(n.body).url).then(() => {
@@ -4627,6 +5094,12 @@ function AuthenticatedView({
       onEditBookmark: (n) => {
         void handleSelectView('bookmarks').then(() => selectBookmarkForEdit(n.id));
       },
+      onSaveBookmarkAsNote: (n) => behindGate(n, () => {
+        const clipped = clipper.clipNoteFor(n);
+        if (clipped) revealNote(clipped);
+        else void clipper.saveBookmarkAsNote(n);
+      }),
+      clippedNoteFor: clipper.clipNoteFor,
       setShowSettings,
       handleSignOutClick,
       selectedIds,
@@ -4736,6 +5209,7 @@ function AuthenticatedView({
     isEditorStale,
     handleTagsChange,
     handleTrackersChange,
+    handleTrackersPatch,
     handleVaultSave,
     scheduleSync,
     patchLocal,
@@ -4775,7 +5249,7 @@ function AuthenticatedView({
 
   // Every schedule write of the calendar: a move, an end day, a Schedule view
   // field, a drop, and the "Change this item?" question of a repeating event.
-  // Spec: ops/docs/plans/calendar-pillar-spec.md (steps 4 and 6)
+  // Spec: ops/docs/archive/calendar-pillar-spec.md (steps 4 and 6)
   // A calendar row is a date, not a document: its right-click menu holds what
   // is done to the date (when, and whether it stays on the calendar), and the
   // document's own verbs stay in its "..." menu and the other lists. Only an
@@ -4879,8 +5353,29 @@ function AuthenticatedView({
   });
   // The alert a new alert list starts with (Settings › Date & Time › Calendar).
   const calendarDefaults = alertDefaults(userSettings);
+  // The daily check-in reminder of this device rings in the same plan while
+  // today's check-in is not done.
+  // Spec: ops/issues/0439.md (Reminder plan)
+  const checkInReminderTime = useCheckInReminder();
+  const checkInToday = useToday();
+  const checkInSkipped = useCheckInSkipped(checkInToday);
+  const checkInIsDone = checkInSkipped || checkInLogged(listedNotes, checkInToday, isNoteLocked);
+  // The medication reminders of this device; a dose logged today takes today
+  // out. Spec: ops/docs/mood-wellness-tracker.md section 6.7
+  const medicationRinging = useMedicationReminders();
+  const medLogsOn = (day: string) => {
+    const entry = checkInEntry(listedNotes, day);
+    return entry && !isNoteLocked(entry) ? (entry.trackers as { medications?: MedicationLogEntry[] } | undefined)?.medications : undefined;
+  };
+  const checkInYesterday = shiftDay(checkInToday, -1);
+  const todayMedLogs = medLogsOn(checkInToday);
+  const yesterdayMedLogs = medLogsOn(checkInYesterday);
+  const medicationReminders = useMemo(
+    () => medicationReminderItems(userSettings.medications, medicationRinging, checkInToday, { [checkInYesterday]: yesterdayMedLogs, [checkInToday]: todayMedLogs }),
+    [userSettings.medications, medicationRinging, checkInToday, checkInYesterday, todayMedLogs, yesterdayMedLogs],
+  );
   // Reminders: this device plans and fires the alerts of the items it holds.
-  // Spec: ops/docs/plans/calendar-pillar-spec.md (step 7)
+  // Spec: ops/docs/archive/calendar-pillar-spec.md (step 7)
   const reminders = useReminders({
     notes,
     // A failed read leaves the list empty, which is no plan to act on.
@@ -4891,7 +5386,10 @@ function AuthenticatedView({
     titles: userSettings.calendar.reminderTitles,
     appLock: userSettings.appLockEnabled,
     birthday: userSettings.calendar.alertBirthday,
+    checkIn: checkInReminderTime ? { time: checkInReminderTime, done: checkInIsDone } : null,
+    medications: medicationReminders,
     onOpen: (id, occurrence) => {
+      if (id === CHECK_IN_REMINDER_ID || id.startsWith(MEDICATION_REMINDER_PREFIX)) { openCheckInHome(); return; }
       markSeen(id);
       void calendar.openAt(occurrence || toLocalIso(new Date())).then(() => calendar.openItem(id, occurrence || undefined));
     },
@@ -5103,7 +5601,7 @@ function AuthenticatedView({
   // While the open folder lists its whole branch, a subfolder's chip names
   // its path below that folder instead, so two subfolders that share a name
   // read apart. Safe only because TagChips, inside the list panes, is the one
-  // reader of this map. Spec: ops/docs/plans/folder-subfolders.md (D4)
+  // reader of this map. Spec: ops/docs/archive/folder-subfolders.md (D4)
   const folderNames = useMemo(() => {
     const names = new Map(userSettings.folders.map((f) => [f.id, f.name]));
     if (selectedFolder && selectedFolder !== UNFILED_ID && userSettings.includeSubfolders) {
@@ -5120,8 +5618,12 @@ function AuthenticatedView({
     tag: (tag: string) => void chipFilterRef.current.tag(tag),
     folder: (id: string) => void chipFilterRef.current.folder(id),
   }), []);
+  // The units a check-in row prints its numbers in, with a stable identity
+  // so the memoized rows re-render only when a unit changes.
+  const { weightUnit, waterUnit, caffeineUnit } = userSettings.trackerSettings;
+  const checkInUnits = useMemo(() => ({ weightUnit, waterUnit, caffeineUnit }), [weightUnit, waterUnit, caffeineUnit]);
   // The Subfolders switch beside the folder chip, offered only while the open
-  // folder has a subfolder to include. Spec: ops/docs/plans/folder-subfolders.md (D3)
+  // folder has a subfolder to include. Spec: ops/docs/archive/folder-subfolders.md (D3)
   const subfoldersSwitch = useMemo(
     () => (selectedFolder && userSettings.folders.some((f) => f.parentId === selectedFolder)
       ? {
@@ -5133,7 +5635,7 @@ function AuthenticatedView({
   );
   // Every folder and tag glyph reads its look from here, deep inside
   // components that never see the settings.
-  // Spec: ops/docs/plans/folder-tag-icons.md (section 7)
+  // Spec: ops/docs/archive/folder-tag-icons.md (section 7)
   // The list's filter lends its color to every note in it (resolveItemColor).
   const colorFilter = useMemo(
     () => ({
@@ -5155,7 +5657,7 @@ function AuthenticatedView({
   // The open note's background takes its color when the switch is on: its
   // first colored tag, else its folder. A layer over the pane's own surface,
   // never a replacement for it, so the theme still shows through.
-  // Spec: ops/docs/plans/folder-tag-icons.md (sections 4.4 and 4.6)
+  // Spec: ops/docs/archive/folder-tag-icons.md (sections 4.4 and 4.6)
   // An import's tag colors (Google Keep). Pro, like every look, and never
   // over a color the person already picked for that tag.
   const applyImportedTagColors = useCallback(
@@ -5232,11 +5734,13 @@ function AuthenticatedView({
 
   const tasksList = (
     <TasksList
+      place={placeScope}
       otherSpace={otherSpace}
       calendar={datedLists.tasks ? {
         entries: calendarDays,
         onOpen: openCalendarItem,
         onCreate: (day) => void createDatedItem('task', day),
+        onEvent: (day) => openQuickAdd({ defaultDay: day }),
         ...calendarExtras,
       } : null}
       onSelectView={handleSelectView}
@@ -5261,14 +5765,14 @@ function AuthenticatedView({
       taskInputRef={taskInputRef}
       searchInputRef={searchInputRef as React.RefObject<HTMLInputElement>}
       mobileTabIndex={mobileTabIndex}
-      hotkeyLabel={hotkeyLabel}
       isNoteLocked={isNoteLocked}
       onSetShowDoneTasks={setShowDoneTasks}
       onSetTaskDraft={setTaskDraft}
       onToggleTask={handleToggleTask}
       onOpenTaskSource={handleOpenTaskSource}
       onAddQuickTask={handleAddQuickTask}
-      onNew={handleNew}
+      onNew={() => void handleNew()}
+      onNewKanban={() => void handleNew(undefined, 'tasks', undefined, undefined, 'kanban')}
       onOpenImport={() => setImportExportModal({ open: true, tab: 'import' })}
       onSelectNote={(id) => {
         setSelectedId(id);
@@ -5300,6 +5804,7 @@ function AuthenticatedView({
 
   const filesList = (
     <FilesList
+      place={placeScope}
       onSelectView={handleSelectView}
       hiddenViews={userSettings.hiddenViews}
       onOpenDrawer={() => setDrawerOpen(true)}
@@ -5410,6 +5915,28 @@ function AuthenticatedView({
     setBookmarkFocusSignal((x) => x + 1);
   }
 
+  /** The quick add's "New bookmark: <link>": the same item the Bookmarks
+   *  bar adds, filed where the list stands, opened at its name. A link that
+   *  is a bookmark already opens that one, as the bar's guard warns. */
+  async function handleQuickBookmark(raw: string) {
+    const url = normalizeUrl(raw);
+    if (!url) return handleNewBookmark();
+    const tags = inheritedTags();
+    const folderId = inheritedFolderId();
+    await handleSelectView('bookmarks');
+    const existing = duplicateBookmarkId(bookmarkKeys, url);
+    if (existing) {
+      flashToast(t('shell:bookmarks.duplicateHint'));
+      await selectBookmarkForEdit(existing);
+      return;
+    }
+    const created = await createNote('', buildLinkBody(url), tags, false, 'link', folderId);
+    await refresh();
+    pendingFocus.current = 'title';
+    await selectBookmarkForEdit(created.id);
+    void runSync();
+  }
+
   /** Select a bookmark INTO the standard editor (pencil, context-menu
    *  Edit, quick-add create). handleSelectNote cannot do it - a plain
    *  click there opens the URL by design. */
@@ -5436,13 +5963,20 @@ function AuthenticatedView({
    *  reads as doing nothing at all (GitHub #305). All three are read before
    *  the view switch, which is what the Pinned view's New menu needs: it
    *  leaves a starred-only list to get here. */
-  function handleNewContact() {
+  function handleNewContact(name = '') {
     const starred = view === 'starred';
     const folderId = inheritedFolderId();
     const tags = inheritedTags();
+    // A name typed in the quick add: the title, and the form's first and
+    // last name fields, split at the last space.
+    const clean = name.trim();
+    const cut = clean.lastIndexOf(' ');
+    const body = clean
+      ? buildContactBody({ ...emptyContact(), first: cut > 0 ? clean.slice(0, cut) : clean, last: cut > 0 ? clean.slice(cut + 1) : '' })
+      : '{}';
     void (async () => {
       await handleSelectView('contacts');
-      const created = await createNote('', '{}', tags, starred, 'contact', folderId);
+      const created = await createNote(clean, body, tags, starred, 'contact', folderId);
       await refresh();
       await selectBookmarkForEdit(created.id);
       void runSync();
@@ -5451,6 +5985,8 @@ function AuthenticatedView({
 
   const contactsList = (
     <ContactsList
+      place={placeScope}
+      otherSpaceLine={otherSpaceLine}
       contacts={displayNotes}
       isNoteLocked={isNoteLocked}
       listPrefs={listPrefs}
@@ -5471,7 +6007,7 @@ function AuthenticatedView({
       allTags={tagCounts.tags}
       foldersUnlocked={foldersUnlocked}
       viewMode={effectiveViewMode}
-      onRequestNew={handleNewContact}
+      onRequestNew={() => handleNewContact()}
       selectedId={view === 'contacts' ? selectedId : null}
       selectionMode={selectionMode}
       selectedIds={selectedIds}
@@ -5498,6 +6034,8 @@ function AuthenticatedView({
 
   const bookmarksList = (
     <BookmarksList
+      place={placeScope}
+      otherSpaceLine={otherSpaceLine}
       bookmarks={displayNotes}
       isNoteLocked={isNoteLocked}
       bookmarkKeys={bookmarkKeys}
@@ -5581,8 +6119,51 @@ function AuthenticatedView({
     />
   );
 
+  // This device's card switch (checkInCardSwitch.ts).
+  const checkInCardOn = useCheckInCardShown();
+  // The check-in card: Journals, and All while Journals is shown there (the
+  // one switch is the card's; All follows its Journals row), never over a
+  // search, a selection, a tag or folder filter, or Trash.
+  // Spec: ops/issues/0439.md (Spec)
+  const checkInShown = checkInCardOn
+    && (view === 'journal' || (view === 'home' && isShownInAll(userSettings, 'journal')));
+  const checkInCard = checkInShown && !search.trim() && !selectionMode && !selectedTag && !selectedFolder ? (
+    <CheckInCard
+      grid={gridMode}
+      notes={listedNotes}
+      isGated={isNoteLocked}
+      settings={userSettings.checkIn}
+      onSettingsChange={(next) => mutateSettings((prev) => ({ ...prev, checkIn: next }))}
+      trackerSettings={userSettings.trackerSettings}
+      onTrackerSettingsChange={(ts) => mutateSettings((prev) => ({ ...prev, trackerSettings: ts }))}
+      medications={userSettings.medications}
+      factors={userSettings.factors}
+      isPro={auth.isPro}
+      onOpenUpgrade={() => setShowUpgrade({ trigger: null })}
+      onSave={saveCheckIn}
+      onOpenDay={openCheckInDay}
+      onOpenSettings={openCheckInSettings}
+      onOpenTrackers={openTrackerSettings}
+      openMenu={ctxMenu.open}
+    />
+  ) : null;
+
   const notesList = (
     <NotesList
+      place={placeScope}
+      checkInCard={checkInCard}
+      checkInCardToggle={view === 'journal' || (view === 'home' && isShownInAll(userSettings, 'journal')) ? {
+        checked: checkInCardOn,
+        onChange: setCheckInCardShown,
+      } : undefined}
+      checkInToggle={checkInIds.size > 0 ? {
+        on: showTextless,
+        onChange: (on: boolean) => mutateSettings((prev) => ({ ...prev, checkIn: { ...prev.checkIn, showTextless: on } })),
+      } : undefined}
+      hiddenCheckIns={hiddenCheckInCount}
+      hiddenInAll={hiddenInAllCount}
+      otherSpaceLine={otherSpaceLine}
+      journalMoods={journalMoods}
       onSelectView={handleSelectView}
       hiddenViews={userSettings.hiddenViews}
       importOffer={importOffer}
@@ -5635,11 +6216,13 @@ function AuthenticatedView({
       onLongPressStart={beginLongPress}
       onLongPressEnd={cancelLongPress}
       isNoteLocked={isNoteLocked}
-      onNew={(vaultType, overrideView) => void handleNew(vaultType, overrideView, undefined, view === 'starred')}
+      onNew={(vaultType, overrideView, template) => void handleNew(vaultType, overrideView, undefined, view === 'starred', template)}
       onNewBookmark={handleNewBookmark}
-      onNewContact={handleNewContact}
+      onClipPage={() => clipper.openClipWindow()}
+      onNewContact={() => handleNewContact()}
       onQuickAdd={() => openQuickAdd(view === 'calendar' ? { defaultDay: calendar.focus } : {})}
       onOpenImport={(tab) => setImportExportModal({ open: true, tab })}
+      onOpenGenerator={() => setShowGenerator(true)}
       onNewFile={() => {
         void handleSelectView('files');
         filesUploadRef.current?.click();
@@ -5666,9 +6249,9 @@ function AuthenticatedView({
         </Suspense>
       ) : undefined}
       onCreateDated={(type, day) => void createDatedItem(type, day)}
+      onNewEvent={(day) => openQuickAdd({ defaultDay: day })}
       onEmptyTrash={handleEmptyTrash}
       trashedNotesLength={trashedNotes.length}
-      hotkeyLabel={hotkeyLabel}
       vaultFilter={vaultFilter}
       onVaultFilterChange={setVaultFilter}
       quotaUsedBytes={viewQuota ? viewQuota.totalBytes + viewQuota.imageBytes : undefined}
@@ -5692,7 +6275,7 @@ function AuthenticatedView({
       // the banners, the list pane, or the editor renders first. The root is
       // the one ancestor of all three. env() is 0 on Android (the system
       // already insets the WebView) and the real notch inset on iOS.
-      // Spec: ops/docs/ui-patterns.md section 54 (the safe-area inset lives on the root, not per pane)
+      // Spec: ops/docs/archive/ui-patterns.md section 54 (the safe-area inset lives on the root, not per pane)
       ref={shellRootRef}
       // No `lg:pt-0` here, deliberately. It used to zero the safe-area padding at
       // the lg breakpoint on the assumption that lg means desktop, where there is
@@ -5855,7 +6438,7 @@ function AuthenticatedView({
             the lg-xl band, expanded at xl+, see xlScreen), but the
             collapse handle renders at every lg+ width - width chooses
             the default, never the capability.
-            Spec: ops/docs/ui-patterns.md section 40 (canonical breakpoints) */}
+            Spec: ops/docs/archive/ui-patterns.md section 40 (canonical breakpoints) */}
         {!zenMode && !sidebarCollapsed && (
           // Width formulas live in the --pn-sidebar-render vars on the root
           // div; the dock variant tightens the cap in docked-grid so the
@@ -5865,7 +6448,7 @@ function AuthenticatedView({
           </aside>
         )}
         {!zenMode && !sidebarCollapsed && (
-          <HoverLabel label={t('paneResize.hintCollapse')} position="end" className="hidden lg:flex h-full">
+          <HoverLabel label={t('paneResize.hintCollapse')} keys={keyText('toggleSidebar')} position="end" className="hidden lg:flex h-full">
             <button
               type="button"
               role="separator"
@@ -5911,7 +6494,7 @@ function AuthenticatedView({
         {!zenMode && sidebarCollapsed && (
           // A collapsed strip opens on a click, or on a drag outward that is
           // released past the snap distance (useExpandDrag).
-          <HoverLabel label={t('sidebar.expand')} position="end" className="hidden lg:flex h-full">
+          <HoverLabel label={t('sidebar.expand')} keys={keyText('toggleSidebar')} position="end" className="hidden lg:flex h-full">
             <button
               type="button"
               {...sidebarExpandDrag}
@@ -5935,7 +6518,7 @@ function AuthenticatedView({
             data-pane="list"
             // Middle-click and Alt-click on any row or tile open it as a tab.
             // Cmd-click stays the multi-select gesture it already is.
-            // Spec: ops/docs/plans/note-tabs.md (section 2)
+            // Spec: ops/docs/archive/note-tabs.md (section 2)
             onClickCapture={(e) => {
               if (!tabsShown || !e.altKey || e.metaKey || e.ctrlKey || e.shiftKey) return;
               const id = (e.target as HTMLElement).closest<HTMLElement>('[data-item-id]')?.dataset.itemId;
@@ -5974,7 +6557,9 @@ function AuthenticatedView({
             <FolderNamesContext.Provider value={folderNames}>
               <ChipFilterContext.Provider value={selectionMode ? null : chipFilter}>
                 <SubfoldersSwitchContext.Provider value={subfoldersSwitch}>
+                <CheckInUnitsContext.Provider value={checkInUnits}>
                   {view === 'tasks' ? tasksList : view === 'files' ? filesList : view === 'markdown' ? markdownPane : view === 'bookmarks' ? bookmarksList : view === 'contacts' ? contactsList : notesList}
+                </CheckInUnitsContext.Provider>
                 </SubfoldersSwitchContext.Provider>
               </ChipFilterContext.Provider>
             </FolderNamesContext.Provider>
@@ -6070,7 +6655,7 @@ function AuthenticatedView({
               but only while the list is not beside the editor: there the
               row's icon already carries the color, and a line that starts at
               the list's edge reads as a pane that does not line up.
-              Spec: ops/docs/plans/note-color-style.md (decision N6) */}
+              Spec: ops/docs/archive/note-color-style.md (decision N6) */}
           {noteLook?.style === 'accent' &&
             !(tabsShown && spaceTabs.tabs.length > 0) &&
             !(tabsShown && !zenMode && !gridMode && !notesListCollapsed && !markdownEntry) && (
@@ -6094,10 +6679,7 @@ function AuthenticatedView({
                 showTab(id);
                 closeTabs(spaceTabs.tabs.filter((n) => n.id !== id).map((n) => n.id));
               }}
-              onCloseAll={() => {
-                const ids = spaceTabs.tabs.map((n) => n.id);
-                closeTabs(ids.filter((x) => x !== selectedId), ids);
-              }}
+              onCloseAll={closeAllTabs}
               onTogglePin={(id) => openTabs.setPinned(id, !openTabs.pinnedIds.has(id))}
               onMove={openTabs.moveTab}
               onContextMenu={(e, items) => ctxMenu.open(e, items)}
@@ -6136,7 +6718,7 @@ function AuthenticatedView({
               // handing the widest pane in the app back its one grey sentence.
               // The pitch is still one click away either way, on the `?` in the
               // folder row.
-              // Spec: ops/docs/plans/markdown-folder.md (section 11)
+              // Spec: ops/docs/archive/markdown-folder.md (section 11)
               <div className="flex-1 overflow-y-auto flex flex-col px-6 py-10">
                 <div className="w-full max-w-md mx-auto my-auto">
                   <p className="text-[15px] text-pn-muted text-center mb-5">
@@ -6172,6 +6754,7 @@ function AuthenticatedView({
                 firstHour={Number(userSettings.calendar.hourStart.slice(0, 2))}
                 onMenu={isMobile && notesListCollapsed ? () => setDrawerOpen(true) : undefined}
                 agenda={tabsShown ? { open: !notesListCollapsed, toggle: toggleCalendarAgenda } : undefined}
+                onImport={() => setImportExportModal({ open: true, tab: 'import' })}
               />
             </Suspense>
           ) : !selected ? (
@@ -6203,10 +6786,12 @@ function AuthenticatedView({
               </div>
             )}
             <NoteEditorPane
+              onOpenTrackerSettings={openTrackerSettings}
               selected={selected}
               view={view}
               notes={notes}
               bookmarkKeys={bookmarkKeys}
+              bookmarkClip={bookmarkClip}
               auth={auth}
               spellcheck={spellcheck}
               invisibles={invisibles}
@@ -6299,6 +6884,8 @@ function AuthenticatedView({
               noteMenu={{
                 noteColor: noteColorInfo,
                 onSetNoteColor: setNoteColor,
+                onOpenColorSettings: openNoteColorSettings,
+                onPickNoteIcon: pickNoteIcon,
                 handleToggleStar,
                 handleToggleArchive,
                 setJournalDate,
@@ -6353,7 +6940,7 @@ function AuthenticatedView({
           controls go icon-only (HoverLabels carry the words), the hotkey
           chips merge into one, and the stats drop their unit words; below
           lg the stats go entirely.
-          Spec: ops/docs/ui-patterns.md section 40 (canonical breakpoints) */}
+          Spec: ops/docs/archive/ui-patterns.md section 40 (canonical breakpoints) */}
       {footerVisible && (
         <FullFooter
           zenMode={zenMode}
@@ -6369,6 +6956,8 @@ function AuthenticatedView({
             onOpen: openCalendarItem,
             onPick: createJournalEntryFor,
             onToday: () => createJournalEntryFor(toLocalIso(new Date())),
+            creates: 'journal',
+            onEvent: (day: string) => openQuickAdd({ defaultDay: day }),
           }}
           auth={auth}
           setShowSettings={setShowSettings}
@@ -6376,7 +6965,8 @@ function AuthenticatedView({
           setShowAbout={setShowAbout}
           setShowAppearance={setShowAppearance}
           setShowUpgrade={setShowUpgrade}
-          handleSignOutClick={handleSignOutClick}
+          lockReady={lockReady}
+          handleLockClick={handleLockClick}
         />
       )}
 
@@ -6394,18 +6984,21 @@ function AuthenticatedView({
           no longer draws under the system bars and env() reads 0 there - the
           floor became 24px of dead space on Android (GitHub #205). iOS still
           reports a real inset and still clears the home indicator.
-          Spec: ops/docs/ui-patterns.md section 40 (canonical breakpoints) */}
+          Spec: ops/docs/archive/ui-patterns.md section 40 (canonical breakpoints) */}
       {footerVisible && (
         // The bar collapses its row rather than sliding over the note, so the
         // text below it gains the space; useBarAway keeps that from moving the
         // text. Clipped only while it can leave: on a list the New menu opens
-        // upward out of it.
+        // upward out of it. The clip cuts the bottom and the sides only, so
+        // the bar can still slide down out of its row while the tips of its
+        // buttons open upward over the note; overflow-hidden cut every tip
+        // away and left a sliver of the sync status tip.
         <div
           ref={phoneBarRef}
           inert={barAway}
           className={`shrink-0 ${barHideable ? `grid transition-[grid-template-rows] duration-200 ease-out motion-reduce:transition-none ${barAway ? 'grid-rows-[0fr]' : 'grid-rows-[1fr]'}` : ''}`}
         >
-        <div className={barHideable ? 'min-h-0 overflow-hidden' : 'contents'}>
+        <div className={barHideable ? 'min-h-0 [clip-path:inset(-100vh_0_0_0)]' : 'contents'}>
         <MiniFooter
           setZenMode={setZenMode}
           zenUnlocked={zenUnlocked}
@@ -6417,12 +7010,16 @@ function AuthenticatedView({
             onOpen: openCalendarItem,
             onPick: createJournalEntryFor,
             onToday: () => createJournalEntryFor(toLocalIso(new Date())),
+            creates: 'journal',
+            onEvent: (day: string) => openQuickAdd({ defaultDay: day }),
           }}
           auth={auth}
           setShowSettings={setShowSettings}
           setShowStats={setShowStats}
           setShowAppearance={setShowAppearance}
           setShowUpgrade={setShowUpgrade}
+          lockReady={lockReady}
+          handleLockClick={handleLockClick}
           newSlotRef={setNewSlot}
           noteJump={noteJump}
         />
@@ -6450,14 +7047,13 @@ function AuthenticatedView({
           initialSetting={settingsRow}
           defaultCategory="stats"
           footer={
-            <button
-              type="button"
+            <Button
+              icon={iconSignOut()}
+              className="w-full justify-center"
               onClick={() => { setShowSettings(false); handleSignOutClick(); }}
-              className="w-full rounded-md border border-divider hover:bg-surface-1 px-4 py-2 text-sm transition text-pn-muted inline-flex items-center justify-center gap-1.5"
             >
-              {iconSignOut()}
               {t('footer.signOut')}
-            </button>
+            </Button>
           }
           categories={buildSettingsCategories({
             t,
@@ -6510,6 +7106,7 @@ function AuthenticatedView({
           notesCreated={userSettings.notesCreated}
           firstSeenAt={userSettings.firstSeenAt}
           trackerSettings={userSettings.trackerSettings}
+          factors={userSettings.factors}
           isPro={auth.isPro}
           onOpenUpgrade={() => { setShowStats(false); setShowUpgrade({ trigger: null }); }}
           onClose={() => setShowStats(false)}
@@ -6598,8 +7195,7 @@ function AuthenticatedView({
           onSyncNow={runSync}
           onOpenImageSettings={() => {
             setShowSyncOptions(false);
-            setSettingsCategory('images');
-            setShowSettings(true);
+            openImageSettings();
           }}
           onOpenUpgrade={() => {
             setShowSyncOptions(false);
@@ -6627,6 +7223,8 @@ function AuthenticatedView({
           onNoteColorsChange={(next) => mutateSettings((prev) => applyNoteColorChoice(prev, next))}
           sinkCheckedTasks={userSettings.sinkCheckedTasks}
           onSinkCheckedTasksChange={(on) => mutateSettings((prev) => ({ ...prev, sinkCheckedTasks: on }))}
+          taskConfetti={userSettings.taskConfetti}
+          onTaskConfettiChange={(on) => mutateSettings((prev) => ({ ...prev, taskConfetti: on }))}
           spaces={userSettings.spaces}
           onSpacesChange={(on) => mutateSettings((prev) => ({ ...prev, spaces: on }))}
           onOpenUpgrade={(trigger) => {
@@ -6634,10 +7232,12 @@ function AuthenticatedView({
             setShowUpgrade({ trigger: trigger ?? 'theme' });
           }}
           onClose={() => setShowAppearance(false)}
-          onOpenAll={(pane) => {
+          onOpenAll={(pane, row) => {
+            // The whole Settings window, with its category list, on that pane
+            // (and row): the same layout every other door opens.
             setShowAppearance(false);
             setSettingsCategory(pane);
-            setSettingsSolo(true);
+            setSettingsRow(row ? { id: row } : undefined);
             setShowSettings(true);
           }}
           customThemes={userSettings.customThemes}
@@ -6677,8 +7277,8 @@ function AuthenticatedView({
             if (showUpgrade.trigger === 'zen' && !auth.isPro) setZenMode(false);
             // If a pro theme was being previewed, revert that slot to default.
             if (showUpgrade.trigger === 'theme' && !proUnlocked(auth.isPro)) {
-              if (!isFreeTheme(lightTheme)) setColorTheme('light', 'default');
-              if (!isFreeTheme(darkTheme)) setColorTheme('dark', 'default');
+              if (!isFreeTheme(paintedSlot('light').choice)) setColorTheme('light', 'default');
+              if (!isFreeTheme(paintedSlot('dark').choice)) setColorTheme('dark', 'default');
             }
             setShowUpgrade(null);
             // A theme builder draft that waited for the upgrade opens again.
@@ -6777,6 +7377,13 @@ function AuthenticatedView({
           }}
         />
       )}
+      {showGenerator && (
+        <PasswordGeneratorModal
+          isPro={auth.isPro}
+          onOpenUpgrade={() => { setShowGenerator(false); setShowUpgrade({ trigger: 'passphrase' }); }}
+          onClose={() => setShowGenerator(false)}
+        />
+      )}
       {showEmptyTrashModal && (
         <EmptyTrashModal
           noteCount={trashedNotes.length}
@@ -6858,7 +7465,7 @@ function AuthenticatedView({
         />
       )}
       {/* "Change this item?" for a repeating event, from every schedule
-          path. Spec: ops/docs/plans/calendar-pillar-spec.md (step 6) */}
+          path. Spec: ops/docs/archive/calendar-pillar-spec.md (step 6) */}
       {calendarActions.question && (() => {
         const q = calendarActions.question;
         const del = q.kind === 'delete';
@@ -6902,6 +7509,7 @@ function AuthenticatedView({
           title={t('bulkTrash.title')}
           confirmLabel={t('bulkTrash.title')}
           variant="warning"
+          confirmIcon={PILLAR_GLYPHS.trash}
           enterConfirms
           onConfirm={() => void executeBulkTrash()}
           onClose={dismissBulkTrash}
@@ -7174,6 +7782,24 @@ function AuthenticatedView({
           </button>
         </div>
       )}
+      {clipper.windowOpen && (
+        <ClipPageModal
+          token={clipper.token}
+          onSave={clipper.saveFromWindow}
+          onKeepBookmark={clipper.keepBookmark}
+          existingClip={clipper.clipNoteForUrl}
+          onOpenNote={(note) => {
+            clipper.closeClipWindow();
+            revealNote(note);
+          }}
+          onOpenImageSettings={() => {
+            clipper.closeClipWindow();
+            openImageSettings();
+          }}
+          initialUrl={clipper.windowUrl}
+          onClose={clipper.closeClipWindow}
+        />
+      )}
       {importToast && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-accent-fill text-white text-[15px] font-medium px-4 py-2 rounded-full shadow-lg">
           {importToast}
@@ -7251,6 +7877,21 @@ function AuthenticatedView({
           onConfirmSignOut={() => void confirmSignOut()}
         />
       )}
+      {noteIconId !== null && (
+        <Suspense fallback={null}>
+          <NoteIconPicker
+            noteId={noteIconId}
+            name={(() => {
+              const n = notes.find((x) => x.id === noteIconId);
+              return n ? deriveDisplayTitle(n, isNoteLocked(n)) : '';
+            })()}
+            settings={userSettings}
+            mutateSettings={mutateSettings}
+            onSaved={() => void runSync()}
+            onClose={() => setNoteIconId(null)}
+          />
+        </Suspense>
+      )}
       {quickSwitcherQuery !== null && (
         <Suspense fallback={null}>
           <QuickSwitcher
@@ -7268,6 +7909,15 @@ function AuthenticatedView({
             linkOf={(n) => (opensBookmarkOnClick(n, isNoteLocked(n)) ? parseLinkBody(n.body).url || null : null)}
             onEditLink={(n) => { void handleSelectView('bookmarks').then(() => selectBookmarkForEdit(n.id)); }}
             sectionIcons={SETTINGS_SECTION_ICONS}
+            themes={{
+              unlocked: proUnlocked(auth.isPro),
+              customThemes: userSettings.customThemes,
+              onLocked: () => {
+                setSettingsCategory('design');
+                setSettingsRow({ id: 'appearance.theme' });
+                setShowSettings(true);
+              },
+            }}
             onOpenSetting={(entry) => {
               setSettingsCategory(entry.section);
               setSettingsRow(entry.isSection ? undefined : { id: entry.id, ...(entry.tab ? { tab: entry.tab } : {}) });
@@ -7330,12 +7980,37 @@ function AuthenticatedView({
               setPendingFileScroll({ noteId: f.noteId, uuid: f.uuid });
             }}
             quickAdd={{
-              mode: quickAddAt ? 'create' : 'jump',
               ...(quickAddAt ?? {}),
               folders: userSettings.folders.map((f) => ({ id: f.id, name: f.name })),
               spaces: spacesOn,
               onCreate: (q, type) => void createFromQuickAdd(q, type),
+              onAppend: (n, lines, asTasks) => void handleAppendFromQuickAdd(n, lines, asTasks),
+              onAppendNew: (title, lines) => void handleNewListFromQuickAdd(title, lines),
+              // The New menu's other kinds, through the same calls it makes.
+              makers: {
+                kanban: (name) => {
+                  void handleSelectView('tasks');
+                  void handleNew(undefined, 'tasks', undefined, undefined, 'kanban', name);
+                },
+                // A web address is the login's address, and its site the name.
+                login: (name) => {
+                  const url = asWebAddress(name);
+                  void handleSelectView('vault');
+                  void handleNew('login', 'vault', undefined, undefined, undefined, url ? linkDomain(url) : name, url ?? undefined);
+                },
+                file: () => {
+                  void handleSelectView('files');
+                  filesUploadRef.current?.click();
+                },
+                contact: (name) => handleNewContact(name),
+                bookmark: (url) => (url ? void handleQuickBookmark(url) : handleNewBookmark()),
+                clip: (url) => clipper.openClipWindow(url),
+              },
             }}
+            bodyOf={(n) => (isNoteLocked(n) ? null : n.body)}
+            actionsOf={(n) => buildNoteMenu(n, { alone: true })}
+            onGoToDay={(day) => void calendar.openAt(day, { mark: true })}
+            daySection={sidebarViewRows(tShell).find((r) => r.key === 'calendar')}
             filters={{
               tags: railTagCounts.tags,
               favoriteTags: new Set(favoriteTagsList.map(([tag]) => tag)),

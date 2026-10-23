@@ -10,6 +10,8 @@
     "back": "Wstecz",
     "next": "Dalej",
     "remove": "Usuń",
+    "deleteConfirm": "Usunąć?",
+    "removeConfirm": "Usunąć?",
     "copy": "Kopiuj",
     "rename": "Zmień nazwę",
     "create": "Utwórz",
@@ -61,15 +63,17 @@
   },
   "palette": {
     "label": "Polecenia",
-    "open": "Polecenia (>)",
+    "open": "Polecenia",
     "empty": "Brak pasujących poleceń",
     "groups": {
+      "features": "Funkcje",
       "commands": "Polecenia",
       "new": "Nowe",
-      "goTo": "Przejdź do"
+      "goTo": "Przejdź do",
+      "themes": "Motywy"
     },
     "commands": {
-      "quickSwitcher": "Przejdź do elementu lub ustawienia",
+      "quickSwitcher": "Otwórz Ninja: znajdź element, dodaj cokolwiek, uruchom polecenie",
       "historyBack": "Przejdź wstecz",
       "historyForward": "Przejdź dalej",
       "toggleSidebar": "Pokaż lub ukryj panel boczny",
@@ -95,9 +99,9 @@
     }
   },
   "quickSwitcher": {
-    "label": "Przejdź do elementu lub ustawienia",
-    "jumpTo": "Przejdź",
-    "placeholder": "Wpisz tytuł lub ustawienie albo > dla poleceń",
+    "label": "Ninja: znajdź element lub ustawienie, dodaj cokolwiek, uruchom polecenie",
+    "jumpTo": "Ninja",
+    "placeholder": "Ninja do usług: tytuł, + aby dodać, > dla poleceń",
     "recent": "Ostatnie",
     "empty": "Brak elementu ani ustawienia o tej nazwie",
     "searchAll": "Szukaj wszędzie: „{{query}}”",
@@ -115,6 +119,7 @@
     "tagItems_one": "{{count}} element",
     "emptyTags": "Brak tagu o tej nazwie",
     "emptyFolders": "Brak folderu o tej nazwie",
+    "emptyVault": "Nic tu jeszcze nie ma. Wpisz +, aby dodać pierwszy element.",
     "onlyTags": "tagi",
     "onlyFolders": "foldery",
     "showOnlyTags": "Tylko tagi",
@@ -126,6 +131,12 @@
     "createFolder": "Utwórz folder „{{name}}”",
     "newTag": "Nowy tag",
     "newFolder": "Nowy folder",
+    "goToDay": "Przejdź do dnia",
+    "inText": "W treści",
+    "actions": "akcje",
+    "back": "wstecz",
+    "actionsPlaceholder": "Filtruj akcje",
+    "onlyCreate": "dodaj",
     "tagItems_few": "{{count}} elementy",
     "tagItems_many": "{{count}} elementów"
   },
@@ -187,46 +198,48 @@
     "removeTag": "Usuń {{tag}}"
   },
   "loading": {
+    "pause": "Wstrzymaj teksty",
+    "play": "Wznów teksty",
     "lines": [
-      "ładowanie twojego zaszyfrowanego nadmyślania…",
-      "chwileczkę, właśnie rozczarowujemy reklamodawców.",
-      "zbyt zaszyfrowane, by się przejmować.",
-      "szwajcarska energia bankowa w robieniu notatek.",
-      "chronimy twoje myśli spod prysznica.",
-      "twoje sekrety przetrwały kolejny restart.",
-      "nic nie opuszcza urządzenia na golasa.",
-      "po cichu otwieramy sejf…",
-      "zimny sejf na ciepłe myśli.",
-      "ta notatka szanuje własną prywatność.",
-      "czytanie niemożliwe. synchronizacja możliwa.",
-      "lokalnie odszyfrowane. globalnie ignorowane.",
-      "twoje notatki trzymają dystans społeczny.",
-      "szyfrogram wchodzi, szyfrogram wychodzi.",
-      "kolejny piękny dzień na szyfrowanie.",
-      "nudne sekrety od pierwszego dnia.",
-      "ty piszesz. nikt nie czyta.",
-      "prywatność bez wykładu ted.",
-      "odszyfrowujemy, bo to niczyja sprawa.",
-      "chmura nadal nic nie rozumie.",
-      "serwer nic nie wie. serwer tak woli.",
-      "mniej inwigilacji. więcej notatek.",
-      "zaszyfrowane bzdury, zgodnie z planem.",
-      "matematycznie niedostępne.",
-      "zero wiedzy. maksimum tupetu.",
-      "śledzenie wyłączone emocjonalnie i technicznie.",
-      "plotki zostają na twoim urządzeniu.",
-      "tekst jawny z lokalnych upraw.",
-      "zamieniamy myśli w nieczytelną zupę.",
-      "tylko ty i klucze.",
-      "prywatne myśli wchodzą w tryb prywatny.",
-      "twoje przyszłe wycieki pozostają fikcją.",
-      "kolejna notatka ukryta przed kapitalizmem.",
-      "prywatność nie jest tu opcją premium.",
-      "bezpieczeństwo przez faktyczne bezpieczeństwo.",
-      "po cichu stawiamy opór handlarzom danych.",
-      "nie wykryto materiału do trenowania ai.",
-      "zaszyfrowane mocniej, niż trzeba.",
-      "prywatność: wczytywanie.",
+      "szwajcarska energia bankowa w robieniu notatek",
+      "chronimy twoje myśli spod prysznica",
+      "twoje notatki są zaszyfrowane na twoim urządzeniu",
+      "zimny sejf na ciepłe myśli",
+      "kolejny piękny dzień na szyfrowanie",
+      "nudne sekrety od pierwszego dnia",
+      "prywatność bez wykładu ted",
+      "chmura nadal nic nie rozumie",
+      "serwer przechowuje szyfrogram. uważa go za nudny",
+      "mniej inwigilacji. więcej notatek",
+      "zaszyfrowane bzdury, zgodnie z planem",
+      "śledzenie wyłączone emocjonalnie i technicznie",
+      "plotki zostają na twoim urządzeniu",
+      "prywatne myśli wchodzą w tryb prywatny",
+      "kolejna notatka ukryta przed kapitalizmem",
+      "prywatność nie jest tu opcją premium",
+      "bezpieczeństwo przez faktyczne bezpieczeństwo",
+      "po cichu stawiamy opór handlarzom danych",
+      "nie wykryto materiału do trenowania ai",
+      "zaszyfrowane mocniej, niż trzeba",
+      "sam sygnał. zero inwigilacji",
+      "zamieniamy problemy z zaufaniem w oprogramowanie",
+      "twoje myśli nie są na sprzedaż",
+      "poszukiwacze danych znaleźli tylko smutek",
+      "twój sejf pozostaje agresywnie zaszyfrowany",
+      "szwajcarska neutralność, tylko dla notatek",
+      "bez reklam. bez elementów śledzących. bez zwrotów akcji",
+      "open source, więc możesz sprawdzić matematykę",
+      "szyfrogram to nasz język miłości",
+      "twoje notatki są nudne dla obcych",
+      "dzwonił twój pamiętnik. chce prywatności",
+      "twój tracker nastroju tęsknił za tobą",
+      "twoje pomysły, tylko bez widowni",
+      "twój dziennik dochował twoich sekretów przez noc",
+      "jedno prywatne miejsce na wszystko, czego nigdy nie wrzucisz do sieci",
+      "żaden algorytm nie decyduje, co tu widzisz",
+      "twój zrzut myśli jest cały i bezpieczny",
+      "pisanie to myślenie. myślenie jest prywatne",
+      "nie konsultowano się z żadnym influencerem",
       "wczytujemy sekrety odpowiedzialnie.",
       "sam sygnał. zero inwigilacji.",
       "nadchodzi kolejne zaszyfrowane arcydzieło.",
@@ -241,6 +254,27 @@
       "lokalnie odszyfrowujemy myśli egzystencjalne…",
       "twój sejf pozostaje agresywnie nieczytelny.",
       "szwajcarska neutralność, ale dla notatek."
+    ],
+    "loadingOnly": [
+      "ładowanie twojego zaszyfrowanego nadmyślania",
+      "chwileczkę, właśnie rozczarowujemy reklamodawców",
+      "twoje sekrety przetrwały kolejny restart",
+      "po cichu otwieramy sejf",
+      "lokalnie odszyfrowane. globalnie ignorowane",
+      "odszyfrowujemy, bo to niczyja sprawa",
+      "tekst jawny z lokalnych upraw",
+      "zamieniamy myśli w nieczytelną zupę",
+      "nadchodzi kolejne zaszyfrowane arcydzieło",
+      "przywracamy porządek w zaszyfrowanym chaosie",
+      "lokalnie odszyfrowujemy myśli egzystencjalne",
+      "rozgrzewamy klucze",
+      "szukamy twojego toku myślenia",
+      "liczymy twoje nieodhaczone zadania. bez oceniania",
+      "podczas tego ładowania nie wyświetlono żadnych reklam",
+      "odkładamy twoje notatki na ich miejsce",
+      "rozplątujemy wczorajsze myśli",
+      "układamy bity w ładnej kolejności",
+      "przypominamy sobie to, o czym miało się pamiętać"
     ]
   },
   "neverBackedUp": {
@@ -254,5 +288,57 @@
     "changesSome_few": "{{count}} z tych notatek mają zmiany bez kopii zapasowej, które zostałyby utracone.",
     "changesSome_many": "{{count}} z tych notatek ma zmiany bez kopii zapasowej, które zostałyby utracone.",
     "changesSome_other": "{{count}} z tych notatek ma zmiany bez kopii zapasowej, które zostałyby utracone."
+  },
+  "ninja": {
+    "recent": "Ostatnie",
+    "topHit": "Najlepsze dopasowanie",
+    "trashEmpty": "Kosz jest pusty",
+    "allThemes": "Wszystkie motywy",
+    "features": {
+      "stats": {
+        "label": "Statystyki",
+        "detail": "Twoje pisanie, serie i trackery w czasie"
+      },
+      "trackers": {
+        "label": "Trackery",
+        "detail": "Nastrój, nawyki, czynniki i leki"
+      },
+      "medication": {
+        "label": "Leki",
+        "detail": "Dawki, godziny i przypomnienia"
+      },
+      "yearInPixels": {
+        "label": "Rok w pikselach",
+        "detail": "Każdy dzień roku jako jeden kolorowy kwadrat"
+      },
+      "importExport": {
+        "label": "Import & Export",
+        "detail": "Wczytaj notatki, wyjmij kopię zapasową"
+      },
+      "generator": {
+        "label": "Generator haseł",
+        "detail": "Silne hasło lub fraza hasłowa, gotowe do skopiowania"
+      },
+      "themes": {
+        "label": "Motywy",
+        "detail": "Motywy kolorystyczne, jasne i ciemne"
+      }
+    },
+    "new": {
+      "medication": "Nowy lek",
+      "customTracker": "Nowy własny tracker"
+    },
+    "commands": {
+      "syncResume": "Wznów synchronizację",
+      "changelog": "Nowości",
+      "help": "Pomoc",
+      "themesPage": "Motywy społeczności",
+      "website": "Strona PrivacyNotes"
+    },
+    "themes": {
+      "word": "Motyw",
+      "light": "Jasny motyw",
+      "dark": "Ciemny motyw"
+    }
   }
 }

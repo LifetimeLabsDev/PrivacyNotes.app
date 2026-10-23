@@ -10,7 +10,7 @@
  * colour of the surface it sits on (surface-1 in the sidebar, surface-0 in
  * the collapsed rail), or the halo reads as a smudge.
  *
- * Spec: ops/docs/ui-patterns.md (section 46 - update dot)
+ * Spec: ops/docs/archive/ui-patterns.md (section 46 - update dot)
  */
 export function UpdateDot({ ring = 'ring-surface-1' }: { ring?: string }) {
   return (

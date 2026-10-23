@@ -111,7 +111,7 @@ export function useExports({
       const ex = await loadExport();
       const missing = await ex.exportAllMarkdownZip(ns, imageStoreRef.current, attachmentStoreRef.current, (msg) => {
         setExportProgress({ status: msg, done: false });
-      }, userSettings.folders, { itemStyles: userSettings.itemStyles, customThemes: userSettings.customThemes });
+      }, userSettings.folders, { itemStyles: userSettings.itemStyles, customThemes: userSettings.customThemes, factors: userSettings.factors, customHabits: userSettings.customHabits });
       setExportProgress({ status: ex.describeMissing(missing), done: true });
     });
   };
@@ -121,7 +121,7 @@ export function useExports({
       const ex = await loadExport();
       const missing = await ex.exportEncryptedFullBackup(ns, imageStoreRef.current, attachmentStoreRef.current, auth.encryptionKey, (msg) => {
         setExportProgress({ status: msg, done: false });
-      }, userSettings.folders, { itemStyles: userSettings.itemStyles, customThemes: userSettings.customThemes });
+      }, userSettings.folders, { itemStyles: userSettings.itemStyles, customThemes: userSettings.customThemes, factors: userSettings.factors, customHabits: userSettings.customHabits });
       setExportProgress({ status: ex.describeMissing(missing), done: true });
     });
   };
@@ -152,10 +152,10 @@ export function useExports({
     });
   };
   const exportAllJson = (ns: LocalNote[]) =>
-    runExport('json', async () => (await loadExport()).exportAllJson(ns, userSettings.folders, userSettings.itemStyles, userSettings.customThemes));
+    runExport('json', async () => (await loadExport()).exportAllJson(ns, userSettings.folders, userSettings.itemStyles, userSettings.customThemes, userSettings.factors, userSettings.customHabits));
   const exportEncryptedBackup = (ns: LocalNote[]) =>
     runExport('encrypted', async () =>
-      (await loadExport()).exportEncryptedBackup(ns, auth.encryptionKey, userSettings.folders, userSettings.itemStyles, userSettings.customThemes));
+      (await loadExport()).exportEncryptedBackup(ns, auth.encryptionKey, userSettings.folders, userSettings.itemStyles, userSettings.customThemes, userSettings.factors, userSettings.customHabits));
   const exportVault = (ns: LocalNote[]) =>
     runExport('vault', async () => (await loadExport()).exportVaultBitwarden(ns, userSettings.folders));
   const exportBookmarks = (ns: LocalNote[]) =>
@@ -219,13 +219,15 @@ export function useExports({
    *  .pnbackup restore merges them, with each folder look moved to the id its
    *  folder came back under. */
   const mergeRestoredSettings = (
-    settings: { itemStyles?: unknown; customThemes?: unknown },
+    settings: { itemStyles?: unknown; customThemes?: unknown; factors?: unknown; customHabits?: unknown },
     savedToFinal: ReadonlyMap<string, string>,
   ) =>
     mutateSettings((prev) =>
       settingsAfterRestore(prev, {
         itemStyles: remapFolderLooks(settings.itemStyles, savedToFinal),
         customThemes: settings.customThemes,
+        factors: settings.factors,
+        customHabits: settings.customHabits,
       }),
     );
   return {

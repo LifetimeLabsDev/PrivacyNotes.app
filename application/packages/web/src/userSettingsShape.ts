@@ -1,5 +1,6 @@
+import type { CustomHabitDef } from './habitList';
 import { DEFAULT_STORE as DEFAULT_LIST_PREFS_STORE, type ListPrefsStore } from './listPrefs';
-import { defaultTrackerSettings, type TrackerSettings, type MedicationTemplate } from './trackerTypes';
+import { defaultTrackerSettings, type FactorDef, type TrackerSettings, type MedicationTemplate } from './trackerTypes';
 import type { ColorTheme, LineSpacing } from './theme';
 import type { JournalTitleFormat } from './notesViewUtils';
 import type { Clock, DateOrder } from './intlFormat';
@@ -17,7 +18,7 @@ import type { FormatBarSetting } from './formatBar';
 /**
  * One app-wide image switch. A string rather than a boolean so a third
  * state can be added later without a migration.
- * Spec: ops/docs/plans/image-quality-handoff.md (section 3)
+ * Spec: ops/docs/archive/image-quality-handoff.md (section 3)
  */
 export type ImageSwitch = 'on' | 'off';
 
@@ -45,7 +46,7 @@ export type CalendarSettings = {
 /** Settings › Date & Time › Calendar as it starts: 10 minutes before a timed item, 09:00 on
  *  the day of an all-day one, 09:00 the day before a birthday, no week
  *  numbers, the hours 07:00 to 22:00, titles shown.
- *  Spec: ops/docs/plans/calendar-pillar-spec.md (decision 11) */
+ *  Spec: ops/docs/archive/calendar-pillar-spec.md (decision 11) */
 export function defaultCalendarSettings(): CalendarSettings {
   return {
     alertTimed: 10,
@@ -56,6 +57,31 @@ export function defaultCalendarSettings(): CalendarSettings {
     hourEnd: '22:00',
     reminderTitles: true,
   };
+}
+
+/**
+ * The daily check-in card (GitHub #439): where it shows, whether the tracker
+ * pills follow the mood, and whether the Journals and All lists show entries
+ * that hold tracker values and no text. One preferences object, rebuilt in a
+ * few taps, so the newest writer owns it.
+ * Spec: ops/issues/0439.md (Spec)
+ */
+export type CheckInSettings = {
+  /** Kept for the blobs older versions wrote and never read: All follows
+   *  the Journals row of "Show in All" instead of its own switch. */
+  all: boolean;
+  /** Kept for older blobs and never read: the guided pass is always on. */
+  askTrackers: boolean;
+  /** Days with tracker values and no writing, listed in Journals and All. */
+  showTextless: boolean;
+};
+
+/** Check-ins hidden from the lists. The card's own switch is device-local
+ *  (checkInCardSwitch.ts). The two unread fields keep
+ *  their old defaults so a blob merges the same on every version.
+ *  Spec: ops/issues/0439.md (Decisions) */
+export function defaultCheckInSettings(): CheckInSettings {
+  return { all: true, askTrackers: true, showTextless: false };
 }
 
 export type UserSettings = {
@@ -127,6 +153,11 @@ export type UserSettings = {
    * in the editor and in the Tasks view alike. On by default.
    */
   sinkCheckedTasks: boolean;
+  /**
+   * Whether a ticked task checkbox throws a little confetti, in the editor
+   * and in the Tasks view alike (`checkboxConfetti.ts`). On by default.
+   */
+  taskConfetti: boolean;
   /**
    * Whether the Personal and Work spaces are on (Pro). On by default; off
    * shows every item and hides the switch. Spec: ops/docs/plans/spaces.md
@@ -222,7 +253,7 @@ export type UserSettings = {
    * would not contain a pillar added next year, so that pillar would be
    * invisible on every existing account while the code looked correct.
    * 'home' is never in here - All cannot be hidden.
-   * Spec: ops/docs/plans/sidebar-views.md (synced account-wide, not per-device)
+   * Spec: ops/docs/archive/sidebar-views.md (synced account-wide, not per-device)
    */
   hiddenViews: View[];
   /**
@@ -232,7 +263,7 @@ export type UserSettings = {
    * different wishes. Applies to the mixed lists only (All, plus the tag
    * and folder views, which are All with a filter on top); a single-type
    * pillar never filters itself.
-   * Spec: ops/docs/plans/sidebar-views.md (synced account-wide, not per-device)
+   * Spec: ops/docs/archive/sidebar-views.md (synced account-wide, not per-device)
    */
   hiddenInAll: View[];
   /**
@@ -247,7 +278,7 @@ export type UserSettings = {
    * Whether an open folder lists the items of its subfolders too. One switch
    * for every folder and every section, because the folder filter scopes all
    * of them at once. Off lists the direct members only.
-   * Spec: ops/docs/plans/folder-subfolders.md (D1, D2)
+   * Spec: ops/docs/archive/folder-subfolders.md (D1, D2)
    */
   includeSubfolders: boolean;
   /**
@@ -260,7 +291,7 @@ export type UserSettings = {
    * hidden list leaves a repair no code path can perform - hide a view on
    * one device, and another device's stored start view is invalid with
    * nothing able to reach it.
-   * Spec: ops/docs/plans/start-view.md (cold start only, All is the default)
+   * Spec: ops/docs/archive/start-view.md (cold start only, All is the default)
    */
   startView: View;
   /**
@@ -300,7 +331,7 @@ export type UserSettings = {
    * follows the app language plus the device region, so it resolves on each
    * device. Synced, as a top-level key of its own, so an older client copies
    * it through. Anything else reads as 'auto'. GitHub #251.
-   * Spec: ops/docs/plans/dates.md (section 3.3)
+   * Spec: ops/docs/archive/dates.md (section 3.3)
    */
   dateOrder: DateOrder;
   /** 24-hour or 12-hour clock; 'auto' follows the device, as `dateOrder` does. */
@@ -311,7 +342,7 @@ export type UserSettings = {
    * is the active choice over the preset and takes no suffix; picking a preset
    * clears it. A new key rather than a new `journalTitleFormat` value, which
    * an older client would revert. GitHub #200.
-   * Spec: ops/docs/plans/dates.md (section 3.5)
+   * Spec: ops/docs/archive/dates.md (section 3.5)
    */
   journalTitlePattern: string;
   /**
@@ -335,7 +366,7 @@ export type UserSettings = {
    * `f:<folder id>` or `t:<tag>`. A map of registers that merges per value at
    * every sync point, beside the folder tree rather than inside it - see
    * itemStyles.ts for why.
-   * Spec: ops/docs/plans/folder-tag-icons.md (section 5)
+   * Spec: ops/docs/archive/folder-tag-icons.md (section 5)
    */
   itemStyles: ItemStyles;
   /**
@@ -354,21 +385,21 @@ export type UserSettings = {
   /**
    * Pro: the format bar a person arranged, as one stamped register, merged at
    * every sync point like the looks. Empty or reset is the stock bar.
-   * Spec: ops/docs/plans/format-bar.md (section 8)
+   * Spec: ops/docs/archive/format-bar.md (section 8)
    */
   formatBar: FormatBarSetting;
   /**
    * Whether a note takes its folder or tag color as its background: the open
    * note, its list row and its grid tile. One switch for all notes, synced
    * like the theme.
-   * Spec: ops/docs/plans/folder-tag-icons.md (section 4.6)
+   * Spec: ops/docs/archive/folder-tag-icons.md (section 4.6)
    */
   tintNotes: boolean;
   /**
    * How strongly a note shows its color: as a background, or only on its
    * icon. A field of its own beside `tintNotes`, which keeps its meaning for
    * older clients; the Appearance control writes both.
-   * Spec: ops/docs/plans/note-color-style.md (section 4)
+   * Spec: ops/docs/archive/note-color-style.md (section 4)
    */
   noteColorStyle: NoteColorStyle;
   /**
@@ -396,7 +427,7 @@ export type UserSettings = {
    * imported archive cannot fire them on day one. Monotonic - merges
    * take the larger value, and saveLocalSettings refuses to regress
    * it (React state can hold a copy older than the last bump).
-   * Spec: ops/docs/plans/rating-prompt-handoff.md (step 2)
+   * Spec: ops/docs/archive/rating-prompt-handoff.md (step 2)
    */
   notesCreated: number;
   /**
@@ -405,7 +436,7 @@ export type UserSettings = {
    * this lived in localStorage every milestone re-fired the first time
    * someone opened the app on their second device - the rating ask
    * included. Union-merged, so it can only ever grow.
-   * Spec: ops/docs/plans/rating-prompt-handoff.md (step 1)
+   * Spec: ops/docs/archive/rating-prompt-handoff.md (step 1)
    */
   milestonesSeen: string[];
   /**
@@ -417,7 +448,7 @@ export type UserSettings = {
    * reports ~2400 days for a one-day-old account that imported a 2019
    * archive. Merges keep the OLDER value (mirror image of notesCreated):
    * two devices stamping independently must settle on the first one.
-   * Spec: ops/docs/plans/rating-prompt-handoff.md (step 3)
+   * Spec: ops/docs/archive/rating-prompt-handoff.md (step 3)
    */
   firstSeenAt: string | null;
   /**
@@ -437,9 +468,23 @@ export type UserSettings = {
    * item (minutes before), an all-day item and a birthday (days before, at a
    * time), null for none; the week numbers column; the hours the hour grid
    * opens on; and whether a reminder shows the item's title.
-   * Spec: ops/docs/plans/calendar-pillar-spec.md (decisions 11 and 15)
+   * Spec: ops/docs/archive/calendar-pillar-spec.md (decisions 11 and 15)
    */
   calendar: CalendarSettings;
+  /** The check-in card and the check-in rows. Spec: ops/issues/0439.md (Spec) */
+  checkIn: CheckInSettings;
+  /**
+   * The person's own factors, the parts of a day the Factors pill offers.
+   * Top-level and merged by id with tombstones, because an older app keeps an
+   * unknown top-level key and drops an unknown key inside `trackerSettings`.
+   * Spec: ops/issues/0439.md (Spec)
+   */
+  factors: FactorDef[];
+  /**
+   * The person's own habit questions, beside the built-in ones. Top-level and
+   * merged by id with tombstones, like `factors`. Spec: ops/issues/0439.md (Spec)
+   */
+  customHabits: CustomHabitDef[];
   /**
    * Freshness counter, and the one field the server cannot forge. It lives
    * INSIDE the encrypted blob, so a server that keeps an old ciphertext and
@@ -464,7 +509,7 @@ export type UserSettings = {
    * the ceiling in imageProcessing.ts and re-encodes it; metadata removal
    * drops EXIF and every other metadata block. Both apply to new images
    * only: nothing rewrites a blob that is already stored.
-   * Spec: ops/docs/plans/image-quality-handoff.md (section 3)
+   * Spec: ops/docs/archive/image-quality-handoff.md (section 3)
    */
   imageSpaceSaver: ImageSwitch;
   imageStripMetadata: ImageSwitch;
@@ -472,7 +517,7 @@ export type UserSettings = {
    * Keep contact photos small: a contact photo fits inside the ceiling in
    * imageProcessing.ts whatever the two switches above say. Off, it follows
    * them like any other image. Read by the contacts photo path.
-   * Spec: ops/docs/plans/image-quality-handoff.md (section 7)
+   * Spec: ops/docs/archive/image-quality-handoff.md (section 7)
    */
   imageContactCeiling: ImageSwitch;
   /**
@@ -510,6 +555,7 @@ export function defaultSettings(): UserSettings {
     listPrefs: DEFAULT_LIST_PREFS_STORE,
     tasksShowDone: false,
     sinkCheckedTasks: true,
+    taskConfetti: true,
     spaces: true,
     autoProtectLogins: false,
     pinSalt: null,
@@ -530,7 +576,7 @@ export function defaultSettings(): UserSettings {
     hiddenInAll: [],
     archivedInAll: false,
     includeSubfolders: false,
-    startView: 'home', // Spec: ops/docs/plans/start-view.md (All is the default)
+    startView: 'home', // Spec: ops/docs/archive/start-view.md (All is the default)
     editorMode: 'formatted', // Spec: ops/specs/editor-mode-toggle.md (default editor mode)
     // Spec: ops/docs/design-decisions.md (editor paragraph rhythm)
     lineSpacing: 'compact',
@@ -546,13 +592,13 @@ export function defaultSettings(): UserSettings {
     deviceLabels: {},
     customThemes: {},
     formatBar: {},
-    // Spec: ops/docs/plans/folder-tag-icons.md (decision D10, on)
+    // Spec: ops/docs/archive/folder-tag-icons.md (decision D10, on)
     tintNotes: true,
-    // Spec: ops/docs/plans/note-color-style.md (decision N5, accent)
+    // Spec: ops/docs/archive/note-color-style.md (decision N5, accent)
     noteColorStyle: 'accent',
     folderSort: { field: 'name', dir: 'asc' },
     sidebarBrowse: 'tags', // Spec: ops/specs/folders.md (sidebarBrowse default)
-    // Spec: ops/docs/plans/image-quality-handoff.md (section 3, both default on)
+    // Spec: ops/docs/archive/image-quality-handoff.md (section 3, both default on)
     imageSpaceSaver: 'on',
     imageStripMetadata: 'on',
     imageContactCeiling: 'on',
@@ -561,8 +607,12 @@ export function defaultSettings(): UserSettings {
     firstSeenAt: null,
     ratingDone: false,
     importPromptDismissed: false,
-    // Spec: ops/docs/plans/calendar-pillar-spec.md (decision 11)
+    // Spec: ops/docs/archive/calendar-pillar-spec.md (decision 11)
     calendar: defaultCalendarSettings(),
+    // Spec: ops/issues/0439.md (Decisions)
+    checkIn: defaultCheckInSettings(),
+    factors: [],
+    customHabits: [],
     settingsRev: 0,
     pwGen: {
       length: 20,
@@ -588,7 +638,7 @@ export function defaultSettings(): UserSettings {
  * Two surfaces write these: the rail's own menus (the eye on the Content
  * caption, the funnel on the All row) and the Sidebar table in Appearance.
  * Same field, shown twice, so the flip lives here rather than in either one.
- * Spec: ops/docs/plans/sidebar-views.md (single toggle shared by every write surface, never duplicated)
+ * Spec: ops/docs/archive/sidebar-views.md (single toggle shared by every write surface, never duplicated)
  */
 export function toggleHiddenView(
   prev: UserSettings,

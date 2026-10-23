@@ -7,7 +7,7 @@ mod biometric;
 
 /// Who the OS opens Markdown files with, and pointing it at us on the two
 /// platforms that permit it. Desktop only: neither mobile OS has user-settable
-/// file associations. Spec: ops/docs/plans/markdown-folder.md (section 11)
+/// file associations. Spec: ops/docs/archive/markdown-folder.md (section 11)
 #[cfg(desktop)]
 mod file_assoc;
 
@@ -21,7 +21,7 @@ mod print;
 /// The cover iOS photographs in place of the notes when the app leaves the
 /// screen. Android does the same job with a window property of its own, set
 /// from MainActivity.kt, so nothing here is compiled for it.
-/// Spec: ops/docs/plans/app-switcher-privacy-screen.md
+/// Spec: ops/docs/archive/app-switcher-privacy-screen.md
 mod privacy_screen;
 
 /// No previous, next and Done bar above the iOS keyboard: the note editor's
@@ -37,12 +37,16 @@ mod title_bar;
 /// Links, text and files other apps shared into this one, waiting for the
 /// unlocked app to take them. Compiled everywhere so its tests run on the
 /// host; only the mobile builds expose its commands.
-/// Spec: ops/docs/plans/share-into-app.md
+/// Spec: ops/docs/archive/share-into-app.md
 mod pasteboard;
 use pasteboard::pasteboard_pictures;
 mod share_inbox;
 #[cfg(mobile)]
 use share_inbox::{share_inbox_list, share_inbox_read, share_inbox_remove, share_limit_set};
+/// The web clipper's download, on every native platform.
+/// Spec: ops/docs/archive/web-clipper-stage1.md (section 3.1)
+mod clip_fetch;
+use clip_fetch::clip_fetch;
 
 /// Files the OS asked us to open before the webview was ready to hear about it.
 ///
@@ -51,7 +55,7 @@ use share_inbox::{share_inbox_list, share_inbox_read, share_inbox_remove, share_
 /// lock. Emitting straight away would drop it on the floor and the user would
 /// be left staring at a login screen wondering why their file did not open, so
 /// the path waits here until the frontend says it is listening.
-/// Spec: ops/docs/plans/markdown-folder.md (section 11)
+/// Spec: ops/docs/archive/markdown-folder.md (section 11)
 #[cfg(desktop)]
 static PENDING_OPEN: std::sync::Mutex<Vec<String>> = std::sync::Mutex::new(Vec::new());
 
@@ -132,8 +136,6 @@ fn has_url_scheme(arg: &str) -> bool {
 /// link arrives as several arguments and the second of them was unwrapped
 /// into a path - a local file, or a UNC name pointing at a host of the
 /// sender's choosing.
-///
-/// Spec: ops/docs/audit-adversarial-2026-09-bfg.md (SEC-20)
 #[cfg(desktop)]
 fn openable_path(arg: &str) -> Option<String> {
     #[cfg(not(target_os = "windows"))]
@@ -171,7 +173,6 @@ fn queue_from_args<I: IntoIterator<Item = String>>(args: I) {
     // split payload is already dead as a link before our callback runs. This
     // closes the delivery rather than the shape, which is why a double-click
     // on a note that lives on a file server is still an ordinary open.
-    // Spec: ops/docs/audit-adversarial-2026-09-bfg.md (SEC-20)
     if args.iter().any(|a| announces_app_scheme(a)) {
         return;
     }
@@ -202,7 +203,7 @@ fn take_pending_opens(app: tauri::AppHandle) -> Vec<String> {
     // Widening happens HERE rather than at queue time because this is the first
     // point that has an AppHandle: the two queue sites are a plugin callback and
     // `std::env::args()`.
-    // Spec: ops/docs/plans/markdown-folder.md (section 11)
+    // Spec: ops/docs/archive/markdown-folder.md (section 11)
     if let Some(scope) = app.try_fs_scope() {
         // The last one only, which is the one the frontend opens: a
         // multi-select hands over several, and the widening this grants is
@@ -233,6 +234,20 @@ fn markdown_assoc_status(app: tauri::AppHandle) -> file_assoc::AssocStatus {
 #[cfg(desktop)]
 fn markdown_assoc_claim(app: tauri::AppHandle) -> Result<(), String> {
     file_assoc::claim(&app)
+}
+
+/// Who opens `.txt` files, or nothing on Linux, where the row is not offered.
+#[tauri::command(async)]
+#[cfg(desktop)]
+fn text_assoc_status(app: tauri::AppHandle) -> Option<file_assoc::AssocStatus> {
+    file_assoc::text_status(&app)
+}
+
+/// Make us the default `.txt` app. macOS only, and only from an explicit click.
+#[tauri::command(async)]
+#[cfg(desktop)]
+fn text_assoc_claim(app: tauri::AppHandle) -> Result<(), String> {
+    file_assoc::text_claim(&app)
 }
 
 /// Open the OS screen where the user sets this themselves. Windows only, where
@@ -273,7 +288,6 @@ fn markdown_assoc_open_os_settings() -> Result<(), String> {
 /// directory travel on the plugin's own connect, which happens after this has
 /// decided, so a listener that fails the test learns only that somebody
 /// looked.
-/// Spec: ops/docs/security-backlog.md (SEC-28)
 #[cfg(all(desktop, target_os = "macos"))]
 fn rendezvous_is_ours(config: &tauri::Config) -> bool {
     let identifier = config.identifier.replace(['.', '-'], "_");
@@ -343,7 +357,6 @@ fn rendezvous_holder_matches(path: &str, expected: Option<std::path::PathBuf>) -
 /// The positive case is the one worth having: the listener is this test
 /// binary, so the peer the kernel names IS the executable asked about, which
 /// is the same proof the app makes of a running copy of itself.
-/// Spec: ops/docs/security-backlog.md (SEC-28)
 #[cfg(all(test, desktop, target_os = "macos"))]
 mod rendezvous_tests {
     use super::rendezvous_holder_matches;
@@ -453,6 +466,14 @@ fn restart_without_non_unicode_args(
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    // reqwest is built with `rustls-no-provider` (the clipper pins its own
+    // provider in clip_fetch.rs), and that feature reaches every reqwest
+    // client in the build, Tauri's own included: the dev-server proxy of a
+    // phone dev build, and the updater. A client built with no process-wide
+    // provider panics, so the app installs ring as that provider before any
+    // client exists. An Err only means one was installed already.
+    let _ = rustls::crypto::ring::default_provider().install_default();
+
     // On Linux and macOS, no launch argument after argv[0] reaches the
     // builder unless it is valid Unicode. The deep-link plugin (every Linux
     // launch) and the single-instance plugin (a second launch, on Linux and
@@ -521,7 +542,7 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         // Calendar reminders on every platform: scheduled with the OS on a
         // phone, shown from the app's own timer on a desktop.
-        // Spec: ops/docs/plans/calendar-pillar-spec.md (section 8)
+        // Spec: ops/docs/archive/calendar-pillar-spec.md (section 8)
         .plugin(tauri_plugin_notification::init());
 
     // Self-updater is desktop-only; iOS/Android update via their stores.
@@ -557,6 +578,10 @@ pub fn run() {
     // and does not need to, because our own two commands call it from Rust.
     #[cfg(target_os = "android")]
     let builder = builder.plugin(tauri_plugin_biometric::init());
+    // The bound key's Keystore half (plugins/biometric-key), registered the
+    // same way: no capability entry, reached only from src/biometric.rs.
+    #[cfg(target_os = "android")]
+    let builder = builder.plugin(tauri_plugin_biometric_key::init());
 
     // App-defined commands. These need no ACL/capability entry (only plugin
     // commands do). The biometric pair is registered on every platform and
@@ -569,20 +594,29 @@ pub fn run() {
         is_scoop_install,
         biometric_available,
         biometric_authenticate,
+        biometric_key_create,
+        biometric_key_open,
+        biometric_key_delete,
         print_html,
         take_pending_opens,
         markdown_assoc_status,
         markdown_assoc_claim,
         markdown_assoc_open_os_settings,
+        text_assoc_status,
+        text_assoc_claim,
         set_privacy_screen,
         set_capture_block,
         set_title_bar_colors,
-        pasteboard_pictures
+        pasteboard_pictures,
+        clip_fetch
     ]);
     #[cfg(mobile)]
     let builder = builder.invoke_handler(tauri::generate_handler![
         biometric_available,
         biometric_authenticate,
+        biometric_key_create,
+        biometric_key_open,
+        biometric_key_delete,
         print_html,
         set_privacy_screen,
         set_capture_block,
@@ -590,7 +624,8 @@ pub fn run() {
         share_inbox_read,
         share_inbox_remove,
         share_limit_set,
-        pasteboard_pictures
+        pasteboard_pictures,
+        clip_fetch
     ]);
 
     // A load can replace the web view's content view, so the iOS keyboard bar
@@ -691,7 +726,7 @@ pub fn run() {
                 // Shift+Cmd+W. A predefined item keeps its own key, so both
                 // copies (File and Window) are swapped for one of ours. The
                 // About window closes on Cmd+W by itself (AboutWindow.tsx).
-                // Spec: ops/docs/plans/keyboard-shortcuts.md (decision D4)
+                // Spec: ops/docs/archive/keyboard-shortcuts.md (decision D4)
                 for item in menu.items()? {
                     let MenuItemKind::Submenu(submenu) = item else { continue };
                     let items = submenu.items()?;
@@ -733,7 +768,7 @@ pub fn run() {
             // arrives only once the web bundle has booted. They read a flag
             // that is false until it does, so an early transition covers
             // nothing, which is the right answer at that point.
-            // Spec: ops/docs/plans/app-switcher-privacy-screen.md
+            // Spec: ops/docs/archive/app-switcher-privacy-screen.md
             privacy_screen::observe();
 
             let _ = &app;
@@ -745,7 +780,7 @@ pub fn run() {
             // macOS delivers a file open as an Apple Event, never in argv, so
             // this is the ONLY place a double-click arrives there. Reaching it
             // is why the builder ends in build()+run() rather than run() alone.
-            // Spec: ops/docs/plans/markdown-folder.md (section 11)
+            // Spec: ops/docs/archive/markdown-folder.md (section 11)
             #[cfg(target_os = "macos")]
             if let tauri::RunEvent::Opened { urls } = &_event {
                 use tauri::Emitter;
@@ -807,7 +842,7 @@ fn unpacked_by_scoop() -> bool {
 /// opens the browser's find. The app owns its keys, so they are turned off.
 /// Editing keys (copy, paste, cut, select all, undo) are not browser keys in
 /// WebView2's sense and keep working.
-/// Spec: ops/docs/plans/keyboard-shortcuts.md (decision D8)
+/// Spec: ops/docs/archive/keyboard-shortcuts.md (decision D8)
 #[cfg(target_os = "windows")]
 fn disable_browser_accelerator_keys(window: &tauri::WebviewWindow) {
     let _ = window.with_webview(|webview| unsafe {
@@ -911,6 +946,91 @@ async fn biometric_authenticate(
     }
 }
 
+/// The bound biometric key: what `biometric_key_create`
+/// hands the web side. `handle` is all it stores; `secret` (hex) is what it
+/// derives the wrap key from, and it is never stored.
+#[derive(serde::Serialize)]
+struct BiometricKey {
+    handle: String,
+    secret: String,
+}
+
+/// Makes a fresh key in the device's secure hardware (Secure Enclave, Android
+/// Keystore, Windows Hello), seals a secret to it, and opens it once behind
+/// the biometric prompt. Errors are the plain codes `unsupported` (said before
+/// any prompt: this device cannot bind, and the web side keeps the presence
+/// gate), `cancelled` and `failed`. A caller gets nothing it could not get by
+/// passing the prompt itself, and every call makes a new key under a new name,
+/// so no call can replace or open an existing enrollment.
+/// Spec: ops/docs/plans/biometric-key-binding.md (section 8.2)
+#[tauri::command]
+async fn biometric_key_create(
+    app: tauri::AppHandle,
+    reason: String,
+    cancel_label: String,
+) -> Result<BiometricKey, String> {
+    #[cfg(native_biometric)]
+    {
+        tauri::async_runtime::spawn_blocking(move || {
+            biometric::key_create(&app, reason, cancel_label)
+                .map(|(handle, secret)| BiometricKey { handle, secret })
+                .map_err(|failure| failure.code().to_owned())
+        })
+        .await
+        .map_err(|_| "failed".to_owned())?
+    }
+    #[cfg(not(native_biometric))]
+    {
+        let _ = (app, reason, cancel_label);
+        Err("unsupported".to_owned())
+    }
+}
+
+/// Opens the secret of a key `biometric_key_create` made, behind the biometric
+/// prompt. Errors: `cancelled`, `gone` (the OS destroyed the key: the device
+/// passcode removed, the key invalidated; it never comes back), `unenrolled`
+/// (no biometric enrolled now; the key may open again once one is) and
+/// `failed`. Without a passed biometric check the hardware releases nothing,
+/// whatever handle a caller sends.
+#[tauri::command]
+async fn biometric_key_open(
+    app: tauri::AppHandle,
+    handle: String,
+    reason: String,
+    cancel_label: String,
+) -> Result<String, String> {
+    #[cfg(native_biometric)]
+    {
+        tauri::async_runtime::spawn_blocking(move || {
+            biometric::key_open(&app, handle, reason, cancel_label)
+                .map_err(|failure| failure.code().to_owned())
+        })
+        .await
+        .map_err(|_| "failed".to_owned())?
+    }
+    #[cfg(not(native_biometric))]
+    {
+        let _ = (app, handle, reason, cancel_label);
+        Err("unsupported".to_owned())
+    }
+}
+
+/// Deletes the hardware key of a handle the web side no longer stores. On
+/// Apple the key lives only in the handle, so there is nothing to delete; on
+/// Android and Windows only a key this app made under its own prefix can be
+/// named. Never fails: an orphan key opens nothing.
+#[tauri::command]
+async fn biometric_key_delete(app: tauri::AppHandle, handle: String) {
+    #[cfg(native_biometric)]
+    {
+        let _ = tauri::async_runtime::spawn_blocking(move || biometric::key_delete(&app, handle)).await;
+    }
+    #[cfg(not(native_biometric))]
+    {
+        let _ = (app, handle);
+    }
+}
+
 /// Prints one note from the standalone HTML document the frontend already
 /// renders for the .html export - same markup, same print CSS, same inlined
 /// images, so a printout matches the browser's on every platform.
@@ -939,7 +1059,7 @@ async fn print_html(app: tauri::AppHandle, html: String, job_name: String) -> Re
 /// and it pushes from the one place local settings are written.
 ///
 /// The cover is black on every theme, so nothing but the switch crosses the
-/// bridge. Spec: ops/docs/plans/app-switcher-privacy-screen.md
+/// bridge. Spec: ops/docs/archive/app-switcher-privacy-screen.md
 #[tauri::command]
 fn set_privacy_screen(enabled: bool) {
     privacy_screen::set(enabled);
@@ -949,7 +1069,7 @@ fn set_privacy_screen(enabled: bool) {
 /// or let it back in. A device setting: the frontend stores the switch itself
 /// and pushes it at boot and on every change. Android does the same job from
 /// MainActivity.kt, so the command does nothing there.
-/// Spec: ops/docs/plans/app-switcher-privacy-screen.md (section 14)
+/// Spec: ops/docs/archive/app-switcher-privacy-screen.md (section 14)
 #[tauri::command]
 fn set_capture_block(app: tauri::AppHandle, enabled: bool) {
     privacy_screen::set_capture_block(&app, enabled);
@@ -1005,15 +1125,13 @@ fn open_about_window(app: &tauri::AppHandle) {
 /// The argv side of the file association, which is the only part of it that
 /// can be reached without an `AppHandle`.
 ///
-/// Both of these came out of the September security review. A path is claimed
+/// Two refusals live here. A path is claimed
 /// on its extension alone, and a `file://` value is unwrapped through a URL
 /// parser, so a token that is neither still has to be refused. And the
 /// unwrapping is scoped to the platform that needs it: a Linux file manager
 /// launching a `%F` desktop entry may hand over a URL, while on Windows the
 /// same code turned an attacker-supplied deep link into a filesystem path,
 /// because the single-instance forwarder splits one argument into several.
-///
-/// Spec: ops/docs/audit-adversarial-2026-09-bfg.md (SEC-20, SEC-34)
 #[cfg(all(test, desktop))]
 mod tests {
     use super::*;
@@ -1162,8 +1280,6 @@ mod tests {
     /// file rather than for "not a symlink". Asserted against a real link on
     /// a real filesystem, because it is an operating-system behaviour and
     /// the whole guard depends on it.
-    ///
-    /// Spec: ops/docs/audit-adversarial-2026-09-bfg.md (SEC-21)
     #[test]
     fn a_symlink_reports_itself_and_not_its_target() {
         let dir = std::env::temp_dir().join("pn-symlink-filetype-test");

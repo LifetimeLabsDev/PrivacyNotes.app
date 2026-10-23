@@ -9,11 +9,10 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
-import { formatFileSize } from './attachmentValidation';
 import { IconUpgrade } from './UpgradeModal';
 import { isStorageConfigured } from './paddle';
 import { proUnlocked } from './demo';
-import { X } from './icons';
+import { Button, CloseButton, ProgressBar } from './ui';
 
 type FileUploadStatus = 'pending' | 'uploading' | 'done' | 'failed';
 
@@ -80,19 +79,7 @@ export function UploadProgressModal({ entries, isPro, hasStorageSub, onOpenUpgra
                 : t('upload.completeTitle')
               : t('upload.uploadingTitle', { count: entries.length })}
           </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={!allDone}
-            aria-label={t('common:actions.close')}
-            className={`shrink-0 -m-1 p-1 transition ${
-              allDone
-                ? 'text-pn-muted hover:text-pn-soft'
-                : 'text-pn-muted/50 cursor-not-allowed'
-            }`}
-          >
-            <X size={18} />
-          </button>
+          <CloseButton onClick={onClose} disabled={!allDone} />
         </div>
 
         {/* File list */}
@@ -134,17 +121,11 @@ export function UploadProgressModal({ entries, isPro, hasStorageSub, onOpenUpgra
                 </span>
               </div>
               {/* Progress bar */}
-              <div className="h-1 rounded-full bg-track overflow-hidden">
-                <div className={`h-full rounded-full transition-all duration-300 ${
-                  entry.status === 'done'
-                    ? 'w-full bg-emerald-500 dark:bg-emerald-400'
-                    : entry.status === 'failed'
-                      ? 'w-full bg-red-400 dark:bg-red-500'
-                      : entry.status === 'uploading'
-                        ? 'w-2/3 bg-accent-fill animate-pulse'
-                        : 'w-0'
-                }`} />
-              </div>
+              <ProgressBar
+                label={entry.name}
+                value={entry.status === 'pending' ? 0 : entry.status === 'uploading' ? undefined : 1}
+                tone={entry.status === 'done' ? 'success' : entry.status === 'failed' ? 'danger' : 'info'}
+              />
               {entry.status === 'failed' && (entry.errorCode || entry.error) && (
                 <p className="text-[11px] text-danger mt-0.5 leading-tight">
                   {/* Structured codes first; the raw-text quota sniff stays as
@@ -174,18 +155,7 @@ export function UploadProgressModal({ entries, isPro, hasStorageSub, onOpenUpgra
               {active > 0 && counts.failed > 0 && ', '}
               {counts.failed > 0 && t('upload.summaryFailed', { count: counts.failed })}
             </span>
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={!allDone}
-              className={`text-[13px] font-medium px-4 py-1.5 rounded-md transition ${
-                allDone
-                  ? 'bg-accent-fill text-white hover:bg-accent-fill-hover'
-                  : 'bg-track text-pn-muted/75 cursor-not-allowed'
-              }`}
-            >
-              {t('common:actions.done')}
-            </button>
+            <Button action="done" onClick={onClose} disabled={!allDone} />
           </div>
           {/* Upsell - tier-aware, minimal inline. Free -> Pro (50 MB),
               Pro without a storage sub -> storage add-on (100 MB); at the

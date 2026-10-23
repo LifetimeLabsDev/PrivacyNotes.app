@@ -2,7 +2,7 @@
  * Recognising a pipe table's delimiter row. Kept apart from
  * tableColumnWidths.ts because the word count and the note list read it on
  * every render, and they need nothing else from there.
- * Spec: ops/docs/plans/table-column-widths.md
+ * Spec: ops/docs/archive/table-column-widths.md
  */
 
 /** The dash count of each delimiter cell; colons and spaces do not count. Null when the row is not a delimiter row. */

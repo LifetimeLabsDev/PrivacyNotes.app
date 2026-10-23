@@ -8,8 +8,9 @@ import { ViewModeContext, setDeviceCompactRows, useCompactRows } from './viewMod
 import { ViewModeToggle } from './ViewModeToggle';
 import type { Space } from './spaces';
 import { SPACE_ICONS } from './SpaceSwitch';
-import { setCalendarShowsOther, setJournalCalendarShown, useCalendarShowsOther, useJournalCalendarShown } from './JournalCalendar';
-import { X, Question, ArrowsInLineVertical, Article, Calendar, Rows, Clock, HardDrive, PencilSimpleSlash, Shield, SortAscending, SortDescending, Tag, TextAlignJustify } from './icons';
+import { setCalendarShowsOther, setJournalCalendarMood, setJournalCalendarShown, useCalendarShowsOther, useJournalCalendarMood, useJournalCalendarShown } from './JournalCalendar';
+import { Question, ArrowsInLineVertical, Pulse, Article, Calendar, Rows, Clock, Smiley, HardDrive, PencilSimpleSlash, Shield, SortAscending, SortDescending, Tag, TextAlignJustify } from './icons';
+import { CloseButton } from './ui';
 import {
   resolvePrefs,
   setPillarPrefs,
@@ -22,7 +23,9 @@ import {
 /**
  * Preferences popover for the notes list:
  *   - LAYOUT: Auto / List / Grid, this device only (viewMode.ts), and in
- *     Journals Show calendar (device-local, like the layout)
+ *     Journals Show calendar (device-local, like the layout), and Show
+ *     daily check-in above it in the lists that draw the card (device-local
+ *     too, checkInCardSwitch.ts)
  *   - SORT BY: Modified / Created / Title + asc/desc arrow
  *   - VIEW: Show preview (+ Longer preview text) / Show date / Show tags, plus
  *     Show file size in the lists whose rows print one (`showSizeToggle`)
@@ -63,9 +66,15 @@ type Props = {
   pillar?: Pillar;
   /** This list draws the calendar card: show its device switches. */
   calendarRows?: boolean;
+  /** The Journals calendar's mood look switch, under Show calendar. */
+  moodRow?: boolean;
   /** With Spaces on, the space that is not open: the calendar's switch
    *  shows or hides its items, and the row names it. */
   otherSpace?: Space | null;
+  /** This list draws the daily check-in card: its switch, above Show calendar.
+   *  The one place the card is switched on and off, besides the gear's
+   *  "Hide this card". Spec: ops/issues/0439.md (Spec) */
+  checkInCard?: { checked: boolean; onChange: (on: boolean) => void };
   /** CSS classes merged onto the popover container. Positioning only. */
   className?: string;
   /** Hide the VIEW toggles section (preview, date, tags). */
@@ -78,7 +87,7 @@ type Props = {
   showSizeToggle?: boolean;
   /**
    * Add "Show groups" to the VIEW section. Only the panes that draw group
-   * headers pass it. Spec: ops/docs/plans/list-groups.md
+   * headers pass it. Spec: ops/docs/archive/list-groups.md
    */
   showGroupsToggle?: boolean;
   /** Hide the OTHER toggles section (read-only, protected). */
@@ -123,12 +132,15 @@ export function ListPrefsPopover({
   createdLabel,
   pillar = 'global',
   calendarRows = false,
+  moodRow = false,
   otherSpace = null,
+  checkInCard,
 }: Props) {
   const { t } = useTranslation('shell');
   // Read and write the SAME copy the pane's list renders from.
   const prefs: ListPrefs = resolvePrefs(store, pillar);
   const calendarShown = useJournalCalendarShown();
+  const moodLook = useJournalCalendarMood();
   // The switch belongs to the open space, the one that is not `otherSpace`.
   const openSpace: Space = otherSpace === 'personal' ? 'work' : 'personal';
   const showsOther = useCalendarShowsOther(openSpace);
@@ -227,14 +239,7 @@ export function ListPrefsPopover({
       {/* Closing is one click away wherever the menu opens: beside the list it
           sits far from the button that opened it. Escape and a click outside
           still close it too. */}
-      <button
-        type="button"
-        onClick={onClose}
-        aria-label={t('common:actions.close')}
-        className="absolute top-2 end-2 z-10 inline-flex items-center justify-center w-7 h-7 rounded-md text-pn-muted hover:text-pn hover:bg-pn/5 transition"
-      >
-        <X size={15} />
-      </button>
+      <CloseButton onClick={onClose} className="absolute top-2 end-2 z-10" />
       {/* ── LAYOUT ───────────────────────────────────────────────── */}
       {layout && (
       <div className="px-4 pt-3 pb-3 border-b border-divider">
@@ -253,15 +258,34 @@ export function ListPrefsPopover({
             onChange={setDeviceCompactRows}
           />
         </div>
-        {/* Device-local like the layout, so it sits here and outside the synced prefs. */}
+        {/* The two cards at the top of the list, in the order they stand:
+            the check-in above the calendar, both device-local like the layout. */}
+        {checkInCard && (
+          <div className="mt-2">
+            <ToggleRow
+              label={t('listPrefs.showCheckIn')}
+              icon={<Pulse aria-hidden="true" className="shrink-0" />}
+              checked={checkInCard.checked}
+              onChange={checkInCard.onChange}
+            />
+          </div>
+        )}
         {calendarRows && (
-          <div className="mt-2 space-y-0.5">
+          <div className={`${checkInCard ? 'mt-0.5' : 'mt-2'} space-y-0.5`}>
             <ToggleRow
               label={t('listPrefs.showCalendar')}
               icon={<Calendar aria-hidden="true" className="shrink-0" />}
               checked={calendarShown}
               onChange={setJournalCalendarShown}
             />
+            {calendarShown && moodRow && (
+              <ToggleRow
+                label={t('listPrefs.moodCalendar')}
+                icon={<Smiley aria-hidden="true" className="shrink-0" />}
+                checked={moodLook}
+                onChange={setJournalCalendarMood}
+              />
+            )}
             {calendarShown && otherSpace && (
               <ToggleRow
                 label={(

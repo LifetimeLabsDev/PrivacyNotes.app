@@ -55,6 +55,9 @@ export const GUIDE_META: Record<string, { name: string; icon?: string }> = {
   // honest. It wears the key the app gives the Vault instead - the
   // phosphor glyph in GUIDE_GLYPH (help-page.ts) and on the homepage pill.
   'browser-passwords': { name: 'Browser passwords' },
+  // No icon either: a .vcf comes from every address book, so it wears the
+  // AddressBook glyph the importer row uses.
+  contacts: { name: 'Contacts (vCard)' },
   evernote: { name: 'Evernote', icon: 'evernote.svg' },
   'google-calendar': { name: 'Google Calendar', icon: 'google-calendar.svg' },
   'google-keep': { name: 'Google Keep', icon: 'google-keep.svg' },

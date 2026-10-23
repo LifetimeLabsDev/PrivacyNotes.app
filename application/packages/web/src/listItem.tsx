@@ -13,7 +13,7 @@
  * work unchanged.
  * Spec: ops/docs/plans/list-grid-parity.md (section 5)
  */
-import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
+import type { CSSProperties, HTMLAttributes, ReactNode, RefCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Archive, Check, CloudSlash, PencilSimpleSlash, PushPin, Shield, Warning, type Icon } from './icons';
 
@@ -126,6 +126,8 @@ export function ItemFlags({ flags, size = 12, onImage = false }: { flags: readon
 
 /** Handlers and element props the pane hands the item's root. */
 export type ItemRootProps = HTMLAttributes<HTMLElement> & {
+  ref?: RefCallback<HTMLElement>;
+  'data-window-item'?: true;
   draggable?: boolean;
   type?: 'button';
 };
@@ -165,7 +167,7 @@ function SelectBox({ selected, onToggle, layout, compact = false }: { selected: 
 function rootAttrs(item: ListItem, state: ItemState) {
   return {
     // Read by the list pane's one middle-click and Alt-click handler, which
-    // opens the item as a tab. Spec: ops/docs/plans/note-tabs.md
+    // opens the item as a tab. Spec: ops/docs/archive/note-tabs.md
     'data-item-id': item.id,
     'aria-current': state.open || undefined,
     style: item.look?.css,

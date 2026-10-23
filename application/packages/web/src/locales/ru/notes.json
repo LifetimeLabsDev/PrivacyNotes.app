@@ -18,10 +18,8 @@
   "header": {
     "new": "Создать",
     "newNote": "Новая заметка",
-    "newNoteHover": "Новая заметка ({{hotkey}})",
     "trash": "Корзина",
-    "newEvent": "Новое событие",
-    "newEventHover": "Новое событие ({{hotkey}})"
+    "newEvent": "Новое событие"
   },
   "folderChip": {
     "clear": "Очистить фильтр папки: {{folder}}",
@@ -35,15 +33,18 @@
     "ariaLabel": "Новый элемент сейфа",
     "login": "Логин",
     "card": "Кредитная карта",
-    "sshKey": "SSH-ключ"
+    "sshKey": "SSH-ключ",
+    "generator": "Пароль"
   },
   "newMenu": {
     "note": "Заметка",
     "task": "Задача",
+    "kanban": "Канбан-доска",
     "journal": "Дневник",
     "login": "Логин",
     "file": "Файл",
     "bookmark": "Закладка",
+    "clipPage": "Сохранить страницу",
     "contact": "Контакт",
     "event": "Событие",
     "quickAdd": "Быстрое добавление"
@@ -55,8 +56,7 @@
     "keys": "Ключи"
   },
   "journal": {
-    "newEntry": "Новая запись в дневнике",
-    "newEntryHover": "Новая запись в дневнике ({{hotkey}})"
+    "newEntry": "Новая запись в дневнике"
   },
   "tasks": {
     "newTitle": "Задачи на {{date}}"
@@ -70,7 +70,8 @@
   "search": {
     "sortOptions": "Сортировка и вид",
     "placeholderVault": "Поиск в сейфе…",
-    "placeholderNotes": "Поиск заметок…"
+    "placeholderNotes": "Поиск заметок…",
+    "placeholderEvents": "Поиск событий…"
   },
   "selection": {
     "countOf": "Выбрано {{selected}} из {{total}}",
@@ -82,9 +83,16 @@
     "vault": "Сейф пуст.",
     "notes": "Заметок пока нет.",
     "archive": "Архив пуст.",
+    "trash": "Корзина пуста.",
     "filtered": "Ни один элемент не соответствует фильтрам.",
     "clearFilters": "Очистить фильтры",
-    "filteredAfter": "чтобы их показать."
+    "filteredAfter": "чтобы их показать.",
+    "hiddenInAll_one": "{{count}} элемент скрыт фильтром «Показывать в списке „Все“». Откройте фильтр рядом с «Все», чтобы показать его.",
+    "inOtherSpace_one": "{{count}} элемент находится в пространстве «{{space}}». Перейдите в «{{space}}» на боковой панели, чтобы увидеть его.",
+    "inOtherSpace_few": "{{count}} элемента находятся в пространстве «{{space}}». Перейдите в «{{space}}» на боковой панели, чтобы увидеть их.",
+    "inOtherSpace_many": "{{count}} элементов находится в пространстве «{{space}}». Перейдите в «{{space}}» на боковой панели, чтобы увидеть их.",
+    "hiddenInAll_few": "{{count}} элемента скрыты фильтром «Показывать в списке „Все“». Откройте фильтр рядом с «Все», чтобы показать их.",
+    "hiddenInAll_many": "{{count}} элементов скрыто фильтром «Показывать в списке „Все“». Откройте фильтр рядом с «Все», чтобы показать их."
   },
   "listGroups": {
     "previous7Days": "Последние 7 дней",
@@ -104,12 +112,34 @@
     "calendar": "Календарь"
   },
   "footerStats": {
-    "journals": "Дневников",
-    "items": "Элементов",
-    "trashed": "В корзине",
-    "notes": "Заметок",
-    "bookmarks": "Закладок",
-    "contacts": "Контактов"
+    "journals_one": "Дневник",
+    "journals_few": "Дневника",
+    "journals_many": "Дневников",
+    "items_one": "Элемент",
+    "items_few": "Элемента",
+    "items_many": "Элементов",
+    "trashed_one": "В корзине",
+    "trashed_few": "В корзине",
+    "trashed_many": "В корзине",
+    "notes_one": "Заметка",
+    "notes_few": "Заметки",
+    "notes_many": "Заметок",
+    "bookmarks_one": "Закладка",
+    "bookmarks_few": "Закладки",
+    "bookmarks_many": "Закладок",
+    "contacts_one": "Контакт",
+    "files_one": "Файл",
+    "lists_one": "Список",
+    "tasks_one": "Задача",
+    "today": "Сегодня",
+    "tasks_few": "Задачи",
+    "tasks_many": "Задач",
+    "lists_few": "Списка",
+    "lists_many": "Списков",
+    "files_few": "Файла",
+    "files_many": "Файлов",
+    "contacts_few": "Контакта",
+    "contacts_many": "Контактов"
   },
   "toast": {
     "imageUploadFailed": "Не удалось отправить изображение: {{error}}",
@@ -169,7 +199,7 @@
   },
   "zen": {
     "exit": "Выйти из дзена",
-    "exitHover": "Выйти из режима дзен (Esc)",
+    "exitHover": "Выйти из режима дзен",
     "enterHover": "Включить режим дзен",
     "proHover": "Режим дзен (Pro)",
     "enterAriaShortcut": "Включить режим дзен ({{keys}})"
@@ -246,9 +276,13 @@
     "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Открыть статистику",
     "journalCalendar": "Календарь дневника",
-    "words": "Слов",
+    "words_one": "Слово",
+    "words_few": "Слова",
+    "words_many": "Слов",
     "zen": "Дзен",
     "appearance": "Внешний вид",
+    "lockApp": "Заблокировать приложение",
+    "lockAppSetUp": "Сначала задайте PIN в разделе «Безопасность»",
     "goToTop": "Перейти в начало",
     "goToEnd": "Перейти в конец",
     "signOut": "Выйти",
@@ -272,6 +306,7 @@
     "editorLabel": "Редактор",
     "formatBarLabel": "Панель инструментов",
     "listsLabel": "Списки",
+    "trackersLabel": "Трекеры",
     "helpLabel": "Справка",
     "aboutLabel": "О приложении",
     "languageLabel": "Язык",
@@ -289,7 +324,7 @@
   },
   "bulkTrash": {
     "title": "Переместить в корзину",
-    "body_one": "Переместить <highlight>{{count}} элемент</highlight> в корзину? Позже можно будет восстановить.",
+    "body_one": "Переместить <highlight>{{count}} элемент</highlight> в корзину? Позже его можно будет восстановить.",
     "body_few": "Переместить <highlight>{{count}} элемента</highlight> в корзину? Позже их можно будет восстановить.",
     "body_many": "Переместить <highlight>{{count}} элементов</highlight> в корзину? Позже их можно будет восстановить.",
     "body_other": "Переместить <highlight>{{count}} элемента</highlight> в корзину? Позже их можно будет восстановить.",
@@ -351,5 +386,15 @@
   "ambiguousLink": {
     "title": "Две заметки называются одинаково",
     "body": "Название <highlight>«{{title}}»</highlight> носят несколько заметок, поэтому ссылка не указывает, какую именно. Переименуйте одну из них, и ссылка будет вести на другую."
+  },
+  "connections": {
+    "title": "Связи",
+    "hide": "Скрыть связи",
+    "linkedFrom": "Ссылаются сюда",
+    "linksTo": "Ссылается на",
+    "missing": "Ещё не создана",
+    "protectedHidden_one": "{{count}} элемент с защитой PIN скрыт",
+    "protectedHidden_few": "{{count}} элемента с защитой PIN скрыты",
+    "protectedHidden_many": "{{count}} элементов с защитой PIN скрыто"
   }
 }

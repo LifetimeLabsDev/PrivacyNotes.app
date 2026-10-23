@@ -2758,13 +2758,15 @@ dependencies = [
 
 [[package]]
 name = "privacynotes"
-version = "0.654.2"
+version = "0.696.1"
 dependencies = [
  "block2",
  "libc",
  "objc2",
  "objc2-foundation",
  "plist",
+ "reqwest",
+ "rustls",
  "serde",
  "serde_json",
  "tauri",
@@ -2772,6 +2774,7 @@ dependencies = [
  "tauri-plugin",
  "tauri-plugin-auth-session",
  "tauri-plugin-biometric",
+ "tauri-plugin-biometric-key",
  "tauri-plugin-deep-link",
  "tauri-plugin-dialog",
  "tauri-plugin-fs",
@@ -2782,6 +2785,9 @@ dependencies = [
  "tauri-plugin-single-instance",
  "tauri-plugin-updater",
  "tauri-plugin-window-state",
+ "tokio",
+ "url",
+ "webpki-roots",
  "webview2-com",
  "windows 0.62.2",
  "windows-future 0.3.2",
@@ -3985,6 +3991,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "tauri-plugin-biometric-key"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "tauri",
+ "tauri-plugin",
+]
+
+[[package]]
 name = "tauri-plugin-deep-link"
 version = "2.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4431,7 +4446,19 @@ dependencies = [
  "mio",
  "pin-project-lite",
  "socket2",
+ "tokio-macros",
  "windows-sys 0.61.2",
+]
+
+[[package]]
+name = "tokio-macros"
+version = "2.7.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "78773a2a397f451582ce068015985c33193cf6dea8b74d2a639fe457b2f07b0e"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 3.0.3",
 ]
 
 [[package]]
@@ -5035,6 +5062,15 @@ name = "webpki-root-certs"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f31141ce3fc3e300ae89b78c0dd67f9708061d1d2eda54b8209346fd6be9a92c"
+dependencies = [
+ "rustls-pki-types",
+]
+
+[[package]]
+name = "webpki-roots"
+version = "1.0.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7dcd9d09a39985f5344844e66b0c530a33843579125f23e21e9f0f220850f22a"
 dependencies = [
  "rustls-pki-types",
 ]

@@ -15,7 +15,7 @@ import { OTHER_KEY, PINNED_KEY, SYMBOL_KEY, buildGroups, groupBasis, type ListGr
  * The group headers of a notes list: the hook every pane calls, the header
  * row, and the fold state behind it. A pane hands its sorted notes in and
  * renders the entries it gets back, so no pane holds a copy of the rules.
- * Spec: ops/docs/plans/list-groups.md
+ * Spec: ops/docs/archive/list-groups.md
  */
 
 // Device-local, like the layout. The demo gets its own key, because `?demo=1`
@@ -138,7 +138,7 @@ const titleCollator = new Intl.Collator(undefined, { sensitivity: 'base', numeri
 /** Today's local date, renewed at local midnight and when the window comes
  *  back (a sleeping machine fires no timer on time), so a list left open
  *  overnight moves its "Today" items to "Yesterday". */
-function useToday(): string {
+export function useToday(): string {
   const [today, setToday] = useState(() => toLocalIso(new Date()));
   useEffect(() => {
     const check = () => setToday(toLocalIso(new Date()));

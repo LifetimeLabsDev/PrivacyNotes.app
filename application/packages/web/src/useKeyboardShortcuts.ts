@@ -100,7 +100,7 @@ export interface KeyboardShortcutHandlers {
  * of them used arrives with `defaultPrevented`, which `matchesKey` refuses.
  * Each key press runs at most one command.
  *
- * Spec: ops/docs/plans/keyboard-shortcuts.md (sections 4.3 and 4.4)
+ * Spec: ops/docs/archive/keyboard-shortcuts.md (sections 4.3 and 4.4)
  */
 export function useKeyboardShortcuts(h: KeyboardShortcutHandlers): PaletteRunner {
   // The listener is added once and reads the latest handlers through a ref,
@@ -322,7 +322,7 @@ function runShortcut(e: KeyboardEvent, h: KeyboardShortcutHandlers): boolean | t
   // else the open item. It never closes the window: on a Mac that moves to
   // Shift+Cmd+W. Alt+Shift+W only closes a tab, and is let through when
   // there is none, because on a Mac it types „.
-  // Spec: ops/docs/plans/note-tabs.md (section 3)
+  // Spec: ops/docs/archive/note-tabs.md (section 3)
   if (is('closeTab')) {
     const altKey = !(e.metaKey || e.ctrlKey);
     if (altKey) return h.closeActiveTab();

@@ -154,7 +154,7 @@ export function FindBar({ editor, focusTick, initialQuery, startQuery, onSwap, s
       <MatchNav count={count} noHits={noHits} canStep={info.total > 0} onStep={go} />
       {onSwap && <ReplaceToggle open={false} pro={swapPro} onClick={() => onSwap(query)} />}
       <div className="w-px h-5 bg-divider mx-0.5 shrink-0" aria-hidden="true" />
-      <HoverLabel label={t('find.closeTitle', { keys: keyText('find') })} position="below-end">
+      <HoverLabel label={t('find.closeTitle')} keys={keyText('find')} position="below-end">
         <button
           type="button"
           onMouseDown={(e) => e.preventDefault()}

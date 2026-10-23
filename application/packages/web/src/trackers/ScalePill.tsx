@@ -1,14 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import { PillShell } from './PillShell';
 import { TRACKER_ICONS } from './icons';
+import { ScaleTiles } from '../MoodScale';
+import { PanelQuestion } from './panelUI';
 
 /**
- * Generic scale pill with configurable range. Defaults to 0-10.
+ * Generic scale pill with configurable range, 0 to 10 by default: the same
+ * tiles as the mood, in the accent. A tap commits and closes the panel.
  */
 export function ScalePill({
   id,
   label,
-  color,
   value,
   expanded,
   onToggle,
@@ -19,10 +21,10 @@ export function ScalePill({
   suffix,
   lowLabel,
   highLabel,
+  prompt,
 }: {
   id: string;
   label: string;
-  color: string;
   value?: number;
   expanded: boolean;
   onToggle: () => void;
@@ -33,9 +35,10 @@ export function ScalePill({
   suffix?: string;
   lowLabel?: string;
   highLabel?: string;
+  /** The question over the tiles; "Label (min-max)" when absent. */
+  prompt?: string;
 }) {
   const { t } = useTranslation('trackers');
-  const count = max - min + 1;
   const filledText = value != null ? `${value}${suffix ?? `/${max}`}` : undefined;
   const low = lowLabel ?? t('scaleEnds.low');
   const high = highLabel ?? t('scaleEnds.high');
@@ -43,7 +46,6 @@ export function ScalePill({
   return (
     <PillShell
       label={label}
-      color={color}
       filled={value != null}
       expanded={expanded}
       onToggle={onToggle}
@@ -51,34 +53,16 @@ export function ScalePill({
       icon={TRACKER_ICONS[id]}
       readOnly={readOnly}
     >
-      <div className="flex flex-col gap-2 items-start">
-        <span className="text-xs font-medium text-pn-soft">
-          {t('scalePill.prompt', { label, min, max })}
-        </span>
-        <div className="inline-flex flex-col gap-1">
-          <div className="flex gap-1">
-            {Array.from({ length: count }, (_, i) => min + i).map((n) => (
-              <button
-                key={n}
-                type="button"
-                onClick={() => { onChange(n); onToggle(); }}
-                className={`w-7 h-7 rounded-md text-xs font-semibold transition-colors ${
-                  value === n
-                    ? 'text-white'
-                    : 'bg-surface-0 text-pn-soft hover:opacity-80'
-                }`}
-                style={value === n ? { backgroundColor: color } : undefined}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
-          <div className="flex justify-between text-[10px] text-pn-muted px-0.5">
-            <span>{low}</span>
-            <span>{high}</span>
-          </div>
-        </div>
-      </div>
+      <PanelQuestion>{prompt ?? t('scalePill.prompt', { label, min, max })}</PanelQuestion>
+      <ScaleTiles
+        min={min}
+        max={max}
+        value={value}
+        onPick={(n) => { onChange(n); onToggle(); }}
+        label={label}
+        ends={[/\d/.test(low) ? low : `${min} · ${low}`, /\d/.test(high) ? high : `${max} · ${high}`]}
+        className="w-full max-w-[420px]"
+      />
     </PillShell>
   );
 }

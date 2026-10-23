@@ -7,15 +7,30 @@ import { useCopyToClipboard } from './clipboard';
 import { openExternal } from './openExternal';
 import { hasPin } from './pin';
 import { PinInfoModal } from './PinInfoModal';
-import { ArrowSquareOut, CaretDown, Check, Copy, Info } from './icons';
+import { CaretDown, Info, NotePencil, NEW_GLYPHS } from './icons';
 import { isImeComposing } from './imeComposing';
+import { Button, SETTINGS_BTN_PRIMARY, SETTINGS_HELP, Spinner } from './ui';
+import { formatInstant } from './intlFormat';
+import { DEMO_APP_URL } from './demo';
+import { withSource } from './campaignSource';
+import type { ClipJob, ClipNotice } from './clipMessages';
+
+/** Save as note on a bookmark: the note it was clipped into, the clip that
+ *  is running, the last message, and the two actions. */
+export interface BookmarkClip {
+  note?: LocalNote;
+  job?: ClipJob;
+  notice?: ClipNotice;
+  onSave: () => void;
+  onOpenNote: () => void;
+}
 
 /**
  * The bookmark column, the vault's `VAULT_COLUMN` one size up: the URL row
  * carries a long value plus the Copy and Open buttons, so it needs more room
  * than the vault's label + value pairs. Wider than 720 and the field trails a
  * lane of empty space to the buttons.
- * Spec: ops/docs/ui-patterns.md (the vault column)
+ * Spec: ops/docs/archive/ui-patterns.md (the vault column)
  */
 const BOOKMARK_COLUMN = 'w-full max-w-[720px]';
 
@@ -32,7 +47,7 @@ const BOOKMARK_COLUMN = 'w-full max-w-[720px]';
  * the stored body. The duplicate half is the same guard the quick-add bar
  * runs, against the same account-wide key map - editing a bookmark onto a
  * URL you already have was the one way past it (fixed 2026-08-26).
- * Spec: ops/docs/plans/bookmarks-pillar.md (standard-header rework)
+ * Spec: ops/docs/archive/bookmarks-pillar.md (standard-header rework)
  */
 export function BookmarkItem({
   note,
@@ -40,6 +55,7 @@ export function BookmarkItem({
   isTrash,
   onBodyChange,
   onPinProtectedChange,
+  clip,
 }: {
   note: LocalNote;
   /** Every saved bookmark URL in the account, keyed by dedupe key -> note id
@@ -49,6 +65,8 @@ export function BookmarkItem({
   isTrash: boolean;
   onBodyChange: (id: string, body: string) => void;
   onPinProtectedChange: (id: string, pinProtected: boolean) => void;
+  /** Absent in the trash: a trashed bookmark is not clipped. */
+  clip?: BookmarkClip;
 }) {
   const { t } = useTranslation('shell');
   const { copy, copied } = useCopyToClipboard();
@@ -108,7 +126,7 @@ export function BookmarkItem({
           115px), so the field takes its own line and the buttons share the
           next one. A container query, because the pane is a column the user
           drags and a viewport breakpoint cannot see it.
-          Spec: ops/docs/ui-patterns.md (section 77) */}
+          Spec: ops/docs/archive/ui-patterns.md (section 77) */}
       <div className="flex items-center gap-1.5 @max-[30rem]:flex-wrap">
         {/* The website icon sits inside the field, behind a hairline, where a
             browser's address bar carries it: no extra line, and the address
@@ -138,26 +156,54 @@ export function BookmarkItem({
             className="w-full min-w-0 bg-transparent px-3 py-2 text-sm focus:outline-none"
           />
         </div>
-        <button
-          type="button"
+        <Button
+          action={copied === 'url' ? 'done' : 'copy'}
+          variant="secondary"
           onClick={() => copy(savedUrl, 'url')}
-          className="shrink-0 inline-flex items-center justify-center gap-1.5 h-9 rounded-md border border-divider bg-surface-1 px-3 text-[13px] text-pn-soft transition hover:text-accent hover:border-accent @max-[30rem]:flex-1"
+          className={`shrink-0 @max-[30rem]:flex-1${copied === 'url' ? ' [&_svg]:text-success' : ''}`}
         >
-          {/* The label never changes - a wider "copied" caption resized
-              the button and squeezed the URL field mid-click. The green
-              check is the feedback, the vault's own pattern. */}
-          {copied === 'url' ? <Check size={15} className="text-green-500" /> : <Copy size={15} />}
+          {/* A fixed label keeps clipboard feedback from resizing the URL field. */}
           {t('common:actions.copy')}
-        </button>
-        <button
-          type="button"
-          onClick={() => openExternal(savedUrl)}
-          className="shrink-0 inline-flex items-center justify-center gap-1.5 h-9 rounded-md bg-accent/10 px-3 text-[13px] font-semibold text-accent-strong transition hover:bg-accent/20 @max-[30rem]:flex-1"
-        >
-          <ArrowSquareOut size={15} />
+        </Button>
+        <Button action="open" variant="accent" onClick={() => openExternal(savedUrl)} className="shrink-0 @max-[30rem]:flex-1">
           {t('bookmarks.openAction')}
-        </button>
+        </Button>
+        {clip && savedUrl && (
+          clip.job ? (
+            <Button variant="primary" icon={<Spinner size={15} className="text-white" />} disabled className="shrink-0 @max-[30rem]:basis-full">
+              {t('clipper.saving')}
+            </Button>
+          ) : clip.note ? (
+            <Button variant="primary" icon={<NotePencil size={15} aria-hidden />} onClick={clip.onOpenNote} className="shrink-0 @max-[30rem]:basis-full">
+              {t('clipper.openNote')}
+            </Button>
+          ) : (
+            <Button variant="primary" icon={<NEW_GLYPHS.note size={15} aria-hidden />} onClick={clip.onSave} className="shrink-0 @max-[30rem]:basis-full">
+              {t('clipper.saveAsNote')}
+            </Button>
+          )
+        )}
       </div>
+      {clip?.job && (
+        <p className={`mt-1.5 ${SETTINGS_HELP}`} role="status">
+          {clip.job.step === 'page' ? t('clipper.stepPage') : t('clipper.stepPictures', { done: clip.job.done, total: clip.job.total })}
+        </p>
+      )}
+      {clip?.note && !clip.job && (
+        <p className={`mt-1.5 ${SETTINGS_HELP} text-success`}>
+          {t('clipper.savedOn', { date: formatInstant(clip.note.createdAt, 'date') })}
+        </p>
+      )}
+      {clip?.notice && !clip.job && (
+        <div className="mt-1.5 space-y-2" role="alert">
+          <p className="text-xs font-medium text-warning">{clip.notice.text}</p>
+          {clip.notice.signUp && (
+            <a href={withSource(DEMO_APP_URL)} className={`${SETTINGS_BTN_PRIMARY} inline-flex`}>
+              {t('demoBanner.cta')}
+            </a>
+          )}
+        </div>
+      )}
       {invalid && (
         <div className="mt-1.5 text-[12px] font-medium text-danger">{t('bookmarks.urlInvalid')}</div>
       )}

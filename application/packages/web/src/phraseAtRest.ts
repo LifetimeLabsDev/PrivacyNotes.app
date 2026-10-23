@@ -8,10 +8,9 @@
  * IndexedDB (db.kv). IndexedDB persists the CryptoKey OBJECT via
  * structured clone; the raw key bytes never exist in script-readable
  * form, so a copied localStorage file or a serialized backup of the
- * databases cannot recover the phrase (pre-launch audit 2026-08-28,
- * findings 8 and 9). An attacker who can RUN CODE in this origin on
- * this machine can still use the key - that boundary is documented in
- * THREAT_MODEL.md.
+ * databases cannot recover the phrase. An attacker who can RUN CODE
+ * in this origin on this machine can still use the key - that boundary
+ * is documented in THREAT_MODEL.md.
  *
  * The envelope reuses the phrase's own storage key. Every presence
  * check (hasStoredSession, the app-lock gate, sign-out removal, the
@@ -21,9 +20,9 @@
  * Failure policy, in one line: the wrap is best effort and the phrase
  * wins. If IndexedDB or WebCrypto is unavailable, persist falls back
  * to the old plaintext behavior with a breadcrumb - a storage hiccup
- * must never cost anyone their session (auth session audit 2026-08-25,
- * section 0). A lost wrap key (envelope present, key gone) demotes to
- * the sign-in screen, where re-entering the phrase repairs everything.
+ * must never cost anyone their session. A lost wrap key (envelope
+ * present, key gone) demotes to the sign-in screen, where re-entering
+ * the phrase repairs everything.
  *
  * Spec: THREAT_MODEL.md (phrase wrapped at rest under a
  * non-extractable device key)

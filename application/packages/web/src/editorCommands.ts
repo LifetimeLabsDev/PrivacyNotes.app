@@ -3,16 +3,16 @@ import { formatInstant } from './intlFormat';
 
 /**
  * The editor's own commands, for command mode and the keys: find, replace,
- * the outline, the Markdown view and the date inserts live inside the open
+ * the outline, the connections, the Markdown view and the date inserts live inside the open
  * note's components, so the open note registers them here while it is on
  * screen, and the command list in the search field runs them. A command whose
  * entry is absent is not offered; the date inserts are absent while the note
  * cannot be edited.
  *
- * Spec: ops/docs/plans/keyboard-shortcuts.md (decision D5, command mode),
- * ops/docs/plans/dates.md (section 3.6)
+ * Spec: ops/docs/archive/keyboard-shortcuts.md (decision D5, command mode),
+ * ops/docs/archive/dates.md (section 3.6)
  */
-export type EditorCommand = 'find' | 'findReplace' | 'outline' | 'markdownView' | 'insertDate' | 'insertDateTime';
+export type EditorCommand = 'find' | 'findReplace' | 'outline' | 'connections' | 'markdownView' | 'insertDate' | 'insertDateTime';
 
 export const editorCommands: Partial<Record<EditorCommand, () => void>> = {};
 

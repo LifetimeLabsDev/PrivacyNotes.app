@@ -11,7 +11,7 @@ import type { ImportTarget } from '../import/destination';
 import type { ImageStore } from '../imageStore';
 import type { AppearancePane } from '../AppearanceSheet';
 import { exemptOpts } from '../i18nExempt';
-import { Calendar, ChartBar, CreditCard, Database, Image as ImageIcon, Info, Question, Repeat, ListBullets, Palette, PencilLine, Shield, Toolbox, Translate, User, type Icon } from '../icons';
+import { Calendar, ChartBar, CreditCard, Database, Info, Question, Repeat, ListBullets, Palette, Heartbeat, PencilLine, Shield, Toolbox, Translate, User, type Icon } from '../icons';
 import { proUnlocked } from '../demo';
 import { activeLocale } from '../languages';
 import { helpPath } from '../localeRoutes';
@@ -19,6 +19,7 @@ import { updateNote } from '../notesRepo';
 import { weekReflectionFor } from '../notesViewUtils';
 import type { View } from '../views';
 import type { SettingsCategory } from '../SettingsShell';
+import { StoragePane } from './StoragePane';
 import type { SectionId } from '../settingsSearch/registry';
 import { siteHref } from '../siteLinks';
 import { withCredentialChanges, type UserSettings } from '../userSettings';
@@ -32,7 +33,9 @@ export const StatsModal = lazyModal(() => import('../StatsModal').then((m) => m.
 export const AboutModal = lazyModal(() => import('../AboutModal').then((m) => m.AboutModal));
 export const FeedbackModal = lazyModal(() => import('../FeedbackModal').then((m) => m.FeedbackModal));
 export const SecurityModal = lazyModal(() => import('../SecurityModal').then((m) => m.SecurityModal));
+export const PasswordGeneratorModal = lazyModal(() => import('../PasswordGenerator').then((m) => m.PasswordGeneratorModal));
 export const SyncOptionsModal = lazyModal(() => import('../SyncOptionsModal').then((m) => m.SyncOptionsModal));
+export const ClipPageModal = lazyModal(() => import('../ClipPageModal').then((m) => m.default));
 export const NoteHistoryModal = lazyModal(() => import('../NoteHistoryModal').then((m) => m.NoteHistoryModal));
 export const ImportModal = lazyModal(() => import('../import/ImportModal').then((m) => m.ImportModal));
 export const MediaViewer = lazyModal(() => import('../MediaViewer').then((m) => m.MediaViewer));
@@ -45,6 +48,7 @@ const LanguageSheet = lazyModal(() => import('../LanguageSheet').then((m) => m.L
 const DateSheet = lazyModal(() => import('../LanguageSheet').then((m) => m.DateSheet));
 const CalendarSettings = lazyModal(() => import('../CalendarSettings').then((m) => m.CalendarSettings));
 const DateTimePane = lazyModal(() => import('../DateTimePane').then((m) => m.DateTimePane));
+const TrackerSettingsPane = lazyModal(() => import('../TrackerConfig').then((m) => m.TrackerSettingsPane));
 
 type Authed = Extract<AuthState, { status: 'authenticated' }>;
 
@@ -54,13 +58,13 @@ export const SETTINGS_SECTION_ICONS: Record<SectionId, Icon> = {
   import: Repeat,
   plan: CreditCard,
   storage: Database,
-  images: ImageIcon,
   security: Shield,
   me: User,
   design: Palette,
   editor: PencilLine,
   formatBar: Toolbox,
   lists: ListBullets,
+  trackers: Heartbeat,
   language: Translate,
   date: Calendar,
   about: Info,
@@ -135,7 +139,7 @@ export function buildSettingsCategories({
   /** Switches one view off, or back on, in the sidebar or in the All list.
    *  Built in NotesView because hiding the OPEN view also leaves it, which
    *  this module cannot do; never write hiddenViews/hiddenInAll through
-   *  mutateSettings. Spec: ops/docs/plans/sidebar-views.md */
+   *  mutateSettings. Spec: ops/docs/archive/sidebar-views.md */
   onToggleHiddenView: (field: 'hiddenViews' | 'hiddenInAll', key: View) => void;
   auth: Authed;
   settingsAutoVerify: boolean;
@@ -154,7 +158,7 @@ export function buildSettingsCategories({
   createImportFolder: (name: string) => string | null;
   applyImportedTagColors: (colors: Map<string, string>) => void;
   mergeRestoredSettings: (
-    settings: { itemStyles?: unknown; customThemes?: unknown },
+    settings: { itemStyles?: unknown; customThemes?: unknown; factors?: unknown; customHabits?: unknown },
     savedToFinal: ReadonlyMap<string, string>,
   ) => void;
   exportAllMarkdownZip: (ns: LocalNote[]) => Promise<void>;
@@ -179,11 +183,12 @@ export function buildSettingsCategories({
   formatBarBoard: FormatBarBoardProps;
 }): SettingsCategory[] {
   // Design, Editor and Lists are three panes of one sheet, one Settings
-  // entry each. Spec: ops/docs/ui-patterns.md (section 135)
-  const appearancePane = (pane: AppearancePane) => (
+  // entry each. Spec: ops/docs/archive/ui-patterns.md (section 135)
+  const appearancePane = (pane: AppearancePane, initialTab?: string) => (
     <AppearanceSheet
       embedded
       pane={pane}
+      initialTab={initialTab}
       isPro={auth.isPro ?? false}
       viewMode={viewMode}
       onViewModeChange={onViewModeChange}
@@ -202,6 +207,8 @@ export function buildSettingsCategories({
       onNoteColorsChange={(next) => mutateSettings((prev) => applyNoteColorChoice(prev, next))}
       sinkCheckedTasks={userSettings.sinkCheckedTasks}
       onSinkCheckedTasksChange={(on) => mutateSettings((prev) => ({ ...prev, sinkCheckedTasks: on }))}
+      taskConfetti={userSettings.taskConfetti}
+      onTaskConfettiChange={(on) => mutateSettings((prev) => ({ ...prev, taskConfetti: on }))}
       spaces={userSettings.spaces}
       onSpacesChange={(on) => mutateSettings((prev) => ({ ...prev, spaces: on }))}
       onOpenUpgrade={(trigger) => { setShowSettings(false); setShowUpgrade({ trigger: trigger ?? 'theme' }); }}
@@ -218,10 +225,11 @@ export function buildSettingsCategories({
               label: t('settings.statsLabel'),
               group: t('settings.groupYourNotes'),
               icon: railIcon('stats'),
-              render: ({ initialTab }) => (
+              render: ({ initialTab, navigate }) => (
                 <StatsModal
+                  onOpenWellnessExport={() => navigate('import', 'wellness')}
                   embedded
-                  initialTab={initialTab === 'wellness' || initialTab === 'writing' ? initialTab : 'overview'}
+                  initialTab={initialTab === 'wellness' || initialTab === 'writing' || initialTab === 'medication' || initialTab === 'mood' ? initialTab : 'overview'}
                   notes={notes}
                   isNoteLocked={isNoteLocked}
                   // Deleted medications included on purpose: their log
@@ -231,6 +239,7 @@ export function buildSettingsCategories({
                   notesCreated={userSettings.notesCreated}
                   firstSeenAt={userSettings.firstSeenAt}
                   trackerSettings={userSettings.trackerSettings}
+                  factors={userSettings.factors}
                   onOpenDay={(date) => {
                     const entry = journalOn(notes, date);
                     if (!entry) return;
@@ -253,7 +262,7 @@ export function buildSettingsCategories({
                 <ImportModal
                   embedded
                   onClose={() => setShowSettings(false)}
-                  initialTab={initialTab === 'export' || initialTab === 'restore' || initialTab === 'vault' ? initialTab : 'import'}
+                  initialTab={initialTab === 'export' || initialTab === 'restore' || initialTab === 'vault' || initialTab === 'wellness' ? initialTab : 'import'}
                   notes={notes}
                   onImportFolders={mergeImportedFolders}
                   importTarget={importTarget}
@@ -270,6 +279,14 @@ export function buildSettingsCategories({
                   onExportBookmarks={exportBookmarks}
                   onExportContacts={exportContacts}
                   onExportCalendar={exportCalendar}
+                  wellness={{
+                    isNoteLocked,
+                    trackerSettings: userSettings.trackerSettings,
+                    factors: userSettings.factors,
+                    medications: userSettings.medications,
+                    isPro: auth.isPro,
+                    onOpenUpgrade: () => { setShowSettings(false); setShowUpgrade({ trigger: null }); },
+                  }}
                   onImportEncrypted={importEncryptedBackup}
                   onBlobsRestored={() => {
                     imageStoreRef.current?.processPendingUploads().catch((err) =>
@@ -319,7 +336,6 @@ export function buildSettingsCategories({
               label: t('settings.formatBarLabel'),
               group: t('settings.groupPreferences'),
               icon: railIcon('formatBar'),
-              ownHeading: true,
               render: () => appearancePane('formatBar'),
             },
             {
@@ -327,7 +343,28 @@ export function buildSettingsCategories({
               label: t('settings.listsLabel'),
               group: t('settings.groupPreferences'),
               icon: railIcon('lists'),
-              render: () => appearancePane('lists'),
+              render: ({ initialTab }) => appearancePane('lists', initialTab),
+            },
+            {
+              id: 'trackers',
+              label: t('settings.trackersLabel'),
+              group: t('settings.groupPreferences'),
+              icon: railIcon('trackers'),
+              render: ({ initialTab }) => (
+                <TrackerSettingsPane
+                  initialTab={initialTab}
+                  settings={userSettings.trackerSettings}
+                  onChange={(ts) => mutateSettings((prev) => ({ ...prev, trackerSettings: ts }))}
+                  factors={userSettings.factors}
+                  onFactorsChange={(next) => mutateSettings((prev) => ({ ...prev, factors: next }))}
+                  customHabits={userSettings.customHabits}
+                  onCustomHabitsChange={(next) => mutateSettings((prev) => ({ ...prev, customHabits: next }))}
+                  medications={userSettings.medications}
+                  onMedicationsChange={(meds) => mutateSettings((prev) => ({ ...prev, medications: meds }))}
+                  isPro={auth.isPro}
+                  onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: null }); }}
+                />
+              ),
             },
             {
               id: 'date',
@@ -445,33 +482,29 @@ export function buildSettingsCategories({
               label: t('settings.storageLabel'),
               group: t('settings.groupAccount'),
               icon: railIcon('storage'),
-              render: ({ navigate }) => (
-                <SyncOptionsModal
-                  embedded
-                  tab="storage"
-                  onSyncNow={runSync}
-                  onOpenNote={onOpenNote}
-                  onOpenImageSettings={() => navigate('images')}
-                  onClose={() => setShowSettings(false)}
-                  onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: 'storage' }); }}
-                  onSignOut={handleSignOutClick}
-                />
-              ),
-            },
-            {
-              // The two app-wide image switches. Under Storage on purpose:
-              // the Storage tab is where a full quota bar is stared at, and
-              // it links here. Spec: ops/docs/plans/image-quality-handoff.md (section 9)
-              id: 'images',
-              label: t('settings.imagesLabel'),
-              group: t('settings.groupAccount'),
-              icon: railIcon('images'),
-              render: () => (
-                <ImagesSheet
-                  spaceSaver={userSettings.imageSpaceSaver}
-                  stripMetadata={userSettings.imageStripMetadata}
-                  contactCeiling={userSettings.imageContactCeiling}
-                  onChange={(field, value) => mutateSettings((prev) => ({ ...prev, [field]: value }))}
+              render: ({ initialTab }) => (
+                <StoragePane
+                  initialTab={initialTab}
+                  storage={(openImages) => (
+                    <SyncOptionsModal
+                      embedded
+                      tab="storage"
+                      onSyncNow={runSync}
+                      onOpenNote={onOpenNote}
+                      onOpenImageSettings={openImages}
+                      onClose={() => setShowSettings(false)}
+                      onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: 'storage' }); }}
+                      onSignOut={handleSignOutClick}
+                    />
+                  )}
+                  images={
+                    <ImagesSheet
+                      spaceSaver={userSettings.imageSpaceSaver}
+                      stripMetadata={userSettings.imageStripMetadata}
+                      contactCeiling={userSettings.imageContactCeiling}
+                      onChange={(field, value) => mutateSettings((prev) => ({ ...prev, [field]: value }))}
+                    />
+                  }
                 />
               ),
             },

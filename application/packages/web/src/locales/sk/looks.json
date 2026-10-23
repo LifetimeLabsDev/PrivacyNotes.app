@@ -1,6 +1,8 @@
 {
   "captionFolder": "Priečinok",
   "captionTag": "Značka",
+  "captionNote": "Poznámka",
+  "captionTracker": "Sledovaná hodnota",
   "useDefault": "Použiť predvolené",
   "color": "Farba",
   "noColor": "Bez farby",

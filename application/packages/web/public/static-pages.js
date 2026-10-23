@@ -167,6 +167,14 @@
         var link = e.target.closest ? e.target.closest('a[data-lang]') : null;
         if (!link) return;
         persistLanguage(link.getAttribute('data-lang'));
+        // The English-only pages' menu lands on a homepage. System there
+        // resolves to the reader's own homepage, never the bare apex, which
+        // drops a signed-in reader into the app.
+        if (link.hasAttribute('data-system-home') && langLocales) {
+          var own = preferredLocale(Object.keys(langLocales)) || 'en';
+          e.preventDefault();
+          location.assign(langLocales[own] || '/en');
+        }
       });
     });
 
@@ -434,7 +442,7 @@
   if (page === 'help-leaf') initLeafSearch();
   if (page === 'changelog') { initChangelog(); initShots(); }
   if (page === 'brand') { initBrand(); initBrandRail(); }
-  if (page === 'themes') { initBrand(); initThemeShots(); initThemeMore(); }
+  if (page === 'themes') { initBrand(); initThemeMore(); initThemeShots(); }
   if (page === 'landing') initLanding();
   if (page === 'cheatsheet') initCheatSheet();
   if (page === 'auth-desktop') initAuthDesktop();
@@ -445,12 +453,51 @@
   // Every picture is already a link to its file, so without JS a click opens
   // the image. With JS a thumbnail swaps the hero, and the hero or an item's
   // photo chip opens a lightbox that steps through the release's shots.
-  // The full-screen screenshot viewer of /changelog and /themes (its CSS is
-  // LIGHTBOX_CSS in static-page-chrome.ts). Built once per page; returns
-  // open(shots, i, back), where a shot is { src, dark, alt } and back is the
-  // element focus returns to on close.
+  // The full-screen screenshot viewer of /changelog and /themes, the one
+  // gallery both pages share (its CSS is LIGHTBOX_CSS in
+  // static-page-chrome.ts). Built once per page; returns open(shots, i, back),
+  // where back is the element focus returns to on close. A shot is
+  // { src, dark, alt } and, on /themes, also:
+  //   code   the theme code: the caption turns into a headline over a Copy
+  //          code button, and the C key copies it
+  //   mode   "Light" or "Dark", beside the count
+  //   by     { name, href } for the credit, votes { count, href } for its thread
+  //   desc   the author's description
+  //   hash   the URL hash while the shot shows, so the address can be shared
+  //   el     the card's link, which gets focus on close, so the reader lands
+  //          on the theme they stepped to
+  // Arrows, the arrow keys and a sideways swipe step through the shots.
   function shotIcon(d) {
     return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>';
+  }
+  // A sideways swipe on a touch screen calls step(1) or step(-1). Returns
+  // swiped(), true once after a swipe: a swipe ends in a click, and that
+  // click must not act.
+  function onSwipe(el, step) {
+    var x0 = null;
+    var y0 = null;
+    var swiped = false;
+    el.addEventListener('touchstart', function (e) {
+      // Two fingers pinch the picture; they do not step.
+      if (e.touches.length > 1) { x0 = null; return; }
+      x0 = e.touches[0].clientX;
+      y0 = e.touches[0].clientY;
+    }, { passive: true });
+    el.addEventListener('touchend', function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0;
+      var dy = e.changedTouches[0].clientY - y0;
+      x0 = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+        swiped = true;
+        step(dx < 0 ? 1 : -1);
+      }
+    });
+    return function () {
+      var was = swiped;
+      swiped = false;
+      return was;
+    };
   }
   var lightboxOpen = null;
   function lightbox() {
@@ -470,32 +517,100 @@
     lb.setAttribute('role', 'dialog');
     lb.setAttribute('aria-modal', 'true');
     lb.setAttribute('aria-label', 'Screenshot');
+    // The card's COPY_ICON and DONE_ICON in themes-page.ts.
+    var copyIcons =
+      '<svg class="ic-copy" width="15" height="15" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,32H88a8,8,0,0,0-8,8V80H40a8,8,0,0,0-8,8V216a8,8,0,0,0,8,8H168a8,8,0,0,0,8-8V176h40a8,8,0,0,0,8-8V40A8,8,0,0,0,216,32ZM160,208H48V96H160Zm48-48H176V88a8,8,0,0,0-8-8H96V48H208Z"/></svg>' +
+      '<svg class="ic-done" width="15" height="15" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>';
     lb.innerHTML =
-      '<img alt=""><p></p>' +
+      // The dock under the picture: the name, one meta line and the whole
+      // description, then Copy code and Upvote. It wraps by its own width
+      // (a container query), and the picture gives up the height it needs.
+      '<div class="lb-fig"><img alt=""><div class="lb-dock"><div class="lb-in"><div class="lb-info"><div class="lb-head"><p class="lb-t"></p><p class="lb-m"></p></div><p class="lb-d"></p></div>' +
+      '<div class="lb-acts"><button type="button" class="lb-btn lb-copy" data-label-done="Copied" aria-keyshortcuts="C" hidden>' + copyIcons + '<span class="cl">Copy code</span><kbd>C</kbd></button>' +
+      '<a class="lb-btn lb-vote" target="_blank" rel="noopener noreferrer nofollow" hidden>' +
+      // The card's P_ARROW_UP in themes-page.ts.
+      '<svg width="15" height="15" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M205.66,117.66a8,8,0,0,1-11.32,0L136,59.31V216a8,8,0,0,1-16,0V59.31L61.66,117.66a8,8,0,0,1-11.32-11.32l72-72a8,8,0,0,1,11.32,0l72,72A8,8,0,0,1,205.66,117.66Z"/></svg>' +
+      '<span>Upvote</span><kbd class="lb-vc"></kbd></a></div></div></div></div>' +
       '<button type="button" class="lb-x" aria-label="Close">' + shotIcon('<line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>') + '</button>' +
       '<button type="button" class="lb-p" aria-label="Previous screenshot">' + shotIcon('<polyline points="15 18 9 12 15 6"/>') + '</button>' +
       '<button type="button" class="lb-n" aria-label="Next screenshot">' + shotIcon('<polyline points="9 18 15 12 9 6"/>') + '</button>';
     document.body.appendChild(lb);
     var lbImg = lb.querySelector('img');
-    var lbCap = lb.querySelector('p');
+    var lbCap = lb.querySelector('.lb-t');
+    var lbBy = lb.querySelector('.lb-m');
+    var lbDesc = lb.querySelector('.lb-d');
+    var lbCopy = lb.querySelector('.lb-copy');
+    var lbVote = lb.querySelector('.lb-vote');
+    var lbDock = lb.querySelector('.lb-dock');
     var lbPrev = lb.querySelector('.lb-p');
     var lbNext = lb.querySelector('.lb-n');
     var lbClose = lb.querySelector('.lb-x');
     var cur = { shots: [], i: 0, back: null };
 
+    function link(href, text, cls) {
+      var a = document.createElement('a');
+      a.href = href;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer nofollow';
+      a.textContent = text;
+      if (cls) a.className = cls;
+      return a;
+    }
+    function setHash(hash) {
+      var url = location.pathname + location.search + (hash ? '#' + hash : '');
+      if (url !== location.pathname + location.search + location.hash) history.replaceState(null, '', url);
+    }
     function show(i) {
       cur.i = (i + cur.shots.length) % cur.shots.length;
       var shot = cur.shots[cur.i];
       lbImg.src = srcOf(shot);
       lbImg.alt = shot.alt;
-      lbCap.textContent = (cur.shots.length > 1 ? cur.i + 1 + ' / ' + cur.shots.length + ' \u00b7 ' : '') + shot.alt;
+      lbCap.textContent = shot.alt;
+      // The meta line: the place, the mode and the credit.
+      var meta = [];
+      if (cur.shots.length > 1) meta.push(cur.i + 1 + ' / ' + cur.shots.length);
+      if (shot.mode) meta.push(shot.mode);
+      lbBy.textContent = meta.join(' \u00b7 ');
+      if (shot.by) {
+        lbBy.append((meta.length ? ' \u00b7 ' : '') + 'by ', link(shot.by.href, '@' + shot.by.name));
+      } else if (shot.code) {
+        lbBy.append((meta.length ? ' \u00b7 ' : '') + 'by the team');
+      }
+      lbBy.hidden = !lbBy.textContent;
+      lbDesc.textContent = shot.desc || '';
+      lbDesc.hidden = !shot.desc;
+      lbVote.hidden = !shot.votes;
+      if (shot.votes) {
+        lbVote.href = shot.votes.href;
+        lbVote.querySelector('.lb-vc').textContent = shot.votes.count;
+        lbVote.setAttribute('aria-label', 'Upvote on GitHub, ' + shot.votes.count + (shot.votes.count === '1' ? ' vote' : ' votes'));
+      }
+      // The headline caption of /themes (the theme's name). The homepage's
+      // Ninja shots ask for it with `big`: their caption is the whole story.
+      lb.classList.toggle('lb-code', !!shot.code || !!shot.big);
+      clearTimeout(lbCopy._pnCopied);
+      lbCopy.classList.remove('on');
+      if (lbCopy._pnLabel) lbCopy.querySelector('.cl').textContent = lbCopy._pnLabel;
+      lbCopy.hidden = !shot.code || !navigator.clipboard;
       lbPrev.hidden = lbNext.hidden = cur.shots.length < 2;
+      if (shot.hash) setHash(shot.hash);
+      fit();
     }
+    // The picture takes what the dock leaves. The dock is as wide as the
+    // picture, so a narrower picture can make it taller: two passes settle it.
+    function fit() {
+      if (lb.hidden) return;
+      lb.style.setProperty('--lb-dock', lbDock.offsetHeight + 'px');
+      lb.style.setProperty('--lb-dock', lbDock.offsetHeight + 'px');
+    }
+    window.addEventListener('resize', fit);
+    lbImg.addEventListener('load', fit);
     function open(shots, i, back) {
       cur.shots = shots;
       cur.back = back;
       show(i);
       lb.hidden = false;
+      fit();
       document.documentElement.style.overflow = 'hidden';
       lbClose.focus();
     }
@@ -503,12 +618,27 @@
       lb.hidden = true;
       lbImg.removeAttribute('src');
       document.documentElement.style.overflow = '';
-      if (cur.back) cur.back.focus();
+      var shot = cur.shots[cur.i];
+      if (shot.hash) setHash('');
+      var back = shot.el || cur.back;
+      if (back) back.focus();
     }
+    function copy() {
+      if (lbCopy.hidden) return;
+      navigator.clipboard.writeText(cur.shots[cur.i].code).then(function () {
+        showCopied(lbCopy);
+      // A refused clipboard shows nothing, which is the honest answer.
+      }).catch(function () {});
+    }
+    var swiped = onSwipe(lb, function (by) {
+      if (cur.shots.length > 1) show(cur.i + by);
+    });
     lbClose.addEventListener('click', close);
+    lbCopy.addEventListener('click', copy);
     lbPrev.addEventListener('click', function () { show(cur.i - 1); });
     lbNext.addEventListener('click', function () { show(cur.i + 1); });
     lb.addEventListener('click', function (e) {
+      if (swiped()) return;
       if (e.target === lb) close();
     });
     document.addEventListener('keydown', function (e) {
@@ -516,9 +646,10 @@
       if (e.key === 'Escape') close();
       else if (e.key === 'ArrowLeft') show(cur.i - 1);
       else if (e.key === 'ArrowRight') show(cur.i + 1);
+      else if ((e.key === 'c' || e.key === 'C') && !e.metaKey && !e.ctrlKey && !e.altKey) copy();
       else if (e.key === 'Tab') {
-        // Keep focus inside the open dialog.
-        var f = [lbClose, lbPrev, lbNext].filter(function (b) { return !b.hidden; });
+        // Keep focus inside the open dialog: the buttons and the credit links.
+        var f = [lbClose].concat(Array.prototype.slice.call(lbBy.querySelectorAll('a')), [lbCopy, lbVote, lbPrev, lbNext]).filter(function (b) { return !b.hidden; });
         var at = f.indexOf(document.activeElement);
         e.preventDefault();
         f[(at + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus();
@@ -530,21 +661,53 @@
 
   // /themes: a card's screenshot is a link to its file, so without JS a click
   // opens the image. With JS it opens the viewer, which steps through the
-  // cards the filters show, in page order.
+  // cards the filters show, in page order. The card's id is the theme's
+  // hash: the viewer writes it while the theme shows, and a page opened with
+  // one opens the viewer on that theme.
   function initThemeShots() {
     var links = Array.prototype.slice.call(document.querySelectorAll('.shot a[data-shot]'));
     if (!links.length) return;
     var open = lightbox();
+    function shotOf(l) {
+      var card = l.closest('.tc');
+      var code = card.querySelector('code.code');
+      var credit = card.querySelector('.by a:not(.vote)');
+      var vote = card.querySelector('.by .vote');
+      var desc = card.querySelector('.desc');
+      return {
+        src: l.getAttribute('href'),
+        dark: null,
+        alt: l.getAttribute('data-alt') || '',
+        code: code ? code.textContent : '',
+        mode: card.getAttribute('data-mode') === 'dark' ? 'Dark' : 'Light',
+        // Read from the card at open, because the Worker writes the live
+        // vote counts into it.
+        by: credit ? { name: credit.textContent.replace(/^@/, ''), href: credit.href } : null,
+        votes: vote ? { count: vote.querySelector('.vc').textContent, href: vote.href } : null,
+        desc: desc ? desc.textContent : '',
+        hash: card.id,
+        el: l
+      };
+    }
+    function openAt(a) {
+      var shown = links.filter(function (l) { return l.offsetParent !== null; });
+      open(shown.map(shotOf), Math.max(0, shown.indexOf(a)), a);
+    }
     links.forEach(function (a) {
       a.addEventListener('click', function (e) {
         e.preventDefault();
-        var shown = links.filter(function (l) { return l.offsetParent !== null; });
-        var shots = shown.map(function (l) {
-          return { src: l.getAttribute('href'), dark: null, alt: l.getAttribute('data-alt') || '' };
-        });
-        open(shots, Math.max(0, shown.indexOf(a)), a);
+        openAt(a);
       });
     });
+    var id = decodeURIComponent(location.hash.slice(1));
+    var card = id && document.getElementById(id);
+    var a = card && card.classList.contains('tc') && card.querySelector('.shot a[data-shot]');
+    if (!a) return;
+    // A card past the first page waits behind Load more.
+    var more = card.parentElement.nextElementSibling;
+    for (var n = 0; card.classList.contains('tc-more') && more && !more.hidden && n < 50; n++) more.click();
+    card.scrollIntoView({ block: 'center' });
+    openAt(a);
   }
 
   // /themes: each list shows its first data-page cards and a Load more button
@@ -640,7 +803,7 @@
 
       // Step through a release's shots on the page itself: arrows beside the
       // picture, and a sideways swipe on a touch screen.
-      var swiped = false;
+      var swiped = function () { return false; };
       function step(by) {
         var n = shots.length;
         setHero(((Number(hero.getAttribute('data-i')) || 0) + by + n) % n);
@@ -657,28 +820,13 @@
           b.addEventListener('click', function () { step(d[1]); });
           stage.appendChild(b);
         });
-        var x0 = null;
-        var y0 = null;
-        stage.addEventListener('touchstart', function (e) {
-          x0 = e.touches[0].clientX;
-          y0 = e.touches[0].clientY;
-        }, { passive: true });
-        stage.addEventListener('touchend', function (e) {
-          if (x0 === null) return;
-          var dx = e.changedTouches[0].clientX - x0;
-          var dy = e.changedTouches[0].clientY - y0;
-          x0 = null;
-          if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
-            swiped = true;
-            step(dx < 0 ? 1 : -1);
-          }
-        });
+        swiped = onSwipe(stage, step);
       }
       hero.addEventListener('click', function (e) {
         e.preventDefault();
         // A swipe ends in a click on touch screens; it changed the picture, it
         // did not ask for the lightbox.
-        if (swiped) { swiped = false; return; }
+        if (swiped()) return;
         open(shots, Number(hero.getAttribute('data-i')) || 0, hero);
       });
       if (rel)
@@ -865,6 +1013,20 @@
     });
   }
 
+  // An icon copy button (/themes, its viewer) turns its icon into a check and
+  // its words into "Copied" for two seconds, the app's copy pattern.
+  function showCopied(btn) {
+    var text = btn.querySelector('.cl');
+    var label = btn._pnLabel || (btn._pnLabel = text ? text.textContent : '');
+    if (text) text.textContent = btn.getAttribute('data-label-done') || 'Copied';
+    btn.classList.add('on');
+    clearTimeout(btn._pnCopied);
+    btn._pnCopied = setTimeout(function () {
+      btn.classList.remove('on');
+      if (text) text.textContent = label;
+    }, 2000);
+  }
+
   // /brand: reveal the copy buttons and wire them to their text blocks.
   // The buttons ship hidden; without JS the text stays selectable as-is.
   function initBrand() {
@@ -877,18 +1039,8 @@
         if (!src) return;
         // textContent, because a code inside a closed <details> is not rendered.
         navigator.clipboard.writeText(btn.hasAttribute('data-copy-icon') ? src.textContent : src.innerText).then(function () {
-          // An icon button (/themes) turns its icon into a check and its
-          // words into "Copied" for two seconds, the app's copy pattern.
           if (btn.hasAttribute('data-copy-icon')) {
-            var text = btn.querySelector('.cl');
-            var label = btn._pnLabel || (btn._pnLabel = text ? text.textContent : '');
-            if (text) text.textContent = btn.getAttribute('data-label-done') || 'Copied';
-            btn.classList.add('on');
-            clearTimeout(btn._pnCopied);
-            btn._pnCopied = setTimeout(function () {
-              btn.classList.remove('on');
-              if (text) text.textContent = label;
-            }, 2000);
+            showCopied(btn);
             return;
           }
           var old = btn.textContent;
@@ -938,17 +1090,17 @@
     // --- copy-link button per answer -------------------------------------
     var copyLabel = search.getAttribute('data-copy') || 'Copy link';
     var copiedLabel = search.getAttribute('data-copied') || 'Copied';
-    // Same chain link the entry's own permalink anchor draws (LINK_ICON in
-    // static-page-chrome.ts), one size down to sit in the copy row.
+    // The chain link of LINK_ICON in static-page-chrome.ts, one size down to
+    // match the "Open this answer" arrow beside it in the .a-acts row.
     var linkIcon =
-      '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
     if (navigator.clipboard) {
       entries.forEach(function (entry) {
         var body = entry.querySelector('.a');
         if (!body) return;
         var btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'copybtn';
+        btn.className = 'a-act';
         btn.innerHTML = linkIcon + '<span>' + copyLabel + '</span>';
         // Copy the entry's LEAF page URL (its own indexable landing page),
         // not a #fragment: nicer to share, and every share seeds Google
@@ -967,7 +1119,7 @@
             btn.querySelector('span').textContent = copyLabel;
           }
         );
-        body.appendChild(btn);
+        (body.querySelector('.a-acts') || body).appendChild(btn);
       });
     }
 
@@ -1584,4 +1736,9 @@
       } catch (e) { /* selection is a convenience, never a requirement */ }
     }
   }
+
+  // The homepage (LandingPage.tsx, a React page) loads this file on the first
+  // click on a Ninja screenshot and opens the same viewer through this handle,
+  // so /changelog, /themes and the homepage share one lightbox.
+  window.pnLightbox = lightbox;
 })();

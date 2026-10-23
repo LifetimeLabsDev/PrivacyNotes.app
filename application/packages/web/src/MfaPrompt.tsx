@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Shield, X } from './icons';
+import { Shield } from './icons';
 import { PinInput, type PinInputHandle } from './PinInput';
 import { MfaCancelledError, submitMfaCode, dismissMfaPrompt, type MfaPromptRequest } from './mfaStep';
 import { useEscapeToClose } from './useEscapeToClose';
 import { useAccountLogins } from './accountLogins';
 import { accountErrorKey } from './AccountSignInSetup';
+import { CloseButton } from './ui';
 
 /** A backup restores the authenticator. It never goes to an app endpoint. */
 export function MfaRecoveryHelp() {
@@ -97,10 +98,7 @@ export function MfaPrompt({ request, onSubmit, onDismiss, onRepair, repairing = 
             <Shield size={20} className="text-accent shrink-0" aria-hidden="true" />
             <h2 id={titleId} className="text-lg font-semibold">{t(request.wrongLogin ? 'mfaPrompt.wrongLoginTitle' : 'mfaPrompt.title')}</h2>
           </div>
-          <button type="button" onClick={onDismiss} aria-label={t('common:actions.close')}
-            className="text-pn-muted hover:text-pn transition p-1 -m-1">
-            <X size={18} />
-          </button>
+          <CloseButton onClick={onDismiss} />
         </div>
         {request.wrongLogin ? (
           <div className="space-y-3">

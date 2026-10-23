@@ -14,7 +14,7 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 
  * blur save, Escape cancels, and a key that finishes an IME composition does
  * neither. Other input props pass through, which is how the file chip keeps
  * its drag and pointer stops.
- * Spec: ops/docs/ui-patterns.md (inline rename field)
+ * Spec: ops/docs/archive/ui-patterns.md (inline rename field)
  */
 export function InlineRenameField({ value, onValueChange, onCommit, onCancel, ...rest }: Props) {
   return (

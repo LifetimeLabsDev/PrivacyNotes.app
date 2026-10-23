@@ -1,137 +1,119 @@
-import { useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
-  BUILTIN_TRACKER_COLORS,
+  SKIP_REASONS,
   activeMedications,
+  type MedicationDose,
   type MedicationLogEntry,
   type MedicationStatus,
   type MedicationTemplate,
+  type SkipReason,
 } from '../trackerTypes';
 import { PillShell } from './PillShell';
 import { TRACKER_ICONS } from './icons';
-import { X } from '../icons';
-import { HoverLabel } from '../HoverLabel';
-import { toLocalIso } from '../notesViewUtils';
-import { isImeComposing } from '../imeComposing';
-
-// Caps on medication template fields. Long unbroken names/dosages overflow
-// the pill row layout (truncation only hides display overflow, not input).
-const MED_NAME_MAX = 50;
-const MED_DOSAGE_MAX = 30;
-
-/** Today as a LOCAL ISO date, matching how journal entries are filed.
- *  The date part of `toISOString()` is the UTC day, which is tomorrow for
- *  anyone east of Greenwich late in the evening - so a medication could be
- *  recorded as starting on a day not yet lived. */
-function todayLocalIso(): string {
-  return toLocalIso(new Date());
-}
+import { CHIP_ADD, PanelQuestion, Segmented, chipClass } from './panelUI';
+import { Gear, Plus, Warning, X } from '../icons';
+import { formatDay, toLocalIso } from '../intlFormat';
+import { timeLabel } from '../JournalCalendar';
+import { useTrackerHistory } from '../trackerLastLogged';
+import {
+  LOW_SUPPLY_DAYS,
+  asNeededOn,
+  daysLeft,
+  doseLogId,
+  dosesOf,
+  dosesOn,
+  isLiveOn,
+  logDoseId,
+  logsOf,
+  newDoseId,
+  runsOutOn,
+  sortDoses,
+  supplyLeft,
+} from '../medicationDoses';
 
 /**
- * Medication pill - log per-medication status (taken/skipped), add new
- * templates inline, edit name/dosage, and delete. Templates are persisted
- * at the user-settings level so the same list is available across entries.
+ * Medication pill - one row per dose the entry's day asks about (Taken or
+ * Skip, a reason under a skip), the as-needed doses of the day with "Log a
+ * dose", and the low-supply line. It only logs: medications are added,
+ * edited and removed in Settings > Trackers > Medication, which "Change
+ * these medications" opens. Spec: ops/docs/mood-wellness-tracker.md section 6.7
  */
 export function MedicationPill({
   value,
+  day,
   expanded,
   onToggle,
   onChange,
   templates,
-  onTemplatesChange,
+  onEditMedications,
+  supplyUnlocked = false,
   readOnly,
 }: {
   value?: MedicationLogEntry[];
+  /** The entry's day; today when the entry carries none. */
+  day?: string;
   expanded: boolean;
   onToggle: () => void;
   onChange: (v: MedicationLogEntry[]) => void;
   templates: MedicationTemplate[];
-  onTemplatesChange: (meds: MedicationTemplate[]) => void;
+  /** Opens Settings > Trackers > Medication: the one place medications are
+   *  added, edited and removed. */
+  onEditMedications?: () => void;
+  /** Pro or the demo: the low-supply line shows (section 6.7). */
+  supplyUnlocked?: boolean;
   readOnly?: boolean;
 }) {
   const { t } = useTranslation('trackers');
-  const [addingNew, setAddingNew] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newDosage, setNewDosage] = useState('');
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editName, setEditName] = useState('');
-  const [editDosage, setEditDosage] = useState('');
+  const history = useTrackerHistory();
 
-  const handleDelete = (medId: string) => {
-    // Tombstone instead of removing - sync union-merge needs the entry
-    // to stay so deletion propagates across devices.
-    const now = new Date().toISOString();
-    onTemplatesChange(
-      templates.map((m) =>
-        m.id === medId ? { ...m, deletedAt: now, updatedAt: now } : m
-      )
-    );
-    // The LOG entries stay. This deletes a medication from the list going
-    // forward; it is not a claim that the user never took it. Stripping
-    // the entry from `value` erased the record for whichever day happened
-    // to be open - and on a backfilled entry that is a past day the user
-    // was not even looking at. The tombstone already hides the row.
-    setConfirmDeleteId(null);
-  };
+  const today = toLocalIso(new Date());
+  const entryDay = day ?? today;
+  const isToday = entryDay === today;
 
-  const startEdit = (med: MedicationTemplate) => {
-    setEditingId(med.id);
-    setEditName(med.name);
-    setEditDosage(med.dosage);
-    setConfirmDeleteId(null);
-  };
+  // The medications of this day: a live one the day asks about, an as-needed
+  // one, and any one the day already holds a log for, so a log never hides.
+  const rows = activeMedications(templates).flatMap((med) => {
+    const logs = logsOf(value, med.id);
+    if (isLiveOn(med, entryDay) && asNeededOn(med, entryDay)) return [{ med, doses: [] as MedicationDose[], asNeeded: true }];
+    const doses = dosesOn(med, entryDay);
+    if (doses.length > 0) return [{ med, doses, asNeeded: false }];
+    if (logs.length === 0) return [];
+    // A day the schedule does not ask about, with logs: scheduled doses show
+    // as their rows; doses the schedule never had are as-needed ones.
+    const byId = new Map(dosesOf(med).map((d) => [d.id, d]));
+    const known = logs.map((l) => byId.get(logDoseId(l.medicationId)));
+    if (known.every(Boolean)) return [{ med, doses: sortDoses(known as MedicationDose[]), asNeeded: false }];
+    return [{ med, doses: [] as MedicationDose[], asNeeded: true }];
+  });
 
-  const saveEdit = () => {
-    if (!editingId || !editName.trim()) return;
-    const nextDosage = editDosage.trim();
-    onTemplatesChange(
-      templates.map((m) => {
-        if (m.id !== editingId) return m;
-        // A dosage change is a medical fact with a date, and the doctor
-        // report renders it as a timeline. Overwriting the field in place
-        // destroyed every earlier dose - the timeline was permanently
-        // empty because nothing ever appended here.
-        const changed = nextDosage !== m.dosage;
-        return {
-          ...m,
-          name: editName.trim(),
-          dosage: nextDosage,
-          // Stamped so the settings merge can tell this edit from the copy
-          // another device still holds. Without it the merge fell back to
-          // "local wins" and this correction never left the device.
-          updatedAt: new Date().toISOString(),
-          dosageHistory: changed
-            ? [...m.dosageHistory, { dosage: nextDosage, changedAt: todayLocalIso() }]
-            : m.dosageHistory,
-        };
-      })
-    );
-    setEditingId(null);
-  };
+  const hasAny = activeMedications(templates).length > 0;
 
-  // Only show active (non-tombstoned) meds in the UI.
-  const visibleTemplates = activeMedications(templates);
-
-  // Count only entries whose medication is still on the list. A deleted
-  // medication keeps its log entries (they are history), so counting them
-  // against the visible template count produced labels like "2/1".
-  const visibleIds = new Set(visibleTemplates.map((m) => m.id));
-  const loggedCount =
-    value?.filter((e) => e.status === 'taken' && visibleIds.has(e.medicationId)).length ?? 0;
-  const totalCount = visibleTemplates.length;
+  // The count on the pill: taken doses out of the scheduled ones. As-needed
+  // doses are not owed, so they do not count.
+  let expected = 0;
+  let taken = 0;
+  for (const r of rows) {
+    if (r.asNeeded) continue;
+    const done = new Set(logsOf(value, r.med.id).filter((l) => l.status === 'taken').map((l) => logDoseId(l.medicationId)));
+    expected += r.doses.length;
+    taken += r.doses.filter((d) => done.has(d.id)).length;
+  }
   const filledLabel =
-    totalCount === 0
+    expected === 0
       ? undefined
-      : loggedCount === totalCount
-        ? t('medication.takenCount', { count: loggedCount })
-        : `${loggedCount}/${totalCount}`;
+      : taken === expected
+        ? t('medication.takenCount', { count: taken })
+        : `${taken}/${expected}`;
 
-  const setStatus = (medId: string, status: MedicationStatus) => {
+  const setStatus = (logId: string, status: MedicationStatus) => {
     const current = value ?? [];
-    const idx = current.findIndex((e) => e.medicationId === medId);
+    const idx = current.findIndex((e) => e.medicationId === logId);
+    // A Taken tap on today's entry records when; a tap on another day does
+    // not, because the time it happened is unknown.
+    // `ts` lets the merge keep the newer of two taps on one dose.
+    const entry: MedicationLogEntry = { medicationId: logId, status, ...(status === 'taken' && isToday ? { at: nowTime() } : {}), ts: new Date().toISOString() };
     if (idx < 0) {
-      onChange([...current, { medicationId: medId, status }]);
+      onChange([...current, entry]);
       return;
     }
     // Tapping the status a medication already carries clears it. There was
@@ -141,264 +123,181 @@ export function MedicationPill({
     if (current[idx]!.status === status) {
       next.splice(idx, 1);
     } else {
-      next[idx] = { medicationId: medId, status };
+      next[idx] = entry;
     }
     onChange(next);
   };
 
-  const handleAddMed = () => {
-    if (!newName.trim()) return;
-    const startedAt = todayLocalIso();
-    const dosage = newDosage.trim();
-    const med: MedicationTemplate = {
-      id: crypto.randomUUID(),
-      name: newName.trim(),
-      dosage,
-      timing: 'morning',
-      startedAt,
-      updatedAt: new Date().toISOString(),
-      // The first entry IS the starting dose. Without it the timeline had
-      // to print the CURRENT dosage next to the start date, so a med that
-      // began at 10mg and moved to 20mg read "Started 20mg" - a wrong
-      // fact on a page written for a clinician.
-      dosageHistory: dosage ? [{ dosage, changedAt: startedAt }] : [],
-    };
-    onTemplatesChange([...templates, med]);
-    setNewName('');
-    setNewDosage('');
-    setAddingNew(false);
+  const setReason = (logId: string, reason: SkipReason) => {
+    const current = value ?? [];
+    onChange(current.map((e) => {
+      if (e.medicationId !== logId) return e;
+      const ts = new Date().toISOString();
+      if (e.reason === reason) { const { reason: _, ...rest } = e; return { ...rest, ts }; }
+      return { ...e, reason, ts };
+    }));
   };
+
+  // An as-needed dose is a fact of its own, with its own id, so two devices
+  // that each log one keep both.
+  const logDose = (medId: string) => {
+    onChange([...(value ?? []), { medicationId: doseLogId(medId, newDoseId()), status: 'taken', ...(isToday ? { at: nowTime() } : {}), ts: new Date().toISOString() }]);
+  };
+  const removeDose = (logId: string) => onChange((value ?? []).filter((e) => e.medicationId !== logId));
+
+  // The supply line: a scheduled medication with a week of use or less left.
+  const supplyDays = history.map((d) => ({ date: typeof d.journalDate === 'string' ? d.journalDate : '', logs: d.medications }));
+  const low = !supplyUnlocked ? [] : rows.flatMap(({ med }) => {
+    const count = supplyLeft(med, supplyDays);
+    const left = daysLeft(med, count);
+    return left !== null && left < LOW_SUPPLY_DAYS ? [{ med, left, date: runsOutOn(med, count, today) }] : [];
+  });
+
+  const nameOf = (med: MedicationTemplate) => (
+    <span className="flex items-center gap-1.5 min-w-0">
+      {med.color && <span aria-hidden="true" className="w-2 h-2 shrink-0 rounded-full" style={{ backgroundColor: med.color }} />}
+      <span className="truncate text-[13px] font-medium text-pn">{med.name}</span>
+    </span>
+  );
 
   return (
     <PillShell
       label={t('labels.meds')}
-      color={BUILTIN_TRACKER_COLORS.medication}
-      filled={totalCount > 0 && (value?.length ?? 0) > 0}
+      filled={rows.length > 0 && (value?.length ?? 0) > 0}
       expanded={expanded}
       onToggle={onToggle}
       filledLabel={filledLabel}
       icon={TRACKER_ICONS.medication}
       readOnly={readOnly}
     >
-      <div className="flex flex-col gap-2 min-w-[220px] max-w-[280px]">
-        <span className="text-xs font-medium text-pn-soft">
-          {t('medication.heading')}
-        </span>
-        {visibleTemplates.length === 0 && !addingNew && (
-          <p className="text-[11px] text-pn-muted">
-            {t('medication.empty')}
-          </p>
-        )}
-        {visibleTemplates.map((med) => {
-          const entry = value?.find((e) => e.medicationId === med.id);
-          const status = entry?.status;
-
-          // Inline edit mode
-          if (editingId === med.id) {
-            return (
-              <div key={med.id} className="flex flex-col gap-1.5 py-1 border-t border-b border-divider">
-                <input
-                  type="text"
-                  value={editName}
-                  maxLength={MED_NAME_MAX}
-                  onChange={(e) => setEditName(e.target.value)}
-                  className="w-full px-2 py-1 rounded-md text-xs border border-pn-muted/50 bg-surface-0 text-pn"
-                  autoFocus
-                  placeholder={t('medication.namePlaceholder')}
-                  onKeyDown={(e) => { if (isImeComposing(e)) return; if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') setEditingId(null); }}
-                />
-                <input
-                  type="text"
-                  value={editDosage}
-                  maxLength={MED_DOSAGE_MAX}
-                  onChange={(e) => setEditDosage(e.target.value)}
-                  className="w-full px-2 py-1 rounded-md text-xs border border-pn-muted/50 bg-surface-0 text-pn"
-                  placeholder={t('medication.dosagePlaceholder')}
-                  onKeyDown={(e) => { if (isImeComposing(e)) return; if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') setEditingId(null); }}
-                />
-                <div className="flex gap-1">
-                  <button
-                    type="button"
-                    onClick={saveEdit}
-                    className="flex-1 px-2 py-1 rounded-md text-[11px] font-medium bg-accent-fill text-white hover:bg-accent-fill-hover"
-                  >
-                    {t('common:actions.save')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setEditingId(null)}
-                    className="px-2 py-1 rounded-md text-[11px] font-medium text-pn-muted hover:bg-pn/5"
-                  >
-                    {t('common:actions.cancel')}
-                  </button>
-                </div>
-              </div>
-            );
-          }
-
-          // Confirm delete mode
-          if (confirmDeleteId === med.id) {
-            return (
-              <div key={med.id} className="flex items-center justify-between gap-2 py-0.5">
-                <span className="min-w-0 break-words text-[11px] text-pn-soft">
-                  <Trans
-                    i18nKey="trackers:medication.confirmRemove"
-                    values={{ name: med.name }}
-                    components={{ highlight: <span className="font-medium" /> }}
-                  />
-                </span>
-                <div className="flex gap-1">
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(med.id)}
-                    className="px-2 py-0.5 rounded text-[10px] font-medium bg-red-500 text-white hover:bg-red-600"
-                  >
-                    {t('medication.yes')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setConfirmDeleteId(null)}
-                    className="px-2 py-0.5 rounded text-[10px] font-medium text-pn-muted hover:bg-pn/5"
-                  >
-                    {t('medication.no')}
-                  </button>
-                </div>
-              </div>
-            );
-          }
-
-          // Normal row
-          return (
-            <div key={med.id} className="flex items-center justify-between gap-2">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1 min-w-0">
-                  {readOnly ? (
-                    <span className="text-xs font-medium text-pn-soft truncate min-w-0">
-                      {med.name}
-                    </span>
-                  ) : (
-                    <HoverLabel label={t('medication.editMedication')} position="above" className="min-w-0">
-                    <button
-                      type="button"
-                      onClick={() => startEdit(med)}
-                      className="block max-w-full text-xs font-medium text-pn-soft truncate hover:text-accent dark:hover:text-accent transition-colors text-start"
-                      aria-label={t('medication.editMedication')}
-                    >
-                      {med.name}
-                    </button>
-                    </HoverLabel>
-                  )}
-                  {!readOnly && (
-                    <HoverLabel label={t('medication.removeMedication')} position="above">
-                    <button
-                      type="button"
-                      onClick={() => setConfirmDeleteId(med.id)}
-                      className="shrink-0 p-0.5 text-pn-muted hover:text-red-400 dark:hover:text-red-400 transition-colors"
-                      aria-label={t('medication.removeMedication')}
-                    >
-                      <X size={10} />
-                    </button>
-                    </HoverLabel>
-                  )}
-                </div>
-                {med.dosage && (
-                  <span className="block truncate text-[10px] text-pn-muted">
-                    {med.dosage}
-                  </span>
-                )}
-              </div>
-              <div className="flex gap-0.5 shrink-0">
-                <MedButton
-                  active={status === 'taken'}
-                  onClick={() => setStatus(med.id, 'taken')}
-                  color="emerald"
-                  label={t('medication.taken')}
-                />
-                <MedButton
-                  active={status === 'skipped'}
-                  onClick={() => setStatus(med.id, 'skipped')}
-                  color="amber"
-                  label={t('medication.skip')}
-                />
-              </div>
-            </div>
-          );
-        })}
-        {addingNew ? (
-          <div className="flex flex-col gap-1.5 pt-1 border-t border-divider">
-            <input
-              type="text"
-              placeholder={t('medication.namePlaceholder')}
-              value={newName}
-              maxLength={MED_NAME_MAX}
-              onChange={(e) => setNewName(e.target.value)}
-              className="w-full px-2 py-1 rounded-md text-xs border border-pn-muted/50 bg-surface-0 text-pn"
-              autoFocus
-              onKeyDown={(e) => { if (e.key === 'Enter' && !isImeComposing(e)) handleAddMed(); }}
-            />
-            <input
-              type="text"
-              placeholder={t('medication.dosagePlaceholder')}
-              value={newDosage}
-              maxLength={MED_DOSAGE_MAX}
-              onChange={(e) => setNewDosage(e.target.value)}
-              className="w-full px-2 py-1 rounded-md text-xs border border-pn-muted/50 bg-surface-0 text-pn"
-              onKeyDown={(e) => { if (e.key === 'Enter' && !isImeComposing(e)) handleAddMed(); }}
-            />
-            <div className="flex gap-1">
-              <button
-                type="button"
-                onClick={handleAddMed}
-                className="flex-1 px-2 py-1 rounded-md text-[11px] font-medium bg-accent-fill text-white hover:bg-accent-fill-hover"
-              >
-                {t('common:actions.add')}
-              </button>
-              <button
-                type="button"
-                onClick={() => { setAddingNew(false); setNewName(''); setNewDosage(''); }}
-                className="px-2 py-1 rounded-md text-[11px] font-medium text-pn-muted hover:bg-pn/5"
-              >
-                {t('common:actions.cancel')}
-              </button>
-            </div>
-          </div>
-        ) : (
+      <div className="@container flex flex-col gap-1.5 max-w-[460px]">
+        <PanelQuestion>{t('medication.prompt')}</PanelQuestion>
+        {onEditMedications && !readOnly && (
           <button
             type="button"
-            onClick={() => setAddingNew(true)}
-            className="text-[11px] text-accent hover:underline self-start"
+            onClick={onEditMedications}
+            className="-mt-3 mb-1 self-start inline-flex items-center gap-1.5 text-xs font-medium text-accent hover:underline"
           >
-            {t('medication.addMedication')}
+            <Gear size={14} aria-hidden="true" />
+            {t(hasAny ? 'medication.editList' : 'medication.add')}
           </button>
         )}
+        {/* No row: either no medication at all, or none is due on this day
+            (before its start, after its end, a day its repeat skips). */}
+        {rows.length === 0 && (
+          <p className="text-xs text-pn-muted">{t(hasAny ? 'medication.noneThisDay' : onEditMedications ? 'medication.emptyAdd' : 'medication.empty')}</p>
+        )}
+        {rows.map(({ med, doses, asNeeded }) => {
+          if (asNeeded) {
+            // As needed: today's doses as chips with a remove button, and
+            // "Log a dose". The limit is a note, never a lock.
+            const logged = logsOf(value, med.id).filter((l) => l.status === 'taken');
+            const max = med.maxPerDay;
+            const sub = [strengthOn(med, entryDay), max ? t('medication.todayCount', { count: logged.length, max }) : t('medication.asNeeded')].filter(Boolean).join(' · ');
+            return (
+              <div key={med.id} className="rounded-md border border-divider bg-surface-2 ps-3 pe-1.5 py-1.5">
+                {/* The same grid as a dose row: on a narrow panel the button
+                    takes a line of its own, so the count is never cut. */}
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] @sm:grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-x-2 gap-y-1.5">
+                  <div className="min-w-0">
+                    {nameOf(med)}
+                    <span className="block truncate text-[11px] text-pn-muted">{sub}</span>
+                  </div>
+                  {!readOnly && (
+                    <button type="button" onClick={() => logDose(med.id)} className={`${CHIP_ADD} justify-center order-last col-span-2 @sm:order-none @sm:col-span-1`}>
+                      <Plus size={11} aria-hidden="true" />
+                      {t('medication.logDose')}
+                    </button>
+                  )}
+                </div>
+                {logged.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-1.5">
+                    {logged.map((l) => {
+                      const label = l.at ? timeLabel(entryDay, l.at) : t('medication.dose');
+                      return (
+                        <span key={l.medicationId} className={chipClass(true)}>
+                          {label}
+                          {!readOnly && (
+                            <button type="button" onClick={() => removeDose(l.medicationId)} aria-label={t('medication.removeDose', { time: label })} className="ms-1 -me-1 inline-flex items-center justify-center w-4 h-4 rounded hover:bg-pn/10">
+                              <X size={10} aria-hidden="true" />
+                            </button>
+                          )}
+                        </span>
+                      );
+                    })}
+                  </div>
+                )}
+                {max !== undefined && logged.length >= max && (
+                  <p className="mt-1.5 text-[11px] text-warning">{t('medication.limitReached')}</p>
+                )}
+              </div>
+            );
+          }
+
+          // One card per dose: the name and dose, the answer for the day, and
+          // the quiet edit and remove buttons on the first dose. On a narrow
+          // panel the answer takes a second line of its own, full width, so
+          // the name is never cut to a few letters.
+          return doses.map((dose, i) => {
+            const logId = doseLogId(med.id, dose.id);
+            const log = value?.find((e) => e.medicationId === logId);
+            const when = dose.time ? timeLabel(entryDay, dose.time) : doses.length > 1 ? t('medication.doseN', { n: i + 1 }) : '';
+            const sub = [
+              i === 0 || doses.length === 1 ? strengthOn(med, entryDay) : '',
+              when,
+              log?.status === 'taken' && log.at ? t('medication.takenAt', { time: timeLabel(entryDay, log.at) }) : '',
+            ].filter(Boolean).join(' · ');
+            return (
+              <div key={logId} className="rounded-md border border-divider bg-surface-2 ps-3 pe-1.5 py-1.5">
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] @sm:grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-x-2 gap-y-1.5">
+                  <div className="min-w-0">
+                    {nameOf(med)}
+                    {sub && <span className="block truncate text-[11px] text-pn-muted">{sub}</span>}
+                  </div>
+                  <Segmented
+                    tone="status"
+                    ariaLabel={when ? `${med.name}, ${when}` : med.name}
+                    options={[{ key: 'taken', label: t('medication.taken') }, { key: 'skipped', label: t('medication.skip') }]}
+                    value={log?.status === 'missed' ? null : (log?.status ?? null)}
+                    onPick={(st) => setStatus(logId, st)}
+                    className={`order-last col-span-2 @sm:order-none @sm:col-span-1 ${i === 0 ? '' : '@sm:col-span-2'}`}
+                  />
+                </div>
+                {log?.status === 'skipped' && !readOnly && (
+                  <div role="group" aria-label={t('medication.skipWhy')} className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                    <span className="text-[11px] text-pn-muted me-0.5">{t('medication.skipWhy')}</span>
+                    {SKIP_REASONS.map((r) => (
+                      <button key={r} type="button" aria-pressed={log.reason === r} onClick={() => setReason(logId, r)} className={chipClass(log.reason === r)}>
+                        {t(`medication.reasons.${r}`)}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          });
+        })}
+        {low.map(({ med, left, date }) => (
+          <p key={med.id} className="flex items-center gap-1.5 text-[11px] text-warning">
+            <Warning size={12} aria-hidden="true" />
+            {date ? t('medication.lowSupplyOn', { name: med.name, count: left, date: formatDay(date, 'date') }) : t('medication.lowSupply', { name: med.name, count: left })}
+          </p>
+        ))}
       </div>
     </PillShell>
   );
 }
 
-function MedButton({
-  active,
-  onClick,
-  color,
-  label,
-}: {
-  active: boolean;
-  onClick: () => void;
-  color: 'emerald' | 'amber';
-  label: string;
-}) {
-  const bg = active
-    ? color === 'emerald'
-      ? 'bg-emerald-500 text-white'
-      : 'bg-amber-500 text-white'
-    : 'bg-surface-0 text-pn-muted hover:bg-pn/10';
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`px-2 py-0.5 rounded text-[10px] font-medium transition-colors ${bg}`}
-    >
-      {label}
-    </button>
-  );
+/** The strength a day was taken at: the last dose change on or before it,
+ *  so a past entry keeps the dose of its day after a change. */
+function strengthOn(med: MedicationTemplate, day: string): string {
+  let at = '';
+  for (const h of med.dosageHistory) if (h.changedAt <= day) at = h.dosage;
+  return at || med.dosage;
+}
+
+/** The local time now, `HH:MM`. */
+function nowTime(): string {
+  const d = new Date();
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }

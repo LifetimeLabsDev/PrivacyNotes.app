@@ -14,7 +14,7 @@
  * mailto: for a contact's rows, which the OS hands to the dialer, the
  * messages app and the mail client. A phone number never opens in the iOS
  * browser sheet; that sheet is for http(s) only.
- * Spec: ops/docs/plans/contacts-pillar.md (section 9, tap to call)
+ * Spec: ops/docs/archive/contacts-pillar.md (section 9, tap to call)
  */
 
 import { detectPlatform } from './devices';
@@ -25,7 +25,7 @@ const OPENABLE = /^(https?|tel|sms|mailto):/i;
 export function openExternal(url: string): void {
   if (!OPENABLE.test(url)) return;
   // A shortcut to an item of this vault opens in place.
-  // Spec: ops/docs/plans/note-shortcuts.md (5.4)
+  // Spec: ops/docs/archive/note-shortcuts.md (5.4)
   if (openShortcutInApp(url)) return;
   const platform = detectPlatform();
   if (platform !== 'web') {

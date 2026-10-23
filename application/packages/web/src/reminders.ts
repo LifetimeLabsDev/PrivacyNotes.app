@@ -15,7 +15,7 @@ import { occurrencesOf, shiftDay, type Alert, type Schedule } from './schedule';
  * locked (no Pro, a refund) the plan is empty, so the same call cancels
  * everything; `cancelDeviceReminders` takes every alert off when the account
  * leaves the device. Nothing else schedules or cancels.
- * Spec: ops/docs/plans/calendar-pillar-spec.md (step 7, section 8)
+ * Spec: ops/docs/archive/calendar-pillar-spec.md (step 7, section 8)
  */
 
 /** The iOS limit of pending local notifications; the plan never holds more. */
@@ -150,6 +150,9 @@ export function planAlerts(items: readonly ReminderItem[], now: number, snoozes:
     const [itemId = '', day = ''] = key.split('|');
     const item = items.find((i) => i.id === itemId);
     if (!item) continue;
+    // An occurrence the series took out (deleted, detached, or a medication
+    // dose already logged) never rings again, snoozed or not.
+    if (item.schedule.repeat?.skip?.includes(day)) continue;
     out.push({ key, nid: notificationId(key), itemId, occurrence: day, at, startsAt: localMoment(day, item.schedule.time ?? '00:00').getTime() });
   }
   return out.sort((a, b) => a.at - b.at || a.key.localeCompare(b.key)).slice(0, limit);

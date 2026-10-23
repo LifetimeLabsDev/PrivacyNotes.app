@@ -11,7 +11,7 @@ const listeners = new Set<() => void>();
  * (WCAG 2.2, 2.1.4 Character Key Shortcuts). Device-local, like the
  * keyboard it is about.
  *
- * Spec: ops/docs/plans/keyboard-shortcuts.md (decision D7)
+ * Spec: ops/docs/archive/keyboard-shortcuts.md (decision D7)
  */
 export function singleKeysOn(): boolean {
   try {

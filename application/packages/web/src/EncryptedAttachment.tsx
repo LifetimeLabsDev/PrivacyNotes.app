@@ -33,7 +33,8 @@ import { ContextMenu, useContextMenu, type ContextMenuItem } from './ContextMenu
 import { suppressSoftKeyboard } from './softKeyboard';
 import { useNearScreen } from './useNearScreen';
 import { useBlobQuotaBlocked } from './usePendingUploads';
-import { MusicNotes, VideoCamera, Image, Archive, File as FileGlyph, Pause, Play, Trash, Check, Download, DotsThree, Eye, X, iconCopy, iconEditPencil, iconTrash } from './icons';
+import { MusicNotes, VideoCamera, Image, Archive, File as FileGlyph, Pause, Play, Check, Copy, Download, DotsThree, Eye, PencilSimple, X, iconCopy, iconEditPencil } from './icons';
+import { DeleteButton } from './ui/DeleteButton';
 import { formatDuration } from './formatDuration';
 import {
   FILE_NAME_MAX_LENGTH,
@@ -77,7 +78,7 @@ const renameListeners = new Set<RenameListener>();
 let pendingRename: { uuid: string; at: number } | null = null;
 
 /** How long a request waits for its chip to appear. */
-// Spec: ops/docs/plans/file-rename-and-audio-seek.md (where the control lives)
+// Spec: ops/docs/archive/file-rename-and-audio-seek.md (where the control lives)
 const RENAME_REQUEST_TTL_MS = 4000;
 
 /**
@@ -177,7 +178,7 @@ export function holdsOneFile(doc: ProseMirrorNode): boolean {
  * Whether a note's picture or PDF draws as the file card: only in a note the
  * Files pillar made, and only while that note holds one file. A note of
  * several files reads as a list, and a card per file would make it a gallery.
- * Spec: ops/docs/ui-patterns.md (section 107, the file card)
+ * Spec: ops/docs/archive/ui-patterns.md (section 107, the file card)
  */
 export function showsFileCard(fileNote: boolean, doc: ProseMirrorNode): boolean {
   return fileNote && holdsOneFile(doc);
@@ -388,7 +389,6 @@ function EncryptedAttachmentView({
   // Rendered as an amber explanation, not a red error (backlog #151).
   const [missingRemote, setMissingRemote] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [playing, setPlaying] = useState(false);
   /**
    * Whether this note can be edited, tracked rather than read once.
@@ -417,7 +417,6 @@ function EncryptedAttachmentView({
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUrlRef = useRef<string | null>(null);
-  const deleteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const uuid = src?.startsWith(FILE_URI_PREFIX)
     ? src.slice(FILE_URI_PREFIX.length)
@@ -495,9 +494,6 @@ function EncryptedAttachmentView({
       if (audioUrlRef.current) {
         URL.revokeObjectURL(audioUrlRef.current);
         audioUrlRef.current = null;
-      }
-      if (deleteTimerRef.current) {
-        clearTimeout(deleteTimerRef.current);
       }
     };
   }, []);
@@ -676,22 +672,12 @@ function EncryptedAttachmentView({
   // select, drag and delete. On the file card the picture above is the trigger.
   const tileOpens = viewable && !showPreview;
 
-  const armDelete = useCallback(() => {
-    if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
-    setConfirmingDelete(true);
-    deleteTimerRef.current = setTimeout(() => setConfirmingDelete(false), 3000);
-  }, []);
-
-  // Rename, copy and delete are wanted now and then, so they wait in a menu
-  // and the row keeps one labelled action.
+  // On a narrow chip Rename and Copy fold into this menu. Delete never does:
+  // its armed confirm lasts seconds and must appear where the click was.
   const openMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     const items: ContextMenuItem[] = [];
     if (editable) items.push({ label: t('attachment.rename'), icon: iconEditPencil(), onSelect: startRename });
     items.push({ label: t('common:actions.copy'), icon: iconCopy(), onSelect: handleCopy });
-    if (editable) {
-      items.push({ type: 'separator' });
-      items.push({ label: t('common:actions.delete'), icon: iconTrash(), destructive: true, onSelect: armDelete });
-    }
     const r = e.currentTarget.getBoundingClientRect();
     const rtl = document.documentElement.dir === 'rtl';
     menu.open(
@@ -913,7 +899,7 @@ function EncryptedAttachmentView({
             cannot show; a recording plays from its tile), Download beside
             it, and the menu. The minimum width holds the wrap decision
             steady while the rename field is open with two buttons. */}
-        <div className="shrink-0 flex items-center justify-end gap-0.5 min-w-[126px] ms-auto">
+        <div className="shrink-0 flex items-center justify-end gap-0.5 min-w-[166px] ms-auto">
           {renaming ? (
             <>
               <ActionButton onClick={commitRename} label={t('attachment.saveName')}>
@@ -923,21 +909,6 @@ function EncryptedAttachmentView({
                 <X size={15} />
               </ActionButton>
             </>
-          ) : confirmingDelete ? (
-            <button
-              type="button"
-              onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
-                setConfirmingDelete(false);
-                deleteNode();
-              }}
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 dark:bg-red-950/30 text-danger text-xs font-medium transition hover:bg-red-100 dark:hover:bg-red-950/50 cursor-pointer select-none ${BUTTON_CONTENT}`}
-            >
-              <Trash size={13} />
-              {t('attachment.deleteConfirm')}
-            </button>
           ) : (
             <>
               {viewable ? (
@@ -956,13 +927,27 @@ function EncryptedAttachmentView({
                   <Download size={15} />
                 </ActionButton>
               )}
-              <ActionButton onClick={openMenu} label={copied ? t('attachment.copied') : t('attachment.more')} tip="above-end">
-                {copied ? (
-                  <Check size={15} className="text-green-500" />
-                ) : (
-                  <DotsThree size={18} weight="bold" />
+              {/* Rename and Copy show in the row when the chip has room, and fold into the menu when it has not. */}
+              <span className="hidden @[30rem]/chip:contents">
+                {editable && (
+                  <ActionButton onClick={startRename} label={t('attachment.rename')}>
+                    <PencilSimple size={15} />
+                  </ActionButton>
                 )}
-              </ActionButton>
+                <ActionButton onClick={handleCopy} label={copied ? t('attachment.copied') : t('common:actions.copy')} tip="above-end">
+                  {copied ? <Check size={15} className="text-success" /> : <Copy size={15} />}
+                </ActionButton>
+              </span>
+              <span className="contents @[30rem]/chip:hidden">
+                <ActionButton onClick={openMenu} label={copied ? t('attachment.copied') : t('attachment.more')} tip="above-end">
+                  {copied ? (
+                    <Check size={15} className="text-success" />
+                  ) : (
+                    <DotsThree size={18} weight="bold" />
+                  )}
+                </ActionButton>
+              </span>
+              {editable && <DeleteButton label={t('common:actions.delete')} confirmLabel={t('attachment.deleteConfirm')} onConfirm={deleteNode} />}
             </>
           )}
         </div>
@@ -974,7 +959,7 @@ function EncryptedAttachmentView({
       // my-6 (24px) is one line of body copy (15px x 1.7). With the ghost
       // paragraph gone, this margin IS the gap between stacked chips - 12px
       // read as a solid block, and the old two-line crater was 75px.
-      className="encrypted-attachment-wrapper my-6 leading-none"
+      className="encrypted-attachment-wrapper @container/chip my-6 leading-none"
       // Same defect as EncryptedImage: the node spec sets draggable: true, but
       // a React node view also needs this attribute or TipTap never starts the
       // drag. Fixed together because the two are the media-block pair
@@ -1048,7 +1033,7 @@ export function cachedAttachmentUrl(uuid: string): string | null {
 
 /** The attachment an object URL of this tab shows, or null. A paste of the
  *  browser's "Copy image" names that URL, and this turns it back into the
- *  stored file instead of a second copy. Spec: ops/docs/plans/picture-copy-reuse.md */
+ *  stored file instead of a second copy. Spec: ops/docs/archive/picture-copy-reuse.md */
 export function attachmentIdForUrl(url: string): string | null {
   for (const [uuid, cached] of attachmentUrlCache) if (cached === url) return uuid;
   return null;

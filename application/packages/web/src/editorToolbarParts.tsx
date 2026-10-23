@@ -173,7 +173,7 @@ export const TB_BTN_ACTIVE = 'bg-accent/15 text-accent-strong [@media(hover:hove
 // the near edge closes that gap and moves the dead space to the far side, where
 // it reads as a hole in the row. 24px is the width where the caret carries no
 // visible slack on either side, and the hairline then does the grouping that
-// spacing alone cannot. Spec: ops/docs/ui-patterns.md (split colour buttons)
+// spacing alone cannot. Spec: ops/docs/archive/ui-patterns.md (split colour buttons)
 export const TB_SPLIT_MAIN =
   'relative flex items-center justify-center w-8 h-8 rounded-s-md active:scale-95 transition outline-none shrink-0';
 export const TB_SPLIT_CARET =
@@ -202,6 +202,7 @@ export function ToolbarBtn({
   onClick,
   active,
   label,
+  keys,
   tabIndex,
   btnRef,
   children,
@@ -209,6 +210,8 @@ export function ToolbarBtn({
   onClick: () => void;
   active?: boolean;
   label: string;
+  /** The shortcut of the same action, for the tip. */
+  keys?: string;
   tabIndex?: number;
   /** Set on buttons a popover anchors to, so it can measure the real box. */
   btnRef?: RefObject<HTMLButtonElement | null>;
@@ -216,7 +219,7 @@ export function ToolbarBtn({
 }) {
   const side = useContext(TipSideContext);
   return (
-    <HoverLabel label={label} position={side}>
+    <HoverLabel label={label} keys={keys} position={side}>
       <button
         ref={btnRef}
         type="button"

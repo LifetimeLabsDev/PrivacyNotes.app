@@ -387,7 +387,7 @@ export function FolderTree({
              read as one more folder. Same FolderPlus mark and amber tint as
              the folder picker's own "New folder" button, so the two say the
              same thing in the two places they appear.
-             Spec: ops/docs/ui-patterns.md (section 76) */
+             Spec: ops/docs/archive/ui-patterns.md (section 76) */
           className="w-full mt-2 rounded-md border border-dashed border-divider hover:border-accent/50 text-[15px] font-medium transition flex items-center justify-start gap-2 ps-[7px] pe-2 py-2 text-pn-muted hover:text-accent"
         >
           <FolderPlus size={16} className="shrink-0 text-label" />

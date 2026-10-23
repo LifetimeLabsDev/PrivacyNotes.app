@@ -17,7 +17,7 @@
  * Callers own persistence. Settings hands the result to its own save; the
  * lock screen writes it to the local cache before the app mounts.
  *
- * Spec: ops/docs/plans/pin-recovery.md
+ * Spec: ops/docs/archive/pin-recovery.md
  */
 
 import {

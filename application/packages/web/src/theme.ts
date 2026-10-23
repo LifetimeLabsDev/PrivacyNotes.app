@@ -187,24 +187,23 @@ function cssChannels(root: HTMLElement, name: string): [number, number, number] 
   return channels as [number, number, number];
 }
 
-/** Paint a resolved theme on <html>. Does NOT persist anything.
- *
- * The `theme-animating` class is toggled briefly around the class flip
- * so a global CSS rule in index.css can crossfade background/color/
- * border during the ~280ms window and then get out of the way. Skipped
- * on the very first call (initial bootstrap) so the initial paint
- * doesn't flash. */
-let hasAppliedOnce = false;
-/** The Linux app draws through WebKitGTK on its software path, where a
- *  transition on every element repaints the whole window on each frame and
- *  a switch takes seconds, so it snaps there instead. */
-const CROSSFADE = __PN_BUILD_PLATFORM__ !== 'linux';
+let themeTransitionFrame = 0;
+/** Theme colors must settle before control hover transitions resume. */
+function suppressThemeTransitions(): void {
+  const root = document.documentElement;
+  root.classList.add('pn-theme-switching');
+  cancelAnimationFrame(themeTransitionFrame);
+  themeTransitionFrame = requestAnimationFrame(() => {
+    themeTransitionFrame = requestAnimationFrame(() => root.classList.remove('pn-theme-switching'));
+  });
+}
+
+/** Paint a resolved theme without animating every mounted item.
+ * Spec: ops/docs/color-themes.md (Theme switching performance)
+ */
 function paintTheme(theme: Theme): void {
   const root = document.documentElement;
-  const wantsCrossfade = CROSSFADE && hasAppliedOnce && typeof window !== 'undefined';
-  if (wantsCrossfade) {
-    root.classList.add('theme-animating');
-  }
+  if (root.classList.contains('dark') !== (theme === 'dark')) suppressThemeTransitions();
   if (theme === 'dark') {
     root.classList.add('dark');
   } else {
@@ -212,12 +211,6 @@ function paintTheme(theme: Theme): void {
   }
   paintThemeColorMeta(theme);
   paintNativeBars();
-  if (wantsCrossfade) {
-    window.setTimeout(() => {
-      root.classList.remove('theme-animating');
-    }, 320);
-  }
-  hasAppliedOnce = true;
 }
 
 /**
@@ -494,7 +487,7 @@ export type CopyFormat = 'markdown' | 'plain';
  * character, for a reader who pastes tasks into forms and work tools that
  * print `- [ ]` as it is. Device-local, like spell check: what a paste
  * target understands belongs to the device's apps, not the account.
- * Spec: ops/docs/plans/paste-pictures.md (section 3.6)
+ * Spec: ops/docs/archive/paste-pictures.md (section 3.6)
  */
 function getStoredCopyFormat(): CopyFormat {
   try {
@@ -511,9 +504,25 @@ function applyCopyFormat(format: CopyFormat): void {
   localStorage.setItem(COPY_FORMAT_KEY, format);
 }
 
+/** The format "Copy as ..." asks the serializer for, while it runs. */
+let copyFormatOnce: CopyFormat | null = null;
+
 /** For the copy serializer, which runs outside React. */
 export function readCopyFormat(): CopyFormat {
-  return activeCopyFormat;
+  return copyFormatOnce ?? activeCopyFormat;
+}
+
+/**
+ * Runs `run` with the copy serializer reading the given format, and leaves
+ * the setting as it was. Spec: ops/issues/0546.md (Spec)
+ */
+export function withCopyFormat(format: CopyFormat, run: () => void): void {
+  copyFormatOnce = format;
+  try {
+    run();
+  } finally {
+    copyFormatOnce = null;
+  }
 }
 
 // ------------------------------------------------------------------
@@ -669,6 +678,31 @@ export const THEME_DISPLAY_NAME: Record<ColorTheme, string> = {
   'navy-depths': 'Navy',
   'oled': 'OLED',
 };
+
+/** Swatch colors per theme - 3 vertical stripes: sidebar tone, accent,
+    text. Stripe one is the sidebar (`--pn-surface-0`), never the list or
+    the editor tone: it is the widest spread the palettes have, so it is
+    what makes one chip read as a different theme from the next.
+    The Design pane's cards and Ninja's theme rows draw it.
+    Spec: ops/docs/color-themes.md (section 4, adding a theme) */
+const SWATCH: Record<ColorTheme, [string, string, string]> = {
+  'default': ['#F5F5F5', '#1E40AF', '#0A0A0A'],
+  'warm-cream': ['#E1D8C4', '#1840B1', '#2D2416'],
+  'slate': ['#DDE1E8', '#4338CA', '#121524'],
+  'soft-dark': ['#1C1F26', '#89B7E6', '#CDD3DE'],
+  'navy-depths': ['#0D1321', '#83A4F8', '#D4DAE7'],
+  'sage': ['#E1E7DE', '#2B6A4D', '#17201A'],
+  'oled': ['#000000', '#4A90D9', '#E8E8E8'],
+};
+
+/** The Default card stands for whichever palette the painted mode uses, so
+    unlike a named theme it has one set of stripes per mode. The table above
+    holds the light one. */
+const SWATCH_DEFAULT_DARK: [string, string, string] = ['#171514', '#4A90D9', '#D9D4CC'];
+
+export function themeSwatch(ct: ColorTheme, dark: boolean): [string, string, string] {
+  return ct === 'default' && dark ? SWATCH_DEFAULT_DARK : SWATCH[ct];
+}
 
 /** Themes available for a given mode (for the picker grid). */
 export const LIGHT_THEMES: ColorTheme[] = ['default', 'warm-cream', 'slate', 'sage'];
@@ -852,14 +886,12 @@ function paintCustomRules(): void {
 
 /** Put both slots on <html>. Each palette's CSS block is scoped to its own
  *  mode, so only the slot of the painted mode applies, and a mode flip needs
- *  no repaint here. `instant` skips the crossfade, for the builder, which
- *  repaints on every keystroke. */
-function paintColorThemes(instant = false): void {
+ *  no repaint here. */
+function paintColorThemes(): void {
   const root = document.documentElement;
-  const wantsCrossfade = CROSSFADE && !instant && hasAppliedOnce && typeof window !== 'undefined';
-  if (wantsCrossfade) root.classList.add('theme-animating');
+  suppressThemeTransitions();
   // Snapshot first: removing while iterating a live classList skips entries.
-  const toRemove = [...root.classList].filter((c) => (c.startsWith('theme-') && c !== 'theme-animating') || c.startsWith('logo-'));
+  const toRemove = [...root.classList].filter((c) => c.startsWith('theme-') || c.startsWith('logo-'));
   toRemove.forEach((c) => root.classList.remove(c));
   for (const mode of ['light', 'dark'] as const) {
     const ct = activeColorThemes[mode];
@@ -875,9 +907,6 @@ function paintColorThemes(instant = false): void {
   }
   paintCustomRules();
   paintNativeBars();
-  if (wantsCrossfade) {
-    window.setTimeout(() => root.classList.remove('theme-animating'), 320);
-  }
 }
 
 /** Show a palette in one slot without saving it: a free user's preview, or
@@ -916,7 +945,7 @@ export function previewCustomTheme(mode: Theme, snap: CustomSnapshot | null): vo
   previewSnapshots[mode] = snap ? validSnapshot(snap, mode) : null;
   const preview = previewSnapshots[mode];
   activeColorThemes[mode] = preview ? customChoice(preview.id) : getStoredColorTheme(mode);
-  paintColorThemes(true);
+  paintColorThemes();
   emitThemeChange();
 }
 
@@ -1084,6 +1113,54 @@ function getFaviconsSnapshot(): boolean { return activeFavicons; }
 function getCopyFormatSnapshot(): CopyFormat { return activeCopyFormat; }
 function getPasteFormatSnapshot(): PasteFormat { return activePasteFormat; }
 
+/** Website icons only depend on their visibility preference, not the palette. */
+export function useFavicons(): boolean {
+  return useSyncExternalStore(subscribeTheme, getFaviconsSnapshot);
+}
+
+function setColorTheme(mode: Theme, next: ThemeChoice): void {
+  applyColorTheme(mode, next);
+  emitThemeChange();
+}
+
+/**
+ * Keep a theme and show it. The slot of its mode takes it, and the screen
+ * moves to that mode: a pinned mode of the other kind switches, and Auto on
+ * a system in the other mode pins the theme's mode, so a pick never goes
+ * away when Settings closes. A pick of the mode on screen keeps Auto.
+ * Settings, the theme builder and Ninja all pick through this.
+ * Spec: ops/docs/color-themes.md (section 1, a click on a theme)
+ */
+function pickTheme(mode: Theme, pick: ThemeChoice | CustomSnapshot): void {
+  if (typeof pick === 'string') applyColorTheme(mode, pick);
+  else applyCustomTheme(pick);
+  if (getStoredTheme() !== mode) applyThemeMode(mode);
+  else if (peekTheme) {
+    peekTheme = null;
+    paintTheme(mode);
+  }
+  emitThemeChange();
+}
+
+function setInvisibles(next: boolean): void {
+  applyInvisibles(next);
+  emitThemeChange();
+}
+
+function toggle(): void {
+  applyThemeMode(getStoredTheme() === 'dark' ? 'light' : 'dark');
+  emitThemeChange();
+}
+
+/** The shell reads writing preferences; CSS paints mode and palette changes.
+ * Spec: ops/docs/color-themes.md (Theme switching performance)
+ */
+export function useShellAppearance() {
+  const spellcheck = useSyncExternalStore(subscribeTheme, getSpellcheckSnapshot);
+  const invisibles = useSyncExternalStore(subscribeTheme, getInvisiblesSnapshot);
+  return { spellcheck, invisibles, setColorTheme, pickTheme, setInvisibles, toggle };
+}
+
 /**
  * React hook that exposes both axes and controls for each.
  *
@@ -1117,11 +1194,6 @@ export function useTheme() {
     emitThemeChange();
   }, []);
 
-  const setColorTheme = useCallback((mode: Theme, next: ThemeChoice) => {
-    applyColorTheme(mode, next);
-    emitThemeChange();
-  }, []);
-
   /** Save a custom theme in the slot of its mode. */
   const setCustomTheme = useCallback((snap: CustomSnapshot) => {
     applyCustomTheme(snap);
@@ -1152,11 +1224,6 @@ export function useTheme() {
     emitThemeChange();
   }, []);
 
-  const setInvisibles = useCallback((next: boolean) => {
-    applyInvisibles(next);
-    emitThemeChange();
-  }, []);
-
   const setFavicons = useCallback((next: boolean) => {
     applyFavicons(next);
     emitThemeChange();
@@ -1178,13 +1245,5 @@ export function useTheme() {
     emitThemeChange();
   }, []);
 
-  /** Flip to the opposite of what is on screen and pin it. Someone on
-   *  'auto' who reaches for the footer toggle is asking for an explicit
-   *  choice right now; Auto is one click away in the Appearance pane. */
-  const toggle = useCallback(() => {
-    applyThemeMode(getStoredTheme() === 'dark' ? 'light' : 'dark');
-    emitThemeChange();
-  }, []);
-
-  return { theme, themeMode, toggle, setTheme, setThemeMode, colorTheme, lightTheme, darkTheme, setColorTheme, setCustomTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, cycleContentWidth, spellcheck, setSpellcheck, invisibles, setInvisibles, favicons, setFavicons, copyFormat, setCopyFormat, pasteFormat, setPasteFormat };
+  return { theme, themeMode, toggle, setTheme, setThemeMode, colorTheme, lightTheme, darkTheme, setColorTheme, setCustomTheme, pickTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, cycleContentWidth, spellcheck, setSpellcheck, invisibles, setInvisibles, favicons, setFavicons, copyFormat, setCopyFormat, pasteFormat, setPasteFormat };
 }

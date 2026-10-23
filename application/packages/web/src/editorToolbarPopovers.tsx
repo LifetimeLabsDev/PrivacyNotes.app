@@ -6,7 +6,7 @@ import { Trash as TrashIcon, type Icon } from './icons';
 import { HoverLabel } from './HoverLabel';
 import { ColorSwatch } from './ColorSwatch';
 import { TEXT_COLORS, HIGHLIGHT_COLORS, FONT_FAMILIES, FONT_SIZES } from './editorColors';
-import { CALLOUT_TYPES } from './calloutTypes';
+import { CALLOUT_PICKER_TYPES } from './calloutTypes';
 import { writeColorPref } from './editorPrefs';
 import type { ALIGNMENT_VALUES } from './editorExtensions';
 import type { PopoverPos } from './usePopoverPosition';
@@ -141,7 +141,7 @@ export function CalloutPanel({ popoverRef, pos, onClose, editor, isActive }: {
   return (
     <ToolbarPanel popoverRef={popoverRef} pos={pos} className="bg-surface-1 border border-divider rounded-lg shadow-lg p-2 w-[240px] max-h-[calc(100dvh-16px)] overflow-y-auto" role="menu" aria-label={t('callout.pickerLabel')}>
       <div className="grid grid-cols-3 gap-1">
-        {CALLOUT_TYPES.map((c) => {
+        {CALLOUT_PICKER_TYPES.map((c) => {
           const CalloutIcon = c.icon;
           return (
             <button

@@ -1,13 +1,15 @@
 {
   "placeholder": "Comece a escrever…",
+  "eventPlaceholder": "Adicione uma pauta, um endereço ou notas…",
   "toolbar": {
     "bold": "Negrito",
+    "hideKeyboard": "Ocultar teclado",
     "italic": "Itálico",
     "underline": "Sublinhado",
     "heading": "Título",
     "taskList": "Lista de tarefas",
     "bulletList": "Lista com marcadores",
-    "addLink": "Adicionar link ({{keys}})",
+    "addLink": "Adicionar link",
     "noteLink": "Criar link para outra nota (ou digite [[)",
     "numberedList": "Lista numerada",
     "textColor": "Cor do texto",
@@ -40,7 +42,6 @@
     "footnote": "Nota de rodapé",
     "spoiler": "Spoiler",
     "copyBox": "Caixa de cópia",
-    "withHint": "{{label}} ({{hint}})",
     "customize": "Personalizar a barra de formatação"
   },
   "align": {
@@ -98,7 +99,9 @@
       "update": "Atualização",
       "time": "Tempo",
       "steps": "Passos",
-      "place": "Local"
+      "place": "Local",
+      "kanban": "Quadro kanban",
+      "column": "Coluna"
     }
   },
   "color": {
@@ -132,27 +135,51 @@
     "resizeHint": "Segure {{shift}} para mudar só esta coluna, {{alt}} para passos menores",
     "deleteRow": "Excluir linha",
     "deleteColumn": "Excluir coluna",
-    "deleteTable": "Excluir tabela"
+    "deleteTable": "Excluir tabela",
+    "insertFormula": "Inserir fórmula",
+    "formulaNoMatch": "Nenhuma fórmula corresponde",
+    "formula": {
+      "SUM": "Somar os valores",
+      "PRODUCT": "Multiplicar os valores",
+      "AVG": "Média dos valores",
+      "AVERAGE": "Média dos valores",
+      "MEDIAN": "Valor do meio",
+      "MIN": "Menor valor",
+      "MAX": "Maior valor",
+      "COUNT": "Quantos números há",
+      "ABS": "Valor sem o sinal",
+      "SQRT": "Raiz quadrada",
+      "SIGN": "Se um valor é positivo ou negativo",
+      "CEIL": "Arredondar para cima até um número inteiro",
+      "FLOOR": "Arredondar para baixo até um número inteiro",
+      "ROUND": "Arredondar para um número inteiro",
+      "LOG": "Logaritmo",
+      "RAND": "Um número aleatório",
+      "PI": "A constante pi",
+      "E": "O número de Euler",
+      "TAU": "A constante tau",
+      "PHI": "A proporção áurea"
+    }
   },
   "find": {
     "placeholder": "Buscar na nota",
     "label": "Buscar na nota",
-    "previous": "Resultado anterior (Shift+Enter)",
-    "previousTitle": "Anterior (Shift+Enter)",
-    "next": "Próximo resultado (Enter)",
-    "nextTitle": "Próximo (Enter)",
+    "previous": "Resultado anterior",
+    "previousTitle": "Anterior",
+    "next": "Próximo resultado",
+    "nextTitle": "Próximo",
     "close": "Fechar busca",
-    "closeTitle": "Fechar ({{keys}})",
+    "closeTitle": "Fechar",
     "replacePlaceholder": "Substituir por",
     "replaceLabel": "Substituir por",
     "replace": "Substituir",
-    "replaceTitle": "Substituir esta ocorrência (Enter)",
+    "replaceTitle": "Substituir esta ocorrência",
     "replaceAll": "Todas",
     "replaceAllTitle": "Substituir todas as ocorrências",
     "caseSensitive": "Diferenciar maiúsculas de minúsculas",
     "caseSensitiveTitle": "Diferenciar maiúsculas de minúsculas",
     "closeReplace": "Fechar buscar e substituir",
-    "closeReplaceTitle": "Fechar ({{keys}})",
+    "closeReplaceTitle": "Fechar",
     "showReplace": "Buscar e substituir",
     "hideReplace": "Ocultar substituição",
     "replacedCount_one": "{{count}} substituída",
@@ -164,7 +191,6 @@
     "title": "Estrutura",
     "ariaLabel": "Estrutura da nota",
     "hide": "Ocultar estrutura",
-    "hideTitle": "Ocultar estrutura ({{keys}})",
     "copyHeadingLink": "Copiar link para o título",
     "copyNoteLink": "Copiar link entre notas",
     "copyHeadingShortcut": "Copiar atalho para o título",
@@ -172,6 +198,8 @@
   },
   "bodyMenu": {
     "cut": "Recortar",
+    "copyAsPlain": "Copiar como texto simples",
+    "copyAsMarkdown": "Copiar como Markdown",
     "sortAsc": "Ordenar linhas de A a Z",
     "sortDesc": "Ordenar linhas de Z a A"
   },
@@ -286,6 +314,7 @@
     "hidden": "Ocultos",
     "hiddenNote": "Eles continuam funcionando por atalho e em Markdown.",
     "hiddenDrop": "Solte um botão aqui para ocultá-lo.",
+    "arrangeTitle": "Botões",
     "markdownViewNote": "A visualização Markdown mantém seu próprio conjunto fixo de botões.",
     "hiddenEmpty": "Nada está oculto.",
     "alwaysVisible": "Sempre visíveis",
@@ -320,5 +349,20 @@
     "positionNote": "Escolha onde a barra de formatação fica no editor.",
     "positionTop": "Em cima",
     "positionBottom": "Embaixo"
+  },
+  "kanban": {
+    "todo": "A fazer",
+    "inProgress": "Em andamento",
+    "review": "Em revisão",
+    "done": "Concluído",
+    "color": "Cor",
+    "columns": "Colunas",
+    "columnCount_one": "{{count}} coluna",
+    "columnCount_other": "{{count}} colunas",
+    "cardCount_one": "{{count}} cartão",
+    "cardCount_other": "{{count}} cartões",
+    "addColumn": "Adicionar coluna",
+    "removeBoard": "Remover quadro",
+    "moveTo": "Mover para"
   }
 }

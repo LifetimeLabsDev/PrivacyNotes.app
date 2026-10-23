@@ -1,11 +1,14 @@
+import { TASK_CHECK_PATH } from './ui/TaskCheckbox';
 import type { Editor as TipTapEditor } from '@tiptap/react';
 import TaskItem, { type TaskItemOptions } from '@tiptap/extension-task-item';
 import TaskList from '@tiptap/extension-task-list';
 import { Extension, InputRule, getHTMLFromFragment, type NodeViewRendererProps } from '@tiptap/core';
 import { Fragment, type Node as ProseMirrorNode } from '@tiptap/pm/model';
 import { Plugin, PluginKey, NodeSelection, type Transaction } from '@tiptap/pm/state';
+import { Decoration, DecorationSet } from '@tiptap/pm/view';
 import { isSoftKeyboardDevice, suppressSoftKeyboard } from './softKeyboard';
 import { isStoredAlignment } from './editorAlignment';
+import { dragCard, kanbanCardOf, markCardGrip, openCardMenu } from './kanbanDrag';
 
 /**
  * Markdown autoformatting for task lists. StarterKit ships input rules for
@@ -70,6 +73,28 @@ function slideIn(dom: Node | null, topBefore: number) {
   dom.animate(
     [{ transform: `translateY(${dy}px)` }, { transform: 'none' }],
     { duration: 180, easing: 'ease-out' },
+  );
+}
+
+/**
+ * Plays the tick's draw on the task that moved. ProseMirror keeps the
+ * clicked item's DOM where it was and hands it to the task that slides into
+ * that place, so the CSS draw runs there, on a task that was already ticked,
+ * and the moved task arrives drawn. Finish the stray draw and run the same
+ * one, the `.pn-task-checkbox:checked` transition, on the moved task.
+ * Spec: ops/docs/design-decisions.md (Checkbox feedback)
+ */
+function drawMovedTick(clicked: HTMLInputElement, moved: Node | null) {
+  if (!(moved instanceof HTMLElement)) return;
+  const box = moved.querySelector<HTMLInputElement>(':scope > label > .pn-task-checkbox');
+  if (!box || box === clicked || !box.checked) return;
+  const stray = clicked.parentElement?.querySelector('.pn-check path');
+  if (stray && typeof stray.getAnimations === 'function') stray.getAnimations().forEach((a) => a.finish());
+  const path = box.parentElement?.querySelector('.pn-check path');
+  if (!path || typeof path.animate !== 'function') return;
+  path.animate(
+    [{ strokeDashoffset: 14 }, { strokeDashoffset: 0 }],
+    { duration: 750, delay: 60, easing: 'ease-out', fill: 'backwards' },
   );
 }
 
@@ -208,7 +233,7 @@ function dragTask(event: PointerEvent, item: HTMLElement, getPos: () => number |
 
 const GRIP_SVG =
   '<svg viewBox="0 0 10 16"><circle cx="2.5" cy="3" r="1.4"/><circle cx="7.5" cy="3" r="1.4"/><circle cx="2.5" cy="8" r="1.4"/><circle cx="7.5" cy="8" r="1.4"/><circle cx="2.5" cy="13" r="1.4"/><circle cx="7.5" cy="13" r="1.4"/></svg>';
-const CHECK_SVG = '<svg viewBox="0 0 12 12"><path d="M2 6.5 5 9 10 3"/></svg>';
+const CHECK_SVG = `<svg viewBox="0 0 12 12"><path d="${TASK_CHECK_PATH}"/></svg>`;
 
 /** Each icon is parsed once and cloned for every task: a note with thousands
  *  of tasks otherwise parses the same markup thousands of times on open. */
@@ -303,6 +328,33 @@ export const TaskItemMobileSafe = TaskItem.extend<TaskItemOptions & {
     return [
       ...(this.parent?.() ?? []),
       new Plugin({
+        key: new PluginKey('taskCaretDrawn'),
+        props: {
+          // A task item skips layout until the browser decides at its next
+          // frame that it is on screen (content-visibility in index.css). A
+          // key that arrives before that frame, right after Enter made the
+          // task, was typed into the next block the browser had drawn: the
+          // words fell below the list or into the task after, and an empty
+          // task stayed behind. The class keeps every task around the caret
+          // drawn from the moment the caret enters it. It is a decoration,
+          // never a classList change on the item: ProseMirror redraws an item
+          // whose attributes change under it, and the redraw re-ran the
+          // change without end, freezing the tab.
+          decorations: (state) => {
+            const { $head } = state.selection;
+            const decorations: Decoration[] = [];
+            for (let depth = $head.depth; depth > 0; depth--) {
+              const node = $head.node(depth);
+              if (node.type.name !== name) continue;
+              const from = $head.before(depth);
+              decorations.push(Decoration.node(from, from + node.nodeSize, { class: 'pn-task-caret' }));
+            }
+            // Null when the caret is in no task, so the view skips this plugin.
+            return decorations.length ? DecorationSet.create(state.doc, decorations) : null;
+          },
+        },
+      }),
+      new Plugin({
         key: new PluginKey('taskTextDrag'),
         props: {
           handleDOMEvents: {
@@ -337,7 +389,19 @@ export const TaskItemMobileSafe = TaskItem.extend<TaskItemOptions & {
       grip.append(svgCopy(GRIP_SVG));
       grip.addEventListener('mousedown', (event) => event.preventDefault());
       grip.addEventListener('pointerdown', (event) => {
-        if (typeof getPos === 'function') dragTask(event, listItem, getPos, editor as TipTapEditor);
+        if (typeof getPos !== 'function') return;
+        // A Kanban card can also move to another column, and a tap on its
+        // grip opens Move to.
+        if (kanbanCardOf(listItem)) dragCard(event, listItem, getPos, editor as TipTapEditor);
+        else dragTask(event, listItem, getPos, editor as TipTapEditor);
+      });
+      // Once the item is in the document, a card's grip becomes a button.
+      requestAnimationFrame(() => markCardGrip(grip, listItem));
+      // VoiceOver and other assistive tech activate with a click and no
+      // pointer press (detail 0); on a card that opens Move to.
+      grip.addEventListener('click', (event) => {
+        if (event.detail !== 0 || typeof getPos !== 'function' || !kanbanCardOf(listItem)) return;
+        openCardMenu(grip, getPos, editor as TipTapEditor);
       });
       const checkboxWrapper = document.createElement('label');
       const checkboxStyler = document.createElement('span');
@@ -353,14 +417,12 @@ export const TaskItemMobileSafe = TaskItem.extend<TaskItemOptions & {
       updateA11Y();
 
       checkboxWrapper.contentEditable = 'false';
-      // The styler span hosts the draw-in check SVG (checkbox variant B).
-      // A CSS ::before clip-path cannot animate a stroke, so the check is
-      // a real path whose dashoffset transitions when li[data-checked]
-      // flips - see the taskList rules in index.css.
+      // The shared task checkbox styles follow the native checked state.
       checkboxStyler.className = 'pn-check';
       checkboxStyler.setAttribute('aria-hidden', 'true');
       checkboxStyler.append(svgCopy(CHECK_SVG));
       checkbox.type = 'checkbox';
+      checkbox.className = 'pn-task-checkbox';
       checkbox.addEventListener('mousedown', (event) => event.preventDefault());
       // Skipping `.focus()` below is not enough once the editor already holds
       // focus: the tap itself is what re-raises the IME. Arm the suppression
@@ -403,7 +465,11 @@ export const TaskItemMobileSafe = TaskItem.extend<TaskItemOptions & {
               return true;
             })
             .run();
-          if (movedTo !== null) slideIn(editor.view.nodeDOM(movedTo), topBefore);
+          if (movedTo !== null) {
+            const moved = editor.view.nodeDOM(movedTo);
+            slideIn(moved, topBefore);
+            if (checked) drawMovedTick(checkbox, moved);
+          }
         }
         if (!editor.isEditable && this.options.onReadOnlyChecked) {
           if (!this.options.onReadOnlyChecked(node, checked)) {

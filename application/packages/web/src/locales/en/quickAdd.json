@@ -1,5 +1,6 @@
 {
   "words": {
+    "add": "add",
     "every": "every, each",
     "weekday": "weekday, weekdays, workday, workdays",
     "daily": "daily",
@@ -37,6 +38,7 @@
     "times": "times, x",
     "ordinal": "st, nd, rd, th, .",
     "work": "work",
-    "personal": "personal, home"
+    "personal": "personal, home",
+    "in": "in"
   }
 }

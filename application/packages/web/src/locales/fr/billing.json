@@ -11,6 +11,7 @@
       "storage": "Plus d’espace est une fonction Pro : 500 Mo de stockage, 50 Mo par fichier, et jusqu’à 5 Go de plus avec un module de stockage quand tu en as besoin.",
       "folders": "Les dossiers sont une fonctionnalité Pro. Organise tes notes dans des dossiers imbriqués, aussi profonds que tu veux, et garde chaque projet séparé.",
       "looks": "Les icônes et les couleurs des dossiers et des étiquettes sont une fonctionnalité Pro. Donne à chacun un style reconnaissable au premier coup d'œil.",
+      "noteIcon": "Les icônes de note sont une fonctionnalité Pro. Donne à une note sa propre icône pour la repérer au premier coup d'œil dans la liste et dans tes onglets.",
       "spaces": "Les espaces sont une fonctionnalité Pro. {{desc}}",
       "formatBar": "Organiser la barre d'outils est une fonctionnalité Pro. Mets dans la barre les boutons que tu utilises, masque les autres et range le menu + à ta façon.",
       "lock": "Verrouiller une note est une fonctionnalité Pro. Passe à Pro pour protéger toute note des modifications accidentelles.",

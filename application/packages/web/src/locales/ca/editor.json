@@ -1,13 +1,15 @@
 {
   "placeholder": "Comença a escriure…",
+  "eventPlaceholder": "Afegeix un ordre del dia, una adreça o notes…",
   "toolbar": {
     "bold": "Negreta",
+    "hideKeyboard": "Amaga el teclat",
     "italic": "Cursiva",
     "underline": "Subratllat",
     "heading": "Encapçalament",
     "taskList": "Llista de tasques",
     "bulletList": "Llista de pics",
-    "addLink": "Afegeix un enllaç ({{keys}})",
+    "addLink": "Afegeix un enllaç",
     "noteLink": "Enllaça a una altra nota (o escriu [[)",
     "numberedList": "Llista numerada",
     "textColor": "Color del text",
@@ -40,7 +42,6 @@
     "footnote": "Nota a peu de pàgina",
     "spoiler": "Espòiler",
     "copyBox": "Quadre per copiar",
-    "withHint": "{{label}} ({{hint}})",
     "customize": "Personalitza la barra de format"
   },
   "align": {
@@ -98,7 +99,9 @@
       "update": "Actualització",
       "time": "Temps",
       "steps": "Passos",
-      "place": "Lloc"
+      "place": "Lloc",
+      "kanban": "Tauler Kanban",
+      "column": "Columna"
     }
   },
   "color": {
@@ -132,27 +135,51 @@
     "resizeHint": "Mantén premuda {{shift}} per canviar només aquesta columna, {{alt}} per a passos més fins",
     "deleteRow": "Suprimeix la fila",
     "deleteColumn": "Suprimeix la columna",
-    "deleteTable": "Suprimeix la taula"
+    "deleteTable": "Suprimeix la taula",
+    "insertFormula": "Insereix una fórmula",
+    "formulaNoMatch": "Cap fórmula coincideix",
+    "formula": {
+      "SUM": "Suma els valors",
+      "PRODUCT": "Multiplica els valors",
+      "AVG": "Mitjana dels valors",
+      "AVERAGE": "Mitjana dels valors",
+      "MEDIAN": "Valor central",
+      "MIN": "Valor més petit",
+      "MAX": "Valor més gran",
+      "COUNT": "Quants nombres hi ha",
+      "ABS": "Valor sense signe",
+      "SQRT": "Arrel quadrada",
+      "SIGN": "Si un valor és positiu o negatiu",
+      "CEIL": "Arrodoneix cap amunt al nombre enter",
+      "FLOOR": "Arrodoneix cap avall al nombre enter",
+      "ROUND": "Arrodoneix al nombre enter",
+      "LOG": "Logaritme",
+      "RAND": "Un nombre aleatori",
+      "PI": "La constant pi",
+      "E": "El nombre d'Euler",
+      "TAU": "La constant tau",
+      "PHI": "La proporció àuria"
+    }
   },
   "find": {
     "placeholder": "Cerca dins la nota",
     "label": "Cerca dins la nota",
-    "previous": "Coincidència anterior (Maj+Retorn)",
-    "previousTitle": "Anterior (Maj+Retorn)",
-    "next": "Coincidència següent (Retorn)",
-    "nextTitle": "Següent (Retorn)",
+    "previous": "Coincidència anterior",
+    "previousTitle": "Anterior",
+    "next": "Coincidència següent",
+    "nextTitle": "Següent",
     "close": "Tanca la cerca",
-    "closeTitle": "Tanca ({{keys}})",
+    "closeTitle": "Tanca",
     "replacePlaceholder": "Substitueix per",
     "replaceLabel": "Substitueix per",
     "replace": "Substitueix",
-    "replaceTitle": "Substitueix aquesta coincidència (Retorn)",
+    "replaceTitle": "Substitueix aquesta coincidència",
     "replaceAll": "Totes",
     "replaceAllTitle": "Substitueix totes les coincidències",
     "caseSensitive": "Distingeix majúscules i minúscules",
     "caseSensitiveTitle": "Distingeix majúscules i minúscules",
     "closeReplace": "Tanca cerca i substitueix",
-    "closeReplaceTitle": "Tanca ({{keys}})",
+    "closeReplaceTitle": "Tanca",
     "showReplace": "Cerca i substitueix",
     "hideReplace": "Amaga la substitució",
     "replacedCount_one": "{{count}} substituïda",
@@ -165,7 +192,6 @@
     "title": "Esquema",
     "ariaLabel": "Esquema de la nota",
     "hide": "Amaga l'esquema",
-    "hideTitle": "Amaga l'esquema ({{keys}})",
     "copyHeadingLink": "Copia l'enllaç a l'encapçalament",
     "copyNoteLink": "Copia l'enllaç entre notes",
     "copyHeadingShortcut": "Copia la drecera a l'encapçalament",
@@ -173,6 +199,8 @@
   },
   "bodyMenu": {
     "cut": "Retalla",
+    "copyAsPlain": "Copia com a text pla",
+    "copyAsMarkdown": "Copia com a Markdown",
     "sortAsc": "Ordena les línies de la A a la Z",
     "sortDesc": "Ordena les línies de la Z a la A"
   },
@@ -290,6 +318,7 @@
     "hidden": "Amagats",
     "hiddenNote": "Continuen funcionant amb la drecera i en Markdown.",
     "hiddenDrop": "Deixa anar un botó aquí per amagar-lo.",
+    "arrangeTitle": "Botons",
     "markdownViewNote": "La vista Markdown té el seu propi conjunt fix de botons.",
     "hiddenEmpty": "No hi ha res amagat.",
     "alwaysVisible": "Sempre visibles",
@@ -324,5 +353,20 @@
     "positionNote": "Tria on va la barra de format a l’editor.",
     "positionTop": "A dalt",
     "positionBottom": "A baix"
+  },
+  "kanban": {
+    "todo": "Per fer",
+    "inProgress": "En curs",
+    "review": "Revisió",
+    "done": "Fet",
+    "color": "Color",
+    "columns": "Columnes",
+    "columnCount_other": "{{count}} columnes",
+    "cardCount_other": "{{count}} targetes",
+    "addColumn": "Afegeix una columna",
+    "removeBoard": "Elimina el tauler",
+    "moveTo": "Mou a",
+    "cardCount_one": "{{count}} targeta",
+    "columnCount_one": "{{count}} columna"
   }
 }

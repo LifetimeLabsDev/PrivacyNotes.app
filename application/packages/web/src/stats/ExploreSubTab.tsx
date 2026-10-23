@@ -1,48 +1,38 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CompareResult, DaySeries, TrackerDescriptor } from '../wellnessTypes';
-import { SectionEyebrow } from '../settingsUI';
+import type { CompareResult } from '../wellnessTypes';
+import { SETTINGS_SELECT, SectionEyebrow, SettingsSegmented } from '../settingsUI';
+import { ProMark } from '../UpgradeModal';
+import { CalendarCheck, ChartLine, Sparkle } from '../icons';
+import { EffectBarRow, SureDots, WeekdayChart, changeTone, signedValue, spreadOf, weekdayAverages } from './statsParts';
 import { formatDay } from '../intlFormat';
 import { TrackerChart } from '../TrackerChart';
 import { aggregate } from '../trackerSeries';
 import { compare, outcomesFor } from '../trackerCompare';
-import { visibleInUi } from '../trackerRegistry';
 import { cardNumbers, chartSpecFor } from './TrackerCard';
-import { compareSentence, formatNumber, hasData, levelLabel, ruleLabel, trackerName, type WellnessModel } from './wellnessModel';
+import { compareSentence, formatNumber, hasData, levelLabel, sideLabels, trackerName, type WellnessModel } from './wellnessModel';
 
-/** The calendar shows at most this many days; longer ranges show its tail. */
-const CALENDAR_DAYS = 91;
+/**
+ * One tracker's page: its numbers, its chart against an outcome on one date
+ * axis, and the comparison, same day or next day. The Back row above names it.
+ * Spec: ops/docs/archive/wellness-statistics.md (sections 9, 22)
+ */
+/** The smallest difference the goes-with list shows, as a share of the outcome's spread, and how many rows it keeps. */
+const GOES_WITH_MIN = 0.05;
+const GOES_WITH_MAX = 5;
 
-function tail(series: DaySeries, days: number): DaySeries {
-  if (series.points.length <= days) return series;
-  const points = series.points.slice(-days);
-  return { from: points[0]!.date, to: series.to, points };
-}
-
-/** Spec: ops/docs/plans/wellness-statistics.md (section 9) */
-export function ExploreSubTab({ model, selectedId, onSelect, unlocked, isPro, onOpenUpgrade, onOpenDay }: {
+export function ExploreSubTab({ model, trackerId, unlocked, isPro, onOpenUpgrade, onOpenDay }: {
   model: WellnessModel;
-  selectedId: string | null;
-  onSelect: (id: string) => void;
+  trackerId: string;
   unlocked: boolean;
   isPro: boolean;
   onOpenUpgrade?: () => void;
   onOpenDay?: (date: string) => void;
 }) {
   const { t } = useTranslation('stats');
-  const [showStopped, setShowStopped] = useState(false);
   const [lag, setLag] = useState<0 | 1>(0);
   const [outcomeId, setOutcomeId] = useState<string>('mood');
-
-  const withData = useMemo(
-    () => model.registry.filter((d) => d.kind !== 'medication' && hasData(model.seriesOf(d))),
-    [model],
-  );
-  const live = withData.filter(visibleInUi);
-  const stopped = withData.filter((d) => !visibleInUi(d));
-  const chips = showStopped ? [...live, ...stopped] : live;
-  // Mood is the default outcome, so the default subject is the first other tracker.
-  const selected = model.byId(selectedId ?? '') ?? live.find((d) => d.id !== 'mood') ?? live[0] ?? null;
+  const selected = model.byId(trackerId) ?? null;
   const weekly = model.rangeDays > 182;
 
   const outcomes = useMemo(
@@ -61,11 +51,29 @@ export function ExploreSubTab({ model, selectedId, onSelect, unlocked, isPro, on
     return [{ result: compare(model.entries, selected, outcome, model.range, lag) }];
   }, [model, selected, outcome, lag]);
 
+  // Every outcome at once, same day: what this tracker goes with, biggest difference first.
+  const goesWith = useMemo(() => {
+    if (!selected || !unlocked || selected.kind === 'set') return [];
+    // Each difference as a share of its outcome's spread, so steps and a 1 to 10 scale compare fairly.
+    const rows = outcomes
+      .map((o) => {
+        const r = compare(model.entries, selected, o, model.range, 0);
+        return { o, r, share: r.delta === null ? 0 : Math.abs(r.delta) / spreadOf(o, model.seriesOf(o)) };
+      })
+      .filter(({ r, share }) => r.delta !== null && share >= GOES_WITH_MIN)
+      .sort((a, b) => b.share - a.share)
+      .slice(0, GOES_WITH_MAX);
+    const top = Math.max(...rows.map((x) => x.share), 1e-9);
+    return rows.map((x) => ({ ...x, share: x.share / top }));
+  }, [model, selected, outcomes, unlocked]);
+
   if (!selected) return <p className="text-xs text-pn-muted">{t('wellness.trackers.empty')}</p>;
   const series = model.seriesOf(selected);
   const { headline, sub } = cardNumbers(selected, series, t);
   const name = trackerName(selected, t);
   const agg = aggregate(series, selected);
+  const weekdayValues = selected.kind === 'scale' || selected.kind === 'measure' ? weekdayAverages(series) : null;
+  const weekdays = weekdayValues && weekdayValues.every((v) => v !== null) ? weekdayValues : null;
   const formatPoint = (v: unknown) => {
     if (typeof v === 'boolean') return v ? t('trackers:custom.yes') : t('trackers:custom.no');
     if (typeof v === 'string') return levelLabel(selected, v, t);
@@ -76,37 +84,8 @@ export function ExploreSubTab({ model, selectedId, onSelect, unlocked, isPro, on
 
   return (
     <>
-      <div className="flex flex-wrap gap-1.5">
-        {chips.map((d) => {
-          const on = d.id === selected.id;
-          return (
-            <button
-              key={d.id}
-              type="button"
-              onClick={() => onSelect(d.id)}
-              className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${on ? 'text-white border-transparent' : 'border-divider text-pn-soft hover:border-pn-muted'} ${!visibleInUi(d) ? 'line-through' : ''}`}
-              style={on ? { backgroundColor: d.color } : undefined}
-            >
-              {trackerName(d, t)}
-            </button>
-          );
-        })}
-        {stopped.length > 0 && (
-          <button type="button" onClick={() => setShowStopped((v) => !v)} className="px-2.5 py-1 rounded-full text-[11px] border border-dashed border-divider text-pn-muted">
-            {t('wellness.trackers.stoppedChip', { count: stopped.length })}
-          </button>
-        )}
-      </div>
-
       <div>
-        <div className="flex items-baseline justify-between gap-2">
-          <span className="text-sm font-semibold inline-flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: selected.color }} />
-            {name}
-          </span>
-          <span className="text-[10px] text-pn-muted">{t(`range.${model.rangeId}`)}</span>
-        </div>
-        <div className="text-xl font-semibold mt-1">{headline}</div>
+        <div className="text-2xl font-semibold">{headline}</div>
         <div className="text-[11px] text-pn-muted">{sub}</div>
         {agg.kind === 'yesno' && (
           <div className="text-[11px] text-pn-muted">
@@ -115,25 +94,11 @@ export function ExploreSubTab({ model, selectedId, onSelect, unlocked, isPro, on
         )}
       </div>
 
-      <div>
-        <SectionEyebrow className="mb-2">{t('wellness.explore.calendar')}</SectionEyebrow>
-        <TrackerChart
-          spec={{ form: 'calendar', series: tail(series, CALENDAR_DAYS), color: selected.color, levels: selected.levels }}
-          height={Math.ceil(Math.min(series.points.length, CALENDAR_DAYS) / 7 + 1) * 20}
-          ariaLabel={`${name}: ${t('wellness.explore.calendar')}`}
-          formatValue={formatPoint}
-          onPickDay={onOpenDay}
-        />
-      </div>
-
-      {outcome && (
+      {/* The tracker's own chart when nothing else has data to set it against. */}
+      {!outcome && (
         <div>
-          <SectionEyebrow className="mb-2">{t('wellness.explore.against', { outcome: trackerName(outcome, t) })}</SectionEyebrow>
-          <TrackerChart spec={chartSpecFor(outcome, model.seriesOf(outcome), weekly)} height={64} ariaLabel={trackerName(outcome, t)} onPickDay={onOpenDay} />
-          <div className="mt-1">
-            <TrackerChart spec={chartSpecFor(selected, series, weekly)} height={selected.kind === 'yesno' ? 24 : 48} ariaLabel={name} formatValue={formatPoint} onPickDay={onOpenDay} />
-          </div>
-          <div className="flex justify-between text-[10px] text-pn-muted mt-1">
+          <TrackerChart spec={chartSpecFor(selected, series, weekly)} height={64} ariaLabel={name} formatValue={formatPoint} onPickDay={onOpenDay} />
+          <div className="flex justify-between text-[11px] text-pn-muted mt-1">
             <span>{formatDay(model.range.from, 'dayMonth')}</span>
             <span>{formatDay(model.range.to, 'dayMonth')}</span>
           </div>
@@ -142,58 +107,105 @@ export function ExploreSubTab({ model, selectedId, onSelect, unlocked, isPro, on
 
       {outcome && (
         <div>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="inline-flex rounded-md border border-divider overflow-hidden text-[11px]">
-              {([0, 1] as const).map((l) => (
-                <button key={l} type="button" onClick={() => setLag(l)} className={`px-3 py-1 ${lag === l ? 'bg-pn text-surface-2' : 'text-pn-soft'}`}>
-                  {t(l === 0 ? 'wellness.effects.sameDay' : 'wellness.effects.nextDay')}
-                </button>
-              ))}
+          <SectionEyebrow className="mb-2" icon={ChartLine}>{t('wellness.explore.against', { outcome: trackerName(outcome, t) })}</SectionEyebrow>
+          <TrackerChart spec={chartSpecFor(outcome, model.seriesOf(outcome), weekly)} height={64} ariaLabel={trackerName(outcome, t)} onPickDay={onOpenDay} />
+          <div className="mt-1">
+            <TrackerChart spec={chartSpecFor(selected, series, weekly)} height={selected.kind === 'yesno' ? 24 : 48} ariaLabel={name} formatValue={formatPoint} onPickDay={onOpenDay} />
+          </div>
+          <div className="flex justify-between text-[11px] text-pn-muted mt-1">
+            <span>{formatDay(model.range.from, 'dayMonth')}</span>
+            <span>{formatDay(model.range.to, 'dayMonth')}</span>
+          </div>
+        </div>
+      )}
+
+      {goesWith.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <SectionEyebrow icon={Sparkle}>{t('home.goesWith', { name })}</SectionEyebrow>
+            <span className="text-[11px] text-pn-muted">{t('home.goesWithHint', { side: sideLabels(goesWith[0]!.r, selected, t).a })}</span>
+          </div>
+          <div className="@container rounded-lg border border-divider bg-surface-2 px-3 divide-y divide-divider">
+            {goesWith.map(({ o, r, share }) => (
+              <EffectBarRow
+                key={o.id}
+                d={o}
+                label={trackerName(o, t)}
+                sub={t('home.daysSplit', { a: r.a.n, b: r.b.n })}
+                delta={r.delta ?? 0}
+                sure={<SureDots r={r} />}
+                share={share}
+                text={signedValue(o, r.delta ?? 0, t)}
+                tone={changeTone(o, r.delta ?? 0)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {weekdays && (
+        <div>
+          <SectionEyebrow className="mb-2" icon={CalendarCheck}>{t('home.byWeekday')}</SectionEyebrow>
+          <div className="rounded-lg border border-divider bg-surface-2 p-3">
+            <WeekdayChart values={weekdays} color={selected.color} format={(v) => formatNumber(v, 1)} />
+          </div>
+        </div>
+      )}
+
+      {outcome && (
+        <div>
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <div className="flex items-center gap-2">
+              <SettingsSegmented
+                label={`${t('wellness.effects.sameDay')} / ${t('wellness.effects.nextDay')}`}
+                value={lag === 0 ? 'same' : 'next'}
+                onChange={(v) => setLag(v === 'same' ? 0 : 1)}
+                options={[
+                  { value: 'same', label: t('wellness.effects.sameDay') },
+                  { value: 'next', label: t('wellness.effects.nextDay') },
+                ]}
+              />
+              {!isPro && <ProMark />}
             </div>
-            {!isPro && <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">{t('wellness.patterns.proBadge')}</span>}
+            {unlocked && outcomes.length > 1 && (
+              <label className="flex items-center gap-2 text-xs text-pn-soft">
+                {t('wellness.effects.compareWith')}
+                <select value={outcome.id} onChange={(e) => setOutcomeId(e.target.value)} className={SETTINGS_SELECT}>
+                  {outcomes.map((d) => <option key={d.id} value={d.id}>{trackerName(d, t)}</option>)}
+                </select>
+              </label>
+            )}
           </div>
           {unlocked ? (
             <div className="space-y-3">
               {results.map(({ result, tag }) => {
-                const oName = trackerName(outcome, t);
-                const label = tag ? levelLabel(selected, tag, t) : name;
+                const sides = sideLabels(result, selected, t);
                 // The bars share one scale: the outcome's declared range, or the larger mean.
                 const scale = outcome.max ?? Math.max(result.a.mean ?? 0, result.b.mean ?? 0, 1);
                 const widthA = result.a.mean === null ? 0 : (result.a.mean / scale) * 100;
                 const widthB = result.b.mean === null ? 0 : (result.b.mean / scale) * 100;
                 return (
                   <div key={tag ?? 'one'} className="rounded-lg border border-divider bg-track p-3">
-                    <div className="text-[10px] text-pn-muted mb-2">{label}: {ruleLabel(result, selected, t)}</div>
-                    {([['a', widthA, result.a, selected.color], ['b', widthB, result.b, undefined]] as const).map(([side, w, g, color]) => (
-                      <div key={side} className="grid grid-cols-[88px_1fr_36px] items-center gap-2 text-xs mb-1">
-                        <span className="text-pn-soft">
-                          {t(side === 'a' ? 'wellness.effects.withLabel' : 'wellness.effects.withoutLabel')}
-                          <span className="block text-[10px] text-pn-muted">{t('wellness.units.days', { count: g.n })}</span>
-                        </span>
-                        <span className="h-2.5 rounded bg-surface-0 overflow-hidden"><span className="block h-full rounded" style={{ width: `${Math.min(100, w)}%`, backgroundColor: color ?? 'var(--pn-border-stronger, #9ca3af)' }} /></span>
-                        <span className="tabular-nums text-end">{g.mean === null ? '-' : formatNumber(g.mean, 1)}</span>
-                      </div>
-                    ))}
-                    <div className="text-xs mt-2">
+                    {/* The finding first, in words; the bars below show it. */}
+                    <p className="text-sm text-pn mb-3">
                       {result.delta === null
                         ? result.shortfall && t('wellness.effects.shortfall', { count: result.shortfall.days, side: t(result.shortfall.side === 'a' ? 'wellness.effects.sideWith' : 'wellness.effects.sideWithout') })
-                        : t(result.delta >= 0 ? 'wellness.effects.higher' : 'wellness.effects.lower', { outcome: oName, delta: formatNumber(Math.abs(result.delta), 1) })}
-                    </div>
-                    {result.delta !== null && Math.abs(result.delta) >= 0.5 && (
-                      <div className="text-[11px] text-pn-muted mt-1">{compareSentence(result, selected, outcome, t)}</div>
-                    )}
+                        : compareSentence(result, selected, outcome, t)}
+                    </p>
+                    {([['a', widthA, result.a, selected.color, sides.a], ['b', widthB, result.b, undefined, sides.b]] as const).map(([side, w, g, color, label]) => (
+                      <div key={side} className="grid grid-cols-[minmax(0,9rem)_1fr_2.5rem] items-center gap-3 text-xs mb-2 last:mb-0">
+                        <span className="min-w-0">
+                          <span className="block text-pn-soft truncate">{label}</span>
+                          <span className="block text-[11px] text-pn-muted">{t('wellness.units.days', { count: g.n })}</span>
+                        </span>
+                        <span className="h-2.5 rounded bg-surface-0 overflow-hidden"><span className="block h-full rounded" style={{ width: `${Math.min(100, w)}%`, backgroundColor: color ?? 'var(--pn-border-stronger, #9ca3af)' }} /></span>
+                        <span className="tabular-nums text-end text-sm font-semibold">{g.mean === null ? '-' : formatNumber(g.mean, 1)}</span>
+                      </div>
+                    ))}
                   </div>
                 );
               })}
-              <p className="text-[10px] text-pn-muted">{t('wellness.effects.footnote')}</p>
-              {outcomes.length > 1 && (
-                <label className="flex items-center gap-2 text-[11px] text-pn-muted">
-                  {t('wellness.effects.compareWith')}
-                  <select value={outcome.id} onChange={(e) => setOutcomeId(e.target.value)} className="px-2 py-1 rounded-md text-xs border border-divider bg-surface-0 text-pn">
-                    {outcomes.map((d) => <option key={d.id} value={d.id}>{trackerName(d, t)}</option>)}
-                  </select>
-                </label>
-              )}
+              <p className="text-[11px] text-pn-muted">{t('wellness.effects.footnote')}</p>
             </div>
           ) : (
             <button type="button" onClick={onOpenUpgrade} className="w-full rounded-lg border border-dashed border-divider p-3 text-xs text-pn-muted hover:text-pn hover:border-pn-muted transition-colors text-center">

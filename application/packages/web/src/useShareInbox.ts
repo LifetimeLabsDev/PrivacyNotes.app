@@ -16,7 +16,7 @@
  * when its turn comes, so only one file is ever held in memory. An item leaves
  * the inbox only once it is saved; one that fails stays for the next drain and
  * does not hold up the items after it.
- * Spec: ops/docs/plans/share-into-app.md
+ * Spec: ops/docs/archive/share-into-app.md
  */
 import { useEffect, useRef } from 'react';
 import { detectPlatform } from './devices';

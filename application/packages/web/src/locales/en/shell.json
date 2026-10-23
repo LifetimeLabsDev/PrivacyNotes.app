@@ -7,7 +7,6 @@
   "tasksList": {
     "title": "Tasks",
     "newTaskNote": "New task note",
-    "newTaskNoteWithHotkey": "New task note ({{hotkey}})",
     "hideCompleted": "Hide completed tasks",
     "showCompleted": "Show completed tasks",
     "searchPlaceholder": "Search tasks…",
@@ -237,8 +236,10 @@
     "color": "Color",
     "colorNone": "No color",
     "colorUseDefault": "Use default",
+    "icon": "Icon",
     "colorFromFolder": "From folder: {{name}}",
     "colorFromTag": "From tag: #{{name}}",
+    "colorOwnHint": "A color picked here fills this note's background. <setting>Folder and tag colors</setting> do not change it.",
     "details": "Details",
     "readOnly": "Read-only",
     "readOnlyDescription": "No edits until you toggle it off.",
@@ -281,12 +282,12 @@
     "endsAt": "Ends at",
     "noEnd": "None",
     "removeFromCalendar": "Remove from calendar",
-    "makeEvent": "Make this an event to repeat it",
+    "makeEvent": "Convert to <b>Event</b> to repeat it",
     "typeEvent": "Event",
     "repeatRemoved": "The repeat is removed"
   },
   "selectionToolbar": {
-    "exitSelectionTooltip": "Exit selection (Esc)",
+    "exitSelectionTooltip": "Exit selection",
     "exitSelection": "Exit selection",
     "unpin": "Unpin",
     "pin": "Pin",
@@ -318,6 +319,7 @@
     "showSize": "Show file size",
     "showTags": "Show folder & tags",
     "showCalendar": "Show calendar",
+    "showCheckIn": "Show check-in",
     "showWorkItems": "Show <b>Work</b> items",
     "showPersonalItems": "Show <b>Personal</b> items",
     "other": "Other",
@@ -336,12 +338,13 @@
     "groupsByLetter": "Grouped by first letter",
     "groupsNoneForSize": "Not available when sorted by size",
     "compactRows": "Compact rows",
-    "compactRowsHint": "No icon, less spacing"
+    "compactRowsHint": "No icon, less spacing",
+    "moodCalendar": "Show moods in the calendar"
   },
   "backfillPopover": {
     "calendarLabel": "Journal calendar",
     "today": "Today",
-    "chooseEntry": "Entries on {{date}}"
+    "chooseEntry": "Items on {{date}}"
   },
   "monthGrid": {
     "previousMonth": "Previous month",
@@ -353,11 +356,13 @@
     "dayWithEntry": "{{date}}, has an entry",
     "dayWithEntryIn": "{{date}}, has an entry in {{space}}",
     "dayWithItems_one": "{{date}}, {{count}} item",
-    "dayWithItems_other": "{{date}}, {{count}} items"
+    "dayWithItems_other": "{{date}}, {{count}} items",
+    "dayWithMood": "{{date}}, mood {{mood}}"
   },
   "contextMenu": {
     "newNote": "New Note",
     "newTask": "New Task",
+    "newKanban": "New Kanban board",
     "newLogin": "New Login",
     "newJournal": "New Journal",
     "newFile": "New File",
@@ -392,6 +397,8 @@
     "openBookmark": "Open",
     "copyBookmarkUrl": "Copy URL",
     "editBookmark": "Edit bookmark",
+    "saveAsNote": "Save as note",
+    "openClippedNote": "Open note",
     "openInTab": "Open in tab",
     "openInTabHint": "{{key}}-click",
     "closeTab": "Close tab",
@@ -490,6 +497,7 @@
     "assocWindowsManual": "Windows only lets you choose this yourself.",
     "assocWindowsOpen": "Open Windows settings",
     "assocChangeHint": "Change this in your system settings.",
+    "assocFinderSteps": "To change it, choose Get Info on a .md file in Finder, pick PrivacyNotes under Open with, and click Change All.",
     "assocFailed": "Could not change the default app.",
     "assocWorking": "Asking your system…",
     "copyPath": "Copy path",
@@ -502,7 +510,6 @@
     "importedManyToast": "Saved {{count}} files to your encrypted notes. The originals are untouched.",
     "alreadySavedToast": "“{{title}}” is already in your notes.",
     "importedManySkippedToast": "Saved {{saved}} files, skipped {{skipped}} already in your notes.",
-    "footerFiles": "Files",
     "bridge_one": "{{count}} match in Markdown",
     "bridge_other": "{{count}} matches in Markdown"
   },
@@ -716,6 +723,7 @@
     "workEmpty": "Work is empty. In Personal, open the menu of an item or a folder and choose Move to Work."
   },
   "calendar": {
+    "importLabel": "Import a calendar",
     "moveToToday": "Move to today",
     "moveToTomorrow": "Move to tomorrow",
     "moveToNextWeek": "Move to next week",
@@ -851,6 +859,7 @@
     "at": "at",
     "remove": "Remove {{alert}}",
     "reminder": "Reminder",
+    "medication": "Medication reminder",
     "open": "Open",
     "snooze": "Snooze 10 min",
     "offOnPhone": "Reminders are off on this phone",
@@ -860,12 +869,36 @@
   "quickAdd": {
     "group": "Create",
     "items": "Items",
+    "addTo": "Add to",
+    "newListWith_one": "New task list “{{title}}” with {{count}} task",
+    "newListWith_other": "New task list “{{title}}” with {{count}} tasks",
+    "appendHint": "Add “{{text}}” to a list or note you have",
+    "appendHintDetail": "Types >>, then the start of its name",
+    "appendNone": "No task list or note to add to yet",
+    "appendNoneDetail": "Type a name after >> to make a task list of that name",
+    "linkGroup": "Save this link",
+    "linkDetail": {
+      "bookmark": "Keeps the address. You name it next.",
+      "clip": "Saves the article text and pictures as a note.",
+      "login": "Keeps the address and names it after the site. You add the password next."
+    },
+    "addTasks_one": "Add {{count}} task to {{title}}",
+    "addTasks_other": "Add {{count}} tasks to {{title}}",
+    "addLine": "Add to {{title}}",
+    "added": "Added to {{title}}",
+    "notAdded": "Nothing was added to {{title}}. Try again.",
     "createNamed": "{{type}}: {{title}}",
     "types": {
       "event": "New event",
       "note": "New note",
       "task": "New task list",
-      "journal": "New journal entry"
+      "journal": "New journal entry",
+      "kanban": "New kanban board",
+      "login": "New login",
+      "file": "Upload a file",
+      "contact": "New contact",
+      "bookmark": "New bookmark",
+      "clip": "Clip a page"
     },
     "keepAsText": "Keep this as text",
     "placeholder": "Title, day, time, repeat...",
@@ -881,18 +914,133 @@
     "examplesGroup": "Example sentences",
     "syntax": {
       "group": "What you can type",
-      "day": { "label": "Day", "examples": "tomorrow · fri · next wed · Oct 31 · in 3 days", "insert": "tomorrow" },
-      "time": { "label": "Time", "examples": "3pm · 15:00 · 4-5pm · at 9", "insert": "3pm" },
-      "length": { "label": "Length", "examples": "for 30m · for 3 days · fri to sun", "insert": "for 1h" },
-      "repeat": { "label": "Repeat", "examples": "every friday · every weekday · every month on the 1st", "insert": "every friday" },
-      "alert": { "label": "Alert", "examples": "1h before · alert 10m", "insert": "1h before" },
-      "place": { "label": "Folder and tag", "examples": "/Travel · #school", "insert": "#" },
-      "space": { "label": "Space", "examples": "@work · @personal", "insert": "@work" },
-      "type": { "label": "Type", "examples": "task · note · journal (an event when none is typed)", "insert": "task" }
+      "day": {
+        "label": "Day",
+        "examples": "tomorrow · fri · next wed · Oct 31 · in 3 days",
+        "insert": "tomorrow"
+      },
+      "time": {
+        "label": "Time",
+        "examples": "3pm · 15:00 · 4-5pm · at 9",
+        "insert": "3pm"
+      },
+      "length": {
+        "label": "Length",
+        "examples": "for 30m · for 3 days · fri to sun",
+        "insert": "for 1h"
+      },
+      "repeat": {
+        "label": "Repeat",
+        "examples": "every friday · every weekday · every month on the 1st",
+        "insert": "every friday"
+      },
+      "alert": {
+        "label": "Alert",
+        "examples": "1h before · alert 10m",
+        "insert": "1h before"
+      },
+      "place": {
+        "label": "Folder and tag",
+        "examples": "/Travel · #school",
+        "insert": "#"
+      },
+      "space": {
+        "label": "Space",
+        "examples": "@work · @personal",
+        "insert": "@work"
+      },
+      "type": {
+        "label": "Type",
+        "examples": "task · note · journal (an event when none is typed)",
+        "insert": "task"
+      },
+      "append": {
+        "label": "Add to a list or note you have",
+        "examples": "milk, eggs >> Groceries · call the bank >> Errands",
+        "insert": "milk, eggs >>"
+      }
     },
     "label": "Quick add"
   },
   "offline": {
     "notLoaded": "You're offline, and this part of the app has not loaded yet. Try again when you're back online."
+  },
+  "checkIn": {
+    "prompt": "How are you today?",
+    "promptOn": "How were you on {{date}}?",
+    "edit": "Change what you logged",
+    "anotherDay": "Log another day",
+    "backToToday": "Back to today",
+    "options": "Check-in options",
+    "skipToday": "Skip today",
+    "hide": "Hide this card",
+    "change": "Change mood",
+    "saved": "Saved",
+    "chooseTrackers": "Choose trackers",
+    "settings": "Check-in settings",
+    "skipped": "Skipped for today.",
+    "startOver": "Start over",
+    "cleared": "Check-in cleared.",
+    "hidden": "Card hidden. Show check-in in the list options turns it back on.",
+    "undo": "Undo",
+    "done": "Done",
+    "write": "Write about today",
+    "writeOn": "Write about {{date}}",
+    "streak": "Day {{n}} in a row",
+    "streakFirst": "Day 1, a good start",
+    "allDone": "All done for today",
+    "niceWork": "Nice work showing up for yourself.",
+    "locked": "Today's entry is locked",
+    "lockedOn": "The entry for {{date}} is locked",
+    "toggle": "Show check-ins",
+    "hiddenCount_one": "{{count}} check-in is hidden.",
+    "hiddenCount_other": "{{count}} check-ins are hidden.",
+    "showThem": "Show"
+  },
+  "clipper": {
+    "saveAsNote": "Save as note",
+    "saving": "Saving as note…",
+    "stepPage": "Downloading the page",
+    "stepPictures": "Saving pictures, {{done}} of {{total}}",
+    "openNote": "Open note",
+    "alreadySaved": "This page is already saved as a note ({{date}}).",
+    "savedOn": "Saved as a note {{date}}",
+    "windowTitle": "Clip page",
+    "addressLabel": "Web address",
+    "addressPlaceholder": "Paste a link…",
+    "savePictures": "Save pictures",
+    "savePicturesHint": "Up to 20 pictures, stored with the note. They count toward your storage.",
+    "downloading": "Downloading the page…",
+    "downloadingPictures": "Downloading pictures, {{done}} of {{total}}",
+    "picturesLine_one": "{{count}} picture · {{size}}, saved with the note",
+    "picturesLine_other": "{{count}} pictures · {{size}}, saved with the note",
+    "sourceLabel": "Source",
+    "imageLabel": "Image",
+    "saved": "Saved as a note",
+    "somePicturesFailed_one": "Saved. {{count}} picture could not be saved and stays as a link.",
+    "somePicturesFailed_other": "Saved. {{count}} pictures could not be saved and stay as links.",
+    "storageFull_one": "Saved without {{count}} picture: your storage is full.",
+    "storageFull_other": "Saved without {{count}} pictures: your storage is full.",
+    "blocked": "This site blocks clipping. The bookmark is saved.",
+    "noMainText": "No main text found on this page. The bookmark is saved.",
+    "tooLong": "This page is too long to save as one note. The bookmark is saved.",
+    "offline": "You are offline. The bookmark is saved; try Save as note later.",
+    "timeout": "The page took too long to load. The bookmark is saved; try again later.",
+    "notAPage": "This address is not a web page. The bookmark is saved.",
+    "refused": "This address cannot be clipped.",
+    "rateLimit": "Too many pages saved in a short time. Try again in a minute.",
+    "failed": "The page could not be saved. The bookmark is saved.",
+    "shortText": "This page has very little text. It may be a sign-in, cookie or check page. Keep it as a bookmark instead?",
+    "keepBookmark": "Keep bookmark",
+    "saveAnyway": "Save anyway",
+    "shortTextSaved": "Saved, but the page had very little text. It may be a sign-in, cookie or check page.",
+    "demoLimit": "The demo's clipping limit is reached for now. Sign up to clip without it."
+  },
+  "eventCard": {
+    "show": "Show the schedule: {{when}}",
+    "hide": "Hide the schedule",
+    "until": "Until {{day}}",
+    "noAlert": "No alert",
+    "endsLater": "Ends another day"
   }
 }

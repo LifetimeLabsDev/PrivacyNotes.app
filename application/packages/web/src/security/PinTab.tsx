@@ -1,4 +1,5 @@
-import { Check, Minus, Timer, Warning } from '../icons';
+import { Check, Minus, ShieldSlash, Timer, Warning } from '../icons';
+import { Button } from '../ui';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useEscapeToClose } from '../useEscapeToClose';
@@ -44,7 +45,7 @@ import {
   secretReady,
   type SecretKind,
 } from '../secretKind';
-import { SectionEyebrow, SETTINGS_HELP, SettingsCallout } from '../settingsUI';
+import { SectionEyebrow, SETTINGS_BTN_PRIMARY, SETTINGS_HELP, SETTINGS_SELECT, SettingsCallout } from '../settingsUI';
 import { loadLocalSettings, saveCredential, type UserSettings } from '../userSettings';
 import { TIMEOUT_OPTIONS } from './timeoutOptions';
 
@@ -93,7 +94,7 @@ export function PinTab({
     PASSCODE_SETUP_ENABLED && pinIsPasscode() ? 'passcode' : 'pin');
   const [oldPinVerified, setOldPinVerified] = useState(false);
   // The phrase route out of a forgotten PIN, and the line that says it
-  // worked. Spec: ops/docs/plans/pin-recovery.md
+  // worked. Spec: ops/docs/archive/pin-recovery.md
   const [recovering, setRecovering] = useState(false);
   // The kind that was cleared, for the line that says it worked.
   const [recovered, setRecovered] = useState<SecretKind | null>(null);
@@ -422,7 +423,7 @@ export function PinTab({
           <button
             onClick={() => void verifyOldPin(oldPin)}
             disabled={!secretReady(existingKind, oldPin) || oldPinBusy}
-            className="w-full rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+            className={`w-full ${SETTINGS_BTN_PRIMARY}`}
           >
             {oldPinBusy ? t('pinTab.checking') : t('pinTab.verify')}
           </button>
@@ -537,7 +538,7 @@ export function PinTab({
               disabled={busy || (newKind === 'passcode'
                 ? !isValidPasscode(pin) || normalizeSecret(pin) !== normalizeSecret(confirm) || !devicesUpdated
                 : pin.length !== 4 || confirm.length !== 4)}
-              className="flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-4 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+              className={`flex-1 ${SETTINGS_BTN_PRIMARY}`}
             >
               {busy
                 ? t('common:state.saving')
@@ -546,14 +547,14 @@ export function PinTab({
                   : pinExists ? t('pinTab.updatePin') : t('pinTab.setPin')}
             </button>
             {pinExists && (
-              <button
+              <Button
                 data-setting="security.removePin"
+                icon={<ShieldSlash size={15} aria-hidden="true" className="shrink-0" />}
                 onClick={() => setShowRemoveConfirm(true)}
                 disabled={busy}
-                className="rounded-md border border-divider text-pn-muted hover:bg-surface-1 hover:text-danger px-4 py-2 text-sm transition"
               >
                 {existingKind === 'passcode' ? t('removePinDialog.removePasscode') : t('pinTab.removePin')}
-              </button>
+              </Button>
             )}
           </div>
         </>
@@ -571,7 +572,7 @@ export function PinTab({
             value={String(timeoutMinutes)}
             onChange={(e) => onTimeoutChange(Number(e.target.value))}
             disabled={!pinExists}
-            className="w-full rounded-md bg-surface-1 border border-divider px-3 py-2 text-sm focus:outline-none focus:border-accent disabled:opacity-50"
+            className={`w-full ${SETTINGS_SELECT} disabled:opacity-50`}
           >
             {TIMEOUT_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>

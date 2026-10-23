@@ -9,7 +9,7 @@
  * zoom buttons, and no control sits on it: the arrows have gutters of their
  * own, and on a phone they move into the bar.
  *
- * Spec: ops/docs/ui-patterns.md (section 98, the picture viewer)
+ * Spec: ops/docs/archive/ui-patterns.md (section 98, the picture viewer)
  */
 import { Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { lazyPart } from './chunkLoad';
@@ -314,7 +314,7 @@ function Notice({ text }: { text: string }) {
  * is down, and the zoom reaches the parent (the buttons, the swipe gate) when
  * the gesture ends. The area around the picture is backdrop, so a tap beside
  * a small picture closes the viewer the way a tap on the stage does.
- * Spec: ops/docs/plans/viewer-pinch-zoom.md
+ * Spec: ops/docs/archive/viewer-pinch-zoom.md
  */
 function Picture({ src, alt, zoom, onZoom, onPointerDown, onPointerUp, onPointerCancel }: {
   src: string;

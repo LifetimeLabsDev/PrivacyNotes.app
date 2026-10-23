@@ -4,8 +4,8 @@ import { ItemList, useContextTarget, useItemList } from './itemList';
 import type { LocalNote } from './db';
 import type { ListPrefs, ListPrefsStore } from './listPrefs';
 import type { View } from './views';
-import NoteRow, { itemDragSelection } from './NoteRow';
-import NoteCard from './NoteCard';
+import { itemDragSelection } from './NoteRow';
+import { WindowedNoteRow as NoteRow, WindowedNoteCard as NoteCard } from './WindowedNoteItem';
 import { ListNav } from './notesView/ListNav';
 import { ListSearchInput } from './ListSearchInput';
 import { ListPrefsPopover } from './ListPrefsPopover';
@@ -26,9 +26,10 @@ import { NewButton } from './NewButton';
  * Rows are the shared NoteRow, which draws the round initials chip for a
  * contact itself, so the prefs toggles and the sort rule are the same code
  * the rest of the app runs.
- * Spec: ops/docs/plans/contacts-pillar.md (section 4) + contacts-mockups.html
+ * Spec: ops/docs/archive/contacts-pillar.md (section 4) + contacts-mockups.html
  */
 export function ContactsList({
+  place = null,
   contacts,
   isNoteLocked,
   listPrefs,
@@ -36,6 +37,7 @@ export function ContactsList({
   onListPrefsChange,
   onSelectView,
   hiddenViews,
+  otherSpaceLine,
   importOffer,
   onOpenDrawer,
   search,
@@ -72,6 +74,9 @@ export function ContactsList({
   allTags,
   viewMode,
 }: {
+  /** The view and space this list draws, so a return lands where it was;
+   *  null under a search. Spec: ops/docs/archive/keep-my-place.md */
+  place?: string | null;
   /** Active (non-trashed) contact notes, already folder/tag scoped and
    *  searched by the owner (NotesView's displayNotes). */
   contacts: LocalNote[];
@@ -83,6 +88,9 @@ export function ContactsList({
   onListPrefsChange: (next: ListPrefsStore) => void;
   onSelectView: (v: View) => void;
   hiddenViews?: View[] | undefined;
+  /** With Spaces on, the empty-list line that says how many of this list's
+   *  items are in the other space; undefined when there are none. */
+  otherSpaceLine?: string;
   /** The synced import-offer dismissal; see ImportPrompt.tsx. */
   importOffer: ImportOffer;
   onOpenDrawer: () => void;
@@ -145,7 +153,7 @@ export function ContactsList({
   });
 
   const showSearchEntry = !!q && contacts.length === 0 && !selectionMode;
-  const list = useItemList([search, activeFolderName, activeTag], contacts.length);
+  const list = useItemList([search, activeFolderName, activeTag], contacts.length, place);
   const showFilterEntry =
     !selectionMode &&
     (activeFolderName !== null || activeTag !== null) &&
@@ -251,7 +259,7 @@ export function ContactsList({
         {empty && !filteredAway ? (
           <li className={`flex flex-col items-center justify-center text-center px-8 py-14 ${viewMode === 'grid' ? 'col-span-full' : ''}`}>
             <PILLAR_GLYPHS.contacts size={34} className="text-pn-muted" weight="duotone" aria-hidden="true" />
-            <p className="text-[13px] text-pn-muted mt-3">{t('contacts.emptyNone')}</p>
+            <p className="text-[13px] text-pn-muted mt-3">{otherSpaceLine ?? t('contacts.emptyNone')}</p>
             <h3 className="text-[15px] font-semibold mt-1 mb-4">{t('contacts.emptyTitle')}</h3>
             <div className="flex flex-wrap items-center justify-center gap-2">
               <button type="button" onClick={onRequestNew} className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md bg-accent-fill px-3.5 py-2 text-[13px] font-medium text-white transition hover:bg-accent-fill/90">
@@ -282,6 +290,7 @@ export function ContactsList({
             {contacts.slice(0, list.reveal.visible).map((n) => (
               viewMode === 'grid' ? (
               <NoteCard
+                windowed={contacts.length > 100}
                 key={n.id}
                 note={n}
                 isOpen={selectedId === n.id && !selectionMode}
@@ -307,6 +316,7 @@ export function ContactsList({
               />
               ) : (
               <NoteRow
+                windowed={contacts.length > 100}
                 key={n.id}
                 note={n}
                 isOpen={selectedId === n.id && !selectionMode}

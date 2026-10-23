@@ -92,7 +92,7 @@ fi
 # The share extension target, and the app's dependency on it, which is what
 # embeds the extension in the app. Tauri's template knows neither, so a fresh
 # init drops both; the sources stay in src-tauri/ios-share, outside gen/.
-# Spec: ops/docs/plans/share-into-app.md
+# Spec: ops/docs/archive/share-into-app.md
 if ! grep -q "privacynotes_Share:" "$GEN/project.yml"; then
   python3 - "$GEN/project.yml" "$HERE/src-tauri/ios-share/target.yml" <<'PYEOF'
 import sys

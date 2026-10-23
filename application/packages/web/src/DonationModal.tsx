@@ -1,7 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next';
-import { useEscapeToClose } from './useEscapeToClose';
-import { X } from './icons';
 import { Brand } from './Brand';
+import { Modal } from './ui';
 
 type Props = {
   reason: string;
@@ -10,31 +9,8 @@ type Props = {
 
 export function DonationModal({ reason, onClose }: Props) {
   const { t } = useTranslation('billing');
-  useEscapeToClose(onClose);
   return (
-    <div
-      className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 sm:p-6 z-50"
-      onClick={onClose}
-    >
-      <div
-        className="bg-surface-2 border border-divider text-pn rounded-lg max-w-md w-full p-6 space-y-4"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-start justify-between">
-          <div>
-            <div className="text-xs text-pn-muted uppercase tracking-wide">
-              {t('donation.eyebrow')}
-            </div>
-            <h2 className="text-lg font-semibold mt-1">{reason}</h2>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-pn-muted hover:text-pn-soft transition p-1 -m-1"
-            aria-label={t('common:actions.close')}
-          >
-            <X size={18} />
-          </button>
-        </div>
+    <Modal onClose={onClose} title={reason} subtitle={t('donation.eyebrow')} className="max-w-md p-6 space-y-4">
 
         <p className="text-sm text-pn-muted leading-relaxed">
           <Trans
@@ -64,7 +40,6 @@ export function DonationModal({ reason, onClose }: Props) {
             {t('donation.support')}
           </a>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

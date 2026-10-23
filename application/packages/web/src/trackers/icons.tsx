@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import {
   Barbell,
+  CheckSquare,
   Coffee,
   Drop,
   Footprints,
@@ -12,6 +13,7 @@ import {
   MoonStars,
   PersonSimpleRun,
   Pill,
+  PuzzlePiece,
   Smiley,
   SmileySad,
   Target,
@@ -26,6 +28,8 @@ import {
 export const TRACKER_ICONS: Record<string, ReactNode> = {
   mood: <Smiley size={12} />,
   emotions: <Heart size={12} />,
+  factors: <PuzzlePiece size={12} />,
+  habits: <CheckSquare size={12} />,
   sleep: <Moon size={12} />,
   activity: <PersonSimpleRun size={12} />,
   energy: <Lightning size={12} />,

@@ -7,7 +7,7 @@
  * encrypted store, so no later change can leak content across the boundary by
  * forgetting a filter.
  *
- * Spec: ops/docs/plans/markdown-folder.md (note-links never cross the boundary; a title must not leak)
+ * Spec: ops/docs/archive/markdown-folder.md (note-links never cross the boundary; a title must not leak)
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,7 @@ import type { View } from '../views';
 import type { ContextMenuItem } from '../ContextMenu';
 import { markdownSupport } from './capability';
 import { MarkdownDefaultAppPopover } from './MarkdownDefaultApp';
-import { useMarkdownDefaultApp } from './defaultApp';
+import { useDefaultApp } from './defaultApp';
 import { forgetFolder, rememberFolder } from './folderMemory';
 import { adaptFile, entryToNote, isSupportedFile, isTextFile, readOpenedFile } from './adapter';
 import {
@@ -106,7 +106,7 @@ export function MarkdownListPane({
    *  same pair `NotesList` uses. */
   viewMode: 'list' | 'grid';
   /** Open the reference card behind the `?`. Owned by the shell because the
-   *  modal is the shell's to render. Spec: ops/docs/plans/markdown-folder.md (12) */
+   *  modal is the shell's to render. Spec: ops/docs/archive/markdown-folder.md (12) */
   onExplain: () => void;
   /** A remembered folder awaiting the click that re-grants its permission. */
   reopenName: string | null;
@@ -141,7 +141,7 @@ export function MarkdownListPane({
    * absent once it is, which in grid mode with nothing open is the only thing on
    * screen that says so. One shared fetch backs both - see `defaultApp.ts`.
    */
-  const defaultApp = useMarkdownDefaultApp();
+  const defaultApp = useDefaultApp('markdown');
   /**
    * Multi-select, mirrored rather than reused.
    *
@@ -187,7 +187,7 @@ export function MarkdownListPane({
    * the picker anyway - "Outside our vault / No sync, encryption or backup"
    * sits two inches above the button - and the full card is one click away
    * on the `?`.
-   * Spec: ops/docs/plans/markdown-folder.md (section 12)
+   * Spec: ops/docs/archive/markdown-folder.md (section 12)
    */
   async function handleOpenFolder() {
     setError(null);
@@ -679,7 +679,7 @@ export function MarkdownListPane({
                 `below-end` and not `below`: a centred tip on the second-to-last
                 control in the row collided with the `?`'s own tip beside it. Same
                 position as that one, for the same reason it has it.
-                Spec: ops/docs/plans/markdown-folder.md (section 11) */}
+                Spec: ops/docs/archive/markdown-folder.md (section 11) */}
             {defaultApp && defaultApp.owner !== 'ours' && (
               <HoverLabel label={t('markdown.assocTitle')} position="below-end" className="shrink-0">
                 <button

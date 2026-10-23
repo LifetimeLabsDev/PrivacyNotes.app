@@ -13,7 +13,7 @@ import type {
  * Tracker values on a calendar axis: one slot per local day, a missing day
  * kept as a gap, never closed up. Every day is stepped with a local Date,
  * so a day is the person's calendar day, never a UTC slice.
- * Spec: ops/docs/plans/wellness-statistics.md (section 5)
+ * Spec: ops/docs/archive/wellness-statistics.md (section 5)
  */
 
 function parseDay(iso: string): Date {
@@ -69,7 +69,7 @@ export function buildSeries(entries: JournalEntry[], d: TrackerDescriptor, range
   const points: DayPoint[] = [];
   for (let day = range.from; day <= range.to; day = addDays(day, 1)) {
     const data = byDate.get(day);
-    points.push({ date: day, value: data ? d.read(data) : undefined });
+    points.push({ date: day, value: data ? d.read(data) : undefined, ...(data && d.doses ? { doses: d.doses(data, day) } : {}) });
   }
   return { from: range.from, to: range.to, points };
 }
@@ -144,8 +144,30 @@ function aggregateMedication(series: DaySeries) {
     if (p.value !== undefined) started = true;
   }
   const marked = taken + skipped + missed;
+  // Doses, where the descriptor counts them: the card then says what the
+  // adherence figures say (section 6.7 of the tracker spec), and an
+  // as-needed medication is a count of doses, never a share.
+  // As the statistics do, days before the first one with a log are before
+  // the person began recording this medication: unknown, not missed.
+  let expected = 0, takenDoses = 0, asNeeded = 0, counted = false, begun = false;
+  for (const p of series.points) {
+    if (p.value !== undefined) begun = true;
+    if (!p.doses || !begun) continue;
+    counted = true;
+    expected += p.doses.expected;
+    takenDoses += p.doses.taken;
+    asNeeded += p.doses.asNeeded;
+  }
+  if (counted) {
+    return {
+      kind: 'medication' as const, taken, skipped, missed, unmarked,
+      doses: { expected, taken: takenDoses, asNeeded },
+      rate: expected ? Math.round((takenDoses / expected) * 100) : null,
+    };
+  }
   return {
     kind: 'medication' as const, taken, skipped, missed, unmarked,
+    doses: null,
     rate: marked ? Math.round((taken / marked) * 100) : null,
   };
 }

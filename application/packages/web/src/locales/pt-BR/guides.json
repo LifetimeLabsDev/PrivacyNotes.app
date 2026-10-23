@@ -40,7 +40,7 @@
           "h": "O que vem junto",
           "p": [
             "Cada evento chega com o dia, o horário e a duração, inclusive os eventos de vários dias. Os eventos repetidos mantêm a regra de repetição, e uma ocorrência que você moveu ou excluiu no Google continua movida ou excluída. Cada calendário vira uma pasta.",
-            "Os lembretes que você definiu em um evento também chegam, inclusive os lembretes por e-mail: eles viram lembretes do app, que precisam do PrivacyNotes Pro para tocar. Um evento que usava os lembretes padrão do seu calendário chega sem lembrete, porque o Google não grava os padrões no arquivo. O local, o link da videochamada, os convidados e a descrição vão para o texto do evento. Os horários aparecem como estavam neste dispositivo no momento da importação.",
+            "Os lembretes que você definiu em um evento também chegam, inclusive os lembretes por e-mail: [eles viram lembretes do app](/br/help/reminders/), que precisam do PrivacyNotes Pro para tocar. Um evento que usava os lembretes padrão do seu calendário chega sem lembrete, porque o Google não grava os padrões no arquivo. O local, o link da videochamada, os convidados e a descrição vão para o texto do evento. [Os horários aparecem como estavam neste dispositivo no momento da importação](/br/help/calendar-time-zones/).",
             "Um único arquivo .ics de qualquer app de calendário também funciona, inclusive do Apple Calendar e do Outlook.",
             "Importe o mesmo arquivo de novo mais tarde e os eventos que já estão aqui são pulados, então só os novos são adicionados."
           ]
@@ -66,7 +66,7 @@
         {
           "h": "O que vem junto",
           "p": [
-            "Títulos, texto das notas e formatação chegam intactos. As checklists do Keep viram listas de tarefas nativas do PrivacyNotes, e os marcadores do Keep chegam como etiquetas.",
+            "Títulos, texto das notas e formatação chegam intactos. As checklists do Keep viram [listas de tarefas nativas do PrivacyNotes](/br/help/tasks/), e os marcadores do Keep chegam como etiquetas.",
             "Arraste o .zip inteiro do Takeout para o importador. Se você já descompactou, um arquivo .json avulso da pasta Takeout/Keep também funciona."
           ]
         }
@@ -95,7 +95,7 @@
         {
           "h": "O que vem junto",
           "p": [
-            "Estrutura de pastas, texto das notas e imagens incorporadas sobrevivem à mudança. As notas mantêm seus títulos, e os anexos aterrissam no armazenamento criptografado de arquivos ao lado da sua nota."
+            "Estrutura de pastas, texto das notas e imagens incorporadas sobrevivem à mudança. As notas mantêm seus títulos, e os anexos aterrissam no [armazenamento criptografado de arquivos](/br/help/attachment-limits/) ao lado da sua nota."
           ]
         }
       ]
@@ -126,9 +126,9 @@
         {
           "h": "O que vem junto",
           "p": [
-            "Suas etiquetas vêm como etiquetas. As etiquetas aninhadas, como #work/projects, também são reconstruídas como pastas, e cada nota vai para a pasta da sua etiqueta mais profunda. Os links entre notas viram links entre notas do PrivacyNotes, e um link para um título aponta para esse título.",
+            "Suas etiquetas vêm como etiquetas. As etiquetas aninhadas, como #work/projects, também são reconstruídas como pastas, e cada nota vai para a pasta da sua etiqueta mais profunda. [Os links entre notas viram links entre notas do PrivacyNotes](/br/help/note-links/), e um link para um título aponta para esse título.",
             "A formatação sobrevive: títulos, negrito, itálico, sublinhado, tachado, destaques nas cores do Bear, listas de tarefas, tabelas, blocos de código, citações, avisos, fórmulas e notas de rodapé. As imagens abrem em largura total, e os títulos recolhidos chegam abertos.",
-            "As notas fixadas continuam fixadas, as arquivadas vão para o Arquivo, as da lixeira vão para a Lixeira, as somente leitura continuam somente leitura, e cada nota mantém suas datas originais.",
+            "As notas fixadas continuam fixadas, [as arquivadas vão para o Arquivo](/br/help/archive/), as da lixeira vão para a Lixeira, as somente leitura continuam somente leitura, e cada nota mantém suas datas originais.",
             "As imagens e os arquivos anexados às suas notas são importados para o seu armazenamento. Uma nota que aponta para um arquivo que o backup não contém ainda assim é importada, e a prévia da importação diz quantos links isso afeta."
           ]
         }
@@ -152,9 +152,9 @@
           "h": "O que vem junto",
           "p": [
             "Sua estrutura de pastas é reconstruída como pastas de verdade, não achatada em etiquetas, não importa a profundidade do aninhamento. Uma nota em Work/Projects vai parar em uma pasta Work > Projects. Se você reimportar o mesmo vault, as pastas já criadas são reutilizadas em vez de duplicadas.",
-            "No plano gratuito você pode navegar por essas pastas na hora; criar, renomear e mover pastas é um recurso Pro, então uma importação do Obsidian é uma boa forma de experimentar antes de fazer upgrade.",
+            "No plano gratuito você pode navegar por essas pastas na hora; [criar, renomear e mover pastas é um recurso Pro](/br/help/folders/), então uma importação do Obsidian é uma boa forma de experimentar antes de fazer upgrade.",
             "O frontmatter YAML é entendido: tags, aliases e datas de criação são respeitados, e as #tags no corpo são mescladas ao campo de etiquetas. Na importação você também pode marcar \"Também etiquetar as notas por pasta\" para adicionar o nome de cada pasta como etiqueta, útil se você também gosta de filtrar por etiqueta.",
-            "Seus links [[...]] continuam funcionando: o PrivacyNotes os exibe como links entre notas, então as conexões entre notas sobrevivem à mudança. A pasta de configuração .obsidian e a .trash são puladas automaticamente."
+            "Seus links [[...]] continuam funcionando: [o PrivacyNotes os exibe como links entre notas](/br/help/note-links/), então as conexões entre notas sobrevivem à mudança. A pasta de configuração .obsidian e a .trash são puladas automaticamente."
           ]
         }
       ]
@@ -177,7 +177,7 @@
         {
           "h": "Notas Super, checklists e códigos 2FA mantêm o formato",
           "p": [
-            "As notas Super mantêm a formatação: títulos, listas, checklists, tabelas, blocos de código, destaques, cores, alinhamento de texto e seções recolhíveis. Um link para outra nota vira um link entre notas, e uma #hashtag no texto vira uma etiqueta da nota. As checklists vão para Tarefas, as planilhas viram tabelas e as entradas do autenticador viram logins no Cofre, com a chave 2FA. Etiquetas aninhadas viram pastas, e cada nota mantém também as suas etiquetas.",
+            "As notas Super mantêm a formatação: títulos, listas, checklists, tabelas, blocos de código, destaques, cores, alinhamento de texto e seções recolhíveis. [Um link para outra nota vira um link entre notas](/br/help/note-links/), e uma #hashtag no texto vira uma etiqueta da nota. As checklists vão para Tarefas, as planilhas viram tabelas e [as entradas do autenticador viram logins no Cofre, com a chave 2FA](/br/help/vault-totp/). Etiquetas aninhadas viram pastas, e cada nota mantém também as suas etiquetas.",
             "Os arquivos que você enviou ao Standard Notes ficam no servidor deles, então o backup guarda apenas os nomes. Cada nota importada marca onde havia um arquivo. Baixe esses arquivos do Standard Notes e adicione-os à nota de novo."
           ]
         },
@@ -230,7 +230,7 @@
         {
           "h": "O que vem junto",
           "p": [
-            "Dos .docx: negrito, itálico, sublinhado, tachado, listas com marcadores e numeradas, e caixas de seleção (que viram listas de tarefas nativas) sobrevivem todos. Dos .txt: o texto, e nada mais.",
+            "Dos .docx: negrito, itálico, sublinhado, tachado, listas com marcadores e numeradas, e caixas de seleção (que viram [listas de tarefas nativas](/br/help/tasks/)) sobrevivem todos. Dos .txt: o texto, e nada mais.",
             "As imagens incorporadas numa nota do Samsung precisam ser transferidas manualmente: o importador sinaliza cada nota que tinha uma, então você sabe exatamente onde recolocá-las. O texto, os títulos e as datas chegam todos na mesma passada."
           ]
         }
@@ -254,7 +254,7 @@
         {
           "h": "Onde as coisas aterrissam",
           "p": [
-            "Logins viram entradas de Login do Cofre (com os ícones dos sites), cartões viram entradas de cartão, chaves SSH viram entradas de chave SSH, e notas seguras mais identidades chegam como notas legíveis. Pastas do Bitwarden viram etiquetas, e favoritos chegam com estrela. As chaves de autenticação (TOTP) vêm junto, então seus códigos 2FA continuam funcionando.",
+            "Logins viram [entradas de Login do Cofre](/br/help/vault/) (com os ícones dos sites), cartões viram entradas de cartão, chaves SSH viram entradas de chave SSH, e notas seguras mais identidades chegam como notas legíveis. Pastas do Bitwarden viram etiquetas, e favoritos chegam com estrela. As chaves de autenticação (TOTP) vêm junto, então [seus códigos 2FA continuam funcionando](/br/help/vault-totp/).",
             "O arquivo exportado contém suas senhas em texto puro, então importe, confira se chegou tudo e depois apague o arquivo de vez. Dentro do PrivacyNotes tudo volta a ser criptografado, no seu dispositivo e a caminho do servidor."
           ]
         }
@@ -305,7 +305,7 @@
         {
           "h": "O que vem junto, e o que fica para trás",
           "p": [
-            "Tabelas, blocos de código, destaques, sublinhado, cor do texto e fórmulas sobrevivem todos. As checklists viram listas de tarefas, os lembretes de nota viram uma tarefa no topo da nota, anexos e imagens são recriptografados dentro do seu armazenamento, os recortes da web mantêm a URL de origem, e as notas de voz mantêm a transcrição. Os links internos viram links entre notas, casados pelo título da nota apontada, já que o Evernote não exporta nenhum id de nota.",
+            "Tabelas, blocos de código, destaques, sublinhado, cor do texto e fórmulas sobrevivem todos. [As checklists viram listas de tarefas](/br/help/tasks/), os lembretes de nota viram uma tarefa no topo da nota, anexos e imagens são recriptografados dentro do seu armazenamento, os recortes da web mantêm a URL de origem, e as notas de voz mantêm a transcrição. [Os links internos viram links entre notas](/br/help/note-links/), casados pelo título da nota apontada, já que o Evernote não exporta nenhum id de nota.",
             "As tarefas não atravessam: no lugar de cada bloco de tarefas a exportação deixa um marcador \"Content not supported\", sem títulos, sem prazos e sem estado de conclusão para ler. Os blocos criptografados continuam criptografados, então descriptografe-os no Evernote antes. Fontes personalizadas, alinhamento do texto e hierarquia de tags aninhadas são descartados."
           ]
         },
@@ -334,7 +334,7 @@
         {
           "h": "Como os arquivos são lidos",
           "p": [
-            "O frontmatter YAML é respeitado quando existe: os campos title, created, updated e tags são usados direto, o que faz deste também o caminho de restauração das exportações Markdown do próprio PrivacyNotes. Também lemos as etiquetas escritas como #hashtags no texto. Arquivos simples sem frontmatter usam o nome do arquivo como título e o conteúdo como corpo. A leitura é deliberadamente tolerante: aceitamos .md, .markdown, .mdown, .mkd e .txt.",
+            "O frontmatter YAML é respeitado quando existe: os campos title, created, updated e tags são usados direto, o que faz deste também [o caminho de restauração das exportações Markdown do próprio PrivacyNotes](/br/help/export/). Também lemos as etiquetas escritas como #hashtags no texto. Arquivos simples sem frontmatter usam o nome do arquivo como título e o conteúdo como corpo. A leitura é deliberadamente tolerante: aceitamos .md, .markdown, .mdown, .mkd e .txt.",
             "Compacte a pasta inteira e a estrutura vem junto. As subpastas são reconstruídas como pastas de verdade, em qualquer profundidade, e as imagens e arquivos para onde as suas notas apontam são importados junto. O que ninguém referencia fica para trás e é contado, então uma pasta cheia de prints antigos não come o seu armazenamento."
           ]
         }
@@ -374,9 +374,9 @@
         {
           "h": "O que vem junto",
           "p": [
-            "Seus cadernos são reconstruídos como pastas de verdade, não achatados em etiquetas, na mesma profundidade em que o Notesnook os aninhou. Uma nota em Work > Projects vai parar em uma pasta Work > Projects.",
+            "[Seus cadernos são reconstruídos como pastas de verdade](/br/help/folders/), não achatados em etiquetas, na mesma profundidade em que o Notesnook os aninhou. Uma nota em Work > Projects vai parar em uma pasta Work > Projects.",
             "Notas fixadas e favoritas continuam marcadas. O Notesnook mantém Pin e Favorite como duas propriedades separadas; o PrivacyNotes tem uma única lista de Fixados, então uma nota que fosse qualquer uma das duas vai parar lá.",
-            "Destaques, fórmulas e alinhamento do texto são preservados: texto destacado continua destacado, as fórmulas voltam a ser renderizadas como fórmulas, e blocos centralizados ou alinhados à direita mantêm o alinhamento. Fontes personalizadas, tamanhos de fonte e cores de texto não têm equivalente aqui, então esse estilo é descartado e o texto é mantido."
+            "Destaques, cores de texto, tamanhos de fonte, sobrescrito, subscrito, fórmulas e alinhamento do texto são preservados: cada cor passa para a cor mais próxima da nossa paleta, um tamanho de fonte que você escolheu vira Pequeno, Grande ou Muito grande, as fórmulas voltam a ser renderizadas como fórmulas, e blocos centralizados ou alinhados à direita mantêm o alinhamento. Fontes personalizadas não têm equivalente aqui, então a fonte é descartada e o texto é mantido."
           ]
         },
         {
@@ -414,15 +414,15 @@
         {
           "h": "O que vem junto",
           "p": [
-            "Cada entrada vai parar em Diários em vez de em Notas, datada do dia que o Diário mostra acima dela, então seu histórico mantém a forma.",
-            "Fotos e Live Photos são importadas como imagens, vídeos e memorandos de voz como anexos. A Apple entrega as fotos em HEIC, que a maioria dos navegadores não consegue exibir, então o PrivacyNotes converte cada uma para JPEG na entrada. Essa é a parte lenta de uma importação grande: algumas centenas de fotos podem levar vários minutos, e a linha de progresso conta elas para você.",
+            "[Cada entrada vai parar em Diários](/br/help/journal/) em vez de em Notas, datada do dia que o Diário mostra acima dela, então seu histórico mantém a forma.",
+            "Fotos e Live Photos são importadas como imagens, vídeos e memorandos de voz como anexos. A Apple entrega as fotos em HEIC, que a maioria dos navegadores não consegue exibir, então [o PrivacyNotes converte cada uma para JPEG na entrada](/br/help/image-quality/). Essa é a parte lenta de uma importação grande: algumas centenas de fotos podem levar vários minutos, e a linha de progresso conta elas para você.",
             "Negrito, itálico, sublinhado, tachado, cores de texto, listas com marcadores e numeradas, e citações em bloco sobrevivem todos."
           ]
         },
         {
           "h": "Fotos, vídeos e seu armazenamento",
           "p": [
-            "Um diário cheio de fotos é bem maior do que um diário cheio de texto, e conta contra seu armazenamento como qualquer outra coisa. A prévia da importação soma tudo antes de você confirmar, e se recusa a começar se não couber."
+            "Um diário cheio de fotos é bem maior do que um diário cheio de texto, e [conta contra seu armazenamento como qualquer outra coisa](/br/help/storage-usage/). A prévia da importação soma tudo antes de você confirmar, e se recusa a começar se não couber."
           ]
         },
         {
@@ -435,7 +435,7 @@
         {
           "h": "Estado de Espírito",
           "p": [
-            "Se você fez um registro em State of Mind, o PrivacyNotes preenche os rastreadores de humor e emoção dessa entrada sempre que o vocabulário da Apple corresponde a um dos nossos. Tudo o que não tem correspondência, e as áreas de vida que você marcou, ficam guardados como uma linha de texto para que nada se perca."
+            "Se você fez um registro em State of Mind, [o PrivacyNotes preenche os rastreadores de humor e emoção](/br/help/choose-trackers/) dessa entrada sempre que o vocabulário da Apple corresponde a um dos nossos. Tudo o que não tem correspondência, e as áreas de vida que você marcou, ficam guardados como uma linha de texto para que nada se perca."
           ]
         },
         {
@@ -507,7 +507,7 @@
           "h": "O que vem junto",
           "p": [
             "Seus cadernos são reconstruídos como pastas de verdade, aninhadas na profundidade em que estavam no UpNote. Uma nota que morava em vários cadernos vai parar no primeiro e carrega os outros como etiquetas.",
-            "Notas fixadas e do Quick Access chegam como Fixadas. Notas na lixeira vão parar na lixeira, modelos são importados como notas com a etiqueta #template, os links de uma nota para outra viram links entre notas, e cada nota mantém suas datas originais.",
+            "Notas fixadas e do Quick Access chegam como Fixadas. Notas na lixeira vão parar na lixeira, modelos são importados como notas com a etiqueta #template, [os links de uma nota para outra viram links entre notas](/br/help/note-links/), e cada nota mantém suas datas originais.",
             "A formatação sobrevive: listas de tarefas, tabelas, blocos de código, fórmulas, sublinhado, subscrito e sobrescrito, alinhamento do texto e destaques. Seções recolhíveis viram avisos recolhíveis e mantêm o estado aberto ou fechado. As cores de texto e as cores de destaque são ambas aproximadas à paleta do próprio editor, então um destaque amarelo continua amarelo e um verde continua verde. Cada nota chega como o UpNote a salvou pela última vez."
           ]
         },
@@ -554,7 +554,7 @@
           "h": "O que vem junto",
           "p": [
             "Seus cadernos são reconstruídos como pastas de verdade, aninhadas na mesma profundidade do Joplin, e cada nota mantém suas etiquetas e as datas de criação e de atualização que o Joplin mostrava.",
-            "As tarefas a fazer viram notas de tarefa com uma caixa que você pode marcar, já marcada quando a tarefa estava concluída, e a data de vencimento fica escrita ao lado do título. Os links entre notas viram links entre notas do PrivacyNotes. As imagens e os anexos são importados para o seu armazenamento e continuam no lugar na nota. As notas salvas em HTML, como muitos recortes da web, são convertidas com a formatação.",
+            "[As tarefas a fazer viram notas de tarefa](/br/help/tasks/) com uma caixa que você pode marcar, já marcada quando a tarefa estava concluída, e a data de vencimento fica escrita ao lado do título. [Os links entre notas viram links entre notas do PrivacyNotes](/br/help/note-links/). As imagens e os anexos são importados para o seu armazenamento e continuam no lugar na nota. As notas salvas em HTML, como muitos recortes da web, são convertidas com a formatação.",
             "As notas do caderno Conflicts do Joplin chegam com a etiqueta \"conflict\", para você achá-las e organizá-las. Se você usa a criptografia do Joplin, deixe-o terminar de descriptografar antes de exportar: um item que ainda está criptografado é pulado, e a prévia da importação diz quantos."
           ]
         }
@@ -615,7 +615,7 @@
             "Cada pasta que você tinha vem junto, aninhada do jeito que você deixou, dentro de uma pasta nova chamada Bookmarks. A barra de favoritos é a exceção: o conteúdo dela sobe um nível em vez de virar pasta, porque cada navegador chama essa barra de um jeito em cada idioma. O Safari não marca nada, então o Favorites dele chega mesmo como pasta.",
             "O dia em que você salvou cada favorito vem junto. O Safari é o único navegador que não escreve data nenhuma, então uma exportação do Safari chega com a data de hoje.",
             "O Firefox também é o único que salva tags e uma palavra-chave da barra de endereços junto com o favorito. Se o seu arquivo tiver, a prévia oferece uma caixa para manter, e as duas chegam aqui como etiquetas.",
-            "Três coisas ficam de fora de propósito. Os atalhos internos do navegador, como Most Visited, não são links de verdade: são contados e pulados. Os ícones dos sites também não são lidos do arquivo, porque a cópia guardada lá dentro envelhece; o PrivacyNotes busca uma nova. E uma pasta que não tinha nenhum favorito não é recriada.",
+            "Três coisas ficam de fora de propósito. Os atalhos internos do navegador, como Most Visited, não são links de verdade: são contados e pulados. Os ícones dos sites também não são lidos do arquivo, porque a cópia guardada lá dentro envelhece; [o PrivacyNotes busca uma nova](/br/help/bookmarks/). E uma pasta que não tinha nenhum favorito não é recriada.",
             "Importar o mesmo arquivo duas vezes é seguro. Um marcador cujo endereço você já salvou é ignorado em vez de adicionado de novo, e a prévia diz quantos foram."
           ]
         },
@@ -679,7 +679,7 @@
         {
           "h": "O que vem junto",
           "p": [
-            "Cada linha vira um login com o site, o usuário e a senha, mais a nota que o navegador guardava junto. O Firefox é o único dos três que grava datas, então os logins dele mantêm o dia em que você salvou e os outros chegam com a data de hoje. O Safari é o único que exporta uma chave de autenticação, e só se você guardava os códigos no Safari: quando tem, o código continua funcionando aqui.",
+            "Cada linha vira um login com o site, o usuário e a senha, mais a nota que o navegador guardava junto. O Firefox é o único dos três que grava datas, então os logins dele mantêm o dia em que você salvou e os outros chegam com a data de hoje. O Safari é o único que exporta uma chave de autenticação, e só se você guardava os códigos no Safari: quando tem, [o código continua funcionando aqui](/br/help/vault-totp/).",
             "Os navegadores salvam uma entrada por página de login, então uma exportação grande costuma trazer várias linhas da mesma empresa. Todas entram, e depois você junta ou apaga.",
             "O navegador guarda as senhas numa lista plana, então não há estrutura de pastas para reconstruir. Em vez disso, cada login chega com uma etiqueta, o que abre o lote inteiro em um clique."
           ]
@@ -774,7 +774,7 @@
         {
           "h": "Os links Zettelkasten guardam o texto, não o destino",
           "p": [
-            "O Zettlr liga as notas por identificador, então um link se lê [[20260823120000]]. A gente mantém os links entre notas exatamente como estão escritos, o que significa que um link por identificador só acha a nota dele aqui se alguma nota realmente tiver esse identificador como título. Os links escritos com o nome do arquivo funcionam normalmente: se você depende deles, mude o formato de link interno para o nome do arquivo antes de exportar.",
+            "O Zettlr liga as notas por identificador, então um link se lê [[20260823120000]]. [A gente mantém os links entre notas exatamente como estão escritos](/br/help/note-links/), o que significa que um link por identificador só acha a nota dele aqui se alguma nota realmente tiver esse identificador como título. Os links escritos com o nome do arquivo funcionam normalmente: se você depende deles, mude o formato de link interno para o nome do arquivo antes de exportar.",
             "Chaves de citação como [@doe2026] são texto para a gente. Chegam sem mudança e deixam de ser clicáveis."
           ]
         },
@@ -812,6 +812,57 @@
           "h": "As duas extensões servem",
           "p": [
             "O Notes escreve .txt de fábrica e .md quando você ou a sua administração mudam a configuração. Aqui a gente lê as duas, junto com .markdown, .mdown e .mkd, então antes de exportar você não precisa renomear nada nem mexer no servidor."
+          ]
+        }
+      ]
+    },
+    "contacts": {
+      "app": "Contatos (vCard)",
+      "title": "Exporte os seus contatos",
+      "metaTitle": "Como exportar seus contatos como vCard - PrivacyNotes",
+      "lead": "Todo celular e toda agenda de contatos conseguem exportar seus contatos como um único arquivo .vcf, e o PrivacyNotes lê esse arquivo diretamente, fotos incluídas.",
+      "sections": [
+        {
+          "h": "Exporte do seu iPhone",
+          "steps": [
+            "Abra o app Contatos e toque em \"Listas\" no canto superior esquerdo.",
+            "Toque e segure \"Todos os Contatos\" e escolha Exportar.",
+            "Salve o .vcf no app Arquivos ou envie-o por AirDrop para o dispositivo em que você vai importar."
+          ]
+        },
+        {
+          "h": "Exporte do seu Mac ou do iCloud",
+          "steps": [
+            "No app Contatos, selecione \"Todos os Contatos\" e pressione Command-A.",
+            "Escolha Arquivo > Exportar > Exportar vCard.",
+            "Em [icloud.com/contacts](https://www.icloud.com/contacts), selecione tudo, abra o menu \"...\" e escolha \"Exportar vCard\"."
+          ]
+        },
+        {
+          "h": "Exporte do Android ou do Google Contatos",
+          "steps": [
+            "No app Google Contatos, toque em \"Fix & manage\" (corrigir e gerenciar) > \"Export to file\" (exportar para arquivo).",
+            "Em [contacts.google.com](https://contacts.google.com), escolha Export (exportar) e selecione \"vCard (for iOS Contacts)\".",
+            "Em um celular Samsung, abra Contatos > Gerenciar contatos > Importar ou exportar contatos > Exportar."
+          ]
+        },
+        {
+          "h": "Escolha vCard, não CSV",
+          "p": [
+            "O Google oferece dois formatos CSV ao lado do vCard. O importador lê apenas arquivos .vcf, então um CSV não aparece no seletor de arquivos. Exporte de novo e escolha vCard."
+          ]
+        },
+        {
+          "h": "O que vem junto",
+          "p": [
+            "Todos os cartões do arquivo vêm junto: nomes, telefones, endereços de e-mail, endereços postais, aniversários e outras datas, sites, perfis em redes sociais e notas. Os seus próprios rótulos ficam como você os digitou, então \"Trabalho da mãe\" continua \"Trabalho da mãe\".",
+            "Uma foto dentro do arquivo vem junto. Uma foto que é só um link da web continua sendo um link, e nada é baixado. [Quando as fotos não cabem no seu armazenamento](/br/help/storage-usage/), os contatos são importados mesmo assim e as fotos ficam de fora."
+          ]
+        },
+        {
+          "h": "Importe o mesmo arquivo de novo quando quiser",
+          "p": [
+            "Uma segunda importação pula as pessoas que você já tem. Ela compara cada cartão pelo ID, depois pelo nome junto com um telefone em comum, depois por um endereço de e-mail em comum. Os contatos que você já salvou não são alterados, então as suas edições aqui ficam seguras."
           ]
         }
       ]

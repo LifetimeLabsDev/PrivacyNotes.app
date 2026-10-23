@@ -6,13 +6,15 @@ import { intlLocale } from './languages';
 import type { Space } from './spaces';
 import type { LocalNote } from './db';
 import { typeGlyph } from './NoteRow';
+import { moodColor } from './moodColors';
+import { moodAnchor } from './moodMark';
 
 /**
  * One month of days. It draws and reports a click, nothing else: the hosts
  * own the data and decide what a picked day does. It replaces the browser
  * date field, whose calendar is a separate window the page cannot place,
  * mark or connect to an entry.
- * Spec: ops/docs/plans/journal-calendar.md
+ * Spec: ops/docs/archive/journal-calendar.md
  */
 
 /** A local ISO day as a Date at noon, so a daylight-saving change never moves
@@ -121,6 +123,9 @@ type Props = {
    *  takes an overlay (`renderWeek`, the multi-day bars). `small` is the
    *  240 px grid of dots every popover and card draws. */
   size?: 'small' | 'large';
+  /** A `small` grid as wide as the check-in card above it, for the band at
+   *  the top of a list: the full width of the list since 2026-10-22. */
+  wide?: boolean;
   /** The focused day, when the host keeps it (the Calendar pillar keeps the
    *  month across an open item and Back). The grid keeps its own otherwise. */
   focus?: string;
@@ -143,6 +148,10 @@ type Props = {
   weekNumbers?: boolean;
   /** Large: a list item dragged over a day, and dropped on it. */
   drop?: { accepts: (e: React.DragEvent) => boolean; onDrop: (day: string, e: React.DragEvent) => void };
+  /** Small: the mood look of the Journals calendar. A day with a mood is a
+   *  disc in its color, a day written without one a ring; the dots give way.
+   *  Spec: ops/issues/0439.md (Spec) */
+  moodOf?: (day: string) => number | 'written' | undefined;
 };
 
 /** The ISO 8601 week number of a day. */
@@ -155,7 +164,7 @@ function isoWeek(day: string): number {
 
 export function MonthGrid({
   marked, selected, initialMonth, onPick, weeks = 6, onToggleWeeks, onToday,
-  size = 'small', focus: heldFocus, onFocusChange, renderDay, renderWeek, onAdd, onDayMenu, headerEnd, headerBelow, headerStart, weekNumbers = false, drop,
+  size = 'small', wide = false, focus: heldFocus, onFocusChange, renderDay, renderWeek, onAdd, onDayMenu, headerEnd, headerBelow, headerStart, weekNumbers = false, drop, moodOf,
 }: Props) {
   const { t } = useTranslation('shell');
   const today = toLocalIso(new Date());
@@ -246,9 +255,11 @@ export function MonthGrid({
   // Every calendar in the app draws through here: the hosts give a container
   // and nothing else, so the width, the title, the Today row and the day
   // states stay one design in the list, the popovers and the entry menu.
-  const titleClass = 'inline-flex items-center gap-1 rounded-md px-2 py-1 text-[13px] font-medium text-pn';
+  // Under 208 px (the short title's width) the title and the header buttons
+  // tighten, so the arrows and a host's button still fit beside the title.
+  const titleClass = 'inline-flex items-center gap-1 rounded-md px-2 @max-[207.98px]/month:px-1 py-1 text-[13px] font-medium text-pn';
   return (
-    <div className="@container/month w-full max-w-[240px] mx-auto select-none">
+    <div className={`@container/month w-full ${wide ? '' : 'max-w-[240px]'} mx-auto select-none`}>
       {onToday && (
         <button
           type="button"
@@ -278,7 +289,7 @@ export function MonthGrid({
             {heading}
           </span>
         )}
-        <span className="flex items-center">
+        <span className="flex shrink-0 items-center @max-[207.98px]/month:[&_button]:w-7">
           <button type="button" onClick={() => setFocus(step(-1))} aria-label={t(weeks === 1 ? 'monthGrid.previousWeek' : 'monthGrid.previousMonth')} className={navBtn}>
             <CaretLeft size={14} aria-hidden="true" />
           </button>
@@ -305,13 +316,22 @@ export function MonthGrid({
           const spaces = new Set(kinds.filter((k) => k !== null));
           const spaceName = spaces.size === 1 ? t(spaces.has('work') ? 'spaces.work' : 'spaces.personal') : null;
           const isSelected = day === selected;
+          const mood = moodOf && hasEntry ? moodOf(day) : undefined;
+          const moodDisc = typeof mood === 'number';
           // Selected: a filled square. Today: a ring. A dotted day keeps its
-          // dot in both, white on the fill, so no state hides another.
-          const circle = isSelected
-            ? 'bg-accent-fill text-white font-semibold'
-            : isToday
-              ? 'ring-[1.5px] ring-inset ring-accent text-accent font-semibold group-hover:bg-accent/10'
-              : `${inMonth ? 'text-pn' : 'text-pn-muted opacity-60'} group-hover:bg-pn/5`;
+          // dot in both, white on the fill, so no state hides another. In the
+          // mood look a disc carries the mood, and selected and today become
+          // an outline around it.
+          const circle = moodDisc
+            ? `font-semibold ${isSelected ? 'outline outline-2 outline-offset-1 outline-accent' : isToday ? 'outline outline-[1.5px] outline-offset-1 outline-accent' : ''} ${inMonth ? '' : 'opacity-60'}`
+            : mood === 'written' && !isSelected
+              ? `ring-[1.5px] ring-inset ring-current ${dayKindColor('journal')} ${isToday ? 'font-semibold' : ''} ${inMonth ? '' : 'opacity-60'}`
+              : isSelected
+                ? 'bg-accent-fill text-white font-semibold'
+                : isToday
+                  ? 'ring-[1.5px] ring-inset ring-accent text-accent font-semibold group-hover:bg-accent/10'
+                  : `${inMonth ? 'text-pn' : 'text-pn-muted opacity-60'} group-hover:bg-pn/5`;
+          const showDots = hasEntry && mood === undefined;
           return (
             <button
               key={day}
@@ -319,7 +339,8 @@ export function MonthGrid({
               data-day={day}
               tabIndex={day === focus ? 0 : -1}
               aria-label={
-                !hasEntry ? label
+                moodDisc ? t('monthGrid.dayWithMood', { date: label, mood: t(`trackers:mood.anchor.${moodAnchor(mood)}`) })
+                  : !hasEntry ? label
                   : kinds.length > 1 ? t('monthGrid.dayWithItems', { date: label, count: kinds.length })
                   : spaceName ? t('monthGrid.dayWithEntryIn', { date: label, space: spaceName })
                   : t('monthGrid.dayWithEntry', { date: label })
@@ -331,18 +352,23 @@ export function MonthGrid({
               onDragOver={drop ? (e) => { if (drop.accepts(e)) { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; if (dropDay !== day) setDropDay(day); } } : undefined}
               onDragLeave={drop ? () => setDropDay((d) => (d === day ? null : d)) : undefined}
               onDrop={drop ? (e) => { if (drop.accepts(e)) { e.preventDefault(); setDropDay(null); drop.onDrop(day, e); } } : undefined}
-              className={`group flex items-center justify-center h-10 [@media(hover:none)]:h-11 outline-none rounded-lg ${dropDay === day ? 'ring-2 ring-inset ring-accent bg-accent/10' : ''}`}
+              className={`group min-w-0 flex items-center justify-center h-10 [@media(hover:none)]:h-11 outline-none rounded-lg ${dropDay === day ? 'ring-2 ring-inset ring-accent bg-accent/10' : ''}`}
             >
               <span
-                className={`relative flex items-center justify-center w-8 h-9 pb-2 rounded-lg text-[13px] tabular-nums transition group-focus-visible:outline group-focus-visible:outline-2 group-focus-visible:outline-offset-1 group-focus-visible:outline-accent ${circle}`}
+                className={`relative flex items-center justify-center w-full max-w-8 ${moodOf ? 'aspect-square rounded-full' : 'h-9 pb-2 rounded-lg'} text-[13px] tabular-nums transition group-focus-visible:outline group-focus-visible:outline-2 group-focus-visible:outline-offset-1 group-focus-visible:outline-accent ${circle}`}
+                // A tint of the mood's color, not the color itself: the day's
+                // number stays in the text color and the month stays calm.
+                style={moodDisc ? { background: `color-mix(in srgb, ${moodColor(mood)} 32%, transparent)` } : undefined}
               >
                 {dayAtNoon(day).getDate()}
-                {hasEntry && (
-                  <span aria-hidden="true" className="absolute bottom-[6px] inset-x-0 flex justify-center gap-[3px]">
+                {showDots && (
+                  // Under 240 px a day cell is too narrow for three dots, so
+                  // the first one stays, a size smaller.
+                  <span aria-hidden="true" className="absolute bottom-[6px] inset-x-0 flex justify-center gap-[3px] @max-[239.98px]/month:gap-[2px]">
                     {dots.map((dot, i) => (
                       <span
                         key={i}
-                        className={`w-[5px] h-[5px] ${dot.space === 'work' ? 'rounded-[1px]' : 'rounded-full'} ${isSelected ? 'bg-white' : `bg-current ${dot.kind ? dayKindColor(dot.kind) : 'text-accent'}`}`}
+                        className={`w-[5px] h-[5px] @max-[239.98px]/month:w-1 @max-[239.98px]/month:h-1 ${i >= 1 ? '@max-[239.98px]/month:hidden' : ''} ${dot.space === 'work' ? 'rounded-[1px]' : 'rounded-full'} ${isSelected ? 'bg-white' : `bg-current ${dot.kind ? dayKindColor(dot.kind) : 'text-accent'}`}`}
                       />
                     ))}
                   </span>
@@ -362,7 +388,7 @@ export function MonthGrid({
  * button (the roving tab stop), the content under it is the host's chips,
  * the empty space and the plus create. Weekends take a tint, other months
  * fade, today's number is a filled square.
- * Spec: ops/docs/plans/calendar-pillar-spec.md (step 1)
+ * Spec: ops/docs/archive/calendar-pillar-spec.md (step 1)
  */
 function LargeMonth({
   focus, today, title, cells, weekStart, weeks, gridRef, onKeyDown, onPrev, onNext, onToday, onPick,

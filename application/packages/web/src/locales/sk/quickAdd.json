@@ -1,7 +1,8 @@
 {
   "words": {
-    "every": "každý, každú, každé, každá, každých, každom",
-    "weekday": "pracovný, pracovné, pracovných, všedný, všedné, všedných",
+    "add": "pridať, pridaj",
+    "every": "každý, každú, každé, každá, každých, každom, každého",
+    "weekday": "pracovný, pracovné, pracovných, všedný, všedné, všedných, pracovný deň, všedný deň, pracovné dni, všedné dni",
     "daily": "denne, každodenne",
     "weekly": "týždenne",
     "monthly": "mesačne",
@@ -32,11 +33,12 @@
     "hour": "h, hod, hodina, hodinu, hodiny, hodín",
     "day": "d, deň, dni, dní, dňa",
     "week": "týž, týždeň, týždne, týždňov, týždni",
-    "month": "mes, mesiac, mesiace, mesiacov, mesiaci",
+    "month": "mes, mesiac, mesiace, mesiacov, mesiaci, mesiaca",
     "year": "r, rok, roky, rokov, roku",
     "times": "krát, x, ×",
     "ordinal": ".",
     "work": "práca, prácu, práci",
-    "personal": "osobné, osobný, domov, doma"
+    "personal": "osobné, osobný, domov, doma",
+    "in": "za"
   }
 }

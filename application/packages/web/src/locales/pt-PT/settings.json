@@ -1,7 +1,9 @@
 {
   "shell": {
     "title": "Definições",
-    "allSettings": "Todas as definições"
+    "allSettings": "Todas as definições",
+    "fillWindow": "Usar a janela inteira",
+    "restoreWindow": "Voltar ao tamanho normal"
   },
   "account": {
     "title": "Conta",
@@ -106,6 +108,11 @@
     "sharedSlot_other": "{{count}} instalações partilham uma vaga de dispositivo",
     "added": "adicionado {{time}}",
     "lastActive": "ativo pela última vez {{time}}",
+    "versionUnknown": "versão desconhecida",
+    "idLabel": "ID",
+    "browser": "Navegador",
+    "update": "Atualizar",
+    "updateHint": "Esta versão já não consegue sincronizar. Atualiza a app neste dispositivo.",
     "removeAll": "Remover todas",
     "recentlyRemoved": "Removidos recentemente",
     "removedAt": "Removido {{time}}"
@@ -191,6 +198,8 @@
     "faviconsProxy": "Os ícones passam pelo nosso proxy. Apenas neste dispositivo.",
     "invisiblesTitle": "Caracteres invisíveis",
     "invisiblesDesc": "Mostra os espaços, as quebras de linha e as marcas de parágrafo enquanto escreves.",
+    "listsTabGeneral": "Geral",
+    "listsTabSidebar": "Barra lateral e Todos",
     "sidebarTitle": "<sb>Barra lateral</sb> e <all>Todos</all>",
     "sidebarDesc": "Que vistas aparecem na barra lateral e que itens contém a lista Todos.",
     "colInSidebar": "Barra lateral",
@@ -211,14 +220,30 @@
     "contentWidthFull": "Total",
     "lineSpacingTitle": "Espaçamento de linhas",
     "noteColorsTitle": "Cores de pastas e etiquetas",
+    "noteColorsPickerTitle": "Para todas as pastas e etiquetas",
     "noteColorsDesc": "Como uma nota mostra a cor da sua pasta ou etiqueta: a nota inteira, só o ícone ou nada.",
     "noteColorsBackground": "Fundo",
     "noteColorsExampleTitle": "Fim de semana em Lisboa",
     "noteColorsExampleFolder": "Viagens, uma pasta verde",
-    "noteColorsAccent": "Ícone",
+    "noteColorsAccent": "Só o ícone",
     "noteColorsOff": "Desligado",
+    "checkboxesTitle": "Caixas de verificação",
+    "taskConfettiTitle": "Confetti ao marcar",
+    "taskConfettiDesc": "Sai um pouco de confetti da caixa de verificação quando a marcas.",
     "sinkCheckedTitle": "Mover itens marcados para baixo",
     "sinkCheckedDesc": "Um item marcado passa para baixo dos itens por marcar da sua lista.",
+    "defaultAppsTitle": "Abrir com o PrivacyNotes",
+    "defaultAppsMarkdown": "Ficheiros Markdown",
+    "defaultAppsText": "Ficheiros de texto",
+    "defaultAppsMarkdownHint": "Os ficheiros .md em que fazes duplo clique abrem aqui.",
+    "defaultAppsTextHint": "Os ficheiros .txt e README em que fazes duplo clique abrem aqui.",
+    "defaultAppsTextHintWindows": "Os ficheiros .txt em que fazes duplo clique abrem aqui.",
+    "defaultAppsTextFinderSteps": "Para mudar isto, escolhe Obter informações num ficheiro .txt no Finder, seleciona o PrivacyNotes em Abrir com e clica em Alterar tudo.",
+    "defaultAppsMakeDefault": "Tornar predefinida",
+    "defaultAppsIsDefault": "Predefinida",
+    "defaultAppsOwnerOther": "Agora abrem com {{app}}.",
+    "defaultAppsOwnerOtherUnnamed": "Agora abrem com outra app.",
+    "defaultAppsOwnerNone": "Ainda não têm uma app predefinida.",
     "spacesTitle": "Espaços",
     "spacesDesc": "Divide a tua biblioteca em Pessoal e Trabalho e mostra um de cada vez.",
     "lineSpacingDesc": "O espaço entre linhas e parágrafos enquanto escreves.",
@@ -248,7 +273,8 @@
       "none": "Ainda não há temas aqui.",
       "sortLabel": "Ordenar",
       "sortVotes": "Mais votados",
-      "sortNewest": "Mais recentes"
+      "sortNewest": "Mais recentes",
+      "more": "Mais temas"
     },
     "custom": {
       "newTheme": "Novo tema",
@@ -449,6 +475,8 @@
     "wifiHoldTooltip": "Os ficheiros sobem assim que houver wi-fi. As notas continuam a sincronizar.",
     "notBackedUp": "Sem cópia de segurança",
     "notSynced": "Não sincronizado",
+    "firstSyncPending": "Este dispositivo ainda não concluiu a primeira sincronização com o servidor, por isso algumas notas ainda podem faltar aqui.",
+    "pullFailed": "A última sincronização não conseguiu transferir dados do servidor. Volta a tentar automaticamente.",
     "notBackedUpTooltip_one": "{{count}} nota não tem cópia de segurança. Clica para ver porquê.",
     "notBackedUpTooltip_other": "{{count}} notas não têm cópia de segurança. Clica para ver porquê.",
     "notBackedUpAria_one": "{{count}} nota não tem cópia de segurança",
@@ -531,7 +559,7 @@
     "alertBirthday": "Aniversários",
     "alertsHelp": "Os itens novos começam com estes alertas. Depois disso, cada item mantém os seus próprios alertas.",
     "reminderTitles": "Mostrar títulos nos lembretes",
-    "reminderTitlesHelp": "Desligado, um lembrete mostra a palavra Lembrete e a hora. Um item protegido pelo teu PIN mostra sempre só isso.",
+    "reminderTitlesHelp": "Ligado, um lembrete mostra o título do item. Desligado, mostra apenas \"Lembrete\" e a hora. Um item protegido pelo teu PIN nunca mostra o título.",
     "whereTitle": "Lembretes neste dispositivo",
     "reminderHint": {
       "mobile": "Os lembretes tocam neste telemóvel, também com o PrivacyNotes fechado.",
@@ -545,11 +573,14 @@
     "permissionDenied": "As notificações estão bloqueadas para o PrivacyNotes. Permite-as nas definições deste navegador ou dispositivo.",
     "weekNumbers": "Mostrar os números das semanas",
     "weekNumbersHelp": "Na vista de mês e nos calendários pequenos.",
-    "hours": "Dia e Semana abrem às",
+    "hours": "Primeira hora em Dia e Semana",
+    "checkInReminder": "Lembrete do check-in diário",
+    "checkInReminderHelp": "\"Como estás hoje?\" uma vez por dia, neste dispositivo. Não num dia em que já registaste o humor ou saltaste o check-in.",
+    "checkInReminderAt": "Toca às",
     "groupView": "Vista",
     "groupReminders": "Lembretes",
     "groupDefaults": "Alertas predefinidos",
-    "hoursHelp": "Desliza para cima para ver as horas anteriores.",
+    "hoursHelp": "As vistas Dia e Semana abrem nesta hora. As horas anteriores ficam acima.",
     "to": "até"
   }
 }

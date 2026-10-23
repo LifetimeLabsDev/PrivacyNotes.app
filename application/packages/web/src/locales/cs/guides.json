@@ -40,7 +40,7 @@
           "h": "Co se přenese",
           "p": [
             "Každá událost dorazí se svým dnem, časem a délkou, včetně událostí na několik dní. Opakované události si zachovají své pravidlo a výskyt, který byl v Google přesunutý nebo smazaný, zůstane přesunutý nebo smazaný. Každý kalendář se stane složkou.",
-            "Připomínky nastavené u události dorazí také, včetně e-mailových: stanou se připomínkami v aplikaci, a aby zazvonily, potřebují PrivacyNotes Pro. Událost, která používala výchozí připomínky kalendáře, dorazí bez připomínky, protože Google výchozí hodnoty do souboru nezapisuje. Místo, odkaz na videohovor, hosté i popis se zapíšou do textu události. Časy se zobrazí tak, jak je ukazovalo toto zařízení při importu.",
+            "Připomínky nastavené u události dorazí také, včetně e-mailových: [stanou se připomínkami v aplikaci](/cs/help/reminders/), a aby zazvonily, potřebují PrivacyNotes Pro. Událost, která používala výchozí připomínky kalendáře, dorazí bez připomínky, protože Google výchozí hodnoty do souboru nezapisuje. Místo, odkaz na videohovor, hosté i popis se zapíšou do textu události. [Časy se zobrazí tak, jak je ukazovalo toto zařízení při importu](/cs/help/calendar-time-zones/).",
             "Funguje i jeden soubor .ics z libovolné aplikace s kalendářem, včetně Apple Calendar a Outlooku.",
             "Když později naimportuješ stejný soubor znovu, události, které tu už jsou, se přeskočí, takže se přidají jen nové."
           ]
@@ -66,7 +66,7 @@
         {
           "h": "Co se přenese",
           "p": [
-            "Názvy, text poznámek i formátování dorazí neporušené. Zaškrtávací seznamy z Keepu se převedou na nativní seznamy úkolů v PrivacyNotes a popisky z Keepu dorazí jako značky.",
+            "Názvy, text poznámek i formátování dorazí neporušené. Zaškrtávací seznamy z Keepu se převedou na [nativní seznamy úkolů v PrivacyNotes](/cs/help/tasks/) a popisky z Keepu dorazí jako značky.",
             "Do importu přetáhni celý .zip z Takeoutu. Pokud už je rozbalený, funguje i jednotlivý soubor .json s poznámkou ze složky Takeout/Keep."
           ]
         }
@@ -95,7 +95,7 @@
         {
           "h": "Co se přenese",
           "p": [
-            "Struktura složek, text poznámek i vložené obrázky přechod přežijí. Poznámky si zachovají názvy a přílohy skončí v šifrovaném úložišti souborů u své poznámky."
+            "Struktura složek, text poznámek i vložené obrázky přechod přežijí. Poznámky si zachovají názvy a přílohy skončí v [šifrovaném úložišti souborů](/cs/help/attachment-limits/) u své poznámky."
           ]
         }
       ]
@@ -126,9 +126,9 @@
         {
           "h": "Co se přenese",
           "p": [
-            "Tvoje značky se přenesou jako značky. Vnořené značky jako #work/projects se navíc znovu postaví jako složky a každá poznámka skončí ve složce své nejhlouběji zanořené značky. Odkaz na jinou poznámku se změní na odkaz na poznámku a odkaz na nadpis míří na ten nadpis.",
+            "Tvoje značky se přenesou jako značky. Vnořené značky jako #work/projects se navíc znovu postaví jako složky a každá poznámka skončí ve složce své nejhlouběji zanořené značky. [Odkaz na jinou poznámku se změní na odkaz na poznámku](/cs/help/note-links/) a odkaz na nadpis míří na ten nadpis.",
             "Formátování přežije: nadpisy, tučné písmo, kurzíva, podtržení, přeškrtnutí, zvýraznění v barvách z Bear, seznamy úkolů, tabulky, bloky kódu, citace, callouty, matematika a poznámky pod čarou. Obrázky se otevřou v plné šířce a sbalené nadpisy dorazí rozbalené.",
-            "Připnuté poznámky zůstanou připnuté, archivované poznámky skončí v archivu, poznámky z koše v koši, poznámky jen pro čtení zůstanou jen pro čtení a každá poznámka si zachová svá původní data.",
+            "Připnuté poznámky zůstanou připnuté, [archivované poznámky skončí v archivu](/cs/help/archive/), poznámky z koše v koši, poznámky jen pro čtení zůstanou jen pro čtení a každá poznámka si zachová svá původní data.",
             "Obrázky a soubory připojené k poznámkám se naimportují do tvého úložiště. Poznámka, která odkazuje na soubor, jenž v záloze není, se přesto naimportuje a náhled importu ti řekne, kolika odkazů se to týká."
           ]
         }
@@ -152,9 +152,9 @@
           "h": "Co se přenese",
           "p": [
             "Tvoje struktura složek se znovu postaví jako skutečné složky, ne jako značky, ať je zanořená jakkoli hluboko. Poznámka ve Work/Projects skončí ve složce Work > Projects. Při opakovaném importu stejného vaultu se použijí už vytvořené složky, místo aby se duplikovaly.",
-            "V bezplatném tarifu si tyhle složky můžeš hned prohlížet; vytváření, přejmenování a přesouvání složek je funkce Pro, takže import z Obsidianu je dobrý způsob, jak si to vyzkoušet ještě předtím, než na Pro přejdeš.",
+            "V bezplatném tarifu si tyhle složky můžeš hned prohlížet; [vytváření, přejmenování a přesouvání složek je funkce Pro](/cs/help/folders/), takže import z Obsidianu je dobrý způsob, jak si to vyzkoušet ještě předtím, než na Pro přejdeš.",
             "YAML frontmatter umíme přečíst: značky, aliasy a data vytvoření respektujeme a značky uvedené přímo v textu (#takto) se sloučí do pole se značkami. Během importu můžeš navíc zaškrtnout „Označit poznámky i podle složky“ a přidat tak jako značku i název každé složky, což se hodí, když k filtrování používáš značky.",
-            "Tvoje odkazy [[...]] fungují dál: PrivacyNotes je vykreslí jako odkazy na poznámky, takže propojení mezi poznámkami přesun přežije. Konfigurační složka .obsidian a .trash se automaticky přeskočí."
+            "Tvoje odkazy [[...]] fungují dál: [PrivacyNotes je vykreslí jako odkazy na poznámky](/cs/help/note-links/), takže propojení mezi poznámkami přesun přežije. Konfigurační složka .obsidian a .trash se automaticky přeskočí."
           ]
         }
       ]
@@ -177,7 +177,7 @@
         {
           "h": "Poznámky Super, zaškrtávací seznamy a kódy 2FA si zachovají podobu",
           "p": [
-            "Poznámky Super si zachovají formátování: nadpisy, seznamy, zaškrtávací seznamy, tabulky, bloky kódu, zvýraznění, barvy, zarovnání textu a sbalitelné sekce. Odkaz na jinou poznámku se stane odkazem na poznámku a #hashtag v textu se stane značkou poznámky. Zaškrtávací seznamy skončí v Úkolech, tabulkové poznámky se stanou tabulkami a položky autentizátoru se stanou přihlašovacími údaji v Trezoru i s klíčem 2FA. Vnořené značky se stanou složkami a každá poznámka si navíc ponechá své značky.",
+            "Poznámky Super si zachovají formátování: nadpisy, seznamy, zaškrtávací seznamy, tabulky, bloky kódu, zvýraznění, barvy, zarovnání textu a sbalitelné sekce. [Odkaz na jinou poznámku se stane odkazem na poznámku](/cs/help/note-links/) a #hashtag v textu se stane značkou poznámky. Zaškrtávací seznamy skončí v Úkolech, tabulkové poznámky se stanou tabulkami a položky autentizátoru se stanou přihlašovacími údaji [v Trezoru i s klíčem 2FA](/cs/help/vault-totp/). Vnořené značky se stanou složkami a každá poznámka si navíc ponechá své značky.",
             "Soubory nahrané do Standard Notes zůstávají na jejich serveru, takže záloha obsahuje jen jejich názvy. Každá importovaná poznámka označí místo, kde byl soubor. Stáhni tyto soubory ze Standard Notes a přidej je do poznámky znovu."
           ]
         },
@@ -230,7 +230,7 @@
         {
           "h": "Co se přenese",
           "p": [
-            "Z exportu .docx přežije tučné písmo, kurzíva, podtržení, přeškrtnutí, odrážkové i číslované seznamy a zaškrtávací políčka (z nich se stanou nativní seznamy úkolů). Z exportu .txt jen text, nic dalšího.",
+            "Z exportu .docx přežije tučné písmo, kurzíva, podtržení, přeškrtnutí, odrážkové i číslované seznamy a zaškrtávací políčka (z nich se stanou [nativní seznamy úkolů](/cs/help/tasks/)). Z exportu .txt jen text, nic dalšího.",
             "Obrázky vložené v poznámce ze Samsungu přeneseš ručně: u každé poznámky, která nějaký měla, na to import upozorní, takže přesně víš, kam je vrátit. Text, názvy i data přijdou v jednom průchodu."
           ]
         }
@@ -254,7 +254,7 @@
         {
           "h": "Kam se co uloží",
           "p": [
-            "Z přihlašovacích údajů se stanou položky přihlašovacích údajů v Trezoru (i s ikonami webů), z karet položky karet, z SSH klíčů položky SSH klíčů a zabezpečené poznámky i identity dorazí jako čitelné poznámky. Složky z Bitwardenu se převedou na značky a oblíbené položky dorazí s hvězdičkou. Ověřovací klíče (TOTP) putují s sebou, takže tvoje kódy 2FA fungují dál.",
+            "Z přihlašovacích údajů se stanou [položky přihlašovacích údajů v Trezoru](/cs/help/vault/) (i s ikonami webů), z karet položky karet, z SSH klíčů položky SSH klíčů a zabezpečené poznámky i identity dorazí jako čitelné poznámky. Složky z Bitwardenu se převedou na značky a oblíbené položky dorazí s hvězdičkou. Ověřovací klíče (TOTP) putují s sebou, takže [tvoje kódy 2FA fungují dál](/cs/help/vault-totp/).",
             "Exportovaný soubor obsahuje tvoje hesla v čitelné podobě, takže ho naimportuj, zkontroluj, že všechno dorazilo, a pak ho pořádně smaž. V PrivacyNotes je pak všechno zase zašifrované, na tvém zařízení i cestou na server."
           ]
         }
@@ -305,7 +305,7 @@
         {
           "h": "Co se přenese a co ne",
           "p": [
-            "Tabulky, bloky kódu, zvýraznění, podtržení, barva textu i vzorce přežijí. Ze zaškrtávacích seznamů se stanou seznamy úkolů, z připomínky u poznámky úkol hned na jejím začátku, přílohy a obrázky se znovu zašifrují do tvého úložiště, webové výstřižky si nechají zdrojovou adresu a hlasové poznámky svůj přepis. Z interních odkazů se stanou odkazy na poznámky, spárované podle názvu odkazované poznámky, protože Evernote žádná id poznámek neexportuje.",
+            "Tabulky, bloky kódu, zvýraznění, podtržení, barva textu i vzorce přežijí. [Ze zaškrtávacích seznamů se stanou seznamy úkolů](/cs/help/tasks/), z připomínky u poznámky úkol hned na jejím začátku, přílohy a obrázky se znovu zašifrují do tvého úložiště, webové výstřižky si nechají zdrojovou adresu a hlasové poznámky svůj přepis. [Z interních odkazů se stanou odkazy na poznámky](/cs/help/note-links/), spárované podle názvu odkazované poznámky, protože Evernote žádná id poznámek neexportuje.",
             "Úkoly se nepřenesou: export nechá místo každého bloku úkolů jen zástupné „Content not supported“, bez názvů, termínů i stavu dokončení. Šifrované bloky zůstanou šifrované, takže si je nejdřív dešifruj v Evernotu. Vlastní fonty, zarovnání textu a zanořenou hierarchii značek zahodíme."
           ]
         },
@@ -334,7 +334,7 @@
         {
           "h": "Jak se soubory čtou",
           "p": [
-            "Pokud je v souboru frontmatter YAML, respektujeme ho: pole title, created, updated a tags použijeme přímo, díky čemuž je tohle zároveň cesta, jak obnovit vlastní exporty PrivacyNotes do Markdownu. Čteme i značky napsané jako #hashtagy v textu. U obyčejných souborů bez frontmatteru se jako název použije jméno souboru a jako tělo jeho obsah. Parser je záměrně tolerantní: přijme .md, .markdown, .mdown, .mkd i .txt.",
+            "Pokud je v souboru frontmatter YAML, respektujeme ho: pole title, created, updated a tags použijeme přímo, díky čemuž je tohle zároveň [cesta, jak obnovit vlastní exporty PrivacyNotes do Markdownu](/cs/help/export/). Čteme i značky napsané jako #hashtagy v textu. U obyčejných souborů bez frontmatteru se jako název použije jméno souboru a jako tělo jeho obsah. Parser je záměrně tolerantní: přijme .md, .markdown, .mdown, .mkd i .txt.",
             "Zabal celou složku a struktura půjde s ní. Podsložky se znovu postaví jako skutečné složky, v jakékoli hloubce, a obrázky i soubory, na které tvoje poznámky odkazují, se naimportují spolu s nimi. To, na co nic neodkazuje, zůstane stranou a spočítáme ti to, takže složka plná starých snímků obrazovky ti nesežere úložiště."
           ]
         }
@@ -374,9 +374,9 @@
         {
           "h": "Co se přenese",
           "p": [
-            "Tvoje poznámkové bloky se znovu postaví jako skutečné složky, ne jako značky, přesně v té hloubce, v jaké byly v Notesnooku zanořené. Poznámka ve Work > Projects skončí ve složce Work > Projects.",
+            "[Tvoje poznámkové bloky se znovu postaví jako skutečné složky](/cs/help/folders/), ne jako značky, přesně v té hloubce, v jaké byly v Notesnooku zanořené. Poznámka ve Work > Projects skončí ve složce Work > Projects.",
             "Připnuté a oblíbené poznámky zůstanou označené. Notesnook má Pin a Favorite jako dvě samostatné vlastnosti; PrivacyNotes má jediný seznam Připnuté, takže poznámka, která měla jednu z nich, skončí v něm.",
-            "Zvýraznění, matematika a zarovnání textu se přenesou tak, jak jsou: zvýrazněný text zůstane zvýrazněný, vzorce se znovu vykreslí jako matematika a bloky zarovnané na střed nebo doprava si zarovnání zachovají. Vlastní fonty, velikosti písma a barvy textu tady nemají obdobu, takže tohle stylování se zahodí a samotný text zůstane."
+            "Zvýraznění, barvy textu, velikosti písma, horní index, dolní index, matematika a zarovnání textu se přenesou tak, jak jsou: každá barva se přesune na nejbližší barvu v naší paletě, zvolená velikost písma se změní na Malé, Velké nebo Velmi velké, vzorce se znovu vykreslí jako matematika a bloky zarovnané na střed nebo doprava si zarovnání zachovají. Vlastní fonty tady nemají obdobu, takže se písmo zahodí a samotný text zůstane."
           ]
         },
         {
@@ -414,15 +414,15 @@
         {
           "h": "Co se přenese",
           "p": [
-            "Každý záznam skončí v Denících místo v Poznámkách, s datem dne, který nad ním Deník zobrazuje, takže tvoje historie zůstane v původní podobě.",
-            "Fotky a Live Photos se importují jako obrázky, videa a hlasové poznámky jako přílohy. Apple dodává fotky ve formátu HEIC, který většina prohlížečů nezobrazí, takže PrivacyNotes každou z nich cestou převede do JPEG. To je ta pomalá část velkého importu: pár set fotek může trvat několik minut, a řádek s průběhem je pro tebe průběžně počítá.",
+            "[Každý záznam skončí v Denících](/cs/help/journal/) místo v Poznámkách, s datem dne, který nad ním Deník zobrazuje, takže tvoje historie zůstane v původní podobě.",
+            "Fotky a Live Photos se importují jako obrázky, videa a hlasové poznámky jako přílohy. Apple dodává fotky ve formátu HEIC, který většina prohlížečů nezobrazí, takže [PrivacyNotes každou z nich cestou převede do JPEG](/cs/help/image-quality/). To je ta pomalá část velkého importu: pár set fotek může trvat několik minut, a řádek s průběhem je pro tebe průběžně počítá.",
             "Tučné písmo, kurzíva, podtržení, přeškrtnutí, barvy textu, odrážkové a číslované seznamy i citační bloky zůstanou zachované."
           ]
         },
         {
           "h": "Fotky, videa a tvoje úložiště",
           "p": [
-            "Deník plný fotek je mnohem větší než deník plný textu a počítá se do tvého úložiště stejně jako cokoli jiného. Náhled importu to spočítá předem a odmítne začít, kdyby se to nevešlo."
+            "Deník plný fotek je mnohem větší než deník plný textu a [počítá se do tvého úložiště stejně jako cokoli jiného](/cs/help/storage-usage/). Náhled importu to spočítá předem a odmítne začít, kdyby se to nevešlo."
           ]
         },
         {
@@ -435,7 +435,7 @@
         {
           "h": "Stav mysli",
           "p": [
-            "Pokud máš záznam z funkce State of Mind, PrivacyNotes u toho záznamu vyplní sledované hodnoty nálady a emocí všude tam, kde se Applova formulace shoduje s některou z našich. Cokoli, co se nepodaří spárovat, a životní oblasti, které jsi označil, zůstanou zachované jako řádek textu, aby se nic neztratilo."
+            "Pokud máš záznam z funkce State of Mind, PrivacyNotes u toho záznamu [vyplní sledované hodnoty nálady a emocí](/cs/help/choose-trackers/) všude tam, kde se Applova formulace shoduje s některou z našich. Cokoli, co se nepodaří spárovat, a životní oblasti, které jsi označil, zůstanou zachované jako řádek textu, aby se nic neztratilo."
           ]
         },
         {
@@ -507,7 +507,7 @@
           "h": "Co se přenese",
           "p": [
             "Tvoje zápisníky se znovu postaví jako skutečné složky, zanořené tak hluboko, jak byly v UpNote. Poznámka, která žila ve víc zápisnících, skončí v prvním z nich a ostatní si ponese jako značky.",
-            "Připnuté poznámky a poznámky z Quick Access dorazí jako Připnuté. Poznámky z koše skončí v koši, šablony se naimportují jako poznámky se značkou #template, propojení poznámek se převedou na odkazy na poznámky a každá poznámka si zachová svá původní data.",
+            "Připnuté poznámky a poznámky z Quick Access dorazí jako Připnuté. Poznámky z koše skončí v koši, šablony se naimportují jako poznámky se značkou #template, [propojení poznámek se převedou na odkazy na poznámky](/cs/help/note-links/) a každá poznámka si zachová svá původní data.",
             "Formátování přežije: zaškrtávací seznamy, tabulky, bloky kódu, matematika, podtržení, dolní i horní index, zarovnání textu a zvýraznění. Sbalitelné sekce se změní na sbalitelné callouty a zachovají si otevřený nebo zavřený stav. Barvy textu i barvy zvýraznění se napasují na vlastní paletu editoru, takže žluté zvýraznění zůstane žluté a zelené zelené. Každá poznámka dorazí tak, jak ji UpNote naposledy uložil."
           ]
         },
@@ -554,7 +554,7 @@
           "h": "Co se přenese",
           "p": [
             "Tvoje zápisníky se znovu postaví jako skutečné složky, zanořené tak hluboko, jak je zanořil Joplin, a každá poznámka si zachová své značky i data vytvoření a úpravy, která ti Joplin ukazoval.",
-            "Úkoly se stanou poznámkami s políčkem, které můžeš odškrtnout, a pokud byl úkol hotový, je už odškrtnuté; termín zůstane zapsaný vedle názvu. Odkazy na jiné poznámky zůstanou funkční jako odkazy na poznámky. Obrázky a přílohy se naimportují do tvého úložiště a v poznámce zůstanou na svém místě. Poznámky uložené jako HTML, například mnoho výstřižků z webu, se převedou i s formátováním.",
+            "[Úkoly se stanou poznámkami s políčkem](/cs/help/tasks/), které můžeš odškrtnout, a pokud byl úkol hotový, je už odškrtnuté; termín zůstane zapsaný vedle názvu. [Odkazy na jiné poznámky zůstanou funkční jako odkazy na poznámky](/cs/help/note-links/). Obrázky a přílohy se naimportují do tvého úložiště a v poznámce zůstanou na svém místě. Poznámky uložené jako HTML, například mnoho výstřižků z webu, se převedou i s formátováním.",
             "Poznámky ze zápisníku Conflicts v Joplin dorazí se značkou „conflict“, takže je snadno najdeš a roztřídíš. Pokud používáš šifrování v Joplin, nech ho před exportem dokončit dešifrování: položka, která je ještě šifrovaná, se přeskočí a náhled importu ti řekne, kolik jich je."
           ]
         }
@@ -615,7 +615,7 @@
             "Každá složka, kterou jsi měl, přijde s nimi a zůstane zanořená přesně tak, jak jsi ji nechal, uvnitř jedné nové složky s názvem Bookmarks. Lišta záložek je výjimka: její obsah se posune o úroveň výš, místo aby se z něj stala složka, protože každý prohlížeč tu lištu v každém jazyce pojmenuje jinak. Safari neoznačuje nic, takže jeho Favorites opravdu přijde jako složka.",
             "Den, kdy jsi každou záložku uložil, přijde s ní. Safari je jediný prohlížeč, který data nezapisuje vůbec, takže export ze Safari dorazí s dnešním datem.",
             "Firefox je zároveň jediný, který k záložce ukládá štítky a klíčové slovo pro adresní řádek. Když je tvůj soubor obsahuje, náhled nabídne zaškrtávátko, aby zůstaly, a obojí sem dorazí jako značky.",
-            "Tři věci zůstanou záměrně stranou. Vnitřní zkratky prohlížeče jako Most Visited nejsou skutečné odkazy, takže se spočítají a přeskočí. Ikony webů se ze souboru také nečtou, protože kopie uložená uvnitř zastarává; PrivacyNotes si stáhne čerstvou. A složka, ve které žádná záložka nebyla, se znovu nevytvoří.",
+            "Tři věci zůstanou záměrně stranou. Vnitřní zkratky prohlížeče jako Most Visited nejsou skutečné odkazy, takže se spočítají a přeskočí. Ikony webů se ze souboru také nečtou, protože kopie uložená uvnitř zastarává; [PrivacyNotes si stáhne čerstvou](/cs/help/bookmarks/). A složka, ve které žádná záložka nebyla, se znovu nevytvoří.",
             "Naimportovat stejný soubor dvakrát je bezpečné. Záložka, jejíž adresu už máš uloženou, se přeskočí místo toho, aby se přidala znovu, a náhled ti řekne, kolik jich bylo."
           ]
         },
@@ -679,7 +679,7 @@
         {
           "h": "Co přijde s sebou",
           "p": [
-            "Z každého řádku vzniknou přihlašovací údaje se stránkou, uživatelským jménem a heslem, a k tomu poznámka, kterou u nich prohlížeč držel. Datum zapisuje jako jediný z těch tří Firefox, takže jeho přihlašovací údaje si nesou den, kdy jsi je uložil, a ostatní přijdou s dnešním datem. Ověřovací klíč exportuje jako jediné Safari, a jen když jsi v něm kódy měl - pak kód funguje dál i tady.",
+            "Z každého řádku vzniknou přihlašovací údaje se stránkou, uživatelským jménem a heslem, a k tomu poznámka, kterou u nich prohlížeč držel. Datum zapisuje jako jediný z těch tří Firefox, takže jeho přihlašovací údaje si nesou den, kdy jsi je uložil, a ostatní přijdou s dnešním datem. Ověřovací klíč exportuje jako jediné Safari, a jen když jsi v něm kódy měl - [pak kód funguje dál i tady](/cs/help/vault-totp/).",
             "Prohlížeče ukládají zvláštní záznam pro každou přihlašovací stránku, takže velký export často obsahuje víc řádků pro jednu firmu. Naimportují se všechny a potom je můžeš spojit nebo smazat.",
             "Prohlížeč drží hesla v jednom plochém seznamu, takže není žádná struktura složek, kterou by šlo obnovit. Místo toho dorazí všechny přihlašovací údaje označené značkou, což ti celou dávku vytáhne na jedno kliknutí."
           ]
@@ -774,7 +774,7 @@
         {
           "h": "Odkazy Zettelkastenu si nesou text, ne cíl",
           "p": [
-            "Zettlr propojuje poznámky přes identifikátor, takže odkaz vypadá takto: [[20260823120000]]. My necháváme odkazy na poznámky přesně tak, jak jsou zapsané, což znamená, že odkaz přes identifikátor tu najde svou poznámku jen tehdy, když se nějaká poznámka opravdu jmenuje tímto identifikátorem. Odkazy psané názvem souboru fungují normálně, takže pokud na nich stavíš, přepni si před exportem formát interních odkazů na název souboru.",
+            "Zettlr propojuje poznámky přes identifikátor, takže odkaz vypadá takto: [[20260823120000]]. [My necháváme odkazy na poznámky přesně tak, jak jsou zapsané](/cs/help/note-links/), což znamená, že odkaz přes identifikátor tu najde svou poznámku jen tehdy, když se nějaká poznámka opravdu jmenuje tímto identifikátorem. Odkazy psané názvem souboru fungují normálně, takže pokud na nich stavíš, přepni si před exportem formát interních odkazů na název souboru.",
             "Citační klíče jako [@doe2026] jsou pro nás text. Projdou beze změny a přestanou být klikatelné."
           ]
         },
@@ -812,6 +812,57 @@
           "h": "Fungují obě přípony",
           "p": [
             "Notes ve výchozím stavu zapisuje .txt, a .md ve chvíli, kdy ty nebo tvůj správce změníte nastavení. Čteme tu obě, stejně jako .markdown, .mdown a .mkd, takže před exportem nemusíš nic přejmenovávat ani sahat na server."
+          ]
+        }
+      ]
+    },
+    "contacts": {
+      "app": "Kontakty (vCard)",
+      "title": "Vyexportuj si kontakty",
+      "metaTitle": "Jak vyexportovat kontakty jako vCard - PrivacyNotes",
+      "lead": "Každý telefon i adresář umí vyexportovat tvoje kontakty jako jeden soubor .vcf a PrivacyNotes ten soubor čte přímo, včetně fotek.",
+      "sections": [
+        {
+          "h": "Export z iPhonu",
+          "steps": [
+            "Otevři Contacts a klepni vlevo nahoře na „Lists“.",
+            "Podrž prst na „All Contacts“ a zvol Export.",
+            "Ulož soubor .vcf do aplikace Soubory, nebo ho pošli přes AirDrop do zařízení, na kterém budeš importovat."
+          ]
+        },
+        {
+          "h": "Export z Macu nebo iCloudu",
+          "steps": [
+            "V Contacts vyber „All Contacts“ a stiskni Command-A.",
+            "Zvol File > Export > Export vCard.",
+            "Na [icloud.com/contacts](https://www.icloud.com/contacts) vyber všechny kontakty, pak otevři nabídku „...“ a zvol „Export vCard“."
+          ]
+        },
+        {
+          "h": "Export z Androidu nebo Google Contacts",
+          "steps": [
+            "V aplikaci Google Contacts klepni na „Fix & manage“ > „Export to file“.",
+            "Na [contacts.google.com](https://contacts.google.com) zvol Export a pak vyber „vCard (for iOS Contacts)“.",
+            "Na telefonu Samsung otevři Contacts > Manage contacts > Import or export contacts > Export."
+          ]
+        },
+        {
+          "h": "Vyber vCard, ne CSV",
+          "p": [
+            "Google vedle vCard nabízí ještě dva formáty CSV. Import čte jen soubory .vcf, takže se CSV ve výběru souborů vůbec neukáže. Vyexportuj kontakty znovu a vyber vCard."
+          ]
+        },
+        {
+          "h": "Co se přenese",
+          "p": [
+            "Přenese se každá vizitka v souboru: jména, telefony, e-mailové adresy, poštovní adresy, narozeniny a další data, weby, profily na sociálních sítích i poznámky. Tvoje vlastní popisky zůstanou přesně tak, jak je máš napsané, takže z „Mámina pracovní linka“ zůstane „Mámina pracovní linka“.",
+            "Fotka uložená přímo v souboru se přenese. Fotka, která je jen odkazem na web, zůstane odkazem a nic se nestahuje. [Když se fotky nevejdou do tvého úložiště](/cs/help/storage-usage/), kontakty se i tak naimportují a fotky zůstanou venku."
+          ]
+        },
+        {
+          "h": "Stejný soubor můžeš kdykoli importovat znovu",
+          "p": [
+            "Druhý import přeskočí lidi, které už máš. Každou vizitku páruje nejdřív podle jejího ID, pak podle jména a shodného telefonního čísla a nakonec podle shodné e-mailové adresy. Kontakty, které už máš uložené, se nemění, takže tvoje úpravy tady zůstanou v bezpečí."
           ]
         }
       ]

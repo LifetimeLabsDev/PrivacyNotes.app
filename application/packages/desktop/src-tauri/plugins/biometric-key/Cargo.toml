@@ -1,0 +1,22 @@
+# The Android half of the bound biometric key: an Android
+# Keystore key that opens only through a BiometricPrompt CryptoObject, so the
+# fingerprint releases the key instead of only deciding whether the app reads
+# one it stores. The official biometric plugin asks for a yes or no and has no
+# CryptoObject, so this one ships its own Kotlin. Its commands are reached
+# from Rust only (src/biometric.rs) and are never granted to the web view.
+# Spec: ops/docs/plans/biometric-key-binding.md (section 8.2)
+[package]
+name = "tauri-plugin-biometric-key"
+version = "0.1.0"
+description = "Android Keystore key released by a strong biometric"
+edition = "2021"
+rust-version = "1.77"
+links = "tauri-plugin-biometric-key"
+publish = false
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+
+[build-dependencies]
+tauri-plugin = { version = "2", features = ["build"] }

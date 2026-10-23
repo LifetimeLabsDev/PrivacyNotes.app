@@ -83,7 +83,7 @@ export const lowlight = createLowlight(common);
  * the note's own font, with the code block's wrap and copy buttons in a
  * light look and no language label. Stored as ```copy, so another Markdown app shows a plain
  * code block. Registered as plain text, or lowlight would guess a language
- * and colour it. Spec: ops/docs/plans/spoiler-and-copy.md
+ * and colour it. Spec: ops/docs/archive/spoiler-and-copy.md
  */
 export const COPY_BOX_LANGUAGE = 'copy';
 lowlight.registerAlias({ plaintext: [COPY_BOX_LANGUAGE] });

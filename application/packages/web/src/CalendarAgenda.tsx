@@ -10,6 +10,7 @@ import { setItemDragImage, writeItemDrag, type ItemDragPayload } from './itemDra
 import type { DayEntry, DayIndex } from './notesViewUtils';
 import { dayNumber } from './schedule';
 import { ReminderPermissionHint } from './notesView/useReminders';
+import { useProgressiveReveal } from './useProgressiveReveal';
 
 /**
  * The Calendar pillar's list pane: the agenda. The coming days with their
@@ -19,7 +20,7 @@ import { ReminderPermissionHint } from './notesView/useReminders';
  * today is out of view. On a phone a week strip with dots heads it, pulled
  * down to a month by its grab bar or its title, and a tap on a day scrolls
  * the agenda there.
- * Spec: ops/docs/plans/calendar-pillar-spec.md (step 3)
+ * Spec: ops/docs/archive/calendar-pillar-spec.md (step 3)
  */
 
 const BACK_DAYS = 7;
@@ -73,33 +74,55 @@ export default function CalendarAgenda({ index, onOpen, search, strip, dragPaylo
   const scroller = useRef<HTMLDivElement | null>(null);
   const pending = useRef<string | null>(today);
   const query = search.trim();
+  const reveal = useProgressiveReveal();
 
   const days = useMemo(() => {
     const back = query ? SEARCH_DAYS : BACK_DAYS;
     const forward = query ? SEARCH_DAYS : ahead;
     const match = query ? textMatcher(query) : null;
-    const out: { day: string; entries: readonly DayEntry[] }[] = [];
+    const out: { day: string; entries: readonly DayEntry[]; offset: number }[] = [];
+    let offset = 0;
     for (let i = -back; i <= forward; i++) {
       const day = addDays(today, i);
       let entries = index.has(day) ? byTime(index.entriesOf(day)) : [];
       if (match) entries = entries.filter((e) => match(e.title));
       // Today always has its header, so the agenda has an anchor.
-      if (entries.length || (day === today && !query)) out.push({ day, entries });
+      if (entries.length || (day === today && !query)) {
+        out.push({ day, entries, offset });
+        offset += entries.length + 1;
+      }
     }
     return out;
   }, [index, today, ahead, query]);
+
+  const lastDay = days[days.length - 1];
+  const totalRows = lastDay ? lastDay.offset + lastDay.entries.length + 1 : 0;
+
+  useLayoutEffect(() => {
+    reveal.reset();
+    pending.current = query ? null : today;
+    if (scroller.current) scroller.current.scrollTop = 0;
+    if (!query) reveal.ensure(days.find((d) => d.day === today)?.offset ?? 0);
+    // A changed index keeps the reading position and revealed rows.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, today]);
 
   // Scroll a day's header to the top: today on open, a picked strip day.
   useLayoutEffect(() => {
     const day = pending.current;
     if (!day) return;
+    const target = days.find((d) => d.day >= day);
+    if (target && target.offset >= reveal.visible) {
+      reveal.ensure(target.offset);
+      return;
+    }
     const el = scroller.current?.querySelector<HTMLElement>(`[data-agenda-day="${day}"]`)
       ?? [...(scroller.current?.querySelectorAll<HTMLElement>('[data-agenda-day]') ?? [])].find((h) => (h.dataset.agendaDay ?? '') >= day);
     if (el && scroller.current) {
       scroller.current.scrollTop = el.offsetTop;
       pending.current = null;
     }
-  }, [days]);
+  }, [days, reveal.visible, reveal.ensure]);
 
   // The Today pill: shown while today's header is out of view.
   useEffect(() => {
@@ -116,11 +139,13 @@ export default function CalendarAgenda({ index, onOpen, search, strip, dragPaylo
     }, { root });
     io.observe(el);
     return () => io.disconnect();
-  }, [days, today]);
+  }, [days, today, reveal.visible]);
 
   function goTo(day: string) {
     if (dayNumber(day) - dayNumber(today) > ahead) setAhead(dayNumber(day) - dayNumber(today) + 14);
     pending.current = day;
+    const target = days.find((d) => d.day >= day);
+    if (target) reveal.ensure(target.offset);
     const el = scroller.current?.querySelector<HTMLElement>(`[data-agenda-day="${day}"]`)
       ?? [...(scroller.current?.querySelectorAll<HTMLElement>('[data-agenda-day]') ?? [])].find((h) => (h.dataset.agendaDay ?? '') >= day);
     if (el && scroller.current) {
@@ -131,7 +156,8 @@ export default function CalendarAgenda({ index, onOpen, search, strip, dragPaylo
 
   function onScroll(e: React.UIEvent<HTMLDivElement>) {
     const el = e.currentTarget;
-    if (!query && el.scrollTop + el.clientHeight > el.scrollHeight - 400) setAhead((n) => Math.min(n + AHEAD_DAYS, 3 * SEARCH_DAYS));
+    reveal.onScroll(el, totalRows);
+    if (!query && reveal.visible >= totalRows && el.scrollTop + el.clientHeight > el.scrollHeight - 400) setAhead((n) => Math.min(n + AHEAD_DAYS, 3 * SEARCH_DAYS));
   }
 
   /** The grab bar: a drag down past `PULL_PX` opens the month, up folds it. */
@@ -173,7 +199,7 @@ export default function CalendarAgenda({ index, onOpen, search, strip, dragPaylo
       <div ref={scroller} onScroll={onScroll} className="@container/agenda relative flex-1 min-h-0 overflow-y-auto overscroll-contain pb-16">
         {days.length === 0 && <p className="p-4 text-[13px] text-pn-muted text-center">{t('notes:empty.noMatches')}</p>}
         <ul>
-          {days.map(({ day, entries }, i) => {
+          {days.filter((d) => d.offset < reveal.visible).map(({ day, entries, offset }, i) => {
             const prev = days[i - 1];
             const gap = prev ? dayNumber(day) - dayNumber(prev.day) - 1 : 0;
             const mixed = new Set(entries.map((e) => e.space)).size > 1;
@@ -203,7 +229,7 @@ export default function CalendarAgenda({ index, onOpen, search, strip, dragPaylo
                     <p className="px-4 py-2.5 text-[12.5px] text-pn-muted">{t('calendar.nothingToday')}</p>
                   ) : (
                     <div className={`px-2 py-1.5 flex flex-col gap-0.5 ${day < today ? 'opacity-70' : ''}`}>
-                      {entries.map((entry) => (
+                      {entries.slice(0, Math.max(0, reveal.visible - offset - 1)).map((entry) => (
                         <CalendarItemRow
                           key={`${entry.id}|${entry.occurrence ?? ''}`}
                           entry={entry}

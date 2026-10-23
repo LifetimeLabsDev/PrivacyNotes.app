@@ -1,6 +1,9 @@
+import { VaultFieldAction } from './ui/VaultFieldAction';
+import { Button } from './ui/Button';
+import { VaultFormActions } from './ui/VaultFormActions';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, Copy, Eye, EyeSlash, FloppyDisk, Globe, Info, Lock, NotePencil, Password, Plus, Shield, Tag, Trash, User } from './icons';
+import { Globe, Info, Lock, NotePencil, Plus, Shield, Tag, Trash, User } from './icons';
 import { hasPin } from './pin';
 import { PinInfoModal } from './PinInfoModal';
 import { HoverLabel } from './HoverLabel';
@@ -12,6 +15,7 @@ import { FIELD_BUTTON, FIELD_CLASS, FieldLabel } from './formFields';
 import { PasswordGeneratorModal } from './PasswordGenerator';
 import type { UpgradeTrigger } from './UpgradeModal';
 import { newLoginField, type LoginExtras, type LoginField } from './loginExtras';
+import { storedVaultKeys } from './vaultBody';
 
 /* ────────────────────────────────────────────────────────────────
  * LoginData - the JSON blob stored in the note body for login-type
@@ -43,8 +47,10 @@ export function parseLoginBody(body: string): LoginData {
   }
 }
 
-export function serializeLoginBody(data: LoginData): string {
+/** `previous` is the stored body; keys a newer version wrote in it are kept. */
+export function serializeLoginBody(data: LoginData, previous = ''): string {
   return JSON.stringify({
+    ...storedVaultKeys(previous),
     url: data.url,
     username: data.username,
     password: data.password,
@@ -65,31 +71,6 @@ export function domainFromUrl(raw: string): string {
     // Fallback: strip protocol + path by hand.
     return raw.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').replace(/^www\./, '');
   }
-}
-
-/* ────────────────────────────────────────────────────────────────
- * Copy button (reused for username / password / URL)
- * ──────────────────────────────────────────────────────────────── */
-function CopyBtn({
-  onClick,
-  active,
-  title,
-}: {
-  onClick: () => void;
-  active: boolean;
-  title: string;
-}) {
-  return (
-    <HoverLabel label={title} position="start">
-      <button type="button" onClick={onClick} aria-label={title} className={FIELD_BUTTON}>
-        {active ? (
-          <Check size={16} className="text-emerald-500" />
-        ) : (
-          <Copy size={16} />
-        )}
-      </button>
-    </HoverLabel>
-  );
 }
 
 /* ────────────────────────────────────────────────────────────────
@@ -183,9 +164,9 @@ export function LoginForm({
   const updateBody = useCallback(
     (patch: Partial<LoginData>) => {
       const next = { ...data, ...patch };
-      onBodyChange(noteId, serializeLoginBody(next));
+      onBodyChange(noteId, serializeLoginBody(next, body));
     },
-    [noteId, data, onBodyChange]
+    [noteId, data, body, onBodyChange]
   );
 
   const handleUrlChange = useCallback(
@@ -222,7 +203,7 @@ export function LoginForm({
               autoComplete="off"
               className={fieldClass}
             />
-            <CopyBtn
+            <VaultFieldAction kind="copy"
               onClick={() => copy(data.username, 'username')}
               active={copied === 'username'}
               title={t('loginForm.copyUsername')}
@@ -242,31 +223,17 @@ export function LoginForm({
               placeholder={t('loginForm.passwordPlaceholder')}
               fieldClass={fieldClass}
             />
-            <HoverLabel label={showPassword ? t('loginForm.hidePassword') : t('loginForm.showPassword')} position="above">
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? t('loginForm.hidePassword') : t('loginForm.showPassword')}
-                className={FIELD_BUTTON}
-              >
-                {showPassword ? <EyeSlash size={16} /> : <Eye size={16} />}
-              </button>
-            </HoverLabel>
-            <CopyBtn
+            <VaultFieldAction kind="reveal" active={showPassword} title={showPassword ? t('loginForm.hidePassword') : t('loginForm.showPassword')} onClick={() => setShowPassword(!showPassword)} />
+            <VaultFieldAction kind="copy"
               onClick={() => copy(data.password, 'password')}
               active={copied === 'password'}
               title={t('loginForm.copyPassword')}
             />
           </div>
           {!locked && (
-            <button
-              type="button"
-              onClick={() => setShowGenerator(true)}
-              className="inline-flex items-center gap-1 mt-1 text-[11px] text-accent-strong bg-accent/8 hover:bg-accent/15 px-2 py-0.5 rounded-full transition"
-            >
-              <Password size={11} />
+            <Button action="generate" onClick={() => setShowGenerator(true)} className="mt-2">
               {t('loginForm.generatePassword')}
-            </button>
+            </Button>
           )}
           {showGenerator && (
             <PasswordGeneratorModal
@@ -297,7 +264,7 @@ export function LoginForm({
               spellCheck={false}
               className={`${fieldClass} font-mono`}
             />
-            <CopyBtn
+            <VaultFieldAction kind="copy"
               onClick={() => copy(data.totp, 'totp')}
               active={copied === 'totp'}
               title={t('loginForm.copyTotp')}
@@ -335,7 +302,7 @@ export function LoginForm({
               autoComplete="off"
               className={fieldClass}
             />
-            <CopyBtn
+            <VaultFieldAction kind="copy"
               onClick={() => copy(data.url, 'url')}
               active={copied === 'url'}
               title={t('loginForm.copyUrl')}
@@ -356,7 +323,7 @@ export function LoginForm({
                 aria-label={t('loginForm.websiteLabel')}
                 className={fieldClass}
               />
-              <CopyBtn onClick={() => copy(url, `url-${i}`)} active={copied === `url-${i}`} title={t('loginForm.copyUrl')} />
+              <VaultFieldAction kind="copy" onClick={() => copy(url, `url-${i}`)} active={copied === `url-${i}`} title={t('loginForm.copyUrl')} />
               {!locked && (
                 <HoverLabel label={t('loginForm.removeWebsite')} position="start">
                   <button type="button" onClick={() => setUrls(extras.extraUrls.filter((_, j) => j !== i))} aria-label={t('loginForm.removeWebsite')} className={FIELD_BUTTON}>
@@ -442,22 +409,13 @@ export function LoginForm({
                         />
                       )}
                       {hidden && (
-                        <HoverLabel label={shown ? t('loginForm.hidePassword') : t('loginForm.showPassword')} position="above">
-                          <button
-                            type="button"
-                            onClick={() => setRevealed((prev) => {
-                              const next = new Set(prev);
-                              if (!next.delete(f.id)) next.add(f.id);
-                              return next;
-                            })}
-                            aria-label={shown ? t('loginForm.hidePassword') : t('loginForm.showPassword')}
-                            className={FIELD_BUTTON}
-                          >
-                            {shown ? <EyeSlash size={16} /> : <Eye size={16} />}
-                          </button>
-                        </HoverLabel>
+                        <VaultFieldAction kind="reveal" active={shown} title={shown ? t('loginForm.hidePassword') : t('loginForm.showPassword')} onClick={() => setRevealed((prev) => {
+                          const next = new Set(prev);
+                          if (!next.delete(f.id)) next.add(f.id);
+                          return next;
+                        })} />
                       )}
-                      <CopyBtn onClick={() => copy(f.value, `field-${f.id}`)} active={copied === `field-${f.id}`} title={t('loginForm.copyField')} />
+                      <VaultFieldAction kind="copy" onClick={() => copy(f.value, `field-${f.id}`)} active={copied === `field-${f.id}`} title={t('loginForm.copyField')} />
                     </div>
                   </div>
                 );
@@ -523,31 +481,7 @@ export function LoginForm({
           </p>
         )}
 
-        {/* Save / Cancel */}
-        {saveError && (
-          <p className="text-[11px] text-danger">{saveError}</p>
-        )}
-        {!locked && (
-          <div className="flex gap-2 -mt-2">
-            {!isNew && (
-              <button
-                type="button"
-                onClick={onCancel}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium border border-divider text-pn-muted hover:bg-pn/5 transition"
-              >
-                {t('common:actions.cancel')}
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={onSave}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-accent-fill text-white hover:bg-accent-fill-hover transition"
-            >
-              <FloppyDisk />
-              {t('common:actions.save')}
-            </button>
-          </div>
-        )}
+        <VaultFormActions locked={locked} isNew={isNew} saveError={saveError} onSave={onSave} onCancel={onCancel} />
       </div>
     </div>
   );

@@ -24,7 +24,7 @@ import { getPushFailures } from './pushFailures';
  *
  * Demo never syncs, so every demo row would qualify; the queries return
  * nothing there rather than warn about a promise demo never made.
- * Spec: ops/docs/ui-patterns.md (the not-backed-up state)
+ * Spec: ops/docs/archive/ui-patterns.md (the not-backed-up state)
  */
 export function isNeverBackedUp(n: Pick<LocalNote, 'dirty' | 'syncedNonce'>): boolean {
   return n.dirty !== 0 && n.syncedNonce == null;

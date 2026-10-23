@@ -14,7 +14,7 @@ import { countWords } from './wordCountUtils';
  *
  * Rows hold counts only, never note text, so the table stays outside the
  * at-rest seal (localSeal.ts SEALED_TABLES).
- * Spec: ops/docs/plans/wellness-statistics.md (section 20)
+ * Spec: ops/docs/archive/wellness-statistics.md (section 20)
  */
 export interface LedgerRow {
   /** Local calendar day, `YYYY-MM-DD`. */
@@ -115,7 +115,7 @@ export async function firstCountedDay(): Promise<string | null> {
  * the day it was last changed, each at the hour of the stamp. Runs only while
  * the ledger is empty, so a device that counts for real is never overwritten.
  * The rows are marked, and the Overview says so.
- * Spec: ops/docs/plans/wellness-statistics.md (section 20)
+ * Spec: ops/docs/archive/wellness-statistics.md (section 20)
  */
 export async function backfillLedger(notes: ReadonlyArray<{ body: string; createdAt: string; updatedAt: string; deleted: number }>): Promise<boolean> {
   await tail;

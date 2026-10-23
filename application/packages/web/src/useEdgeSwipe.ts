@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-// Spec: ops/docs/ui-patterns.md (section 38 - mobile drawer gestures)
+// Spec: ops/docs/archive/ui-patterns.md (section 38 - mobile drawer gestures)
 /** Default eligibility: touches starting within this many px of the left viewport edge. */
 export const EDGE_START_PX = 24;
 /** Rightward travel that commits the gesture. */

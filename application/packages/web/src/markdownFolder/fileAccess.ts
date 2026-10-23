@@ -12,7 +12,7 @@
  * and a dead end the moment editing exists - and a read-only path that cannot
  * grow into the real one is a second implementation to keep working.
  *
- * Spec: ops/docs/plans/markdown-folder.md (section 5, platform matrix)
+ * Spec: ops/docs/archive/markdown-folder.md (section 5, platform matrix)
  */
 import { detectPlatform } from '../devices';
 import { SUPPORTED_EXTENSIONS, isSupportedFile } from './adapter';
@@ -136,7 +136,6 @@ function isSkippedFile(name: string): boolean {
  * be true by construction rather than by remembering.
  *
  * Pinned by `tests/markdownFolderAssetPath.test.ts`.
- * Spec: ops/docs/audit-adversarial-2026-09-bfg.md (SEC-21)
  */
 export function isScannableFile(entry: {
   name: string;

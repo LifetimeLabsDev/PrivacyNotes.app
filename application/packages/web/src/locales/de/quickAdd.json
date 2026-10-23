@@ -1,5 +1,6 @@
 {
   "words": {
+    "add": "hinzufügen",
     "every": "jeden, jede, jedes, alle",
     "weekday": "werktag, werktags, werktage, arbeitstag, arbeitstage, wochentag, wochentags",
     "daily": "täglich",
@@ -32,11 +33,12 @@
     "hour": "h, std, stunde, stunden",
     "day": "t, tag, tage, tagen",
     "week": "w, wo, woche, wochen",
-    "month": "monat, monate, monaten",
+    "month": "monat, monate, monaten, monats",
     "year": "j, jahr, jahre, jahren",
     "times": "mal, x",
     "ordinal": ".",
     "work": "arbeit, beruf, job",
-    "personal": "privat, persönlich, zuhause"
+    "personal": "privat, persönlich, zuhause",
+    "in": "in"
   }
 }

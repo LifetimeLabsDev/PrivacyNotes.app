@@ -9,7 +9,8 @@
     "tabExport": "Export",
     "tabRestore": "Restore",
     "tabVault": "Passwords",
-    "working": "Working…"
+    "working": "Working…",
+    "tabWellness": "Trackers"
   },
   "footer": {
     "exportNote": "Exports run locally. Nothing is uploaded.",
@@ -20,7 +21,9 @@
     "autoTagLabel": "Tag imported notes by source",
     "autoTagDesc": "Google Keep notes get <keep>#google</keep>, Obsidian gets <obsidian>#obsidian</obsidian>, and so on.",
     "guideAria": "Import guide for {{app}}",
-    "guideLabel": "Guide"
+    "guideLabel": "Guide",
+    "groupGeneral": "General",
+    "groupNotes": "Notes"
   },
   "folderImport": {
     "tagLabel": "Also tag notes by folder",
@@ -49,6 +52,24 @@
     "timeZone": "Time zone",
     "ends": "Ends",
     "repeats": "Repeats"
+  },
+  "webcal": {
+    "title": "Webcal",
+    "desc": "A calendar address, such as a webcal:// link from Proton, iCloud, Outlook or a public calendar. It is downloaded once; paste it again later to add only the new events.",
+    "fieldLabel": "Calendar address",
+    "import": "Import",
+    "downloading": "Downloading…",
+    "errors": {
+      "invalid": "Paste an address that starts with webcal://, webcals:// or https://.",
+      "refused": "This address cannot be opened.",
+      "wrongType": "This address does not lead to a calendar file.",
+      "tooLarge": "This calendar is larger than 10 MB.",
+      "timeout": "The calendar server did not answer in time. Try again later.",
+      "blocked": "The calendar server refused the download. Check that the calendar is shared or public.",
+      "offline": "You are offline. Connect and try again.",
+      "limit": "Too many downloads in a short time. Wait a minute and try again.",
+      "failed": "The calendar could not be downloaded. Check the address and try again."
+    }
   },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip (Keep folder) or a single .json note. Checklists import as native task lists.",
@@ -82,7 +103,7 @@
     "intro": "Import logins, credit cards, and SSH keys from another password manager."
   },
   "restorePick": {
-    "intro": "Restore a PrivacyNotes backup you exported earlier. Your file is read and decrypted locally.",
+    "intro": "Restore a PrivacyNotes backup you exported earlier.",
     "fullBackupTitle": "Full backup (.zip)",
     "fullBackupDesc": "Restore notes, journals, vault items, tasks, images, audio, and files. A note you already have is kept, or updated if the backup holds a newer copy of it.",
     "encryptedBackupTitle": "Encrypted backup (.pnbackup, .pnbackupz)",

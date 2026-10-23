@@ -73,7 +73,7 @@ if (existsSync(androidPropsPath)) {
 
 // The iOS share extension: App Store Connect refuses an upload whose extension
 // version differs from the app's, and Tauri stamps only the app's own plist.
-// Spec: ops/docs/plans/share-into-app.md
+// Spec: ops/docs/archive/share-into-app.md
 const sharePlistPath = resolve(root, 'packages/desktop/src-tauri/ios-share/Info.plist');
 const sharePlist = readFileSync(sharePlistPath, 'utf8');
 const sharePlistNext = sharePlist.replace(
@@ -129,7 +129,7 @@ for (const [plistRel, required] of [
 // that guard every other string guard these too. A locale whose catalog lacks
 // them gets no folder, and iOS falls back to English. Apple knows Traditional
 // Chinese by its script tag, as above.
-// Spec: ops/docs/plans/share-into-app.md
+// Spec: ops/docs/archive/share-into-app.md
 for (const lang of readdirSync(resolve(root, 'packages/web/src/locales'))) {
   const catalogPath = resolve(root, 'packages/web/src/locales', lang, 'shell.json');
   if (!existsSync(catalogPath)) continue;

@@ -1,13 +1,15 @@
 {
   "placeholder": "書き始めましょう…",
+  "eventPlaceholder": "議題、住所、メモなどを追加しましょう…",
   "toolbar": {
     "bold": "太字",
+    "hideKeyboard": "キーボードを閉じる",
     "italic": "斜体",
     "underline": "下線",
     "heading": "見出し",
     "taskList": "タスクリスト",
     "bulletList": "箇条書き",
-    "addLink": "リンクを追加({{keys}})",
+    "addLink": "リンクを追加",
     "noteLink": "別のノートへリンク([[ の入力でも可)",
     "numberedList": "番号付きリスト",
     "textColor": "文字色",
@@ -40,7 +42,6 @@
     "footnote": "脚注",
     "spoiler": "ネタバレ",
     "copyBox": "コピー用ボックス",
-    "withHint": "{{label}}（{{hint}}）",
     "customize": "ツールバーをカスタマイズ"
   },
   "align": {
@@ -98,7 +99,9 @@
       "update": "更新",
       "time": "時間",
       "steps": "手順",
-      "place": "場所"
+      "place": "場所",
+      "kanban": "カンバンボード",
+      "column": "列"
     }
   },
   "color": {
@@ -132,27 +135,51 @@
     "resizeHint": "{{shift}} を押しながらドラッグでこの列だけを変更、{{alt}} で細かく調整",
     "deleteRow": "行を削除",
     "deleteColumn": "列を削除",
-    "deleteTable": "表を削除"
+    "deleteTable": "表を削除",
+    "insertFormula": "数式を挿入",
+    "formulaNoMatch": "一致する数式がありません",
+    "formula": {
+      "SUM": "値を合計",
+      "PRODUCT": "値を掛け合わせる",
+      "AVG": "値の平均",
+      "AVERAGE": "値の平均",
+      "MEDIAN": "真ん中の値",
+      "MIN": "最も小さい値",
+      "MAX": "最も大きい値",
+      "COUNT": "数値の個数",
+      "ABS": "符号を除いた値",
+      "SQRT": "平方根",
+      "SIGN": "値が正か負か",
+      "CEIL": "整数に切り上げ",
+      "FLOOR": "整数に切り捨て",
+      "ROUND": "整数に四捨五入",
+      "LOG": "対数",
+      "RAND": "ランダムな数値",
+      "PI": "円周率",
+      "E": "自然対数の底",
+      "TAU": "円周率の2倍",
+      "PHI": "黄金比"
+    }
   },
   "find": {
     "placeholder": "ノート内を検索",
     "label": "ノート内を検索",
-    "previous": "前の一致(Shift+Enter)",
-    "previousTitle": "前へ(Shift+Enter)",
-    "next": "次の一致(Enter)",
-    "nextTitle": "次へ(Enter)",
+    "previous": "前の一致",
+    "previousTitle": "前へ",
+    "next": "次の一致",
+    "nextTitle": "次へ",
     "close": "検索を閉じる",
-    "closeTitle": "閉じる({{keys}})",
+    "closeTitle": "閉じる",
     "replacePlaceholder": "置換後の文字列",
     "replaceLabel": "置換後の文字列",
     "replace": "置換",
-    "replaceTitle": "この一致を置換(Enter)",
+    "replaceTitle": "この一致を置換",
     "replaceAll": "すべて",
     "replaceAllTitle": "すべての一致を置換",
     "caseSensitive": "大文字と小文字を区別",
     "caseSensitiveTitle": "大文字と小文字を区別",
     "closeReplace": "検索と置換を閉じる",
-    "closeReplaceTitle": "閉じる({{keys}})",
+    "closeReplaceTitle": "閉じる",
     "showReplace": "検索と置換",
     "hideReplace": "置換を隠す",
     "replacedCount_other": "{{count}}件を置換しました"
@@ -163,7 +190,6 @@
     "title": "アウトライン",
     "ariaLabel": "ノートのアウトライン",
     "hide": "アウトラインを隠す",
-    "hideTitle": "アウトラインを隠す({{keys}})",
     "copyHeadingLink": "見出しへのリンクをコピー",
     "copyNoteLink": "ノートリンクをコピー",
     "copyHeadingShortcut": "見出しへのショートカットをコピー",
@@ -171,6 +197,8 @@
   },
   "bodyMenu": {
     "cut": "切り取り",
+    "copyAsPlain": "プレーンテキストとしてコピー",
+    "copyAsMarkdown": "Markdownとしてコピー",
     "sortAsc": "行を昇順に並び替え",
     "sortDesc": "行を降順に並び替え"
   },
@@ -280,6 +308,7 @@
     "hidden": "非表示",
     "hiddenNote": "ショートカットとMarkdownで引き続き使えます。",
     "hiddenDrop": "ボタンをここにドロップすると非表示になります。",
+    "arrangeTitle": "ボタン",
     "markdownViewNote": "Markdown表示には独自の固定ボタンセットがあります。",
     "hiddenEmpty": "非表示のものはありません。",
     "alwaysVisible": "常に表示",
@@ -314,5 +343,18 @@
     "positionNote": "エディタ内のツールバーの位置を選びます。",
     "positionTop": "上",
     "positionBottom": "下"
+  },
+  "kanban": {
+    "todo": "未着手",
+    "inProgress": "進行中",
+    "review": "レビュー",
+    "done": "完了",
+    "color": "色",
+    "columns": "列",
+    "columnCount_other": "{{count}}列",
+    "cardCount_other": "{{count}}枚のカード",
+    "addColumn": "列を追加",
+    "removeBoard": "ボードを削除",
+    "moveTo": "移動先"
   }
 }

@@ -10,6 +10,8 @@ import { BARE_LINKABLE_RE, linkifyMarkdown } from './linkify';
 // link target. Two different jobs, one obvious name.
 import { noteLinkTarget as sanitizeLinkTarget } from '../noteLinks';
 import { isUntitledStem } from '../exportNames';
+import { DEFAULT_HIGHLIGHT, FONT_SIZES } from '../editorColors';
+import { nearestHighlight, nearestTextColor } from './paletteColor';
 import { importBlobs, mimeFromExt } from './blobImport';
 import type { ImportedNote, ParsedImport } from './types';
 
@@ -52,10 +54,13 @@ import type { ImportedNote, ParsedImport } from './types';
  *   - `attachments/` files are imported into encrypted storage; body
  *     references are rewritten to pn:img/ and pn:file/ URIs by the shared
  *     blob pipeline.
+ *   - Callouts become callouts of the same keyword, keeping the title,
+ *     the fold state and the blocks inside (lists, tables, nested callouts).
  *   - Highlights, math, and text alignment map onto the editor's own
  *     nodes (==highlight==, $..$/$$..$$, aligned HTML blocks - same
- *     contract as the UpNote importer). Formatting we have no node for
- *     (font family, font size, text color) is dropped, keeping the text.
+ *     contract as the UpNote importer). A text color or highlight color
+ *     becomes the nearest color of the editor's palette. Font family and
+ *     font size have no node and are dropped, keeping the text.
  */
 
 /* ------------------------------------------------------------------ */
@@ -199,10 +204,14 @@ interface ConvFlags {
   tables: number;
   codeBlocks: number;
   aligned: number;
+  colors: number;
+  droppedColors: number;
+  fontSizes: number;
   droppedStyling: number;
   droppedAlign: number;
   noteLinks: number;
   math: number;
+  callouts: number;
 }
 
 /**
@@ -277,26 +286,68 @@ const ALIGN_BLOCKERS = new Set([
  */
 function isSimpleAlignable(el: Element, ctx: ConvCtx): boolean {
   if (BARE_LINKABLE_RE.test(el.textContent ?? '')) return false;
-  for (const child of Array.from(el.childNodes)) {
-    if (child.nodeType === Node.TEXT_NODE) continue;
-    if (child.nodeType !== Node.ELEMENT_NODE) continue;
-    const c = child as Element;
-    const tag = c.tagName.toLowerCase();
-    if (tag === 'br') continue;
-    if (ALIGN_BLOCKERS.has(tag)) return false;
-    if (/math-(?:block|inline)/i.test(c.getAttribute('class') ?? '')) return false;
-    if (tag === 'a') {
-      // Only plain external links can ride along as HTML; anything that
-      // resolves inside the export becomes markdown syntax.
-      const href = c.getAttribute('href') ?? '';
-      if (!/^(?:https?:|mailto:)/i.test(href)) return false;
-      if (attachmentToken(ctx, href) || noteLinkTarget(ctx, href)) return false;
-    } else if (!['b', 'strong', 'i', 'em', 'u', 's', 'del', 'strike', 'code', 'kbd', 'span', 'sub', 'sup', 'mark'].includes(tag)) {
-      return false;
-    }
-    if (!isSimpleAlignable(c, ctx)) return false;
+  return Array.from(el.childNodes).every((c) => isSimpleInline(c, ctx));
+}
+
+/** One node of a simple inline run: text, a mark, or a plain external link. */
+function isSimpleInline(child: Node, ctx: ConvCtx): boolean {
+  if (child.nodeType !== Node.ELEMENT_NODE) return true;
+  const c = child as Element;
+  const tag = c.tagName.toLowerCase();
+  if (tag === 'br') return true;
+  if (ALIGN_BLOCKERS.has(tag)) return false;
+  if (/math-(?:block|inline)/i.test(c.getAttribute('class') ?? '')) return false;
+  if (tag === 'a') {
+    // Only plain external links can ride along as HTML; anything that
+    // resolves inside the export becomes markdown syntax.
+    const href = c.getAttribute('href') ?? '';
+    if (!/^(?:https?:|mailto:)/i.test(href)) return false;
+    if (attachmentToken(ctx, href) || noteLinkTarget(ctx, href)) return false;
+  } else if (!['b', 'strong', 'i', 'em', 'u', 's', 'del', 'strike', 'code', 'kbd', 'span', 'sub', 'sup', 'mark'].includes(tag)) {
+    return false;
   }
-  return true;
+  return Array.from(c.childNodes).every((n) => isSimpleInline(n, ctx));
+}
+
+/** Blocks a table cell can carry into an HTML table. */
+const CELL_BLOCKS = new Set(['p', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote']);
+
+/**
+ * Can a pipe row hold this cell? Only one line of inline content: no span,
+ * and at most one paragraph. A list or a second paragraph needs the HTML
+ * table the editor itself writes for such a cell (#597).
+ */
+function fitsPipeCell(cell: Element): boolean {
+  if (Number(cell.getAttribute('colspan') ?? 1) > 1 || Number(cell.getAttribute('rowspan') ?? 1) > 1) return false;
+  const blocks = Array.from(cell.children).filter((c) => CELL_BLOCKS.has(c.tagName.toLowerCase()));
+  return blocks.length === 0 || (blocks.length === 1 && blocks[0]!.tagName.toLowerCase() === 'p');
+}
+
+/**
+ * Can this cell go into an HTML table? Same contract as an aligned block,
+ * one level down: blocks of simple inline content, since markdown inside
+ * an HTML block is not parsed. A checklist has no plain HTML form.
+ */
+function isSimpleCell(el: Element, ctx: ConvCtx): boolean {
+  return Array.from(el.childNodes).every((child) => {
+    if (child.nodeType !== Node.ELEMENT_NODE) return true;
+    const c = child as Element;
+    if (!CELL_BLOCKS.has(c.tagName.toLowerCase())) return isSimpleInline(c, ctx);
+    if (/checklist/i.test(c.getAttribute('class') ?? '')) return false;
+    return isSimpleCell(c, ctx);
+  });
+}
+
+/** A simple cell's content as sanitized HTML. */
+function renderCellHtml(node: Node, ctx: ConvCtx): string {
+  if (node.nodeType === Node.ELEMENT_NODE) {
+    const tag = (node as Element).tagName.toLowerCase();
+    if (CELL_BLOCKS.has(tag)) {
+      const inner = Array.from(node.childNodes).map((c) => renderCellHtml(c, ctx)).join('');
+      return `<${tag}>${inner}</${tag}>`;
+    }
+  }
+  return renderInlineHtml(node, ctx);
 }
 
 function escapeHtml(s: string): string {
@@ -310,6 +361,71 @@ function escapeHtml(s: string): string {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+// `background-color` must not match as `color`: the group start keeps the `-` out.
+const COLOR_RE = /(?:^|[;\s])color\s*:\s*([^;]+)/i;
+const BACKGROUND_RE = /background-color\s*:\s*([^;]+)/i;
+const FONT_SIZE_RE = /font-size\s*:\s*([\d.]+)\s*(px|pt)\b/i;
+
+/**
+ * The editor size nearest to a Notesnook font size, or null for body size.
+ * Notesnook writes 12 to 14 px for ordinary text and an explicit size only
+ * when the person picked one, so a smaller value is Small and a larger one
+ * Large, or Huge from 24 px.
+ */
+function editorFontSize(style: string): string | null {
+  const m = style.match(FONT_SIZE_RE);
+  if (!m) return null;
+  const px = Number(m[1]) * (m[2]?.toLowerCase() === 'pt' ? 4 / 3 : 1);
+  if (!Number.isFinite(px)) return null;
+  const name = px < 12 ? 'Small' : px >= 24 ? 'Huge' : px > 15 ? 'Large' : null;
+  return name ? (FONT_SIZES.find((s) => s.name === name)?.value ?? null) : null;
+}
+
+/**
+ * Wrap a styled run in the palette color nearest to each of its colors and
+ * the editor size nearest to its font size, in the editor's own form: one
+ * span for color and size outside, the highlight inside, the whitespace
+ * outside both. `html` is the aligned-block path, where markdown
+ * does not parse, so the default highlight is a bare `<mark>`. A `<mark>`
+ * with no color of its own is the default highlight.
+ */
+function paletteRun(inner: string, style: string, ctx: ConvCtx, html: boolean, isMark = false): string {
+  if (!inner.trim()) return inner;
+  const colorCss = style.match(COLOR_RE)?.[1];
+  const backgroundCss = style.match(BACKGROUND_RE)?.[1];
+  const color = colorCss ? nearestTextColor(colorCss) : null;
+  const mapped = backgroundCss ? nearestHighlight(backgroundCss) : null;
+  if ((colorCss && !color) || (backgroundCss && !mapped && !isMark)) ctx.flags.droppedColors++;
+  const highlight = mapped ?? (isMark ? DEFAULT_HIGHLIGHT : null);
+  const size = editorFontSize(style);
+  if (!color && !highlight && !size) return inner;
+
+  const [, lead = '', body = '', trail = ''] = inner.match(/^(\s*)([\s\S]*?)(\s*)$/) ?? [];
+  // An inline tag cannot hold a paragraph break: the blocks keep their text.
+  if (/\n\s*\n/.test(body)) {
+    ctx.flags.droppedColors++;
+    return inner;
+  }
+  let out = body;
+  if (highlight) {
+    ctx.flags.highlights++;
+    out = highlight.value
+      ? `<mark style="background-color: ${highlight.value}">${out}</mark>`
+      : html ? `<mark>${out}</mark>` : `==${out}==`;
+  }
+  const css: string[] = [];
+  if (color) {
+    ctx.flags.colors++;
+    css.push(`color: ${color}`);
+  }
+  if (size) {
+    ctx.flags.fontSizes++;
+    css.push(`font-size: ${size}`);
+  }
+  if (css.length > 0) out = `<span style="${css.join('; ')}">${out}</span>`;
+  return lead + out + trail;
 }
 
 /** Render simple inline content as sanitized HTML for an aligned block. */
@@ -347,16 +463,16 @@ function renderInlineHtml(node: Node, ctx: ConvCtx): string {
     case 'sup':
       return `<sup>${children()}</sup>`;
     case 'mark':
-      ctx.flags.highlights++;
-      return `<mark>${children()}</mark>`;
+      return paletteRun(children(), el.getAttribute('style') ?? '', ctx, true, true);
     case 'a': {
       const href = el.getAttribute('href') ?? '';
       if (!/^(?:https?:|mailto:)/i.test(href)) return children();
       return `<a href="${escapeHtml(href)}">${children()}</a>`;
     }
     default:
-      // Styling wrappers (font family, size, color): keep the text.
-      return children();
+      // Styling wrappers: colors and sizes move onto the editor's own,
+      // a font family is dropped, keeping the text.
+      return paletteRun(children(), el.getAttribute('style') ?? '', ctx, true);
   }
 }
 
@@ -374,23 +490,28 @@ function renderInlineHtml(node: Node, ctx: ConvCtx): string {
  *   <em>/<i>                    -> *italic*
  *   <u>                         -> <u> (HTML passthrough, TipTap Underline)
  *   <s>/<del>/<strike>          -> ~~strike~~
- *   <mark>                      -> ==highlight==
+ *   <mark>, background-color    -> ==highlight== or a palette <mark style>
+ *   color                       -> palette <span style="color: ...">
  *   <code>/<kbd>                -> `code`
  *   <pre class="codeblock">     -> fenced block (data-language honored)
  *   <ul>/<ol>/<li>              -> - / 1. (nesting preserved)
  *   .checklist / .simple-checklist -> - [ ] / - [x] (li.checked)
  *   <blockquote>                -> >
+ *   div.callout[data-callout-type] -> > [!type]+ title (- when .collapsed)
  *   <hr>                        -> ---
- *   <table>                     -> GFM pipe table
+ *   <table>                     -> GFM pipe table, or an HTML table
+ *                                  when a cell holds a list or blocks
  *   <img src="attachments/..">  -> ![alt](nnatt:NNNNNN)
  *   <a href="attachments/..">   -> [name](nnatt:NNNNNN)
  *   <a href="./other.html">     -> [[Other note title]]
  *   <a href="https://..">       -> [text](url)
- *   <iframe src>                -> the src as a link on its own line
+ *   <iframe src>                -> the src as a link on its own line, or
+ *                                  the saved page for a web clip
  *   .math-inline / .math-block  -> $latex$ / $$latex$$ math nodes
  *   text-align on simple blocks -> <p style="text-align: ...;"> HTML
- *   <span data-font-family>,
- *   font-size, color            -> dropped, inner text kept
+ *   <sup>/<sub>                 -> <sup>/<sub> (HTML passthrough)
+ *   font-size                   -> Small, Large or Huge <span style>
+ *   <span data-font-family>     -> dropped, inner text kept
  */
 function htmlToMarkdown(bodyEl: Element, ctx: ConvCtx): string {
   function inlineOnly(text: string): string {
@@ -425,6 +546,8 @@ function htmlToMarkdown(bodyEl: Element, ctx: ConvCtx): string {
     const isChecklist = /checklist/i.test(cls);
     const ordered = el.tagName.toLowerCase() === 'ol';
     if (isChecklist) ctx.flags.checklists++;
+    // A Notesnook task list can carry a title the person typed above it.
+    const listTitle = (el.getAttribute('data-title') ?? '').trim();
 
     const items = Array.from(el.children).filter(
       (c) => c.tagName.toLowerCase() === 'li'
@@ -463,7 +586,44 @@ function htmlToMarkdown(bodyEl: Element, ctx: ConvCtx): string {
         if (trimmed) lines.push(trimmed);
       }
     }
-    return lines.length > 0 ? `${lines.join('\n')}\n\n` : '';
+    if (lines.length === 0) return '';
+    return `${listTitle ? `${listTitle}\n\n` : ''}${lines.join('\n')}\n\n`;
+  }
+
+  /** Prefix every line with `> `, an empty line with a bare `>`. */
+  function quoteLines(text: string): string {
+    return text
+      .split('\n')
+      .map((l) => (l.trim() ? `> ${l}` : '>'))
+      .join('\n');
+  }
+
+  /**
+   * A Notesnook callout: `div.callout`, its keyword in `data-callout-type`,
+   * a `collapsed` class when folded, and an `<h4>` title as its first child
+   * (Notesnook fills it with the type name in capitals). The keyword is
+   * written as found: the editor maps it onto its own type and keeps it.
+   * Spec: ops/docs/callouts.md (importers)
+   */
+  function renderCallout(el: Element): string {
+    const raw = (el.getAttribute('data-callout-type') ?? '').trim().toLowerCase();
+    const keyword = /^[\w-]+$/.test(raw) ? raw : 'info';
+    const folded = /(?:^|\s)collapsed(?:\s|$)/.test(el.getAttribute('class') ?? '');
+    const first = el.firstElementChild;
+    const heading = first && /^h[1-6]$/i.test(first.tagName) ? first : null;
+    const title = heading
+      ? inlineOnly(Array.from(heading.childNodes).map((c) => walk(c, '')).join(''))
+      : '';
+    const body = Array.from(el.childNodes)
+      .filter((c) => c !== heading)
+      .map((c) => walk(c, ''))
+      .join('')
+      .replace(/[ \t]+\n/g, '\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+    ctx.flags.callouts++;
+    const head = `> [!${keyword}]${folded ? '-' : '+'}${title ? ` ${title}` : ''}`;
+    return `\n${head}${body ? `\n${quoteLines(body)}` : ''}\n\n`;
   }
 
   function renderTable(el: Element): string {
@@ -477,6 +637,17 @@ function htmlToMarkdown(bodyEl: Element, ctx: ConvCtx): string {
         .map((c) =>
           inlineOnly(walk(c, '')).replace(/\|/g, '\\|').replace(/^$/, ' ')
         );
+
+    const cells = rows.flatMap((tr) =>
+      Array.from(tr.children).filter((c) => /^(td|th)$/i.test(c.tagName))
+    );
+    if (
+      !cells.every(fitsPipeCell) &&
+      !BARE_LINKABLE_RE.test(el.textContent ?? '') &&
+      cells.every((c) => isSimpleCell(c, ctx))
+    ) {
+      return `\n${renderHtmlTable(rows)}\n\n`;
+    }
 
     const grid = rows.map(cellsOf).filter((r) => r.length > 0);
     if (grid.length === 0) return '';
@@ -499,6 +670,31 @@ function htmlToMarkdown(bodyEl: Element, ctx: ConvCtx): string {
       ...bodyRows.map((r) => `| ${r.join(' | ')} |`),
     ];
     return `\n${lines.join('\n')}\n\n`;
+  }
+
+  /**
+   * The table on one line, so no blank line ends the HTML block and a
+   * callout can quote it. The editor reads it back as a table whose cells
+   * hold their lists and paragraphs.
+   */
+  function renderHtmlTable(rows: Element[]): string {
+    const rowHtml = rows.map((tr) => {
+      const cellHtml = Array.from(tr.children)
+        .filter((c) => /^(td|th)$/i.test(c.tagName))
+        .map((c) => {
+          const tag = c.tagName.toLowerCase();
+          const spans = ['colspan', 'rowspan']
+            .map((a) => [a, Number(c.getAttribute(a) ?? 1)] as const)
+            .filter(([, n]) => Number.isInteger(n) && n > 1)
+            .map(([a, n]) => ` ${a}="${n}"`)
+            .join('');
+          const inner = Array.from(c.childNodes).map((n) => renderCellHtml(n, ctx)).join('');
+          return `<${tag}${spans}>${inner}</${tag}>`;
+        })
+        .join('');
+      return `<tr>${cellHtml}</tr>`;
+    });
+    return `<table><tbody>${rowHtml.join('')}</tbody></table>`.replace(/\s*\n\s*/g, ' ');
   }
 
   function renderAnchor(el: Element, indent: string): string {
@@ -560,6 +756,8 @@ function htmlToMarkdown(bodyEl: Element, ctx: ConvCtx): string {
       return `$${src}$`;
     }
 
+    if (tag === 'div' && /(?:^|\s)callout(?:\s|$)/.test(cls)) return renderCallout(el);
+
     const children = () =>
       Array.from(el.childNodes).map((c) => walk(c, indent)).join('');
 
@@ -618,11 +816,13 @@ function htmlToMarkdown(bodyEl: Element, ctx: ConvCtx): string {
         const inner = children();
         return inner.trim() ? `~~${inner.trim()}~~` : inner;
       }
-      case 'mark': {
+      case 'mark':
+        return paletteRun(children(), style, ctx, false, true);
+
+      case 'sup':
+      case 'sub': {
         const inner = children();
-        if (!inner.trim()) return inner;
-        ctx.flags.highlights++;
-        return `==${inner.trim()}==`;
+        return inner.trim() ? `<${tag}>${inner}</${tag}>` : inner;
       }
       case 'code': {
         // A <code> inside <pre> is handled by the <pre> branch.
@@ -676,11 +876,7 @@ function htmlToMarkdown(bodyEl: Element, ctx: ConvCtx): string {
       case 'blockquote': {
         const inner = children().trim();
         if (!inner) return '';
-        const quoted = inner
-          .split('\n')
-          .map((l) => (l.trim() ? `> ${l}` : '>'))
-          .join('\n');
-        return `\n${quoted}\n\n`;
+        return `\n${quoteLines(inner)}\n\n`;
       }
 
       case 'table':
@@ -700,24 +896,39 @@ function htmlToMarkdown(bodyEl: Element, ctx: ConvCtx): string {
 
       case 'iframe':
       case 'embed': {
-        const src = el.getAttribute('src') ?? '';
-        return src ? `\n[${src}](${src})\n\n` : '';
+        // Notesnook writes a web clip as `<iframe src="<path> "width=... />`:
+        // a space inside the src, and no end tag, so the parser reads the
+        // rest of the note as the iframe's raw text. That text is parsed
+        // again, so the note does not end at its first web clip.
+        const src = (el.getAttribute('src') ?? '').trim();
+        const token = attachmentToken(ctx, src);
+        let out = token
+          ? `\n[${attachmentName(resolveRelative(ctx.baseDir, src) ?? src)}](${token})\n\n`
+          : src ? `\n[${src}](${src})\n\n` : '';
+        const rest = tag === 'iframe' ? (el.textContent ?? '') : '';
+        if (rest.trim()) {
+          const doc = new DOMParser().parseFromString(rest, 'text/html');
+          out += Array.from(doc.body.childNodes).map((c) => walk(c, indent)).join('');
+        }
+        return out;
       }
 
       case 'span':
       default: {
-        // Everything else is a styling wrapper we have no node for:
-        // font family, font size, text color, background color. Keep the
-        // text, drop the styling.
+        // Everything else is a styling wrapper. A text color and a
+        // background color move onto the palette and a font size onto the
+        // editor's sizes; a font family has no node, so the text stays and
+        // the family goes.
         const inner = children();
         if (
           inner.trim() &&
           (el.hasAttribute('data-font-family') ||
-            /font-size|font-family|(?<!-)color\s*:/i.test(style))
+            /font-family/i.test(style) ||
+            (/font-size/i.test(style) && !FONT_SIZE_RE.test(style)))
         ) {
           ctx.flags.droppedStyling++;
         }
-        return inner;
+        return paletteRun(inner, style, ctx, false);
       }
     }
   }
@@ -1041,10 +1252,14 @@ async function parseZip(
     tables: 0,
     codeBlocks: 0,
     aligned: 0,
+    colors: 0,
+    droppedColors: 0,
+    fontSizes: 0,
     droppedStyling: 0,
     droppedAlign: 0,
     noteLinks: 0,
     math: 0,
+    callouts: 0,
   };
   const notes: ImportedNote[] = [];
 
@@ -1177,6 +1392,11 @@ export async function parseNotesnook(
       `Converted ${flags.noteLinks} internal link${plural(flags.noteLinks)} into note-links.`
     );
   }
+  if (flags.callouts > 0) {
+    transforms.push(
+      `Converted ${flags.callouts} callout${plural(flags.callouts)}, keeping their type, title and fold state.`
+    );
+  }
   if (flags.checklists > 0) {
     transforms.push(
       `Converted ${flags.checklists} checklist${plural(flags.checklists)} into native task lists.`
@@ -1203,10 +1423,17 @@ export async function parseNotesnook(
   if (flags.droppedAlign > 0) {
     transforms.push('Dropped alignment on blocks the editor cannot align, keeping the text.');
   }
+  if (flags.colors > 0) {
+    transforms.push(`Kept ${flags.colors} text color${plural(flags.colors)}, matched to the editor's colors.`);
+  }
+  if (flags.droppedColors > 0) {
+    transforms.push('Dropped colors the editor cannot show, such as black or white text, keeping the text.');
+  }
+  if (flags.fontSizes > 0) {
+    transforms.push(`Kept ${flags.fontSizes} font size${plural(flags.fontSizes)}, matched to the editor's Small, Large and Huge.`);
+  }
   if (flags.droppedStyling > 0) {
-    transforms.push(
-      'Dropped custom fonts, font sizes, and text colors, keeping the text.'
-    );
+    transforms.push('Dropped custom fonts, keeping the text.');
   }
   if (imageCount > 0) {
     transforms.push(`Found ${imageCount} image${plural(imageCount)} to import.`);
@@ -1253,10 +1480,14 @@ export function htmlNoteToMarkdown(html: string): string {
       tables: 0,
       codeBlocks: 0,
       aligned: 0,
+      colors: 0,
+      droppedColors: 0,
+      fontSizes: 0,
       droppedStyling: 0,
       droppedAlign: 0,
       noteLinks: 0,
       math: 0,
+      callouts: 0,
     },
   });
 }

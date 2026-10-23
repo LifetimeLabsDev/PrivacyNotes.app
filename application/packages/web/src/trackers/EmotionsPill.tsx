@@ -1,10 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import {
-  BUILTIN_TRACKER_COLORS,
-  EMOTION_TAGS,
-} from '../trackerTypes';
+import { EMOTION_TAGS } from '../trackerTypes';
 import { PillShell } from './PillShell';
 import { TRACKER_ICONS } from './icons';
+import { PanelQuestion } from './panelUI';
 
 /**
  * Multi-select emotion tags grouped by valence (positive/neutral/negative).
@@ -39,7 +37,6 @@ export function EmotionsPill({
   return (
     <PillShell
       label={t('labels.emotions')}
-      color={BUILTIN_TRACKER_COLORS.emotions}
       filled={count > 0}
       expanded={expanded}
       onToggle={onToggle}
@@ -48,9 +45,7 @@ export function EmotionsPill({
       readOnly={readOnly}
     >
       <div className="flex flex-col gap-2">
-        <span className="text-xs font-medium text-pn-soft">
-          {t('emotions.prompt')}
-        </span>
+        <PanelQuestion>{t('emotions.prompt')}</PanelQuestion>
         {(['positive', 'neutral', 'negative'] as const).map((valence) => (
           <div key={valence}>
             <span className={`block text-[11px] font-medium mb-1 ${
@@ -62,7 +57,7 @@ export function EmotionsPill({
             }`}>
               {t(`emotions.valence.${valence}`)}
             </span>
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-1.5">
             {EMOTION_TAGS.filter((tag) => tag.valence === valence).map((tag) => (
               <TagChip
                 key={tag.key}
@@ -101,10 +96,11 @@ function TagChip({
     <button
       type="button"
       onClick={onClick}
-      className={`px-2 py-0.5 rounded-full text-[11px] font-medium transition-all ${
+      aria-pressed={selected}
+      className={`inline-flex items-center h-7 px-2.5 rounded-md border text-[12px] font-medium transition-colors ${
         selected
-          ? `${colorClass} ring-2 ring-current/30`
-          : 'bg-surface-0 text-pn-muted hover:bg-pn/10'
+          ? `${colorClass} border-current/25`
+          : 'border-transparent bg-surface-0 text-pn-soft hover:bg-pn/10 hover:text-pn'
       }`}
     >
       {label}

@@ -10,6 +10,8 @@
     "back": "Retour",
     "next": "Suivant",
     "remove": "Retirer",
+    "deleteConfirm": "Supprimer ?",
+    "removeConfirm": "Retirer ?",
     "copy": "Copier",
     "rename": "Renommer",
     "create": "Créer",
@@ -59,15 +61,17 @@
   },
   "palette": {
     "label": "Commandes",
-    "open": "Commandes (>)",
+    "open": "Commandes",
     "empty": "Aucune commande correspondante",
     "groups": {
+      "features": "Fonctionnalités",
       "commands": "Commandes",
       "new": "Nouveau",
-      "goTo": "Aller à"
+      "goTo": "Aller à",
+      "themes": "Thèmes"
     },
     "commands": {
-      "quickSwitcher": "Aller à un élément ou un paramètre",
+      "quickSwitcher": "Ouvrir Ninja : trouver un élément, ajouter n'importe quoi, lancer une commande",
       "historyBack": "Reculer",
       "historyForward": "Avancer",
       "toggleSidebar": "Afficher/masquer la barre latérale",
@@ -93,9 +97,9 @@
     }
   },
   "quickSwitcher": {
-    "label": "Aller à un élément ou un paramètre",
-    "jumpTo": "Accéder",
-    "placeholder": "Tape un titre ou un paramètre, ou > pour les commandes",
+    "label": "Ninja : trouve un élément ou un paramètre, ajoute n'importe quoi, lance une commande",
+    "jumpTo": "Ninja",
+    "placeholder": "Ninja à ton service : un titre, + pour ajouter, > pour les commandes",
     "recent": "Récents",
     "empty": "Aucun élément ni paramètre avec ce nom",
     "searchAll": "Tout rechercher : « {{query}} »",
@@ -114,6 +118,7 @@
     "tagItems_other": "{{count}} éléments",
     "emptyTags": "Aucune étiquette avec ce nom",
     "emptyFolders": "Aucun dossier avec ce nom",
+    "emptyVault": "Rien ici pour l'instant. Tape + pour ajouter ton premier élément.",
     "onlyTags": "étiquettes",
     "onlyFolders": "dossiers",
     "showOnlyTags": "Étiquettes uniquement",
@@ -124,7 +129,13 @@
     "createTag": "Créer l'étiquette #{{name}}",
     "createFolder": "Créer le dossier « {{name}} »",
     "newTag": "Nouvelle étiquette",
-    "newFolder": "Nouveau dossier"
+    "newFolder": "Nouveau dossier",
+    "goToDay": "Aller au jour",
+    "inText": "Dans le texte",
+    "actions": "actions",
+    "back": "retour",
+    "actionsPlaceholder": "Filtrer les actions",
+    "onlyCreate": "ajouter"
   },
   "cardForm": {
     "cardholderName": "Nom du titulaire",
@@ -182,46 +193,48 @@
     "removeTag": "Retirer {{tag}}"
   },
   "loading": {
+    "pause": "Mettre les phrases en pause",
+    "play": "Relancer les phrases",
     "lines": [
-      "chargement de tes ruminations chiffrées…",
-      "un instant, on déçoit les annonceurs.",
-      "trop chiffré pour s'en soucier.",
-      "le secret bancaire suisse, version notes.",
-      "on protège tes idées sous la douche.",
-      "tes secrets ont survécu à un redémarrage de plus.",
-      "rien ne quitte l'appareil tout nu.",
-      "on ouvre le coffre en silence…",
-      "stockage à froid pour pensées chaudes.",
-      "cette note se respecte trop pour fuiter.",
-      "lecture impossible. synchro possible.",
-      "déchiffré localement. ignoré mondialement.",
-      "tes notes gardent leurs distances.",
-      "du chiffré entre, du chiffré sort.",
-      "encore une belle journée pour chiffrer.",
-      "on garde les secrets ennuyeux depuis le lancement.",
-      "tu l'écris. personne ne le lit.",
-      "la confidentialité sans la conférence TED.",
-      "on déchiffre comme si de rien n'était.",
-      "on garde le cloud bien perplexe.",
-      "le serveur ne sait rien. et ça lui va.",
-      "moins de surveillance. plus de notes.",
-      "du charabia chiffré, comme prévu.",
-      "mathématiquement indisponible.",
-      "zéro connaissance. audace maximale.",
-      "pistage désactivé, émotionnellement et techniquement.",
-      "c'est ton appareil qui a tous les potins.",
-      "du texte en clair, produit localement.",
-      "on transforme tes idées en soupe illisible.",
-      "juste toi et les clés.",
-      "tes pensées privées passent en mode privé.",
-      "on garde tes futures fuites bien fictives.",
-      "encore une note cachée du capitalisme.",
-      "ici la confidentialité n'est pas une option payante.",
-      "la sécurité par la vraie sécurité.",
-      "on résiste discrètement aux courtiers de données.",
-      "aucun matériel d'entraînement pour l'IA détecté.",
-      "chiffré plus fort que nécessaire.",
-      "confidentialité : en cours de chargement.",
+      "le secret bancaire suisse, version notes",
+      "on protège tes idées sous la douche",
+      "tes notes sont chiffrées sur ton appareil",
+      "stockage à froid pour pensées chaudes",
+      "encore une belle journée pour chiffrer",
+      "on garde les secrets ennuyeux depuis le lancement",
+      "la confidentialité sans la conférence TED",
+      "on garde le cloud bien perplexe",
+      "le serveur stocke du chiffré. il trouve ça ennuyeux",
+      "moins de surveillance. plus de notes",
+      "du charabia chiffré, comme prévu",
+      "pistage désactivé, émotionnellement et techniquement",
+      "c'est ton appareil qui a tous les potins",
+      "tes pensées privées passent en mode privé",
+      "encore une note cachée du capitalisme",
+      "ici la confidentialité n'est pas une option payante",
+      "la sécurité par la vraie sécurité",
+      "on résiste discrètement aux courtiers de données",
+      "aucun matériel d'entraînement pour l'IA détecté",
+      "chiffré plus fort que nécessaire",
+      "que du signal. zéro surveillance",
+      "on transforme la méfiance en logiciel",
+      "tes pensées restent hors marché",
+      "les fouilleurs de données n'ont trouvé que de la tristesse",
+      "ton coffre reste chiffré avec acharnement",
+      "la neutralité suisse, version notes",
+      "pas de pubs. pas de traceurs. pas de rebondissement",
+      "open source, pour que tu puisses vérifier les maths",
+      "le chiffré, c'est notre langage de l'amour",
+      "on rend tes notes ennuyeuses pour les inconnus",
+      "ton journal intime a appelé. il veut de l'intimité",
+      "ton suivi d'humeur s'ennuyait de toi",
+      "tes idées, sans le public",
+      "ton journal a gardé tes secrets toute la nuit",
+      "un seul endroit privé pour tout ce que tu ne publierais jamais",
+      "ici, aucun algorithme ne décide de ce que tu vois",
+      "tes idées en vrac sont saines et sauves",
+      "écrire, c'est penser. penser, c'est privé",
+      "aucun influenceur n'a été consulté",
       "on charge les secrets de manière responsable.",
       "que du signal. aucune surveillance.",
       "encore un chef-d'œuvre chiffré qui arrive.",
@@ -236,6 +249,27 @@
       "déchiffrement local de pensées existentielles…",
       "ton coffre reste obstinément illisible.",
       "neutralité suisse, mais pour les notes."
+    ],
+    "loadingOnly": [
+      "chargement de tes ruminations chiffrées",
+      "un instant, on déçoit les annonceurs",
+      "tes secrets ont survécu à un redémarrage de plus",
+      "on ouvre le coffre en silence",
+      "déchiffré localement. ignoré mondialement",
+      "on déchiffre comme si de rien n'était",
+      "du texte en clair, produit localement",
+      "on transforme tes idées en soupe illisible",
+      "encore un chef-d'œuvre chiffré en approche",
+      "on remet de l'ordre dans le chaos chiffré",
+      "on déchiffre localement tes pensées existentielles",
+      "on fait chauffer les clés",
+      "on retrouve le fil de tes pensées",
+      "on compte tes tâches non cochées. sans jugement",
+      "aucune pub n'a été affichée pendant ce chargement",
+      "on remet tes notes là où tu les as laissées",
+      "on démêle les pensées d'hier",
+      "on range les bits dans un bel ordre",
+      "on se souvient de ce que tu as oublié de retenir"
     ]
   },
   "neverBackedUp": {
@@ -245,5 +279,57 @@
     "changesOne": "Ses dernières modifications ne sont pas sauvegardées et seraient perdues.",
     "changesSome_one": "{{count}} de ces notes a des modifications non sauvegardées qui seraient perdues.",
     "changesSome_other": "{{count}} de ces notes ont des modifications non sauvegardées qui seraient perdues."
+  },
+  "ninja": {
+    "recent": "Récents",
+    "topHit": "Meilleur résultat",
+    "trashEmpty": "La corbeille est vide",
+    "allThemes": "Tous les thèmes",
+    "features": {
+      "stats": {
+        "label": "Statistiques",
+        "detail": "Ton écriture, tes séries et tes suivis dans le temps"
+      },
+      "trackers": {
+        "label": "Suivis",
+        "detail": "Humeur, habitudes, facteurs et médication"
+      },
+      "medication": {
+        "label": "Médication",
+        "detail": "Doses, horaires et rappels"
+      },
+      "yearInPixels": {
+        "label": "Année en pixels",
+        "detail": "Chaque jour de l'année en un carré de couleur"
+      },
+      "importExport": {
+        "label": "Import & Export",
+        "detail": "Fais entrer tes notes, sors une sauvegarde"
+      },
+      "generator": {
+        "label": "Générateur de mots de passe",
+        "detail": "Un mot de passe ou une phrase de passe robuste, prêt à copier"
+      },
+      "themes": {
+        "label": "Thèmes",
+        "detail": "Thèmes de couleur pour le mode clair et le mode sombre"
+      }
+    },
+    "new": {
+      "medication": "Nouveau médicament",
+      "customTracker": "Nouveau suivi personnalisé"
+    },
+    "commands": {
+      "syncResume": "Reprendre la synchro",
+      "changelog": "Nouveautés",
+      "help": "Aide",
+      "themesPage": "Thèmes de la communauté",
+      "website": "Site web de PrivacyNotes"
+    },
+    "themes": {
+      "word": "Thème",
+      "light": "Thème clair",
+      "dark": "Thème sombre"
+    }
   }
 }

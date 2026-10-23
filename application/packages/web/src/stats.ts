@@ -57,12 +57,13 @@ function wordsOf(n: LocalNote): number {
 
 const isAlive = (n: LocalNote) => n.deleted === 0 && n.trashed === 0;
 
-/** The list footer's counts: what computeStats reports, and nothing else. */
+/** The list footer's counts over the rows a view lists. Trash lists trashed
+ *  notes, so only a hard-deleted tombstone is skipped here. */
 export function footerCounts(notes: LocalNote[]): { totalNotes: number; totalWords: number } {
   let totalNotes = 0;
   let totalWords = 0;
   for (const n of notes) {
-    if (!isAlive(n)) continue;
+    if (n.deleted !== 0) continue;
     totalNotes++;
     totalWords += wordsOf(n);
   }

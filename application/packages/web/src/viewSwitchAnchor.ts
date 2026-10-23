@@ -10,6 +10,8 @@
  * Spec: ops/issues/0493.md (Reading position)
  */
 
+import { stripToPlainText } from './notesViewUtils';
+
 /** What a switch carries from one view to the other. */
 export type ViewAnchor = { words: string; offset: number; ratio: number };
 
@@ -25,26 +27,16 @@ export function anchorWords(text: string, count = 6): string {
 
 /** A line that draws no text of its own in the formatted view: a code
  *  fence, a callout header, a table rule, a divider. */
-const STRUCTURAL = /^\s*(?:(?:>\s?)*\[![\w-]+\][+-]?.*|`{3,}.*|~{3,}.*|\|?[\s:|-]*-{3,}[\s:|-]*|[-*_]{3,}\s*)$/;
+const STRUCTURAL = /^\s*(?:(?:>\s?)*\[![\w-]+(?:\|[\w-]+)?\][+-]?.*|`{3,}.*|~{3,}.*|\|?[\s:|-]*-{3,}[\s:|-]*|[-*_]{3,}\s*)$/;
 
 /** One Markdown line as the formatted view shows its text; empty for a
- *  line that shows none. */
+ *  line that shows none. The reading is the preview stripper's, so the two
+ *  never disagree; this adds only the indent of a nested item and a table
+ *  row's cells. A spoiler reads as the preview mask, so a line that starts
+ *  with one matches on fewer words or falls back to the scroll percent. */
 export function stripMarkdownLine(line: string): string {
   if (STRUCTURAL.test(line)) return '';
-  return normalizeText(
-    line
-      .replace(/<[^>]*>/g, '')
-      .replace(/^\s*(?:>\s?)+/, '')
-      .replace(/^\s*#{1,6}\s+/, '')
-      .replace(/^\s*(?:[-*+]|\d+[.)])\s+(?:\[[ xX]\]\s+)?/, '')
-      .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
-      .replace(/\[\[([^\]|]*)(?:\|([^\]]*))?\]\]/g, (_, target: string, label?: string) => label ?? target)
-      .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-      .replace(/(\*\*|__|~~|\|\||`)/g, '')
-      .replace(/(^|[\s(])[*_](?=\S)|(?<=\S)[*_](?=$|[\s).,!?:;])/g, '$1')
-      .replace(/^\|/, '')
-      .replace(/\|/g, ' '),
-  );
+  return normalizeText(stripToPlainText(line.trimStart()).replace(/\|/g, ' '));
 }
 
 /**
@@ -141,7 +133,7 @@ export function captureAnchor(pane: HTMLElement): ViewAnchor | null {
 
 /** Scrolls the view now on screen so the anchor sits where it was. False
  *  while that view has not drawn its text yet. */
-export function restoreAnchor(pane: HTMLElement, anchor: ViewAnchor): boolean {
+function restoreAnchor(pane: HTMLElement, anchor: ViewAnchor): boolean {
   const area = pane.querySelector<HTMLTextAreaElement>('textarea[data-pn-source]');
   const body = area ? null : pane.querySelector<HTMLElement>('.ProseMirror');
   if (!area && !body?.firstElementChild) return false;
@@ -166,4 +158,30 @@ export function restoreAnchor(pane: HTMLElement, anchor: ViewAnchor): boolean {
     ? Math.round(anchor.ratio * max)
     : Math.round(pane.scrollTop + top - line - gap);
   return true;
+}
+
+/**
+ * Puts the anchor back once the view has drawn its text, and once more a
+ * frame later, when its height has settled. A scroll from anything else
+ * between two frames (a jump to a heading, a search hit) wins, and the loop
+ * stops. Returns the cancel.
+ */
+export function followAnchor(pane: HTMLElement, anchor: ViewAnchor): () => void {
+  let frame = 0;
+  let tries = 0;
+  let placed = false;
+  let last: number | null = null;
+  const step = () => {
+    if (last !== null && Math.abs(pane.scrollTop - last) > 2) return;
+    if (restoreAnchor(pane, anchor)) {
+      if (placed) return;
+      placed = true;
+    } else if (++tries > 30) {
+      return;
+    }
+    last = pane.scrollTop;
+    frame = requestAnimationFrame(step);
+  };
+  frame = requestAnimationFrame(step);
+  return () => cancelAnimationFrame(frame);
 }

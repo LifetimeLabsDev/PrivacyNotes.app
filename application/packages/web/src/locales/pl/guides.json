@@ -40,7 +40,7 @@
           "h": "Co przechodzi razem z wydarzeniami",
           "p": [
             "Każde wydarzenie przychodzi ze swoim dniem, godziną i czasem trwania, także wydarzenia trwające kilka dni. Wydarzenia cykliczne zachowują swoją regułę, a wystąpienie przeniesione lub usunięte w Google zostaje przeniesione lub usunięte. Każdy kalendarz staje się folderem.",
-            "Przypomnienia ustawione przy wydarzeniu też przychodzą, w tym przypomnienia e-mailem: stają się przypomnieniami w aplikacji, a żeby dzwoniły, potrzebny jest PrivacyNotes Pro. Wydarzenie, które używało domyślnych przypomnień kalendarza, przychodzi bez przypomnienia, bo Google nie zapisuje wartości domyślnych w pliku. Miejsce, link do rozmowy wideo, goście i opis trafiają do tekstu wydarzenia. Godziny wyświetlają się tak, jak na tym urządzeniu w chwili importu.",
+            "Przypomnienia ustawione przy wydarzeniu też przychodzą, w tym przypomnienia e-mailem: [stają się przypomnieniami w aplikacji](/pl/help/reminders/), a żeby dzwoniły, potrzebny jest PrivacyNotes Pro. Wydarzenie, które używało domyślnych przypomnień kalendarza, przychodzi bez przypomnienia, bo Google nie zapisuje wartości domyślnych w pliku. Miejsce, link do rozmowy wideo, goście i opis trafiają do tekstu wydarzenia. [Godziny wyświetlają się tak, jak na tym urządzeniu w chwili importu](/pl/help/calendar-time-zones/).",
             "Działa też pojedynczy plik .ics z dowolnej aplikacji kalendarza, w tym z Kalendarza Apple i Outlooka.",
             "Jeśli później zaimportujesz ten sam plik jeszcze raz, wydarzenia, które już tu są, zostaną pominięte, więc dodane zostaną tylko nowe."
           ]
@@ -66,7 +66,7 @@
         {
           "h": "Co przechodzi razem z notatkami",
           "p": [
-            "Tytuły, treść notatek i formatowanie docierają nienaruszone. Listy kontrolne z Keep zamieniają się w natywne listy zadań PrivacyNotes, a etykiety z Keep trafiają jako tagi.",
+            "Tytuły, treść notatek i formatowanie docierają nienaruszone. Listy kontrolne z Keep zamieniają się w [natywne listy zadań PrivacyNotes](/pl/help/tasks/), a etykiety z Keep trafiają jako tagi.",
             "Upuść cały plik .zip z Takeout w importerze. Jeśli już go rozpakowałeś, zadziała też pojedynczy plik notatki .json z folderu Takeout/Keep."
           ]
         }
@@ -95,7 +95,7 @@
         {
           "h": "Co przechodzi razem z notatkami",
           "p": [
-            "Struktura folderów, treść notatek i osadzone obrazy przetrwają podróż. Notatki zachowują tytuły, a załączniki lądują w zaszyfrowanej pamięci plików obok swojej notatki."
+            "Struktura folderów, treść notatek i osadzone obrazy przetrwają podróż. Notatki zachowują tytuły, a załączniki lądują w [zaszyfrowanej pamięci plików](/pl/help/attachment-limits/) obok swojej notatki."
           ]
         }
       ]
@@ -126,9 +126,9 @@
         {
           "h": "Co przechodzi razem z notatkami",
           "p": [
-            "Twoje tagi przechodzą jako tagi. Zagnieżdżone tagi, takie jak #work/projects, są dodatkowo odtwarzane jako foldery, a każda notatka trafia do folderu swojego najgłębszego tagu. Połączenia między notatkami stają się linkami do notatek, a link do nagłówka wskazuje ten nagłówek.",
+            "Twoje tagi przechodzą jako tagi. Zagnieżdżone tagi, takie jak #work/projects, są dodatkowo odtwarzane jako foldery, a każda notatka trafia do folderu swojego najgłębszego tagu. [Połączenia między notatkami stają się linkami do notatek](/pl/help/note-links/), a link do nagłówka wskazuje ten nagłówek.",
             "Formatowanie zostaje: nagłówki, pogrubienie, kursywa, podkreślenie, przekreślenie, podświetlenia w kolorach z Bear, listy zadań, tabele, bloki kodu, cytaty, ramki, wzory matematyczne i przypisy. Obrazy otwierają się w pełnej szerokości, a zwinięte nagłówki przychodzą rozwinięte.",
-            "Przypięte notatki zostają przypięte, notatki z archiwum trafiają do Archiwum, notatki z kosza trafiają do Kosza, notatki tylko do odczytu zostają tylko do odczytu, a każda notatka zachowuje swoje oryginalne daty.",
+            "Przypięte notatki zostają przypięte, [notatki z archiwum trafiają do Archiwum](/pl/help/archive/), notatki z kosza trafiają do Kosza, notatki tylko do odczytu zostają tylko do odczytu, a każda notatka zachowuje swoje oryginalne daty.",
             "Obrazy i pliki dołączone do notatek są importowane do Twojej pamięci. Notatka, która wskazuje plik, którego nie ma w kopii zapasowej, i tak się zaimportuje, a podgląd importu powie Ci, ilu linków to dotyczy."
           ]
         }
@@ -152,9 +152,9 @@
           "h": "Co przechodzi razem z notatkami",
           "p": [
             "Twoja struktura folderów zostaje odtworzona jako prawdziwe foldery, a nie spłaszczona do tagów, niezależnie od tego, jak głęboko jest zagnieżdżona. Notatka w Praca/Projekty ląduje w folderze Praca > Projekty. Ponowny import tego samego sejfu użyje folderów, które już utworzył, zamiast je duplikować.",
-            "W planie darmowym możesz od razu przeglądać te foldery; tworzenie, zmiana nazw i przenoszenie folderów to funkcja Pro, więc import z Obsidian to dobry sposób, żeby ją wypróbować przed przejściem na Pro.",
+            "W planie darmowym możesz od razu przeglądać te foldery; [tworzenie, zmiana nazw i przenoszenie folderów to funkcja Pro](/pl/help/folders/), więc import z Obsidian to dobry sposób, żeby ją wypróbować przed przejściem na Pro.",
             "Frontmatter YAML jest rozumiany: tagi, aliasy i daty utworzenia są respektowane, a #tagi w treści są scalane z polem tagów. Podczas importu możesz też zaznaczyć „Oznacz notatki też tagiem folderu”, aby dodać nazwę każdego folderu jako tag, przydatne, jeśli lubisz też filtrować po tagach.",
-            "Twoje linki [[...]] nadal działają: PrivacyNotes renderuje je jako linki do notatek, więc połączenia między notatkami przetrwają przeprowadzkę. Folder konfiguracyjny .obsidian oraz .trash są pomijane automatycznie."
+            "Twoje linki [[...]] nadal działają: [PrivacyNotes renderuje je jako linki do notatek](/pl/help/note-links/), więc połączenia między notatkami przetrwają przeprowadzkę. Folder konfiguracyjny .obsidian oraz .trash są pomijane automatycznie."
           ]
         }
       ]
@@ -177,7 +177,7 @@
         {
           "h": "Notatki Super, listy kontrolne i kody 2FA zachowują swój kształt",
           "p": [
-            "Notatki Super zachowują formatowanie: nagłówki, listy, listy kontrolne, tabele, bloki kodu, wyróżnienia, kolory, wyrównanie tekstu i zwijane sekcje. Link do innej notatki staje się linkiem do notatki, a #hashtag w tekście staje się tagiem notatki. Listy kontrolne trafiają do Zadań, arkusze kalkulacyjne stają się tabelami, a wpisy z uwierzytelniacza stają się loginami w Sejfie, razem z kluczem 2FA. Zagnieżdżone tagi stają się folderami, a każda notatka zachowuje też swoje tagi.",
+            "Notatki Super zachowują formatowanie: nagłówki, listy, listy kontrolne, tabele, bloki kodu, wyróżnienia, kolory, wyrównanie tekstu i zwijane sekcje. [Link do innej notatki staje się linkiem do notatki](/pl/help/note-links/), a #hashtag w tekście staje się tagiem notatki. Listy kontrolne trafiają do Zadań, arkusze kalkulacyjne stają się tabelami, a wpisy z uwierzytelniacza stają się [loginami w Sejfie, razem z kluczem 2FA](/pl/help/vault-totp/). Zagnieżdżone tagi stają się folderami, a każda notatka zachowuje też swoje tagi.",
             "Pliki przesłane do Standard Notes zostają na ich serwerze, więc kopia zawiera tylko ich nazwy. Każda zaimportowana notatka oznacza miejsce, w którym był plik. Pobierz te pliki ze Standard Notes i dodaj je ponownie do notatki."
           ]
         },
@@ -230,7 +230,7 @@
         {
           "h": "Co przechodzi razem z notatkami",
           "p": [
-            "Z eksportów .docx: pogrubienie, kursywa, podkreślenie, przekreślenie, listy punktowane i numerowane oraz pola wyboru (które stają się natywnymi listami zadań) zostają zachowane. Z eksportów .txt: tekst i nic poza tym.",
+            "Z eksportów .docx: pogrubienie, kursywa, podkreślenie, przekreślenie, listy punktowane i numerowane oraz pola wyboru (które stają się [natywnymi listami zadań](/pl/help/tasks/)) zostają zachowane. Z eksportów .txt: tekst i nic poza tym.",
             "Obrazy osadzone w notatce Samsunga przenosisz ręcznie: importer oznacza każdą notatkę, która je miała, więc wiesz dokładnie, gdzie je z powrotem wstawić. Tekst, tytuły i daty przychodzą w tym samym przebiegu."
           ]
         }
@@ -254,7 +254,7 @@
         {
           "h": "Gdzie co trafia",
           "p": [
-            "Loginy stają się wpisami typu Login w Sejfie (razem z ikonami stron), karty stają się wpisami kart, klucze SSH wpisami kluczy SSH, a bezpieczne notatki i tożsamości trafiają jako czytelne notatki. Foldery Bitwarden mapują się na tagi, a ulubione przychodzą z gwiazdką. Klucze uwierzytelniające (TOTP) też jadą z tobą, więc twoje kody 2FA nadal działają.",
+            "Loginy stają się [wpisami typu Login w Sejfie](/pl/help/vault/) (razem z ikonami stron), karty stają się wpisami kart, klucze SSH wpisami kluczy SSH, a bezpieczne notatki i tożsamości trafiają jako czytelne notatki. Foldery Bitwarden mapują się na tagi, a ulubione przychodzą z gwiazdką. Klucze uwierzytelniające (TOTP) też jadą z tobą, więc [twoje kody 2FA nadal działają](/pl/help/vault-totp/).",
             "Plik eksportu zawiera Twoje hasła jawnym tekstem, więc zaimportuj go, sprawdź, czy wszystko dotarło, a potem porządnie go usuń. Wewnątrz PrivacyNotes wszystko jest znów zaszyfrowane, na Twoim urządzeniu i w drodze na serwer."
           ]
         }
@@ -305,7 +305,7 @@
         {
           "h": "Co przechodzi razem z notatkami, a co nie",
           "p": [
-            "Tabele, bloki kodu, podświetlenia, podkreślenia, kolor tekstu i wzory zostają zachowane. Listy kontrolne stają się listami zadań, przypomnienie przy notatce staje się zadaniem na jej początku, załączniki i obrazy trafiają na nowo zaszyfrowane do Twojej pamięci, wycinki stron zachowują adres źródła, a notatki głosowe swoją transkrypcję. Linki wewnętrzne stają się linkami do notatek, dopasowanymi po tytule linkowanej notatki, bo Evernote nie eksportuje identyfikatorów notatek.",
+            "Tabele, bloki kodu, podświetlenia, podkreślenia, kolor tekstu i wzory zostają zachowane. [Listy kontrolne stają się listami zadań](/pl/help/tasks/), przypomnienie przy notatce staje się zadaniem na jej początku, załączniki i obrazy trafiają na nowo zaszyfrowane do Twojej pamięci, wycinki stron zachowują adres źródła, a notatki głosowe swoją transkrypcję. [Linki wewnętrzne stają się linkami do notatek](/pl/help/note-links/), dopasowanymi po tytule linkowanej notatki, bo Evernote nie eksportuje identyfikatorów notatek.",
             "Zadania nie przechodzą: w miejscu każdego bloku zadań eksport zostawia zastępnik „Content not supported”, bez tytułów, terminów i statusu ukończenia, które dałoby się jeszcze odczytać. Bloki zaszyfrowane pozostają zaszyfrowane, więc odszyfruj je wcześniej w Evernote. Własne czcionki, wyrównanie tekstu i zagnieżdżona hierarchia tagów są pomijane."
           ]
         },
@@ -334,7 +334,7 @@
         {
           "h": "Jak czytane są pliki",
           "p": [
-            "Frontmatter YAML jest respektowany, gdy jest: pola title, created, updated i tags trafiają prosto do notatki, przez co to jest też droga powrotna dla własnych eksportów Markdown z PrivacyNotes. Czytamy również tagi zapisane jako #hashtagi w tekście. Zwykłe pliki bez frontmattera biorą nazwę pliku jako tytuł, a treść jako tekst notatki. Parser jest celowo pobłażliwy: przyjmuje .md, .markdown, .mdown, .mkd i .txt.",
+            "Frontmatter YAML jest respektowany, gdy jest: pola title, created, updated i tags trafiają prosto do notatki, przez co to jest też [droga powrotna dla własnych eksportów Markdown z PrivacyNotes](/pl/help/export/). Czytamy również tagi zapisane jako #hashtagi w tekście. Zwykłe pliki bez frontmattera biorą nazwę pliku jako tytuł, a treść jako tekst notatki. Parser jest celowo pobłażliwy: przyjmuje .md, .markdown, .mdown, .mkd i .txt.",
             "Spakuj cały folder, a struktura pójdzie razem z nim. Podfoldery są odtwarzane jako prawdziwe foldery, na dowolnej głębokości, a obrazy i pliki, do których linkują twoje notatki, importują się razem z nimi. To, do czego nic nie linkuje, zostaje na miejscu i jest policzone, więc folder pełen starych zrzutów ekranu nie zjada ci miejsca."
           ]
         }
@@ -374,9 +374,9 @@
         {
           "h": "Co przechodzi razem z notatkami",
           "p": [
-            "Twoje notesy zostają odtworzone jako prawdziwe foldery, a nie spłaszczone do tagów, dokładnie na tej głębokości, na jakiej były zagnieżdżone w Notesnooku. Notatka w Praca > Projekty ląduje w folderze Praca > Projekty.",
+            "[Twoje notesy zostają odtworzone jako prawdziwe foldery](/pl/help/folders/), a nie spłaszczone do tagów, dokładnie na tej głębokości, na jakiej były zagnieżdżone w Notesnooku. Notatka w Praca > Projekty ląduje w folderze Praca > Projekty.",
             "Notatki przypięte i ulubione zostają oznaczone. Notesnook trzyma Pin i Favorite jako dwie osobne właściwości; PrivacyNotes ma jedną listę Przypięte, więc każda notatka przypięta lub oznaczona jako ulubiona tam wyląduje.",
-            "Podświetlenia, matematyka i wyrównanie tekstu przechodzą takie, jakie są: tekst podświetlony pozostaje podświetlony, wzory znów renderują się jako matematyka, a bloki wyśrodkowane lub wyrównane do prawej zachowują swoje wyrównanie. Własne czcionki, rozmiary czcionek i kolory tekstu nie mają tu odpowiednika, więc to stylowanie jest pomijane, a sam tekst zostaje zachowany."
+            "Podświetlenia, kolory tekstu, rozmiary czcionek, indeks górny, indeks dolny, matematyka i wyrównanie tekstu przechodzą takie, jakie są: każdy kolor trafia do najbliższego koloru z naszej palety, wybrany rozmiar czcionki zmienia się w Mały, Duży lub Bardzo duży, wzory znów renderują się jako matematyka, a bloki wyśrodkowane lub wyrównane do prawej zachowują swoje wyrównanie. Własne czcionki nie mają tu odpowiednika, więc sama czcionka jest pomijana, a tekst zostaje zachowany."
           ]
         },
         {
@@ -414,15 +414,15 @@
         {
           "h": "Co przechodzi razem z wpisami",
           "p": [
-            "Każdy wpis ląduje w Dziennikach, a nie w Notatkach, z datą dnia, którą Dziennik pokazuje nad nim, więc Twoja historia zachowuje swój kształt.",
-            "Zdjęcia i Live Photos importują się jako obrazy, filmy i notatki głosowe jako załączniki. Apple dostarcza zdjęcia jako HEIC, którego większość przeglądarek nie wyświetli, więc PrivacyNotes konwertuje każde z nich do JPEG po drodze. To najwolniejsza część dużego importu: kilkaset zdjęć może zająć kilka minut, a pasek postępu liczy je za Ciebie.",
+            "[Każdy wpis ląduje w Dziennikach](/pl/help/journal/), a nie w Notatkach, z datą dnia, którą Dziennik pokazuje nad nim, więc Twoja historia zachowuje swój kształt.",
+            "Zdjęcia i Live Photos importują się jako obrazy, filmy i notatki głosowe jako załączniki. Apple dostarcza zdjęcia jako HEIC, którego większość przeglądarek nie wyświetli, więc PrivacyNotes [konwertuje każde z nich do JPEG po drodze](/pl/help/image-quality/). To najwolniejsza część dużego importu: kilkaset zdjęć może zająć kilka minut, a pasek postępu liczy je za Ciebie.",
             "Pogrubienie, kursywa, podkreślenie, przekreślenie, kolory tekstu, listy punktowane i numerowane oraz cytaty blokowe zostają zachowane."
           ]
         },
         {
           "h": "Zdjęcia, filmy i Twoja pamięć",
           "p": [
-            "Dziennik pełen zdjęć jest znacznie większy niż dziennik pełen tekstu i liczy się do Twojej pamięci tak samo jak wszystko inne. Podgląd importu sumuje to, zanim zatwierdzisz, i odmawia startu, jeśli by się to nie zmieściło."
+            "Dziennik pełen zdjęć jest znacznie większy niż dziennik pełen tekstu i [liczy się do Twojej pamięci tak samo jak wszystko inne](/pl/help/storage-usage/). Podgląd importu sumuje to, zanim zatwierdzisz, i odmawia startu, jeśli by się to nie zmieściło."
           ]
         },
         {
@@ -435,7 +435,7 @@
         {
           "h": "Funkcja State of Mind",
           "p": [
-            "Jeśli zarejestrowałeś State of Mind, PrivacyNotes uzupełnia w tym wpisie trackery nastroju i emocji wszędzie tam, gdzie sformułowanie Apple pasuje do jednego z naszych. Wszystko, czego nie da się dopasować, oraz obszary życia, które otagowałeś, zostają zachowane jako linijka tekstu, żeby nic się nie zgubiło."
+            "Jeśli zarejestrowałeś State of Mind, PrivacyNotes [uzupełnia w tym wpisie trackery nastroju i emocji](/pl/help/choose-trackers/) wszędzie tam, gdzie sformułowanie Apple pasuje do jednego z naszych. Wszystko, czego nie da się dopasować, oraz obszary życia, które otagowałeś, zostają zachowane jako linijka tekstu, żeby nic się nie zgubiło."
           ]
         },
         {
@@ -507,7 +507,7 @@
           "h": "Co przechodzi razem z notatkami",
           "p": [
             "Twoje notesy zostają odtworzone jako prawdziwe foldery, zagnieżdżone tak głęboko, jak były w UpNote. Notatka, która żyła w kilku notesach, ląduje w pierwszym z nich, a pozostałe niesie jako tagi.",
-            "Notatki przypięte i te z Quick Access przychodzą jako Przypięte. Notatki z kosza lądują w koszu, szablony importują się jako notatki z tagiem #template, linki z UpNote stają się linkami do notatek, a każda notatka zachowuje swoje oryginalne daty.",
+            "Notatki przypięte i te z Quick Access przychodzą jako Przypięte. Notatki z kosza lądują w koszu, szablony importują się jako notatki z tagiem #template, [linki z UpNote stają się linkami do notatek](/pl/help/note-links/), a każda notatka zachowuje swoje oryginalne daty.",
             "Formatowanie przetrwa: listy zadań, tabele, bloki kodu, matematyka, podkreślenie, indeksy dolne i górne, wyrównanie tekstu i podświetlenia. Sekcje zwijane stają się zwijanymi ramkami i zachowują swój stan otwarty lub zamknięty. Kolory tekstu i kolory podświetlenia są dopasowywane do palety edytora, więc żółte podświetlenie zostaje żółte, a zielone zielone. Każda notatka trafia tu w tej postaci, w jakiej zapisał ją ostatnio UpNote."
           ]
         },
@@ -554,7 +554,7 @@
           "h": "Co przechodzi razem z notatkami",
           "p": [
             "Twoje notesy są odtwarzane jako prawdziwe foldery, zagnieżdżone tak głęboko, jak w Joplin, a każda notatka zachowuje swoje tagi oraz daty utworzenia i aktualizacji, które pokazywał Ci Joplin.",
-            "Elementy to-do stają się notatkami zadań z polem wyboru, które możesz odhaczyć, od razu odhaczonym, jeśli to-do było wykonane, a termin zostaje zapisany obok tytułu. Połączenia między notatkami stają się linkami do notatek. Obrazy i załączniki są importowane do Twojej pamięci i zostają na swoich miejscach w notatce. Notatki zapisane jako HTML, takie jak wiele wycinków z sieci, są konwertowane razem z formatowaniem.",
+            "[Elementy to-do stają się notatkami zadań](/pl/help/tasks/) z polem wyboru, które możesz odhaczyć, od razu odhaczonym, jeśli to-do było wykonane, a termin zostaje zapisany obok tytułu. [Połączenia między notatkami stają się linkami do notatek](/pl/help/note-links/). Obrazy i załączniki są importowane do Twojej pamięci i zostają na swoich miejscach w notatce. Notatki zapisane jako HTML, takie jak wiele wycinków z sieci, są konwertowane razem z formatowaniem.",
             "Notatki z notesu Conflicts w Joplin przychodzą z tagiem „conflict”, więc możesz je znaleźć i posortować. Jeśli używasz szyfrowania Joplin, poczekaj, aż skończy odszyfrowywanie, zanim wyeksportujesz: element, który nadal jest zaszyfrowany, jest pomijany, a podgląd importu powie Ci, ile ich jest."
           ]
         }
@@ -615,7 +615,7 @@
             "Każdy folder, który miałeś, przychodzi zagnieżdżony dokładnie tak, jak go zostawiłeś, wewnątrz jednego nowego folderu o nazwie Bookmarks. Pasek zakładek to wyjątek: jego zawartość przesuwa się o poziom wyżej, zamiast stać się folderem, bo każda przeglądarka nazywa ten pasek inaczej w każdym języku. Safari nie oznacza niczego, więc jego Favorites faktycznie przychodzi jako folder.",
             "Dzień, w którym zapisałeś każdą zakładkę, przychodzi razem z nią. Safari jako jedyna przeglądarka nie zapisuje żadnych dat, więc eksport z Safari przychodzi z dzisiejszą datą.",
             "Firefox jest też jedyną przeglądarką, która zapisuje przy zakładce tagi i słowo kluczowe paska adresu. Jeśli twój plik je zawiera, podgląd zaproponuje pole wyboru, żeby je zachować, i jedno i drugie trafi tutaj jako tag.",
-            "Trzy rzeczy celowo nie są przenoszone. Wewnętrzne skróty przeglądarki, jak Most Visited, nie są prawdziwymi linkami, więc są liczone i pomijane. Ikon stron też nie czytamy z pliku, bo zapisana w nim kopia się starzeje; PrivacyNotes pobiera świeżą. A folder, w którym nie było żadnej zakładki, nie zostaje odtworzony.",
+            "Trzy rzeczy celowo nie są przenoszone. Wewnętrzne skróty przeglądarki, jak Most Visited, nie są prawdziwymi linkami, więc są liczone i pomijane. Ikon stron też nie czytamy z pliku, bo zapisana w nim kopia się starzeje; [PrivacyNotes pobiera świeżą](/pl/help/bookmarks/). A folder, w którym nie było żadnej zakładki, nie zostaje odtworzony.",
             "Zaimportowanie tego samego pliku dwa razy jest bezpieczne. Zakładka, której adres już zapisałeś, zostanie pominięta zamiast dodana ponownie, a podgląd powie ci, ile ich było."
           ]
         },
@@ -679,7 +679,7 @@
         {
           "h": "Co przechodzi",
           "p": [
-            "Każdy wiersz staje się loginem ze stroną, nazwą użytkownika i hasłem, a do tego notatką, którą przeglądarka trzymała obok. Firefox jako jedyny z tej trójki zapisuje daty, więc jego loginy zachowują dzień zapisania, a pozostałe przychodzą z dzisiejszą datą. Safari jako jedyne eksportuje klucz uwierzytelniający i tylko wtedy, gdy trzymałeś kody w Safari - wtedy kod działa dalej także tutaj.",
+            "Każdy wiersz staje się loginem ze stroną, nazwą użytkownika i hasłem, a do tego notatką, którą przeglądarka trzymała obok. Firefox jako jedyny z tej trójki zapisuje daty, więc jego loginy zachowują dzień zapisania, a pozostałe przychodzą z dzisiejszą datą. Safari jako jedyne eksportuje klucz uwierzytelniający i tylko wtedy, gdy trzymałeś kody w Safari - wtedy [kod działa dalej także tutaj](/pl/help/vault-totp/).",
             "Przeglądarki zapisują osobny wpis dla każdej strony logowania, więc duży eksport często ma kilka wierszy dla jednej firmy. Wszystkie się zaimportują, a potem możesz je połączyć albo usunąć.",
             "Przeglądarka trzyma hasła na jednej płaskiej liście, więc nie ma struktury folderów do odtworzenia. Zamiast tego każdy login przychodzi otagowany, dzięki czemu jednym kliknięciem masz całą paczkę."
           ]
@@ -774,7 +774,7 @@
         {
           "h": "Linki Zettelkastenu zachowują tekst, nie cel",
           "p": [
-            "Zettlr łączy notatki po identyfikatorze, więc link wygląda tak: [[20260823120000]]. Zostawiamy linki do notatek dokładnie tak, jak zostały zapisane, co znaczy, że link po identyfikatorze trafi tu w notatkę tylko wtedy, gdy jakaś notatka naprawdę nosi ten identyfikator jako tytuł. Linki zapisane nazwą pliku działają normalnie, więc jeśli na nich polegasz, przed eksportem przestaw format linków wewnętrznych na nazwę pliku.",
+            "Zettlr łączy notatki po identyfikatorze, więc link wygląda tak: [[20260823120000]]. [Zostawiamy linki do notatek dokładnie tak, jak zostały zapisane](/pl/help/note-links/), co znaczy, że link po identyfikatorze trafi tu w notatkę tylko wtedy, gdy jakaś notatka naprawdę nosi ten identyfikator jako tytuł. Linki zapisane nazwą pliku działają normalnie, więc jeśli na nich polegasz, przed eksportem przestaw format linków wewnętrznych na nazwę pliku.",
             "Klucze cytowań w rodzaju [@doe2026] są dla nas tekstem. Przechodzą bez zmian i przestają być klikalne."
           ]
         },
@@ -812,6 +812,57 @@
           "h": "Oba rozszerzenia działają",
           "p": [
             "Notes zapisuje domyślnie .txt, a .md wtedy, gdy ty albo twoja administracja zmienicie ustawienie. Czytamy tu obie, a także .markdown, .mdown i .mkd, więc przed eksportem nie musisz niczego zmieniać ani ruszać serwera."
+          ]
+        }
+      ]
+    },
+    "contacts": {
+      "app": "Kontakty (vCard)",
+      "title": "Wyeksportuj swoje kontakty",
+      "metaTitle": "Jak wyeksportować kontakty jako vCard - PrivacyNotes",
+      "lead": "Każdy telefon i każda książka adresowa potrafi wyeksportować kontakty jako jeden plik .vcf, a PrivacyNotes czyta ten plik bezpośrednio, razem ze zdjęciami.",
+      "sections": [
+        {
+          "h": "Wyeksportuj z iPhone'a",
+          "steps": [
+            "Otwórz Kontakty i stuknij „Lists” w lewym górnym rogu.",
+            "Dotknij i przytrzymaj „All Contacts”, a potem wybierz Export.",
+            "Zapisz plik .vcf w aplikacji Pliki albo wyślij go przez AirDrop na urządzenie, na którym importujesz."
+          ]
+        },
+        {
+          "h": "Wyeksportuj z Maca lub iCloud",
+          "steps": [
+            "W Kontaktach zaznacz „All Contacts” i naciśnij Command-A.",
+            "Wybierz File > Export > Export vCard.",
+            "Na [icloud.com/contacts](https://www.icloud.com/contacts) zaznacz wszystko, otwórz menu „...” i wybierz „Export vCard”."
+          ]
+        },
+        {
+          "h": "Wyeksportuj z Androida lub Kontaktów Google",
+          "steps": [
+            "W aplikacji Kontakty Google stuknij „Fix & manage” > „Export to file”.",
+            "Na [contacts.google.com](https://contacts.google.com) wybierz Export, a potem „vCard (for iOS Contacts)”.",
+            "Na telefonie Samsung otwórz Kontakty > Manage contacts > Import or export contacts > Export."
+          ]
+        },
+        {
+          "h": "Wybierz vCard, nie CSV",
+          "p": [
+            "Google oferuje obok vCard dwa formaty CSV. Importer czyta tylko pliki .vcf, więc plik CSV nie pojawi się w oknie wyboru pliku. Wyeksportuj jeszcze raz i wybierz vCard."
+          ]
+        },
+        {
+          "h": "Co przechodzi",
+          "p": [
+            "Przechodzi każda wizytówka z pliku: imiona i nazwiska, telefony, adresy e-mail, adresy pocztowe, urodziny i inne daty, strony internetowe, profile społecznościowe i notatki. Twoje własne etykiety zostają tak, jak je wpisano, więc „Służbowy numer mamy” zostaje „Służbowym numerem mamy”.",
+            "Zdjęcie zapisane w pliku przechodzi. Zdjęcie, które jest tylko linkiem internetowym, zostaje linkiem i nic nie jest pobierane. [Gdy zdjęcia nie mieszczą się w Twojej pamięci](/pl/help/storage-usage/), kontakty i tak się importują, a zdjęcia zostają pominięte."
+          ]
+        },
+        {
+          "h": "Importuj ten sam plik ponownie w dowolnej chwili",
+          "p": [
+            "Kolejny import pomija osoby, które już masz. Dopasowuje każdą wizytówkę po jej ID, potem po imieniu i nazwisku razem ze wspólnym numerem telefonu, a potem po wspólnym adresie e-mail. Kontakty, które już zapisano, się nie zmieniają, więc Twoje zmiany tutaj są bezpieczne."
           ]
         }
       ]

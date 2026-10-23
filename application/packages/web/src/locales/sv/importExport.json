@@ -9,7 +9,8 @@
     "tabExport": "Exportera",
     "tabRestore": "Återställ",
     "tabVault": "Lösenord",
-    "working": "Arbetar…"
+    "working": "Arbetar…",
+    "tabWellness": "Mätvärden"
   },
   "footer": {
     "exportNote": "Exporter körs lokalt. Ingenting laddas upp.",
@@ -20,7 +21,9 @@
     "autoTagLabel": "Tagga importerade anteckningar efter källa",
     "autoTagDesc": "Anteckningar från Google Keep får <keep>#google</keep>, Obsidian får <obsidian>#obsidian</obsidian>, och så vidare.",
     "guideAria": "Importguide för {{app}}",
-    "guideLabel": "Guide"
+    "guideLabel": "Guide",
+    "groupGeneral": "Allmänt",
+    "groupNotes": "Anteckningar"
   },
   "folderImport": {
     "tagLabel": "Tagga även anteckningar efter mapp",
@@ -49,6 +52,24 @@
     "timeZone": "Tidszon",
     "ends": "Slutar",
     "repeats": "Upprepas"
+  },
+  "webcal": {
+    "title": "Webcal",
+    "desc": "En kalenderadress, till exempel en webcal://-länk från Proton, iCloud, Outlook eller en offentlig kalender. Den laddas ner en gång; klistra in den igen senare för att bara lägga till de nya händelserna.",
+    "fieldLabel": "Kalenderadress",
+    "import": "Importera",
+    "downloading": "Laddar ner…",
+    "errors": {
+      "invalid": "Klistra in en adress som börjar med webcal://, webcals:// eller https://.",
+      "refused": "Den här adressen kan inte öppnas.",
+      "wrongType": "Den här adressen leder inte till en kalenderfil.",
+      "tooLarge": "Den här kalendern är större än 10 MB.",
+      "timeout": "Kalenderservern svarade inte i tid. Försök igen senare.",
+      "blocked": "Kalenderservern nekade nedladdningen. Kontrollera att kalendern är delad eller offentlig.",
+      "offline": "Du är offline. Anslut och försök igen.",
+      "limit": "För många nedladdningar på kort tid. Vänta en minut och försök igen.",
+      "failed": "Kalendern kunde inte laddas ner. Kontrollera adressen och försök igen."
+    }
   },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip (mappen Keep) eller en enskild .json-anteckning. Checklistor importeras som riktiga uppgiftslistor.",
@@ -82,7 +103,7 @@
     "intro": "Importera inloggningar, kort och SSH-nycklar från en annan lösenordshanterare."
   },
   "restorePick": {
-    "intro": "Återställ en PrivacyNotes-säkerhetskopia som du exporterat tidigare. Din fil läses och dekrypteras lokalt.",
+    "intro": "Återställ en PrivacyNotes-säkerhetskopia som du exporterat tidigare.",
     "fullBackupTitle": "Fullständig säkerhetskopia (.zip)",
     "fullBackupDesc": "Återställ anteckningar, dagböcker, valvobjekt, uppgifter, bilder, ljud och filer. En anteckning du redan har behålls, eller uppdateras om säkerhetskopian har en nyare version av den.",
     "encryptedBackupTitle": "Krypterad säkerhetskopia (.pnbackup, .pnbackupz)",

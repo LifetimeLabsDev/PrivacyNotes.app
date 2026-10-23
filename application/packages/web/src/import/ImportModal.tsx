@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import type { ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { isOversizeImport, splitImportedNote } from '../noteSplit';
@@ -16,8 +16,7 @@ import type { LocalNote } from '../db';
 import { missingItemsLabel } from '../export';
 import type { FolderDef } from '../folders';
 import { destinationGroups, existingImportFolder, fileUnfiled, type ImportDestination, type ImportTarget } from './destination';
-import { useEscapeToClose } from '../useEscapeToClose';
-import { ArrowCounterClockwise, BookOpenText, BracketsCurly, CalendarDots, Check, CircleNotch, Download, FileHtml, FileZip, Key, Lock, Upload, X, AddressBook } from '../icons';
+import { Archive, ArrowCounterClockwise, Heartbeat, BookmarkSimple, BookOpenText, BracketsCurly, CalendarDots, Check, CircleNotch, Download, FileHtml, FileText, FileZip, Globe, Key, Lock, Note, SquaresFour, Tag, Upload, AddressBook } from '../icons';
 import { goesToCalendarFile } from '../schedule';
 import { fetchQuotaUsage, recalculateQuota } from '../devices';
 import { estimateNoteStoredBytes, estimateBlobBytes } from '../notesViewUtils';
@@ -27,12 +26,19 @@ import { RESTORE_WAIT_LINE, restoreGateNow, useRestoreGate, type RestoreGate } f
 import { formatBytes } from '../formatBytes';
 import { perFileLimit } from '../attachmentValidation';
 import { contactPhotoOptions, processImage } from '../imageProcessing';
-import { SectionEyebrow, SettingsCallout, SettingsTabStrip, settingsTabClass } from '../settingsUI';
+import { SETTINGS_HELP, SectionEyebrow, SettingsCallout, SettingsTabStrip, settingsTabClass, ROW_TITLE } from '../settingsUI';
+import { Button, Callout, Checkbox, Modal, Spinner, TextField } from '../ui';
+import { calendarFeedUrl, downloadCalendarFeed } from './calendarFeed';
+import { ClipError, type ClipErrorReason } from '../clipDownload';
 import { activeLocale } from '../languages';
 import { helpPath } from '../localeRoutes';
 import { siteHref } from '../siteLinks';
 import { HoverLabel } from '../HoverLabel';
 import { HelpChip } from '../HelpChip';
+import { Switch } from '../Switch';
+import { WellnessExportTab } from '../stats/WellnessExport';
+import { IconUpgrade } from '../UpgradeModal';
+import { usePaneTab } from '../settingsPaneTab';
 
 /**
  * The `accept` list to hand the file picker, widened on Android.
@@ -84,7 +90,7 @@ type QuotaCheck = {
  * OEM contacts app and an iPhone. `fits` is decided BEFORE anything is
  * written, so the contacts land and the photos are declined as one whole,
  * never half of them followed by a quota error.
- * Spec: ops/docs/plans/contacts-pillar.md (section 7.4)
+ * Spec: ops/docs/archive/contacts-pillar.md (section 7.4)
  */
 type PhotoEstimate = {
   count: number;
@@ -192,12 +198,15 @@ export function ImportModal({
   importTarget,
   onCreateImportFolder,
   embedded = false,
+  wellness,
 }: {
   onClose: () => void;
   onImported: (count: number, skippedDuplicates?: number, repaired?: RestoreCounts) => void;
   /** Render inline as a settings pane (no overlay, no own header/escape). */
   embedded?: boolean;
-  initialTab?: 'import' | 'export' | 'restore' | 'vault';
+  /** The tracker data for the Wellness tab; without it the tab is not shown. */
+  wellness?: Omit<ComponentProps<typeof WellnessExportTab>, 'notes' | 'Row'>;
+  initialTab?: 'import' | 'export' | 'restore' | 'vault' | 'wellness';
   notes: LocalNote[];
   onExportAllMdZip: (ns: LocalNote[]) => void;
   onExportAllHtmlZip: (ns: LocalNote[]) => void;
@@ -250,8 +259,7 @@ export function ImportModal({
     | { kind: 'applying'; importer: Importer }
     | { kind: 'error'; importer: Importer; message: string };
 
-  useEscapeToClose(onClose, !embedded);
-  const [tab, setTab] = useState<'import' | 'export' | 'restore' | 'vault'>(initialTab);
+  const [tab, setTab] = usePaneTab<'import' | 'export' | 'restore' | 'vault' | 'wellness'>('importExport', initialTab);
   const [phase, setPhase] = useState<Phase>({ kind: 'pick' });
   const restoreGate = useRestoreGate();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -465,7 +473,7 @@ export function ImportModal({
     // A note color from the source (Google Keep) becomes a tag named after
     // the color, in the reader's language, and that tag takes the color:
     // colors live on tags here, never on a note.
-    // Spec: ops/docs/plans/folder-tag-icons.md (section 4.7)
+    // Spec: ops/docs/archive/folder-tag-icons.md (section 4.7)
     const colorTags = new Map<string, string>();
     if (notesForApply.some((n) => n.colorKey)) {
       notesForApply = notesForApply.map((n) => {
@@ -617,33 +625,14 @@ export function ImportModal({
   }
 
   return (
-    <div
-      className={embedded ? 'contents' : 'fixed inset-0 bg-black/50 dark:bg-black/70 z-50 flex items-center justify-center p-4'}
-      onClick={embedded ? undefined : onClose}
+    <Modal
+      embedded={embedded}
+      embeddedClassName="flex-1 min-h-0 flex flex-col text-pn"
+      onClose={onClose}
+      title={tab === 'import' ? t('shell.importTitle') : tab === 'export' || tab === 'wellness' ? t('shell.exportTitle') : tab === 'restore' ? t('shell.restoreTitle') : t('shell.vaultTitle')}
+      header="bar"
+      className="max-w-lg max-h-[85vh] flex flex-col"
     >
-      <div
-        className={
-          embedded
-            ? 'flex-1 min-h-0 flex flex-col text-pn'
-            : 'bg-surface-2 border border-divider rounded-lg max-w-lg w-full max-h-[85vh] flex flex-col text-pn'
-        }
-        onClick={(e) => e.stopPropagation()}
-      >
-        {!embedded && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-divider">
-            <h2 className="text-lg font-semibold">
-              {tab === 'import' ? t('shell.importTitle') : tab === 'export' ? t('shell.exportTitle') : tab === 'restore' ? t('shell.restoreTitle') : t('shell.vaultTitle')}
-            </h2>
-            <button
-              onClick={onClose}
-              aria-label={t('common:actions.close')}
-              className="text-pn-muted hover:text-pn transition p-1 -m-1"
-            >
-              <X size={18} />
-            </button>
-          </div>
-        )}
-
         <SettingsTabStrip
           role="tablist"
           aria-label={t('shell.tablistLabel')}
@@ -656,6 +645,8 @@ export function ImportModal({
             // Key, not a padlock: the same glyph the sidebar gives the Vault
             // pillar (PILLAR_GLYPHS.vault), so the two surfaces agree.
             { id: 'vault' as const, setting: 'import.vault', label: t('shell.tabVault'), icon: <Key aria-hidden="true" /> },
+            // Shown when the pane has the tracker data to export.
+            ...(wellness ? [{ id: 'wellness' as const, setting: 'import.wellness', label: t('shell.tabWellness'), icon: <Heartbeat aria-hidden="true" /> }] : []),
           ]).map((tb) => (
             <button
               key={tb.id}
@@ -678,6 +669,12 @@ export function ImportModal({
                 tab === 'import' ? (
                   <ImportPickPhase
                     onPick={handlePickImporter}
+                    onCalendarFeed={(file) => {
+                      const calendar = IMPORTERS.find((i) => i.id === 'google-calendar');
+                      // The Google Calendar importer reads any .ics; the
+                      // preview names the source as the person chose it.
+                      if (calendar) void runParseFlow({ ...calendar, label: t('webcal.title') }, file);
+                    }}
                     autoTag={autoTag}
                     onAutoTagChange={setAutoTag}
                   />
@@ -787,6 +784,8 @@ export function ImportModal({
                 <ErrorPhase importerLabel={sourceLabel(phase.importer, t)} message={phase.message} />
               )}
             </>
+          ) : tab === 'wellness' && wellness ? (
+            <WellnessExportTab notes={notes} {...wellness} Row={ActionRow} />
           ) : (
             // The window stays open after an export: a daily routine writes
             // more than one backup, and the progress window sits above it.
@@ -805,73 +804,22 @@ export function ImportModal({
           )}
         </div>
 
-        <div className="px-5 py-3 border-t border-divider flex items-center justify-between gap-3">
-          {tab === 'export' ? (
+        {/* A picking tab needs no footer: the X closes the window, and a lone
+            line there reads as stray text. The footer comes back while an
+            import runs, for Back and Import. */}
+        {!(tab === 'export' || tab === 'wellness' || phase.kind === 'pick') && (
+        <div className="px-6 py-3 border-t border-divider flex items-center justify-between gap-3">
+          {phase.kind === 'preview' ? (
             <>
-              <div className="text-xs text-pn-soft">
-                {t('footer.exportNote')}
-              </div>
-              <button
-                onClick={onClose}
-                className="text-sm rounded border border-divider px-3 py-1.5 hover:bg-surface-1 transition"
-              >
-                {t('common:actions.close')}
-              </button>
-            </>
-          ) : tab === 'restore' && phase.kind === 'pick' ? (
-            <>
-              <div className="text-xs text-pn-soft">
-                {t('footer.restoreNote')}
-              </div>
-              <button
-                onClick={onClose}
-                className="text-sm rounded border border-divider px-3 py-1.5 hover:bg-surface-1 transition"
-              >
-                {t('common:actions.cancel')}
-              </button>
-            </>
-          ) : phase.kind === 'pick' ? (
-            <>
-              <div className="text-xs text-pn-soft">
-                {t('footer.importNote')}
-              </div>
-              <button
-                onClick={onClose}
-                className="text-sm rounded border border-divider px-3 py-1.5 hover:bg-surface-1 transition"
-              >
-                {t('common:actions.cancel')}
-              </button>
-            </>
-          ) : phase.kind === 'preview' ? (
-            <>
-              <button
-                onClick={handleBackToPick}
-                className="text-sm rounded border border-divider px-3 py-1.5 hover:bg-surface-1 transition"
-              >
-                {t('common:actions.back')}
-              </button>
-              <button
-                onClick={handleConfirm}
-                disabled={quotaCheck?.exceeds === true}
-                className="text-sm rounded bg-accent-fill text-white px-4 py-1.5 hover:bg-accent-fill-hover transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-              >
+              <Button action="back" onClick={handleBackToPick} />
+              <Button action="import" variant="primary" onClick={handleConfirm} disabled={quotaCheck?.exceeds === true}>
                 {t('counts.importButton', { counts: formatTypeCountsShort(phase.parsed.notes) })}
-              </button>
+              </Button>
             </>
           ) : phase.kind === 'error' ? (
             <>
-              <button
-                onClick={handleBackToPick}
-                className="text-sm rounded border border-divider px-3 py-1.5 hover:bg-surface-1 transition"
-              >
-                {t('common:actions.back')}
-              </button>
-              <button
-                onClick={onClose}
-                className="text-sm rounded border border-divider px-3 py-1.5 hover:bg-surface-1 transition"
-              >
-                {t('common:actions.cancel')}
-              </button>
+              <Button action="back" onClick={handleBackToPick} />
+              <Button action="cancel" onClick={onClose} />
             </>
           ) : (
             <div className="text-xs text-pn-muted w-full text-center">
@@ -879,6 +827,7 @@ export function ImportModal({
             </div>
           )}
         </div>
+        )}
 
         {/* Hidden file input - shared by all importer cards. */}
         <input
@@ -888,8 +837,7 @@ export function ImportModal({
           accept={pickerAccept(activeImporter?.accept ?? '')}
           onChange={handleFileSelected}
         />
-      </div>
-    </div>
+    </Modal>
   );
 }
 
@@ -942,6 +890,7 @@ const GUIDE_SLUG: Record<string, string> = {
   'bear': 'bear',
   'bitwarden': 'bitwarden',
   'browser-passwords': 'browser-passwords',
+  'vcard': 'contacts',
   'evernote': 'evernote',
   'google-keep': 'google-keep',
   'google-calendar': 'google-calendar',
@@ -1020,7 +969,7 @@ const SOURCE_DESC_KEY: Record<string, string> = {
 
 /** The 32px plate every Import, Export and Restore row draws its mark on.
  *  `glyph` wins over `src`, so an id must never carry both.
- *  Spec: ops/docs/ui-patterns.md (section 71) */
+ *  Spec: ops/docs/archive/ui-patterns.md (section 71) */
 function RowIcon({ src, glyph }: { src?: string; glyph?: ReactNode }) {
   if (!glyph && !src) return null;
   return (
@@ -1049,7 +998,7 @@ function ImporterRow({ imp, onPick }: { imp: Importer; onPick: (imp: Importer) =
     // The border and the rounding sit on the row, not on the button: the guide
     // rail is a second target inside the same frame, and its divider is that
     // frame's only internal line. Do NOT add `overflow-hidden` here - it would
-    // clip the rail's hover tip. Spec: ops/docs/ui-patterns.md (section 18)
+    // clip the rail's hover tip. Spec: ops/docs/archive/ui-patterns.md (section 18)
     <div
       data-setting={`import.source.${imp.id}`}
       className={`flex items-stretch rounded-lg border transition ${
@@ -1095,27 +1044,106 @@ function ImporterRow({ imp, onPick }: { imp: Importer; onPick: (imp: Importer) =
   );
 }
 
-/** Import tab - notes & journals only, 1-col with descriptions. */
-function ImportPickPhase({ onPick, autoTag, onAutoTagChange }: { onPick: (imp: Importer) => void; autoTag: boolean; onAutoTagChange: (v: boolean) => void }) {
+/** The message for a calendar address that did not download. */
+const FEED_ERROR: Record<ClipErrorReason, string> = {
+  'refused': 'webcal.errors.refused',
+  'wrong-type': 'webcal.errors.wrongType',
+  'too-large': 'webcal.errors.tooLarge',
+  'timeout': 'webcal.errors.timeout',
+  'blocked': 'webcal.errors.blocked',
+  'offline': 'webcal.errors.offline',
+  'limit': 'webcal.errors.limit',
+  'demo-limit': 'webcal.errors.limit',
+  'failed': 'webcal.errors.failed',
+};
+
+/** The Webcal row: a calendar address, downloaded once and handed to the
+ *  calendar import as a file. The address is never kept or shown back in a
+ *  message. Spec: ops/issues/0548.md (Spec, design A) */
+function CalendarFeedRow({ onFile }: { onFile: (file: File) => void }) {
+  const { t } = useTranslation('importExport');
+  const { supabase } = useAuth();
+  const [address, setAddress] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const url = calendarFeedUrl(address);
+    if (!url) {
+      setError(t('webcal.errors.invalid'));
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      const file = await downloadCalendarFeed(url, async () => (await supabase.auth.getSession()).data.session?.access_token ?? null);
+      onFile(file);
+    } catch (err) {
+      setError(t(FEED_ERROR[err instanceof ClipError ? err.reason : 'failed']));
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div data-setting="import.webcal" className="rounded-lg border border-divider px-3 py-2.5 flex items-start gap-3">
+      <RowIcon glyph={<Globe size={20} aria-hidden="true" />} />
+      <form onSubmit={submit} noValidate className="min-w-0 flex-1">
+        <span className="block font-medium text-sm">{t('webcal.title')}</span>
+        <span className="block text-xs text-pn-soft mt-0.5">{t('webcal.desc')}</span>
+        <div className="mt-2 flex items-start gap-2">
+          <div className="min-w-0 flex-1">
+            <TextField
+              size="sm"
+              type="url"
+              inputMode="url"
+              autoComplete="off"
+              spellCheck={false}
+              aria-label={t('webcal.fieldLabel')}
+              placeholder="webcal://"
+              value={address}
+              onChange={(e) => {
+                setAddress(e.target.value);
+                setError(null);
+              }}
+              error={error ?? undefined}
+              className="w-full"
+            />
+          </div>
+          <Button type="submit" variant="primary" icon={busy ? <Spinner size={15} className="text-current" /> : <Download size={15} aria-hidden="true" />} disabled={busy || !address.trim()}>
+            {busy ? t('webcal.downloading') : t('webcal.import')}
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+/** Import tab, 1-col with descriptions, in two groups: the general sources
+ *  (bookmarks, contacts, calendars) first, then the note apps. */
+function ImportPickPhase({ onPick, onCalendarFeed, autoTag, onAutoTagChange }: { onPick: (imp: Importer) => void; onCalendarFeed: (file: File) => void; autoTag: boolean; onAutoTagChange: (v: boolean) => void }) {
   const { t } = useTranslation('importExport');
   const importerMap = Object.fromEntries(IMPORTERS.map((i) => [i.id, i]));
-  // Browser bookmarks leads on purpose; everything below it is
-  // alphabetical. It is the only entry that is not a note app, and it is
-  // the one people arrive looking for. Spec: ops/docs/plans/bookmarks-pillar.md
-  const noteIds = ['browser-bookmarks', 'vcard', 'apple-journal', 'apple-notes', 'bear', 'evernote', 'google-calendar', 'google-keep', 'ia-writer', 'joplin', 'markdown-folder', 'nextcloud-notes', 'notesnook', 'obsidian', 'samsung-notes', 'simplenote', 'standard-notes', 'typora', 'upnote', 'zettlr'];
+  // Browser bookmarks leads the general group on purpose: it is the one people
+  // arrive looking for. The note apps are alphabetical.
+  // Spec: ops/docs/archive/bookmarks-pillar.md
+  const generalIds = ['browser-bookmarks', 'vcard', 'google-calendar'];
+  const noteIds = ['apple-journal', 'apple-notes', 'bear', 'evernote', 'google-keep', 'ia-writer', 'joplin', 'markdown-folder', 'nextcloud-notes', 'notesnook', 'obsidian', 'samsung-notes', 'simplenote', 'standard-notes', 'typora', 'upnote', 'zettlr'];
+  const rows = (ids: string[]) => ids.map((id) => {
+    const imp = importerMap[id];
+    return imp ? <ImporterRow key={id} imp={imp} onPick={onPick} /> : null;
+  });
 
   return (
     <div className="space-y-3">
-      <label data-setting="import.autoTag" className="flex items-start gap-2 rounded-lg border border-divider p-3 cursor-pointer hover:bg-surface-1 transition">
-        <input
-          type="checkbox"
+      <div data-setting="import.autoTag" className="rounded-lg border border-divider p-3">
+        <Switch
+          label={t('importPick.autoTagLabel')}
+          icon={<Tag size={14} className="text-accent" />}
+          labelClassName={ROW_TITLE}
           checked={autoTag}
-          onChange={(e) => onAutoTagChange(e.target.checked)}
-          className="h-4 w-4 mt-0.5 shrink-0 accent-accent"
-        />
-        <div>
-          <div className="text-sm font-medium">{t('importPick.autoTagLabel')}</div>
-          <div className="text-xs text-pn-soft mt-0.5">
+          onChange={onAutoTagChange}
+          description={
             <Trans
               i18nKey="importExport:importPick.autoTagDesc"
               components={{
@@ -1123,17 +1151,20 @@ function ImportPickPhase({ onPick, autoTag, onAutoTagChange }: { onPick: (imp: I
                 obsidian: <span className="font-mono text-accent" />,
               }}
             />
-          </div>
-        </div>
-      </label>
-
-      <div className="space-y-1.5">
-        {noteIds.map((id) => {
-          const imp = importerMap[id];
-          if (!imp) return null;
-          return <ImporterRow key={id} imp={imp} onPick={onPick} />;
-        })}
+          }
+        />
       </div>
+
+      <section className="space-y-1.5">
+        <SectionEyebrow icon={SquaresFour} className="pt-1">{t('importPick.groupGeneral')}</SectionEyebrow>
+        {rows(generalIds)}
+        <CalendarFeedRow onFile={onCalendarFeed} />
+      </section>
+
+      <section className="space-y-1.5">
+        <SectionEyebrow icon={Note} className="pt-1">{t('importPick.groupNotes')}</SectionEyebrow>
+        {rows(noteIds)}
+      </section>
     </div>
   );
 }
@@ -1146,11 +1177,9 @@ function VaultPickPhase({ onPick }: { onPick: (imp: Importer) => void }) {
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-pn-soft">
+      <p className={SETTINGS_HELP}>
         {t('vaultPick.intro')}
       </p>
-
-      <HelpChip surface="vault" />
 
       <div className="space-y-1.5">
         {vaultIds.map((id) => {
@@ -1159,6 +1188,8 @@ function VaultPickPhase({ onPick }: { onPick: (imp: Importer) => void }) {
           return <ImporterRow key={id} imp={imp} onPick={onPick} />;
         })}
       </div>
+
+      <HelpChip surface="vault" />
     </div>
   );
 }
@@ -1175,11 +1206,9 @@ function RestorePickPhase({ gate, onPickRestore, onImportEncrypted }: {
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-pn-soft">
+      <p className={SETTINGS_HELP}>
         {t('restorePick.intro')}
       </p>
-
-      <HelpChip surface="restore" />
 
       {gate !== 'open' && <SettingsCallout>{t(RESTORE_WAIT_LINE[gate])}</SettingsCallout>}
 
@@ -1217,6 +1246,8 @@ function RestorePickPhase({ gate, onPickRestore, onImportEncrypted }: {
           if (file) onImportEncrypted(file);
         }}
       />
+
+      <HelpChip surface="restore" />
     </div>
   );
 }
@@ -1470,17 +1501,14 @@ function PreviewPhase({
       {destinationRow}
 
       {oversizeCount > 0 && onSplitOversizeChange && (
-        <div className="rounded-lg border border-amber-300 dark:border-amber-800 bg-amber-50/60 dark:bg-amber-950/20 p-3 space-y-2">
-          <div className="text-sm text-amber-800 dark:text-amber-300">{t('preview.oversize', { count: oversizeCount })}</div>
-          <label className="flex items-start gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={splitOversize ?? false}
-              onChange={(e) => onSplitOversizeChange(e.target.checked)}
-              className="h-4 w-4 mt-0.5 shrink-0 accent-accent"
-            />
-            <span className="text-sm font-medium">{t('preview.splitOversize', { count: oversizeCount })}</span>
-          </label>
+        <div className="space-y-2">
+          <Callout tone="warning" title={t('preview.oversize', { count: oversizeCount })} />
+          <Checkbox
+            checked={splitOversize ?? false}
+            onChange={(e) => onSplitOversizeChange(e.target.checked)}
+            label={t('preview.splitOversize', { count: oversizeCount })}
+            className="ms-1.5"
+          />
         </div>
       )}
 
@@ -1557,13 +1585,9 @@ function PreviewPhase({
       )}
 
       {warnings.length > 0 && (
-        <div className="rounded-lg border border-amber-400/40 bg-amber-50 dark:bg-amber-900/10 p-3 text-xs space-y-1">
-          {warnings.map((w, i) => (
-            <div key={i} className="text-amber-800 dark:text-amber-300">
-              {w}
-            </div>
-          ))}
-        </div>
+        <Callout tone="warning">
+          <div className="space-y-1">{warnings.map((w, i) => <div key={i}>{w}</div>)}</div>
+        </Callout>
       )}
 
       {sampleTitles.length > 0 && (
@@ -1643,12 +1667,9 @@ function ErrorPhase({
   const { t } = useTranslation('importExport');
   return (
     <div className="py-6">
-      <SectionEyebrow danger className="mb-1">
-        {t('errorPhase.heading', { importer: importerLabel })}
-      </SectionEyebrow>
-      <div className="text-sm text-pn-soft whitespace-pre-wrap">
-        {message}
-      </div>
+      <Callout tone="danger" title={t('errorPhase.heading', { importer: importerLabel })}>
+        <div className="whitespace-pre-wrap break-words">{message}</div>
+      </Callout>
     </div>
   );
 }
@@ -1696,14 +1717,12 @@ function ExportPanel({
   );
   return (
     <div className="space-y-3">
-      <p className="text-sm text-pn-soft">
+      <p className={SETTINGS_HELP}>
         {t('export.intro')}
       </p>
 
-      <HelpChip surface="export" />
-
       <div>
-        <SectionEyebrow className="mb-1.5">
+        <SectionEyebrow className="mb-1.5" icon={Archive}>
           {t('export.fullBackupHeading')}
         </SectionEyebrow>
         <div className="space-y-1.5">
@@ -1734,7 +1753,7 @@ function ExportPanel({
       </div>
 
       <div>
-        <SectionEyebrow className="mb-1.5">
+        <SectionEyebrow className="mb-1.5" icon={FileText}>
           {t('export.portableHeading')}
         </SectionEyebrow>
         <div className="space-y-1.5">
@@ -1757,7 +1776,7 @@ function ExportPanel({
 
       {hasBookmarks && (
         <div>
-          <SectionEyebrow className="mb-1.5">
+          <SectionEyebrow className="mb-1.5" icon={BookmarkSimple}>
             {t('export.bookmarksOnlyHeading')}
           </SectionEyebrow>
           <div className="space-y-1.5">
@@ -1774,7 +1793,7 @@ function ExportPanel({
 
       {hasContacts && (
         <div>
-          <SectionEyebrow className="mb-1.5">
+          <SectionEyebrow className="mb-1.5" icon={AddressBook}>
             {t('export.contactsOnlyHeading')}
           </SectionEyebrow>
           <div className="space-y-1.5">
@@ -1791,7 +1810,7 @@ function ExportPanel({
 
       {hasCalendar && (
         <div>
-          <SectionEyebrow className="mb-1.5">
+          <SectionEyebrow className="mb-1.5" icon={CalendarDots}>
             {t('export.calendarOnlyHeading')}
           </SectionEyebrow>
           <div className="space-y-1.5">
@@ -1808,7 +1827,7 @@ function ExportPanel({
 
       {hasVaultItems && (
         <div>
-          <SectionEyebrow className="mb-1.5">
+          <SectionEyebrow className="mb-1.5" icon={Key}>
             {t('export.vaultOnlyHeading')}
           </SectionEyebrow>
           <div className="space-y-1.5">
@@ -1823,8 +1842,9 @@ function ExportPanel({
         </div>
       )}
 
-      {/* The question you leave with, not the one you arrive with, so it
-          sits after the last section rather than beside the choice. */}
+      {/* Help links sit at the foot of a settings pane, after the last
+          section: the question you arrive with, then the one you leave with. */}
+      <HelpChip surface="export" />
       <HelpChip surface="exportEnd" />
     </div>
   );
@@ -1839,6 +1859,7 @@ function ActionRow({
   title,
   description,
   locked,
+  pro,
   glyph,
   src,
   disabled,
@@ -1849,6 +1870,8 @@ function ActionRow({
   title: string;
   description: string;
   locked?: boolean;
+  /** A Pro action: the rocket after the title, as on every Pro door. */
+  pro?: boolean;
   glyph?: ReactNode;
   src?: string;
   disabled?: boolean;
@@ -1870,6 +1893,7 @@ function ActionRow({
           {locked && (
             <Lock size={10} className="text-accent shrink-0" />
           )}
+          {pro && <IconUpgrade size={12} />}
         </span>
         <span className="block text-xs text-pn-soft mt-0.5">{description}</span>
       </span>

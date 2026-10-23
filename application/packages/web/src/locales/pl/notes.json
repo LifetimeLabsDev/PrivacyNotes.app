@@ -18,10 +18,8 @@
   "header": {
     "new": "Nowa",
     "newNote": "Nowa notatka",
-    "newNoteHover": "Nowa notatka ({{hotkey}})",
     "trash": "Kosz",
-    "newEvent": "Nowe wydarzenie",
-    "newEventHover": "Nowe wydarzenie ({{hotkey}})"
+    "newEvent": "Nowe wydarzenie"
   },
   "folderChip": {
     "clear": "Usuń filtr folderu: {{folder}}",
@@ -35,15 +33,18 @@
     "ariaLabel": "Nowy element sejfu",
     "login": "Login",
     "card": "Karta kredytowa",
-    "sshKey": "Klucz SSH"
+    "sshKey": "Klucz SSH",
+    "generator": "Hasło"
   },
   "newMenu": {
     "note": "Notatka",
     "task": "Zadanie",
+    "kanban": "Tablica kanban",
     "journal": "Dziennik",
     "login": "Login",
     "file": "Plik",
     "bookmark": "Zakładka",
+    "clipPage": "Przechwyć stronę",
     "contact": "Kontakt",
     "event": "Wydarzenie",
     "quickAdd": "Szybkie dodawanie"
@@ -55,8 +56,7 @@
     "keys": "Klucze"
   },
   "journal": {
-    "newEntry": "Nowy wpis w dzienniku",
-    "newEntryHover": "Nowy wpis w dzienniku ({{hotkey}})"
+    "newEntry": "Nowy wpis w dzienniku"
   },
   "tasks": {
     "newTitle": "Zadania na {{date}}"
@@ -70,7 +70,8 @@
   "search": {
     "sortOptions": "Opcje sortowania i widoku",
     "placeholderVault": "Szukaj w sejfie…",
-    "placeholderNotes": "Szukaj notatek…"
+    "placeholderNotes": "Szukaj notatek…",
+    "placeholderEvents": "Szukaj wydarzeń…"
   },
   "selection": {
     "countOf": "zaznaczono {{selected}} z {{total}}",
@@ -82,9 +83,16 @@
     "vault": "Sejf jest pusty.",
     "notes": "Brak notatek.",
     "archive": "Nic nie zarchiwizowano.",
+    "trash": "Kosz jest pusty.",
     "filtered": "Żadne elementy nie pasują do Twoich filtrów.",
     "clearFilters": "Usuń filtry",
-    "filteredAfter": "aby je wyświetlić."
+    "filteredAfter": "aby je wyświetlić.",
+    "hiddenInAll_one": "{{count}} element jest ukryty przez filtr Pokaż w widoku Wszystkie. Otwórz filtr obok Wszystkie, aby go pokazać.",
+    "inOtherSpace_one": "{{count}} element jest w przestrzeni {{space}}. Przełącz na przestrzeń {{space}} na pasku bocznym, aby go zobaczyć.",
+    "inOtherSpace_few": "{{count}} elementy są w przestrzeni {{space}}. Przełącz na przestrzeń {{space}} na pasku bocznym, aby je zobaczyć.",
+    "inOtherSpace_many": "{{count}} elementów jest w przestrzeni {{space}}. Przełącz na przestrzeń {{space}} na pasku bocznym, aby je zobaczyć.",
+    "hiddenInAll_few": "{{count}} elementy są ukryte przez filtr Pokaż w widoku Wszystkie. Otwórz filtr obok Wszystkie, aby je pokazać.",
+    "hiddenInAll_many": "{{count}} elementów jest ukrytych przez filtr Pokaż w widoku Wszystkie. Otwórz filtr obok Wszystkie, aby je pokazać."
   },
   "listGroups": {
     "previous7Days": "Ostatnie 7 dni",
@@ -104,12 +112,34 @@
     "calendar": "Kalendarz"
   },
   "footerStats": {
-    "journals": "Dzienniki",
-    "items": "Elementy",
-    "trashed": "W koszu",
-    "notes": "Notatki",
-    "bookmarks": "Zakładki",
-    "contacts": "Kontakty"
+    "journals_one": "Dziennik",
+    "journals_few": "Dzienniki",
+    "journals_many": "Dzienników",
+    "items_one": "Element",
+    "items_few": "Elementy",
+    "items_many": "Elementów",
+    "trashed_one": "W koszu",
+    "trashed_few": "W koszu",
+    "trashed_many": "W koszu",
+    "notes_one": "Notatka",
+    "notes_few": "Notatki",
+    "notes_many": "Notatek",
+    "bookmarks_one": "Zakładka",
+    "bookmarks_few": "Zakładki",
+    "bookmarks_many": "Zakładek",
+    "contacts_one": "Kontakt",
+    "files_one": "Plik",
+    "lists_one": "Lista",
+    "tasks_one": "Zadanie",
+    "today": "Dzisiaj",
+    "tasks_few": "Zadania",
+    "tasks_many": "Zadań",
+    "lists_few": "Listy",
+    "lists_many": "List",
+    "files_few": "Pliki",
+    "files_many": "Plików",
+    "contacts_few": "Kontakty",
+    "contacts_many": "Kontaktów"
   },
   "toast": {
     "imageUploadFailed": "Przesyłanie obrazu nie powiodło się: {{error}}",
@@ -169,7 +199,7 @@
   },
   "zen": {
     "exit": "Wyjdź z Zen",
-    "exitHover": "Wyjdź z trybu Zen (Esc)",
+    "exitHover": "Wyjdź z trybu Zen",
     "enterHover": "Włącz tryb Zen",
     "proHover": "Tryb Zen (Pro)",
     "enterAriaShortcut": "Włącz tryb Zen ({{keys}})"
@@ -246,9 +276,13 @@
     "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Otwórz statystyki",
     "journalCalendar": "Kalendarz dziennika",
-    "words": "Słowa",
+    "words_one": "Słowo",
+    "words_few": "Słowa",
+    "words_many": "Słów",
     "zen": "Tryb Zen",
     "appearance": "Wygląd",
+    "lockApp": "Zablokuj aplikację",
+    "lockAppSetUp": "Najpierw ustaw PIN w sekcji Bezpieczeństwo",
     "goToTop": "Przejdź na górę",
     "goToEnd": "Przejdź na koniec",
     "signOut": "Wyloguj się",
@@ -272,6 +306,7 @@
     "editorLabel": "Edytor",
     "formatBarLabel": "Pasek formatowania",
     "listsLabel": "Listy",
+    "trackersLabel": "Trackery",
     "helpLabel": "Pomoc",
     "aboutLabel": "O aplikacji",
     "languageLabel": "Język",
@@ -289,7 +324,7 @@
   },
   "bulkTrash": {
     "title": "Przenieś do kosza",
-    "body_one": "Przenieść <highlight>{{count}} element</highlight> do kosza? Możesz go później przywrócić.",
+    "body_one": "Przenieść <highlight>{{count}} element</highlight> do kosza? Później możesz go przywrócić.",
     "body_other": "Przenieść <highlight>{{count}} elementu</highlight> do kosza? Możesz je później przywrócić.",
     "body_few": "Przenieść <highlight>{{count}} elementy</highlight> do kosza? Możesz je później przywrócić.",
     "body_many": "Przenieść <highlight>{{count}} elementów</highlight> do kosza? Możesz je później przywrócić.",
@@ -351,5 +386,15 @@
   "ambiguousLink": {
     "title": "Dwie notatki mają ten tytuł",
     "body": "Więcej niż jedna notatka nosi tytuł <highlight>„{{title}}”</highlight>, więc ten link nie mówi, o którą chodzi. Zmień nazwę jednej z nich, a link wskaże drugą."
+  },
+  "connections": {
+    "title": "Powiązania",
+    "hide": "Ukryj powiązania",
+    "linkedFrom": "Linki przychodzące",
+    "linksTo": "Linki wychodzące",
+    "missing": "Jeszcze nie utworzono",
+    "protectedHidden_one": "{{count}} element chroniony PIN-em nie jest wyświetlany",
+    "protectedHidden_few": "{{count}} elementy chronione PIN-em nie są wyświetlane",
+    "protectedHidden_many": "{{count}} elementów chronionych PIN-em nie jest wyświetlanych"
   }
 }

@@ -29,7 +29,7 @@ export interface SidebarOption {
  * when the popover's own height changes, which happens here on every tick:
  * the rail behind it shortens as rows switch off.
  *
- * Spec: ops/docs/plans/sidebar-views.md
+ * Spec: ops/docs/archive/sidebar-views.md
  */
 export function SidebarOptionsPopover({
   title,

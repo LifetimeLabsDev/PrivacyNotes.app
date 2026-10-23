@@ -3,7 +3,7 @@
   "tabs": {
     "overview": "總覽",
     "writing": "寫作",
-    "wellness": "身心"
+    "wellness": "追蹤項目"
   },
   "writing": {
     "notes": "筆記",
@@ -19,6 +19,42 @@
     "tooltipNoMood": "{{date}}：未記錄心情",
     "tooltipEdits_other": "{{date}}：{{count}} 次編輯",
     "longestNote": "最長的筆記：<name>{{title}}</name>（{{count}} 字）"
+  },
+  "home": {
+    "inARow_other": "連續 {{count}} 天",
+    "firstInsight_other": "第一個洞察需要 {{count}} 個記錄日",
+    "standsOut": "值得注意的事",
+    "lifts": "提升你的心情",
+    "onAverage": "平均{{word}}",
+    "daysOf": "{{days}} 天中的 {{logged}} 天",
+    "medsTaken": "已服藥 {{pct}}%",
+    "moodByDay": "每天的心情",
+    "moodLegend": "長條：每一天。線：7 天平均。",
+    "yourWeek": "你的這一週",
+    "yourWeekHint": "各星期幾的平均心情",
+    "weekLine": "你最好的一天是{{best}}（{{bestAvg}}），最難熬的是{{worst}}（{{worstAvg}}）。",
+    "daysSplit": "{{a}} 天對比 {{b}} 天",
+    "yourDays": "你的日子",
+    "yesOf": "{{total}} 天中有 {{yes}} 天為「是」",
+    "goesWith": "{{name}} 和什麼有關",
+    "goesWithHint": "{{side}}，與其他日子相比",
+    "byWeekday": "依星期幾",
+    "last30": "最近 30 天",
+    "openEntry": "開啟日誌",
+    "nothingThatDay": "那天沒有任何記錄。",
+    "drags": "拉低你的心情",
+    "nextDay": "隔天",
+    "label": {
+      "above": "{{name}} 高於 {{threshold}}",
+      "levels": "{{name}}：{{levels}}",
+      "taken": "已服用 {{name}}"
+    },
+    "footnoteShort": "與你其他記錄日相比的心情分數。點越多，代表數字背後的天數越多。這是關聯，不是因果的證明。",
+    "trackers": "你的追蹤項目",
+    "tapHint": "點一下即可開啟",
+    "delta": "與之前的日子相比 {{delta}}",
+    "sureEarly": "還早：有的 {{a}} 天，沒有的 {{b}} 天。繼續記錄。",
+    "sureDays": "有的 {{a}} 天，沒有的 {{b}} 天"
   },
   "range": {
     "7d": "7 天",
@@ -37,12 +73,14 @@
       "patterns": "模式"
     },
     "empty": {
-      "title": "還沒有身心資料。",
+      "title": "還沒有追蹤項目資料。",
       "hint": "開啟一篇日誌並記錄心情，就能開始。"
     },
     "export": {
       "heading": "匯出",
       "downloadJSON": "下載 JSON",
+      "downloadCSV": "下載 CSV",
+      "csvDate": "日期",
       "doctorPDF": "醫師 PDF",
       "copyAIPrompt": "顯示並複製 AI 提示詞",
       "copied": "已複製！",
@@ -50,7 +88,13 @@
       "proBadge": "PRO",
       "usesRange": "使用上方的期間",
       "promptShown": "這是你複製的提示詞。貼到你選用的聊天機器人即可。",
-      "hidePrompt": "隱藏"
+      "hidePrompt": "隱藏",
+      "intro": "你在日誌中記錄的追蹤項目數值，依你選擇的期間匯出。",
+      "aiPromptDesc": "一份追蹤項目摘要，可貼到聊天機器人。會顯示在這裡並複製到剪貼簿。",
+      "doctorDesc": "一份可列印的報告，包含心情、睡眠、用藥與趨勢，可帶去看診。",
+      "jsonDesc": "每個追蹤項目數值及其日期與定義，供其他應用程式或你自己分析。",
+      "csvDesc": "每天一列、每個追蹤項目一欄，適用於試算表。",
+      "openExport": "匯出你的追蹤項目資料"
     },
     "medication": {
       "adherence": "服藥率",
@@ -60,6 +104,7 @@
       },
       "dosageTimeline": "劑量時間軸",
       "started": "開始 {{dosage}}",
+      "startedPlain": "開始",
       "changedTo": "改為 {{dosage}}"
     },
     "patterns": {
@@ -67,7 +112,8 @@
       "insights": "洞察",
       "proBadge": "PRO",
       "insightsLocked_other": "偵測到 {{count}} 項洞察。升級 Pro 即可檢視",
-      "tableLocked": "升級 Pro 即可查看哪些追蹤項目影響你的心情"
+      "tableLocked": "升級 Pro 即可查看哪些追蹤項目影響你的心情",
+      "waiting_other": "還有 {{count}} 個追蹤項目需要更多記錄日才能比較。"
     },
     "week": {
       "range": "{{start}} 至 {{end}}",
@@ -82,7 +128,7 @@
       "reflectionPlaceholder": "這一週整體感覺如何？想記下什麼想法…",
       "heading": "每週回顧",
       "proBadge": "PRO",
-      "locked": "升級 Pro 即可查看你的每週身心摘要"
+      "locked": "升級 Pro 即可查看你的每週追蹤項目摘要"
     },
     "units": {
       "days_other": "{{count}} 天"
@@ -106,27 +152,30 @@
       "doseChange": "在 {{date}} {{name}} 改為 {{dosage}} 的前後，你的心情在前 {{nBefore}} 天平均 {{before}}，後 {{nAfter}} 天平均 {{after}}。"
     },
     "aiPrompt": {
-      "intro": "我一直在記錄自己的心情與身心狀態。請分析下面的資料，找出模式、趨勢與可以實際執行的建議。",
+      "intro": "我每天寫日誌並記錄追蹤項目。以下是我的資料。心情是我自己的評分，從 1（很糟）到 10（很棒）。沒有數值的日子代表我沒有記錄，不是零。",
       "overview": "總覽",
       "daysTracked": "追蹤天數：{{days}}",
       "avgMood": "平均心情：{{mood}}/10",
       "avgSleep": "平均睡眠：{{hours}} 小時",
       "adherence": "服藥率：{{pct}}%",
       "topEmotions": "主要情緒：{{list}}",
-      "moodTrend": "心情趨勢（最近 30 天）",
+      "moodTrend": "每天的心情",
       "columnDate": "日期",
       "columnMood": "心情",
+      "columnAverage": "7 天平均",
       "sleepDistribution": "睡眠品質分布",
       "activityDistribution": "活動程度分布",
       "adherenceHeading": "服藥率",
-      "adherenceLine": "{{name}}：在 {{total}} 個記錄日中服用 {{taken}} 天（{{pct}}%）",
+      "adherenceLine": "{{name}}：排定的 {{total}} 劑中已服用 {{taken}} 劑（{{pct}}%）",
       "dosageTimeline": "劑量時間軸",
       "patterns": "偵測到的模式",
-      "questions": "我想知道的事",
-      "question1": "我的心情隨時間有什麼模式嗎？",
-      "question2": "睡眠品質與活動程度和心情有關聯嗎？",
-      "question3": "有沒有需要和醫療人員討論的趨勢？",
-      "question4": "根據這些資料，有哪些可以實際執行的建議？",
+      "questions": "如何回答",
+      "question1": "先列出最重要的三項發現，每一項附上背後的數字。",
+      "question2": "把資料顯示的事實和你的推測分開。兩個一起變動的追蹤項目，不代表其中一個造成另一個。",
+      "question3": "如果某個模式所依據的天數太少、不足以採信，請說明。",
+      "question4": "建議兩到三個我可以試行兩週的小改變，並說明該追蹤什麼來確認是否有效。",
+      "question5": "指出任何值得和醫師討論的事。不要做診斷。",
+      "question6": "如果資料讓你無法確定，請先問我最多三個問題。",
       "footer": "由 PrivacyNotes 產生（privacynotes.app）",
       "period": "期間：{{from}} 至 {{to}}",
       "daysLogged": "記錄天數：{{days}} 天中的 {{logged}} 天",
@@ -135,7 +184,7 @@
       "trackerYesLine": "{{name}}：{{count}} 天中有 {{yes}} 天為「是」",
       "effects": "有與沒有的日子的心情",
       "effectLine": "{{name}}（{{rule}}）：有 {{a}}，沒有 {{b}}，差異 {{delta}}，{{na}} / {{nb}} 天",
-      "customQuestion": "{{name}} 和我當天或隔天的心情有關聯嗎？"
+      "customQuestion": "也請檢查 {{name}} 是否和我當天或隔天的心情有關聯。"
     },
     "report": {
       "documentTitle": "健康報告",
@@ -156,9 +205,9 @@
       "activityDistribution": "活動程度分布",
       "columnLevel": "程度",
       "adherenceHeading": "服藥率",
-      "adherenceNote": "服用天數佔該藥物受追蹤的記錄日比例。沒有標記的當天算作未服用。沒有日記記錄的日子兩邊都不計。",
+      "adherenceNote": "已服用的排定劑量，佔自每種藥物首次記錄以來、有日誌紀錄的日子裡應服劑量的比例。應服但未標記的劑量算作未服用。沒有日誌紀錄的日子，以及需要時服用的藥物，都不計入。",
       "columnMedication": "藥物",
-      "columnTaken": "服用/天數",
+      "columnTaken": "服用/劑數",
       "columnRate": "比率",
       "dosageTimeline": "劑量時間軸",
       "started": "{{date}} 開始 {{dosage}}",
@@ -204,6 +253,15 @@
       "legend": "線：7 天平均。三角形：劑量變更。",
       "dose": "{{name}} {{dosage}}"
     },
+    "pixels": {
+      "heading": "年度像素圖",
+      "aria": "{{year}} 年每一天的心情，每天一格",
+      "hint": "每天一格，以心情顏色顯示。",
+      "hintTap": "每天一格，以心情顏色顯示。點一下即可開啟那一天。",
+      "saveImage": "儲存為圖片",
+      "prevYear": "上一年",
+      "nextYear": "下一年"
+    },
     "trackers": {
       "heading": "追蹤項目",
       "tapHint": "點一下即可開啟「探索」",
@@ -213,13 +271,16 @@
       "unknown": "未知的追蹤項目 {{id}}",
       "sleepHours": "睡眠時數",
       "sleepQuality": "睡眠品質",
-      "avgDays": "平均，{{count}} 天",
-      "sumDays": "總計，{{count}} 天",
+      "avgDays_other": "平均，{{count}} 天",
+      "sumDays_other": "總計，{{count}} 天",
+      "daysLogged_other": "已記錄 {{count}} 天",
       "yesNo": "是 {{yes}} 天，否 {{no}} 天",
       "notLogged": "{{count}} 天未記錄",
       "latestLowHigh": "最新 {{latest}}，最低 {{low}}，最高 {{high}}",
-      "topLevel": "{{level}} {{count}} 天",
+      "topLevel_other": "{{level}}：{{count}} 天",
       "taken": "{{total}} 天中服用 {{taken}} 天",
+      "takenDoses_other": "{{count}} 劑中已服 {{taken}} 劑",
+      "asNeededDoses_other": "需要時服用 {{count}} 劑",
       "empty": "這段期間沒有任何記錄",
       "unanswered": "{{count}} 個記錄日沒有作答"
     },
@@ -239,6 +300,14 @@
       "footnote": "這是記錄日之間的觀察結果，不是原因。",
       "higher": "這些日子的{{outcome}}高出 {{delta}} 分。",
       "lower": "這些日子的{{outcome}}低了 {{delta}} 分。",
+      "side": {
+        "with": "有 {{name}} 的日子",
+        "without": "沒有的日子",
+        "above": "高於 {{threshold}}",
+        "atOrBelow": "{{threshold}} 或以下",
+        "taken": "已服用",
+        "missed": "漏服"
+      },
       "rule": {
         "yesno": "有的日子與沒有的日子",
         "halves": "高於 {{threshold}} 與 {{threshold}} 或以下",
@@ -336,7 +405,7 @@
     "milestones": "里程碑",
     "longestStreak": "最長連續天數：{{count}} 天",
     "openWriting": "開啟「寫作」",
-    "openWellness": "開啟「身心」",
+    "openWellness": "開啟「追蹤項目」",
     "computed": "在這台裝置上計算",
     "pillars": {
       "notes": "筆記",
@@ -347,6 +416,60 @@
       "contacts": "聯絡人",
       "logins": "登入資訊"
     },
-    "ledgerEstimated": "統計開始之前，由你的筆記估算。"
+    "ledgerEstimated": "統計開始之前，由你的筆記估算。",
+    "today": "今天，{{date}}",
+    "lastEdit": "最後編輯於 {{time}}",
+    "wordsToday_other": "今天寫了 {{formatted}} 字",
+    "edited_other": "編輯了 {{count}} 個項目",
+    "created_other": "新增 {{count}} 個",
+    "scheduled_other": "日曆上有 {{count}} 項",
+    "next": "{{title}}，{{time}}",
+    "checkedIn": "{{word}}，已打卡",
+    "thisWeek": "這一週",
+    "thisWeekHint": "最近 7 天與之前 7 天相比",
+    "vsLastWeek": "與上週相比 {{delta}}",
+    "activeDays": "活躍天數",
+    "notesCreated": "建立的項目",
+    "checkIns": "打卡",
+    "streaks": "連續紀錄",
+    "checkInStreak": "打卡連續天數",
+    "keep": "你保存的一切",
+    "keepSub": "最近 7 天新增",
+    "growingTags": "成長中的標籤",
+    "moodMonth": "最近 30 天平均{{word}}"
+  },
+  "recap": {
+    "thisWeek": "這一週",
+    "previous": "上一週",
+    "next": "下一週",
+    "bestWorst": "{{best}}是你最好的一天（{{bestMood}}），{{worst}}最難熬（{{worstMood}}）。",
+    "noMood": "這一週沒有記錄心情。",
+    "also": "7 天中有 {{logged}} 天記錄了心情，建立了 {{created}} 個項目。",
+    "againstWeekBefore": "變化是與前一週相比。",
+    "prompt": "{{day}}有什麼好事？"
+  },
+  "writingTab": {
+    "inOneLook": "這段期間一覽",
+    "wordsWritten": "寫下的字數",
+    "daysWrote": "寫作天數",
+    "perDay": "每天 {{words}} 字",
+    "notesStarted": "新開始的筆記",
+    "vsBefore": "與之前的日子相比 {{delta}}",
+    "readTime_other": "寫下的內容約需 {{count}} 分鐘閱讀",
+    "novels_other": "累計相當於 {{count}} 本小說",
+    "tagsUsed": "{{count}} 個標籤，這段期間用了 {{used}} 個",
+    "wordsPerDay": "每天字數",
+    "wordsPerWeek": "每週字數",
+    "biggest": "你寫得最多的一天是 {{day}}（{{words}} 字）。你最好的星期幾是{{weekday}}。",
+    "year": "你的寫作年度",
+    "yearHint": "顏色越深：那天編輯越多",
+    "hoursHint": "依星期幾與時段的編輯次數",
+    "topTags": "最常用的標籤",
+    "lengths": "筆記長度",
+    "short": "短",
+    "median": "你有一半的筆記少於 {{words}} 字。",
+    "longest": "你最長的筆記",
+    "words_other": "{{formatted}} 字",
+    "readHours_other": "寫下的內容約需 {{count}} 小時閱讀"
   }
 }

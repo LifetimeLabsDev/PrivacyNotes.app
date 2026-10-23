@@ -215,7 +215,7 @@ function wikiLinkRule(state: WikiLinkParseState): boolean {
   // does not recognise that shape, so without this guard the `!` is left
   // stranded as literal text and the rest becomes a note-link - which is both
   // wrong on screen and, once serialized back, a rewrite of the user's file.
-  // Spec: ops/docs/plans/markdown-folder.md (section 8, media)
+  // Spec: ops/docs/archive/markdown-folder.md (section 8, media)
   if (pos > 0 && src.charCodeAt(pos - 1) === 0x21) {
     return false;
   }

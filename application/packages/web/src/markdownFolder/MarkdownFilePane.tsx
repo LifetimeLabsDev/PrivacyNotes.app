@@ -5,7 +5,7 @@
  * comment somewhere: nothing is written unless the user actually typed, and
  * nothing is written over a file that changed underneath us.
  *
- * Spec: ops/docs/plans/markdown-folder.md (section 7)
+ * Spec: ops/docs/archive/markdown-folder.md (section 7)
  */
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +20,7 @@ import { ArrowLeft, FileMd, FileTxt, Lock, MagnifyingGlass, Swap, Trash, X } fro
 import { EditorSlotPill } from '../EditorSlotPill';
 import { editorCommands } from '../editorCommands';
 import { HoverLabel } from '../HoverLabel';
+import { keyText } from '../shortcutMatch';
 import { adaptFile, isTextFile, tidyRichSave } from './adapter';
 import { stampsMatch } from './fileAccess';
 import { applyAssets, restoreAssets, useAssets } from './useAssets';
@@ -181,7 +182,7 @@ export function MarkdownFilePane({
 
   // Links resolve inside this folder and nowhere else: a local file never
   // names an encrypted note, and an encrypted note never names a file.
-  // Spec: ops/docs/plans/markdown-folder.md (section 3, note-links)
+  // Spec: ops/docs/archive/markdown-folder.md (section 3, note-links)
   const relPaths = useMemo(() => (dir?.entries ?? []).map((e) => e.relPath), [dir]);
   const linkTitles = useMemo(
     () => relPaths.map((rel) => ({ id: rel, title: noteLinkPathFor(rel) })),
@@ -591,7 +592,7 @@ export function MarkdownFilePane({
           renamed on disk, not typed over here - so it truncates instead of
           scroll-fading. The only addition is the open padlock, which is the
           whole point of this pillar.
-          Spec: ops/docs/ui-patterns.md (editor header) */}
+          Spec: ops/docs/archive/ui-patterns.md (editor header) */}
       <div className="flex justify-center min-h-11 sm:min-h-14 py-1.5 sm:py-0 sm:h-14 border-b border-divider shrink-0">
         <div className="flex items-center gap-2 px-4 sm:px-6 pn-content-col">
           {/* The way back, in the one slot every editor in this app puts it.
@@ -637,7 +638,7 @@ export function MarkdownFilePane({
           {/* Find and replace has no "..." menu to live in here, so it sits in
               the header, for both modes. Cmd/Ctrl+F and Option+Cmd+F reach the
               same bars. */}
-          <HoverLabel label={t('noteOptionsMenu.findReplace')} position="below">
+          <HoverLabel label={t('noteOptionsMenu.findReplace')} keys={keyText('findReplace')} position="below">
             <button
               type="button"
               onClick={() => (mode === 'rich' ? editorRef.current?.toggleReplace() : editorCommands.findReplace?.())}
@@ -724,7 +725,7 @@ export function MarkdownFilePane({
             hideEncryptedMedia
             // The magnifier beside the outline pill, as on a note.
             bodyControls={bodyOverflows ? (
-              <EditorSlotPill label={t('notes:editor.findInNote')} onClick={() => editorRef.current?.toggleFind()}>
+              <EditorSlotPill label={t('notes:editor.findInNote')} keys={keyText('find')} onClick={() => editorRef.current?.toggleFind()}>
                 <MagnifyingGlass size={17} />
               </EditorSlotPill>
             ) : null}

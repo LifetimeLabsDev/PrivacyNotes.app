@@ -11,14 +11,16 @@
  * In a browser whose passkey provider has the WebAuthn PRF extension, the key
  * is bound: HKDF over the PRF output of the passkey gives the AES-GCM key at
  * each unlock, and the key is never stored, so a copy of the storage holds only
- * ciphertext (one record, `privacynotes.bio.enrollment`). Everywhere else (the
- * native apps, a browser or provider without PRF, an enrollment made before
- * the binding) the gate is a user-presence check only: the phrase is wrapped
- * with a random AES-GCM-256 key that sits in localStorage beside the blob it
- * wraps, so storage access bypasses the gate entirely. `isBiometricKeyBound`
- * answers which.
+ * ciphertext (one record, `privacynotes.bio.enrollment`). In the native apps
+ * the same record holds a key the device's secure hardware keeps (the Secure
+ * Enclave, the Android Keystore, Windows Hello) and releases only after the
+ * biometric check. Everywhere else (a device that cannot bind, a browser or
+ * provider without PRF, an enrollment made before the binding) the gate is a
+ * user-presence check only: the phrase is wrapped with a random AES-GCM-256
+ * key that sits in localStorage beside the blob it wraps, so storage access
+ * bypasses the gate entirely. `isBiometricKeyBound` answers which.
  * Spec: ops/docs/plans/app-lock-passcode.md (section 4.6),
- * ops/docs/plans/biometric-key-binding.md (section 4.1)
+ * ops/docs/plans/biometric-key-binding.md (sections 4 and 8)
  *
  * Also provides PIN-based phrase wrapping (PBKDF2, convenience only).
  * Note encryption is untouched - this module only wraps the stored phrase.
@@ -29,6 +31,7 @@ import {
   base64ToBytes,
   bytesToBase64url,
   base64urlToBytes,
+  hexToBytes,
 } from '@notes/shared';
 import { detectPlatform } from './devices';
 import { credentialKey } from './demo';
@@ -40,14 +43,15 @@ import { settingsLocalKey } from './settingsLocalKey';
 // ── Constants ──────────────────────────────────────────────────
 // All demo-bucketed (see credentialKey in demo.ts): the demo's usable
 // Security tabs must never touch a real account's wrapped phrase on
-// the same origin. Session audit 2026-08-25.
+// the same origin.
 
 const BIO_CREDENTIAL_ID = credentialKey('privacynotes.bio.credentialId');
 const BIO_WRAP_KEY = credentialKey('privacynotes.bio.wrapKey');
 const BIO_IV = credentialKey('privacynotes.bio.iv');
 const BIO_WRAPPED = credentialKey('privacynotes.bio.wrapped');
-// A bound web enrollment, one JSON value so it is written in one setItem and a
-// half-written one cannot exist: { v: 1, credentialId, prfSalt, iv, wrapped }.
+// A bound enrollment, one JSON value so it is written in one setItem and a
+// half-written one cannot exist: { v: 1, credentialId, prfSalt, iv, wrapped }
+// in a browser, { v: 2, handle, iv, wrapped } in the native apps.
 const BIO_ENROLLMENT = credentialKey('privacynotes.bio.enrollment');
 // Names an older build used for PRF salts; cleared on removal, never written.
 const BIO_LEGACY_PRF_SALT = credentialKey('privacynotes.bio.prfSalt');
@@ -147,6 +151,95 @@ async function nativeAuthenticate(reason: string, cancelLabel: string): Promise<
   }
 }
 
+/**
+ * Why the hardware key gave nothing. `unsupported`: this device cannot bind
+ * (no strong biometric, no secure hardware), said before any prompt.
+ * `cancelled`: the person or the OS cancelled the prompt. `gone`: the OS
+ * destroyed the key (the device passcode removed, the key invalidated), and
+ * it never comes back. `unenrolled`: no biometric is enrolled now, so the key
+ * cannot open, but it may again once one is. `failed`: anything else.
+ */
+type NativeKeyFailure = 'unsupported' | 'cancelled' | 'gone' | 'unenrolled' | 'failed';
+type NativeKey = { handle: string; secret: Uint8Array };
+
+/** The shell answers with these codes; anything else is a failure. */
+function nativeKeyFailure(err: unknown): NativeKeyFailure {
+  return err === 'unsupported' || err === 'cancelled' || err === 'gone' || err === 'unenrolled' ? err : 'failed';
+}
+
+// The 32 random bytes the hardware key seals, or the Windows Hello signature.
+const NATIVE_SECRET_MIN_BYTES = 32;
+
+/** The secret arrives as hex; anything else, or anything short, is a failure. */
+function nativeSecret(hex: unknown): Uint8Array {
+  if (typeof hex !== 'string') throw 'failed';
+  let bytes: Uint8Array;
+  try {
+    bytes = hexToBytes(hex);
+  } catch {
+    throw 'failed';
+  }
+  if (bytes.length < NATIVE_SECRET_MIN_BYTES) throw 'failed';
+  return bytes;
+}
+
+/**
+ * Make a fresh hardware key, seal a secret to it, and open the secret once
+ * behind the biometric prompt, which is both the person's consent and the
+ * proof that the key opens. Throws a NativeKeyFailure. A shell without the
+ * command reads as `unsupported`, so the presence gate still enrolls.
+ * Spec: ops/docs/plans/biometric-key-binding.md (section 8.2)
+ */
+async function nativeKeyCreate(reason: string, cancelLabel: string): Promise<NativeKey> {
+  let made: { handle?: unknown; secret?: unknown };
+  try {
+    made = await invokeTauri<{ handle?: unknown; secret?: unknown }>('biometric_key_create', { reason, cancelLabel });
+  } catch (err) {
+    if (err === 'cancelled' || err === 'failed') throw err;
+    throw 'unsupported';
+  }
+  if (typeof made?.handle !== 'string' || !made.handle) throw 'failed';
+  return { handle: made.handle, secret: nativeSecret(made.secret) };
+}
+
+/** Open the secret of a hardware key behind the biometric prompt. Throws a NativeKeyFailure. */
+async function nativeKeyOpen(handle: string, reason: string, cancelLabel: string): Promise<Uint8Array> {
+  let secret: unknown;
+  try {
+    secret = await invokeTauri<string>('biometric_key_open', { handle, reason, cancelLabel });
+  } catch (err) {
+    throw nativeKeyFailure(err);
+  }
+  return nativeSecret(secret);
+}
+
+/** Remove a hardware key nothing refers to any more. A hint: never throws, never awaited. */
+function nativeKeyDelete(handle: string): void {
+  void invokeTauri('biometric_key_delete', { handle }).catch(() => { /* an orphan key opens nothing */ });
+}
+
+const NATIVE_HKDF_INFO = textEnc.encode('privacynotes-bio-native-v1');
+
+/** The AES-GCM key a hardware secret gives. Non-extractable, and never stored. */
+async function keyFromNativeSecret(secret: Uint8Array): Promise<CryptoKey> {
+  const material = await crypto.subtle.importKey('raw', buf(secret), 'HKDF', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name: 'HKDF', hash: 'SHA-256', salt: new ArrayBuffer(0), info: buf(NATIVE_HKDF_INFO) },
+    material,
+    { name: 'AES-GCM', length: AES_KEY_BITS },
+    false,
+    ['encrypt', 'decrypt'],
+  );
+}
+
+/** Wrap the phrase under a hardware secret and prove the wrap opens before anything is stored. */
+async function buildNativeEnrollment(phrase: string, made: NativeKey): Promise<NativeBoundEnrollment> {
+  const key = await keyFromNativeSecret(made.secret);
+  const { ciphertext, iv } = await aesGcmEncrypt(key, phrase);
+  if ((await aesGcmDecrypt(key, ciphertext, iv)) !== phrase) throw new Error('The new biometric wrap did not open.');
+  return { v: 2, handle: made.handle, iv: bytesToBase64(iv), wrapped: bytesToBase64(ciphertext) };
+}
+
 // ── Feature detection ───────────────────────────────────────────
 
 /**
@@ -167,21 +260,26 @@ export async function canUseBiometric(): Promise<boolean> {
 // ── WebAuthn PRF binding ───────────────────────────────────────
 
 type BoundEnrollment = { v: 1; credentialId: string; prfSalt: string; iv: string; wrapped: string };
+type NativeBoundEnrollment = { v: 2; handle: string; iv: string; wrapped: string };
+type AnyBoundEnrollment = BoundEnrollment | NativeBoundEnrollment;
 
 const PRF_SALT_BYTES = 32;
 const PRF_HKDF_INFO = textEnc.encode('privacynotes-bio-prf-v1');
 
 /** The bound enrollment this device holds, or null. Never throws. */
-function readEnrollment(): BoundEnrollment | null {
+function readEnrollment(): AnyBoundEnrollment | null {
   try {
     const raw = localStorage.getItem(BIO_ENROLLMENT);
     if (!raw) return null;
-    const rec = JSON.parse(raw) as Partial<BoundEnrollment>;
-    if (rec.v !== 1) return null;
-    for (const field of ['credentialId', 'prfSalt', 'iv', 'wrapped'] as const) {
+    const rec = JSON.parse(raw) as Record<string, unknown> | null;
+    const fields = rec?.v === 1 ? ['credentialId', 'prfSalt', 'iv', 'wrapped']
+      : rec?.v === 2 ? ['handle', 'iv', 'wrapped']
+      : null;
+    if (!rec || !fields) return null;
+    for (const field of fields) {
       if (typeof rec[field] !== 'string' || !rec[field]) return null;
     }
-    return rec as BoundEnrollment;
+    return rec as AnyBoundEnrollment;
   } catch {
     return null;
   }
@@ -357,7 +455,7 @@ function enrollmentStamp(): string {
  * back puts back exactly what was there before it, so a working enrollment is
  * never lost to a failed one. Answers whether the record stands.
  */
-function commitBoundEnrollment(record: BoundEnrollment, since: SignInStamp, startedFrom: string): boolean {
+function commitBoundEnrollment(record: AnyBoundEnrollment, since: SignInStamp, startedFrom: string): boolean {
   if (signedOutSince(since)) throw new Error('Signed out during enrollment.');
   if (enrollmentStamp() !== startedFrom) return false;
   const value = JSON.stringify(record);
@@ -464,15 +562,7 @@ export async function enrollBiometric(
 ): Promise<BiometricEnrollResult> {
   const since = signInStamp();
   try {
-    // The native gate has nothing to register: passing the OS prompt IS the
-    // enrollment. The sentinel id records which gate an unlock should use.
-    if (await canUseNativeBiometric()) {
-      if (!(await nativeAuthenticate(reason, cancelLabel))) {
-        return { ok: false, reason: 'user_cancelled', message: 'Biometric verification was cancelled.' };
-      }
-      await storeWrappedPhrase(phrase, NATIVE_CREDENTIAL_ID, since);
-      return { ok: true };
-    }
+    if (await canUseNativeBiometric()) return await enrollNative(phrase, reason, cancelLabel, since);
 
     const startedFrom = enrollmentStamp();
     const made = await createWebCredential();
@@ -487,7 +577,10 @@ export async function enrollBiometric(
       // stamp is asked again with no await before its writes, so another
       // tab's enrollment finished meanwhile is never joined by a raw key.
       if (made.kind === 'presence') {
-        if (await storeWrappedPhrase(phrase, newId, since, () => enrollmentStamp() === startedFrom)) return { ok: true };
+        if (await storeWrappedPhrase(phrase, newId, since, () => enrollmentStamp() === startedFrom)) {
+          markNoPrfHere();
+          return { ok: true };
+        }
         signalCredentialGone(newId);
         return changed;
       }
@@ -513,6 +606,78 @@ export async function enrollBiometric(
       message: err instanceof Error ? err.message : 'Unknown error during biometric enrollment.',
     };
   }
+}
+
+/**
+ * The native enrollment: a key the device's secure hardware holds, where the
+ * device can make one, and the presence gate where it cannot (the prompt IS
+ * the enrollment there, and the sentinel id records which gate an unlock
+ * uses). The hardware key is made under a fresh name, so a working enrollment
+ * is never touched before the new record reads back; a key whose record did
+ * not commit is deleted.
+ * Spec: ops/docs/plans/biometric-key-binding.md (section 8.2)
+ */
+async function enrollNative(
+  phrase: string,
+  reason: string,
+  cancelLabel: string,
+  since: SignInStamp,
+): Promise<BiometricEnrollResult> {
+  const startedFrom = enrollmentStamp();
+  let made: NativeKey | null = null;
+  try {
+    made = await nativeKeyCreate(reason, cancelLabel);
+  } catch (failure) {
+    if (failure === 'cancelled') {
+      return { ok: false, reason: 'user_cancelled', message: 'Biometric verification was cancelled.' };
+    }
+    if (failure !== 'unsupported') {
+      return { ok: false, reason: 'error', message: 'Biometric unlock could not be set up on this device.' };
+    }
+  }
+  if (made) {
+    try {
+      const record = await buildNativeEnrollment(phrase, made);
+      if (enrollmentStamp() !== startedFrom) {
+        nativeKeyDelete(made.handle);
+        return { ok: false, reason: 'changed', message: 'Enrolled in another tab.' };
+      }
+      const previous = readEnrollment();
+      if (!commitBoundEnrollment(record, since, startedFrom)) {
+        nativeKeyDelete(made.handle);
+        // Another tab's enrollment landed first and stands.
+        if (enrollmentStamp() !== startedFrom) return { ok: false, reason: 'changed', message: 'Enrolled in another tab.' };
+        return { ok: false, reason: 'error', message: 'This device could not store biometric unlock.' };
+      }
+      if (previous?.v === 2 && previous.handle !== record.handle) nativeKeyDelete(previous.handle);
+      return { ok: true };
+    } catch (err) {
+      nativeKeyDelete(made.handle);
+      throw err;
+    }
+  }
+  if (!(await nativeAuthenticate(reason, cancelLabel))) {
+    return { ok: false, reason: 'user_cancelled', message: 'Biometric verification was cancelled.' };
+  }
+  await storeWrappedPhrase(phrase, NATIVE_CREDENTIAL_ID, since);
+  return { ok: true };
+}
+
+/**
+ * The silent conversion of a presence enrollment (D5), run after its unlock
+ * opened the old wrap: the phrase is wrapped under the new hardware key and
+ * committed like any bound enrollment, which removes the raw key only after
+ * the record reads back. Any failure deletes the new key and leaves the old
+ * wrap exactly as it was; the unlock has already succeeded either way.
+ */
+async function convertNative(phrase: string, made: NativeKey, since: SignInStamp, startedFrom: string): Promise<void> {
+  try {
+    const record = await buildNativeEnrollment(phrase, made);
+    if (commitBoundEnrollment(record, since, startedFrom)) return;
+  } catch {
+    /* the old wrap still opens */
+  }
+  nativeKeyDelete(made.handle);
 }
 
 export type BiometricSetUpAgainResult =
@@ -541,6 +706,7 @@ export async function setUpBiometricAgain(phrase: string): Promise<BiometricSetU
     }
     if (made.kind === 'presence') {
       signalCredentialGone(bytesToBase64url(made.credentialId));
+      markNoPrfHere();
       return { ok: false, reason: 'no_prf', message: 'This browser gave no PRF output.' };
     }
     const newId = bytesToBase64url(made.credentialId);
@@ -610,11 +776,13 @@ export async function unlockWithBiometric(
  * Why an unlock gave no phrase: the person cancelled or refused the prompt, or
  * the unlock failed for another reason (the key it produced did not open the
  * wrap, a passkey whose PRF gives nothing now, an authenticator error, a
- * damaged record). Only the second earns its own line.
+ * damaged record), or the OS destroyed the hardware key of a native
+ * enrollment (every biometric or the device passcode removed), which never
+ * comes back and must be set up again. The last two earn their own line.
  */
 export type BiometricUnlockResult =
   | { phrase: string; failure?: undefined }
-  | { phrase: null; failure: 'cancelled' | 'unopened' };
+  | { phrase: null; failure: 'cancelled' | 'unopened' | 'gone' };
 
 export async function unlockWithBiometricDetailed(
   reason: string,
@@ -627,6 +795,7 @@ export async function unlockWithBiometricDetailed(
   const startedFrom = enrollmentStamp();
   const current = () => enrollmentStamp() === startedFrom && !signedOutSince(since);
   const record = readEnrollment();
+  if (record?.v === 2) return unlockNativeBound(record, reason, cancelLabel, current);
   if (record) return unlockBound(record, current);
 
   let credIdB64: string | null, wrapKeyB64: string | null, ivB64: string | null, wrappedB64: string | null;
@@ -641,26 +810,25 @@ export async function unlockWithBiometricDetailed(
 
   if (!credIdB64 || !wrapKeyB64 || !ivB64 || !wrappedB64) return { phrase: null, failure: 'cancelled' };
 
+  // Enrolled against the OS authenticator: no credential to assert, the
+  // prompt itself is the gate.
+  if (credIdB64 === NATIVE_CREDENTIAL_ID) {
+    return unlockNativePresence({ wrapKeyB64, ivB64, wrappedB64 }, reason, cancelLabel, since, startedFrom, current);
+  }
   try {
-    // Enrolled against the OS authenticator: no credential to assert, the
-    // prompt itself is the gate.
-    if (credIdB64 === NATIVE_CREDENTIAL_ID) {
-      if (!(await nativeAuthenticate(reason, cancelLabel))) return { phrase: null, failure: 'cancelled' };
-    } else {
-      const credentialId = base64urlToBytes(credIdB64);
-      const getOptions: PublicKeyCredentialRequestOptions = {
-        rpId: window.location.hostname,
-        challenge: buf(crypto.getRandomValues(new Uint8Array(32))),
-        allowCredentials: [{ id: buf(credentialId), type: 'public-key' }],
-        userVerification: 'required',
-      };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (getOptions as any).hints = ['client-device'];
-      const assertion = (await navigator.credentials.get({
-        publicKey: getOptions,
-      })) as PublicKeyCredential | null;
-      if (!assertion) return { phrase: null, failure: 'cancelled' };
-    }
+    const credentialId = base64urlToBytes(credIdB64);
+    const getOptions: PublicKeyCredentialRequestOptions = {
+      rpId: window.location.hostname,
+      challenge: buf(crypto.getRandomValues(new Uint8Array(32))),
+      allowCredentials: [{ id: buf(credentialId), type: 'public-key' }],
+      userVerification: 'required',
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (getOptions as any).hints = ['client-device'];
+    const assertion = (await navigator.credentials.get({
+      publicKey: getOptions,
+    })) as PublicKeyCredential | null;
+    if (!assertion) return { phrase: null, failure: 'cancelled' };
   } catch (err) {
     return { phrase: null, failure: promptFailure(err) };
   }
@@ -671,6 +839,88 @@ export async function unlockWithBiometricDetailed(
     return { phrase: null, failure: 'unopened' };
   }
   return current() ? { phrase } : { phrase: null, failure: 'cancelled' };
+}
+
+/**
+ * Unlock a presence enrollment of the native apps, and convert it (D5). Where
+ * the device can bind, making the hardware key is the prompt: its read-back
+ * needs a passed biometric, so it gates the old wrap as the presence prompt
+ * did, and one prompt does both. Where it cannot, or the key could not be
+ * made, the presence prompt runs as before. A cancel cancels.
+ * Spec: ops/docs/plans/biometric-key-binding.md (section 8.2, migration)
+ */
+async function unlockNativePresence(
+  stored: { wrapKeyB64: string; ivB64: string; wrappedB64: string },
+  reason: string,
+  cancelLabel: string,
+  since: SignInStamp,
+  startedFrom: string,
+  current: () => boolean,
+): Promise<BiometricUnlockResult> {
+  let made: NativeKey | null = null;
+  try {
+    made = await nativeKeyCreate(reason, cancelLabel);
+  } catch (failure) {
+    if (failure === 'cancelled') return { phrase: null, failure: 'cancelled' };
+  }
+  if (!made && !(await nativeAuthenticate(reason, cancelLabel))) return { phrase: null, failure: 'cancelled' };
+  let phrase: string;
+  try {
+    phrase = await unwrapStoredPhrase(stored.wrapKeyB64, stored.ivB64, stored.wrappedB64);
+  } catch {
+    if (made) nativeKeyDelete(made.handle);
+    return { phrase: null, failure: 'unopened' };
+  }
+  if (!current()) {
+    if (made) nativeKeyDelete(made.handle);
+    return { phrase: null, failure: 'cancelled' };
+  }
+  if (made) await convertNative(phrase, made, since, startedFrom);
+  // A sign-out during the conversion removed every door; the phrase it read
+  // must not open the app after it.
+  if (signedOutSince(since)) return { phrase: null, failure: 'cancelled' };
+  return { phrase };
+}
+
+/**
+ * Unlock a bound native enrollment: the hardware key releases the secret
+ * behind the biometric prompt, and nothing stored can stand in for it. A key
+ * the OS destroyed answers `gone`; the dead record is then removed, but only
+ * while another door holds the phrase (a PIN wrap, or the phrase at rest) and
+ * the record is still the one this unlock read. With no biometric enrolled
+ * the lock screen says the same, and the record stays.
+ * Spec: ops/docs/plans/biometric-key-binding.md (D6, section 8.2)
+ */
+async function unlockNativeBound(
+  record: NativeBoundEnrollment,
+  reason: string,
+  cancelLabel: string,
+  current: () => boolean,
+): Promise<BiometricUnlockResult> {
+  let secret: Uint8Array;
+  try {
+    secret = await nativeKeyOpen(record.handle, reason, cancelLabel);
+  } catch (failure) {
+    if (failure === 'cancelled') return { phrase: null, failure: 'cancelled' };
+    if (failure === 'gone') {
+      if (current() && (hasPinWrappedPhrase() || hasStoredPhrase())) removeBiometricCredential();
+      return { phrase: null, failure: 'gone' };
+    }
+    // No biometric enrolled now: the same line, but nothing is removed, so a
+    // finger or face enrolled again can still open this record.
+    if (failure === 'unenrolled') return { phrase: null, failure: 'gone' };
+    return { phrase: null, failure: 'unopened' };
+  }
+  let phrase: string;
+  try {
+    const key = await keyFromNativeSecret(secret);
+    phrase = await aesGcmDecrypt(key, base64ToBytes(record.wrapped), base64ToBytes(record.iv));
+  } catch {
+    return { phrase: null, failure: 'unopened' };
+  }
+  if (!current()) return { phrase: null, failure: 'cancelled' };
+  removePresenceKeys();
+  return { phrase };
 }
 
 /** A cancelled or refused prompt is the person's choice; anything else the
@@ -752,8 +1002,8 @@ export function hasBiometricCredential(): boolean {
 /**
  * Whether biometric unlock on this device is a real key: the authenticator
  * produces or releases the wrap key, so a copy of the storage holds only
- * ciphertext. True only for a browser enrollment bound through PRF; the native
- * apps answer false until their binding ships. The PIN tab warns while
+ * ciphertext. True for a browser enrollment bound through PRF and for a native
+ * enrollment whose key the secure hardware holds. The PIN tab warns while
  * biometric unlock is on and this is false.
  * Spec: ops/docs/plans/biometric-key-binding.md (D3)
  */
@@ -770,13 +1020,38 @@ export function isBiometricKeyBound(): boolean {
 
 /**
  * Whether the Lock tab offers "Set up again": a browser enrollment that is not
- * bound. The native apps keep their presence gate in this work.
+ * bound. The native apps convert on their next unlock instead (D5).
  */
 export function canSetUpBiometricAgain(): boolean {
   if (detectPlatform() !== 'web') return false;
   if (!hasBiometricCredential() || isBiometricKeyBound()) return false;
+  if (noPrfHere()) return false;
   try {
     return localStorage.getItem(BIO_CREDENTIAL_ID) !== NATIVE_CREDENTIAL_ID;
+  } catch {
+    return false;
+  }
+}
+
+// The browser whose passkey last gave no PRF here, by its user agent. Set up
+// again would only make the same unbound passkey, so the Lock tab stops
+// offering it in that browser (GitHub #594 thread: Firefox with Bitwarden
+// offered it after every failure). A browser update changes the user agent and
+// brings the offer back; so does a removal, which clears the mark.
+const BIND_NO_PRF = credentialKey('privacynotes.ui.bindNoPrf');
+
+function markNoPrfHere(): void {
+  try {
+    localStorage.setItem(BIND_NO_PRF, navigator.userAgent);
+  } catch {
+    /* the offer comes back on the next visit */
+  }
+}
+
+/** Whether this browser's passkey already gave no PRF on this device. */
+export function noPrfHere(): boolean {
+  try {
+    return localStorage.getItem(BIND_NO_PRF) === navigator.userAgent;
   } catch {
     return false;
   }
@@ -804,7 +1079,6 @@ async function browserOffersPrf(): Promise<boolean> {
  * passkey gave no PRF), a browser that says its passkeys have PRF, and no
  * earlier answer here. The passkey provider can still lack PRF where the
  * browser has it; the set-up-again then says so and the ask does not return.
- * Spec: ops/docs/audit-release-qa-2026-10-15.md (QA-2)
  */
 export async function shouldOfferBinding(): Promise<boolean> {
   if (!canSetUpBiometricAgain()) return false;
@@ -827,8 +1101,11 @@ export function answerBindingOffer(): void {
 
 /** Remove all biometric credential data from localStorage. Every name goes
  *  through credentialKey, so the demo never removes a real account's keys on
- *  the same origin. */
+ *  the same origin. A native record's hardware key is deleted after it, as a
+ *  hint: the key opens nothing once its record is gone. */
 export function removeBiometricCredential(): void {
+  const record = readEnrollment();
+  if (record?.v === 2) nativeKeyDelete(record.handle);
   try {
     localStorage.removeItem(BIO_ENROLLMENT);
     localStorage.removeItem(BIO_CREDENTIAL_ID);
@@ -837,6 +1114,7 @@ export function removeBiometricCredential(): void {
     localStorage.removeItem(BIO_WRAPPED);
     localStorage.removeItem(BIO_LEGACY_PRF_SALT);
     localStorage.removeItem(BIO_LEGACY_HKDF_SALT);
+    localStorage.removeItem(BIND_NO_PRF);
   } catch {
     /* storage unavailable */
   }

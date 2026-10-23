@@ -77,7 +77,7 @@ const localeModules = import.meta.glob<{ default: Record<string, unknown> }>([
 // `looks` is the one namespace that loads on its own, English included: the
 // folder and tag look picker is its only reader, and its icon names have no
 // business in any boot. ensureLooksLoaded() fetches it.
-// Spec: ops/docs/plans/folder-tag-icons.md (section 10)
+// Spec: ops/docs/archive/folder-tag-icons.md (section 10)
 const looksModules = import.meta.glob<{ default: Record<string, unknown> }>('./locales/*/looks.json');
 const looksLoaded = new Set<string>();
 // `settingsSearch` loads the same way: its keywords and result lines are

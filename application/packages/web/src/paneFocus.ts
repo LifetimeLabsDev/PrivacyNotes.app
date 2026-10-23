@@ -6,7 +6,7 @@
  * text in the editor, the open row in the list, a tag or folder row in the
  * sidebar; else on the pane's first control.
  *
- * Spec: ops/docs/plans/keyboard-shortcuts.md (section 6)
+ * Spec: ops/docs/archive/keyboard-shortcuts.md (section 6)
  */
 
 /** The places of each pane, best first. */

@@ -12,12 +12,13 @@
  * narrow for all of them, they fold into a "more" menu from the left, so
  * Delete is always the last to go and every action stays one menu away.
  * At LIST_WIDTH_MIN (200 px) the row holds the exit X, the menu button,
- * Move and Delete. Spec: ops/docs/ui-patterns.md (toolbar icon-only buttons)
+ * Move and Delete. Spec: ops/docs/archive/ui-patterns.md (toolbar icon-only buttons)
  */
 
 import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HoverLabel } from './HoverLabel';
+import { keyText } from './shortcutMatch';
 import { TagPicker } from './TagPicker';
 import { IconUpgrade } from './UpgradeModal';
 import { ContextMenu, useContextMenu } from './ContextMenu';
@@ -174,7 +175,7 @@ export function SelectionToolbar({
 
   return (
     <div ref={rowRef} className="shrink-0 h-14 px-3 border-b border-divider flex items-center justify-between gap-1 bg-accent/5 dark:bg-accent/10">
-      <HoverLabel label={t('selectionToolbar.exitSelectionTooltip')} position="below">
+      <HoverLabel label={t('selectionToolbar.exitSelectionTooltip')} keys={keyText('escape')} position="below">
       <button
         onClick={onClear}
         aria-label={t('selectionToolbar.exitSelection')}

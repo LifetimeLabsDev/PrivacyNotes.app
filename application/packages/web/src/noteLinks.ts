@@ -168,6 +168,34 @@ function codeSpans(body: string): Span[] {
 }
 
 /**
+ * Every note-link target in `body`, in order, as written between the
+ * brackets and without its label. Code regions and `![[embeds]]` are skipped,
+ * by the same segmented walk `retargetNoteLinks` uses, so this lists exactly
+ * the links the editor renders.
+ */
+export function noteLinkTargets(body: string): string[] {
+  if (!body || !body.includes('[[')) return [];
+  const out: string[] = [];
+  const scan = (text: string, offset: number) => {
+    NOTE_LINK_RE.lastIndex = 0;
+    let m: RegExpExecArray | null;
+    while ((m = NOTE_LINK_RE.exec(text)) !== null) {
+      const abs = offset + m.index;
+      if (abs > 0 && body[abs - 1] === '!') continue;
+      const target = (m[1] ?? '').trim();
+      if (target) out.push(target);
+    }
+  };
+  let cursor = 0;
+  for (const span of codeSpans(body)) {
+    if (cursor < span.start) scan(body.slice(cursor, span.start), cursor);
+    cursor = span.end;
+  }
+  if (cursor < body.length) scan(body.slice(cursor), cursor);
+  return out;
+}
+
+/**
  * Point every `[[oldTitle]]` and `[[oldTitle|label]]` in `body` at `newTitle`.
  * A display label is kept as the user wrote it; a link with no label follows
  * the new title, which is the "the text updates itself" half of #238.

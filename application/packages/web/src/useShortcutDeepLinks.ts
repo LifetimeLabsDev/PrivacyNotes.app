@@ -17,7 +17,7 @@ const LAST_KEY = 'privacynotes.shortcut.lastNative';
  * firing `onOpenUrl`, so a resume asks for the current link too, the same
  * as the sign-in listener in authOAuth.ts.
  *
- * Spec: ops/docs/plans/note-shortcuts.md (5.2)
+ * Spec: ops/docs/archive/note-shortcuts.md (5.2)
  */
 export function useShortcutDeepLinks(onTarget: (t: ShortcutTarget) => void): void {
   const onTargetRef = useRef(onTarget);

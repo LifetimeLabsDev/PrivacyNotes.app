@@ -9,7 +9,8 @@
     "tabExport": "Exportar",
     "tabRestore": "Restaurar",
     "tabVault": "Senhas",
-    "working": "Processando…"
+    "working": "Processando…",
+    "tabWellness": "Rastreadores"
   },
   "footer": {
     "exportNote": "As exportações rodam localmente. Nada é enviado.",
@@ -20,7 +21,9 @@
     "autoTagLabel": "Etiquetar notas importadas pela origem",
     "autoTagDesc": "Notas do Google Keep recebem <keep>#google</keep>, do Obsidian recebem <obsidian>#obsidian</obsidian>, e assim por diante.",
     "guideAria": "Guia de importação para {{app}}",
-    "guideLabel": "Guia"
+    "guideLabel": "Guia",
+    "groupGeneral": "Geral",
+    "groupNotes": "Notas"
   },
   "folderImport": {
     "tagLabel": "Também etiquetar as notas por pasta",
@@ -49,6 +52,24 @@
     "timeZone": "Fuso horário",
     "ends": "Termina",
     "repeats": "Repete"
+  },
+  "webcal": {
+    "title": "Webcal",
+    "desc": "Um endereço de calendário, como um link webcal:// do Proton, iCloud, Outlook ou de um calendário público. Ele é baixado uma vez; cole-o de novo mais tarde para adicionar só os eventos novos.",
+    "fieldLabel": "Endereço do calendário",
+    "import": "Importar",
+    "downloading": "Baixando…",
+    "errors": {
+      "invalid": "Cole um endereço que comece com webcal://, webcals:// ou https://.",
+      "refused": "Não é possível abrir este endereço.",
+      "wrongType": "Este endereço não leva a um arquivo de calendário.",
+      "tooLarge": "Este calendário tem mais de 10 MB.",
+      "timeout": "O servidor do calendário não respondeu a tempo. Tente de novo mais tarde.",
+      "blocked": "O servidor do calendário recusou o download. Verifique se o calendário está compartilhado ou é público.",
+      "offline": "Você está offline. Conecte-se e tente de novo.",
+      "limit": "Downloads demais em pouco tempo. Aguarde um minuto e tente de novo.",
+      "failed": "Não foi possível baixar o calendário. Verifique o endereço e tente de novo."
+    }
   },
   "sourceDesc": {
     "googleKeep": ".zip do Google Takeout (pasta Keep) ou uma única nota .json. Listas de verificação são importadas como listas de tarefas nativas.",
@@ -82,7 +103,7 @@
     "intro": "Importe logins, cartões de crédito e chaves SSH de outro gerenciador de senhas."
   },
   "restorePick": {
-    "intro": "Restaure um backup do PrivacyNotes que você exportou antes. Seu arquivo é lido e descriptografado localmente.",
+    "intro": "Restaure um backup do PrivacyNotes que você exportou antes.",
     "fullBackupTitle": "Backup completo (.zip)",
     "fullBackupDesc": "Restaure notas, diários, itens do cofre, tarefas, imagens, áudio e arquivos. Uma nota que você já tem é mantida, ou atualizada se o backup tiver uma versão mais recente dela.",
     "encryptedBackupTitle": "Backup criptografado (.pnbackup, .pnbackupz)",

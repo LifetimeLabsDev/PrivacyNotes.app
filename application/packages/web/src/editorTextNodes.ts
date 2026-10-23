@@ -241,7 +241,7 @@ export const TextWithMarkdown = Text.extend({
 export const HeadingWithMarkdown = Heading.extend({
   // TipTap's own Mod-Alt-1 to 6 stays; off Apple, Ctrl+Shift+1 to 6 is the
   // key that works where AltGr+digit types a character.
-  // Spec: ops/docs/plans/keyboard-shortcuts.md (decision D11)
+  // Spec: ops/docs/archive/keyboard-shortcuts.md (decision D11)
   addKeyboardShortcuts() {
     const keys = { ...this.parent?.() };
     if (KEY_OS === 'pc') {

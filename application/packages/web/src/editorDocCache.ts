@@ -21,7 +21,7 @@ import { db } from './db';
 /** The parse that made a cached doc. A row from another parse is a miss:
  *  raise this whenever a parse rule changes the document a body gives, or
  *  a big note opens with the old reading of its own text (and the next save
- *  writes that reading back). Spec: ops/docs/plans/footnotes.md (section 5.4) */
+ *  writes that reading back). Spec: ops/docs/archive/footnotes.md (section 5.4) */
 const EDITOR_PARSE_VERSION = 3;
 
 /** Only notes at least this big are cached - below it the parse is well

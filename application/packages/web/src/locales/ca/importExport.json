@@ -9,7 +9,8 @@
     "tabExport": "Exporta",
     "tabRestore": "Restaura",
     "tabVault": "Contrasenyes",
-    "working": "S'està treballant…"
+    "working": "S'està treballant…",
+    "tabWellness": "Seguiments"
   },
   "footer": {
     "exportNote": "Les exportacions s'executen localment. No es puja res.",
@@ -20,7 +21,9 @@
     "autoTagLabel": "Etiqueta les notes importades segons l'origen",
     "autoTagDesc": "Les notes de Google Keep reben <keep>#google</keep>, les d'Obsidian <obsidian>#obsidian</obsidian>, i així successivament.",
     "guideAria": "Guia d'importació per a {{app}}",
-    "guideLabel": "Guia"
+    "guideLabel": "Guia",
+    "groupGeneral": "General",
+    "groupNotes": "Notes"
   },
   "folderImport": {
     "tagLabel": "Etiqueta també les notes per carpeta",
@@ -49,6 +52,24 @@
     "timeZone": "Zona horària",
     "ends": "Acaba",
     "repeats": "Es repeteix"
+  },
+  "webcal": {
+    "title": "Webcal",
+    "desc": "Una adreça de calendari, com ara un enllaç webcal:// de Proton, iCloud, Outlook o d'un calendari públic. Es baixa una sola vegada; enganxa-la de nou més endavant per afegir només els esdeveniments nous.",
+    "fieldLabel": "Adreça del calendari",
+    "import": "Importa",
+    "downloading": "S'està baixant…",
+    "errors": {
+      "invalid": "Enganxa una adreça que comenci per webcal://, webcals:// o https://.",
+      "refused": "Aquesta adreça no es pot obrir.",
+      "wrongType": "Aquesta adreça no porta a cap fitxer de calendari.",
+      "tooLarge": "Aquest calendari supera els 10 MB.",
+      "timeout": "El servidor del calendari no ha respost a temps. Torna-ho a provar més tard.",
+      "blocked": "El servidor del calendari ha rebutjat la baixada. Comprova que el calendari sigui compartit o públic.",
+      "offline": "Estàs fora de línia. Connecta't i torna-ho a provar.",
+      "limit": "Massa baixades en poc temps. Espera un minut i torna-ho a provar.",
+      "failed": "No s'ha pogut baixar el calendari. Comprova l'adreça i torna-ho a provar."
+    }
   },
   "sourceDesc": {
     "googleKeep": "Fitxer .zip de Google Takeout (carpeta Keep) o una sola nota .json. Les llistes de verificació s'importen com a llistes de tasques natives.",
@@ -82,7 +103,7 @@
     "intro": "Importa inicis de sessió, targetes de crèdit i claus SSH des d'un altre gestor de contrasenyes."
   },
   "restorePick": {
-    "intro": "Restaura una còpia de seguretat de PrivacyNotes que hagis exportat abans. El teu fitxer es llegeix i es desxifra localment.",
+    "intro": "Restaura una còpia de seguretat de PrivacyNotes que hagis exportat abans.",
     "fullBackupTitle": "Còpia de seguretat completa (.zip)",
     "fullBackupDesc": "Restaura notes, diaris, elements de la caixa forta, tasques, imatges, àudio i fitxers. Una nota que ja tens es conserva, o s'actualitza si la còpia de seguretat en conté una versió més recent.",
     "encryptedBackupTitle": "Còpia de seguretat xifrada (.pnbackup, .pnbackupz)",

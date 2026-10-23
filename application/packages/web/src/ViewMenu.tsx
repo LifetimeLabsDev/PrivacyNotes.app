@@ -25,7 +25,7 @@ import type { View } from './views';
  * skeleton and answers a different question - which of these do I want, many
  * at a time. They stay apart on purpose: merging them means a mode prop that
  * branches at every row and at the ARIA.
- * Spec: ops/docs/plans/start-view.md (one menu, two triggers)
+ * Spec: ops/docs/archive/start-view.md (one menu, two triggers)
  */
 export function ViewMenu({
   rows,

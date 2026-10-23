@@ -15,7 +15,7 @@
  * No DOM and no ProseMirror here: the parse hook, the serializer, the node
  * view, the drag, the exporter and the word count all ask this module, so the
  * rules cannot drift between them.
- * Spec: ops/docs/plans/table-column-widths.md
+ * Spec: ops/docs/archive/table-column-widths.md
  */
 import { dashCounts } from './tableDelimiterRow';
 

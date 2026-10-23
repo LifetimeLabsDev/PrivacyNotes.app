@@ -818,9 +818,12 @@ async function syncInner(
     throw new SessionExpiredError();
   }
   claimGateBrokenSince = 0;
-  // A denied SELECT must never look like an empty vault. This also gates
-  // the sign-out rescue flush. tests/mfaIntegration.test.ts.
-  await assertMfaAccess(supabase);
+  // The table gate raises mfa_required on the first row a request touches,
+  // so a pass learns of a missing factor from its first real read or write,
+  // and an empty answer means no matching row. The sign-out rescue flush
+  // skips the pull and the heartbeat, so it asks before it writes.
+  // tests/sync/scenarios-mfa.test.ts.
+  if (flushOnly) await assertMfaAccess(supabase);
 
   let lastSync =
     localStorage.getItem(LAST_SYNC_KEY) || '1970-01-01T00:00:00Z';
@@ -1027,7 +1030,7 @@ async function syncInner(
       const local = localMap.get(row.id);
       // Both dirty values win over a pull: 1 is a plaintext-era unsynced
       // edit, 2 is a sealed unsynced edit (the value old bundles cannot
-      // see). Spec: ops/docs/plans/local-at-rest.md (5.2, the dirty fence)
+      // see). Spec: ops/docs/archive/local-at-rest.md (5.2, the dirty fence)
       if (local && (local.dirty === 1 || local.dirty === 2)) continue;
       const heal = healBases && local !== undefined && noteBaseOf(local) === undefined;
       if (heal) healIds.add(row.id);
@@ -1788,7 +1791,7 @@ async function syncInner(
 
       // Two sides can each leave a schedule that holds while their merge does
       // not (an end day kept from one side before a day moved on the other);
-      // the merge keeps what holds. Spec: ops/docs/plans/calendar-pillar-spec.md (section 4.2)
+      // the merge keeps what holds. Spec: ops/docs/archive/calendar-pillar-spec.md (section 4.2)
       const merged: NoteFields = { ...rest, body, trackers: normalizeSchedule(rest.trackers, rest.type) };
       const editedAt = mergedEditedAt(local, server, merged);
       // A server copy that lost the flag to an older writer is not "the
@@ -1868,6 +1871,7 @@ async function syncInner(
         console.log('[sync] merged note', note.id);
       } else if (mergeErr) {
         if (!isNoteTooLargeError(mergeErr)) recordSyncFault({ step: 'push', status: mergeStatus, code: mergeErr.code || undefined, ref: note.id });
+        if (isMfaRefusal(mergeErr)) throw new MfaRequiredError();
         console.error('[sync] auto-merge push failed for', note.id, mergeErr);
         if (onPushError) onPushError(note.id, mergeErr.message ?? 'auto-merge failed');
       } else {
@@ -1877,6 +1881,7 @@ async function syncInner(
         console.warn('[sync] auto-merge lost a second race for', note.id);
       }
     } catch (err) {
+      if (err instanceof MfaRequiredError) throw err;
       console.error('[sync] conflict resolution failed for', note.id, err);
       recordSyncFault({ step: 'push', code: 'merge', ref: note.id });
       if (onPushError) onPushError(note.id, 'conflict resolution failed');

@@ -1,13 +1,15 @@
 {
   "placeholder": "Commence à écrire…",
+  "eventPlaceholder": "Ajoute un ordre du jour, une adresse ou des notes…",
   "toolbar": {
     "bold": "Gras",
+    "hideKeyboard": "Masquer le clavier",
     "italic": "Italique",
     "underline": "Souligné",
     "heading": "Titre",
     "taskList": "Liste de tâches",
     "bulletList": "Liste à puces",
-    "addLink": "Ajouter un lien ({{keys}})",
+    "addLink": "Ajouter un lien",
     "noteLink": "Lier à une autre note (ou tape [[)",
     "numberedList": "Liste numérotée",
     "textColor": "Couleur du texte",
@@ -40,7 +42,6 @@
     "footnote": "Note de bas de page",
     "spoiler": "Spoiler",
     "copyBox": "Bloc à copier",
-    "withHint": "{{label}} ({{hint}})",
     "customize": "Personnaliser la barre de mise en forme"
   },
   "align": {
@@ -98,7 +99,9 @@
       "update": "Mise à jour",
       "time": "Temps",
       "steps": "Étapes",
-      "place": "Lieu"
+      "place": "Lieu",
+      "kanban": "Tableau Kanban",
+      "column": "Colonne"
     }
   },
   "color": {
@@ -132,27 +135,51 @@
     "resizeHint": "Maintiens {{shift}} pour ne modifier que cette colonne, {{alt}} pour un réglage plus fin",
     "deleteRow": "Supprimer la ligne",
     "deleteColumn": "Supprimer la colonne",
-    "deleteTable": "Supprimer le tableau"
+    "deleteTable": "Supprimer le tableau",
+    "insertFormula": "Insérer une formule",
+    "formulaNoMatch": "Aucune formule ne correspond",
+    "formula": {
+      "SUM": "Additionner les valeurs",
+      "PRODUCT": "Multiplier les valeurs",
+      "AVG": "Moyenne des valeurs",
+      "AVERAGE": "Moyenne des valeurs",
+      "MEDIAN": "Valeur du milieu",
+      "MIN": "La plus petite valeur",
+      "MAX": "La plus grande valeur",
+      "COUNT": "Combien de nombres",
+      "ABS": "Valeur sans son signe",
+      "SQRT": "Racine carrée",
+      "SIGN": "Si une valeur est positive ou négative",
+      "CEIL": "Arrondir à l'entier supérieur",
+      "FLOOR": "Arrondir à l'entier inférieur",
+      "ROUND": "Arrondir à l'entier le plus proche",
+      "LOG": "Logarithme",
+      "RAND": "Un nombre aléatoire",
+      "PI": "La constante pi",
+      "E": "Le nombre d'Euler",
+      "TAU": "La constante tau",
+      "PHI": "Le nombre d'or"
+    }
   },
   "find": {
     "placeholder": "Rechercher dans la note",
     "label": "Rechercher dans la note",
-    "previous": "Correspondance précédente (Maj+Entrée)",
-    "previousTitle": "Précédent (Maj+Entrée)",
-    "next": "Correspondance suivante (Entrée)",
-    "nextTitle": "Suivant (Entrée)",
+    "previous": "Correspondance précédente",
+    "previousTitle": "Précédent",
+    "next": "Correspondance suivante",
+    "nextTitle": "Suivant",
     "close": "Fermer la recherche",
-    "closeTitle": "Fermer ({{keys}})",
+    "closeTitle": "Fermer",
     "replacePlaceholder": "Remplacer par",
     "replaceLabel": "Remplacer par",
     "replace": "Remplacer",
-    "replaceTitle": "Remplacer cette occurrence (Entrée)",
+    "replaceTitle": "Remplacer cette occurrence",
     "replaceAll": "Tout",
     "replaceAllTitle": "Remplacer toutes les occurrences",
     "caseSensitive": "Respecter la casse",
     "caseSensitiveTitle": "Respecter la casse",
     "closeReplace": "Fermer rechercher et remplacer",
-    "closeReplaceTitle": "Fermer ({{keys}})",
+    "closeReplaceTitle": "Fermer",
     "showReplace": "Rechercher et remplacer",
     "hideReplace": "Masquer le remplacement",
     "replacedCount_one": "{{count}} remplacée",
@@ -164,7 +191,6 @@
     "title": "Plan",
     "ariaLabel": "Plan de la note",
     "hide": "Masquer le plan",
-    "hideTitle": "Masquer le plan ({{keys}})",
     "copyHeadingLink": "Copier le lien vers le titre",
     "copyNoteLink": "Copier le lien de note",
     "copyHeadingShortcut": "Copier le raccourci vers le titre",
@@ -172,6 +198,8 @@
   },
   "bodyMenu": {
     "cut": "Couper",
+    "copyAsPlain": "Copier en texte brut",
+    "copyAsMarkdown": "Copier en Markdown",
     "sortAsc": "Trier les lignes de A à Z",
     "sortDesc": "Trier les lignes de Z à A"
   },
@@ -286,6 +314,7 @@
     "hidden": "Masqués",
     "hiddenNote": "Ils fonctionnent toujours par raccourci et en Markdown.",
     "hiddenDrop": "Dépose un bouton ici pour le masquer.",
+    "arrangeTitle": "Boutons",
     "markdownViewNote": "La vue Markdown garde son propre jeu de boutons fixe.",
     "hiddenEmpty": "Rien n'est masqué.",
     "alwaysVisible": "Toujours visibles",
@@ -320,5 +349,22 @@
     "positionNote": "Choisis où se place la barre de mise en forme dans l’éditeur.",
     "positionTop": "Haut",
     "positionBottom": "Bas"
+  },
+  "kanban": {
+    "todo": "À faire",
+    "inProgress": "En cours",
+    "review": "Relecture",
+    "done": "Terminé",
+    "color": "Couleur",
+    "columns": "Colonnes",
+    "columnCount_one": "{{count}} colonne",
+    "columnCount_many": "{{count}} colonnes",
+    "columnCount_other": "{{count}} colonnes",
+    "cardCount_one": "{{count}} carte",
+    "cardCount_many": "{{count}} cartes",
+    "cardCount_other": "{{count}} cartes",
+    "addColumn": "Ajouter une colonne",
+    "removeBoard": "Retirer le tableau",
+    "moveTo": "Déplacer vers"
   }
 }
